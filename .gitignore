@@ -9,6 +9,9 @@
 *.zip
 *.tar.gz
 
+# Maven output dir
+target/
+
 .DS_Store
 *.swp
 .vscode
