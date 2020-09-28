@@ -19,26 +19,22 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface ChromiumBrowserContext{
+interface ChromiumBrowserContext {
+  class GrantPermissionsOptions {
+    String origin;
+  }
   List<Page> backgroundPages();
   CDPSession newCDPSession(Page page);
   List<Worker> serviceWorkers();
   void close();
   void addCookies(List<Object> cookies);
-
-  class AddInitScriptArg {
-  }
-  void addInitScript(String script, AddInitScriptArg arg);
+  void addInitScript(String script, Object arg);
   Browser browser();
   void clearCookies();
   void clearPermissions();
   List<Object> cookies(String urls);
   void exposeBinding(String name, String playwrightBinding);
   void exposeFunction(String name, String playwrightFunction);
-
-  class GrantPermissionsOptions {
-    String origin;
-  }
   void grantPermissions(List<String> permissions, GrantPermissionsOptions options);
   Page newPage();
   List<Page> pages();
@@ -46,19 +42,8 @@ interface ChromiumBrowserContext{
   void setDefaultNavigationTimeout(int timeout);
   void setDefaultTimeout(int timeout);
   void setExtraHTTPHeaders(Map<String, String> headers);
-
-  class SetGeolocationGeolocation {
-    Integer latitude;
-    Integer longitude;
-    Integer accuracy;
-  }
-  void setGeolocation(SetGeolocationGeolocation geolocation);
-
-  class SetHTTPCredentialsHttpCredentials {
-    String username;
-    String password;
-  }
-  void setHTTPCredentials(SetHTTPCredentialsHttpCredentials httpCredentials);
+  void setGeolocation(Object geolocation);
+  void setHTTPCredentials(Object httpCredentials);
   void setOffline(boolean offline);
   void unroute(String url, BiConsumer<Route, Request> handler);
   Object waitForEvent(String event, String optionsOrPredicate);

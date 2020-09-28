@@ -19,18 +19,16 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface Keyboard{
-  void down(String key);
-  void insertText(String text);
-
+interface Keyboard {
   class PressOptions {
     Integer delay;
   }
-  void press(String key, PressOptions options);
-
   class TypeOptions {
     Integer delay;
   }
+  void down(String key);
+  void insertText(String text);
+  void press(String key, PressOptions options);
   void type(String text, TypeOptions options);
   void up(String key);
 }

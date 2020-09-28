@@ -19,16 +19,12 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface Route{
-  void abort(String errorCode);
-
+interface Route {
   class ContinueOverrides {
     String method;
     String postData;
     Map<String, String> headers;
   }
-  void continue_(ContinueOverrides overrides);
-
   class FulfillResponse {
     Integer status;
     Map<String, String> headers;
@@ -36,6 +32,8 @@ interface Route{
     String body;
     String path;
   }
+  void abort(String errorCode);
+  void continue_(ContinueOverrides overrides);
   void fulfill(FulfillResponse response);
   Request request();
 }

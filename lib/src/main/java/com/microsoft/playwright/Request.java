@@ -19,7 +19,7 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface Request{
+interface Request {
   Object failure();
   Frame frame();
   Map<String, String> headers();

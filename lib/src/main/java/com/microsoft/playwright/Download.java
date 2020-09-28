@@ -19,7 +19,7 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface Download{
+interface Download {
   Readable createReadStream();
   void delete();
   String failure();

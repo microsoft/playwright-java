@@ -19,15 +19,14 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface FileChooser{
-  ElementHandle element();
-  boolean isMultiple();
-  Page page();
-
+interface FileChooser {
   class SetFilesOptions {
     Boolean noWaitAfter;
     Integer timeout;
   }
+  ElementHandle element();
+  boolean isMultiple();
+  Page page();
   void setFiles(String files, SetFilesOptions options);
 }
 

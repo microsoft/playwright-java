@@ -19,63 +19,87 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface WebKitBrowser{
+interface WebKitBrowser {
+  class NewContextOptions {
+    enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
+    class Geolocation {
+      double latitude;
+      double longitude;
+      double accuracy;
+    }
+    class HttpCredentials {
+      String username;
+      String password;
+    }
+    class VideoSize {
+      int width;
+      int height;
+    }
+    Boolean acceptDownloads;
+    Boolean ignoreHTTPSErrors;
+    Boolean bypassCSP;
+    Object viewport;
+    String userAgent;
+    Integer deviceScaleFactor;
+    Boolean isMobile;
+    Boolean hasTouch;
+    Boolean javaScriptEnabled;
+    String timezoneId;
+    Geolocation geolocation;
+    String locale;
+    List<String> permissions;
+    Map<String, String> extraHTTPHeaders;
+    Boolean offline;
+    HttpCredentials httpCredentials;
+    ColorScheme colorScheme;
+    Logger logger;
+    String relativeArtifactsPath;
+    Boolean recordVideos;
+    VideoSize videoSize;
+    Boolean recordTrace;
+  }
+  class NewPageOptions {
+    enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
+    class Geolocation {
+      double latitude;
+      double longitude;
+      double accuracy;
+    }
+    class HttpCredentials {
+      String username;
+      String password;
+    }
+    class VideoSize {
+      int width;
+      int height;
+    }
+    Boolean acceptDownloads;
+    Boolean ignoreHTTPSErrors;
+    Boolean bypassCSP;
+    Object viewport;
+    String userAgent;
+    Integer deviceScaleFactor;
+    Boolean isMobile;
+    Boolean hasTouch;
+    Boolean javaScriptEnabled;
+    String timezoneId;
+    Geolocation geolocation;
+    String locale;
+    List<String> permissions;
+    Map<String, String> extraHTTPHeaders;
+    Boolean offline;
+    HttpCredentials httpCredentials;
+    ColorScheme colorScheme;
+    Logger logger;
+    String relativeArtifactsPath;
+    Boolean recordVideos;
+    VideoSize videoSize;
+    Boolean recordTrace;
+  }
   void close();
   List<BrowserContext> contexts();
   boolean isConnected();
-
-  class NewContextOptions {
-    Boolean acceptDownloads;
-    Boolean ignoreHTTPSErrors;
-    Boolean bypassCSP;
-    Object viewport;
-    String userAgent;
-    Integer deviceScaleFactor;
-    Boolean isMobile;
-    Boolean hasTouch;
-    Boolean javaScriptEnabled;
-    String timezoneId;
-    Object geolocation;
-    String locale;
-    List<String> permissions;
-    Map<String, String> extraHTTPHeaders;
-    Boolean offline;
-    Object httpCredentials;
-    enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
-    ColorScheme colorScheme;
-    Logger logger;
-    String relativeArtifactsPath;
-    Boolean recordVideos;
-    Object videoSize;
-    Boolean recordTrace;
-  }
   BrowserContext newContext(NewContextOptions options);
-
-  class NewPageOptions {
-    Boolean acceptDownloads;
-    Boolean ignoreHTTPSErrors;
-    Boolean bypassCSP;
-    Object viewport;
-    String userAgent;
-    Integer deviceScaleFactor;
-    Boolean isMobile;
-    Boolean hasTouch;
-    Boolean javaScriptEnabled;
-    String timezoneId;
-    Object geolocation;
-    String locale;
-    List<String> permissions;
-    Map<String, String> extraHTTPHeaders;
-    Boolean offline;
-    Object httpCredentials;
-    enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
-    ColorScheme colorScheme;
-    Logger logger;
-    String relativeArtifactsPath;
-    Boolean recordVideos;
-    Object videoSize;
-    Boolean recordTrace;
-  }
   Page newPage(NewPageOptions options);
   String version();
 }

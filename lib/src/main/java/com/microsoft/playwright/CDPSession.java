@@ -19,11 +19,8 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface CDPSession{
+interface CDPSession {
   void detach();
-
-  class SendParams {
-  }
-  Object send(String method, SendParams params);
+  Object send(String method, Object params);
 }
 

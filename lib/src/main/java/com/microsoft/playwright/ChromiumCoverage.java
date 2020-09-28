@@ -19,17 +19,15 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface ChromiumCoverage{
-
+interface ChromiumCoverage {
   class StartCSSCoverageOptions {
     Boolean resetOnNavigation;
   }
-  void startCSSCoverage(StartCSSCoverageOptions options);
-
   class StartJSCoverageOptions {
     Boolean resetOnNavigation;
     Boolean reportAnonymousScripts;
   }
+  void startCSSCoverage(StartCSSCoverageOptions options);
   void startJSCoverage(StartJSCoverageOptions options);
   List<Object> stopCSSCoverage();
   List<Object> stopJSCoverage();

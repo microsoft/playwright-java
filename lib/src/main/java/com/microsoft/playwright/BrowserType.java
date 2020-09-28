@@ -19,44 +19,64 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface BrowserType{
-
+interface BrowserType {
   class ConnectOptions {
     String wsEndpoint;
     Integer slowMo;
     Logger logger;
     Integer timeout;
   }
-  Browser connect(ConnectOptions options);
-  String executablePath();
-
   class LaunchOptions {
+    class Proxy {
+      String server;
+      String bypass;
+      String username;
+      String password;
+    }
     Boolean headless;
     String executablePath;
     List<String> args;
     Boolean ignoreDefaultArgs;
-    Object proxy;
+    Proxy proxy;
     String downloadsPath;
     String artifactsPath;
     Boolean chromiumSandbox;
-    Map<String, String> firefoxUserPrefs;
+    String firefoxUserPrefs;
     Boolean handleSIGINT;
     Boolean handleSIGTERM;
     Boolean handleSIGHUP;
     Logger logger;
     Integer timeout;
-    Map<String, String> env;
+    String env;
     Boolean devtools;
     Integer slowMo;
   }
-  Browser launch(LaunchOptions options);
-
   class LaunchPersistentContextOptions {
+    enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
+    class Proxy {
+      String server;
+      String bypass;
+      String username;
+      String password;
+    }
+    class Geolocation {
+      double latitude;
+      double longitude;
+      double accuracy;
+    }
+    class HttpCredentials {
+      String username;
+      String password;
+    }
+    class VideoSize {
+      int width;
+      int height;
+    }
     Boolean headless;
     String executablePath;
     List<String> args;
-    Boolean ignoreDefaultArgs;
-    Object proxy;
+    String ignoreDefaultArgs;
+    Proxy proxy;
     Boolean acceptDownloads;
     String downloadsPath;
     String artifactsPath;
@@ -66,7 +86,7 @@ interface BrowserType{
     Boolean handleSIGHUP;
     Logger logger;
     Integer timeout;
-    Map<String, String> env;
+    String env;
     Boolean devtools;
     Integer slowMo;
     Boolean ignoreHTTPSErrors;
@@ -78,40 +98,47 @@ interface BrowserType{
     Boolean hasTouch;
     Boolean javaScriptEnabled;
     String timezoneId;
-    Object geolocation;
+    Geolocation geolocation;
     String locale;
     List<String> permissions;
     Map<String, String> extraHTTPHeaders;
     Boolean offline;
-    Object httpCredentials;
-    enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
+    HttpCredentials httpCredentials;
     ColorScheme colorScheme;
     String relativeArtifactsPath;
     Boolean recordVideos;
-    Object videoSize;
+    VideoSize videoSize;
     Boolean recordTrace;
   }
-  BrowserContext launchPersistentContext(String userDataDir, LaunchPersistentContextOptions options);
-
   class LaunchServerOptions {
+    class Proxy {
+      String server;
+      String bypass;
+      String username;
+      String password;
+    }
     Boolean headless;
     Integer port;
     String executablePath;
     List<String> args;
-    Boolean ignoreDefaultArgs;
-    Object proxy;
+    String ignoreDefaultArgs;
+    Proxy proxy;
     String downloadsPath;
     String artifactsPath;
     Boolean chromiumSandbox;
-    Map<String, String> firefoxUserPrefs;
+    String firefoxUserPrefs;
     Boolean handleSIGINT;
     Boolean handleSIGTERM;
     Boolean handleSIGHUP;
     Logger logger;
     Integer timeout;
-    Map<String, String> env;
+    String env;
     Boolean devtools;
   }
+  Browser connect(ConnectOptions options);
+  String executablePath();
+  Browser launch(LaunchOptions options);
+  BrowserContext launchPersistentContext(String userDataDir, LaunchPersistentContextOptions options);
   BrowserServer launchServer(LaunchServerOptions options);
   String name();
 }
