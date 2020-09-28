@@ -19,7 +19,7 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface BrowserServer {
+public interface BrowserServer {
   void close();
   void kill();
   Object process();

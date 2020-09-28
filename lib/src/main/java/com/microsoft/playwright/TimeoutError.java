@@ -19,6 +19,6 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface TimeoutError {
+public interface TimeoutError {
 }
 

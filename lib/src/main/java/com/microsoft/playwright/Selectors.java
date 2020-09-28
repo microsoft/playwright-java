@@ -19,9 +19,14 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface Selectors {
+public interface Selectors {
   class RegisterOptions {
     Boolean contentScript;
+
+    public RegisterOptions withContentScript(Boolean contentScript) {
+      this.contentScript = contentScript;
+      return this;
+    }
   }
   void register(String name, String script, RegisterOptions options);
 }

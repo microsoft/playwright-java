@@ -19,12 +19,22 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface Keyboard {
+public interface Keyboard {
   class PressOptions {
     Integer delay;
+
+    public PressOptions withDelay(Integer delay) {
+      this.delay = delay;
+      return this;
+    }
   }
   class TypeOptions {
     Integer delay;
+
+    public TypeOptions withDelay(Integer delay) {
+      this.delay = delay;
+      return this;
+    }
   }
   void down(String key);
   void insertText(String text);

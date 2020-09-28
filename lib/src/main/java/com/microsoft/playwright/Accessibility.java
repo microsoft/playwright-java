@@ -19,10 +19,19 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface Accessibility {
+public interface Accessibility {
   class SnapshotOptions {
     Boolean interestingOnly;
     ElementHandle root;
+
+    public SnapshotOptions withInterestingOnly(Boolean interestingOnly) {
+      this.interestingOnly = interestingOnly;
+      return this;
+    }
+    public SnapshotOptions withRoot(ElementHandle root) {
+      this.root = root;
+      return this;
+    }
   }
   Object snapshot(SnapshotOptions options);
 }

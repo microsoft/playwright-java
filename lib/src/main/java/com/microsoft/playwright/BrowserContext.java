@@ -19,9 +19,14 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface BrowserContext {
+public interface BrowserContext {
   class GrantPermissionsOptions {
     String origin;
+
+    public GrantPermissionsOptions withOrigin(String origin) {
+      this.origin = origin;
+      return this;
+    }
   }
   void close();
   void addCookies(List<Object> cookies);

@@ -19,7 +19,7 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface Response {
+public interface Response {
   byte[] body();
   Error finished();
   Frame frame();

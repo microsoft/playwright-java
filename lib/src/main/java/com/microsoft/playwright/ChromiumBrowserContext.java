@@ -19,9 +19,14 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface ChromiumBrowserContext {
+public interface ChromiumBrowserContext {
   class GrantPermissionsOptions {
     String origin;
+
+    public GrantPermissionsOptions withOrigin(String origin) {
+      this.origin = origin;
+      return this;
+    }
   }
   List<Page> backgroundPages();
   CDPSession newCDPSession(Page page);

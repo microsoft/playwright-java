@@ -26,17 +26,17 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-abstract class Element<P extends Element> {
+abstract class Element {
   final String jsonName;
   final String jsonPath;
   final JsonElement jsonElement;
-  final P parent;
+  final Element parent;
 
-  Element(P parent, JsonElement jsonElement) {
+  Element(Element parent, JsonElement jsonElement) {
     this(parent, false, jsonElement);
   }
 
-  Element(P parent, boolean useParentJsonPath, JsonElement jsonElement) {
+  Element(Element parent, boolean useParentJsonPath, JsonElement jsonElement) {
     this.parent = parent;
     if (jsonElement != null && jsonElement.isJsonObject()) {
       this.jsonName = jsonElement.getAsJsonObject().get("name").getAsString();;
@@ -55,11 +55,16 @@ abstract class Element<P extends Element> {
   TypeDefinition typeScope() {
     return parent.typeScope();
   }
+
+  static String toTitle(String name) {
+    return Character.toUpperCase(name.charAt(0)) + name.substring(1);
+  }
 }
 
 // Represents return type of a method, type of a method param or type of a field.
 class TypeRef extends Element {
   String customType;
+  boolean isNestedClass;
 
   TypeRef(Element parent, JsonElement jsonElement) {
     super(parent, true, jsonElement);
@@ -100,6 +105,7 @@ class TypeRef extends Element {
       typeScope().createEnum(customType, jsonName);
     } else if (isClass) {
       typeScope().createNestedClass(customType, this, jsonElement.getAsJsonObject());
+      isNestedClass = true;
     }
   }
 
@@ -146,14 +152,9 @@ class TypeRef extends Element {
       .replace("number", "int")
       .replace("null|", "");
   }
-
-  private static String toTitle(String name) {
-    return Character.toUpperCase(name.charAt(0)) + name.substring(1);
-  }
 }
 
-abstract class TypeDefinition extends Element<Element> {
-  final List<Method> methods = new ArrayList<>();
+abstract class TypeDefinition extends Element {
   final List<Enum> enums = new ArrayList<>();
   final List<NestedClass> classes = new ArrayList<>();
 
@@ -201,13 +202,10 @@ abstract class TypeDefinition extends Element<Element> {
     for (NestedClass c : classes) {
       c.writeTo(output, offset);
     }
-    for (Method m : methods) {
-      m.writeTo(output, offset);
-    }
   }
 }
 
-class Method extends Element<TypeDefinition> {
+class Method extends Element {
   final TypeRef returnType;
   final List<Param> params = new ArrayList<>();
 
@@ -252,7 +250,7 @@ class Method extends Element<TypeDefinition> {
   }
 }
 
-class Param extends Element<Method> {
+class Param extends Element {
   final TypeRef type;
 
   Param(Method method, JsonObject jsonElement) {
@@ -265,7 +263,7 @@ class Param extends Element<Method> {
   }
 }
 
-class Field extends Element<NestedClass> {
+class Field extends Element {
   final String name;
   final TypeRef type;
 
@@ -275,12 +273,17 @@ class Field extends Element<NestedClass> {
     this.type = new TypeRef(this, jsonElement.getAsJsonObject().get("type"));
   }
 
+  String toJava() {
+    return type.toJava() + " " + name;
+  }
+
   void writeTo(List<String> output, String offset) {
-    output.add(offset + type.toJava() + " " + name + ";");
+    output.add(offset + toJava() + ";");
   }
 }
 
 class Interface extends TypeDefinition {
+  private final List<Method> methods = new ArrayList<>();
   private static String header = "/**\n" +
     " * Copyright (c) Microsoft Corporation.\n" +
     " *\n" +
@@ -319,8 +322,11 @@ class Interface extends TypeDefinition {
     output.add("import java.util.*;");
     output.add("import java.util.function.BiConsumer;");
     output.add("");
-    output.add("interface " + jsonName + " {");
+    output.add("public interface " + jsonName + " {");
     super.writeTo(output, offset + "  ");
+    for (Method m : methods) {
+      m.writeTo(output, offset + "  ");
+    }
     output.add("}");
     output.add("\n");
   }
@@ -341,12 +347,40 @@ class NestedClass extends TypeDefinition {
   }
 
   void writeTo(List<String> output, String offset) {
-    output.add(offset + "class " + name + " {");
-    super.writeTo(output, offset + "  ");
+    String access = parent.typeScope() instanceof NestedClass ? "public " : "";
+    output.add(offset + access + "class " + name + " {");
+    String bodyOffset = offset + "  ";
+    super.writeTo(output, bodyOffset);
     for (Field f : fields) {
-      f.writeTo(output, offset + "  ");
+      f.writeTo(output, bodyOffset);
     }
+    output.add("");
+    writeBuilderMethods(output, bodyOffset);
     output.add(offset + "}");
+  }
+
+  private void writeBuilderMethods(List<String> output, String bodyOffset) {
+    if (parent.typeScope() instanceof  NestedClass) {
+      NestedClass outer = (NestedClass) parent.typeScope();
+      output.add(bodyOffset + name + "() {");
+      output.add(bodyOffset + "}");
+      output.add(bodyOffset + "public " + outer.name + " done() {");
+      output.add(bodyOffset + "  return " + outer.name + ".this;");
+      output.add(bodyOffset + "}");
+      output.add("");
+    }
+    for (Field f : fields) {
+      if (f.type.isNestedClass) {
+        output.add(bodyOffset + "public " + f.type.toJava() + " set" + toTitle(f.name) + "() {");
+        output.add(bodyOffset + "  this." + f.name + " = new " + f.type.toJava() + "();");
+        output.add(bodyOffset + "  return this." + f.name + ";");
+      } else {
+        output.add(bodyOffset + "public " + name + " with" + toTitle(f.name) + "(" + f.toJava() + ") {");
+        output.add(bodyOffset + "  this." + f.name + " = " + f.name + ";");
+        output.add(bodyOffset + "  return this;");
+      }
+      output.add(bodyOffset + "}");
+    }
   }
 }
 

@@ -19,7 +19,7 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface JSHandle {
+public interface JSHandle {
   ElementHandle asElement();
   void dispose();
   Object evaluate(String pageFunction, Object arg);

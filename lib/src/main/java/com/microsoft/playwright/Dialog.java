@@ -19,7 +19,7 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface Dialog {
+public interface Dialog {
   void accept(String promptText);
   String defaultValue();
   void dismiss();

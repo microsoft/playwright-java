@@ -19,10 +19,19 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface FileChooser {
+public interface FileChooser {
   class SetFilesOptions {
     Boolean noWaitAfter;
     Integer timeout;
+
+    public SetFilesOptions withNoWaitAfter(Boolean noWaitAfter) {
+      this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    public SetFilesOptions withTimeout(Integer timeout) {
+      this.timeout = timeout;
+      return this;
+    }
   }
   ElementHandle element();
   boolean isMultiple();

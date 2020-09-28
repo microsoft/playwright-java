@@ -19,13 +19,27 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface ChromiumCoverage {
+public interface ChromiumCoverage {
   class StartCSSCoverageOptions {
     Boolean resetOnNavigation;
+
+    public StartCSSCoverageOptions withResetOnNavigation(Boolean resetOnNavigation) {
+      this.resetOnNavigation = resetOnNavigation;
+      return this;
+    }
   }
   class StartJSCoverageOptions {
     Boolean resetOnNavigation;
     Boolean reportAnonymousScripts;
+
+    public StartJSCoverageOptions withResetOnNavigation(Boolean resetOnNavigation) {
+      this.resetOnNavigation = resetOnNavigation;
+      return this;
+    }
+    public StartJSCoverageOptions withReportAnonymousScripts(Boolean reportAnonymousScripts) {
+      this.reportAnonymousScripts = reportAnonymousScripts;
+      return this;
+    }
   }
   void startCSSCoverage(StartCSSCoverageOptions options);
   void startJSCoverage(StartJSCoverageOptions options);

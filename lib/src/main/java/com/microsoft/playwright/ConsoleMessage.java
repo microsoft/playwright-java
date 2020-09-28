@@ -19,11 +19,24 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-interface ConsoleMessage {
+public interface ConsoleMessage {
   class Location {
     String url;
     int lineNumber;
     int columnNumber;
+
+    public Location withUrl(String url) {
+      this.url = url;
+      return this;
+    }
+    public Location withLineNumber(int lineNumber) {
+      this.lineNumber = lineNumber;
+      return this;
+    }
+    public Location withColumnNumber(int columnNumber) {
+      this.columnNumber = columnNumber;
+      return this;
+    }
   }
   List<JSHandle> args();
   Location location();
