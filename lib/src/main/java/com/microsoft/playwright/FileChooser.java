@@ -36,6 +36,9 @@ public interface FileChooser {
   ElementHandle element();
   boolean isMultiple();
   Page page();
+  default void setFiles(String files) {
+    setFiles(files, null);
+  }
   void setFiles(String files, SetFilesOptions options);
 }
 

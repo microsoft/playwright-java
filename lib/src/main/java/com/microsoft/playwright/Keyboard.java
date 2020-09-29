@@ -38,7 +38,13 @@ public interface Keyboard {
   }
   void down(String key);
   void insertText(String text);
+  default void press(String key) {
+    press(key, null);
+  }
   void press(String key, PressOptions options);
+  default void type(String text) {
+    type(text, null);
+  }
   void type(String text, TypeOptions options);
   void up(String key);
 }

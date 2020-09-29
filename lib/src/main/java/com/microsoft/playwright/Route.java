@@ -66,7 +66,13 @@ public interface Route {
       return this;
     }
   }
+  default void abort() {
+    abort(null);
+  }
   void abort(String errorCode);
+  default void continue_() {
+    continue_(null);
+  }
   void continue_(ContinueOverrides overrides);
   void fulfill(FulfillResponse response);
   Request request();

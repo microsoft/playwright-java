@@ -175,6 +175,9 @@ class Types {
     add("Page.pdf.options.width", "string|number", "String");
     add("Page.pdf.options.height", "string|number", "String");
 
+    add("Page.goto.options", "Object", "NavigateOptions");
+    add("Frame.goto.options", "Object", "NavigateOptions");
+
     add("BrowserContext.cookies.urls", "string|Array<string>", "String");
     add("BrowserContext.route.url", "string|RegExp|function(URL):boolean", "String");
     add("BrowserContext.unroute.url", "string|RegExp|function(URL):boolean", "String");

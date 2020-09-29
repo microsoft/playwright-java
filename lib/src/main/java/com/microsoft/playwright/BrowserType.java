@@ -578,8 +578,17 @@ public interface BrowserType {
   }
   Browser connect(ConnectOptions options);
   String executablePath();
+  default Browser launch() {
+    return launch(null);
+  }
   Browser launch(LaunchOptions options);
+  default BrowserContext launchPersistentContext(String userDataDir) {
+    return launchPersistentContext(userDataDir, null);
+  }
   BrowserContext launchPersistentContext(String userDataDir, LaunchPersistentContextOptions options);
+  default BrowserServer launchServer() {
+    return launchServer(null);
+  }
   BrowserServer launchServer(LaunchServerOptions options);
   String name();
 }

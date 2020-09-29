@@ -34,11 +34,11 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     return null;
   }
 
-  public BrowserImpl launch() {
-    return launch(new LaunchOptions());
-  }
   @Override
   public BrowserImpl launch(LaunchOptions options) {
+    if (options == null) {
+      options = new LaunchOptions();
+    }
     JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
     JsonElement result = sendMessage("launch", params);
     return connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("browser").get("guid").getAsString());

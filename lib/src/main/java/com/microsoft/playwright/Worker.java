@@ -20,7 +20,13 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public interface Worker {
+  default Object evaluate(String pageFunction) {
+    return evaluate(pageFunction, null);
+  }
   Object evaluate(String pageFunction, Object arg);
+  default JSHandle evaluateHandle(String pageFunction) {
+    return evaluateHandle(pageFunction, null);
+  }
   JSHandle evaluateHandle(String pageFunction, Object arg);
   String url();
 }

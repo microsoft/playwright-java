@@ -22,7 +22,13 @@ import java.util.function.BiConsumer;
 public interface JSHandle {
   ElementHandle asElement();
   void dispose();
+  default Object evaluate(String pageFunction) {
+    return evaluate(pageFunction, null);
+  }
   Object evaluate(String pageFunction, Object arg);
+  default JSHandle evaluateHandle(String pageFunction) {
+    return evaluateHandle(pageFunction, null);
+  }
   JSHandle evaluateHandle(String pageFunction, Object arg);
   Map<String, JSHandle> getProperties();
   JSHandle getProperty(String propertyName);

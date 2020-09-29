@@ -41,7 +41,13 @@ public interface ChromiumCoverage {
       return this;
     }
   }
+  default void startCSSCoverage() {
+    startCSSCoverage(null);
+  }
   void startCSSCoverage(StartCSSCoverageOptions options);
+  default void startJSCoverage() {
+    startJSCoverage(null);
+  }
   void startJSCoverage(StartJSCoverageOptions options);
   List<Object> stopCSSCoverage();
   List<Object> stopJSCoverage();

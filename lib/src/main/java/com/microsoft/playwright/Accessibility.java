@@ -33,6 +33,9 @@ public interface Accessibility {
       return this;
     }
   }
+  default Object snapshot() {
+    return snapshot(null);
+  }
   Object snapshot(SnapshotOptions options);
 }
 

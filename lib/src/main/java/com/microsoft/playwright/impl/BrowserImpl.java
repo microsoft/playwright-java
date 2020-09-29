@@ -45,12 +45,11 @@ class BrowserImpl extends ChannelOwner implements Browser {
     return false;
   }
 
-  public BrowserContextImpl newContext() {
-    return newContext(new NewContextOptions());
-  }
-
   @Override
   public BrowserContextImpl newContext(NewContextOptions options) {
+    if (options == null) {
+      options = new NewContextOptions();
+    }
     JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
     JsonElement result = sendMessage("newContext", params);
     return connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("context").get("guid").getAsString());

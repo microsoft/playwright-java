@@ -1,12 +1,12 @@
 /**
  * Copyright (c) Microsoft Corporation.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,12 +21,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class TestClick {
+import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class TestBrowser {
   private static Playwright playwright;
   private Browser browser;
   private boolean isChromium;
-  private BrowserContext context;
-  private Page page;
 
   @BeforeAll
   static void beforeAll() {
@@ -35,10 +37,9 @@ public class TestClick {
 
   @BeforeEach
   void setUp() {
-    browser = playwright.chromium().launch();
+    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
+    browser = playwright.chromium().launch(options);
     isChromium = true;
-    context = browser.newContext();
-    page = context.newPage();
   }
 
   @AfterEach
@@ -47,9 +48,10 @@ public class TestClick {
   }
 
   @Test
-  void version_should_work() {
-//    page.navigate(server.PREFIX + "/input/button.html");
-//    page.click("button");
-//    assertEquals("Clicked", page.evaluate("result"));
+  void should_click_the_button() {
+    if (isChromium)
+      assertTrue(Pattern.matches("^\\d+\\.\\d+\\.\\d+\\.\\d+$", browser.version()));
+    else
+      assertTrue(Pattern.matches("^\\d+\\.\\d+", browser.version()));
   }
 }

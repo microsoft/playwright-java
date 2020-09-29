@@ -89,10 +89,25 @@ public interface Mouse {
       return this;
     }
   }
+  default void click(int x, int y) {
+    click(x, y, null);
+  }
   void click(int x, int y, ClickOptions options);
+  default void dblclick(int x, int y) {
+    dblclick(x, y, null);
+  }
   void dblclick(int x, int y, DblclickOptions options);
+  default void down() {
+    down(null);
+  }
   void down(DownOptions options);
+  default void move(int x, int y) {
+    move(x, y, null);
+  }
   void move(int x, int y, MoveOptions options);
+  default void up() {
+    up(null);
+  }
   void up(UpOptions options);
 }
 

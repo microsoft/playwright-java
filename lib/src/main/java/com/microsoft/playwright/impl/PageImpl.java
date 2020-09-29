@@ -39,7 +39,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   public Supplier<PageImpl> waitForPopup() {
-    Supplier<JsonObject> popupSupplier = waitForEvent("popup");
+    Supplier<JsonObject> popupSupplier = waitForProtocolEvent("popup");
     return () -> {
       JsonObject params = popupSupplier.get();
       String guid = params.getAsJsonObject("page").get("guid").getAsString();
@@ -146,13 +146,9 @@ public class PageImpl extends ChannelOwner implements Page {
 
   }
 
-  public void click(String selector) {
-    mainFrame.click(selector);
-  }
-
   @Override
   public void click(String selector, ClickOptions options) {
-
+    mainFrame.click(selector);
   }
 
   @Override
@@ -235,14 +231,10 @@ public class PageImpl extends ChannelOwner implements Page {
     return null;
   }
 
-  public ResponseImpl navigate(String url) {
-    return navigate(url, new GotoOptions());
-  }
-
   @Override
-  public ResponseImpl navigate(String url, GotoOptions options) {
+  public ResponseImpl navigate(String url, NavigateOptions options) {
     // TODO: convert params
-    return mainFrame.navigate(url, new Frame.GotoOptions());
+    return mainFrame.navigate(url, new Frame.NavigateOptions());
   }
 
   @Override

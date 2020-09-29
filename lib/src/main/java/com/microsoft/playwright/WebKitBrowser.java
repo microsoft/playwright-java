@@ -413,7 +413,13 @@ public interface WebKitBrowser {
   void close();
   List<BrowserContext> contexts();
   boolean isConnected();
+  default BrowserContext newContext() {
+    return newContext(null);
+  }
   BrowserContext newContext(NewContextOptions options);
+  default Page newPage() {
+    return newPage(null);
+  }
   Page newPage(NewPageOptions options);
   String version();
 }

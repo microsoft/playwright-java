@@ -429,12 +429,24 @@ public interface ChromiumBrowser {
     }
   }
   CDPSession newBrowserCDPSession();
+  default void startTracing(Page page) {
+    startTracing(page, null);
+  }
+  default void startTracing() {
+    startTracing(null);
+  }
   void startTracing(Page page, StartTracingOptions options);
   byte[] stopTracing();
   void close();
   List<BrowserContext> contexts();
   boolean isConnected();
+  default BrowserContext newContext() {
+    return newContext(null);
+  }
   BrowserContext newContext(NewContextOptions options);
+  default Page newPage() {
+    return newPage(null);
+  }
   Page newPage(NewPageOptions options);
   String version();
 }

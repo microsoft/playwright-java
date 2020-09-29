@@ -240,21 +240,21 @@ public interface Frame {
       return this;
     }
   }
-  class GotoOptions {
+  class NavigateOptions {
     enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
     Integer timeout;
     WaitUntil waitUntil;
     String referer;
 
-    public GotoOptions withTimeout(Integer timeout) {
+    public NavigateOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
     }
-    public GotoOptions withWaitUntil(WaitUntil waitUntil) {
+    public NavigateOptions withWaitUntil(WaitUntil waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
-    public GotoOptions withReferer(String referer) {
+    public NavigateOptions withReferer(String referer) {
       this.referer = referer;
       return this;
     }
@@ -476,42 +476,129 @@ public interface Frame {
   }
   ElementHandle querySelector(String selector);
   List<ElementHandle> querySelectorAll(String selector);
+  default Object evalOnSelector(String selector, String pageFunction) {
+    return evalOnSelector(selector, pageFunction, null);
+  }
   Object evalOnSelector(String selector, String pageFunction, Object arg);
+  default Object evalOnSelectorAll(String selector, String pageFunction) {
+    return evalOnSelectorAll(selector, pageFunction, null);
+  }
   Object evalOnSelectorAll(String selector, String pageFunction, Object arg);
   ElementHandle addScriptTag(AddScriptTagOptions options);
   ElementHandle addStyleTag(AddStyleTagOptions options);
+  default void check(String selector) {
+    check(selector, null);
+  }
   void check(String selector, CheckOptions options);
   List<Frame> childFrames();
+  default void click(String selector) {
+    click(selector, null);
+  }
   void click(String selector, ClickOptions options);
   String content();
+  default void dblclick(String selector) {
+    dblclick(selector, null);
+  }
   void dblclick(String selector, DblclickOptions options);
+  default void dispatchEvent(String selector, String type, Object eventInit) {
+    dispatchEvent(selector, type, eventInit, null);
+  }
+  default void dispatchEvent(String selector, String type) {
+    dispatchEvent(selector, type, null);
+  }
   void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options);
+  default Object evaluate(String pageFunction) {
+    return evaluate(pageFunction, null);
+  }
   Object evaluate(String pageFunction, Object arg);
+  default JSHandle evaluateHandle(String pageFunction) {
+    return evaluateHandle(pageFunction, null);
+  }
   JSHandle evaluateHandle(String pageFunction, Object arg);
+  default void fill(String selector, String value) {
+    fill(selector, value, null);
+  }
   void fill(String selector, String value, FillOptions options);
+  default void focus(String selector) {
+    focus(selector, null);
+  }
   void focus(String selector, FocusOptions options);
   ElementHandle frameElement();
+  default String getAttribute(String selector, String name) {
+    return getAttribute(selector, name, null);
+  }
   String getAttribute(String selector, String name, GetAttributeOptions options);
-  Response navigate(String url, GotoOptions options);
+  default Response navigate(String url) {
+    return navigate(url, null);
+  }
+  Response navigate(String url, NavigateOptions options);
+  default void hover(String selector) {
+    hover(selector, null);
+  }
   void hover(String selector, HoverOptions options);
+  default String innerHTML(String selector) {
+    return innerHTML(selector, null);
+  }
   String innerHTML(String selector, InnerHTMLOptions options);
+  default String innerText(String selector) {
+    return innerText(selector, null);
+  }
   String innerText(String selector, InnerTextOptions options);
   boolean isDetached();
   String name();
   Page page();
   Frame parentFrame();
+  default void press(String selector, String key) {
+    press(selector, key, null);
+  }
   void press(String selector, String key, PressOptions options);
+  default List<String> selectOption(String selector, String values) {
+    return selectOption(selector, values, null);
+  }
   List<String> selectOption(String selector, String values, SelectOptionOptions options);
+  default void setContent(String html) {
+    setContent(html, null);
+  }
   void setContent(String html, SetContentOptions options);
+  default void setInputFiles(String selector, String files) {
+    setInputFiles(selector, files, null);
+  }
   void setInputFiles(String selector, String files, SetInputFilesOptions options);
+  default String textContent(String selector) {
+    return textContent(selector, null);
+  }
   String textContent(String selector, TextContentOptions options);
   String title();
+  default void type(String selector, String text) {
+    type(selector, text, null);
+  }
   void type(String selector, String text, TypeOptions options);
+  default void uncheck(String selector) {
+    uncheck(selector, null);
+  }
   void uncheck(String selector, UncheckOptions options);
   String url();
+  default JSHandle waitForFunction(String pageFunction, Object arg) {
+    return waitForFunction(pageFunction, arg, null);
+  }
+  default JSHandle waitForFunction(String pageFunction) {
+    return waitForFunction(pageFunction, null);
+  }
   JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options);
+  default void waitForLoadState(LoadState state) {
+    waitForLoadState(state, null);
+  }
+  default void waitForLoadState() {
+    waitForLoadState(null);
+  }
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
+  default Response waitForNavigation() {
+    return waitForNavigation(null);
+  }
   Response waitForNavigation(WaitForNavigationOptions options);
+  default ElementHandle waitForSelector(String selector) {
+    return waitForSelector(selector, null);
+  }
   ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
   void waitForTimeout(int timeout);
 }

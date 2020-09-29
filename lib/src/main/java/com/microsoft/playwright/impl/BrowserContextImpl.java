@@ -139,7 +139,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
 
   public Supplier<PageImpl> waitForPage() {
-    Supplier<JsonObject> pageSupplier = waitForEvent("page");
+    Supplier<JsonObject> pageSupplier = waitForProtocolEvent("page");
     return () -> {
       JsonObject params = pageSupplier.get();
       String guid = params.getAsJsonObject("page").get("guid").getAsString();

@@ -182,12 +182,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return null;
   }
 
-  public void click(String selector) {
-    click(selector, new ClickOptions());
-  }
-
   @Override
   public void click(String selector, ClickOptions options) {
+    if (options == null) {
+      options = new ClickOptions();
+    }
     JsonObject params = new JsonObject();
     params.addProperty("selector", selector);
     JsonElement result = sendMessage("click", params);
@@ -238,12 +237,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return null;
   }
 
-  public ResponseImpl navigate(String url) {
-    return navigate(url, new GotoOptions());
-  }
-
   @Override
-  public ResponseImpl navigate(String url, GotoOptions options) {
+  public ResponseImpl navigate(String url, NavigateOptions options) {
+    if (options == null) {
+      options = new NavigateOptions();
+    }
     JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("url", url);
     JsonElement result = sendMessage("goto", params);

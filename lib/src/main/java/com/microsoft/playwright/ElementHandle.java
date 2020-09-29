@@ -367,36 +367,96 @@ public interface ElementHandle {
   }
   ElementHandle querySelector(String selector);
   List<ElementHandle> querySelectorAll(String selector);
+  default Object evalOnSelector(String selector, String pageFunction) {
+    return evalOnSelector(selector, pageFunction, null);
+  }
   Object evalOnSelector(String selector, String pageFunction, Object arg);
+  default Object evalOnSelectorAll(String selector, String pageFunction) {
+    return evalOnSelectorAll(selector, pageFunction, null);
+  }
   Object evalOnSelectorAll(String selector, String pageFunction, Object arg);
   Object boundingBox();
+  default void check() {
+    check(null);
+  }
   void check(CheckOptions options);
+  default void click() {
+    click(null);
+  }
   void click(ClickOptions options);
   Frame contentFrame();
+  default void dblclick() {
+    dblclick(null);
+  }
   void dblclick(DblclickOptions options);
+  default void dispatchEvent(String type) {
+    dispatchEvent(type, null);
+  }
   void dispatchEvent(String type, Object eventInit);
+  default void fill(String value) {
+    fill(value, null);
+  }
   void fill(String value, FillOptions options);
   void focus();
   String getAttribute(String name);
+  default void hover() {
+    hover(null);
+  }
   void hover(HoverOptions options);
   String innerHTML();
   String innerText();
   Frame ownerFrame();
+  default void press(String key) {
+    press(key, null);
+  }
   void press(String key, PressOptions options);
+  default byte[] screenshot() {
+    return screenshot(null);
+  }
   byte[] screenshot(ScreenshotOptions options);
+  default void scrollIntoViewIfNeeded() {
+    scrollIntoViewIfNeeded(null);
+  }
   void scrollIntoViewIfNeeded(ScrollIntoViewIfNeededOptions options);
+  default List<String> selectOption(String values) {
+    return selectOption(values, null);
+  }
   List<String> selectOption(String values, SelectOptionOptions options);
+  default void selectText() {
+    selectText(null);
+  }
   void selectText(SelectTextOptions options);
+  default void setInputFiles(String files) {
+    setInputFiles(files, null);
+  }
   void setInputFiles(String files, SetInputFilesOptions options);
   String textContent();
   String toString();
+  default void type(String text) {
+    type(text, null);
+  }
   void type(String text, TypeOptions options);
+  default void uncheck() {
+    uncheck(null);
+  }
   void uncheck(UncheckOptions options);
+  default void waitForElementState(ElementState state) {
+    waitForElementState(state, null);
+  }
   void waitForElementState(ElementState state, WaitForElementStateOptions options);
+  default ElementHandle waitForSelector(String selector) {
+    return waitForSelector(selector, null);
+  }
   ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
   ElementHandle asElement();
   void dispose();
+  default Object evaluate(String pageFunction) {
+    return evaluate(pageFunction, null);
+  }
   Object evaluate(String pageFunction, Object arg);
+  default JSHandle evaluateHandle(String pageFunction) {
+    return evaluateHandle(pageFunction, null);
+  }
   JSHandle evaluateHandle(String pageFunction, Object arg);
   Map<String, JSHandle> getProperties();
   JSHandle getProperty(String propertyName);

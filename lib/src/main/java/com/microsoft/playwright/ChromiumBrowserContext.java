@@ -64,13 +64,22 @@ public interface ChromiumBrowserContext {
   List<Worker> serviceWorkers();
   void close();
   void addCookies(List<Object> cookies);
+  default void addInitScript(String script) {
+    addInitScript(script, null);
+  }
   void addInitScript(String script, Object arg);
   Browser browser();
   void clearCookies();
   void clearPermissions();
+  default List<Object> cookies() {
+    return cookies(null);
+  }
   List<Object> cookies(String urls);
   void exposeBinding(String name, String playwrightBinding);
   void exposeFunction(String name, String playwrightFunction);
+  default void grantPermissions(List<String> permissions) {
+    grantPermissions(permissions, null);
+  }
   void grantPermissions(List<String> permissions, GrantPermissionsOptions options);
   Page newPage();
   List<Page> pages();
@@ -81,7 +90,13 @@ public interface ChromiumBrowserContext {
   void setGeolocation(Geolocation geolocation);
   void setHTTPCredentials(HTTPCredentials httpCredentials);
   void setOffline(boolean offline);
+  default void unroute(String url) {
+    unroute(url, null);
+  }
   void unroute(String url, BiConsumer<Route, Request> handler);
+  default Object waitForEvent(String event) {
+    return waitForEvent(event, null);
+  }
   Object waitForEvent(String event, String optionsOrPredicate);
 }
 

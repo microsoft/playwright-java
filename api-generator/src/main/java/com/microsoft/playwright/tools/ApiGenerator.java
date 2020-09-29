@@ -208,6 +208,7 @@ abstract class TypeDefinition extends Element {
 class Method extends Element {
   final TypeRef returnType;
   final List<Param> params = new ArrayList<>();
+  private final String name;
 
   private static Map<String, String> tsToJavaMethodName = new HashMap<>();
   static {
@@ -227,14 +228,10 @@ class Method extends Element {
         params.add(new Param(this, arg.getValue().getAsJsonObject()));
       }
     }
+    name = tsToJavaMethodName.containsKey(jsonName) ? tsToJavaMethodName.get(jsonName) : jsonName;
   }
 
-  String toJava() {
-    String name = jsonName;
-    if (tsToJavaMethodName.containsKey(name)) {
-      name = tsToJavaMethodName.get(name);
-    }
-
+  private String toJava() {
     StringBuilder paramList = new StringBuilder();
     for (Param p : params) {
       if (paramList.length() > 0)
@@ -246,7 +243,36 @@ class Method extends Element {
   }
 
   void writeTo(List<String> output, String offset) {
+    for (int i = params.size() - 1; i >= 0; i--) {
+      Param p = params.get(i);
+      if (!p.isOptional()) {
+        break;
+      }
+      writeDefaultOverloadedMethod(i, output, offset);
+    }
     output.add(offset + toJava());
+  }
+
+  private void writeDefaultOverloadedMethod(int paramCount, List<String> output, String offset) {
+    StringBuilder paramList = new StringBuilder();
+    StringBuilder argList = new StringBuilder();
+    for (int i = 0; i < paramCount; i++) {
+      Param p = params.get(i);
+      if (paramList.length() > 0) {
+        paramList.append(", ");
+        argList.append(", ");
+      }
+      paramList.append(p.toJava());
+      argList.append(p.jsonName);
+    }
+    if (argList.length() > 0) {
+      argList.append(", ");
+    }
+    argList.append("null");
+    String returns = returnType.toJava().equals("void") ? "" : "return ";
+    output.add(offset + "default " + returnType.toJava() + " " + name + "(" + paramList + ") {");
+    output.add(offset + "  " + returns + name + "(" + argList + ");");
+    output.add(offset + "}");
   }
 }
 
@@ -256,6 +282,10 @@ class Param extends Element {
   Param(Method method, JsonObject jsonElement) {
     super(method, jsonElement);
     type = new TypeRef(this, jsonElement.get("type").getAsJsonObject());
+  }
+
+  boolean isOptional() {
+    return !jsonElement.getAsJsonObject().get("required").getAsBoolean();
   }
 
   String toJava() {

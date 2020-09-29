@@ -28,6 +28,9 @@ public interface Selectors {
       return this;
     }
   }
+  default void register(String name, String script) {
+    register(name, script, null);
+  }
   void register(String name, String script, RegisterOptions options);
 }
 

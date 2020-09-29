@@ -70,7 +70,7 @@ class ChannelOwner {
     connection.sendMessageNoWait(guid, method, params);
   }
 
-  protected Supplier<JsonObject> waitForEvent(String event) {
+  protected Supplier<JsonObject> waitForProtocolEvent(String event) {
     ArrayList<CompletableFuture<JsonObject>> futures = futureEvents.get(event);
     if (futures == null) {
       futures = new ArrayList<>();
