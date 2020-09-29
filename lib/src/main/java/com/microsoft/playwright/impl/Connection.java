@@ -174,43 +174,43 @@ public class Connection {
 //    initializer = this._replaceGuidsWithChannels(initializer);
     switch (type) {
       case "BrowserType":
-        result = new BrowserType(parent, type, guid, initializer);
+        result = new BrowserTypeImpl(parent, type, guid, initializer);
         break;
       case "Browser":
-        result = new Browser(parent, type, guid, initializer);
+        result = new BrowserImpl(parent, type, guid, initializer);
         break;
       case "BrowserContext":
-        result = new BrowserContext(parent, type, guid, initializer);
+        result = new BrowserContextImpl(parent, type, guid, initializer);
         break;
       case "ConsoleMessage":
-        result = new ConsoleMessage(parent, type, guid, initializer);
+        result = new ConsoleMessageImpl(parent, type, guid, initializer);
         break;
       case "Dialog":
-        result = new Dialog(parent, type, guid, initializer);
+        result = new DialogImpl(parent, type, guid, initializer);
         break;
       case "Download":
-        result = new Download(parent, type, guid, initializer);
+        result = new DownloadImpl(parent, type, guid, initializer);
         break;
       case "Electron":
 //        result = new Playwright(parent, type, guid, initializer);
         break;
       case "Frame":
-        result = new Frame(parent, type, guid, initializer);
+        result = new FrameImpl(parent, type, guid, initializer);
         break;
       case "JSHandle":
 //        result = new JSHandle(parent, type, guid, initializer);
         break;
       case "Page":
-        result = new Page(parent, type, guid, initializer);
+        result = new PageImpl(parent, type, guid, initializer);
         break;
       case "Playwright":
-        result = new Playwright(parent, type, guid, initializer);
+        result = new PlaywrightImpl(parent, type, guid, initializer);
         break;
       case "Request":
-        result = new Request(parent, type, guid, initializer);
+        result = new RequestImpl(parent, type, guid, initializer);
         break;
       case "Response":
-        result = new Response(parent, type, guid, initializer);
+        result = new ResponseImpl(parent, type, guid, initializer);
         break;
       case "Selectors":
 //        result = new Playwright(parent, type, guid, initializer);

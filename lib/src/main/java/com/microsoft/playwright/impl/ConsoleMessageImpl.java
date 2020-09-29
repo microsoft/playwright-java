@@ -19,8 +19,8 @@ package com.microsoft.playwright.impl;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-public class ConsoleMessage extends ChannelOwner {
-  public ConsoleMessage(ChannelOwner parent, String type, String guid, JsonObject initializer) {
+public class ConsoleMessageImpl extends ChannelOwner {
+  public ConsoleMessageImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 

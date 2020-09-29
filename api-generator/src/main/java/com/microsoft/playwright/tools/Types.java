@@ -238,6 +238,11 @@ class Types {
     add("WebKitBrowser.newPage.options.geolocation.longitude", "number", "double");
     add("WebKitBrowser.newPage.options.geolocation.accuracy", "number", "double");
 
+    add("BrowserContext.setGeolocation.geolocation", "null|Object", "Geolocation");
+    add("ChromiumBrowserContext.setGeolocation.geolocation", "null|Object", "Geolocation");
+    add("BrowserContext.setHTTPCredentials.httpCredentials", "null|Object", "HTTPCredentials");
+    add("ChromiumBrowserContext.setHTTPCredentials.httpCredentials", "null|Object", "HTTPCredentials");
+    add("Page.setViewportSize.viewportSize", "Object", "ViewportSize");
 
     // node.js types
     add("BrowserServer.process", "ChildProcess", "Object");

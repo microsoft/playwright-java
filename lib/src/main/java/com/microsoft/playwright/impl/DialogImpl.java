@@ -18,9 +18,9 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
 
-public class Dialog extends ChannelOwner {
+public class DialogImpl extends ChannelOwner {
   private boolean handled;
-  Dialog(ChannelOwner parent, String type, String guid, JsonObject initializer) {
+  DialogImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 

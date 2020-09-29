@@ -19,23 +19,50 @@ package com.microsoft.playwright.impl;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.Page;
 
-public class Browser extends ChannelOwner {
-  Browser(ChannelOwner parent, String type, String guid, JsonObject initializer) {
+import java.util.List;
+
+class BrowserImpl extends ChannelOwner implements Browser {
+  BrowserImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 
-  BrowserContext newContext() {
-    return newContext(new BrowserNewContextOptions());
+  @Override
+  public void close() {
+    sendMessage("close", new JsonObject());
   }
 
-  BrowserContext newContext(BrowserNewContextOptions options) {
+  @Override
+  public List<BrowserContext> contexts() {
+    return null;
+  }
+
+  @Override
+  public boolean isConnected() {
+    return false;
+  }
+
+  public BrowserContextImpl newContext() {
+    return newContext(new NewContextOptions());
+  }
+
+  @Override
+  public BrowserContextImpl newContext(NewContextOptions options) {
     JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
     JsonElement result = sendMessage("newContext", params);
     return connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("context").get("guid").getAsString());
   }
 
-  void close() {
-    sendMessage("close", new JsonObject());
+  @Override
+  public Page newPage(NewPageOptions options) {
+    return null;
+  }
+
+  @Override
+  public String version() {
+    return initializer.get("version").getAsString();
   }
 }

@@ -606,15 +606,15 @@ public interface Page {
       return this;
     }
   }
-  class SetViewportSizeViewportSize {
+  class ViewportSize {
     int width;
     int height;
 
-    public SetViewportSizeViewportSize withWidth(int width) {
+    public ViewportSize withWidth(int width) {
       this.width = width;
       return this;
     }
-    public SetViewportSizeViewportSize withHeight(int height) {
+    public ViewportSize withHeight(int height) {
       this.height = height;
       return this;
     }
@@ -660,6 +660,19 @@ public interface Page {
     }
     public UncheckOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
+      return this;
+    }
+  }
+  class PageViewportSize {
+    int width;
+    int height;
+
+    public PageViewportSize withWidth(int width) {
+      this.width = width;
+      return this;
+    }
+    public PageViewportSize withHeight(int height) {
+      this.height = height;
       return this;
     }
   }
@@ -778,14 +791,14 @@ public interface Page {
   void setDefaultTimeout(int timeout);
   void setExtraHTTPHeaders(Map<String, String> headers);
   void setInputFiles(String selector, String files, SetInputFilesOptions options);
-  void setViewportSize(SetViewportSizeViewportSize viewportSize);
+  void setViewportSize(ViewportSize viewportSize);
   String textContent(String selector, TextContentOptions options);
   String title();
   void type(String selector, String text, TypeOptions options);
   void uncheck(String selector, UncheckOptions options);
   void unroute(String url, BiConsumer<Route, Request> handler);
   String url();
-  Object viewportSize();
+  PageViewportSize viewportSize();
   Object waitForEvent(String event, String optionsOrPredicate);
   JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options);
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);

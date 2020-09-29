@@ -19,26 +19,22 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.util.function.Supplier;
-
-public class BrowserContext extends ChannelOwner {
-  protected BrowserContext(ChannelOwner parent, String type, String guid, JsonObject initializer) {
+public class DownloadImpl extends ChannelOwner {
+  public DownloadImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 
-  Page newPage() {
+  public String url() {
+    return initializer.get("url").getAsString();
+  }
+
+  public String suggestedFilename() {
+    return initializer.get("suggestedFilename").getAsString();
+  }
+
+  public String path() {
     JsonObject params = new JsonObject();
-    JsonElement result = sendMessage("newPage", params);
-    return connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("page").get("guid").getAsString());
+    JsonElement result = sendMessage("path", params);
+    return result.getAsJsonObject().get("path").getAsString();
   }
-
-  public Supplier<Page> waitForPage() {
-    Supplier<JsonObject> pageSupplier = waitForEvent("page");
-    return () -> {
-      JsonObject params = pageSupplier.get();
-      String guid = params.getAsJsonObject("page").get("guid").getAsString();
-      return connection.getExistingObject(guid);
-    };
-  }
-
 }

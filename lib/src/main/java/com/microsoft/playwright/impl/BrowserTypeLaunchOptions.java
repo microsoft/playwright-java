@@ -21,27 +21,27 @@ import com.google.gson.JsonObject;
 import java.util.LinkedHashMap;
 
 public class BrowserTypeLaunchOptions {
-  String executablePath;
-  String[] args;
-  Boolean ignoreAllDefaultArgs;
-  String[] ignoreDefaultArgs;
-  Boolean handleSIGINT;
-  Boolean handleSIGTERM;
-  Boolean handleSIGHUP;
-  Integer timeout;
-  LinkedHashMap<String, String> env;
-  Boolean headless;
-  Boolean devtools;
+  public String executablePath;
+  public String[] args;
+  public Boolean ignoreAllDefaultArgs;
+  public String[] ignoreDefaultArgs;
+  public Boolean handleSIGINT;
+  public Boolean handleSIGTERM;
+  public Boolean handleSIGHUP;
+  public Integer timeout;
+  public LinkedHashMap<String, String> env;
+  public Boolean headless;
+  public Boolean devtools;
   public static class Proxy {
     String server;
     String bypass;
     String username;
     String password;
   }
-  Proxy proxy;
-  String downloadsPath;
-  String _videosPath;
-  JsonObject firefoxUserPrefs;
-  Boolean chromiumSandbox;
-  Integer slowMo;
+  public Proxy proxy;
+  public String downloadsPath;
+  public String _videosPath;
+  public JsonObject firefoxUserPrefs;
+  public Boolean chromiumSandbox;
+  public Integer slowMo;
 }

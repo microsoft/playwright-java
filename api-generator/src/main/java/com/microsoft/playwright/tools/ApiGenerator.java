@@ -74,7 +74,7 @@ class TypeRef extends Element {
 
   void createCustomType() {
     boolean isEnum = jsonName.contains("|\"");
-    boolean isClass = jsonName.equals("Object");
+    boolean isClass = jsonName.replace("null|", "").equals("Object");
     // Use path to the corresponding method, param of field as the key.
     String parentPath = parent.jsonPath;
     Types.Mapping mapping = TypeDefinition.types.findForPath(parentPath);

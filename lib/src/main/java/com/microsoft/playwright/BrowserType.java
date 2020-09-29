@@ -191,6 +191,25 @@ public interface BrowserType {
         return this;
       }
     }
+    public class Viewport {
+      int width;
+      int height;
+
+      Viewport() {
+      }
+      public LaunchPersistentContextOptions done() {
+        return LaunchPersistentContextOptions.this;
+      }
+
+      public Viewport withWidth(int width) {
+        this.width = width;
+        return this;
+      }
+      public Viewport withHeight(int height) {
+        this.height = height;
+        return this;
+      }
+    }
     public class Geolocation {
       double latitude;
       double longitude;
@@ -272,7 +291,7 @@ public interface BrowserType {
     Integer slowMo;
     Boolean ignoreHTTPSErrors;
     Boolean bypassCSP;
-    Object viewport;
+    Viewport viewport;
     String userAgent;
     Integer deviceScaleFactor;
     Boolean isMobile;
@@ -367,9 +386,9 @@ public interface BrowserType {
       this.bypassCSP = bypassCSP;
       return this;
     }
-    public LaunchPersistentContextOptions withViewport(Object viewport) {
-      this.viewport = viewport;
-      return this;
+    public Viewport setViewport() {
+      this.viewport = new Viewport();
+      return this.viewport;
     }
     public LaunchPersistentContextOptions withUserAgent(String userAgent) {
       this.userAgent = userAgent;

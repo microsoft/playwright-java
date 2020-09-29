@@ -18,8 +18,8 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
 
-public class Request  extends ChannelOwner {
-  Request(ChannelOwner parent, String type, String guid, JsonObject initializer) {
+public class RequestImpl extends ChannelOwner {
+  RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 }

@@ -28,6 +28,37 @@ public interface ChromiumBrowserContext {
       return this;
     }
   }
+  class Geolocation {
+    int latitude;
+    int longitude;
+    Integer accuracy;
+
+    public Geolocation withLatitude(int latitude) {
+      this.latitude = latitude;
+      return this;
+    }
+    public Geolocation withLongitude(int longitude) {
+      this.longitude = longitude;
+      return this;
+    }
+    public Geolocation withAccuracy(Integer accuracy) {
+      this.accuracy = accuracy;
+      return this;
+    }
+  }
+  class HTTPCredentials {
+    String username;
+    String password;
+
+    public HTTPCredentials withUsername(String username) {
+      this.username = username;
+      return this;
+    }
+    public HTTPCredentials withPassword(String password) {
+      this.password = password;
+      return this;
+    }
+  }
   List<Page> backgroundPages();
   CDPSession newCDPSession(Page page);
   List<Worker> serviceWorkers();
@@ -47,8 +78,8 @@ public interface ChromiumBrowserContext {
   void setDefaultNavigationTimeout(int timeout);
   void setDefaultTimeout(int timeout);
   void setExtraHTTPHeaders(Map<String, String> headers);
-  void setGeolocation(Object geolocation);
-  void setHTTPCredentials(Object httpCredentials);
+  void setGeolocation(Geolocation geolocation);
+  void setHTTPCredentials(HTTPCredentials httpCredentials);
   void setOffline(boolean offline);
   void unroute(String url, BiConsumer<Route, Request> handler);
   Object waitForEvent(String event, String optionsOrPredicate);

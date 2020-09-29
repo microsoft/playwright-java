@@ -40,6 +40,25 @@ public interface ChromiumBrowser {
   }
   class NewContextOptions {
     enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
+    public class Viewport {
+      int width;
+      int height;
+
+      Viewport() {
+      }
+      public NewContextOptions done() {
+        return NewContextOptions.this;
+      }
+
+      public Viewport withWidth(int width) {
+        this.width = width;
+        return this;
+      }
+      public Viewport withHeight(int height) {
+        this.height = height;
+        return this;
+      }
+    }
     public class Geolocation {
       double latitude;
       double longitude;
@@ -105,7 +124,7 @@ public interface ChromiumBrowser {
     Boolean acceptDownloads;
     Boolean ignoreHTTPSErrors;
     Boolean bypassCSP;
-    Object viewport;
+    Viewport viewport;
     String userAgent;
     Integer deviceScaleFactor;
     Boolean isMobile;
@@ -137,9 +156,9 @@ public interface ChromiumBrowser {
       this.bypassCSP = bypassCSP;
       return this;
     }
-    public NewContextOptions withViewport(Object viewport) {
-      this.viewport = viewport;
-      return this;
+    public Viewport setViewport() {
+      this.viewport = new Viewport();
+      return this.viewport;
     }
     public NewContextOptions withUserAgent(String userAgent) {
       this.userAgent = userAgent;
@@ -216,6 +235,25 @@ public interface ChromiumBrowser {
   }
   class NewPageOptions {
     enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
+    public class Viewport {
+      int width;
+      int height;
+
+      Viewport() {
+      }
+      public NewPageOptions done() {
+        return NewPageOptions.this;
+      }
+
+      public Viewport withWidth(int width) {
+        this.width = width;
+        return this;
+      }
+      public Viewport withHeight(int height) {
+        this.height = height;
+        return this;
+      }
+    }
     public class Geolocation {
       double latitude;
       double longitude;
@@ -281,7 +319,7 @@ public interface ChromiumBrowser {
     Boolean acceptDownloads;
     Boolean ignoreHTTPSErrors;
     Boolean bypassCSP;
-    Object viewport;
+    Viewport viewport;
     String userAgent;
     Integer deviceScaleFactor;
     Boolean isMobile;
@@ -313,9 +351,9 @@ public interface ChromiumBrowser {
       this.bypassCSP = bypassCSP;
       return this;
     }
-    public NewPageOptions withViewport(Object viewport) {
-      this.viewport = viewport;
-      return this;
+    public Viewport setViewport() {
+      this.viewport = new Viewport();
+      return this.viewport;
     }
     public NewPageOptions withUserAgent(String userAgent) {
       this.userAgent = userAgent;

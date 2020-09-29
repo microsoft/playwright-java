@@ -20,14 +20,25 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public interface Request {
-  Object failure();
+  class RequestFailure {
+    String errorText;
+
+    public RequestFailure withErrorText(String errorText) {
+      this.errorText = errorText;
+      return this;
+    }
+  }
+  class RequestPostDataJSON {
+
+  }
+  RequestFailure failure();
   Frame frame();
   Map<String, String> headers();
   boolean isNavigationRequest();
   String method();
   String postData();
   byte[] postDataBuffer();
-  Object postDataJSON();
+  RequestPostDataJSON postDataJSON();
   Request redirectedFrom();
   Request redirectedTo();
   String resourceType();
