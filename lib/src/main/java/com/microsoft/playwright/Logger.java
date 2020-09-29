@@ -22,7 +22,7 @@ import java.util.function.BiConsumer;
 public interface Logger {
   enum Severity { ERROR, INFO, VERBOSE, WARNING}
   class LogHints {
-    String color;
+    public String color;
 
     public LogHints withColor(String color) {
       this.color = color;

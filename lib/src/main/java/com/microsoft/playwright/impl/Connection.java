@@ -32,7 +32,7 @@ class Message {
   String method;
   JsonObject params;
   JsonElement result;
-  JsonObject error;
+  SerializedError error;
 
   @Override
   public String toString() {
@@ -134,10 +134,12 @@ public class Connection {
       }
       callbacks.remove(message.id);
 //      System.out.println("Message: " + message.id + " " + message);
-      if (message.error == null)
+      if (message.error == null) {
         callback.complete(message);
-      else
+      } else {
+        System.out.println(message.error);
         callback.completeExceptionally(new RuntimeException(message.error.toString()));
+      }
       return;
     }
 

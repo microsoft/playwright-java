@@ -21,7 +21,7 @@ import java.util.function.BiConsumer;
 
 public interface Selectors {
   class RegisterOptions {
-    Boolean contentScript;
+    public Boolean contentScript;
 
     public RegisterOptions withContentScript(Boolean contentScript) {
       this.contentScript = contentScript;

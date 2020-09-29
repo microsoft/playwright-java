@@ -21,7 +21,7 @@ import java.util.function.BiConsumer;
 
 public interface ChromiumCoverage {
   class StartCSSCoverageOptions {
-    Boolean resetOnNavigation;
+    public Boolean resetOnNavigation;
 
     public StartCSSCoverageOptions withResetOnNavigation(Boolean resetOnNavigation) {
       this.resetOnNavigation = resetOnNavigation;
@@ -29,8 +29,8 @@ public interface ChromiumCoverage {
     }
   }
   class StartJSCoverageOptions {
-    Boolean resetOnNavigation;
-    Boolean reportAnonymousScripts;
+    public Boolean resetOnNavigation;
+    public Boolean reportAnonymousScripts;
 
     public StartJSCoverageOptions withResetOnNavigation(Boolean resetOnNavigation) {
       this.resetOnNavigation = resetOnNavigation;

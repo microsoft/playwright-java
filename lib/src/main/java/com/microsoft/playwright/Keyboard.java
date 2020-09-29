@@ -21,7 +21,7 @@ import java.util.function.BiConsumer;
 
 public interface Keyboard {
   class PressOptions {
-    Integer delay;
+    public Integer delay;
 
     public PressOptions withDelay(Integer delay) {
       this.delay = delay;
@@ -29,7 +29,7 @@ public interface Keyboard {
     }
   }
   class TypeOptions {
-    Integer delay;
+    public Integer delay;
 
     public TypeOptions withDelay(Integer delay) {
       this.delay = delay;

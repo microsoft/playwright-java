@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
@@ -295,7 +296,10 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void setContent(String html, SetContentOptions options) {
-
+    // TODO: generate converter.
+    String json = new Gson().toJson(options);
+    Frame.SetContentOptions frameOptions = new Gson().fromJson(json, Frame.SetContentOptions.class);
+    mainFrame.setContent(html, frameOptions);
   }
 
   @Override

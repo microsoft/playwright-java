@@ -21,7 +21,7 @@ import java.util.function.BiConsumer;
 
 public interface Request {
   class RequestFailure {
-    String errorText;
+    public String errorText;
 
     public RequestFailure withErrorText(String errorText) {
       this.errorText = errorText;

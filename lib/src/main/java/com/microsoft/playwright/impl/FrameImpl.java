@@ -294,9 +294,29 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return null;
   }
 
+
+  private static String toProtocol(SetContentOptions.WaitUntil waitUntil) {
+    if (waitUntil == null) {
+      waitUntil = SetContentOptions.WaitUntil.LOAD;
+    }
+    switch (waitUntil) {
+      case DOMCONTENTLOADED: return "domcontentloaded";
+      case LOAD: return "load";
+      case NETWORKIDLE: return "networkidle";
+      default: throw new RuntimeException("Unexpected value: " + waitUntil);
+    }
+  }
+
   @Override
   public void setContent(String html, SetContentOptions options) {
-
+    if (options == null) {
+      options = new SetContentOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("html", html);
+    params.remove("waitUntil");
+    params.addProperty("waitUntil", toProtocol(options.waitUntil));
+    sendMessage("setContent", params);
   }
 
   @Override

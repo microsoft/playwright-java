@@ -22,7 +22,7 @@ import java.util.function.BiConsumer;
 public interface Page {
   enum LoadState { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
   class CloseOptions {
-    Boolean runBeforeUnload;
+    public Boolean runBeforeUnload;
 
     public CloseOptions withRunBeforeUnload(Boolean runBeforeUnload) {
       this.runBeforeUnload = runBeforeUnload;
@@ -30,10 +30,10 @@ public interface Page {
     }
   }
   class AddScriptTagOptions {
-    String url;
-    String path;
-    String content;
-    String type;
+    public String url;
+    public String path;
+    public String content;
+    public String type;
 
     public AddScriptTagOptions withUrl(String url) {
       this.url = url;
@@ -53,9 +53,9 @@ public interface Page {
     }
   }
   class AddStyleTagOptions {
-    String url;
-    String path;
-    String content;
+    public String url;
+    public String path;
+    public String content;
 
     public AddStyleTagOptions withUrl(String url) {
       this.url = url;
@@ -71,9 +71,9 @@ public interface Page {
     }
   }
   class CheckOptions {
-    Boolean force;
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Boolean force;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public CheckOptions withForce(Boolean force) {
       this.force = force;
@@ -89,11 +89,11 @@ public interface Page {
     }
   }
   class ClickOptions {
-    enum Button { LEFT, MIDDLE, RIGHT}
-    enum Modifier { ALT, CONTROL, META, SHIFT}
+    public enum Button { LEFT, MIDDLE, RIGHT}
+    public enum Modifier { ALT, CONTROL, META, SHIFT}
     public class Position {
-      int x;
-      int y;
+      public int x;
+      public int y;
 
       Position() {
       }
@@ -110,14 +110,14 @@ public interface Page {
         return this;
       }
     }
-    Button button;
-    Integer clickCount;
-    Integer delay;
-    Position position;
-    Set<Modifier> modifiers;
-    Boolean force;
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Button button;
+    public Integer clickCount;
+    public Integer delay;
+    public Position position;
+    public Set<Modifier> modifiers;
+    public Boolean force;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public ClickOptions withButton(Button button) {
       this.button = button;
@@ -153,11 +153,11 @@ public interface Page {
     }
   }
   class DblclickOptions {
-    enum Button { LEFT, MIDDLE, RIGHT}
-    enum Modifier { ALT, CONTROL, META, SHIFT}
+    public enum Button { LEFT, MIDDLE, RIGHT}
+    public enum Modifier { ALT, CONTROL, META, SHIFT}
     public class Position {
-      int x;
-      int y;
+      public int x;
+      public int y;
 
       Position() {
       }
@@ -174,13 +174,13 @@ public interface Page {
         return this;
       }
     }
-    Button button;
-    Integer delay;
-    Position position;
-    Set<Modifier> modifiers;
-    Boolean force;
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Button button;
+    public Integer delay;
+    public Position position;
+    public Set<Modifier> modifiers;
+    public Boolean force;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public DblclickOptions withButton(Button button) {
       this.button = button;
@@ -212,7 +212,7 @@ public interface Page {
     }
   }
   class DispatchEventOptions {
-    Integer timeout;
+    public Integer timeout;
 
     public DispatchEventOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -220,10 +220,10 @@ public interface Page {
     }
   }
   class EmulateMediaOptions {
-    enum Media { PRINT, SCREEN}
-    enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
-    Media media;
-    ColorScheme colorScheme;
+    public enum Media { PRINT, SCREEN}
+    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
+    public Media media;
+    public ColorScheme colorScheme;
 
     public EmulateMediaOptions withMedia(Media media) {
       this.media = media;
@@ -235,8 +235,8 @@ public interface Page {
     }
   }
   class FillOptions {
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public FillOptions withNoWaitAfter(Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -248,7 +248,7 @@ public interface Page {
     }
   }
   class FocusOptions {
-    Integer timeout;
+    public Integer timeout;
 
     public FocusOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -256,7 +256,7 @@ public interface Page {
     }
   }
   class GetAttributeOptions {
-    Integer timeout;
+    public Integer timeout;
 
     public GetAttributeOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -264,9 +264,9 @@ public interface Page {
     }
   }
   class GoBackOptions {
-    enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
-    Integer timeout;
-    WaitUntil waitUntil;
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public Integer timeout;
+    public WaitUntil waitUntil;
 
     public GoBackOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -278,9 +278,9 @@ public interface Page {
     }
   }
   class GoForwardOptions {
-    enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
-    Integer timeout;
-    WaitUntil waitUntil;
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public Integer timeout;
+    public WaitUntil waitUntil;
 
     public GoForwardOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -292,10 +292,10 @@ public interface Page {
     }
   }
   class NavigateOptions {
-    enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
-    Integer timeout;
-    WaitUntil waitUntil;
-    String referer;
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public Integer timeout;
+    public WaitUntil waitUntil;
+    public String referer;
 
     public NavigateOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -311,10 +311,10 @@ public interface Page {
     }
   }
   class HoverOptions {
-    enum Modifier { ALT, CONTROL, META, SHIFT}
+    public enum Modifier { ALT, CONTROL, META, SHIFT}
     public class Position {
-      int x;
-      int y;
+      public int x;
+      public int y;
 
       Position() {
       }
@@ -331,10 +331,10 @@ public interface Page {
         return this;
       }
     }
-    Position position;
-    Set<Modifier> modifiers;
-    Boolean force;
-    Integer timeout;
+    public Position position;
+    public Set<Modifier> modifiers;
+    public Boolean force;
+    public Integer timeout;
 
     public Position setPosition() {
       this.position = new Position();
@@ -354,7 +354,7 @@ public interface Page {
     }
   }
   class InnerHTMLOptions {
-    Integer timeout;
+    public Integer timeout;
 
     public InnerHTMLOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -362,7 +362,7 @@ public interface Page {
     }
   }
   class InnerTextOptions {
-    Integer timeout;
+    public Integer timeout;
 
     public InnerTextOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -371,10 +371,10 @@ public interface Page {
   }
   class PdfOptions {
     public class Margin {
-      String top;
-      String right;
-      String bottom;
-      String left;
+      public String top;
+      public String right;
+      public String bottom;
+      public String left;
 
       Margin() {
       }
@@ -399,19 +399,19 @@ public interface Page {
         return this;
       }
     }
-    String path;
-    Integer scale;
-    Boolean displayHeaderFooter;
-    String headerTemplate;
-    String footerTemplate;
-    Boolean printBackground;
-    Boolean landscape;
-    String pageRanges;
-    String format;
-    String width;
-    String height;
-    Margin margin;
-    Boolean preferCSSPageSize;
+    public String path;
+    public Integer scale;
+    public Boolean displayHeaderFooter;
+    public String headerTemplate;
+    public String footerTemplate;
+    public Boolean printBackground;
+    public Boolean landscape;
+    public String pageRanges;
+    public String format;
+    public String width;
+    public String height;
+    public Margin margin;
+    public Boolean preferCSSPageSize;
 
     public PdfOptions withPath(String path) {
       this.path = path;
@@ -467,9 +467,9 @@ public interface Page {
     }
   }
   class PressOptions {
-    Integer delay;
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Integer delay;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public PressOptions withDelay(Integer delay) {
       this.delay = delay;
@@ -485,9 +485,9 @@ public interface Page {
     }
   }
   class ReloadOptions {
-    enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
-    Integer timeout;
-    WaitUntil waitUntil;
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public Integer timeout;
+    public WaitUntil waitUntil;
 
     public ReloadOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -499,12 +499,12 @@ public interface Page {
     }
   }
   class ScreenshotOptions {
-    enum Type { JPEG, PNG}
+    public enum Type { JPEG, PNG}
     public class Clip {
-      int x;
-      int y;
-      int width;
-      int height;
+      public int x;
+      public int y;
+      public int width;
+      public int height;
 
       Clip() {
       }
@@ -529,13 +529,13 @@ public interface Page {
         return this;
       }
     }
-    String path;
-    Type type;
-    Integer quality;
-    Boolean fullPage;
-    Clip clip;
-    Boolean omitBackground;
-    Integer timeout;
+    public String path;
+    public Type type;
+    public Integer quality;
+    public Boolean fullPage;
+    public Clip clip;
+    public Boolean omitBackground;
+    public Integer timeout;
 
     public ScreenshotOptions withPath(String path) {
       this.path = path;
@@ -567,8 +567,8 @@ public interface Page {
     }
   }
   class SelectOptionOptions {
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public SelectOptionOptions withNoWaitAfter(Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -580,9 +580,9 @@ public interface Page {
     }
   }
   class SetContentOptions {
-    enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
-    Integer timeout;
-    WaitUntil waitUntil;
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public Integer timeout;
+    public WaitUntil waitUntil;
 
     public SetContentOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -594,8 +594,8 @@ public interface Page {
     }
   }
   class SetInputFilesOptions {
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public SetInputFilesOptions withNoWaitAfter(Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -607,8 +607,8 @@ public interface Page {
     }
   }
   class ViewportSize {
-    int width;
-    int height;
+    public int width;
+    public int height;
 
     public ViewportSize withWidth(int width) {
       this.width = width;
@@ -620,7 +620,7 @@ public interface Page {
     }
   }
   class TextContentOptions {
-    Integer timeout;
+    public Integer timeout;
 
     public TextContentOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -628,9 +628,9 @@ public interface Page {
     }
   }
   class TypeOptions {
-    Integer delay;
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Integer delay;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public TypeOptions withDelay(Integer delay) {
       this.delay = delay;
@@ -646,9 +646,9 @@ public interface Page {
     }
   }
   class UncheckOptions {
-    Boolean force;
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Boolean force;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public UncheckOptions withForce(Boolean force) {
       this.force = force;
@@ -664,8 +664,8 @@ public interface Page {
     }
   }
   class PageViewportSize {
-    int width;
-    int height;
+    public int width;
+    public int height;
 
     public PageViewportSize withWidth(int width) {
       this.width = width;
@@ -677,8 +677,8 @@ public interface Page {
     }
   }
   class WaitForFunctionOptions {
-    double polling;
-    Integer timeout;
+    public double polling;
+    public Integer timeout;
 
     public WaitForFunctionOptions withPolling(double polling) {
       this.polling = polling;
@@ -690,7 +690,7 @@ public interface Page {
     }
   }
   class WaitForLoadStateOptions {
-    Integer timeout;
+    public Integer timeout;
 
     public WaitForLoadStateOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -698,10 +698,10 @@ public interface Page {
     }
   }
   class WaitForNavigationOptions {
-    enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
-    Integer timeout;
-    String url;
-    WaitUntil waitUntil;
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public Integer timeout;
+    public String url;
+    public WaitUntil waitUntil;
 
     public WaitForNavigationOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -717,7 +717,7 @@ public interface Page {
     }
   }
   class WaitForRequestOptions {
-    Integer timeout;
+    public Integer timeout;
 
     public WaitForRequestOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -725,7 +725,7 @@ public interface Page {
     }
   }
   class WaitForResponseOptions {
-    Integer timeout;
+    public Integer timeout;
 
     public WaitForResponseOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -733,9 +733,9 @@ public interface Page {
     }
   }
   class WaitForSelectorOptions {
-    enum State { ATTACHED, DETACHED, HIDDEN, VISIBLE}
-    State state;
-    Integer timeout;
+    public enum State { ATTACHED, DETACHED, HIDDEN, VISIBLE}
+    public State state;
+    public Integer timeout;
 
     public WaitForSelectorOptions withState(State state) {
       this.state = state;

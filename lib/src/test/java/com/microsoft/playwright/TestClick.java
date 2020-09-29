@@ -65,5 +65,15 @@ public class TestClick {
     page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
     assertEquals("Clicked", page.evaluate("result"));
+    System.out.println("done 1");
+  }
+
+  @Test
+  void should_click_svg() {
+    page.setContent("<svg height='100' width='100'>\n" +
+      "<circle onclick='javascript:window.__CLICKED=42' cx='50' cy='50' r='40' stroke='black' stroke-width='3' fill='red'/>\n" +
+      "</svg>\n");
+    page.click("circle");
+    assertEquals(42, page.evaluate("__CLICKED"));
   }
 }

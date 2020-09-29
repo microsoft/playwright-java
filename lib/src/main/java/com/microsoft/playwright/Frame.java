@@ -22,10 +22,10 @@ import java.util.function.BiConsumer;
 public interface Frame {
   enum LoadState { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
   class AddScriptTagOptions {
-    String url;
-    String path;
-    String content;
-    String type;
+    public String url;
+    public String path;
+    public String content;
+    public String type;
 
     public AddScriptTagOptions withUrl(String url) {
       this.url = url;
@@ -45,9 +45,9 @@ public interface Frame {
     }
   }
   class AddStyleTagOptions {
-    String url;
-    String path;
-    String content;
+    public String url;
+    public String path;
+    public String content;
 
     public AddStyleTagOptions withUrl(String url) {
       this.url = url;
@@ -63,9 +63,9 @@ public interface Frame {
     }
   }
   class CheckOptions {
-    Boolean force;
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Boolean force;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public CheckOptions withForce(Boolean force) {
       this.force = force;
@@ -81,11 +81,11 @@ public interface Frame {
     }
   }
   class ClickOptions {
-    enum Button { LEFT, MIDDLE, RIGHT}
-    enum Modifier { ALT, CONTROL, META, SHIFT}
+    public enum Button { LEFT, MIDDLE, RIGHT}
+    public enum Modifier { ALT, CONTROL, META, SHIFT}
     public class Position {
-      int x;
-      int y;
+      public int x;
+      public int y;
 
       Position() {
       }
@@ -102,14 +102,14 @@ public interface Frame {
         return this;
       }
     }
-    Button button;
-    Integer clickCount;
-    Integer delay;
-    Position position;
-    Set<Modifier> modifiers;
-    Boolean force;
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Button button;
+    public Integer clickCount;
+    public Integer delay;
+    public Position position;
+    public Set<Modifier> modifiers;
+    public Boolean force;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public ClickOptions withButton(Button button) {
       this.button = button;
@@ -145,11 +145,11 @@ public interface Frame {
     }
   }
   class DblclickOptions {
-    enum Button { LEFT, MIDDLE, RIGHT}
-    enum Modifier { ALT, CONTROL, META, SHIFT}
+    public enum Button { LEFT, MIDDLE, RIGHT}
+    public enum Modifier { ALT, CONTROL, META, SHIFT}
     public class Position {
-      int x;
-      int y;
+      public int x;
+      public int y;
 
       Position() {
       }
@@ -166,13 +166,13 @@ public interface Frame {
         return this;
       }
     }
-    Button button;
-    Integer delay;
-    Position position;
-    Set<Modifier> modifiers;
-    Boolean force;
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Button button;
+    public Integer delay;
+    public Position position;
+    public Set<Modifier> modifiers;
+    public Boolean force;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public DblclickOptions withButton(Button button) {
       this.button = button;
@@ -204,7 +204,7 @@ public interface Frame {
     }
   }
   class DispatchEventOptions {
-    Integer timeout;
+    public Integer timeout;
 
     public DispatchEventOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -212,8 +212,8 @@ public interface Frame {
     }
   }
   class FillOptions {
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public FillOptions withNoWaitAfter(Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -225,7 +225,7 @@ public interface Frame {
     }
   }
   class FocusOptions {
-    Integer timeout;
+    public Integer timeout;
 
     public FocusOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -233,7 +233,7 @@ public interface Frame {
     }
   }
   class GetAttributeOptions {
-    Integer timeout;
+    public Integer timeout;
 
     public GetAttributeOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -241,10 +241,10 @@ public interface Frame {
     }
   }
   class NavigateOptions {
-    enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
-    Integer timeout;
-    WaitUntil waitUntil;
-    String referer;
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public Integer timeout;
+    public WaitUntil waitUntil;
+    public String referer;
 
     public NavigateOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -260,10 +260,10 @@ public interface Frame {
     }
   }
   class HoverOptions {
-    enum Modifier { ALT, CONTROL, META, SHIFT}
+    public enum Modifier { ALT, CONTROL, META, SHIFT}
     public class Position {
-      int x;
-      int y;
+      public int x;
+      public int y;
 
       Position() {
       }
@@ -280,10 +280,10 @@ public interface Frame {
         return this;
       }
     }
-    Position position;
-    Set<Modifier> modifiers;
-    Boolean force;
-    Integer timeout;
+    public Position position;
+    public Set<Modifier> modifiers;
+    public Boolean force;
+    public Integer timeout;
 
     public Position setPosition() {
       this.position = new Position();
@@ -303,7 +303,7 @@ public interface Frame {
     }
   }
   class InnerHTMLOptions {
-    Integer timeout;
+    public Integer timeout;
 
     public InnerHTMLOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -311,7 +311,7 @@ public interface Frame {
     }
   }
   class InnerTextOptions {
-    Integer timeout;
+    public Integer timeout;
 
     public InnerTextOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -319,9 +319,9 @@ public interface Frame {
     }
   }
   class PressOptions {
-    Integer delay;
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Integer delay;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public PressOptions withDelay(Integer delay) {
       this.delay = delay;
@@ -337,8 +337,8 @@ public interface Frame {
     }
   }
   class SelectOptionOptions {
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public SelectOptionOptions withNoWaitAfter(Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -350,9 +350,9 @@ public interface Frame {
     }
   }
   class SetContentOptions {
-    enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
-    Integer timeout;
-    WaitUntil waitUntil;
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public Integer timeout;
+    public WaitUntil waitUntil;
 
     public SetContentOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -364,8 +364,8 @@ public interface Frame {
     }
   }
   class SetInputFilesOptions {
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public SetInputFilesOptions withNoWaitAfter(Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -377,7 +377,7 @@ public interface Frame {
     }
   }
   class TextContentOptions {
-    Integer timeout;
+    public Integer timeout;
 
     public TextContentOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -385,9 +385,9 @@ public interface Frame {
     }
   }
   class TypeOptions {
-    Integer delay;
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Integer delay;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public TypeOptions withDelay(Integer delay) {
       this.delay = delay;
@@ -403,9 +403,9 @@ public interface Frame {
     }
   }
   class UncheckOptions {
-    Boolean force;
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Boolean force;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public UncheckOptions withForce(Boolean force) {
       this.force = force;
@@ -421,8 +421,8 @@ public interface Frame {
     }
   }
   class WaitForFunctionOptions {
-    double polling;
-    Integer timeout;
+    public double polling;
+    public Integer timeout;
 
     public WaitForFunctionOptions withPolling(double polling) {
       this.polling = polling;
@@ -434,7 +434,7 @@ public interface Frame {
     }
   }
   class WaitForLoadStateOptions {
-    Integer timeout;
+    public Integer timeout;
 
     public WaitForLoadStateOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -442,10 +442,10 @@ public interface Frame {
     }
   }
   class WaitForNavigationOptions {
-    enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
-    Integer timeout;
-    String url;
-    WaitUntil waitUntil;
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public Integer timeout;
+    public String url;
+    public WaitUntil waitUntil;
 
     public WaitForNavigationOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -461,9 +461,9 @@ public interface Frame {
     }
   }
   class WaitForSelectorOptions {
-    enum State { ATTACHED, DETACHED, HIDDEN, VISIBLE}
-    State state;
-    Integer timeout;
+    public enum State { ATTACHED, DETACHED, HIDDEN, VISIBLE}
+    public State state;
+    public Integer timeout;
 
     public WaitForSelectorOptions withState(State state) {
       this.state = state;

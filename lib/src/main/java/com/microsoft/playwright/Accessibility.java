@@ -21,8 +21,8 @@ import java.util.function.BiConsumer;
 
 public interface Accessibility {
   class SnapshotOptions {
-    Boolean interestingOnly;
-    ElementHandle root;
+    public Boolean interestingOnly;
+    public ElementHandle root;
 
     public SnapshotOptions withInterestingOnly(Boolean interestingOnly) {
       this.interestingOnly = interestingOnly;

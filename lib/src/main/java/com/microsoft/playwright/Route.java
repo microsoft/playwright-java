@@ -21,9 +21,9 @@ import java.util.function.BiConsumer;
 
 public interface Route {
   class ContinueOverrides {
-    String method;
-    String postData;
-    Map<String, String> headers;
+    public String method;
+    public String postData;
+    public Map<String, String> headers;
 
     public ContinueOverrides withMethod(String method) {
       this.method = method;
@@ -39,11 +39,11 @@ public interface Route {
     }
   }
   class FulfillResponse {
-    Integer status;
-    Map<String, String> headers;
-    String contentType;
-    String body;
-    String path;
+    public Integer status;
+    public Map<String, String> headers;
+    public String contentType;
+    public String body;
+    public String path;
 
     public FulfillResponse withStatus(Integer status) {
       this.status = status;

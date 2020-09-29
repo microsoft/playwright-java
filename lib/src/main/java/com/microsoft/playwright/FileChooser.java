@@ -21,8 +21,8 @@ import java.util.function.BiConsumer;
 
 public interface FileChooser {
   class SetFilesOptions {
-    Boolean noWaitAfter;
-    Integer timeout;
+    public Boolean noWaitAfter;
+    public Integer timeout;
 
     public SetFilesOptions withNoWaitAfter(Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;

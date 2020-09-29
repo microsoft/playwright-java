@@ -21,10 +21,10 @@ import java.util.function.BiConsumer;
 
 public interface WebKitBrowser {
   class NewContextOptions {
-    enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
+    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
     public class Viewport {
-      int width;
-      int height;
+      public int width;
+      public int height;
 
       Viewport() {
       }
@@ -42,9 +42,9 @@ public interface WebKitBrowser {
       }
     }
     public class Geolocation {
-      double latitude;
-      double longitude;
-      double accuracy;
+      public double latitude;
+      public double longitude;
+      public double accuracy;
 
       Geolocation() {
       }
@@ -66,8 +66,8 @@ public interface WebKitBrowser {
       }
     }
     public class HttpCredentials {
-      String username;
-      String password;
+      public String username;
+      public String password;
 
       HttpCredentials() {
       }
@@ -85,8 +85,8 @@ public interface WebKitBrowser {
       }
     }
     public class VideoSize {
-      int width;
-      int height;
+      public int width;
+      public int height;
 
       VideoSize() {
       }
@@ -103,28 +103,28 @@ public interface WebKitBrowser {
         return this;
       }
     }
-    Boolean acceptDownloads;
-    Boolean ignoreHTTPSErrors;
-    Boolean bypassCSP;
-    Viewport viewport;
-    String userAgent;
-    Integer deviceScaleFactor;
-    Boolean isMobile;
-    Boolean hasTouch;
-    Boolean javaScriptEnabled;
-    String timezoneId;
-    Geolocation geolocation;
-    String locale;
-    List<String> permissions;
-    Map<String, String> extraHTTPHeaders;
-    Boolean offline;
-    HttpCredentials httpCredentials;
-    ColorScheme colorScheme;
-    Logger logger;
-    String relativeArtifactsPath;
-    Boolean recordVideos;
-    VideoSize videoSize;
-    Boolean recordTrace;
+    public Boolean acceptDownloads;
+    public Boolean ignoreHTTPSErrors;
+    public Boolean bypassCSP;
+    public Viewport viewport;
+    public String userAgent;
+    public Integer deviceScaleFactor;
+    public Boolean isMobile;
+    public Boolean hasTouch;
+    public Boolean javaScriptEnabled;
+    public String timezoneId;
+    public Geolocation geolocation;
+    public String locale;
+    public List<String> permissions;
+    public Map<String, String> extraHTTPHeaders;
+    public Boolean offline;
+    public HttpCredentials httpCredentials;
+    public ColorScheme colorScheme;
+    public Logger logger;
+    public String relativeArtifactsPath;
+    public Boolean recordVideos;
+    public VideoSize videoSize;
+    public Boolean recordTrace;
 
     public NewContextOptions withAcceptDownloads(Boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
@@ -216,10 +216,10 @@ public interface WebKitBrowser {
     }
   }
   class NewPageOptions {
-    enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
+    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
     public class Viewport {
-      int width;
-      int height;
+      public int width;
+      public int height;
 
       Viewport() {
       }
@@ -237,9 +237,9 @@ public interface WebKitBrowser {
       }
     }
     public class Geolocation {
-      double latitude;
-      double longitude;
-      double accuracy;
+      public double latitude;
+      public double longitude;
+      public double accuracy;
 
       Geolocation() {
       }
@@ -261,8 +261,8 @@ public interface WebKitBrowser {
       }
     }
     public class HttpCredentials {
-      String username;
-      String password;
+      public String username;
+      public String password;
 
       HttpCredentials() {
       }
@@ -280,8 +280,8 @@ public interface WebKitBrowser {
       }
     }
     public class VideoSize {
-      int width;
-      int height;
+      public int width;
+      public int height;
 
       VideoSize() {
       }
@@ -298,28 +298,28 @@ public interface WebKitBrowser {
         return this;
       }
     }
-    Boolean acceptDownloads;
-    Boolean ignoreHTTPSErrors;
-    Boolean bypassCSP;
-    Viewport viewport;
-    String userAgent;
-    Integer deviceScaleFactor;
-    Boolean isMobile;
-    Boolean hasTouch;
-    Boolean javaScriptEnabled;
-    String timezoneId;
-    Geolocation geolocation;
-    String locale;
-    List<String> permissions;
-    Map<String, String> extraHTTPHeaders;
-    Boolean offline;
-    HttpCredentials httpCredentials;
-    ColorScheme colorScheme;
-    Logger logger;
-    String relativeArtifactsPath;
-    Boolean recordVideos;
-    VideoSize videoSize;
-    Boolean recordTrace;
+    public Boolean acceptDownloads;
+    public Boolean ignoreHTTPSErrors;
+    public Boolean bypassCSP;
+    public Viewport viewport;
+    public String userAgent;
+    public Integer deviceScaleFactor;
+    public Boolean isMobile;
+    public Boolean hasTouch;
+    public Boolean javaScriptEnabled;
+    public String timezoneId;
+    public Geolocation geolocation;
+    public String locale;
+    public List<String> permissions;
+    public Map<String, String> extraHTTPHeaders;
+    public Boolean offline;
+    public HttpCredentials httpCredentials;
+    public ColorScheme colorScheme;
+    public Logger logger;
+    public String relativeArtifactsPath;
+    public Boolean recordVideos;
+    public VideoSize videoSize;
+    public Boolean recordTrace;
 
     public NewPageOptions withAcceptDownloads(Boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;

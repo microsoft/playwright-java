@@ -21,10 +21,10 @@ import java.util.function.BiConsumer;
 
 public interface BrowserType {
   class ConnectOptions {
-    String wsEndpoint;
-    Integer slowMo;
-    Logger logger;
-    Integer timeout;
+    public String wsEndpoint;
+    public Integer slowMo;
+    public Logger logger;
+    public Integer timeout;
 
     public ConnectOptions withWsEndpoint(String wsEndpoint) {
       this.wsEndpoint = wsEndpoint;
@@ -45,10 +45,10 @@ public interface BrowserType {
   }
   class LaunchOptions {
     public class Proxy {
-      String server;
-      String bypass;
-      String username;
-      String password;
+      public String server;
+      public String bypass;
+      public String username;
+      public String password;
 
       Proxy() {
       }
@@ -73,23 +73,23 @@ public interface BrowserType {
         return this;
       }
     }
-    Boolean headless;
-    String executablePath;
-    List<String> args;
-    Boolean ignoreDefaultArgs;
-    Proxy proxy;
-    String downloadsPath;
-    String artifactsPath;
-    Boolean chromiumSandbox;
-    String firefoxUserPrefs;
-    Boolean handleSIGINT;
-    Boolean handleSIGTERM;
-    Boolean handleSIGHUP;
-    Logger logger;
-    Integer timeout;
-    String env;
-    Boolean devtools;
-    Integer slowMo;
+    public Boolean headless;
+    public String executablePath;
+    public List<String> args;
+    public Boolean ignoreDefaultArgs;
+    public Proxy proxy;
+    public String downloadsPath;
+    public String artifactsPath;
+    public Boolean chromiumSandbox;
+    public String firefoxUserPrefs;
+    public Boolean handleSIGINT;
+    public Boolean handleSIGTERM;
+    public Boolean handleSIGHUP;
+    public Logger logger;
+    public Integer timeout;
+    public String env;
+    public Boolean devtools;
+    public Integer slowMo;
 
     public LaunchOptions withHeadless(Boolean headless) {
       this.headless = headless;
@@ -161,12 +161,12 @@ public interface BrowserType {
     }
   }
   class LaunchPersistentContextOptions {
-    enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
+    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
     public class Proxy {
-      String server;
-      String bypass;
-      String username;
-      String password;
+      public String server;
+      public String bypass;
+      public String username;
+      public String password;
 
       Proxy() {
       }
@@ -192,8 +192,8 @@ public interface BrowserType {
       }
     }
     public class Viewport {
-      int width;
-      int height;
+      public int width;
+      public int height;
 
       Viewport() {
       }
@@ -211,9 +211,9 @@ public interface BrowserType {
       }
     }
     public class Geolocation {
-      double latitude;
-      double longitude;
-      double accuracy;
+      public double latitude;
+      public double longitude;
+      public double accuracy;
 
       Geolocation() {
       }
@@ -235,8 +235,8 @@ public interface BrowserType {
       }
     }
     public class HttpCredentials {
-      String username;
-      String password;
+      public String username;
+      public String password;
 
       HttpCredentials() {
       }
@@ -254,8 +254,8 @@ public interface BrowserType {
       }
     }
     public class VideoSize {
-      int width;
-      int height;
+      public int width;
+      public int height;
 
       VideoSize() {
       }
@@ -272,43 +272,43 @@ public interface BrowserType {
         return this;
       }
     }
-    Boolean headless;
-    String executablePath;
-    List<String> args;
-    String ignoreDefaultArgs;
-    Proxy proxy;
-    Boolean acceptDownloads;
-    String downloadsPath;
-    String artifactsPath;
-    Boolean chromiumSandbox;
-    Boolean handleSIGINT;
-    Boolean handleSIGTERM;
-    Boolean handleSIGHUP;
-    Logger logger;
-    Integer timeout;
-    String env;
-    Boolean devtools;
-    Integer slowMo;
-    Boolean ignoreHTTPSErrors;
-    Boolean bypassCSP;
-    Viewport viewport;
-    String userAgent;
-    Integer deviceScaleFactor;
-    Boolean isMobile;
-    Boolean hasTouch;
-    Boolean javaScriptEnabled;
-    String timezoneId;
-    Geolocation geolocation;
-    String locale;
-    List<String> permissions;
-    Map<String, String> extraHTTPHeaders;
-    Boolean offline;
-    HttpCredentials httpCredentials;
-    ColorScheme colorScheme;
-    String relativeArtifactsPath;
-    Boolean recordVideos;
-    VideoSize videoSize;
-    Boolean recordTrace;
+    public Boolean headless;
+    public String executablePath;
+    public List<String> args;
+    public String ignoreDefaultArgs;
+    public Proxy proxy;
+    public Boolean acceptDownloads;
+    public String downloadsPath;
+    public String artifactsPath;
+    public Boolean chromiumSandbox;
+    public Boolean handleSIGINT;
+    public Boolean handleSIGTERM;
+    public Boolean handleSIGHUP;
+    public Logger logger;
+    public Integer timeout;
+    public String env;
+    public Boolean devtools;
+    public Integer slowMo;
+    public Boolean ignoreHTTPSErrors;
+    public Boolean bypassCSP;
+    public Viewport viewport;
+    public String userAgent;
+    public Integer deviceScaleFactor;
+    public Boolean isMobile;
+    public Boolean hasTouch;
+    public Boolean javaScriptEnabled;
+    public String timezoneId;
+    public Geolocation geolocation;
+    public String locale;
+    public List<String> permissions;
+    public Map<String, String> extraHTTPHeaders;
+    public Boolean offline;
+    public HttpCredentials httpCredentials;
+    public ColorScheme colorScheme;
+    public String relativeArtifactsPath;
+    public Boolean recordVideos;
+    public VideoSize videoSize;
+    public Boolean recordTrace;
 
     public LaunchPersistentContextOptions withHeadless(Boolean headless) {
       this.headless = headless;
@@ -461,10 +461,10 @@ public interface BrowserType {
   }
   class LaunchServerOptions {
     public class Proxy {
-      String server;
-      String bypass;
-      String username;
-      String password;
+      public String server;
+      public String bypass;
+      public String username;
+      public String password;
 
       Proxy() {
       }
@@ -489,23 +489,23 @@ public interface BrowserType {
         return this;
       }
     }
-    Boolean headless;
-    Integer port;
-    String executablePath;
-    List<String> args;
-    String ignoreDefaultArgs;
-    Proxy proxy;
-    String downloadsPath;
-    String artifactsPath;
-    Boolean chromiumSandbox;
-    String firefoxUserPrefs;
-    Boolean handleSIGINT;
-    Boolean handleSIGTERM;
-    Boolean handleSIGHUP;
-    Logger logger;
-    Integer timeout;
-    String env;
-    Boolean devtools;
+    public Boolean headless;
+    public Integer port;
+    public String executablePath;
+    public List<String> args;
+    public String ignoreDefaultArgs;
+    public Proxy proxy;
+    public String downloadsPath;
+    public String artifactsPath;
+    public Boolean chromiumSandbox;
+    public String firefoxUserPrefs;
+    public Boolean handleSIGINT;
+    public Boolean handleSIGTERM;
+    public Boolean handleSIGHUP;
+    public Logger logger;
+    public Integer timeout;
+    public String env;
+    public Boolean devtools;
 
     public LaunchServerOptions withHeadless(Boolean headless) {
       this.headless = headless;

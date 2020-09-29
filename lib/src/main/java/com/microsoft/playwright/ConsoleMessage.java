@@ -21,9 +21,9 @@ import java.util.function.BiConsumer;
 
 public interface ConsoleMessage {
   class Location {
-    String url;
-    int lineNumber;
-    int columnNumber;
+    public String url;
+    public int lineNumber;
+    public int columnNumber;
 
     public Location withUrl(String url) {
       this.url = url;

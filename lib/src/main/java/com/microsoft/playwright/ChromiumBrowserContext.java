@@ -21,7 +21,7 @@ import java.util.function.BiConsumer;
 
 public interface ChromiumBrowserContext {
   class GrantPermissionsOptions {
-    String origin;
+    public String origin;
 
     public GrantPermissionsOptions withOrigin(String origin) {
       this.origin = origin;
@@ -29,9 +29,9 @@ public interface ChromiumBrowserContext {
     }
   }
   class Geolocation {
-    int latitude;
-    int longitude;
-    Integer accuracy;
+    public int latitude;
+    public int longitude;
+    public Integer accuracy;
 
     public Geolocation withLatitude(int latitude) {
       this.latitude = latitude;
@@ -47,8 +47,8 @@ public interface ChromiumBrowserContext {
     }
   }
   class HTTPCredentials {
-    String username;
-    String password;
+    public String username;
+    public String password;
 
     public HTTPCredentials withUsername(String username) {
       this.username = username;

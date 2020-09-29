@@ -308,7 +308,7 @@ class Field extends Element {
   }
 
   void writeTo(List<String> output, String offset) {
-    output.add(offset + toJava() + ";");
+    output.add(offset + "public " + toJava() + ";");
   }
 }
 
@@ -429,7 +429,8 @@ class Enum extends TypeDefinition {
   }
 
   void writeTo(List<String> output, String offset) {
-    output.add(offset + "enum " + name + " { " + String.join(", ", enumValues) + "}");
+    String access = parent.typeScope() instanceof NestedClass ? "public " : "";
+    output.add(offset + access + "enum " + name + " { " + String.join(", ", enumValues) + "}");
   }
 }
 
