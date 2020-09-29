@@ -48,7 +48,7 @@ public class TestBrowser {
   }
 
   @Test
-  void should_click_the_button() {
+  void version_should_work() {
     if (isChromium)
       assertTrue(Pattern.matches("^\\d+\\.\\d+\\.\\d+\\.\\d+$", browser.version()));
     else

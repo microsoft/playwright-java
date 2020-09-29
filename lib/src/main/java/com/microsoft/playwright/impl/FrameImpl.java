@@ -125,13 +125,10 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   public <T> T evalTyped(String expression) {
-    JsonElement json = evaluate(expression, null, false);
-    System.out.println("json = " + new Gson().toJson(json));
-    SerializedValue value = new Gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
-    return deserialize(value);
+    return (T) evaluate(expression, null, false);
   }
 
-  JsonElement evaluate(String expression, Object arg, boolean forceExpression) {
+  private Object evaluate(String expression, Object arg, boolean forceExpression) {
     JsonObject params = new JsonObject();
     params.addProperty("expression", expression);
     params.addProperty("world", "main");
@@ -139,7 +136,10 @@ public class FrameImpl extends ChannelOwner implements Frame {
       forceExpression = true;
     params.addProperty("isFunction", !forceExpression);
     params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
-    return sendMessage("evaluateExpression", params);
+    JsonElement json = sendMessage("evaluateExpression", params);
+//    System.out.println("json = " + new Gson().toJson(json));
+    SerializedValue value = new Gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
+    return deserialize(value);
   }
 
   @Override

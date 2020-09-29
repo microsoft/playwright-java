@@ -92,10 +92,6 @@ public class PageImpl extends ChannelOwner implements Page {
     return mainFrame.evalTyped(expression);
   }
 
-  public JsonElement evaluate(String expression) {
-    return evaluate(expression, null);
-  }
-
   @Override
   public void close(CloseOptions options) {
 
@@ -177,8 +173,8 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public JsonElement evaluate(String expression, Object arg) {
-    return evaluate(expression, arg, false);
+  public Object evaluate(String expression, Object arg) {
+    return mainFrame.evaluate(expression, arg);
   }
 
   @Override
@@ -405,9 +401,5 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public List<Worker> workers() {
     return null;
-  }
-
-  public JsonElement evaluate(String expression, Object arg, boolean forceExpression) {
-    return mainFrame.evaluate(expression, arg, forceExpression);
   }
 }
