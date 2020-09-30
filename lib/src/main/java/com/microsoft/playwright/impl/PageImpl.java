@@ -145,7 +145,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void click(String selector, ClickOptions options) {
-    mainFrame.click(selector);
+    mainFrame.click(selector, convertViaJson(options, Frame.ClickOptions.class));
   }
 
   @Override
@@ -195,7 +195,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void fill(String selector, String value, FillOptions options) {
-
+    mainFrame.fill(selector, value, convertViaJson(options, Frame.FillOptions.class));
   }
 
   @Override
@@ -405,5 +405,10 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public List<Worker> workers() {
     return null;
+  }
+
+  private static <F, T> T convertViaJson(F f, Class<T> t) {
+    String json = new Gson().toJson(f);
+    return new Gson().fromJson(json, t);
   }
 }

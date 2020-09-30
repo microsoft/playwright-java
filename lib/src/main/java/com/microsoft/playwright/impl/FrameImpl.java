@@ -17,6 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
@@ -182,14 +183,54 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return null;
   }
 
+
+  private static String toProtocol(ClickOptions.Button button) {
+    switch (button) {
+      case LEFT: return "left";
+      case RIGHT: return "right";
+      case MIDDLE: return "middle";
+      default: throw new RuntimeException("Unexpected value: " + button);
+    }
+  }
+
+  private static JsonArray toProtocol(Set<ClickOptions.Modifier> modifiers) {
+    JsonArray result = new JsonArray();
+    if (modifiers.contains(ClickOptions.Modifier.ALT)) {
+      result.add("Alt");
+    }
+    if (modifiers.contains(ClickOptions.Modifier.CONTROL)) {
+      result.add("Control");
+    }
+    if (modifiers.contains(ClickOptions.Modifier.META)) {
+      result.add("Meta");
+    }
+    if (modifiers.contains(ClickOptions.Modifier.SHIFT)) {
+      result.add("Shift");
+    }
+    return result;
+  }
+
   @Override
   public void click(String selector, ClickOptions options) {
     if (options == null) {
       options = new ClickOptions();
     }
-    JsonObject params = new JsonObject();
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
-    JsonElement result = sendMessage("click", params);
+
+    params.remove("button");
+    if (options.button != null) {
+      params.addProperty("button", toProtocol(options.button));
+    }
+
+    params.remove("modifiers");
+    if (options.modifiers != null) {
+      params.add("modifiers", toProtocol(options.modifiers));
+    }
+
+//    System.err.println(new Gson().toJson(params));
+
+    sendMessage("click", params);
   }
 
   @Override
@@ -219,7 +260,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void fill(String selector, String value, FillOptions options) {
-
+    if (options == null) {
+      options = new FillOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    params.addProperty("value", value);
+    sendMessage("fill", params);
   }
 
   @Override
@@ -245,7 +292,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("url", url);
     JsonElement result = sendMessage("goto", params);
-    System.out.println("result = " + new Gson().toJson(result));
     return connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("response").get("guid").getAsString());
   }
 
