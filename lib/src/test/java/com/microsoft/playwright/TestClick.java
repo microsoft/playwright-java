@@ -94,11 +94,11 @@ public class TestClick {
   void should_click_on_a_span_with_an_inline_element_inside() {
     page.setContent(
       "<style>\n" +
-      "  span::before {\n" +
-      "    content: 'q';\n" +
-      "  }\n" +
-      "</style>\n" +
-      "<span onclick='javascript:window.CLICKED=42'></span>\n");
+        "  span::before {\n" +
+        "    content: 'q';\n" +
+        "  }\n" +
+        "</style>\n" +
+        "<span onclick='javascript:window.CLICKED=42'></span>\n");
     page.click("span");
     assertEquals(42, page.evaluate("CLICKED"));
   }
@@ -136,12 +136,12 @@ public class TestClick {
   void should_click_when_one_of_inline_box_children_is_outside_of_viewport() {
     page.setContent(
       "<style>\n" +
-      "i {\n" +
-      "  position: absolute;\n" +
-      "  top: -1000px;\n" +
-      "}\n" +
-      "</style>\n" +
-      "<span onclick='javascript:window.CLICKED = 42;'><i>woof</i><b>doggo</b></span>\n");
+        "i {\n" +
+        "  position: absolute;\n" +
+        "  top: -1000px;\n" +
+        "}\n" +
+        "</style>\n" +
+        "<span onclick='javascript:window.CLICKED = 42;'><i>woof</i><b>doggo</b></span>\n");
     page.click("span");
     assertEquals(42, page.evaluate("CLICKED"));
   }
@@ -156,7 +156,7 @@ public class TestClick {
       "  const textarea = document.querySelector('textarea');\n" +
       "  return textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);\n" +
       "}"));
-  };
+  }
 
   @Test
   void should_click_offscreen_buttons() {
@@ -207,5 +207,51 @@ public class TestClick {
 
   // TODO: not supported in sync api
   void should_waitFor_display_none_to_be_gone() {
+  }
+  void should_waitFor_visibility_hidden_to_be_gone() {
+  }
+  void should_waitFor_visible_when_parent_is_hidden() {
+  }
+
+  @Test
+  void should_click_wrapped_links() {
+    page.navigate(server.PREFIX + "/wrappedlink.html");
+    page.click("a");
+    assertTrue((Boolean) page.evaluate("__clicked"));
+  }
+
+  @Test
+  void should_click_on_checkbox_input_and_toggle() {
+    page.navigate(server.PREFIX + "/input/checkbox.html");
+    assertNull(page.evaluate("() => window['result'].check"));
+    page.click("input#agree");
+    assertTrue((Boolean) page.evaluate("() => window['result'].check"));
+    assertEquals(Arrays.asList(
+      "mouseover",
+      "mouseenter",
+      "mousemove",
+      "mousedown",
+      "mouseup",
+      "click",
+      "input",
+      "change"),
+      page.evaluate("() => window['result'].events"));
+    page.click("input#agree");
+    assertFalse((Boolean) page.evaluate("() => window['result'].check"));
+  }
+
+  @Test
+  void should_click_on_checkbox_label_and_toggle() {
+    page.navigate(server.PREFIX + "/input/checkbox.html");
+    assertNull(page.evaluate("() => window['result'].check"));
+    page.click("label[for='agree']");
+    assertTrue((Boolean) page.evaluate("() => window['result'].check"));
+    assertEquals(Arrays.asList(
+      "click",
+      "input",
+      "change"),
+      page.evaluate("() => window['result'].events"));
+    page.click("label[for='agree']");
+    assertFalse((Boolean) page.evaluate("() => window['result'].check"));
   }
 }

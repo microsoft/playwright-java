@@ -97,6 +97,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (value.v != null) {
       switch (value.v) {
         case "undefined":
+        case "null":
           return null;
         case "Infinity":
           return (T) Double.valueOf(Double.POSITIVE_INFINITY);
