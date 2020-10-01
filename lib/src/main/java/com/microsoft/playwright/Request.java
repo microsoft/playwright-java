@@ -21,11 +21,10 @@ import java.util.function.BiConsumer;
 
 public interface Request {
   class RequestFailure {
-    public String errorText;
+    private String errorText;
 
-    public RequestFailure withErrorText(String errorText) {
-      this.errorText = errorText;
-      return this;
+    public String errorText() {
+      return this.errorText;
     }
   }
   class RequestPostDataJSON {

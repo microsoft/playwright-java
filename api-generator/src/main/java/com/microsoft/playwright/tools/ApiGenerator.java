@@ -205,6 +205,84 @@ abstract class TypeDefinition extends Element {
   }
 }
 
+class Event extends Element {
+  private final TypeRef type;
+
+  private enum ApiType {HANDLER, LISTENER, WAIT_FOR}
+
+  private static class Info {
+    final String typePrefix;
+    final ApiType apiType;
+
+    Info(String typePrefix, ApiType apiType) {
+      this.typePrefix = typePrefix;
+      this.apiType = apiType;
+    }
+  }
+
+  private static Map<String, Info> events = new HashMap<>();
+  private static void add(String jsonPath, String typePrefix, ApiType apiType) {
+    events.put(jsonPath, new Info(typePrefix, apiType));
+  }
+  static {
+    add("Browser.disconnected", "Disconnected", ApiType.WAIT_FOR);
+    add("BrowserContext.page", "Page", ApiType.WAIT_FOR);
+    add("Page.console", "Console", ApiType.LISTENER);
+    add("Page.crash", "Crash", ApiType.WAIT_FOR);
+    add("Page.dialog", "Dialog", ApiType.HANDLER);
+    add("Page.domcontentloaded", "DomContentLoaded", ApiType.WAIT_FOR);
+    add("Page.download", "Download", ApiType.WAIT_FOR);
+    add("Page.filechooser", "FileChooser", ApiType.HANDLER);
+    add("Page.frameattached", "FrameAttached", ApiType.WAIT_FOR);
+    add("Page.framedetached", "FrameDetached", ApiType.WAIT_FOR);
+    add("Page.framenavigated", "FrameNavigated", ApiType.WAIT_FOR);
+    add("Page.load", "Load", ApiType.WAIT_FOR);
+    add("Page.pageerror", "Error", ApiType.LISTENER);
+    add("Page.popup", "Popup", ApiType.WAIT_FOR);
+    add("Page.request", "Request", ApiType.WAIT_FOR);
+    add("Page.requestfailed", "RequestFailed", ApiType.WAIT_FOR);
+    add("Page.requestfinished", "RequestFinished", ApiType.WAIT_FOR);
+    add("Page.response", "Response", ApiType.WAIT_FOR);
+    add("Page.worker", "Worker", ApiType.WAIT_FOR);
+    add("Worker.close", "Close", ApiType.WAIT_FOR);
+    add("ChromiumBrowser.disconnected", "Disconnected", ApiType.WAIT_FOR);
+    add("ChromiumBrowserContext.backgroundpage", "BackgroundPage", ApiType.WAIT_FOR);
+    add("ChromiumBrowserContext.serviceworker", "ServiceWorker", ApiType.WAIT_FOR);
+    add("ChromiumBrowserContext.page", "Page", ApiType.WAIT_FOR);
+    add("FirefoxBrowser.disconnected", "Disconnected", ApiType.WAIT_FOR);
+    add("WebKitBrowser.disconnected", "Disconnected", ApiType.WAIT_FOR);
+  }
+
+  Event(Element parent, JsonObject jsonElement) {
+    super(parent, jsonElement);
+    type = new TypeRef(this, jsonElement.get("type"));
+    if (!events.containsKey(jsonPath)) {
+      throw new RuntimeException("Type mapping is missing for event: " + jsonPath);
+    }
+  }
+
+  void writeTo(List<String> output, String offset) {
+    // TODO: only whitelisted events are generated for now as the API may change.
+    if (!"Page.console".equals(jsonPath) &&
+        !"Page.popup".equals(jsonPath)) {
+      return;
+    }
+    Info info = events.get(jsonPath);
+    String templateArg = type.toJava().replace("void", "Void");
+    if (info.apiType == ApiType.WAIT_FOR) {
+      output.add(offset + "Deferred<" + templateArg + "> waitFor" + info.typePrefix + "();");
+      return;
+    }
+    if (info.apiType == ApiType.LISTENER || info.apiType == ApiType.HANDLER) {
+      String listenerType = info.typePrefix;
+      output.add(offset + "void add" + listenerType + "Listener(Listener<" + templateArg + "> listener);");
+      output.add(offset + "void remove" + listenerType + "Listener(Listener<" + templateArg + "> listener);");
+      return;
+    }
+    throw new RuntimeException("Unexpected apiType " + info.apiType + " for: " + jsonPath);
+  }
+}
+
 class Method extends Element {
   final TypeRef returnType;
   final List<Param> params = new ArrayList<>();
@@ -307,13 +385,20 @@ class Field extends Element {
     return type.toJava() + " " + name;
   }
 
-  void writeTo(List<String> output, String offset) {
-    output.add(offset + "public " + toJava() + ";");
+  void writeTo(List<String> output, String offset, String access) {
+    output.add(offset + access + toJava() + ";");
+  }
+
+  void writeGetter(List<String> output, String offset) {
+    output.add(offset + "public " + type.toJava() + " " + name + "() {");
+    output.add(offset + "  return this." + name + ";");
+    output.add(offset + "}");
   }
 }
 
 class Interface extends TypeDefinition {
   private final List<Method> methods = new ArrayList<>();
+  private final List<Event> events = new ArrayList<>();
   private static String header = "/**\n" +
     " * Copyright (c) Microsoft Corporation.\n" +
     " *\n" +
@@ -336,14 +421,15 @@ class Interface extends TypeDefinition {
     super(null, jsonElement);
 
     JsonObject members = jsonElement.get("members").getAsJsonObject();
-    for (Map.Entry<String, JsonElement> m : members.entrySet())
-      createMember(m.getValue().getAsJsonObject());
-  }
-
-  private void createMember(JsonObject json) {
-    String kind = json.get("kind").getAsString();
-    if ("method".equals(kind)) {
-      methods.add(new Method(this, json));
+    for (Map.Entry<String, JsonElement> m : members.entrySet()) {
+      JsonObject json = m.getValue().getAsJsonObject();
+      String kind = json.get("kind").getAsString();
+      if ("method".equals(kind)) {
+        methods.add(new Method(this, json));
+      }
+      if ("event".equals(kind)) {
+        events.add(new Event(this, json));
+      }
     }
   }
 
@@ -354,6 +440,9 @@ class Interface extends TypeDefinition {
     output.add("");
     output.add("public interface " + jsonName + " {");
     super.writeTo(output, offset + "  ");
+    for (Event e : events) {
+      e.writeTo(output, offset + "  ");
+    }
     for (Method m : methods) {
       m.writeTo(output, offset + "  ");
     }
@@ -381,11 +470,20 @@ class NestedClass extends TypeDefinition {
     output.add(offset + access + "class " + name + " {");
     String bodyOffset = offset + "  ";
     super.writeTo(output, bodyOffset);
+
+    boolean isReturnType = parent.parent instanceof Method;
+    String fieldAccess = isReturnType ? "private " : "public ";
     for (Field f : fields) {
-      f.writeTo(output, bodyOffset);
+      f.writeTo(output, bodyOffset, fieldAccess);
     }
     output.add("");
-    writeBuilderMethods(output, bodyOffset);
+    if (isReturnType) {
+      for (Field f : fields) {
+        f.writeGetter(output, bodyOffset);
+      }
+    } else {
+      writeBuilderMethods(output, bodyOffset);
+    }
     output.add(offset + "}");
   }
 

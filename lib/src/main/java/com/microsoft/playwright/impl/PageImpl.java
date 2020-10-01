@@ -24,6 +24,7 @@ import com.microsoft.playwright.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -31,7 +32,7 @@ import java.util.function.Supplier;
 public class PageImpl extends ChannelOwner implements Page {
   private final FrameImpl mainFrame;
   private final List<DialogHandler> dialogHandlers = new ArrayList<>();
-  private final List<ConsoleListener> consoleListeners = new ArrayList<>();
+  private final List<Listener<ConsoleMessage>> consoleListeners = new ArrayList<>();
 
   PageImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -39,7 +40,18 @@ public class PageImpl extends ChannelOwner implements Page {
     mainFrame.page = this;
   }
 
-  public Supplier<PageImpl> waitForPopup() {
+  @Override
+  public void addConsoleListener(Listener<ConsoleMessage> listener) {
+    consoleListeners.add(listener);
+  }
+
+  @Override
+  public void removeConsoleListener(Listener<ConsoleMessage> listener) {
+    consoleListeners.remove(listener);
+  }
+
+  @Override
+  public Deferred<Page> waitForPopup() {
     Supplier<JsonObject> popupSupplier = waitForProtocolEvent("popup");
     return () -> {
       JsonObject params = popupSupplier.get();
@@ -64,29 +76,19 @@ public class PageImpl extends ChannelOwner implements Page {
     if ("dialog".equals(event)) {
       String guid = params.getAsJsonObject("dialog").get("guid").getAsString();
       DialogImpl dialog = connection.getExistingObject(guid);
-      for (DialogHandler handler: new ArrayList<>(dialogHandlers))
+      for (DialogHandler handler: new ArrayList<>(dialogHandlers)) {
         handler.handle(dialog);
+      }
       // If no action taken dismiss dialog to not hang.
       if (!dialog.isHandled())
         dialog.dismiss();
     } else if ("console".equals(event)) {
       String guid = params.getAsJsonObject("message").get("guid").getAsString();
       ConsoleMessageImpl message = connection.getExistingObject(guid);
-      for (ConsoleListener listener: new ArrayList<>(consoleListeners))
+      for (Listener<ConsoleMessage> listener: new ArrayList<>(consoleListeners)) {
         listener.handle(message);
+      }
     }
-  }
-
-  public interface ConsoleListener {
-    void handle(ConsoleMessageImpl m);
-  }
-
-  public void addConsoleListener(ConsoleListener listener) {
-    consoleListeners.add(listener);
-  }
-
-  public void removeConsoleListener(ConsoleListener listener) {
-    consoleListeners.remove(listener);
   }
 
   public <T> T evalTyped(String expression) {
@@ -100,22 +102,22 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public ElementHandle querySelector(String selector) {
-    return null;
+    return mainFrame.querySelector(selector);
   }
 
   @Override
   public List<ElementHandle> querySelectorAll(String selector) {
-    return null;
+    return mainFrame.querySelectorAll(selector);
   }
 
   @Override
   public Object evalOnSelector(String selector, String pageFunction, Object arg) {
-    return null;
+    return mainFrame.evalOnSelector(selector, pageFunction, arg);
   }
 
   @Override
   public Object evalOnSelectorAll(String selector, String pageFunction, Object arg) {
-    return null;
+    return mainFrame.evalOnSelectorAll(selector, pageFunction, arg);
   }
 
   @Override

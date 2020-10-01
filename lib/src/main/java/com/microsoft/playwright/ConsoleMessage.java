@@ -21,21 +21,18 @@ import java.util.function.BiConsumer;
 
 public interface ConsoleMessage {
   class Location {
-    public String url;
-    public int lineNumber;
-    public int columnNumber;
+    private String url;
+    private int lineNumber;
+    private int columnNumber;
 
-    public Location withUrl(String url) {
-      this.url = url;
-      return this;
+    public String url() {
+      return this.url;
     }
-    public Location withLineNumber(int lineNumber) {
-      this.lineNumber = lineNumber;
-      return this;
+    public int lineNumber() {
+      return this.lineNumber;
     }
-    public Location withColumnNumber(int columnNumber) {
-      this.columnNumber = columnNumber;
-      return this;
+    public int columnNumber() {
+      return this.columnNumber;
     }
   }
   List<JSHandle> args();

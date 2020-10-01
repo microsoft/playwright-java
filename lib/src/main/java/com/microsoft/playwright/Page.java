@@ -664,16 +664,14 @@ public interface Page {
     }
   }
   class PageViewportSize {
-    public int width;
-    public int height;
+    private int width;
+    private int height;
 
-    public PageViewportSize withWidth(int width) {
-      this.width = width;
-      return this;
+    public int width() {
+      return this.width;
     }
-    public PageViewportSize withHeight(int height) {
-      this.height = height;
-      return this;
+    public int height() {
+      return this.height;
     }
   }
   class WaitForFunctionOptions {
@@ -746,6 +744,9 @@ public interface Page {
       return this;
     }
   }
+  void addConsoleListener(Listener<ConsoleMessage> listener);
+  void removeConsoleListener(Listener<ConsoleMessage> listener);
+  Deferred<Page> waitForPopup();
   default void close() {
     close(null);
   }

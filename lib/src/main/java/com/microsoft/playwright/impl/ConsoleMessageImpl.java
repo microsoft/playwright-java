@@ -18,8 +18,12 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.ConsoleMessage;
+import com.microsoft.playwright.JSHandle;
 
-public class ConsoleMessageImpl extends ChannelOwner {
+import java.util.List;
+
+public class ConsoleMessageImpl extends ChannelOwner implements ConsoleMessage {
   public ConsoleMessageImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
@@ -32,21 +36,9 @@ public class ConsoleMessageImpl extends ChannelOwner {
     return initializer.get("text").getAsString();
   }
 
-//  args(): JSHandle[] {
-//    return this._initializer.args.map(JSHandle.from);
-//  }
-
-  public static class Location {
-    String url;
-    int lineNumber;
-    int columnNumber;
-
-    @Override
-    public String toString() {
-      return url +
-        ":" + lineNumber +
-        ":" + columnNumber;
-    }
+  @Override
+  public List<JSHandle> args() {
+    return null;
   }
 
   public Location location() {

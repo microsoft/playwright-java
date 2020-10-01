@@ -133,8 +133,9 @@ public class FrameImpl extends ChannelOwner implements Frame {
     JsonObject params = new JsonObject();
     params.addProperty("expression", expression);
     params.addProperty("world", "main");
-    if (!isFunctionBody(expression))
+    if (!isFunctionBody(expression)) {
       forceExpression = true;
+    }
     params.addProperty("isFunction", !forceExpression);
     params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
     JsonElement json = sendMessage("evaluateExpression", params);
@@ -155,7 +156,15 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public Object evalOnSelector(String selector, String pageFunction, Object arg) {
-    return null;
+    JsonObject params = new JsonObject();
+    params.addProperty("selector", selector);
+    params.addProperty("expression", pageFunction);
+    params.addProperty("isFunction", isFunctionBody(pageFunction));
+    params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
+    JsonElement json = sendMessage("evalOnSelector", params);
+//    System.out.println("json = " + new Gson().toJson(json));
+    SerializedValue value = new Gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
+    return deserialize(value);
   }
 
   @Override

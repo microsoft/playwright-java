@@ -137,7 +137,6 @@ public class Connection {
       if (message.error == null) {
         callback.complete(message);
       } else {
-        System.out.println(message.error);
         callback.completeExceptionally(new RuntimeException(message.error.toString()));
       }
       return;

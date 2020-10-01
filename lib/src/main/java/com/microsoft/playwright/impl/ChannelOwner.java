@@ -66,7 +66,7 @@ class ChannelOwner {
     return connection.sendMessage(guid, method, params);
   }
 
-  void sendMessageNoWait(String method, JsonObject params) {
+  protected void sendMessageNoWait(String method, JsonObject params) {
     connection.sendMessageNoWait(guid, method, params);
   }
 

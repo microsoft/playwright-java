@@ -19,9 +19,11 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestClick {
   private static Playwright playwright;
@@ -155,4 +157,55 @@ public class TestClick {
       "  return textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);\n" +
       "}"));
   };
+
+  @Test
+  void should_click_offscreen_buttons() {
+    page.navigate(server.PREFIX + "/offscreenbuttons.html");
+    List<String> messages = new ArrayList<>();
+    page.addConsoleListener(msg -> messages.add(msg.text()));
+    for (int i = 0; i < 11; ++i) {
+      // We might've scrolled to click a button - reset to (0, 0).
+      page.evaluate("() => window.scrollTo(0, 0)");
+      page.click("#btn" + i);
+    }
+    assertEquals(Arrays.asList(
+      "button #0 clicked",
+      "button #1 clicked",
+      "button #2 clicked",
+      "button #3 clicked",
+      "button #4 clicked",
+      "button #5 clicked",
+      "button #6 clicked",
+      "button #7 clicked",
+      "button #8 clicked",
+      "button #9 clicked",
+      "button #10 clicked"
+    ), messages);
+  }
+
+  @Test
+  void should_waitFor_visible_when_already_visible() {
+    page.navigate(server.PREFIX + "/input/button.html");
+    page.click("button");
+    assertEquals("Clicked", page.evaluate("result"));
+  }
+
+  @Test
+  void should_not_wait_with_force() {
+    page.navigate(server.PREFIX + "/input/button.html");
+    page.evalOnSelector("button", "b => b.style.display = 'none'");
+    Exception exception = null;
+    try {
+      page.click("button", new Page.ClickOptions().withForce(true));
+    } catch (RuntimeException e) {
+      exception = e;
+    }
+    assertNotNull(exception);
+    assertTrue(exception.getMessage().contains("Element is not visible"));
+    assertEquals("Was not clicked", page.evaluate("result"));
+  }
+
+  // TODO: not supported in sync api
+  void should_waitFor_display_none_to_be_gone() {
+  }
 }
