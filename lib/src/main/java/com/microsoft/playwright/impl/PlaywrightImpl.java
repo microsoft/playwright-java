@@ -16,13 +16,19 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.DeviceDescriptor;
 import com.microsoft.playwright.Playwright;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlaywrightImpl extends ChannelOwner implements Playwright {
   public static PlaywrightImpl create() {
@@ -45,12 +51,21 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private final BrowserTypeImpl chromium;
   private final BrowserTypeImpl firefox;
   private final BrowserTypeImpl webkit;
+  private final Map<String, DeviceDescriptor> devices = new HashMap<>();
 
   public PlaywrightImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     chromium = parent.connection.getExistingObject(initializer.getAsJsonObject("chromium").get("guid").getAsString());
     firefox = parent.connection.getExistingObject(initializer.getAsJsonObject("firefox").get("guid").getAsString());
     webkit = parent.connection.getExistingObject(initializer.getAsJsonObject("webkit").get("guid").getAsString());
+
+    Gson gson = new Gson();
+    for (JsonElement item : initializer.getAsJsonArray("deviceDescriptors")) {
+      JsonObject o = item.getAsJsonObject();
+      String name = o.get("name").getAsString();
+      DeviceDescriptorImpl descriptor = gson.fromJson(o.get("descriptor"), DeviceDescriptorImpl.class);
+      devices.put(name, descriptor);
+    }
   }
 
   @Override
@@ -66,5 +81,10 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   @Override
   public BrowserTypeImpl webkit() {
     return webkit;
+  }
+
+  @Override
+  public Map<String, DeviceDescriptor> devices() {
+    return devices;
   }
 }

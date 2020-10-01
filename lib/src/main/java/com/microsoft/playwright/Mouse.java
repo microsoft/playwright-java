@@ -20,8 +20,9 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public interface Mouse {
+  enum Button { LEFT, MIDDLE, RIGHT }
+
   class ClickOptions {
-    public enum Button { LEFT, MIDDLE, RIGHT}
     public Button button;
     public Integer clickCount;
     public Integer delay;
@@ -40,7 +41,6 @@ public interface Mouse {
     }
   }
   class DblclickOptions {
-    public enum Button { LEFT, MIDDLE, RIGHT}
     public Button button;
     public Integer delay;
 
@@ -54,7 +54,6 @@ public interface Mouse {
     }
   }
   class DownOptions {
-    public enum Button { LEFT, MIDDLE, RIGHT}
     public Button button;
     public Integer clickCount;
 
@@ -76,7 +75,6 @@ public interface Mouse {
     }
   }
   class UpOptions {
-    public enum Button { LEFT, MIDDLE, RIGHT}
     public Button button;
     public Integer clickCount;
 

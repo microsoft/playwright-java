@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public interface ElementHandle {
-  enum ElementState { DISABLED, ENABLED, HIDDEN, STABLE, VISIBLE}
+  enum ElementState { DISABLED, ENABLED, HIDDEN, STABLE, VISIBLE }
   class CheckOptions {
     public Boolean force;
     public Boolean noWaitAfter;
@@ -40,8 +40,6 @@ public interface ElementHandle {
     }
   }
   class ClickOptions {
-    public enum Button { LEFT, MIDDLE, RIGHT}
-    public enum Modifier { ALT, CONTROL, META, SHIFT}
     public class Position {
       public int x;
       public int y;
@@ -61,16 +59,16 @@ public interface ElementHandle {
         return this;
       }
     }
-    public Button button;
+    public Mouse.Button button;
     public Integer clickCount;
     public Integer delay;
     public Position position;
-    public Set<Modifier> modifiers;
+    public Set<Keyboard.Modifier> modifiers;
     public Boolean force;
     public Boolean noWaitAfter;
     public Integer timeout;
 
-    public ClickOptions withButton(Button button) {
+    public ClickOptions withButton(Mouse.Button button) {
       this.button = button;
       return this;
     }
@@ -86,7 +84,7 @@ public interface ElementHandle {
       this.position = new Position();
       return this.position;
     }
-    public ClickOptions withModifiers(Set<Modifier> modifiers) {
+    public ClickOptions withModifiers(Set<Keyboard.Modifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
@@ -104,8 +102,6 @@ public interface ElementHandle {
     }
   }
   class DblclickOptions {
-    public enum Button { LEFT, MIDDLE, RIGHT}
-    public enum Modifier { ALT, CONTROL, META, SHIFT}
     public class Position {
       public int x;
       public int y;
@@ -125,15 +121,15 @@ public interface ElementHandle {
         return this;
       }
     }
-    public Button button;
+    public Mouse.Button button;
     public Integer delay;
     public Position position;
-    public Set<Modifier> modifiers;
+    public Set<Keyboard.Modifier> modifiers;
     public Boolean force;
     public Boolean noWaitAfter;
     public Integer timeout;
 
-    public DblclickOptions withButton(Button button) {
+    public DblclickOptions withButton(Mouse.Button button) {
       this.button = button;
       return this;
     }
@@ -145,7 +141,7 @@ public interface ElementHandle {
       this.position = new Position();
       return this.position;
     }
-    public DblclickOptions withModifiers(Set<Modifier> modifiers) {
+    public DblclickOptions withModifiers(Set<Keyboard.Modifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
@@ -176,7 +172,6 @@ public interface ElementHandle {
     }
   }
   class HoverOptions {
-    public enum Modifier { ALT, CONTROL, META, SHIFT}
     public class Position {
       public int x;
       public int y;
@@ -197,7 +192,7 @@ public interface ElementHandle {
       }
     }
     public Position position;
-    public Set<Modifier> modifiers;
+    public Set<Keyboard.Modifier> modifiers;
     public Boolean force;
     public Integer timeout;
 
@@ -205,7 +200,7 @@ public interface ElementHandle {
       this.position = new Position();
       return this.position;
     }
-    public HoverOptions withModifiers(Set<Modifier> modifiers) {
+    public HoverOptions withModifiers(Set<Keyboard.Modifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
@@ -237,7 +232,7 @@ public interface ElementHandle {
     }
   }
   class ScreenshotOptions {
-    public enum Type { JPEG, PNG}
+    public enum Type { JPEG, PNG }
     public String path;
     public Type type;
     public Integer quality;
@@ -352,7 +347,7 @@ public interface ElementHandle {
     }
   }
   class WaitForSelectorOptions {
-    public enum State { ATTACHED, DETACHED, HIDDEN, VISIBLE}
+    public enum State { ATTACHED, DETACHED, HIDDEN, VISIBLE }
     public State state;
     public Integer timeout;
 

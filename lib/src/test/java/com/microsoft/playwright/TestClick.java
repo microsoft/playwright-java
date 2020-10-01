@@ -254,4 +254,21 @@ public class TestClick {
     page.click("label[for='agree']");
     assertFalse((Boolean) page.evaluate("() => window['result'].check"));
   }
+
+  @Test
+  void should_not_hang_with_touch_enabled_viewports() {
+    // @see https://github.com/GoogleChrome/puppeteer/issues/161
+    DeviceDescriptor descriptor = playwright.devices().get("iPhone 6");
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setViewport()
+        .withWidth(descriptor.viewport().width())
+        .withHeight(descriptor.viewport().height())
+      .done()
+      .withHasTouch(descriptor.hasTouch()));
+    Page page = context.newPage();
+    page.mouse().down();
+    page.mouse().move(100, 10);
+    page.mouse().up();
+    context.close();
+  }
 }

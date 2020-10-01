@@ -194,7 +194,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
 
-  private static String toProtocol(ClickOptions.Button button) {
+  private static String toProtocol(Mouse.Button button) {
     switch (button) {
       case LEFT: return "left";
       case RIGHT: return "right";
@@ -203,18 +203,18 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
   }
 
-  private static JsonArray toProtocol(Set<ClickOptions.Modifier> modifiers) {
+  private static JsonArray toProtocol(Set<Keyboard.Modifier> modifiers) {
     JsonArray result = new JsonArray();
-    if (modifiers.contains(ClickOptions.Modifier.ALT)) {
+    if (modifiers.contains(Keyboard.Modifier.ALT)) {
       result.add("Alt");
     }
-    if (modifiers.contains(ClickOptions.Modifier.CONTROL)) {
+    if (modifiers.contains(Keyboard.Modifier.CONTROL)) {
       result.add("Control");
     }
-    if (modifiers.contains(ClickOptions.Modifier.META)) {
+    if (modifiers.contains(Keyboard.Modifier.META)) {
       result.add("Meta");
     }
-    if (modifiers.contains(ClickOptions.Modifier.SHIFT)) {
+    if (modifiers.contains(Keyboard.Modifier.SHIFT)) {
       result.add("Shift");
     }
     return result;
@@ -237,8 +237,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (options.modifiers != null) {
       params.add("modifiers", toProtocol(options.modifiers));
     }
-
-//    System.err.println(new Gson().toJson(params));
 
     sendMessage("click", params);
   }

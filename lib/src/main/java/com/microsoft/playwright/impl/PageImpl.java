@@ -28,9 +28,13 @@ import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+import static com.microsoft.playwright.impl.Utils.convertViaJson;
+
 
 public class PageImpl extends ChannelOwner implements Page {
   private final FrameImpl mainFrame;
+  private final KeyboardImpl keyboard;
+  private final MouseImpl mouse;
   private final List<DialogHandler> dialogHandlers = new ArrayList<>();
   private final List<Listener<ConsoleMessage>> consoleListeners = new ArrayList<>();
 
@@ -38,6 +42,8 @@ public class PageImpl extends ChannelOwner implements Page {
     super(parent, type, guid, initializer);
     mainFrame = connection.getExistingObject(initializer.getAsJsonObject("mainFrame").get("guid").getAsString());
     mainFrame.page = this;
+    keyboard = new KeyboardImpl(this);
+    mouse = new MouseImpl(this);
   }
 
   @Override
@@ -121,6 +127,11 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public Accessibility accessibility() {
+    return null;
+  }
+
+  @Override
   public void addInitScript(String script, Object arg) {
 
   }
@@ -157,6 +168,11 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public BrowserContext context() {
+    return null;
+  }
+
+  @Override
+  public ChromiumCoverage coverage() {
     return null;
   }
 
@@ -232,8 +248,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public ResponseImpl navigate(String url, NavigateOptions options) {
-    // TODO: convert params
-    return mainFrame.navigate(url, new Frame.NavigateOptions());
+    return mainFrame.navigate(url, convertViaJson(options, Frame.NavigateOptions.class));
   }
 
   @Override
@@ -257,8 +272,18 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public Keyboard keyboard() {
+    return keyboard;
+  }
+
+  @Override
   public Frame mainFrame() {
-    return null;
+    return mainFrame;
+  }
+
+  @Override
+  public Mouse mouse() {
+    return mouse;
   }
 
   @Override
@@ -298,10 +323,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void setContent(String html, SetContentOptions options) {
-    // TODO: generate converter.
-    String json = new Gson().toJson(options);
-    Frame.SetContentOptions frameOptions = new Gson().fromJson(json, Frame.SetContentOptions.class);
-    mainFrame.setContent(html, frameOptions);
+    mainFrame.setContent(html, convertViaJson(options, Frame.SetContentOptions.class));
   }
 
   @Override
@@ -407,10 +429,5 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public List<Worker> workers() {
     return null;
-  }
-
-  private static <F, T> T convertViaJson(F f, Class<T> t) {
-    String json = new Gson().toJson(f);
-    return new Gson().fromJson(json, t);
   }
 }

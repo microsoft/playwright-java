@@ -19,6 +19,7 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.impl.PlaywrightImpl;
 
 import java.io.IOException;
+import java.util.Map;
 
 public interface Playwright {
   static Playwright create() {
@@ -28,4 +29,6 @@ public interface Playwright {
   BrowserType chromium();
   BrowserType firefox();
   BrowserType webkit();
+
+  Map<String, DeviceDescriptor> devices();
 }

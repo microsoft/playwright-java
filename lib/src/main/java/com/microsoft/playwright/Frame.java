@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public interface Frame {
-  enum LoadState { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+  enum LoadState { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
   class AddScriptTagOptions {
     public String url;
     public String path;
@@ -81,8 +81,6 @@ public interface Frame {
     }
   }
   class ClickOptions {
-    public enum Button { LEFT, MIDDLE, RIGHT}
-    public enum Modifier { ALT, CONTROL, META, SHIFT}
     public class Position {
       public int x;
       public int y;
@@ -102,16 +100,16 @@ public interface Frame {
         return this;
       }
     }
-    public Button button;
+    public Mouse.Button button;
     public Integer clickCount;
     public Integer delay;
     public Position position;
-    public Set<Modifier> modifiers;
+    public Set<Keyboard.Modifier> modifiers;
     public Boolean force;
     public Boolean noWaitAfter;
     public Integer timeout;
 
-    public ClickOptions withButton(Button button) {
+    public ClickOptions withButton(Mouse.Button button) {
       this.button = button;
       return this;
     }
@@ -127,7 +125,7 @@ public interface Frame {
       this.position = new Position();
       return this.position;
     }
-    public ClickOptions withModifiers(Set<Modifier> modifiers) {
+    public ClickOptions withModifiers(Set<Keyboard.Modifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
@@ -145,8 +143,6 @@ public interface Frame {
     }
   }
   class DblclickOptions {
-    public enum Button { LEFT, MIDDLE, RIGHT}
-    public enum Modifier { ALT, CONTROL, META, SHIFT}
     public class Position {
       public int x;
       public int y;
@@ -166,15 +162,15 @@ public interface Frame {
         return this;
       }
     }
-    public Button button;
+    public Mouse.Button button;
     public Integer delay;
     public Position position;
-    public Set<Modifier> modifiers;
+    public Set<Keyboard.Modifier> modifiers;
     public Boolean force;
     public Boolean noWaitAfter;
     public Integer timeout;
 
-    public DblclickOptions withButton(Button button) {
+    public DblclickOptions withButton(Mouse.Button button) {
       this.button = button;
       return this;
     }
@@ -186,7 +182,7 @@ public interface Frame {
       this.position = new Position();
       return this.position;
     }
-    public DblclickOptions withModifiers(Set<Modifier> modifiers) {
+    public DblclickOptions withModifiers(Set<Keyboard.Modifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
@@ -241,7 +237,7 @@ public interface Frame {
     }
   }
   class NavigateOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
     public WaitUntil waitUntil;
     public String referer;
@@ -260,7 +256,6 @@ public interface Frame {
     }
   }
   class HoverOptions {
-    public enum Modifier { ALT, CONTROL, META, SHIFT}
     public class Position {
       public int x;
       public int y;
@@ -281,7 +276,7 @@ public interface Frame {
       }
     }
     public Position position;
-    public Set<Modifier> modifiers;
+    public Set<Keyboard.Modifier> modifiers;
     public Boolean force;
     public Integer timeout;
 
@@ -289,7 +284,7 @@ public interface Frame {
       this.position = new Position();
       return this.position;
     }
-    public HoverOptions withModifiers(Set<Modifier> modifiers) {
+    public HoverOptions withModifiers(Set<Keyboard.Modifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
@@ -350,7 +345,7 @@ public interface Frame {
     }
   }
   class SetContentOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
     public WaitUntil waitUntil;
 
@@ -442,7 +437,7 @@ public interface Frame {
     }
   }
   class WaitForNavigationOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
     public String url;
     public WaitUntil waitUntil;
@@ -461,7 +456,7 @@ public interface Frame {
     }
   }
   class WaitForSelectorOptions {
-    public enum State { ATTACHED, DETACHED, HIDDEN, VISIBLE}
+    public enum State { ATTACHED, DETACHED, HIDDEN, VISIBLE }
     public State state;
     public Integer timeout;
 

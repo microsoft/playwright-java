@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public interface Page {
-  enum LoadState { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+  enum LoadState { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
   class CloseOptions {
     public Boolean runBeforeUnload;
 
@@ -89,8 +89,6 @@ public interface Page {
     }
   }
   class ClickOptions {
-    public enum Button { LEFT, MIDDLE, RIGHT}
-    public enum Modifier { ALT, CONTROL, META, SHIFT}
     public class Position {
       public int x;
       public int y;
@@ -110,16 +108,16 @@ public interface Page {
         return this;
       }
     }
-    public Button button;
+    public Mouse.Button button;
     public Integer clickCount;
     public Integer delay;
     public Position position;
-    public Set<Modifier> modifiers;
+    public Set<Keyboard.Modifier> modifiers;
     public Boolean force;
     public Boolean noWaitAfter;
     public Integer timeout;
 
-    public ClickOptions withButton(Button button) {
+    public ClickOptions withButton(Mouse.Button button) {
       this.button = button;
       return this;
     }
@@ -135,7 +133,7 @@ public interface Page {
       this.position = new Position();
       return this.position;
     }
-    public ClickOptions withModifiers(Set<Modifier> modifiers) {
+    public ClickOptions withModifiers(Set<Keyboard.Modifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
@@ -153,8 +151,6 @@ public interface Page {
     }
   }
   class DblclickOptions {
-    public enum Button { LEFT, MIDDLE, RIGHT}
-    public enum Modifier { ALT, CONTROL, META, SHIFT}
     public class Position {
       public int x;
       public int y;
@@ -174,15 +170,15 @@ public interface Page {
         return this;
       }
     }
-    public Button button;
+    public Mouse.Button button;
     public Integer delay;
     public Position position;
-    public Set<Modifier> modifiers;
+    public Set<Keyboard.Modifier> modifiers;
     public Boolean force;
     public Boolean noWaitAfter;
     public Integer timeout;
 
-    public DblclickOptions withButton(Button button) {
+    public DblclickOptions withButton(Mouse.Button button) {
       this.button = button;
       return this;
     }
@@ -194,7 +190,7 @@ public interface Page {
       this.position = new Position();
       return this.position;
     }
-    public DblclickOptions withModifiers(Set<Modifier> modifiers) {
+    public DblclickOptions withModifiers(Set<Keyboard.Modifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
@@ -220,8 +216,8 @@ public interface Page {
     }
   }
   class EmulateMediaOptions {
-    public enum Media { PRINT, SCREEN}
-    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
+    public enum Media { PRINT, SCREEN }
+    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
     public Media media;
     public ColorScheme colorScheme;
 
@@ -264,7 +260,7 @@ public interface Page {
     }
   }
   class GoBackOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
     public WaitUntil waitUntil;
 
@@ -278,7 +274,7 @@ public interface Page {
     }
   }
   class GoForwardOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
     public WaitUntil waitUntil;
 
@@ -292,7 +288,7 @@ public interface Page {
     }
   }
   class NavigateOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
     public WaitUntil waitUntil;
     public String referer;
@@ -311,7 +307,6 @@ public interface Page {
     }
   }
   class HoverOptions {
-    public enum Modifier { ALT, CONTROL, META, SHIFT}
     public class Position {
       public int x;
       public int y;
@@ -332,7 +327,7 @@ public interface Page {
       }
     }
     public Position position;
-    public Set<Modifier> modifiers;
+    public Set<Keyboard.Modifier> modifiers;
     public Boolean force;
     public Integer timeout;
 
@@ -340,7 +335,7 @@ public interface Page {
       this.position = new Position();
       return this.position;
     }
-    public HoverOptions withModifiers(Set<Modifier> modifiers) {
+    public HoverOptions withModifiers(Set<Keyboard.Modifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
@@ -485,7 +480,7 @@ public interface Page {
     }
   }
   class ReloadOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
     public WaitUntil waitUntil;
 
@@ -499,7 +494,7 @@ public interface Page {
     }
   }
   class ScreenshotOptions {
-    public enum Type { JPEG, PNG}
+    public enum Type { JPEG, PNG }
     public class Clip {
       public int x;
       public int y;
@@ -580,7 +575,7 @@ public interface Page {
     }
   }
   class SetContentOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
     public WaitUntil waitUntil;
 
@@ -696,7 +691,7 @@ public interface Page {
     }
   }
   class WaitForNavigationOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE}
+    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
     public String url;
     public WaitUntil waitUntil;
@@ -731,7 +726,7 @@ public interface Page {
     }
   }
   class WaitForSelectorOptions {
-    public enum State { ATTACHED, DETACHED, HIDDEN, VISIBLE}
+    public enum State { ATTACHED, DETACHED, HIDDEN, VISIBLE }
     public State state;
     public Integer timeout;
 
@@ -761,6 +756,7 @@ public interface Page {
     return evalOnSelectorAll(selector, pageFunction, null);
   }
   Object evalOnSelectorAll(String selector, String pageFunction, Object arg);
+  Accessibility accessibility();
   default void addInitScript(String script) {
     addInitScript(script, null);
   }
@@ -778,6 +774,7 @@ public interface Page {
   void click(String selector, ClickOptions options);
   String content();
   BrowserContext context();
+  ChromiumCoverage coverage();
   default void dblclick(String selector) {
     dblclick(selector, null);
   }
@@ -839,7 +836,9 @@ public interface Page {
   }
   String innerText(String selector, InnerTextOptions options);
   boolean isClosed();
+  Keyboard keyboard();
   Frame mainFrame();
+  Mouse mouse();
   Page opener();
   default byte[] pdf() {
     return pdf(null);

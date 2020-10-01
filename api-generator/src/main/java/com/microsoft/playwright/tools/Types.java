@@ -55,43 +55,43 @@ class Types {
     // Option enums
     add("Browser.newContext.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme");
     add("Browser.newPage.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme");
-    add("Page.click.options.button", "\"left\"|\"middle\"|\"right\"", "Button");
-    add("Page.click.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Modifier>", new ModifierEnum());
-    add("Page.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Button");
-    add("Page.dblclick.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Modifier>", new ModifierEnum());
+    add("Page.click.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
+    add("Page.click.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
+    add("Page.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
+    add("Page.dblclick.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("Page.emulateMedia.options.media", "null|\"print\"|\"screen\"", "Media");
     add("Page.emulateMedia.options.colorScheme", "null|\"dark\"|\"light\"|\"no-preference\"", "ColorScheme");
     add("Page.goBack.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "WaitUntil");
     add("Page.goForward.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "WaitUntil");
     add("Page.goto.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "WaitUntil");
-    add("Page.hover.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Modifier>", new ModifierEnum());
+    add("Page.hover.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("Page.reload.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "WaitUntil");
     add("Page.screenshot.options.type", "\"jpeg\"|\"png\"", "Type");
     add("Page.setContent.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "WaitUntil");
     add("Page.waitForFunction.options.polling", "number|\"raf\"", "double", new PollingOption());
     add("Page.waitForNavigation.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "WaitUntil");
     add("Page.waitForSelector.options.state", "\"attached\"|\"detached\"|\"hidden\"|\"visible\"", "State");
-    add("Frame.click.options.button", "\"left\"|\"middle\"|\"right\"", "Button");
-    add("Frame.click.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Modifier>", new ModifierEnum());
-    add("Frame.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Button");
-    add("Frame.dblclick.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Modifier>", new ModifierEnum());
+    add("Frame.click.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
+    add("Frame.click.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
+    add("Frame.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
+    add("Frame.dblclick.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("Frame.goto.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "WaitUntil");
-    add("Frame.hover.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Modifier>", new ModifierEnum());
+    add("Frame.hover.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("Frame.setContent.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "WaitUntil");
     add("Frame.waitForFunction.options.polling", "number|\"raf\"", "double", new PollingOption());
     add("Frame.waitForNavigation.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "WaitUntil");
     add("Frame.waitForSelector.options.state", "\"attached\"|\"detached\"|\"hidden\"|\"visible\"", "State");
-    add("ElementHandle.click.options.button", "\"left\"|\"middle\"|\"right\"", "Button");
-    add("ElementHandle.click.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Modifier>", new ModifierEnum());
-    add("ElementHandle.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Button");
-    add("ElementHandle.dblclick.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Modifier>", new ModifierEnum());
-    add("ElementHandle.hover.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Modifier>", new ModifierEnum());
+    add("ElementHandle.click.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
+    add("ElementHandle.click.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
+    add("ElementHandle.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
+    add("ElementHandle.dblclick.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
+    add("ElementHandle.hover.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("ElementHandle.screenshot.options.type", "\"jpeg\"|\"png\"", "Type");
     add("ElementHandle.waitForSelector.options.state", "\"attached\"|\"detached\"|\"hidden\"|\"visible\"", "State");
-    add("Mouse.click.options.button", "\"left\"|\"middle\"|\"right\"", "Button");
-    add("Mouse.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Button");
-    add("Mouse.down.options.button", "\"left\"|\"middle\"|\"right\"", "Button");
-    add("Mouse.up.options.button", "\"left\"|\"middle\"|\"right\"", "Button");
+    add("Mouse.click.options.button", "\"left\"|\"middle\"|\"right\"", "Button", new Empty());
+    add("Mouse.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Button", new Empty());
+    add("Mouse.down.options.button", "\"left\"|\"middle\"|\"right\"", "Button", new Empty());
+    add("Mouse.up.options.button", "\"left\"|\"middle\"|\"right\"", "Button", new Empty());
     add("BrowserType.launchPersistentContext.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme");
     add("ChromiumBrowser.newContext.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme");
     add("ChromiumBrowser.newPage.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme");
@@ -247,6 +247,10 @@ class Types {
     add("ChromiumBrowserContext.setHTTPCredentials.httpCredentials", "null|Object", "HTTPCredentials");
     add("Page.setViewportSize.viewportSize", "Object", "ViewportSize");
 
+    // Single field options
+    add("Keyboard.type.options", "Object", "int", new Empty());
+    add("Keyboard.press.options", "Object", "int", new Empty());
+
     // node.js types
     add("BrowserServer.process", "ChildProcess", "Object");
 
@@ -289,13 +293,6 @@ class Types {
 
   private void add(String jsonPath, String fromType, String toType, CustomMapping factory) {
     jsonPathToMapping.put(jsonPath, new Mapping(fromType, toType, factory));
-  }
-
-  private static class ModifierEnum implements CustomMapping {
-    @Override
-    public void defineTypesIn(TypeDefinition scope) {
-      scope.addEnum(new Enum(scope, "Modifier", "\"Alt\"|\"Control\"|\"Meta\"|\"Shift\""));
-    }
   }
 
   private static class PollingOption implements CustomMapping {

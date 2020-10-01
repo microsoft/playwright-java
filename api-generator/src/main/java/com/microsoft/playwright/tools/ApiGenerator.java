@@ -346,7 +346,7 @@ class Method extends Element {
     if (argList.length() > 0) {
       argList.append(", ");
     }
-    argList.append("null");
+    argList.append("int".equals(params.get(paramCount).type.toJava()) ? "0" : "null");
     String returns = returnType.toJava().equals("void") ? "" : "return ";
     output.add(offset + "default " + returnType.toJava() + " " + name + "(" + paramList + ") {");
     output.add(offset + "  " + returns + name + "(" + argList + ");");
@@ -357,6 +357,12 @@ class Method extends Element {
 class Param extends Element {
   final TypeRef type;
 
+  private static Map<String, String> customName = new HashMap<>();
+  static {
+    customName.put("Keyboard.type.options", "delay");
+    customName.put("Keyboard.press.options", "delay");
+  }
+
   Param(Method method, JsonObject jsonElement) {
     super(method, jsonElement);
     type = new TypeRef(this, jsonElement.get("type").getAsJsonObject());
@@ -366,8 +372,16 @@ class Param extends Element {
     return !jsonElement.getAsJsonObject().get("required").getAsBoolean();
   }
 
+  private String name() {
+    String name = customName.get(jsonPath);
+    if (name != null) {
+      return name;
+    }
+    return jsonName;
+  }
+
   String toJava() {
-    return type.toJava() + " " + jsonName;
+    return type.toJava() + " " + name();
   }
 }
 
@@ -427,6 +441,10 @@ class Interface extends TypeDefinition {
       if ("method".equals(kind)) {
         methods.add(new Method(this, json));
       }
+      // All properties are converted to methods in Java.
+      if ("property".equals(kind)) {
+        methods.add(new Method(this, json));
+      }
       if ("event".equals(kind)) {
         events.add(new Event(this, json));
       }
@@ -439,15 +457,32 @@ class Interface extends TypeDefinition {
     output.add("import java.util.function.BiConsumer;");
     output.add("");
     output.add("public interface " + jsonName + " {");
-    super.writeTo(output, offset + "  ");
+    offset = "  ";
+    writeSharedTypes(output, offset);
+    super.writeTo(output, offset);
     for (Event e : events) {
-      e.writeTo(output, offset + "  ");
+      e.writeTo(output, offset);
     }
     for (Method m : methods) {
-      m.writeTo(output, offset + "  ");
+      m.writeTo(output, offset);
     }
     output.add("}");
     output.add("\n");
+  }
+
+  void writeSharedTypes(List<String> output, String offset) {
+    switch (jsonName) {
+      case "Mouse": {
+        output.add(offset + "enum Button { LEFT, MIDDLE, RIGHT }");
+        break;
+      }
+      case "Keyboard": {
+        output.add(offset + "enum Modifier { ALT, CONTROL, META, SHIFT }");
+        break;
+      }
+      default: return;
+    }
+    output.add("");
   }
 }
 
@@ -528,7 +563,7 @@ class Enum extends TypeDefinition {
 
   void writeTo(List<String> output, String offset) {
     String access = parent.typeScope() instanceof NestedClass ? "public " : "";
-    output.add(offset + access + "enum " + name + " { " + String.join(", ", enumValues) + "}");
+    output.add(offset + access + "enum " + name + " { " + String.join(", ", enumValues) + " }");
   }
 }
 

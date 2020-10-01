@@ -21,7 +21,7 @@ import java.util.function.BiConsumer;
 
 public interface WebKitBrowser {
   class NewContextOptions {
-    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
+    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
     public class Viewport {
       public int width;
       public int height;
@@ -216,7 +216,7 @@ public interface WebKitBrowser {
     }
   }
   class NewPageOptions {
-    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
+    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
     public class Viewport {
       public int width;
       public int height;

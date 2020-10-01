@@ -39,7 +39,7 @@ public interface ChromiumBrowser {
     }
   }
   class NewContextOptions {
-    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
+    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
     public class Viewport {
       public int width;
       public int height;
@@ -234,7 +234,7 @@ public interface ChromiumBrowser {
     }
   }
   class NewPageOptions {
-    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE}
+    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
     public class Viewport {
       public int width;
       public int height;
