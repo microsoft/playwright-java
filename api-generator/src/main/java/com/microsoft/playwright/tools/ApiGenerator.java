@@ -263,7 +263,8 @@ class Event extends Element {
 
   void writeTo(List<String> output, String offset) {
     // TODO: only whitelisted events are generated for now as the API may change.
-    if (!"Page.console".equals(jsonPath) &&
+    if (!"BrowserContext.page".equals(jsonPath) &&
+        !"Page.console".equals(jsonPath) &&
         !"Page.popup".equals(jsonPath)) {
       return;
     }

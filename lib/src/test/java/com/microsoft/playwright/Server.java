@@ -16,17 +16,19 @@
 
 package com.microsoft.playwright;
 
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.*;
 import java.net.InetSocketAddress;
-import java.net.URI;
 import java.nio.file.FileSystems;
-import java.nio.file.spi.FileTypeDetector;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
+import static java.util.Collections.checkedCollection;
 import static java.util.Collections.singletonList;
 
 public class Server implements HttpHandler {
@@ -39,6 +41,8 @@ public class Server implements HttpHandler {
   public final int PORT;
   public final String EMPTY_PAGE;
   private final File resourcesDir;
+
+  private final Map<String, CompletableFuture<Request>> requestSubscribers = Collections.synchronizedMap(new HashMap<>());
 
   Server(int port) throws IOException {
     PORT = port;
@@ -59,9 +63,29 @@ public class Server implements HttpHandler {
     server.stop(0);
   }
 
+
+  public static class Request {
+    // TODO: make a copy to ensure thread safety
+    public final Headers headers;
+
+    public Request(Headers headers) {
+      this.headers = headers;
+    }
+  }
+
+  Future<Request> waitForRequest(String path) {
+    CompletableFuture<Request> future = requestSubscribers.get(path);
+    if (future == null) {
+      future = new CompletableFuture<>();
+      requestSubscribers.put(path, future);
+    }
+    return future;
+  }
+
   @Override
   public void handle(HttpExchange exchange) throws IOException {
-    File file = new File(resourcesDir, exchange.getRequestURI().getPath().substring(1));
+    String path = exchange.getRequestURI().getPath();
+    File file = new File(resourcesDir, path.substring(1));
     exchange.getResponseHeaders().put("Content-Type", singletonList(mimeType(file)));
     try (FileInputStream input = new FileInputStream(file)) {
       exchange.sendResponseHeaders(200, 0);
@@ -73,6 +97,14 @@ public class Server implements HttpHandler {
       }
     }
     exchange.getResponseBody().close();
+
+    synchronized (requestSubscribers) {
+      CompletableFuture<Request> subscriber = requestSubscribers.get(path);
+      if (subscriber != null) {
+        requestSubscribers.remove(path);
+        subscriber.complete(new Request(exchange.getRequestHeaders()));
+      }
+    }
   }
 
   private static void copy(InputStream in, OutputStream out) throws IOException {

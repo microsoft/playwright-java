@@ -59,6 +59,7 @@ public interface BrowserContext {
       return this;
     }
   }
+  Deferred<Page> waitForPage();
   void close();
   void addCookies(List<Object> cookies);
   default void addInitScript(String script) {

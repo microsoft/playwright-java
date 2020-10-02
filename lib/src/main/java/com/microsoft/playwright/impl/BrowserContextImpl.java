@@ -137,8 +137,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     return null;
   }
 
-
-  public Supplier<PageImpl> waitForPage() {
+  @Override
+  public Deferred<Page> waitForPage() {
     Supplier<JsonObject> pageSupplier = waitForProtocolEvent("page");
     return () -> {
       JsonObject params = pageSupplier.get();
@@ -146,5 +146,4 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       return connection.getExistingObject(guid);
     };
   }
-
 }

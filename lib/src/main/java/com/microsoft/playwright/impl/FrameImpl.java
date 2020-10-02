@@ -23,14 +23,30 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
 import java.util.*;
+import java.util.function.Supplier;
 
+import static com.microsoft.playwright.Frame.LoadState.*;
 import static com.microsoft.playwright.impl.Helpers.isFunctionBody;
 
 public class FrameImpl extends ChannelOwner implements Frame {
   PageImpl page;
+  private final Set<LoadState> loadStates = new HashSet<>();
 
   FrameImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+
+    for (JsonElement item : initializer.get("loadStates").getAsJsonArray()) {
+      loadStates.add(loadStateFromProtocol(item.getAsString()));
+    }
+  }
+
+  private static LoadState loadStateFromProtocol(String value) {
+    switch (value) {
+      case "load": return LOAD;
+      case "domcontentloaded": return DOMCONTENTLOADED;
+      case "networkidle": return NETWORKIDLE;
+      default: throw new RuntimeException("Unexpected value: " + value);
+    }
   }
 
   private static SerializedValue serializeValue(Object value) {
@@ -425,7 +441,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
-
+    if (state == null) {
+      state = LOAD;
+    }
+    while (!loadStates.contains(state)) {
+      // TODO: support timeout!
+      connection.processOneMessage();
+    }
   }
 
   @Override
@@ -442,4 +464,18 @@ public class FrameImpl extends ChannelOwner implements Frame {
   public void waitForTimeout(int timeout) {
 
   }
+
+  protected void handleEvent(String event, JsonObject params) {
+    if ("loadstate".equals(event)) {
+      JsonElement add = params.get("add");
+      if (add != null) {
+        loadStates.add(loadStateFromProtocol(add.getAsString()));
+      }
+      JsonElement remove = params.get("remove");
+      if (remove != null) {
+        loadStates.remove(loadStateFromProtocol(remove.getAsString()));
+      }
+    }
+  }
+
 }
