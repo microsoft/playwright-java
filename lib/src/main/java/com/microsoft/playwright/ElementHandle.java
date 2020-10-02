@@ -84,8 +84,8 @@ public interface ElementHandle {
       this.position = new Position();
       return this.position;
     }
-    public ClickOptions withModifiers(Set<Keyboard.Modifier> modifiers) {
-      this.modifiers = modifiers;
+    public ClickOptions withModifiers(Keyboard.Modifier... modifiers) {
+      this.modifiers = new HashSet<>(Arrays.asList(modifiers));
       return this;
     }
     public ClickOptions withForce(Boolean force) {
@@ -141,8 +141,8 @@ public interface ElementHandle {
       this.position = new Position();
       return this.position;
     }
-    public DblclickOptions withModifiers(Set<Keyboard.Modifier> modifiers) {
-      this.modifiers = modifiers;
+    public DblclickOptions withModifiers(Keyboard.Modifier... modifiers) {
+      this.modifiers = new HashSet<>(Arrays.asList(modifiers));
       return this;
     }
     public DblclickOptions withForce(Boolean force) {
@@ -200,8 +200,8 @@ public interface ElementHandle {
       this.position = new Position();
       return this.position;
     }
-    public HoverOptions withModifiers(Set<Keyboard.Modifier> modifiers) {
-      this.modifiers = modifiers;
+    public HoverOptions withModifiers(Keyboard.Modifier... modifiers) {
+      this.modifiers = new HashSet<>(Arrays.asList(modifiers));
       return this;
     }
     public HoverOptions withForce(Boolean force) {

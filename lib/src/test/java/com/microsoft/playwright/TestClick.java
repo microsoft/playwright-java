@@ -21,8 +21,11 @@ import org.junit.jupiter.api.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import static com.microsoft.playwright.Keyboard.Modifier.SHIFT;
+import static com.microsoft.playwright.Mouse.Button.RIGHT;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestClick {
@@ -30,6 +33,8 @@ public class TestClick {
   private static Server server;
   private Browser browser;
   private boolean isChromium;
+  private boolean isWebKit;
+  private boolean headful;
   private BrowserContext context;
   private Page page;
 
@@ -55,6 +60,8 @@ public class TestClick {
     BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
     browser = playwright.chromium().launch(options);
     isChromium = true;
+    isWebKit = false;
+    headful = false;
     context = browser.newContext();
     page = context.newPage();
   }
@@ -208,8 +215,10 @@ public class TestClick {
   // TODO: not supported in sync api
   void should_waitFor_display_none_to_be_gone() {
   }
+
   void should_waitFor_visibility_hidden_to_be_gone() {
   }
+
   void should_waitFor_visible_when_parent_is_hidden() {
   }
 
@@ -261,8 +270,8 @@ public class TestClick {
     DeviceDescriptor descriptor = playwright.devices().get("iPhone 6");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewport()
-        .withWidth(descriptor.viewport().width())
-        .withHeight(descriptor.viewport().height())
+      .withWidth(descriptor.viewport().width())
+      .withHeight(descriptor.viewport().height())
       .done()
       .withHasTouch(descriptor.hasTouch()));
     Page page = context.newPage();
@@ -270,5 +279,305 @@ public class TestClick {
     page.mouse().move(100, 10);
     page.mouse().up();
     context.close();
+  }
+
+  @Test
+  void should_scroll_and_click_the_button() {
+    page.navigate(server.PREFIX + "/input/scrollable.html");
+    page.click("#button-5");
+    assertEquals("clicked", page.evaluate("() => document.querySelector('#button-5').textContent"));
+    page.click("#button-80");
+    assertEquals("clicked", page.evaluate("() => document.querySelector('#button-80').textContent"));
+  }
+
+  @Test
+  void should_double_click_the_button() {
+    page.navigate(server.PREFIX + "/input/button.html");
+    page.evaluate("() => {\n" +
+      "  window['double'] = false;\n" +
+      "  const button = document.querySelector('button');\n" +
+      "  button.addEventListener('dblclick', event => {\n" +
+      "    window['double'] = true;\n" +
+      "  });\n" +
+      "}");
+    page.dblclick("button");
+    assertEquals(true, page.evaluate("double"));
+    assertEquals("Clicked", page.evaluate("result"));
+  }
+
+  @Test
+  void should_click_a_partially_obscured_button() {
+    page.navigate(server.PREFIX + "/input/button.html");
+    page.evaluate("() => {\n" +
+      "  const button = document.querySelector('button');\n" +
+      "  button.textContent = 'Some really long text that will go offscreen';\n" +
+      "  button.style.position = 'absolute';\n" +
+      "  button.style.left = '368px';\n" +
+      "}");
+    page.click("button");
+    assertEquals("Clicked", page.evaluate("() => window['result']"));
+  }
+
+  @Test
+  void should_click_a_rotated_button() {
+    page.navigate(server.PREFIX + "/input/rotatedButton.html");
+    page.click("button");
+    assertEquals("Clicked", page.evaluate("result"));
+  }
+
+  @Test
+  void should_fire_contextmenu_event_on_right_click() {
+    page.navigate(server.PREFIX + "/input/scrollable.html");
+    page.click("#button-8", new Page.ClickOptions().withButton(RIGHT));
+    assertEquals("context menu", page.evaluate("() => document.querySelector('#button-8').textContent"));
+  }
+
+  @Test
+  void should_click_links_which_cause_navigation() {
+    // @see https://github.com/GoogleChrome/puppeteer/issues/206
+    page.setContent("<a href=" + server.EMPTY_PAGE + ">empty.html</a>");
+    // This should not hang.
+    page.click("a");
+  }
+
+  // TODO: support element handle
+  void should_click_the_button_inside_an_iframe() {
+  }
+
+  // TODO: do we need it in java?
+  //  void should_click_the_button_with_fixed_position_inside_an_iframe() {
+  //    test.fixme(browserName === "chromium" || browserName === "webkit");
+
+
+  // TODO: support element handle
+  void should_click_the_button_with_deviceScaleFactor_set() {
+  }
+
+  @Test
+  void should_click_the_button_with_px_border_with_offset() {
+    page.navigate(server.PREFIX + "/input/button.html");
+    page.evalOnSelector("button", "button => button.style.borderWidth = '8px'");
+    page.click("button", new Page.ClickOptions().setPosition().withX(20).withY(10).done());
+    assertEquals(page.evaluate("result"), "Clicked");
+    // Safari reports border-relative offsetX/offsetY.
+    assertEquals(isWebKit ? 20 + 8 : 20, page.evaluate("offsetX"));
+    assertEquals(isWebKit ? 10 + 8 : 10, page.evaluate("offsetY"));
+  }
+
+  @Test
+  void should_click_the_button_with_em_border_with_offset() {
+    page.navigate(server.PREFIX + "/input/button.html");
+    page.evalOnSelector("button", "button => button.style.borderWidth = '2em'");
+    page.evalOnSelector("button", "button => button.style.fontSize = '12px'");
+    page.click("button", new Page.ClickOptions().setPosition().withX(20).withY(10).done());
+    assertEquals("Clicked", page.evaluate("result"));
+    // Safari reports border-relative offsetX/offsetY.
+    assertEquals(isWebKit ? 12 * 2 + 20 : 20, page.evaluate("offsetX"));
+    assertEquals(isWebKit ? 12 * 2 + 10 : 10, page.evaluate("offsetY"));
+  }
+
+  @Test
+  void should_click_a_very_large_button_with_offset() {
+    page.navigate(server.PREFIX + "/input/button.html");
+    page.evalOnSelector("button", "button => button.style.borderWidth = '8px'");
+    page.evalOnSelector("button", "button => button.style.height = button.style.width = '2000px'");
+    page.click("button", new Page.ClickOptions().setPosition().withX(1900).withY(1910).done());
+    assertEquals("Clicked", page.evaluate("() => window['result']"));
+    // Safari reports border-relative offsetX/offsetY.
+    assertEquals(isWebKit ? 1900 + 8 : 1900, page.evaluate("offsetX"));
+    assertEquals(isWebKit ? 1910 + 8 : 1910, page.evaluate("offsetY"));
+  }
+
+  @Test
+  void should_click_a_button_in_scrolling_container_with_offset() {
+    page.navigate(server.PREFIX + "/input/button.html");
+    page.evalOnSelector("button", "button => {\n" +
+      "  const container = document.createElement('div');\n" +
+      "  container.style.overflow = 'auto';\n" +
+      "  container.style.width = '200px';\n" +
+      "  container.style.height = '200px';\n" +
+      "  button.parentElement.insertBefore(container, button);\n" +
+      "  container.appendChild(button);\n" +
+      "  button.style.height = '2000px';\n" +
+      "  button.style.width = '2000px';\n" +
+      "  button.style.borderWidth = '8px';\n" +
+      "}");
+    page.click("button", new Page.ClickOptions().setPosition().withX(1900).withY(1910).done());
+    assertEquals("Clicked", page.evaluate("() => window['result']"));
+    // Safari reports border-relative offsetX/offsetY.
+    assertEquals(isWebKit ? 1900 + 8 : 1900, page.evaluate("offsetX"));
+    assertEquals(isWebKit ? 1910 + 8 : 1910, page.evaluate("offsetY"));
+  }
+
+  @Test
+  void should_click_the_button_with_offset_with_page_scale() {
+    // TODO:    test.skip(browserName === "firefox");
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setViewport()
+      .withWidth(400)
+      .withHeight(400)
+      .done()
+      .withIsMobile(true));
+    Page page = context.newPage();
+    page.navigate(server.PREFIX + "/input/button.html");
+    page.evalOnSelector("button", "button => {\n" +
+      "  button.style.borderWidth = '8px';\n" +
+      "  document.body.style.margin = '0';\n" +
+      "}");
+    page.click("button", new Page.ClickOptions().setPosition().withX(20).withY(10).done());
+    assertEquals("Clicked", page.evaluate("result"));
+    // 20;10 + 8px of border in each direction
+    int expectedX = 28;
+    int expectedY = 18;
+    if (isWebKit) {
+      // WebKit rounds up during css -> dip -> css conversion.
+      expectedX = 29;
+      expectedY = 19;
+    } else if (isChromium && !headful) {
+      // Headless Chromium rounds down during css -> dip -> css conversion.
+      expectedX = 27;
+      expectedY = 18;
+    }
+    assertEquals(expectedX, Math.round((Integer) page.evaluate("pageX") + 0.01));
+    assertEquals(expectedY, Math.round((Integer) page.evaluate("pageY") + 0.01));
+    context.close();
+  }
+
+  @Test
+  void should_wait_for_stable_position() {
+    page.navigate(server.PREFIX + "/input/button.html");
+    page.evalOnSelector("button", "button => {\n" +
+      "  button.style.transition = 'margin 500ms linear 0s';\n" +
+      "  button.style.marginLeft = '200px';\n" +
+      "  button.style.borderWidth = '0';\n" +
+      "  button.style.width = '200px';\n" +
+      "  button.style.height = '20px';\n" +
+      "  // Set display to 'block' - otherwise Firefox layouts with non-even\n" +
+      "  // values on Linux.\n" +
+      "  button.style.display = 'block';\n" +
+      "  document.body.style.margin = '0';\n" +
+      "}");
+    page.click("button");
+    assertEquals("Clicked", page.evaluate("result"));
+    assertEquals(300, page.evaluate("pageX"));
+    assertEquals(10, page.evaluate("pageY"));
+  }
+
+  // TODO: not supported in sync api
+  void should_wait_for_becoming_hit_target() {
+  }
+
+  // TODO: support element handle
+  void should_fail_when_obscured_and_not_waiting_for_hit_target() {
+  }
+
+  // TODO: not supported in sync api
+  void should_wait_for_button_to_be_enabled() {
+  }
+
+  void should_wait_for_input_to_be_enabled() {
+  }
+
+  void should_wait_for_select_to_be_enabled() {
+  }
+
+  @Test
+  void should_click_disabled_div() {
+    page.setContent("<div onclick='javascript:window.__CLICKED=true;' disabled>Click target</div>");
+    page.click("text=Click target");
+    assertEquals(true, page.evaluate("__CLICKED"));
+  }
+
+  @Test
+  void should_climb_dom_for_inner_label_with_pointer_events_none() {
+    page.setContent("<button onclick='javascript:window.__CLICKED=true;'><label style='pointer-events:none'>Click target</label></button>");
+    page.click("text=Click target");
+    assertEquals(true, page.evaluate("__CLICKED"));
+  }
+
+  @Test
+  void should_climb_up_to__role_button_() {
+    page.setContent("<div role=button onclick='javascript:window.__CLICKED=true;'><div style='pointer-events:none'><span><div>Click target</div></span></div>");
+    page.click("text=Click target");
+    assertEquals(true, page.evaluate("__CLICKED"));
+  }
+
+  // TODO: not supported in sync api
+  void should_wait_for_BUTTON_to_be_clickable_when_it_has_pointer_events_none() {
+  }
+
+  void should_wait_for_LABEL_to_be_clickable_when_it_has_pointer_events_none() {
+  }
+
+  @Test
+  void should_update_modifiers_correctly() {
+    page.navigate(server.PREFIX + "/input/button.html");
+    page.click("button", new Page.ClickOptions().withModifiers(SHIFT));
+    assertEquals(true, page.evaluate("shiftKey"));
+    page.click("button", new Page.ClickOptions().withModifiers());
+    assertEquals(false, page.evaluate("shiftKey"));
+
+    page.keyboard().down("Shift");
+    page.click("button", new Page.ClickOptions().withModifiers());
+    assertEquals(false, page.evaluate("shiftKey"));
+    page.click("button");
+    assertEquals(true, page.evaluate("shiftKey"));
+    page.keyboard().up("Shift");
+    page.click("button");
+    assertEquals(false, page.evaluate("shiftKey"));
+  }
+
+  @Test
+  void should_click_an_offscreen_element_when_scroll_behavior_is_smooth() {
+    page.setContent(
+      "<div style='border: 1px solid black; height: 500px; overflow: auto; width: 500px; scroll-behavior: smooth'>\n" +
+        "    <button style='margin-top: 2000px' onClick='window.clicked = true'>hi</button>\n" +
+        "    </div>");
+    page.click("button");
+    assertEquals(true, page.evaluate("window.clicked"));
+  }
+
+  // TODO: support element handle
+  void should_report_nice_error_when_element_is_detached_and_force_clicked() {
+  }
+
+  // TODO: not supported in sync api
+  void should_fail_when_element_detaches_after_animation() {
+  }
+  void should_retry_when_element_detaches_after_animation() {
+  }
+  void should_retry_when_element_is_animating_from_outside_the_viewport() {
+  }
+  void should_fail_when_element_is_animating_from_outside_the_viewport_with_force() {
+  }
+  @Test
+  void should_dispatch_microtasks_in_order() {
+    page.setContent(
+      "<button id=button>Click me</button>\n" +
+      "<script>\n" +
+      "  let mutationCount = 0;\n" +
+      "  const observer = new MutationObserver((mutationsList, observer) => {\n" +
+      "    for(let mutation of mutationsList)\n" +
+      "    ++mutationCount;\n" +
+      "  });\n" +
+      "  observer.observe(document.body, { attributes: true, childList: true, subtree: true });\n" +
+      "  button.addEventListener('mousedown', () => {\n" +
+      "    mutationCount = 0;\n" +
+      "    document.body.appendChild(document.createElement('div'));\n" +
+      "  });\n" +
+      "  button.addEventListener('mouseup', () => {\n" +
+      "    window['result'] = mutationCount;\n" +
+      "  });\n" +
+      "</script>");
+    page.click("button");
+    assertEquals(1, page.evaluate("() => window['result']"));
+  }
+
+  @Test
+  void should_click_the_button_when_window_innerWidth_is_corrupted() {
+    page.navigate(server.PREFIX + "/input/button.html");
+    page.evaluate("() => Object.defineProperty(window, 'innerWidth', {value: 0})");
+    page.click("button");
+    assertEquals("Clicked", page.evaluate("result"));
   }
 }

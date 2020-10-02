@@ -163,7 +163,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     params.addProperty("isFunction", isFunctionBody(pageFunction));
     params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
     JsonElement json = sendMessage("evalOnSelector", params);
-//    System.out.println("json = " + new Gson().toJson(json));
     SerializedValue value = new Gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
     return deserialize(value);
   }
@@ -248,7 +247,23 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void dblclick(String selector, DblclickOptions options) {
+    if (options == null) {
+      options = new DblclickOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
 
+    params.remove("button");
+    if (options.button != null) {
+      params.addProperty("button", toProtocol(options.button));
+    }
+
+    params.remove("modifiers");
+    if (options.modifiers != null) {
+      params.add("modifiers", toProtocol(options.modifiers));
+    }
+
+    sendMessage("dblclick", params);
   }
 
   @Override

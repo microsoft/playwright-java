@@ -408,6 +408,23 @@ class Field extends Element {
     output.add(offset + "  return this." + name + ";");
     output.add(offset + "}");
   }
+
+  void writeBuilderMethod(List<String> output, String offset, String parentClass) {
+    if (type.isNestedClass) {
+      output.add(offset + "public " + type.toJava() + " set" + toTitle(name) + "() {");
+      output.add(offset + "  this." + name + " = new " + type.toJava() + "();");
+      output.add(offset + "  return this." + name + ";");
+    } else if ("Set<Keyboard.Modifier>".equals(type.toJava())) {
+      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(Keyboard.Modifier... modifiers) {");
+      output.add(offset + "  this." + name + " = new HashSet<>(Arrays.asList(modifiers));");
+      output.add(offset + "  return this;");
+    } else {
+      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + toJava() + ") {");
+      output.add(offset + "  this." + name + " = " + name + ";");
+      output.add(offset + "  return this;");
+    }
+    output.add(offset + "}");
+  }
 }
 
 class Interface extends TypeDefinition {
@@ -533,16 +550,7 @@ class NestedClass extends TypeDefinition {
       output.add("");
     }
     for (Field f : fields) {
-      if (f.type.isNestedClass) {
-        output.add(bodyOffset + "public " + f.type.toJava() + " set" + toTitle(f.name) + "() {");
-        output.add(bodyOffset + "  this." + f.name + " = new " + f.type.toJava() + "();");
-        output.add(bodyOffset + "  return this." + f.name + ";");
-      } else {
-        output.add(bodyOffset + "public " + name + " with" + toTitle(f.name) + "(" + f.toJava() + ") {");
-        output.add(bodyOffset + "  this." + f.name + " = " + f.name + ";");
-        output.add(bodyOffset + "  return this;");
-      }
-      output.add(bodyOffset + "}");
+      f.writeBuilderMethod(output, bodyOffset, name);
     }
   }
 }

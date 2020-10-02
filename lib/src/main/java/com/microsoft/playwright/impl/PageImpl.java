@@ -178,7 +178,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void dblclick(String selector, DblclickOptions options) {
-
+    mainFrame.dblclick(selector, convertViaJson(options, Frame.DblclickOptions.class));
   }
 
   @Override
