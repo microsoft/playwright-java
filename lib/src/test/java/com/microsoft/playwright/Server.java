@@ -28,7 +28,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
-import static java.util.Collections.checkedCollection;
 import static java.util.Collections.singletonList;
 
 public class Server implements HttpHandler {
@@ -43,6 +42,17 @@ public class Server implements HttpHandler {
   private final File resourcesDir;
 
   private final Map<String, CompletableFuture<Request>> requestSubscribers = Collections.synchronizedMap(new HashMap<>());
+  private final Map<String, Auth> auths = Collections.synchronizedMap(new HashMap<>());
+
+  private static class Auth {
+    public final String user;
+    public final String password;
+
+    private Auth(String user, String password) {
+      this.user = user;
+      this.password = password;
+    }
+  }
 
   Server(int port) throws IOException {
     PORT = port;
@@ -63,9 +73,12 @@ public class Server implements HttpHandler {
     server.stop(0);
   }
 
+  void setAuth(String path, String user, String password) {
+    auths.put(path, new Auth(user, password));
+  }
 
   public static class Request {
-    // TODO: make a copy to ensure thread safety
+    // TODO: make a copy to ensure thread safety?
     public final Headers headers;
 
     public Request(Headers headers) {
@@ -85,6 +98,31 @@ public class Server implements HttpHandler {
   @Override
   public void handle(HttpExchange exchange) throws IOException {
     String path = exchange.getRequestURI().getPath();
+
+    if (auths.containsKey(path)) {
+      List<String> header = exchange.getRequestHeaders().get("authorization");
+      boolean authorized = false;
+      if (header != null) {
+        String v = header.get(0);
+        String[] splits = v.split(" ");
+        if (splits.length == 2) {
+          String credentials = new String(Base64.getDecoder().decode(splits[1]));
+          Auth auth = auths.get(path);
+          authorized = credentials.equals(auth.user + ":" + auth.password);
+        }
+      }
+      if (!authorized) {
+        exchange.getResponseHeaders().put("WWW-Authenticate", Arrays.asList("Basic realm=\"Secure Area\""));
+        exchange.sendResponseHeaders(401, 0);
+        try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
+          writer.write("HTTP Error 401 Unauthorized: Access is denied");
+          // TODO: notify subscriber?
+          exchange.getResponseBody().close();
+        }
+        return;
+      }
+    }
+
     File file = new File(resourcesDir, path.substring(1));
     exchange.getResponseHeaders().put("Content-Type", singletonList(mimeType(file)));
     try (FileInputStream input = new FileInputStream(file)) {

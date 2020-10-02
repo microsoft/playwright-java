@@ -358,7 +358,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public String title() {
-    return null;
+    return mainFrame.title();
   }
 
   @Override

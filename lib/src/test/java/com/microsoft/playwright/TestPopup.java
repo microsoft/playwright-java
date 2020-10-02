@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import static com.microsoft.playwright.Page.LoadState.DOMCONTENTLOADED;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPopup {
@@ -81,7 +82,7 @@ public class TestPopup {
     Deferred<Page> popupPromise = context.waitForPage();
     page.click("a");
     Page popup = popupPromise.get();
-    popup.waitForLoadState(Page.LoadState.DOMCONTENTLOADED);
+    popup.waitForLoadState(DOMCONTENTLOADED);
     String userAgent = (String) popup.evaluate("() => window['initialUserAgent']");
     Server.Request request = requestPromise.get();
     context.close();
@@ -100,7 +101,6 @@ public class TestPopup {
       route.continue_();
       intercepted[0] = true;
     });
-
     Deferred<Page> popup = context.waitForPage();
     page.click("a");
     popup.get();
@@ -111,7 +111,7 @@ public class TestPopup {
 
   @Test
   void should_inherit_extra_headers_from_browser_context() throws ExecutionException, InterruptedException {
-    Map<String, String> headers =  new HashMap<String, String>();
+    Map<String, String> headers = new HashMap<>();
     headers.put("foo", "bar");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().withExtraHTTPHeaders(headers));
     Page page = context.newPage();
@@ -135,5 +135,19 @@ public class TestPopup {
       "}", server.PREFIX + "/dummy.html");
     context.close();
     assertFalse(online);
+  }
+
+  @Test
+  void should_inherit_http_credentials_from_browser_context() {
+    server.setAuth("/title.html", "user", "pass");
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setHttpCredentials().withUsername("user").withPassword("pass").done());
+    Page page = context.newPage();
+    page.navigate(server.EMPTY_PAGE);
+    Deferred<Page> popup = page.waitForPopup();
+    page.evaluate("url => window['_popup'] = window.open(url)", server.PREFIX + "/title.html");
+    popup.get().waitForLoadState(DOMCONTENTLOADED);
+    assertEquals("Woof-Woof", popup.get().title());
+    context.close();
   }
 }

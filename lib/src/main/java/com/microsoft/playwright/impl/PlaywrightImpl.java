@@ -38,7 +38,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       System.out.println("driver = " + driver.getCanonicalPath());
       ProcessBuilder pb = new ProcessBuilder("node", driver.getCanonicalPath());
       pb.redirectError(ProcessBuilder.Redirect.INHERIT);
-//    pb.environment().put("DEBUG", "pw:pro*");
+//      pb.environment().put("DEBUG", "pw:pro*");
       Process p = pb.start();
       Connection connection = new Connection(p.getInputStream(), p.getOutputStream());
       PlaywrightImpl playwright = (PlaywrightImpl)connection.waitForObjectWithKnownName("Playwright");
