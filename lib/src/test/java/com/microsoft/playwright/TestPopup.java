@@ -20,11 +20,13 @@ import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPopup {
   private static Playwright playwright;
@@ -107,4 +109,31 @@ public class TestPopup {
     assertTrue(intercepted[0]);
   }
 
+  @Test
+  void should_inherit_extra_headers_from_browser_context() throws ExecutionException, InterruptedException {
+    Map<String, String> headers =  new HashMap<String, String>();
+    headers.put("foo", "bar");
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withExtraHTTPHeaders(headers));
+    Page page = context.newPage();
+    page.navigate(server.EMPTY_PAGE);
+    Future<Server.Request> requestPromise = server.waitForRequest("/dummy.html");
+    page.evaluate("url => window['_popup'] = window.open(url)", server.PREFIX + "/dummy.html");
+    Server.Request request = requestPromise.get();
+    context.close();
+    assertEquals(Arrays.asList("bar"), request.headers.get("foo"));
+  }
+
+  @Test
+  void should_inherit_offline_from_browser_context() {
+    BrowserContext context = browser.newContext();
+    Page page = context.newPage();
+    page.navigate(server.EMPTY_PAGE);
+    context.setOffline(true);
+    boolean online = (boolean) page.evaluate("url => {\n" +
+      "  const win = window.open(url);\n" +
+      "  return win.navigator.onLine;\n" +
+      "}", server.PREFIX + "/dummy.html");
+    context.close();
+    assertFalse(online);
+  }
 }

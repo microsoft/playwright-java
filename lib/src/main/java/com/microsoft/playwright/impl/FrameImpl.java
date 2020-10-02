@@ -156,7 +156,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     params.addProperty("isFunction", !forceExpression);
     params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
     JsonElement json = sendMessage("evaluateExpression", params);
-//    System.out.println("json = " + new Gson().toJson(json));
     SerializedValue value = new Gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
     return deserialize(value);
   }

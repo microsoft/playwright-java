@@ -17,6 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Browser;
@@ -25,6 +26,7 @@ import com.microsoft.playwright.Deferred;
 import com.microsoft.playwright.Page;
 
 import java.util.List;
+import java.util.Map;
 
 class BrowserImpl extends ChannelOwner implements Browser {
   BrowserImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -46,12 +48,28 @@ class BrowserImpl extends ChannelOwner implements Browser {
     return false;
   }
 
+
+  private static JsonArray toProtocol(Map<String, String> map) {
+    JsonArray array = new JsonArray();
+    for (Map.Entry<String, String> e : map.entrySet()) {
+      JsonObject item = new JsonObject();
+      item.addProperty("name", e.getKey());
+      item.addProperty("value", e.getValue());
+      array.add(item);
+    }
+    return array;
+  }
+
   @Override
   public BrowserContextImpl newContext(NewContextOptions options) {
     if (options == null) {
       options = new NewContextOptions();
     }
     JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    if (options.extraHTTPHeaders != null) {
+      params.remove("extraHTTPHeaders");
+      params.add("extraHTTPHeaders", toProtocol(options.extraHTTPHeaders));
+    }
     JsonElement result = sendMessage("newContext", params);
     return connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("context").get("guid").getAsString());
   }
