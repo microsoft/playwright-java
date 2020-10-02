@@ -20,12 +20,31 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static com.microsoft.playwright.impl.Utils.globToRegex;
 
 class BrowserContextImpl extends ChannelOwner implements BrowserContext {
+  private List<RouteInfo> routes = new ArrayList<>();
+  private class RouteInfo {
+    private String url;
+    private BiConsumer<Route, Request> handler;
+    private final Pattern pattern;
+
+    public RouteInfo(String url, BiConsumer<Route, Request> handler) {
+      this.url = url;
+      this.handler = handler;
+      pattern = Pattern.compile(globToRegex(url));
+    }
+  }
+
   protected BrowserContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
@@ -94,7 +113,12 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void route(String url, BiConsumer<Route, Request> handler) {
-
+    routes.add(new RouteInfo(url, handler));
+    if (routes.size() == 1) {
+      JsonObject params = new JsonObject();
+      params.addProperty("enabled", true);
+      sendMessage("setNetworkInterceptionEnabled", params);
+    }
   }
 
   @Override
@@ -129,7 +153,14 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void unroute(String url, BiConsumer<Route, Request> handler) {
-
+    routes = routes.stream()
+      .filter(info -> !info.url.equals(url) || (handler != null && info.handler != handler))
+      .collect(Collectors.toList());
+    if (routes.isEmpty()) {
+      JsonObject params = new JsonObject();
+      params.addProperty("enabled", false);
+      sendMessage("setNetworkInterceptionEnabled", params);
+    }
   }
 
   @Override
@@ -145,5 +176,19 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       String guid = params.getAsJsonObject("page").get("guid").getAsString();
       return connection.getExistingObject(guid);
     };
+  }
+
+  @Override
+  protected void handleEvent(String event, JsonObject params) {
+    if ("route".equals(event)) {
+      Route route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
+      Request request = connection.getExistingObject(params.getAsJsonObject("request").get("guid").getAsString());
+      for (RouteInfo info : routes) {
+        if (info.pattern.matcher(request.url()).find()) {
+          info.handler.accept(route, request);
+        }
+      }
+      route.continue_();
+    }
   }
 }

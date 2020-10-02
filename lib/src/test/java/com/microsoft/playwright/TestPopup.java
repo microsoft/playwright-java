@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestPopup {
   private static Playwright playwright;
@@ -84,6 +85,26 @@ public class TestPopup {
     context.close();
     assertEquals("hey", userAgent);
     assertEquals(Arrays.asList("hey"), request.headers.get("user-agent"));
+  }
+
+  @Test
+  void should_respect_routes_from_browser_context() {
+    BrowserContext context = browser.newContext();
+    Page page = context.newPage();
+    page.navigate(server.EMPTY_PAGE);
+    page.setContent("<a target=_blank rel=noopener href='empty.html'>link</a>");
+    boolean[] intercepted = {false};
+    context.route("**/empty.html", (route, request) -> {
+      route.continue_();
+      intercepted[0] = true;
+    });
+
+    Deferred<Page> popup = context.waitForPage();
+    page.click("a");
+    popup.get();
+
+    context.close();
+    assertTrue(intercepted[0]);
   }
 
 }

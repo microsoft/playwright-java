@@ -213,6 +213,9 @@ public class Connection {
       case "Response":
         result = new ResponseImpl(parent, type, guid, initializer);
         break;
+      case "Route":
+        result = new RouteImpl(parent, type, guid, initializer);
+        break;
       case "Selectors":
 //        result = new Playwright(parent, type, guid, initializer);
         break;
