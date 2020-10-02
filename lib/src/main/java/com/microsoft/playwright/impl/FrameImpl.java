@@ -416,7 +416,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
   @Override
   public String title() {
     JsonElement json = sendMessage("title", new JsonObject());
-    System.out.println(new Gson().toJson(json));
     return json.getAsJsonObject().get("value").getAsString();
   }
 

@@ -269,10 +269,7 @@ public class TestClick {
     // @see https://github.com/GoogleChrome/puppeteer/issues/161
     DeviceDescriptor descriptor = playwright.devices().get("iPhone 6");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .setViewport()
-      .withWidth(descriptor.viewport().width())
-      .withHeight(descriptor.viewport().height())
-      .done()
+      .withViewport(descriptor.viewport().width(), descriptor.viewport().height())
       .withHasTouch(descriptor.hasTouch()));
     Page page = context.newPage();
     page.mouse().down();
@@ -413,10 +410,7 @@ public class TestClick {
   void should_click_the_button_with_offset_with_page_scale() {
     // TODO:    test.skip(browserName === "firefox");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .setViewport()
-      .withWidth(400)
-      .withHeight(400)
-      .done()
+      .withViewport(400, 400)
       .withIsMobile(true));
     Page page = context.newPage();
     page.navigate(server.PREFIX + "/input/button.html");

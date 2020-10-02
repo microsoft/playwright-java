@@ -88,7 +88,7 @@ public interface ChromiumBrowserContext {
   void setDefaultTimeout(int timeout);
   void setExtraHTTPHeaders(Map<String, String> headers);
   void setGeolocation(Geolocation geolocation);
-  void setHTTPCredentials(HTTPCredentials httpCredentials);
+  void setHTTPCredentials(String username, String password);
   void setOffline(boolean offline);
   default void unroute(String url) {
     unroute(url, null);

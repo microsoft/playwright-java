@@ -108,6 +108,30 @@ class Types {
     add("ChromiumBrowserContext.route.handler", "function(Route, Request)", "BiConsumer<Route, Request>");
     add("ChromiumBrowserContext.unroute.handler", "function(Route, Request)", "BiConsumer<Route, Request>");
 
+    // Viewport size.
+    add("Browser.newContext.options.viewport", "null|Object", "Page.Viewport", new Empty());
+    add("Browser.newPage.options.viewport", "null|Object", "Page.Viewport", new Empty());
+    add("Page.setViewportSize.viewportSize", "Object", "Viewport", new Empty());
+    add("Page.viewportSize", "null|Object", "Viewport", new Empty());
+    add("BrowserType.launchPersistentContext.options.viewport", "null|Object", "Page.Viewport", new Empty());
+    add("ChromiumBrowser.newContext.options.viewport", "null|Object", "Page.Viewport", new Empty());
+    add("ChromiumBrowser.newPage.options.viewport", "null|Object", "Page.Viewport", new Empty());
+    add("FirefoxBrowser.newContext.options.viewport", "null|Object", "Page.Viewport", new Empty());
+    add("FirefoxBrowser.newPage.options.viewport", "null|Object", "Page.Viewport", new Empty());
+    add("WebKitBrowser.newContext.options.viewport", "null|Object", "Page.Viewport", new Empty());
+    add("WebKitBrowser.newPage.options.viewport", "null|Object", "Page.Viewport", new Empty());
+
+    // HTTP credentials.
+    add("Browser.newContext.options.httpCredentials", "Object", "HttpCredentials");
+    add("Browser.newPage.options.httpCredentials", "Object", "HttpCredentials");
+    add("BrowserType.launchPersistentContext.options.httpCredentials", "Object", "HttpCredentials");
+    add("ChromiumBrowser.newContext.options.httpCredentials", "Object", "HttpCredentials");
+    add("ChromiumBrowser.newPage.options.httpCredentials", "Object", "HttpCredentials");
+    add("FirefoxBrowser.newContext.options.httpCredentials", "Object", "HttpCredentials");
+    add("FirefoxBrowser.newPage.options.httpCredentials", "Object", "HttpCredentials");
+    add("WebKitBrowser.newContext.options.httpCredentials", "Object", "HttpCredentials");
+    add("WebKitBrowser.newPage.options.httpCredentials", "Object", "HttpCredentials");
+
     // EvaluationArgument
     add("Page.$eval.arg", "EvaluationArgument", "Object");
     add("Page.$$eval.arg", "EvaluationArgument", "Object");
@@ -245,7 +269,6 @@ class Types {
     add("ChromiumBrowserContext.setGeolocation.geolocation", "null|Object", "Geolocation");
     add("BrowserContext.setHTTPCredentials.httpCredentials", "null|Object", "HTTPCredentials");
     add("ChromiumBrowserContext.setHTTPCredentials.httpCredentials", "null|Object", "HTTPCredentials");
-    add("Page.setViewportSize.viewportSize", "Object", "ViewportSize");
 
     // Single field options
     add("Keyboard.type.options", "Object", "int", new Empty());
@@ -288,6 +311,9 @@ class Types {
   }
 
   private void add(String jsonPath, String fromType, String toType) {
+    if (jsonPathToMapping.containsKey(jsonPath)) {
+      throw new RuntimeException("Duplicate entry: " + jsonPath);
+    }
     jsonPathToMapping.put(jsonPath, new Mapping(fromType, toType));
   }
 

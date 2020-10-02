@@ -20,6 +20,24 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public interface Page {
+  class Viewport {
+    private final int width;
+    private final int height;
+
+    public Viewport(int width, int height) {
+      this.width = width;
+      this.height = height;
+    }
+
+    public int width() {
+      return width;
+    }
+
+    public int height() {
+      return height;
+    }
+  }
+
   enum LoadState { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
   class CloseOptions {
     public Boolean runBeforeUnload;
@@ -601,19 +619,6 @@ public interface Page {
       return this;
     }
   }
-  class ViewportSize {
-    public int width;
-    public int height;
-
-    public ViewportSize withWidth(int width) {
-      this.width = width;
-      return this;
-    }
-    public ViewportSize withHeight(int height) {
-      this.height = height;
-      return this;
-    }
-  }
   class TextContentOptions {
     public Integer timeout;
 
@@ -656,17 +661,6 @@ public interface Page {
     public UncheckOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
-    }
-  }
-  class PageViewportSize {
-    private int width;
-    private int height;
-
-    public int width() {
-      return this.width;
-    }
-    public int height() {
-      return this.height;
     }
   }
   class WaitForFunctionOptions {
@@ -872,7 +866,7 @@ public interface Page {
     setInputFiles(selector, files, null);
   }
   void setInputFiles(String selector, String files, SetInputFilesOptions options);
-  void setViewportSize(ViewportSize viewportSize);
+  void setViewportSize(int width, int height);
   default String textContent(String selector) {
     return textContent(selector, null);
   }
@@ -891,7 +885,7 @@ public interface Page {
   }
   void unroute(String url, BiConsumer<Route, Request> handler);
   String url();
-  PageViewportSize viewportSize();
+  Viewport viewportSize();
   default Object waitForEvent(String event) {
     return waitForEvent(event, null);
   }

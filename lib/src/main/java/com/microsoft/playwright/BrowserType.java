@@ -191,25 +191,6 @@ public interface BrowserType {
         return this;
       }
     }
-    public class Viewport {
-      public int width;
-      public int height;
-
-      Viewport() {
-      }
-      public LaunchPersistentContextOptions done() {
-        return LaunchPersistentContextOptions.this;
-      }
-
-      public Viewport withWidth(int width) {
-        this.width = width;
-        return this;
-      }
-      public Viewport withHeight(int height) {
-        this.height = height;
-        return this;
-      }
-    }
     public class Geolocation {
       public double latitude;
       public double longitude;
@@ -291,7 +272,7 @@ public interface BrowserType {
     public Integer slowMo;
     public Boolean ignoreHTTPSErrors;
     public Boolean bypassCSP;
-    public Viewport viewport;
+    public Page.Viewport viewport;
     public String userAgent;
     public Integer deviceScaleFactor;
     public Boolean isMobile;
@@ -386,9 +367,9 @@ public interface BrowserType {
       this.bypassCSP = bypassCSP;
       return this;
     }
-    public Viewport setViewport() {
-      this.viewport = new Viewport();
-      return this.viewport;
+    public LaunchPersistentContextOptions withViewport(int width, int height) {
+      this.viewport = new Page.Viewport(width, height);
+      return this;
     }
     public LaunchPersistentContextOptions withUserAgent(String userAgent) {
       this.userAgent = userAgent;
@@ -434,9 +415,11 @@ public interface BrowserType {
       this.offline = offline;
       return this;
     }
-    public HttpCredentials setHttpCredentials() {
+    public LaunchPersistentContextOptions withHttpCredentials(String username, String password) {
       this.httpCredentials = new HttpCredentials();
-      return this.httpCredentials;
+      this.httpCredentials.username = username;
+      this.httpCredentials.password = password;
+      return this;
     }
     public LaunchPersistentContextOptions withColorScheme(ColorScheme colorScheme) {
       this.colorScheme = colorScheme;

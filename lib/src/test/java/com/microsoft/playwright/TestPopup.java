@@ -138,7 +138,7 @@ public class TestPopup {
   void should_inherit_http_credentials_from_browser_context() {
     server.setAuth("/title.html", "user", "pass");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .setHttpCredentials().withUsername("user").withPassword("pass").done());
+      .withHttpCredentials("user", "pass"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     Deferred<Page> popup = page.waitForPopup();
@@ -151,7 +151,7 @@ public class TestPopup {
   @Test
   void should_inherit_touch_support_from_browser_context() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .setViewport().withWidth(400).withHeight(500).done()
+      .withViewport(400, 500)
       .withHasTouch(true));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
@@ -166,7 +166,7 @@ public class TestPopup {
   @Test
   void should_inherit_viewport_size_from_browser_context() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .setViewport().withWidth(400).withHeight(500).done());
+      .withViewport(400, 500));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     Object size = page.evaluate("() => {\n" +
@@ -180,7 +180,7 @@ public class TestPopup {
   @Test
   void should_use_viewport_size_from_window_features() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .setViewport().withWidth(700).withHeight(700).done());
+      .withViewport(700, 700));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     Deferred<Page> popupEvent = page.waitForPopup();
@@ -189,7 +189,7 @@ public class TestPopup {
       "  return { width: win.innerWidth, height: win.innerHeight };\n" +
       "}");
     Page popup = popupEvent.get();
-    popup.setViewportSize(new Page.ViewportSize().withWidth(500).withHeight(400));
+    popup.setViewportSize(500, 400);
     popup.waitForLoadState();
     Object resized = popup.evaluate("() => ({ width: window.innerWidth, height: window.innerHeight })");
     context.close();

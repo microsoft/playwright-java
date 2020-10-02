@@ -347,9 +347,12 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void setViewportSize(ViewportSize viewportSize) {
+  public void setViewportSize(int width, int height) {
+    JsonObject size = new JsonObject();
+    size.addProperty("width", width);
+    size.addProperty("height", height);
     JsonObject params = new JsonObject();
-    params.add("viewportSize", new Gson().toJsonTree(viewportSize).getAsJsonObject());
+    params.add("viewportSize", size);
     sendMessage("setViewportSize", params);
   }
 
@@ -384,7 +387,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public PageViewportSize viewportSize() {
+  public Viewport viewportSize() {
     return null;
   }
 

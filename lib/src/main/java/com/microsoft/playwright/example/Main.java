@@ -39,7 +39,7 @@ public class Main {
     System.out.println("browser = " + browser);
 
     Browser.NewContextOptions contextOptions = new Browser.NewContextOptions();
-    contextOptions.setViewport().withWidth(800).withHeight(600);
+    contextOptions.withViewport(800, 600);
     BrowserContext context = browser.newContext(contextOptions);
     Page page = context.newPage();
 //    page.navigate("http://example.com", null);

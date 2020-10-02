@@ -22,25 +22,6 @@ import java.util.function.BiConsumer;
 public interface WebKitBrowser {
   class NewContextOptions {
     public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
-    public class Viewport {
-      public int width;
-      public int height;
-
-      Viewport() {
-      }
-      public NewContextOptions done() {
-        return NewContextOptions.this;
-      }
-
-      public Viewport withWidth(int width) {
-        this.width = width;
-        return this;
-      }
-      public Viewport withHeight(int height) {
-        this.height = height;
-        return this;
-      }
-    }
     public class Geolocation {
       public double latitude;
       public double longitude;
@@ -106,7 +87,7 @@ public interface WebKitBrowser {
     public Boolean acceptDownloads;
     public Boolean ignoreHTTPSErrors;
     public Boolean bypassCSP;
-    public Viewport viewport;
+    public Page.Viewport viewport;
     public String userAgent;
     public Integer deviceScaleFactor;
     public Boolean isMobile;
@@ -138,9 +119,9 @@ public interface WebKitBrowser {
       this.bypassCSP = bypassCSP;
       return this;
     }
-    public Viewport setViewport() {
-      this.viewport = new Viewport();
-      return this.viewport;
+    public NewContextOptions withViewport(int width, int height) {
+      this.viewport = new Page.Viewport(width, height);
+      return this;
     }
     public NewContextOptions withUserAgent(String userAgent) {
       this.userAgent = userAgent;
@@ -186,9 +167,11 @@ public interface WebKitBrowser {
       this.offline = offline;
       return this;
     }
-    public HttpCredentials setHttpCredentials() {
+    public NewContextOptions withHttpCredentials(String username, String password) {
       this.httpCredentials = new HttpCredentials();
-      return this.httpCredentials;
+      this.httpCredentials.username = username;
+      this.httpCredentials.password = password;
+      return this;
     }
     public NewContextOptions withColorScheme(ColorScheme colorScheme) {
       this.colorScheme = colorScheme;
@@ -217,25 +200,6 @@ public interface WebKitBrowser {
   }
   class NewPageOptions {
     public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
-    public class Viewport {
-      public int width;
-      public int height;
-
-      Viewport() {
-      }
-      public NewPageOptions done() {
-        return NewPageOptions.this;
-      }
-
-      public Viewport withWidth(int width) {
-        this.width = width;
-        return this;
-      }
-      public Viewport withHeight(int height) {
-        this.height = height;
-        return this;
-      }
-    }
     public class Geolocation {
       public double latitude;
       public double longitude;
@@ -301,7 +265,7 @@ public interface WebKitBrowser {
     public Boolean acceptDownloads;
     public Boolean ignoreHTTPSErrors;
     public Boolean bypassCSP;
-    public Viewport viewport;
+    public Page.Viewport viewport;
     public String userAgent;
     public Integer deviceScaleFactor;
     public Boolean isMobile;
@@ -333,9 +297,9 @@ public interface WebKitBrowser {
       this.bypassCSP = bypassCSP;
       return this;
     }
-    public Viewport setViewport() {
-      this.viewport = new Viewport();
-      return this.viewport;
+    public NewPageOptions withViewport(int width, int height) {
+      this.viewport = new Page.Viewport(width, height);
+      return this;
     }
     public NewPageOptions withUserAgent(String userAgent) {
       this.userAgent = userAgent;
@@ -381,9 +345,11 @@ public interface WebKitBrowser {
       this.offline = offline;
       return this;
     }
-    public HttpCredentials setHttpCredentials() {
+    public NewPageOptions withHttpCredentials(String username, String password) {
       this.httpCredentials = new HttpCredentials();
-      return this.httpCredentials;
+      this.httpCredentials.username = username;
+      this.httpCredentials.password = password;
+      return this;
     }
     public NewPageOptions withColorScheme(ColorScheme colorScheme) {
       this.colorScheme = colorScheme;

@@ -142,7 +142,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void setHTTPCredentials(HTTPCredentials httpCredentials) {
+  public void setHTTPCredentials(String username, String password) {
 
   }
 

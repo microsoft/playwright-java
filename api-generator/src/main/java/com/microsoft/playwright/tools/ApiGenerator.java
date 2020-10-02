@@ -128,9 +128,6 @@ class TypeRef extends Element {
     if (jsonName.replace("null|", "").contains("|")) {
       throw new RuntimeException("Missing mapping for type union: " + jsonPath + ": " + jsonName);
     }
-//    if (jsonPath.contains("geolocation")) {
-//      System.out.println(jsonPath + ": " + jsonName);
-//    }
     return convertBuiltinType(stripPromise(jsonName));
   }
 
@@ -299,6 +296,13 @@ class Method extends Element {
     tsToJavaMethodName.put("goto", "navigate");
   }
 
+  private static Map<String, String> customSignature = new HashMap<>();
+  static {
+    customSignature.put("Page.setViewportSize", "void setViewportSize(int width, int height);");
+    customSignature.put("BrowserContext.setHTTPCredentials", "void setHTTPCredentials(String username, String password);");
+    customSignature.put("ChromiumBrowserContext.setHTTPCredentials", "void setHTTPCredentials(String username, String password);");
+  }
+
   Method(TypeDefinition parent, JsonObject jsonElement) {
     super(parent, jsonElement);
     returnType = new TypeRef(this, jsonElement.get("type"));
@@ -322,6 +326,10 @@ class Method extends Element {
   }
 
   void writeTo(List<String> output, String offset) {
+    if (customSignature.containsKey(jsonPath)) {
+      output.add(offset + customSignature.get(jsonPath));
+      return;
+    }
     for (int i = params.size() - 1; i >= 0; i--) {
       Param p = params.get(i);
       if (!p.isOptional()) {
@@ -411,10 +419,20 @@ class Field extends Element {
   }
 
   void writeBuilderMethod(List<String> output, String offset, String parentClass) {
-    if (type.isNestedClass) {
+    if (name.equals("httpCredentials") && type.toJava().equals("HttpCredentials")) {
+      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(String username, String password) {");
+      output.add(offset + "  this." + name + " = new " + type.toJava() + "();");
+      output.add(offset + "  this." + name + ".username = username;");
+      output.add(offset + "  this." + name + ".password = password;");
+      output.add(offset + "  return this;");
+    } else if (type.isNestedClass) {
       output.add(offset + "public " + type.toJava() + " set" + toTitle(name) + "() {");
       output.add(offset + "  this." + name + " = new " + type.toJava() + "();");
       output.add(offset + "  return this." + name + ";");
+    } else if ("Page.Viewport".equals(type.toJava()) || "Viewport".equals(type.toJava())) {
+      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(int width, int height) {");
+      output.add(offset + "  this." + name + " = new " + type.toJava() + "(width, height);");
+      output.add(offset + "  return this;");
     } else if ("Set<Keyboard.Modifier>".equals(type.toJava())) {
       output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(Keyboard.Modifier... modifiers) {");
       output.add(offset + "  this." + name + " = new HashSet<>(Arrays.asList(modifiers));");
@@ -496,6 +514,26 @@ class Interface extends TypeDefinition {
       }
       case "Keyboard": {
         output.add(offset + "enum Modifier { ALT, CONTROL, META, SHIFT }");
+        break;
+      }
+      case "Page": {
+        output.add(offset + "class Viewport {");
+        output.add(offset + "  private final int width;");
+        output.add(offset + "  private final int height;");
+        output.add("");
+        output.add(offset + "  public Viewport(int width, int height) {");
+        output.add(offset + "    this.width = width;");
+        output.add(offset + "    this.height = height;");
+        output.add(offset + "  }");
+        output.add("");
+        output.add(offset + "  public int width() {");
+        output.add(offset + "    return width;");
+        output.add(offset + "  }");
+        output.add("");
+        output.add(offset + "  public int height() {");
+        output.add(offset + "    return height;");
+        output.add(offset + "  }");
+        output.add(offset + "}");
         break;
       }
       default: return;
