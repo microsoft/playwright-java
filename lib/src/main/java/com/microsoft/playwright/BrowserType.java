@@ -215,25 +215,6 @@ public interface BrowserType {
         return this;
       }
     }
-    public class HttpCredentials {
-      public String username;
-      public String password;
-
-      HttpCredentials() {
-      }
-      public LaunchPersistentContextOptions done() {
-        return LaunchPersistentContextOptions.this;
-      }
-
-      public HttpCredentials withUsername(String username) {
-        this.username = username;
-        return this;
-      }
-      public HttpCredentials withPassword(String password) {
-        this.password = password;
-        return this;
-      }
-    }
     public class VideoSize {
       public int width;
       public int height;
@@ -284,7 +265,7 @@ public interface BrowserType {
     public List<String> permissions;
     public Map<String, String> extraHTTPHeaders;
     public Boolean offline;
-    public HttpCredentials httpCredentials;
+    public BrowserContext.HTTPCredentials httpCredentials;
     public ColorScheme colorScheme;
     public String relativeArtifactsPath;
     public Boolean recordVideos;
@@ -416,9 +397,7 @@ public interface BrowserType {
       return this;
     }
     public LaunchPersistentContextOptions withHttpCredentials(String username, String password) {
-      this.httpCredentials = new HttpCredentials();
-      this.httpCredentials.username = username;
-      this.httpCredentials.password = password;
+      this.httpCredentials = new BrowserContext.HTTPCredentials(username, password);
       return this;
     }
     public LaunchPersistentContextOptions withColorScheme(ColorScheme colorScheme) {

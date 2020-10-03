@@ -300,7 +300,6 @@ class Method extends Element {
   static {
     customSignature.put("Page.setViewportSize", "void setViewportSize(int width, int height);");
     customSignature.put("BrowserContext.setHTTPCredentials", "void setHTTPCredentials(String username, String password);");
-    customSignature.put("ChromiumBrowserContext.setHTTPCredentials", "void setHTTPCredentials(String username, String password);");
   }
 
   Method(TypeDefinition parent, JsonObject jsonElement) {
@@ -419,11 +418,9 @@ class Field extends Element {
   }
 
   void writeBuilderMethod(List<String> output, String offset, String parentClass) {
-    if (name.equals("httpCredentials") && type.toJava().equals("HttpCredentials")) {
+    if (name.equals("httpCredentials")) {
       output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(String username, String password) {");
-      output.add(offset + "  this." + name + " = new " + type.toJava() + "();");
-      output.add(offset + "  this." + name + ".username = username;");
-      output.add(offset + "  this." + name + ".password = password;");
+      output.add(offset + "  this." + name + " = new " + type.toJava() + "(username, password);");
       output.add(offset + "  return this;");
     } else if (type.isNestedClass) {
       output.add(offset + "public " + type.toJava() + " set" + toTitle(name) + "() {");
@@ -532,6 +529,26 @@ class Interface extends TypeDefinition {
         output.add("");
         output.add(offset + "  public int height() {");
         output.add(offset + "    return height;");
+        output.add(offset + "  }");
+        output.add(offset + "}");
+        break;
+      }
+      case "BrowserContext": {
+        output.add(offset + "class HTTPCredentials {");
+        output.add(offset + "  private final String username;");
+        output.add(offset + "  private final String password;");
+        output.add("");
+        output.add(offset + "  public HTTPCredentials(String username, String password) {");
+        output.add(offset + "    this.username = username;");
+        output.add(offset + "    this.password = password;");
+        output.add(offset + "  }");
+        output.add("");
+        output.add(offset + "  public String username() {");
+        output.add(offset + "    return username;");
+        output.add(offset + "  }");
+        output.add("");
+        output.add(offset + "  public String password() {");
+        output.add(offset + "    return password;");
         output.add(offset + "  }");
         output.add(offset + "}");
         break;

@@ -20,6 +20,24 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public interface BrowserContext {
+  class HTTPCredentials {
+    private final String username;
+    private final String password;
+
+    public HTTPCredentials(String username, String password) {
+      this.username = username;
+      this.password = password;
+    }
+
+    public String username() {
+      return username;
+    }
+
+    public String password() {
+      return password;
+    }
+  }
+
   class GrantPermissionsOptions {
     public String origin;
 
@@ -43,19 +61,6 @@ public interface BrowserContext {
     }
     public Geolocation withAccuracy(Integer accuracy) {
       this.accuracy = accuracy;
-      return this;
-    }
-  }
-  class HTTPCredentials {
-    public String username;
-    public String password;
-
-    public HTTPCredentials withUsername(String username) {
-      this.username = username;
-      return this;
-    }
-    public HTTPCredentials withPassword(String password) {
-      this.password = password;
       return this;
     }
   }

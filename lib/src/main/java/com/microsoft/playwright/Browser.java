@@ -46,25 +46,6 @@ public interface Browser {
         return this;
       }
     }
-    public class HttpCredentials {
-      public String username;
-      public String password;
-
-      HttpCredentials() {
-      }
-      public NewContextOptions done() {
-        return NewContextOptions.this;
-      }
-
-      public HttpCredentials withUsername(String username) {
-        this.username = username;
-        return this;
-      }
-      public HttpCredentials withPassword(String password) {
-        this.password = password;
-        return this;
-      }
-    }
     public class VideoSize {
       public int width;
       public int height;
@@ -99,7 +80,7 @@ public interface Browser {
     public List<String> permissions;
     public Map<String, String> extraHTTPHeaders;
     public Boolean offline;
-    public HttpCredentials httpCredentials;
+    public BrowserContext.HTTPCredentials httpCredentials;
     public ColorScheme colorScheme;
     public Logger logger;
     public String relativeArtifactsPath;
@@ -168,9 +149,7 @@ public interface Browser {
       return this;
     }
     public NewContextOptions withHttpCredentials(String username, String password) {
-      this.httpCredentials = new HttpCredentials();
-      this.httpCredentials.username = username;
-      this.httpCredentials.password = password;
+      this.httpCredentials = new BrowserContext.HTTPCredentials(username, password);
       return this;
     }
     public NewContextOptions withColorScheme(ColorScheme colorScheme) {
@@ -224,25 +203,6 @@ public interface Browser {
         return this;
       }
     }
-    public class HttpCredentials {
-      public String username;
-      public String password;
-
-      HttpCredentials() {
-      }
-      public NewPageOptions done() {
-        return NewPageOptions.this;
-      }
-
-      public HttpCredentials withUsername(String username) {
-        this.username = username;
-        return this;
-      }
-      public HttpCredentials withPassword(String password) {
-        this.password = password;
-        return this;
-      }
-    }
     public class VideoSize {
       public int width;
       public int height;
@@ -277,7 +237,7 @@ public interface Browser {
     public List<String> permissions;
     public Map<String, String> extraHTTPHeaders;
     public Boolean offline;
-    public HttpCredentials httpCredentials;
+    public BrowserContext.HTTPCredentials httpCredentials;
     public ColorScheme colorScheme;
     public Logger logger;
     public String relativeArtifactsPath;
@@ -346,9 +306,7 @@ public interface Browser {
       return this;
     }
     public NewPageOptions withHttpCredentials(String username, String password) {
-      this.httpCredentials = new HttpCredentials();
-      this.httpCredentials.username = username;
-      this.httpCredentials.password = password;
+      this.httpCredentials = new BrowserContext.HTTPCredentials(username, password);
       return this;
     }
     public NewPageOptions withColorScheme(ColorScheme colorScheme) {
