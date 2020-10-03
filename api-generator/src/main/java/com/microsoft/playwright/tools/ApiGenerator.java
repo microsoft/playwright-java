@@ -550,9 +550,11 @@ class NestedClass extends TypeDefinition {
     super(parent, true, jsonElement);
     this.name = name;
 
-    JsonObject properties = jsonElement.get("properties").getAsJsonObject();
-    for (Map.Entry<String, JsonElement> m : properties.entrySet()) {
-      fields.add(new Field(this, m.getKey(), m.getValue().getAsJsonObject()));
+    if (jsonElement.has("properties")) {
+      JsonObject properties = jsonElement.get("properties").getAsJsonObject();
+      for (Map.Entry<String, JsonElement> m : properties.entrySet()) {
+        fields.add(new Field(this, m.getKey(), m.getValue().getAsJsonObject()));
+      }
     }
   }
 
