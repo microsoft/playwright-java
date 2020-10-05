@@ -49,10 +49,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
   }
 
-  public <T> T evalTyped(String expression) {
-    return (T) evaluate(expression, null, false);
-  }
-
   private Object evaluate(String expression, Object arg, boolean forceExpression) {
     JsonObject params = new JsonObject();
     params.addProperty("expression", expression);

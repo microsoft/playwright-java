@@ -749,6 +749,8 @@ public interface Page {
   }
   void addConsoleListener(Listener<ConsoleMessage> listener);
   void removeConsoleListener(Listener<ConsoleMessage> listener);
+  void addDialogListener(Listener<Dialog> listener);
+  void removeDialogListener(Listener<Dialog> listener);
   Deferred<Page> waitForPopup();
   default void close() {
     close(null);

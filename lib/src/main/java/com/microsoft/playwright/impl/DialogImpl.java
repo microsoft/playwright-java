@@ -17,13 +17,15 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.Dialog;
 
-public class DialogImpl extends ChannelOwner {
+public class DialogImpl extends ChannelOwner implements Dialog {
   private boolean handled;
   DialogImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 
+  @Override
   public void accept(String promptText) {
     handled = true;
     JsonObject params = new JsonObject();
@@ -32,20 +34,24 @@ public class DialogImpl extends ChannelOwner {
     sendMessageNoWait("accept", params);
   }
 
+  @Override
   public void dismiss() {
     handled = true;
     sendMessageNoWait("dismiss", new JsonObject());
   }
 
+  @Override
   public String defaultValue() {
     return initializer.get("defaultValue").getAsString();
   }
 
+  @Override
   public String message() {
     return initializer.get("message").getAsString();
   }
 
-//  public enum Type { Alert, BeforeUnload, Confirm, Prompt }
+  //  public enum Type { Alert, BeforeUnload, Confirm, Prompt }
+  @Override
   public String type() {
      return initializer.get("type").getAsString();
   }

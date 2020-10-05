@@ -35,8 +35,8 @@ public class PageImpl extends ChannelOwner implements Page {
   private final FrameImpl mainFrame;
   private final KeyboardImpl keyboard;
   private final MouseImpl mouse;
-  private final List<DialogHandler> dialogHandlers = new ArrayList<>();
   private final List<Listener<ConsoleMessage>> consoleListeners = new ArrayList<>();
+  private final List<Listener<Dialog>> dialogListeners = new ArrayList<>();
   final Map<String, Binding> bindings = new HashMap<String, Binding>();
   BrowserContextImpl ownedContext;
 
@@ -60,6 +60,16 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public void addDialogListener(Listener<Dialog> listener) {
+    dialogListeners.add(listener);
+  }
+
+  @Override
+  public void removeDialogListener(Listener<Dialog> listener) {
+    dialogListeners.remove(listener);
+  }
+
+  @Override
   public Deferred<Page> waitForPopup() {
     Supplier<JsonObject> popupSupplier = waitForProtocolEvent("popup");
     return () -> {
@@ -69,28 +79,17 @@ public class PageImpl extends ChannelOwner implements Page {
     };
   }
 
-  public interface DialogHandler {
-    void handle(DialogImpl d);
-  }
-
-  public void addDialogHandler(DialogHandler handler) {
-    dialogHandlers.add(handler);
-  }
-
-  public void removeDialogHandler(DialogHandler handler) {
-    dialogHandlers.remove(handler);
-  }
-
   protected void handleEvent(String event, JsonObject params) {
     if ("dialog".equals(event)) {
       String guid = params.getAsJsonObject("dialog").get("guid").getAsString();
       DialogImpl dialog = connection.getExistingObject(guid);
-      for (DialogHandler handler: new ArrayList<>(dialogHandlers)) {
-        handler.handle(dialog);
+      for (Listener<Dialog> listener: new ArrayList<>(dialogListeners)) {
+        listener.handle(dialog);
       }
       // If no action taken dismiss dialog to not hang.
-      if (!dialog.isHandled())
+      if (!dialog.isHandled()) {
         dialog.dismiss();
+      }
     } else if ("console".equals(event)) {
       String guid = params.getAsJsonObject("message").get("guid").getAsString();
       ConsoleMessageImpl message = connection.getExistingObject(guid);
@@ -98,10 +97,6 @@ public class PageImpl extends ChannelOwner implements Page {
         listener.handle(message);
       }
     }
-  }
-
-  public <T> T evalTyped(String expression) {
-    return mainFrame.evalTyped(expression);
   }
 
   @Override
@@ -410,6 +405,9 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Object waitForEvent(String event, String optionsOrPredicate) {
+    // TODO: do we want to keep this method ?
+    Supplier<JsonObject> popupSupplier = waitForProtocolEvent(event);
+    popupSupplier.get();
     return null;
   }
 

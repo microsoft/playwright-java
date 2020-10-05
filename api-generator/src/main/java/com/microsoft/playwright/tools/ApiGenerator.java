@@ -262,6 +262,7 @@ class Event extends Element {
     // TODO: only whitelisted events are generated for now as the API may change.
     if (!"BrowserContext.page".equals(jsonPath) &&
         !"Page.console".equals(jsonPath) &&
+        !"Page.dialog".equals(jsonPath) &&
         !"Page.popup".equals(jsonPath)) {
       return;
     }
