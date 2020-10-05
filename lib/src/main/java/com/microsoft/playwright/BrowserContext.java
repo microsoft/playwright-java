@@ -78,8 +78,8 @@ public interface BrowserContext {
     return cookies(null);
   }
   List<Object> cookies(String urls);
-  void exposeBinding(String name, String playwrightBinding);
-  void exposeFunction(String name, String playwrightFunction);
+  void exposeBinding(String name, Page.Binding playwrightBinding);
+  void exposeFunction(String name, Page.Function playwrightFunction);
   default void grantPermissions(List<String> permissions) {
     grantPermissions(permissions, null);
   }

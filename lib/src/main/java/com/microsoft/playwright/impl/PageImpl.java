@@ -16,15 +16,13 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -32,14 +30,17 @@ import static com.microsoft.playwright.impl.Utils.convertViaJson;
 
 
 public class PageImpl extends ChannelOwner implements Page {
+  private final BrowserContextImpl browserContext;
   private final FrameImpl mainFrame;
   private final KeyboardImpl keyboard;
   private final MouseImpl mouse;
   private final List<DialogHandler> dialogHandlers = new ArrayList<>();
   private final List<Listener<ConsoleMessage>> consoleListeners = new ArrayList<>();
+  final Map<String, Binding> bindings = new HashMap<String, Binding>();
 
   PageImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    browserContext = (BrowserContextImpl) parent;
     mainFrame = connection.getExistingObject(initializer.getAsJsonObject("mainFrame").get("guid").getAsString());
     mainFrame.page = this;
     keyboard = new KeyboardImpl(this);
@@ -202,13 +203,23 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void exposeBinding(String name, String playwrightBinding) {
+  public void exposeBinding(String name, Binding playwrightBinding) {
+    if (bindings.containsKey(name)) {
+      throw new RuntimeException("Function " + name + " has already been registered");
+    }
+    if (browserContext.bindings.containsKey(name)) {
+      throw new RuntimeException("Function " + name + " has already been registered in the browser context");
+    }
+    bindings.put(name, playwrightBinding);
 
+    JsonObject params = new JsonObject();
+    params.addProperty("name", name);
+    sendMessage("exposeBinding", params);
   }
 
   @Override
-  public void exposeFunction(String name, String playwrightFunction) {
-
+  public void exposeFunction(String name, Function playwrightFunction) {
+    exposeBinding(name, (Binding.Source source, Object... args) -> playwrightFunction.call(args));
   }
 
   @Override

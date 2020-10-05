@@ -174,6 +174,9 @@ public class Connection {
     ChannelOwner result = null;
 //    initializer = this._replaceGuidsWithChannels(initializer);
     switch (type) {
+      case "BindingCall":
+        result = new BindingCall(parent, type, guid, initializer);
+        break;
       case "BrowserType":
         result = new BrowserTypeImpl(parent, type, guid, initializer);
         break;

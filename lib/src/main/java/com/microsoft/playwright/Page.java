@@ -38,6 +38,20 @@ public interface Page {
     }
   }
 
+  interface Function {
+    Object call(Object... args);
+  }
+
+  interface Binding {
+    interface Source {
+      BrowserContext context();
+      Page page();
+      Frame frame();
+    }
+
+    Object call(Source source, Object... args);
+  }
+
   enum LoadState { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
   class CloseOptions {
     public Boolean runBeforeUnload;
@@ -789,8 +803,8 @@ public interface Page {
     return evaluateHandle(pageFunction, null);
   }
   JSHandle evaluateHandle(String pageFunction, Object arg);
-  void exposeBinding(String name, String playwrightBinding);
-  void exposeFunction(String name, String playwrightFunction);
+  void exposeBinding(String name, Binding playwrightBinding);
+  void exposeFunction(String name, Function playwrightFunction);
   default void fill(String selector, String value) {
     fill(selector, value, null);
   }

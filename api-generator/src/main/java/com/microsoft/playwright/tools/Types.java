@@ -152,20 +152,19 @@ class Types {
 
 
     // js functions are always passed as text in java.
-    add("BrowserContext.exposeBinding.playwrightBinding", "function", "String");
-    add("BrowserContext.exposeFunction.playwrightFunction", "function", "String");
     add("Page.$eval.pageFunction", "function(Element)", "String");
     add("Page.$$eval.pageFunction", "function(Array<Element>)", "String");
-    add("Page.exposeBinding.playwrightBinding", "function", "String");
-    add("Page.exposeFunction.playwrightFunction", "function", "String");
     add("Frame.$eval.pageFunction", "function(Element)", "String");
     add("Frame.$$eval.pageFunction", "function(Array<Element>)", "String");
     add("ElementHandle.$eval.pageFunction", "function(Element)", "String");
     add("ElementHandle.$$eval.pageFunction", "function(Array<Element>)", "String");
     add("ElementHandle.evaluate.pageFunction", "function", "String");
     add("JSHandle.evaluate.pageFunction", "function", "String");
-    add("ChromiumBrowserContext.exposeBinding.playwrightBinding", "function", "String");
-    add("ChromiumBrowserContext.exposeFunction.playwrightFunction", "function", "String");
+
+    add("BrowserContext.exposeBinding.playwrightBinding", "function", "Page.Binding");
+    add("BrowserContext.exposeFunction.playwrightFunction", "function", "Page.Function");
+    add("Page.exposeBinding.playwrightBinding", "function", "Binding");
+    add("Page.exposeFunction.playwrightFunction", "function", "Function");
 
     add("BrowserContext.addInitScript.script", "function|string|Object", "String");
     add("Page.addInitScript.script", "function|string|Object", "String");

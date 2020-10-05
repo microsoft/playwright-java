@@ -27,6 +27,13 @@ class Utils {
     return new Gson().fromJson(json, t);
   }
 
+  static boolean isFunctionBody(String expression) {
+    expression = expression.trim();
+    return expression.startsWith("function") ||
+      expression.startsWith("async ") ||
+      expression.contains("=>");
+  }
+
   static Set<Character> escapeGlobChars = new HashSet<>(Arrays.asList('/', '$', '^', '+', '.', '(', ')', '=', '!', '|'));
 
   static String globToRegex(String glob) {
@@ -83,5 +90,4 @@ class Utils {
     tokens.append('$');
     return tokens.toString();
   }
-
 }

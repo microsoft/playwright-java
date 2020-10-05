@@ -196,4 +196,73 @@ public class TestPopup {
     assertEquals(mapOf("width", 600, "height", 300), size);
     assertEquals(mapOf("width", 500, "height", 400), resized);
   }
+
+  @Test
+  void should_respect_routes_from_browser_context_with_window_open() {
+    BrowserContext context = browser.newContext();
+    Page page = context.newPage();
+    page.navigate(server.EMPTY_PAGE);
+    boolean[] intercepted = {false};
+    context.route("**/empty.html", (route, request) -> {
+      route.continue_();
+      intercepted[0] = true;
+    });
+    Deferred<Page> popupEvent = page.waitForPopup();
+    page.evaluate("url => window['__popup'] = window.open(url)", server.EMPTY_PAGE);
+    popupEvent.get();
+    assertTrue(intercepted[0]);
+    context.close();
+  }
+
+  @Test
+  void BrowserContext_addInitScript_should_apply_to_an_in_process_popup() {
+    BrowserContext context = browser.newContext();
+    context.addInitScript("() => window['injected'] = 123");
+    Page page = context.newPage();
+    page.navigate(server.EMPTY_PAGE);
+    Object injected = page.evaluate("() => {\n" +
+      "  const win = window.open('about:blank');\n" +
+      "  return win['injected'];\n" +
+      "}");
+    context.close();
+    assertEquals(123, injected);
+  }
+
+  @Test
+  void BrowserContext_addInitScript_should_apply_to_a_cross_process_popup() {
+    BrowserContext context = browser.newContext();
+    context.addInitScript("() => window['injected'] = 123");
+    Page page = context.newPage();
+    page.navigate(server.EMPTY_PAGE);
+    Deferred<Page> popupEvent = page.waitForPopup();
+    page.evaluate("url => window.open(url)", server.CROSS_PROCESS_PREFIX + "/title.html");
+    Page popup = popupEvent.get();
+    assertEquals(123, popup.evaluate("injected"));
+
+    popup.reload();
+
+    assertEquals(123, popup.evaluate("injected"));
+    context.close();
+  }
+
+  @Test
+  void should_expose_function_from_browser_context() {
+    BrowserContext context = browser.newContext();
+    List<String> messages = new ArrayList<>();
+    context.exposeFunction("add", args -> {
+      messages.add("binding");
+      return (int) args[0] + (int) args[1];
+    });
+    Page page = context.newPage();
+//    context.on("page", () => messages.push('page'));
+    page.navigate(server.EMPTY_PAGE);
+    Object added = page.evaluate("async () => {\n" +
+      "  const win = window.open('about:blank');\n" +
+      "  return win['add'](9, 4);\n" +
+      "}");
+    context.close();
+    assertEquals(13, added);
+//    assertEquals(messages.join("|"), "page|binding");
+  }
+
 }

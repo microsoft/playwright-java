@@ -21,18 +21,22 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.impl.Utils.globToRegex;
+import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 class BrowserContextImpl extends ChannelOwner implements BrowserContext {
+  private final List<PageImpl> pages = new ArrayList<>();
   private List<RouteInfo> routes = new ArrayList<>();
+  final Map<String, Page.Binding> bindings = new HashMap<String, Page.Binding>();
+
   private class RouteInfo {
     private String url;
     private BiConsumer<Route, Request> handler;
@@ -61,7 +65,13 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void addInitScript(String script, Object arg) {
-
+    // TODO: serialize arg
+    JsonObject params = new JsonObject();
+    if (isFunctionBody(script)) {
+      script = "(" + script + ")()";
+    }
+    params.addProperty("source", script);
+    sendMessage("addInitScript", params);
   }
 
   @Override
@@ -85,13 +95,24 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void exposeBinding(String name, String playwrightBinding) {
+  public void exposeBinding(String name, Page.Binding playwrightBinding) {
+    if (bindings.containsKey(name)) {
+      throw new RuntimeException("Function " + name + " has already been registered");
+    }
+    for (PageImpl page : pages) {
+      if (page.bindings.containsKey(name))
+        throw new Error("Function " + name + " has already been registered in one of the pages");
+    }
+    bindings.put(name, playwrightBinding);
 
+    JsonObject params = new JsonObject();
+    params.addProperty("name", name);
+    sendMessage("exposeBinding", params);
   }
 
   @Override
-  public void exposeFunction(String name, String playwrightFunction) {
-
+  public void exposeFunction(String name, Page.Function playwrightFunction) {
+    exposeBinding(name, (Page.Binding.Source source, Object... args) -> playwrightFunction.call(args));
   }
 
   @Override
@@ -191,6 +212,15 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         }
       }
       route.continue_();
+    } else if ("page".equals(event)) {
+      PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
+      pages.add(page);
+    } else if ("bindingCall".equals(event)) {
+      BindingCall bindingCall = connection.getExistingObject(params.getAsJsonObject("binding").get("guid").getAsString());
+      Page.Binding binding = bindings.get(bindingCall.name());
+      if (binding != null) {
+        bindingCall.call(binding);
+      }
     }
   }
 }
