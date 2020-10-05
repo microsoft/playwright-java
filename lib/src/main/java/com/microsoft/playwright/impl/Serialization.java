@@ -17,13 +17,14 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.microsoft.playwright.JSHandle;
+import com.microsoft.playwright.Keyboard;
+import com.microsoft.playwright.Mouse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 class Serialization {
   static SerializedError serializeError(Throwable e) {
@@ -38,8 +39,16 @@ class Serialization {
     return  result;
   }
 
-  private static SerializedValue serializeValue(Object value) {
+  private static SerializedValue serializeValue(Object value, List<JSHandleImpl> handles, int depth) {
+    if (depth > 100) {
+      throw new RuntimeException("Maximum argument depth exceeded");
+    }
     SerializedValue result = new SerializedValue();
+    if (value instanceof JSHandleImpl) {
+      result.h = handles.size();
+      handles.add((JSHandleImpl) value);
+      return result;
+    }
     if (value == null)
       result.v = "undefined";
     else if (value instanceof Double) {
@@ -64,7 +73,7 @@ class Serialization {
     else if (value instanceof List) {
       List<SerializedValue> list = new ArrayList<>();
       for (Object o : (List) value)
-        list.add(serializeValue(o));
+        list.add(serializeValue(o, handles, depth + 1));
       result.a = list.toArray(new SerializedValue[0]);
     } else if (value instanceof Map) {
       List<SerializedValue.O> list = new ArrayList<>();
@@ -72,7 +81,7 @@ class Serialization {
       for (Map.Entry<String, Object> e : map.entrySet()) {
         SerializedValue.O o = new SerializedValue.O();
         o.k = e.getKey();
-        o.v = serializeValue(e.getValue());
+        o.v = serializeValue(e.getValue(), handles, depth + 1);
         list.add(o);
       }
       result.o = list.toArray(new SerializedValue.O[0]);
@@ -83,8 +92,15 @@ class Serialization {
 
   static SerializedArgument serializeArgument(Object arg) {
     SerializedArgument result = new SerializedArgument();
-    result.value = serializeValue(arg);
-    result.handles = new Channel[0];
+    List<JSHandleImpl> handles = new ArrayList<>();
+    result.value = serializeValue(arg, handles, 0);
+    result.handles = new Channel[handles.size()];
+    int i = 0;
+    for (JSHandleImpl handle : handles) {
+      result.handles[i] = new Channel();
+      result.handles[i].guid = handle.guid;
+      ++i;
+    }
     return result;
   }
 
@@ -128,5 +144,31 @@ class Serialization {
       return (T) map;
     }
     throw new RuntimeException("Unexpected result: " + new Gson().toJson(value));
+  }
+
+  static String toProtocol(Mouse.Button button) {
+    switch (button) {
+      case LEFT: return "left";
+      case RIGHT: return "right";
+      case MIDDLE: return "middle";
+      default: throw new RuntimeException("Unexpected value: " + button);
+    }
+  }
+
+  static JsonArray toProtocol(Set<Keyboard.Modifier> modifiers) {
+    JsonArray result = new JsonArray();
+    if (modifiers.contains(Keyboard.Modifier.ALT)) {
+      result.add("Alt");
+    }
+    if (modifiers.contains(Keyboard.Modifier.CONTROL)) {
+      result.add("Control");
+    }
+    if (modifiers.contains(Keyboard.Modifier.META)) {
+      result.add("Meta");
+    }
+    if (modifiers.contains(Keyboard.Modifier.SHIFT)) {
+      result.add("Shift");
+    }
+    return result;
   }
 }

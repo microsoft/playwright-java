@@ -22,6 +22,7 @@ class Binary {
 }
 
 class Channel {
+  String guid;
 }
 
 class Metadata{

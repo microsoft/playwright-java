@@ -19,6 +19,6 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-public interface FirefoxBrowser {
+public interface FirefoxBrowser extends Browser {
 }
 

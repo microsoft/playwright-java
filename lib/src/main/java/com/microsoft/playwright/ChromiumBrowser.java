@@ -19,7 +19,7 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-public interface ChromiumBrowser {
+public interface ChromiumBrowser extends Browser {
   class StartTracingOptions {
     public String path;
     public Boolean screenshots;

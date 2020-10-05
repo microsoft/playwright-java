@@ -464,6 +464,8 @@ class Interface extends TypeDefinition {
     "\n" +
     "package com.microsoft.playwright;\n";
 
+  private static Set<String> allowedBaseInterfaces = new HashSet<>(Arrays.asList("Browser", "JSHandle"));
+
   Interface(JsonObject jsonElement) {
     super(null, jsonElement);
 
@@ -489,7 +491,16 @@ class Interface extends TypeDefinition {
     output.add("import java.util.*;");
     output.add("import java.util.function.BiConsumer;");
     output.add("");
-    output.add("public interface " + jsonName + " {");
+
+    String implementsClause = "";
+    if (jsonElement.getAsJsonObject().has("extends")) {
+      String base = jsonElement.getAsJsonObject().get("extends").getAsString();
+      if (allowedBaseInterfaces.contains(base)) {
+        implementsClause = " extends " + base;
+      }
+    }
+
+    output.add("public interface " + jsonName + implementsClause + " {");
     offset = "  ";
     writeSharedTypes(output, offset);
     super.writeTo(output, offset);

@@ -198,11 +198,14 @@ public class Connection {
       case "Electron":
 //        result = new Playwright(parent, type, guid, initializer);
         break;
+      case "ElementHandle":
+        result = new ElementHandleImpl(parent, type, guid, initializer);
+        break;
       case "Frame":
         result = new FrameImpl(parent, type, guid, initializer);
         break;
       case "JSHandle":
-//        result = new JSHandle(parent, type, guid, initializer);
+        result = new JSHandleImpl(parent, type, guid, initializer);
         break;
       case "Page":
         result = new PageImpl(parent, type, guid, initializer);

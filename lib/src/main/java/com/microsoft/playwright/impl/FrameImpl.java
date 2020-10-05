@@ -17,7 +17,6 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
@@ -70,7 +69,14 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public ElementHandle querySelector(String selector) {
-    return null;
+    JsonObject params = new JsonObject();
+    params.addProperty("selector", selector);
+    JsonElement json = sendMessage("querySelector", params);
+    JsonObject element = json.getAsJsonObject().getAsJsonObject("element");
+    if (element == null) {
+      return null;
+    }
+    return connection.getExistingObject(element.get("guid").getAsString());
   }
 
   @Override
@@ -116,32 +122,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
 
-  private static String toProtocol(Mouse.Button button) {
-    switch (button) {
-      case LEFT: return "left";
-      case RIGHT: return "right";
-      case MIDDLE: return "middle";
-      default: throw new RuntimeException("Unexpected value: " + button);
-    }
-  }
-
-  private static JsonArray toProtocol(Set<Keyboard.Modifier> modifiers) {
-    JsonArray result = new JsonArray();
-    if (modifiers.contains(Keyboard.Modifier.ALT)) {
-      result.add("Alt");
-    }
-    if (modifiers.contains(Keyboard.Modifier.CONTROL)) {
-      result.add("Control");
-    }
-    if (modifiers.contains(Keyboard.Modifier.META)) {
-      result.add("Meta");
-    }
-    if (modifiers.contains(Keyboard.Modifier.SHIFT)) {
-      result.add("Shift");
-    }
-    return result;
-  }
-
   @Override
   public void click(String selector, ClickOptions options) {
     if (options == null) {
@@ -152,12 +132,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
     params.remove("button");
     if (options.button != null) {
-      params.addProperty("button", toProtocol(options.button));
+      params.addProperty("button", Serialization.toProtocol(options.button));
     }
 
     params.remove("modifiers");
     if (options.modifiers != null) {
-      params.add("modifiers", toProtocol(options.modifiers));
+      params.add("modifiers", Serialization.toProtocol(options.modifiers));
     }
 
     sendMessage("click", params);
@@ -178,12 +158,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
     params.remove("button");
     if (options.button != null) {
-      params.addProperty("button", toProtocol(options.button));
+      params.addProperty("button", Serialization.toProtocol(options.button));
     }
 
     params.remove("modifiers");
     if (options.modifiers != null) {
-      params.add("modifiers", toProtocol(options.modifiers));
+      params.add("modifiers", Serialization.toProtocol(options.modifiers));
     }
 
     sendMessage("dblclick", params);
@@ -201,7 +181,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public JSHandle evaluateHandle(String pageFunction, Object arg) {
-    return null;
+    JsonObject params = new JsonObject();
+    params.addProperty("expression", pageFunction);
+    params.addProperty("world", "main");
+    params.addProperty("isFunction", isFunctionBody(pageFunction));
+    params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
+    JsonElement json = sendMessage("evaluateExpressionHandle", params);
+    return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("handle").get("guid").getAsString());
   }
 
   @Override

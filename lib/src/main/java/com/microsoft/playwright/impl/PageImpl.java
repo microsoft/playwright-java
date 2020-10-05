@@ -106,7 +106,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void close(CloseOptions options) {
-    JsonObject params = options == null ? new JsonObject() : (JsonObject) new Gson().toJsonTree(options);
+    JsonObject params = options == null ? new JsonObject() : new Gson().toJsonTree(options).getAsJsonObject();
     sendMessage("close", params);
     if (ownedContext != null) {
       ownedContext.close();
@@ -205,7 +205,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public JSHandle evaluateHandle(String pageFunction, Object arg) {
-    return null;
+    return mainFrame.evaluateHandle(pageFunction, arg);
   }
 
   @Override

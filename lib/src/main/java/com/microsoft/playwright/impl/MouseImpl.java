@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Mouse;
 
+import static com.microsoft.playwright.impl.Serialization.toProtocol;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 
 class MouseImpl implements Mouse {
@@ -27,15 +28,6 @@ class MouseImpl implements Mouse {
 
   MouseImpl(ChannelOwner page) {
     this.page = page;
-  }
-
-  private static String toProtocol(Mouse.Button button) {
-    switch (button) {
-      case LEFT: return "left";
-      case RIGHT: return "right";
-      case MIDDLE: return "middle";
-      default: throw new RuntimeException("Unexpected value: " + button);
-    }
   }
 
   @Override

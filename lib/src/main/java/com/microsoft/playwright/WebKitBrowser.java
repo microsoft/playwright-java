@@ -19,6 +19,6 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-public interface WebKitBrowser {
+public interface WebKitBrowser extends Browser {
 }
 

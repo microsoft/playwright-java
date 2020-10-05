@@ -19,7 +19,7 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-public interface ElementHandle {
+public interface ElementHandle extends JSHandle {
   enum ElementState { DISABLED, ENABLED, HIDDEN, STABLE, VISIBLE }
   class CheckOptions {
     public Boolean force;
