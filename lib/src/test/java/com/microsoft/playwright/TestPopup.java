@@ -265,4 +265,7 @@ public class TestPopup {
 //    assertEquals(messages.join("|"), "page|binding");
   }
 
+  // TODO: checks event order, not specific to java.
+  void should_not_dispatch_binding_on_a_closed_page() {
+  }
 }

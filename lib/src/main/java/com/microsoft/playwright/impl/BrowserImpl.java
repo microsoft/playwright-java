@@ -25,10 +25,13 @@ import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Deferred;
 import com.microsoft.playwright.Page;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static com.microsoft.playwright.impl.Utils.convertViaJson;
 
 class BrowserImpl extends ChannelOwner implements Browser {
+  final Set<BrowserContext> contexts = new HashSet<>();
+
   BrowserImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
@@ -40,7 +43,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public List<BrowserContext> contexts() {
-    return null;
+    return new ArrayList<>(contexts);
   }
 
   @Override
@@ -71,12 +74,18 @@ class BrowserImpl extends ChannelOwner implements Browser {
       params.add("extraHTTPHeaders", toProtocol(options.extraHTTPHeaders));
     }
     JsonElement result = sendMessage("newContext", params);
-    return connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("context").get("guid").getAsString());
+    BrowserContextImpl context = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("context").get("guid").getAsString());
+    contexts.add(context);
+    return context;
   }
 
   @Override
   public Page newPage(NewPageOptions options) {
-    return null;
+    BrowserContextImpl context = newContext(convertViaJson(options, NewContextOptions.class));
+    PageImpl page = context.newPage();
+    page.ownedContext = context;
+    context.ownerPage = page;
+    return page;
   }
 
   @Override

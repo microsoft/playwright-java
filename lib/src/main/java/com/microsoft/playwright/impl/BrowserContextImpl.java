@@ -33,9 +33,12 @@ import static com.microsoft.playwright.impl.Utils.globToRegex;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 class BrowserContextImpl extends ChannelOwner implements BrowserContext {
+  private final BrowserImpl browser;
   private final List<PageImpl> pages = new ArrayList<>();
   private List<RouteInfo> routes = new ArrayList<>();
+  private boolean isClosedOrClosing;
   final Map<String, Page.Binding> bindings = new HashMap<String, Page.Binding>();
+  PageImpl ownerPage;
 
   private class RouteInfo {
     private String url;
@@ -51,11 +54,17 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   protected BrowserContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    browser = (BrowserImpl) parent;
   }
 
   @Override
   public void close() {
-
+    if (isClosedOrClosing) {
+      // TODO: wait close event instead?
+      throw new RuntimeException("Already closing");
+    }
+    isClosedOrClosing = true;
+    sendMessage("close", new JsonObject());
   }
 
   @Override
@@ -100,8 +109,9 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       throw new RuntimeException("Function " + name + " has already been registered");
     }
     for (PageImpl page : pages) {
-      if (page.bindings.containsKey(name))
+      if (page.bindings.containsKey(name)) {
         throw new Error("Function " + name + " has already been registered in one of the pages");
+      }
     }
     bindings.put(name, playwrightBinding);
 
@@ -122,6 +132,9 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public PageImpl newPage() {
+    if (ownerPage != null) {
+      throw new RuntimeException("Please use browser.newContext()");
+    }
     JsonObject params = new JsonObject();
     JsonElement result = sendMessage("newPage", params);
     return connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("page").get("guid").getAsString());
@@ -129,7 +142,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public List<Page> pages() {
-    return null;
+    return new ArrayList<>(pages);
   }
 
   @Override
@@ -220,6 +233,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       Page.Binding binding = bindings.get(bindingCall.name());
       if (binding != null) {
         bindingCall.call(binding);
+      }
+    } else if ("close".equals(event)) {
+      isClosedOrClosing = true;
+      if (browser != null) {
+        browser.contexts.remove(this);
       }
     }
   }

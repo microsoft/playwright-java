@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
@@ -37,6 +38,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private final List<DialogHandler> dialogHandlers = new ArrayList<>();
   private final List<Listener<ConsoleMessage>> consoleListeners = new ArrayList<>();
   final Map<String, Binding> bindings = new HashMap<String, Binding>();
+  BrowserContextImpl ownedContext;
 
   PageImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -104,7 +106,11 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void close(CloseOptions options) {
-
+    JsonObject params = options == null ? new JsonObject() : (JsonObject) new Gson().toJsonTree(options);
+    sendMessage("close", params);
+    if (ownedContext != null) {
+      ownedContext.close();
+    }
   }
 
   @Override
@@ -169,7 +175,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public BrowserContext context() {
-    return null;
+    return browserContext;
   }
 
   @Override

@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBrowser {
   private static Playwright playwright;
@@ -46,6 +46,34 @@ public class TestBrowser {
   void tearDown() {
     browser.close();
   }
+
+  @Test
+  void should_create_new_page() {
+    Page page1 = browser.newPage();
+    assertEquals(1, browser.contexts().size());
+
+    Page page2 = browser.newPage();
+    assertEquals(2, browser.contexts().size());
+
+    page1.close();
+    assertEquals(1, browser.contexts().size());
+
+    page2.close();
+    assertEquals(0, browser.contexts().size());
+  }
+
+  @Test
+  void should_throw_upon_second_create_new_page() {
+    Page page = browser.newPage();
+    try {
+      page.context().newPage();
+      fail("newPage should throw");
+    } catch (RuntimeException e) {
+      assertTrue(e.getMessage().contains("Please use browser.newContext()"));
+    }
+    page.close();
+  }
+
 
   @Test
   void version_should_work() {
