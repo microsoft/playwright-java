@@ -464,7 +464,7 @@ class Interface extends TypeDefinition {
     "\n" +
     "package com.microsoft.playwright;\n";
 
-  private static Set<String> allowedBaseInterfaces = new HashSet<>(Arrays.asList("Browser", "JSHandle"));
+  private static Set<String> allowedBaseInterfaces = new HashSet<>(Arrays.asList("Browser", "JSHandle", "BrowserContext"));
 
   Interface(JsonObject jsonElement) {
     super(null, jsonElement);

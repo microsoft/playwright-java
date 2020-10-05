@@ -23,23 +23,16 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestElementHandleClick {
-  private static Playwright playwright;
   private static Server server;
   private static Browser browser;
-  private static boolean isChromium;
-  private static boolean isWebKit;
-  private static boolean headful;
   private BrowserContext context;
   private Page page;
 
   @BeforeAll
   static void launchBrowser() {
-    playwright = Playwright.create();
+    Playwright playwright = Playwright.create();
     BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
     browser = playwright.chromium().launch(options);
-    isChromium = true;
-    isWebKit = false;
-    headful = false;
   }
 
   @BeforeAll

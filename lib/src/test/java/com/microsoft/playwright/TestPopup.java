@@ -28,18 +28,16 @@ import static com.microsoft.playwright.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPopup {
-  private static Playwright playwright;
   private static Server server;
-  private Browser browser;
-  private boolean isChromium;
-  private boolean isWebKit;
-  private boolean headful;
+  private static Browser browser;
   private BrowserContext context;
   private Page page;
 
   @BeforeAll
-  static void createPlaywright() {
-    playwright = Playwright.create();
+  static void launchBrowser() {
+    Playwright playwright = Playwright.create();
+    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
+    browser = playwright.chromium().launch(options);
   }
 
   @BeforeAll
@@ -49,25 +47,22 @@ public class TestPopup {
 
   @AfterAll
   static void stopServer() throws IOException {
+    browser.close();
     server.stop();
     server = null;
   }
 
   @BeforeEach
   void setUp() {
-//    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().withHeadless(false).withSlowMo(1000);
-    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
-    browser = playwright.chromium().launch(options);
-    isChromium = true;
-    isWebKit = false;
-    headful = false;
     context = browser.newContext();
     page = context.newPage();
   }
 
   @AfterEach
   void tearDown() {
-    browser.close();
+    context.close();
+    context = null;
+    page = null;
   }
 
   @Test

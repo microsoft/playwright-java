@@ -19,7 +19,7 @@ package com.microsoft.playwright;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-public interface ChromiumBrowserContext {
+public interface ChromiumBrowserContext extends BrowserContext {
   List<Page> backgroundPages();
   CDPSession newCDPSession(Page page);
   List<Worker> serviceWorkers();
