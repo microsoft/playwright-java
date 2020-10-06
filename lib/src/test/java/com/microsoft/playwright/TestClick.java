@@ -74,7 +74,7 @@ public class TestClick {
   }
 
   @Test
-  void should_click_the_button() {
+  void shouldClickTheButton() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
     assertEquals("Clicked", page.evaluate("result"));
@@ -82,7 +82,7 @@ public class TestClick {
   }
 
   @Test
-  void should_click_svg() {
+  void shouldClickSvg() {
     page.setContent("<svg height='100' width='100'>\n" +
       "<circle onclick='javascript:window.__CLICKED=42' cx='50' cy='50' r='40' stroke='black' stroke-width='3' fill='red'/>\n" +
       "</svg>\n");
@@ -91,7 +91,7 @@ public class TestClick {
   }
 
   @Test
-  void should_click_the_button_if_window_Node_is_removed() {
+  void shouldClickTheButtonIfWindowNodeIsRemoved() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => delete window.Node");
     page.click("button");
@@ -100,7 +100,7 @@ public class TestClick {
 
   // @see https://github.com/GoogleChrome/puppeteer/issues/4281
   @Test
-  void should_click_on_a_span_with_an_inline_element_inside() {
+  void shouldClickOnASpanWithAnInlineElementInside() {
     page.setContent(
       "<style>\n" +
         "  span::before {\n" +
@@ -115,14 +115,14 @@ public class TestClick {
   // TODO: it('should not throw UnhandledPromiseRejection when page closes'
 
   @Test
-  void should_click_the_1x1_div() {
+  void shouldClickThe1x1Div() {
     page.setContent("<div style='width: 1px; height: 1px;' onclick='window.__clicked = true'></div>");
     page.click("div");
     assertTrue((Boolean) page.evaluate("window.__clicked"));
   }
 
   @Test
-  void should_click_the_button_after_navigation() {
+  void shouldClickTheButtonAfterNavigation() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
     page.navigate(server.PREFIX + "/input/button.html");
@@ -131,7 +131,7 @@ public class TestClick {
   }
 
   @Test
-  void should_click_the_button_after_a_cross_origin_navigation() {
+  void shouldClickTheButtonAfterACrossOriginNavigation() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
     page.navigate(server.CROSS_PROCESS_PREFIX + "/input/button.html");
@@ -142,7 +142,7 @@ public class TestClick {
   // TODO: it('should click with disabled javascript'
 
   @Test
-  void should_click_when_one_of_inline_box_children_is_outside_of_viewport() {
+  void shouldClickWhenOneOfInlineBoxChildrenIsOutsideOfViewport() {
     page.setContent(
       "<style>\n" +
         "i {\n" +
@@ -156,7 +156,7 @@ public class TestClick {
   }
 
   @Test
-  void should_select_the_text_by_triple_clicking() {
+  void shouldSelectTheTextByTripleClicking() {
     page.navigate(server.PREFIX + "/input/textarea.html");
     String text = "This is the text that we are going to try to select. Let's see how it goes.";
     page.fill("textarea", text);
@@ -168,7 +168,7 @@ public class TestClick {
   }
 
   @Test
-  void should_click_offscreen_buttons() {
+  void shouldClickOffscreenButtons() {
     page.navigate(server.PREFIX + "/offscreenbuttons.html");
     List<String> messages = new ArrayList<>();
     page.addConsoleListener(msg -> messages.add(msg.text()));
@@ -193,14 +193,14 @@ public class TestClick {
   }
 
   @Test
-  void should_waitFor_visible_when_already_visible() {
+  void shouldWaitForVisibleWhenAlreadyVisible() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
     assertEquals("Clicked", page.evaluate("result"));
   }
 
   @Test
-  void should_not_wait_with_force() {
+  void shouldNotWaitWithForce() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "b => b.style.display = 'none'");
     Exception exception = null;
@@ -215,24 +215,24 @@ public class TestClick {
   }
 
   // TODO: not supported in sync api
-  void should_waitFor_display_none_to_be_gone() {
+  void shouldWaitForDisplayNoneToBeGone() {
   }
 
-  void should_waitFor_visibility_hidden_to_be_gone() {
+  void shouldWaitForVisibilityHiddenToBeGone() {
   }
 
-  void should_waitFor_visible_when_parent_is_hidden() {
+  void shouldWaitForVisibleWhenParentIsHidden() {
   }
 
   @Test
-  void should_click_wrapped_links() {
+  void shouldClickWrappedLinks() {
     page.navigate(server.PREFIX + "/wrappedlink.html");
     page.click("a");
     assertTrue((Boolean) page.evaluate("__clicked"));
   }
 
   @Test
-  void should_click_on_checkbox_input_and_toggle() {
+  void shouldClickOnCheckboxInputAndToggle() {
     page.navigate(server.PREFIX + "/input/checkbox.html");
     assertNull(page.evaluate("() => window['result'].check"));
     page.click("input#agree");
@@ -252,7 +252,7 @@ public class TestClick {
   }
 
   @Test
-  void should_click_on_checkbox_label_and_toggle() {
+  void shouldClickOnCheckboxLabelAndToggle() {
     page.navigate(server.PREFIX + "/input/checkbox.html");
     assertNull(page.evaluate("() => window['result'].check"));
     page.click("label[for='agree']");
@@ -267,7 +267,7 @@ public class TestClick {
   }
 
   @Test
-  void should_not_hang_with_touch_enabled_viewports() {
+  void shouldNotHangWithTouchEnabledViewports() {
     // @see https://github.com/GoogleChrome/puppeteer/issues/161
     DeviceDescriptor descriptor = playwright.devices().get("iPhone 6");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
@@ -281,7 +281,7 @@ public class TestClick {
   }
 
   @Test
-  void should_scroll_and_click_the_button() {
+  void shouldScrollAndClickTheButton() {
     page.navigate(server.PREFIX + "/input/scrollable.html");
     page.click("#button-5");
     assertEquals("clicked", page.evaluate("() => document.querySelector('#button-5').textContent"));
@@ -290,7 +290,7 @@ public class TestClick {
   }
 
   @Test
-  void should_double_click_the_button() {
+  void shouldDoubleClickTheButton() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => {\n" +
       "  window['double'] = false;\n" +
@@ -305,7 +305,7 @@ public class TestClick {
   }
 
   @Test
-  void should_click_a_partially_obscured_button() {
+  void shouldClickAPartiallyObscuredButton() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => {\n" +
       "  const button = document.querySelector('button');\n" +
@@ -318,21 +318,21 @@ public class TestClick {
   }
 
   @Test
-  void should_click_a_rotated_button() {
+  void shouldClickARotatedButton() {
     page.navigate(server.PREFIX + "/input/rotatedButton.html");
     page.click("button");
     assertEquals("Clicked", page.evaluate("result"));
   }
 
   @Test
-  void should_fire_contextmenu_event_on_right_click() {
+  void shouldFireContextmenuEventOnRightClick() {
     page.navigate(server.PREFIX + "/input/scrollable.html");
     page.click("#button-8", new Page.ClickOptions().withButton(RIGHT));
     assertEquals("context menu", page.evaluate("() => document.querySelector('#button-8').textContent"));
   }
 
   @Test
-  void should_click_links_which_cause_navigation() {
+  void shouldClickLinksWhichCauseNavigation() {
     // @see https://github.com/GoogleChrome/puppeteer/issues/206
     page.setContent("<a href=" + server.EMPTY_PAGE + ">empty.html</a>");
     // This should not hang.
@@ -340,20 +340,20 @@ public class TestClick {
   }
 
   // TODO: support element handle
-  void should_click_the_button_inside_an_iframe() {
+  void shouldClickTheButtonInsideAnIframe() {
   }
 
   // TODO: do we need it in java?
-  //  void should_click_the_button_with_fixed_position_inside_an_iframe() {
+  //  void shouldClickTheButtonWithFixedPositionInsideAnIframe() {
   //    test.fixme(browserName === "chromium" || browserName === "webkit");
 
 
   // TODO: support element handle
-  void should_click_the_button_with_deviceScaleFactor_set() {
+  void shouldClickTheButtonWithDeviceScaleFactorSet() {
   }
 
   @Test
-  void should_click_the_button_with_px_border_with_offset() {
+  void shouldClickTheButtonWithPxBorderWithOffset() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => button.style.borderWidth = '8px'");
     page.click("button", new Page.ClickOptions().setPosition().withX(20).withY(10).done());
@@ -364,7 +364,7 @@ public class TestClick {
   }
 
   @Test
-  void should_click_the_button_with_em_border_with_offset() {
+  void shouldClickTheButtonWithEmBorderWithOffset() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => button.style.borderWidth = '2em'");
     page.evalOnSelector("button", "button => button.style.fontSize = '12px'");
@@ -376,7 +376,7 @@ public class TestClick {
   }
 
   @Test
-  void should_click_a_very_large_button_with_offset() {
+  void shouldClickAVeryLargeButtonWithOffset() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => button.style.borderWidth = '8px'");
     page.evalOnSelector("button", "button => button.style.height = button.style.width = '2000px'");
@@ -388,7 +388,7 @@ public class TestClick {
   }
 
   @Test
-  void should_click_a_button_in_scrolling_container_with_offset() {
+  void shouldClickAButtonInScrollingContainerWithOffset() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => {\n" +
       "  const container = document.createElement('div');\n" +
@@ -409,7 +409,7 @@ public class TestClick {
   }
 
   @Test
-  void should_click_the_button_with_offset_with_page_scale() {
+  void shouldClickTheButtonWithOffsetWithPageScale() {
     // TODO:    test.skip(browserName === "firefox");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .withViewport(400, 400)
@@ -440,7 +440,7 @@ public class TestClick {
   }
 
   @Test
-  void should_wait_for_stable_position() {
+  void shouldWaitForStablePosition() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => {\n" +
       "  button.style.transition = 'margin 500ms linear 0s';\n" +
@@ -460,53 +460,53 @@ public class TestClick {
   }
 
   // TODO: not supported in sync api
-  void should_wait_for_becoming_hit_target() {
+  void shouldWaitForBecomingHitTarget() {
   }
 
   // TODO: support element handle
-  void should_fail_when_obscured_and_not_waiting_for_hit_target() {
+  void shouldFailWhenObscuredAndNotWaitingForHitTarget() {
   }
 
   // TODO: not supported in sync api
-  void should_wait_for_button_to_be_enabled() {
+  void shouldWaitForButtonToBeEnabled() {
   }
 
-  void should_wait_for_input_to_be_enabled() {
+  void shouldWaitForInputToBeEnabled() {
   }
 
-  void should_wait_for_select_to_be_enabled() {
+  void shouldWaitForSelectToBeEnabled() {
   }
 
   @Test
-  void should_click_disabled_div() {
+  void shouldClickDisabledDiv() {
     page.setContent("<div onclick='javascript:window.__CLICKED=true;' disabled>Click target</div>");
     page.click("text=Click target");
     assertEquals(true, page.evaluate("__CLICKED"));
   }
 
   @Test
-  void should_climb_dom_for_inner_label_with_pointer_events_none() {
+  void shouldClimbDomForInnerLabelWithPointerEventsNone() {
     page.setContent("<button onclick='javascript:window.__CLICKED=true;'><label style='pointer-events:none'>Click target</label></button>");
     page.click("text=Click target");
     assertEquals(true, page.evaluate("__CLICKED"));
   }
 
   @Test
-  void should_climb_up_to__role_button_() {
+  void shouldClimbUpTo_roleButton_() {
     page.setContent("<div role=button onclick='javascript:window.__CLICKED=true;'><div style='pointer-events:none'><span><div>Click target</div></span></div>");
     page.click("text=Click target");
     assertEquals(true, page.evaluate("__CLICKED"));
   }
 
   // TODO: not supported in sync api
-  void should_wait_for_BUTTON_to_be_clickable_when_it_has_pointer_events_none() {
+  void shouldWaitForBUTTONToBeClickableWhenItHasPointerEventsNone() {
   }
 
-  void should_wait_for_LABEL_to_be_clickable_when_it_has_pointer_events_none() {
+  void shouldWaitForLABELToBeClickableWhenItHasPointerEventsNone() {
   }
 
   @Test
-  void should_update_modifiers_correctly() {
+  void shouldUpdateModifiersCorrectly() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.click("button", new Page.ClickOptions().withModifiers(SHIFT));
     assertEquals(true, page.evaluate("shiftKey"));
@@ -524,7 +524,7 @@ public class TestClick {
   }
 
   @Test
-  void should_click_an_offscreen_element_when_scroll_behavior_is_smooth() {
+  void shouldClickAnOffscreenElementWhenScrollBehaviorIsSmooth() {
     page.setContent(
       "<div style='border: 1px solid black; height: 500px; overflow: auto; width: 500px; scroll-behavior: smooth'>\n" +
         "    <button style='margin-top: 2000px' onClick='window.clicked = true'>hi</button>\n" +
@@ -534,20 +534,20 @@ public class TestClick {
   }
 
   // TODO: support element handle
-  void should_report_nice_error_when_element_is_detached_and_force_clicked() {
+  void shouldReportNiceErrorWhenElementIsDetachedAndForceClicked() {
   }
 
   // TODO: not supported in sync api
-  void should_fail_when_element_detaches_after_animation() {
+  void shouldFailWhenElementDetachesAfterAnimation() {
   }
-  void should_retry_when_element_detaches_after_animation() {
+  void shouldRetryWhenElementDetachesAfterAnimation() {
   }
-  void should_retry_when_element_is_animating_from_outside_the_viewport() {
+  void shouldRetryWhenElementIsAnimatingFromOutsideTheViewport() {
   }
-  void should_fail_when_element_is_animating_from_outside_the_viewport_with_force() {
+  void shouldFailWhenElementIsAnimatingFromOutsideTheViewportWithForce() {
   }
   @Test
-  void should_dispatch_microtasks_in_order() {
+  void shouldDispatchMicrotasksInOrder() {
     page.setContent(
       "<button id=button>Click me</button>\n" +
       "<script>\n" +
@@ -570,7 +570,7 @@ public class TestClick {
   }
 
   @Test
-  void should_click_the_button_when_window_innerWidth_is_corrupted() {
+  void shouldClickTheButtonWhenWindowInnerWidthIsCorrupted() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => Object.defineProperty(window, 'innerWidth', {value: 0})");
     page.click("button");

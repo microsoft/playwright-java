@@ -66,7 +66,7 @@ public class TestPopup {
   }
 
   @Test
-  void should_inherit_user_agent_from_browser_context() throws ExecutionException, InterruptedException {
+  void shouldInheritUserAgentFromBrowserContext() throws ExecutionException, InterruptedException {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().withUserAgent("hey"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
@@ -84,7 +84,7 @@ public class TestPopup {
   }
 
   @Test
-  void should_respect_routes_from_browser_context() {
+  void shouldRespectRoutesFromBrowserContext() {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
@@ -103,7 +103,7 @@ public class TestPopup {
   }
 
   @Test
-  void should_inherit_extra_headers_from_browser_context() throws ExecutionException, InterruptedException {
+  void shouldInheritExtraHeadersFromBrowserContext() throws ExecutionException, InterruptedException {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .withExtraHTTPHeaders(mapOf("foo", "bar")));
     Page page = context.newPage();
@@ -116,7 +116,7 @@ public class TestPopup {
   }
 
   @Test
-  void should_inherit_offline_from_browser_context() {
+  void shouldInheritOfflineFromBrowserContext() {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
@@ -130,7 +130,7 @@ public class TestPopup {
   }
 
   @Test
-  void should_inherit_http_credentials_from_browser_context() {
+  void shouldInheritHttpCredentialsFromBrowserContext() {
     server.setAuth("/title.html", "user", "pass");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .withHttpCredentials("user", "pass"));
@@ -144,7 +144,7 @@ public class TestPopup {
   }
 
   @Test
-  void should_inherit_touch_support_from_browser_context() {
+  void shouldInheritTouchSupportFromBrowserContext() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .withViewport(400, 500)
       .withHasTouch(true));
@@ -159,7 +159,7 @@ public class TestPopup {
   }
 
   @Test
-  void should_inherit_viewport_size_from_browser_context() {
+  void shouldInheritViewportSizeFromBrowserContext() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .withViewport(400, 500));
     Page page = context.newPage();
@@ -173,7 +173,7 @@ public class TestPopup {
   }
 
   @Test
-  void should_use_viewport_size_from_window_features() {
+  void shouldUseViewportSizeFromWindowFeatures() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .withViewport(700, 700));
     Page page = context.newPage();
@@ -193,7 +193,7 @@ public class TestPopup {
   }
 
   @Test
-  void should_respect_routes_from_browser_context_with_window_open() {
+  void shouldRespectRoutesFromBrowserContextWithWindowOpen() {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
@@ -210,7 +210,7 @@ public class TestPopup {
   }
 
   @Test
-  void BrowserContext_addInitScript_should_apply_to_an_in_process_popup() {
+  void BrowserContextAddInitScriptShouldApplyToAnInProcessPopup() {
     BrowserContext context = browser.newContext();
     context.addInitScript("() => window['injected'] = 123");
     Page page = context.newPage();
@@ -224,7 +224,7 @@ public class TestPopup {
   }
 
   @Test
-  void BrowserContext_addInitScript_should_apply_to_a_cross_process_popup() {
+  void BrowserContextAddInitScriptShouldApplyToACrossProcessPopup() {
     BrowserContext context = browser.newContext();
     context.addInitScript("() => window['injected'] = 123");
     Page page = context.newPage();
@@ -241,7 +241,7 @@ public class TestPopup {
   }
 
   @Test
-  void should_expose_function_from_browser_context() {
+  void shouldExposeFunctionFromBrowserContext() {
     BrowserContext context = browser.newContext();
     List<String> messages = new ArrayList<>();
     context.exposeFunction("add", args -> {
@@ -261,6 +261,6 @@ public class TestPopup {
   }
 
   // TODO: checks event order, not specific to java.
-  void should_not_dispatch_binding_on_a_closed_page() {
+  void shouldNotDispatchBindingOnAClosedPage() {
   }
 }

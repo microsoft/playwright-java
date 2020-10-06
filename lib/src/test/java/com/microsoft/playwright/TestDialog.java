@@ -62,7 +62,7 @@ public class TestDialog {
   }
 
   @Test
-  void should_fire() {
+  void shouldFire() {
     page.addDialogListener(dialog -> {
       assertEquals( "alert", dialog.type());
       assertEquals( "", dialog.defaultValue());
@@ -73,7 +73,7 @@ public class TestDialog {
   }
 
   @Test
-  void should_allow_accepting_prompts() {
+  void shouldAllowAcceptingPrompts() {
     page.addDialogListener(dialog -> {
       assertEquals("prompt", dialog.type());
       assertEquals("yes.", dialog.defaultValue());
@@ -85,7 +85,7 @@ public class TestDialog {
   }
 
   @Test
-  void should_dismiss_the_prompt() {
+  void shouldDismissThePrompt() {
     page.addDialogListener(dialog -> {
       dialog.dismiss();
     });
@@ -94,7 +94,7 @@ public class TestDialog {
   }
 
   @Test
-  void should_accept_the_confirm_prompt() {
+  void shouldAcceptTheConfirmPrompt() {
     page.addDialogListener(dialog -> {
       dialog.accept();
     });
@@ -103,7 +103,7 @@ public class TestDialog {
   }
 
   @Test
-  void should_dismiss_the_confirm_prompt() {
+  void shouldDismissTheConfirmPrompt() {
     page.addDialogListener(dialog -> {
       dialog.dismiss();
     });
@@ -112,7 +112,7 @@ public class TestDialog {
   }
 
   @Test
-  void should_be_able_to_close_context_with_open_alert() {
+  void shouldBeAbleToCloseContextWithOpenAlert() {
 //    test.fixme(browserName === "webkit" && platform === "darwin");
     BrowserContext context = browser.newContext();
     Page page = context.newPage();

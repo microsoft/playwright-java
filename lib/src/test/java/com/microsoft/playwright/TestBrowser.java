@@ -48,7 +48,7 @@ public class TestBrowser {
   }
 
   @Test
-  void should_create_new_page() {
+  void shouldCreateNewPage() {
     Page page1 = browser.newPage();
     assertEquals(1, browser.contexts().size());
 
@@ -63,7 +63,7 @@ public class TestBrowser {
   }
 
   @Test
-  void should_throw_upon_second_create_new_page() {
+  void shouldThrowUponSecondCreateNewPage() {
     Page page = browser.newPage();
     try {
       page.context().newPage();
@@ -76,7 +76,7 @@ public class TestBrowser {
 
 
   @Test
-  void version_should_work() {
+  void versionShouldWork() {
     if (isChromium)
       assertTrue(Pattern.matches("^\\d+\\.\\d+\\.\\d+\\.\\d+$", browser.version()));
     else
