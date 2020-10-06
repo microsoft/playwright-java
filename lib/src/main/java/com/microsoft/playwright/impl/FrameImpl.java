@@ -29,12 +29,23 @@ import static com.microsoft.playwright.impl.Serialization.serializeArgument;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 public class FrameImpl extends ChannelOwner implements Frame {
-  PageImpl page;
+  private String name;
+  private String url;
+  FrameImpl parentFrame;
+  Set<FrameImpl> childFrames = new LinkedHashSet<>();
   private final Set<LoadState> loadStates = new HashSet<>();
+  PageImpl page;
+  boolean isDetached;
 
   FrameImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
 
+    name = initializer.get("name").getAsString();
+    url = initializer.get("url").getAsString();
+    if (initializer.has("parentFrame")) {
+      parentFrame = connection.getExistingObject(initializer.getAsJsonObject("parentFrame").get("guid").getAsString());
+      parentFrame.childFrames.add(this);
+    }
     for (JsonElement item : initializer.get("loadStates").getAsJsonArray()) {
       loadStates.add(loadStateFromProtocol(item.getAsString()));
     }
@@ -240,22 +251,22 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public boolean isDetached() {
-    return false;
+    return isDetached;
   }
 
   @Override
   public String name() {
-    return null;
+    return name;
   }
 
   @Override
   public Page page() {
-    return null;
+    return page;
   }
 
   @Override
   public Frame parentFrame() {
-    return null;
+    return parentFrame;
   }
 
   @Override
@@ -321,7 +332,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public String url() {
-    return null;
+    return url;
   }
 
   @Override
@@ -365,6 +376,9 @@ public class FrameImpl extends ChannelOwner implements Frame {
       if (remove != null) {
         loadStates.remove(loadStateFromProtocol(remove.getAsString()));
       }
+    } else if ("navigated".equals(event)) {
+      url = params.get("url").getAsString();
+      name = params.get("name").getAsString();
     }
   }
 

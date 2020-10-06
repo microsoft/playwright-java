@@ -40,7 +40,7 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   @Override
   public Frame frame() {
-    return null;
+    return request().frame();
   }
 
   @Override
@@ -55,22 +55,22 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   @Override
   public boolean ok() {
-    return false;
+    return status() == 0 || (status() >= 200 && status() <= 299);
   }
 
   @Override
   public Request request() {
-    return null;
+    return connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());
   }
 
   @Override
   public int status() {
-    return 0;
+    return initializer.get("status").getAsInt();
   }
 
   @Override
   public String statusText() {
-    return null;
+    return initializer.get("statusText").getAsString();
   }
 
   @Override
@@ -80,6 +80,6 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   @Override
   public String url() {
-    return null;
+    return initializer.get("url").getAsString();
   }
 }

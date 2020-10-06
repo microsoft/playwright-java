@@ -24,8 +24,15 @@ import com.microsoft.playwright.Response;
 import java.util.Map;
 
 public class RequestImpl extends ChannelOwner implements Request {
+  private RequestImpl redirectedFrom;
+  private RequestImpl redirectedTo;
   RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+
+    if (initializer.has("redirectedFrom")) {
+      redirectedFrom = connection.getExistingObject(initializer.getAsJsonObject("redirectedFrom").get("guid").getAsString());
+      redirectedFrom.redirectedTo = this;
+    }
   }
 
   @Override
@@ -35,7 +42,7 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public Frame frame() {
-    return null;
+    return connection.getExistingObject(initializer.getAsJsonObject("frame").get("guid").getAsString());
   }
 
   @Override
@@ -45,7 +52,7 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public boolean isNavigationRequest() {
-    return false;
+    return initializer.get("isNavigationRequest").getAsBoolean();
   }
 
   @Override
@@ -70,12 +77,12 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public Request redirectedFrom() {
-    return null;
+    return redirectedFrom;
   }
 
   @Override
   public Request redirectedTo() {
-    return null;
+    return redirectedTo;
   }
 
   @Override
@@ -85,7 +92,11 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public Response response() {
-    return null;
+    JsonObject result = sendMessage("response", new JsonObject()).getAsJsonObject();
+    if (!result.has("response")) {
+      return null;
+    }
+    return connection.getExistingObject(result.getAsJsonObject("response").get("guid").getAsString());
   }
 
   @Override

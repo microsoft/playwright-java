@@ -20,10 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -35,6 +32,8 @@ public class PageImpl extends ChannelOwner implements Page {
   private final FrameImpl mainFrame;
   private final KeyboardImpl keyboard;
   private final MouseImpl mouse;
+  // TODO: do not rely on the frame order in the tests
+  private final Set<FrameImpl> frames = new LinkedHashSet<>();
   private final List<Listener<ConsoleMessage>> consoleListeners = new ArrayList<>();
   private final List<Listener<Dialog>> dialogListeners = new ArrayList<>();
   final Map<String, Binding> bindings = new HashMap<String, Binding>();
@@ -47,6 +46,7 @@ public class PageImpl extends ChannelOwner implements Page {
     mainFrame.page = this;
     keyboard = new KeyboardImpl(this);
     mouse = new MouseImpl(this);
+    frames.add(mainFrame);
   }
 
   @Override
@@ -95,6 +95,22 @@ public class PageImpl extends ChannelOwner implements Page {
       ConsoleMessageImpl message = connection.getExistingObject(guid);
       for (Listener<ConsoleMessage> listener: new ArrayList<>(consoleListeners)) {
         listener.handle(message);
+      }
+    } else if ("frameAttached".equals(event)) {
+      String guid = params.getAsJsonObject("frame").get("guid").getAsString();
+      FrameImpl frame = connection.getExistingObject(guid);
+      frames.add(frame);
+      frame.page = this;
+      if (frame.parentFrame != null) {
+        frame.parentFrame.childFrames.add(frame);
+      }
+    } else if ("'frameDetached'".equals(event)) {
+      String guid = params.getAsJsonObject("frame").get("guid").getAsString();
+      FrameImpl frame = connection.getExistingObject(guid);
+      frames.remove(frame);
+      frame.isDetached = true;
+      if (frame.parentFrame != null) {
+        frame.parentFrame.childFrames.remove(frame);
       }
     }
   }
@@ -240,7 +256,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public List<Frame> frames() {
-    return null;
+    return new ArrayList<>(frames);
   }
 
   @Override
