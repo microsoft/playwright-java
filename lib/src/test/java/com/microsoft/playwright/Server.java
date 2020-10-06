@@ -43,6 +43,7 @@ public class Server implements HttpHandler {
 
   private final Map<String, CompletableFuture<Request>> requestSubscribers = Collections.synchronizedMap(new HashMap<>());
   private final Map<String, Auth> auths = Collections.synchronizedMap(new HashMap<>());
+  private final Map<String, HttpHandler> routes = Collections.synchronizedMap(new HashMap<>());
 
   private static class Auth {
     public final String user;
@@ -95,6 +96,11 @@ public class Server implements HttpHandler {
     return future;
   }
 
+
+  void setRoute(String path, HttpHandler handler) {
+    routes.put(path, handler);
+  }
+
   @Override
   public void handle(HttpExchange exchange) throws IOException {
     String path = exchange.getRequestURI().getPath();
@@ -123,6 +129,20 @@ public class Server implements HttpHandler {
       }
     }
 
+    synchronized (requestSubscribers) {
+      CompletableFuture<Request> subscriber = requestSubscribers.get(path);
+      if (subscriber != null) {
+        requestSubscribers.remove(path);
+        subscriber.complete(new Request(exchange.getRequestHeaders()));
+      }
+    }
+
+    HttpHandler handler = routes.get(path);
+    if (handler != null) {
+      handler.handle(exchange);
+      return;
+    }
+
     File file = new File(resourcesDir, path.substring(1));
     exchange.getResponseHeaders().put("Content-Type", singletonList(mimeType(file)));
     try (FileInputStream input = new FileInputStream(file)) {
@@ -135,14 +155,6 @@ public class Server implements HttpHandler {
       }
     }
     exchange.getResponseBody().close();
-
-    synchronized (requestSubscribers) {
-      CompletableFuture<Request> subscriber = requestSubscribers.get(path);
-      if (subscriber != null) {
-        requestSubscribers.remove(path);
-        subscriber.complete(new Request(exchange.getRequestHeaders()));
-      }
-    }
   }
 
   private static void copy(InputStream in, OutputStream out) throws IOException {

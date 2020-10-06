@@ -223,6 +223,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return null;
   }
 
+
+  private static String toProtocol(NavigateOptions.WaitUntil waitUntil) {
+    return waitUntil.toString().toLowerCase();
+  }
+
   @Override
   public ResponseImpl navigate(String url, NavigateOptions options) {
     if (options == null) {
@@ -230,6 +235,10 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
     JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("url", url);
+    if (options.waitUntil != null) {
+      params.remove("waitUntil");
+      params.addProperty("waitUntil", toProtocol(options.waitUntil));
+    }
     JsonElement result = sendMessage("goto", params);
     return connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("response").get("guid").getAsString());
   }

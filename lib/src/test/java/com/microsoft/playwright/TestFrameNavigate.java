@@ -20,6 +20,7 @@ import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 
+import static com.microsoft.playwright.Page.NavigateOptions.WaitUntil.NETWORKIDLE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -62,7 +63,7 @@ public class TestFrameNavigate {
   }
 
   @Test
-  void should_navigate_subframes() {
+  void shouldNavigateSubframes() {
     page.navigate(server.PREFIX + "/frames/one-frame.html");
     assertTrue(page.frames().get(0).url().contains("/frames/one-frame.html"));
     assertTrue(page.frames().get(1).url().contains("/frames/frame.html"));
@@ -70,5 +71,25 @@ public class TestFrameNavigate {
     Response response = page.frames().get(1).navigate(server.EMPTY_PAGE);
     assertTrue(response.ok());
     assertEquals(page.frames().get(1), response.frame());
+  }
+
+  // TODO: not supported in sync api
+  void shouldRejectWhenFrameDetaches() {
+  }
+
+  @Test
+  void shouldContinueAfterClientRedirect() {
+    server.setRoute("/frames/script.js", (httpExchange) -> {});
+    String url = server.PREFIX + "/frames/child-redirect.html";
+    try {
+      page.navigate(url, new Page.NavigateOptions().withTimeout(5000).withWaitUntil(NETWORKIDLE));
+    } catch (RuntimeException e) {
+      assertTrue(e.getMessage().contains("Timeout 5000ms exceeded."));
+      assertTrue(e.getMessage().contains("navigating to \"" + url +"\", waiting until \"networkidle\""));
+    }
+  }
+
+  // TODO: not supported in sync api
+  void shouldReturnMatchingResponses() {
   }
 }
