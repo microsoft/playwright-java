@@ -66,7 +66,6 @@ public class TestFrameNavigate {
     page.navigate(server.PREFIX + "/frames/one-frame.html");
     assertTrue(page.frames().get(0).url().contains("/frames/one-frame.html"));
     assertTrue(page.frames().get(1).url().contains("/frames/frame.html"));
-
     Response response = page.frames().get(1).navigate(server.EMPTY_PAGE);
     assertTrue(response.ok());
     assertEquals(page.frames().get(1), response.frame());
