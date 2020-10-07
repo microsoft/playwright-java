@@ -54,6 +54,7 @@ public class TestPopup {
 
   @BeforeEach
   void setUp() {
+    server.reset();
     context = browser.newContext();
     page = context.newPage();
   }

@@ -51,6 +51,7 @@ public class TestFrameNavigate {
 
   @BeforeEach
   void setUp() {
+    server.reset();
     context = browser.newContext();
     page = context.newPage();
   }

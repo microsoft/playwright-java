@@ -101,6 +101,12 @@ public class Server implements HttpHandler {
     routes.put(path, handler);
   }
 
+  void reset() {
+    requestSubscribers.clear();
+    auths.clear();
+    routes.clear();
+  }
+
   @Override
   public void handle(HttpExchange exchange) throws IOException {
     String path = exchange.getRequestURI().getPath();

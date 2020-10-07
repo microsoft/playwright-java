@@ -93,7 +93,7 @@ class TypeRef extends Element {
       }
     } else {
       if (!mapping.from.equals(jsonName)) {
-        throw new RuntimeException("Unexpected source type for: " + parentPath);
+        throw new RuntimeException("Unexpected source type for: " + parentPath +". Expected: " + mapping.from + "; found: " + jsonName);
       }
       customType = mapping.to;
       if (mapping.customMapping != null) {
@@ -510,6 +510,10 @@ class Interface extends TypeDefinition {
     }
     for (Method m : methods) {
       m.writeTo(output, offset);
+    }
+    // TODO: fix api.json generator to avoid name clash between close() method and close event.
+    if ("Page".equals(jsonName)) {
+      output.add(offset + "Deferred<Void> waitForClose();");
     }
     output.add("}");
     output.add("\n");

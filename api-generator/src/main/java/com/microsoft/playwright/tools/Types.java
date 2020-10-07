@@ -185,6 +185,10 @@ class Types {
     // Return structures
     add("ConsoleMessage.location", "Object", "Location");
 
+    add("Page.waitForRequest", "Promise<Request>", "Deferred<Request>");
+    add("Page.waitForResponse", "Promise<Response>", "Deferred<Response>");
+    add("Page.waitForNavigation", "Promise<null|Response>", "Deferred<Response>");
+
     // Custom options
     add("Page.pdf.options.margin.top", "string|number", "String");
     add("Page.pdf.options.margin.right", "string|number", "String");

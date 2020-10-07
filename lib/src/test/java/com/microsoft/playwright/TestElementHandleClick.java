@@ -49,6 +49,7 @@ public class TestElementHandleClick {
 
   @BeforeEach
   void setUp() {
+    server.reset();
     context = browser.newContext();
     page = context.newPage();
   }

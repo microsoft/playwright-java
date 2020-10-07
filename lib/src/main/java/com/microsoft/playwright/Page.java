@@ -920,23 +920,24 @@ public interface Page {
     waitForLoadState(null);
   }
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
-  default Response waitForNavigation() {
+  default Deferred<Response> waitForNavigation() {
     return waitForNavigation(null);
   }
-  Response waitForNavigation(WaitForNavigationOptions options);
-  default Request waitForRequest(String urlOrPredicate) {
+  Deferred<Response> waitForNavigation(WaitForNavigationOptions options);
+  default Deferred<Request> waitForRequest(String urlOrPredicate) {
     return waitForRequest(urlOrPredicate, null);
   }
-  Request waitForRequest(String urlOrPredicate, WaitForRequestOptions options);
-  default Response waitForResponse(String urlOrPredicate) {
+  Deferred<Request> waitForRequest(String urlOrPredicate, WaitForRequestOptions options);
+  default Deferred<Response> waitForResponse(String urlOrPredicate) {
     return waitForResponse(urlOrPredicate, null);
   }
-  Response waitForResponse(String urlOrPredicate, WaitForResponseOptions options);
+  Deferred<Response> waitForResponse(String urlOrPredicate, WaitForResponseOptions options);
   default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }
   ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
   void waitForTimeout(int timeout);
   List<Worker> workers();
+  Deferred<Void> waitForClose();
 }
 

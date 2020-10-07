@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -34,7 +35,7 @@ import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private final BrowserImpl browser;
-  private final List<PageImpl> pages = new ArrayList<>();
+  final List<PageImpl> pages = new ArrayList<>();
   private List<RouteInfo> routes = new ArrayList<>();
   private boolean isClosedOrClosing;
   final Map<String, Page.Binding> bindings = new HashMap<String, Page.Binding>();
@@ -206,9 +207,9 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public Deferred<Page> waitForPage() {
-    Supplier<JsonObject> pageSupplier = waitForProtocolEvent("page");
+    CompletableFuture<JsonObject> pageFuture = futureForEvent("page");
     return () -> {
-      JsonObject params = pageSupplier.get();
+      JsonObject params = waitForCompletion(pageFuture);
       String guid = params.getAsJsonObject("page").get("guid").getAsString();
       return connection.getExistingObject(guid);
     };

@@ -240,7 +240,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
       params.addProperty("waitUntil", toProtocol(options.waitUntil));
     }
     JsonElement result = sendMessage("goto", params);
-    return connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("response").get("guid").getAsString());
+    JsonObject jsonResponse = result.getAsJsonObject().getAsJsonObject("response");
+    if (jsonResponse == null) {
+      return null;
+    }
+    return connection.getExistingObject(jsonResponse.get("guid").getAsString());
   }
 
   @Override

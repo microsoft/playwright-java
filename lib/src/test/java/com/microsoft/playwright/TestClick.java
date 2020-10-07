@@ -62,6 +62,7 @@ public class TestClick {
 
   @BeforeEach
   void setUp() {
+    server.reset();
     context = browser.newContext();
     page = context.newPage();
   }

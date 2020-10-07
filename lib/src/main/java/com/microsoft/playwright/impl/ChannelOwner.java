@@ -66,11 +66,11 @@ class ChannelOwner {
     return connection.sendMessage(guid, method, params);
   }
 
-  protected void sendMessageNoWait(String method, JsonObject params) {
+  void sendMessageNoWait(String method, JsonObject params) {
     connection.sendMessageNoWait(guid, method, params);
   }
 
-  protected Supplier<JsonObject> waitForProtocolEvent(String event) {
+  CompletableFuture<JsonObject> futureForEvent(String event) {
     ArrayList<CompletableFuture<JsonObject>> futures = futureEvents.get(event);
     if (futures == null) {
       futures = new ArrayList<>();
@@ -78,23 +78,27 @@ class ChannelOwner {
     }
     CompletableFuture<JsonObject> result = new CompletableFuture<>();
     futures.add(result);
-    return () -> {
-      while (!result.isDone()) {
-        connection.processOneMessage();
-      }
-      try {
-        return result.get();
-      } catch (InterruptedException | ExecutionException e) {
-        throw new RuntimeException(e);
-      }
-    };
+    return result;
+  }
+
+  <T> T waitForCompletion(CompletableFuture<T> future) {
+    while (!future.isDone()) {
+      connection.processOneMessage();
+    }
+    // TODO: ensure it's been removed from futureEvents
+    try {
+      return future.get();
+    } catch (InterruptedException | ExecutionException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   final void onEvent(String event, JsonObject parameters) {
     handleEvent(event, parameters);
     ArrayList<CompletableFuture<JsonObject>> futures = futureEvents.remove(event);
-    if (futures == null)
+    if (futures == null) {
       return;
+    }
     for (CompletableFuture<JsonObject> f : futures) {
       f.complete(parameters);
     }
