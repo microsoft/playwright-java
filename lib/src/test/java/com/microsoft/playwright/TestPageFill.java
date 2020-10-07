@@ -1,0 +1,281 @@
+/**
+ * Copyright (c) Microsoft Corporation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.microsoft.playwright;
+
+import org.junit.jupiter.api.*;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestPageFill {
+  private static Server server;
+  private static Browser browser;
+  private static boolean isChromium;
+  private static boolean isWebKit;
+  private static boolean isFirefox;
+  private BrowserContext context;
+  private Page page;
+
+  @BeforeAll
+  static void launchBrowser() {
+    Playwright playwright = Playwright.create();
+    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
+    browser = playwright.chromium().launch(options);
+    isChromium = true;
+
+  }
+
+  @BeforeAll
+  static void startServer() throws IOException {
+    server = new Server(8907);
+  }
+
+  @AfterAll
+  static void stopServer() throws IOException {
+    browser.close();
+    server.stop();
+    server = null;
+  }
+
+  @BeforeEach
+  void setUp() {
+    context = browser.newContext();
+    page = context.newPage();
+  }
+
+  @AfterEach
+  void tearDown() {
+    context.close();
+    context = null;
+    page = null;
+  }
+
+  @Test
+  void shouldFillTextarea() {
+    page.navigate(server.PREFIX + "/input/textarea.html");
+    page.fill("textarea", "some value");
+    assertEquals("some value", page.evaluate("() => window['result']"));
+  }
+
+  @Test
+  void shouldFillInput() {
+    page.navigate(server.PREFIX + "/input/textarea.html");
+    page.fill("input", "some value");
+    assertEquals("some value", page.evaluate("() => window['result']"));
+  }
+
+  @Test
+  void shouldThrowOnUnsupportedInputs() {
+    page.navigate(server.PREFIX + "/input/textarea.html");
+    for (String type : new String[]{"color", "file"}) {
+      page.evalOnSelector("input", "(input, type) => input.setAttribute('type', type)", type);
+      try {
+        page.fill("input", "");
+        fail("fill should throw");
+      } catch (RuntimeException e) {
+        assertTrue(e.getMessage().contains("input of type \"" + type + "\" cannot be filled"), e.getMessage());
+      }
+    }
+  }
+
+  @Test
+  void shouldFillDifferentInputTypes() {
+    page.navigate(server.PREFIX + "/input/textarea.html");
+    for (String type : new String[]{"password", "search", "tel", "text", "url"}) {
+      page.evalOnSelector("input", "(input, type) => input.setAttribute('type', type)", type);
+      page.fill("input", "text " + type);
+      assertEquals("text " + type, page.evaluate("() => window['result']"));
+    }
+  }
+
+  @Test
+  void shouldFillDateInputAfterClicking() {
+    page.setContent("<input type=date>");
+    page.click("input");
+    page.fill("input", "2020-03-02");
+    assertEquals("2020-03-02", page.evalOnSelector("input", "input => input.value"));
+  }
+
+  @Test
+  void shouldThrowOnIncorrectDate() {
+    // TODO: test.skip(browserName === "webkit");
+    page.setContent("<input type=date>");
+    try {
+      page.fill("input", "2020-13-05");
+      fail("did not throw");
+    } catch (RuntimeException e) {
+      assertTrue(e.getMessage().contains("Malformed value"));
+    }
+  }
+
+  @Test
+  void shouldFillTimeInput() {
+    page.setContent("<input type=time>");
+    page.fill("input", "13:15");
+    assertEquals("13:15", page.evalOnSelector("input", "input => input.value"));
+  }
+
+  @Test
+  void shouldThrowOnIncorrectTime() {
+    // TODO: test.skip(browserName === "webkit");
+    page.setContent("<input type=time>");
+    try {
+      page.fill("input", "25:05");
+      fail("did not throw");
+    } catch (RuntimeException e) {
+      assertTrue(e.getMessage().contains("Malformed value"));
+    }
+  }
+
+  @Test
+  void shouldFillDatetimeLocalInput() {
+    page.setContent("<input type=datetime-local>");
+    page.fill("input", "2020-03-02T05:15");
+    assertEquals(page.evalOnSelector("input", "input => input.value"), "2020-03-02T05:15");
+  }
+
+  @Test
+  void shouldThrowOnIncorrectDatetimeLocal() {
+    // TODO: test.skip(browserName === "webkit" || browserName === "firefox");
+    page.setContent("<input type=datetime-local>");
+    try {
+      page.fill("input", "abc");
+      fail("did not throw");
+    } catch (RuntimeException e) {
+      assertTrue(e.getMessage().contains("Malformed value"));
+    }
+  }
+
+  @Test
+  void shouldFillContenteditable() {
+    page.navigate(server.PREFIX + "/input/textarea.html");
+    page.fill("div[contenteditable]", "some value");
+    assertEquals(page.evalOnSelector("div[contenteditable]", "div => div.textContent"), "some value");
+  }
+
+  @Test
+  void shouldFillElementsWithExistingValueAndSelection() {
+    page.navigate(server.PREFIX + "/input/textarea.html");
+
+    page.evalOnSelector("input", "input => input.value = 'value one'");
+    page.fill("input", "another value");
+    assertEquals("another value", page.evaluate("() => window['result']"));
+
+    page.evalOnSelector("input", "input => {\n" +
+      "  input.selectionStart = 1;\n" +
+      "  input.selectionEnd = 2;\n" +
+      "}");
+    page.fill("input", "maybe this one");
+    assertEquals("maybe this one", page.evaluate("() => window['result']"));
+
+    page.evalOnSelector("div[contenteditable]", "div => {\n" +
+      "  div.innerHTML = 'some text <span>some more text<span> and even more text';\n" +
+      "  const range = document.createRange();\n" +
+      "  range.selectNodeContents(div.querySelector('span'));\n" +
+      "  const selection = window.getSelection();\n" +
+      "  selection.removeAllRanges();\n" +
+      "  selection.addRange(range);\n" +
+      "}");
+    page.fill("div[contenteditable]", "replace with this");
+    assertEquals("replace with this", page.evalOnSelector("div[contenteditable]", "div => div.textContent"));
+  }
+
+  @Test
+  void shouldThrowWhenElementIsNotAnInputTextareaOrContenteditable() {
+    page.navigate(server.PREFIX + "/input/textarea.html");
+    try {
+      page.fill("body", "");
+      fail("did not throw");
+    } catch (RuntimeException e) {
+      assertTrue(e.getMessage().contains("Element is not an <input>"));
+    }
+  }
+
+  void shouldThrowIfPassedANonStringValue() {
+    // Doesn't make sense in a strongly typed language
+  }
+
+  // TODO: not supported in sync api, tests internals
+  void shouldRetryOnDisabledElement() {
+  }
+  void shouldRetryOnInvisibleElement() {
+  }
+  @Test
+  void shouldBeAbleToFillTheBody() {
+    page.setContent("<body contentEditable='true'></body>");
+    page.fill("body", "some value");
+    assertEquals("some value", page.evaluate("() => document.body.textContent"));
+  }
+
+  @Test
+  void shouldFillFixedPositionInput() {
+    page.setContent("<input style='position: fixed;' />");
+    page.fill("input", "some value");
+    assertEquals("some value", page.evaluate("() => document.querySelector('input').value"));
+  }
+
+  @Test
+  void shouldBeAbleToFillWhenFocusIsInTheWrongFrame() {
+    page.setContent("<div contentEditable='true'></div>\n" +
+      "<iframe></iframe>");
+    page.focus("iframe");
+    page.fill("div", "some value");
+    assertEquals("some value", page.evalOnSelector("div", "d => d.textContent"));
+  }
+
+  @Test
+  void shouldBeAbleToFillTheInputTypeNumber() {
+    page.setContent("<input id='input' type='number'></input>");
+    page.fill("input", "42");
+    assertEquals("42", page.evaluate("() => window['input'].value"));
+  }
+
+  @Test
+  void shouldBeAbleToFillExponentIntoTheInputTypeNumber() {
+    page.setContent("<input id='input' type='number'></input>");
+    page.fill("input", "-10e5");
+    assertEquals("-10e5", page.evaluate("() => window['input'].value"));
+  }
+
+  @Test
+  void shouldBeAbleToFillInputTypeNumberWithEmptyString() {
+    page.setContent("<input id='input' type='number' value='123'></input>");
+    page.fill("input", "");
+    assertEquals("", page.evaluate("() => window['input'].value"));
+  }
+
+  @Test
+  void shouldNotBeAbleToFillTextIntoTheInputTypeNumber() {
+    page.setContent("<input id='input' type='number'></input>");
+    try {
+      page.fill("input", "abc");
+      fail("did not throw");
+    } catch (RuntimeException e) {
+      assertTrue(e.getMessage().contains("Cannot type text into input[type=number]"));
+    }
+  }
+
+  @Test
+  void shouldBeAbleToClear() {
+    page.navigate(server.PREFIX + "/input/textarea.html");
+    page.fill("input", "some value");
+    assertEquals("some value", page.evaluate("() => window['result']"));
+    page.fill("input", "");
+    assertEquals("", page.evaluate("() => window['result']"));
+  }
+}
