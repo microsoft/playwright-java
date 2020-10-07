@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.Page.LoadState.DOMCONTENTLOADED;
 import static com.microsoft.playwright.Page.LoadState.LOAD;
@@ -33,6 +34,7 @@ public class TestPageBasic {
   private static Browser browser;
   private static boolean isChromium;
   private static boolean isWebKit;
+  private static boolean isFirefox;
   private BrowserContext context;
   private Page page;
 
@@ -269,8 +271,32 @@ public class TestPageBasic {
     assertEquals(server.EMPTY_PAGE, frame.url());
   }
 
-  // TODO:
+  @Test
   void shouldHaveSaneUserAgent() {
+    String userAgent = (String) page.evaluate("() => navigator.userAgent");
+    List<String> parts = Arrays.stream(userAgent.split("[()]")).map(part -> part.trim()).collect(Collectors.toList());
+    // First part is always 'Mozilla/5.0'
+    assertEquals(parts.get(0), "Mozilla/5.0");
+    // Second part in parenthesis is platform - ignore it.
+
+    // Third part for Firefox is the last one and encodes engine and browser versions.
+    if (isFirefox) {
+      String[] engineAndBrowser = parts.get(2).split(" ");
+      assertTrue(engineAndBrowser[0].startsWith("Gecko"));
+      assertTrue(engineAndBrowser[1].startsWith("Firefox"));
+      return;
+    }
+    // For both options.CHROMIUM and options.WEBKIT, third part is the AppleWebKit version.
+    assertTrue(parts.get(2).startsWith("AppleWebKit/"));
+    assertEquals("KHTML, like Gecko", parts.get(3));
+    // 5th part encodes real browser name and engine version.
+    String[] engineAndBrowser = parts.get(4).split(" ");
+    assertTrue(engineAndBrowser[1].startsWith("Safari"));
+    if (isChromium) {
+      assertTrue(engineAndBrowser[0].contains("Chrome/"));
+    } else {
+      assertTrue(engineAndBrowser[0].startsWith("Version/"));
+    }
   }
 
   @Test
