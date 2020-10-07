@@ -297,10 +297,37 @@ class Method extends Element {
     tsToJavaMethodName.put("goto", "navigate");
   }
 
-  private static Map<String, String> customSignature = new HashMap<>();
+  private static Map<String, String[]> customSignature = new HashMap<>();
   static {
-    customSignature.put("Page.setViewportSize", "void setViewportSize(int width, int height);");
-    customSignature.put("BrowserContext.setHTTPCredentials", "void setHTTPCredentials(String username, String password);");
+    customSignature.put("Page.setViewportSize", new String[]{"void setViewportSize(int width, int height);"});
+    customSignature.put("BrowserContext.setHTTPCredentials", new String[]{
+      "void setHTTPCredentials(String username, String password);"});
+    customSignature.put("BrowserContext.route", new String[]{
+      "void route(String url, BiConsumer<Route, Request> handler);",
+      "void route(Pattern url, BiConsumer<Route, Request> handler);",
+      "void route(Predicate<String> url, BiConsumer<Route, Request> handler);",
+    });
+    customSignature.put("Page.route", new String[]{
+      "void route(String url, BiConsumer<Route, Request> handler);",
+      "void route(Pattern url, BiConsumer<Route, Request> handler);",
+      "void route(Predicate<String> url, BiConsumer<Route, Request> handler);",
+    });
+    customSignature.put("BrowserContext.unroute", new String[]{
+      "default void unroute(String url) { unroute(url, null); }",
+      "default void unroute(Pattern url) { unroute(url, null); }",
+      "default void unroute(Predicate<String> url) { unroute(url, null); }",
+      "void unroute(String url, BiConsumer<Route, Request> handler);",
+      "void unroute(Pattern url, BiConsumer<Route, Request> handler);",
+      "void unroute(Predicate<String> url, BiConsumer<Route, Request> handler);",
+    });
+    customSignature.put("Page.unroute", new String[]{
+      "default void unroute(String url) { unroute(url, null); }",
+      "default void unroute(Pattern url) { unroute(url, null); }",
+      "default void unroute(Predicate<String> url) { unroute(url, null); }",
+      "void unroute(String url, BiConsumer<Route, Request> handler);",
+      "void unroute(Pattern url, BiConsumer<Route, Request> handler);",
+      "void unroute(Predicate<String> url, BiConsumer<Route, Request> handler);",
+    });
   }
 
   Method(TypeDefinition parent, JsonObject jsonElement) {
@@ -327,7 +354,9 @@ class Method extends Element {
 
   void writeTo(List<String> output, String offset) {
     if (customSignature.containsKey(jsonPath)) {
-      output.add(offset + customSignature.get(jsonPath));
+      for (String signature : customSignature.get(jsonPath)) {
+        output.add(offset + signature);
+      }
       return;
     }
     for (int i = params.size() - 1; i >= 0; i--) {
@@ -375,6 +404,9 @@ class Param extends Element {
   Param(Method method, JsonObject jsonElement) {
     super(method, jsonElement);
     type = new TypeRef(this, jsonElement.get("type").getAsJsonObject());
+    if (jsonPath.contains(".route")) {
+      System.out.println(jsonPath + ": " + type.jsonName);
+    }
   }
 
   boolean isOptional() {
@@ -490,12 +522,10 @@ class Interface extends TypeDefinition {
   void writeTo(List<String> output, String offset) {
     output.add(header);
     output.add("import java.util.*;");
-    if (jsonName.equals("Page")) {
+    if (Arrays.asList("Page", "BrowserContext").contains(jsonName)) {
       output.add("import java.util.function.BiConsumer;");
       output.add("import java.util.function.Predicate;");
       output.add("import java.util.regex.Pattern;");
-    } else if (jsonName.equals("BrowserContext")) {
-      output.add("import java.util.function.BiConsumer;");
     }
     output.add("");
 

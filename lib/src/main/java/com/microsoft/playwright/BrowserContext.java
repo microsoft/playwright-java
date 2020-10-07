@@ -18,6 +18,8 @@ package com.microsoft.playwright;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 public interface BrowserContext {
   class HTTPCredentials {
@@ -87,16 +89,20 @@ public interface BrowserContext {
   Page newPage();
   List<Page> pages();
   void route(String url, BiConsumer<Route, Request> handler);
+  void route(Pattern url, BiConsumer<Route, Request> handler);
+  void route(Predicate<String> url, BiConsumer<Route, Request> handler);
   void setDefaultNavigationTimeout(int timeout);
   void setDefaultTimeout(int timeout);
   void setExtraHTTPHeaders(Map<String, String> headers);
   void setGeolocation(Geolocation geolocation);
   void setHTTPCredentials(String username, String password);
   void setOffline(boolean offline);
-  default void unroute(String url) {
-    unroute(url, null);
-  }
+  default void unroute(String url) { unroute(url, null); }
+  default void unroute(Pattern url) { unroute(url, null); }
+  default void unroute(Predicate<String> url) { unroute(url, null); }
   void unroute(String url, BiConsumer<Route, Request> handler);
+  void unroute(Pattern url, BiConsumer<Route, Request> handler);
+  void unroute(Predicate<String> url, BiConsumer<Route, Request> handler);
   default Object waitForEvent(String event) {
     return waitForEvent(event, null);
   }

@@ -889,6 +889,8 @@ public interface Page {
   }
   Response reload(ReloadOptions options);
   void route(String url, BiConsumer<Route, Request> handler);
+  void route(Pattern url, BiConsumer<Route, Request> handler);
+  void route(Predicate<String> url, BiConsumer<Route, Request> handler);
   default byte[] screenshot() {
     return screenshot(null);
   }
@@ -922,10 +924,12 @@ public interface Page {
     uncheck(selector, null);
   }
   void uncheck(String selector, UncheckOptions options);
-  default void unroute(String url) {
-    unroute(url, null);
-  }
+  default void unroute(String url) { unroute(url, null); }
+  default void unroute(Pattern url) { unroute(url, null); }
+  default void unroute(Predicate<String> url) { unroute(url, null); }
   void unroute(String url, BiConsumer<Route, Request> handler);
+  void unroute(Pattern url, BiConsumer<Route, Request> handler);
+  void unroute(Predicate<String> url, BiConsumer<Route, Request> handler);
   String url();
   Viewport viewportSize();
   default Object waitForEvent(String event) {

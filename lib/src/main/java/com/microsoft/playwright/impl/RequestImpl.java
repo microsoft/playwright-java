@@ -16,22 +16,30 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Response;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class RequestImpl extends ChannelOwner implements Request {
   private RequestImpl redirectedFrom;
   private RequestImpl redirectedTo;
+  private final Map<String, String> headers = new HashMap<>();
   RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
 
     if (initializer.has("redirectedFrom")) {
       redirectedFrom = connection.getExistingObject(initializer.getAsJsonObject("redirectedFrom").get("guid").getAsString());
       redirectedFrom.redirectedTo = this;
+    }
+    for (JsonElement e : initializer.getAsJsonArray("headers")) {
+      JsonObject item = e.getAsJsonObject();
+      headers.put(item.get("name").getAsString().toLowerCase(), item.get("value").getAsString());
     }
   }
 
@@ -47,7 +55,7 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public Map<String, String> headers() {
-    return null;
+    return headers;
   }
 
   @Override

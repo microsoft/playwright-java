@@ -24,6 +24,8 @@ import com.microsoft.playwright.*;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 
@@ -34,6 +36,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private final KeyboardImpl keyboard;
   private final MouseImpl mouse;
   private Viewport viewport;
+  private final Router routes = new Router();
   // TODO: do not rely on the frame order in the tests
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
   private final List<Listener<ConsoleMessage>> consoleListeners = new ArrayList<>();
@@ -126,6 +129,16 @@ public class PageImpl extends ChannelOwner implements Page {
       frame.isDetached = true;
       if (frame.parentFrame != null) {
         frame.parentFrame.childFrames.remove(frame);
+      }
+    } else if ("route".equals(event)) {
+      Route route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
+      Request request = connection.getExistingObject(params.getAsJsonObject("request").get("guid").getAsString());
+      boolean handled = routes.handle(route, request);
+      if (!handled) {
+        handled = browserContext.routes.handle(route, request);
+      }
+      if (!handled) {
+        route.continue_();
       }
     } else if ("close".equals(event)) {
       isClosed = true;
@@ -274,7 +287,7 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public Frame frame(FrameOptions options) {
     if (options == null) {
-      throw new IllegalArgumentException("Frame criteria should be cpecified");
+      throw new IllegalArgumentException("Frame criteria should be specified");
     }
     for (Frame frame : frames) {
       if (options.name != null && options.name.equals(frame.name())) {
@@ -379,7 +392,26 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void route(String url, BiConsumer<Route, Request> handler) {
+    route(new UrlMatcher(url), handler);
+  }
 
+  @Override
+  public void route(Pattern url, BiConsumer<Route, Request> handler) {
+    route(new UrlMatcher(url), handler);
+  }
+
+  @Override
+  public void route(Predicate<String> url, BiConsumer<Route, Request> handler) {
+    route(new UrlMatcher(url), handler);
+  }
+
+  private void route(UrlMatcher matcher, BiConsumer<Route, Request> handler) {
+    routes.add(matcher, handler);
+    if (routes.size() == 1) {
+      JsonObject params = new JsonObject();
+      params.addProperty("enabled", true);
+      sendMessage("setNetworkInterceptionEnabled", params);
+    }
   }
 
   @Override
@@ -447,7 +479,26 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void unroute(String url, BiConsumer<Route, Request> handler) {
+    unroute(new UrlMatcher(url), handler);
+  }
 
+  @Override
+  public void unroute(Pattern url, BiConsumer<Route, Request> handler) {
+    unroute(new UrlMatcher(url), handler);
+  }
+
+  @Override
+  public void unroute(Predicate<String> url, BiConsumer<Route, Request> handler) {
+    unroute(new UrlMatcher(url), handler);
+  }
+
+  private void unroute(UrlMatcher matcher, BiConsumer<Route, Request> handler) {
+    routes.remove(matcher, handler);
+    if (routes.size() == 0) {
+      JsonObject params = new JsonObject();
+      params.addProperty("enabled", false);
+      sendMessage("setNetworkInterceptionEnabled", params);
+    }
   }
 
   @Override

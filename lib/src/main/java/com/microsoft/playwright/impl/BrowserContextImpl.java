@@ -26,32 +26,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-import static com.microsoft.playwright.impl.Utils.globToRegex;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private final BrowserImpl browser;
   final List<PageImpl> pages = new ArrayList<>();
-  private List<RouteInfo> routes = new ArrayList<>();
+  final Router routes = new Router();
   private boolean isClosedOrClosing;
   final Map<String, Page.Binding> bindings = new HashMap<String, Page.Binding>();
   PageImpl ownerPage;
-
-  private class RouteInfo {
-    private String url;
-    private BiConsumer<Route, Request> handler;
-    private final Pattern pattern;
-
-    public RouteInfo(String url, BiConsumer<Route, Request> handler) {
-      this.url = url;
-      this.handler = handler;
-      pattern = Pattern.compile(globToRegex(url));
-    }
-  }
 
   protected BrowserContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -148,7 +134,21 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void route(String url, BiConsumer<Route, Request> handler) {
-    routes.add(new RouteInfo(url, handler));
+    route(new UrlMatcher(url), handler);
+  }
+
+  @Override
+  public void route(Pattern url, BiConsumer<Route, Request> handler) {
+    route(new UrlMatcher(url), handler);
+  }
+
+  @Override
+  public void route(Predicate<String> url, BiConsumer<Route, Request> handler) {
+    route(new UrlMatcher(url), handler);
+  }
+
+  private void route(UrlMatcher matcher, BiConsumer<Route, Request> handler) {
+    routes.add(matcher, handler);
     if (routes.size() == 1) {
       JsonObject params = new JsonObject();
       params.addProperty("enabled", true);
@@ -190,10 +190,22 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void unroute(String url, BiConsumer<Route, Request> handler) {
-    routes = routes.stream()
-      .filter(info -> !info.url.equals(url) || (handler != null && info.handler != handler))
-      .collect(Collectors.toList());
-    if (routes.isEmpty()) {
+    unroute(new UrlMatcher(url), handler);
+  }
+
+  @Override
+  public void unroute(Pattern url, BiConsumer<Route, Request> handler) {
+    unroute(new UrlMatcher(url), handler);
+  }
+
+  @Override
+  public void unroute(Predicate<String> url, BiConsumer<Route, Request> handler) {
+    unroute(new UrlMatcher(url), handler);
+  }
+
+  private void unroute(UrlMatcher matcher, BiConsumer<Route, Request> handler) {
+    routes.remove(matcher, handler);
+    if (routes.size() == 0) {
       JsonObject params = new JsonObject();
       params.addProperty("enabled", false);
       sendMessage("setNetworkInterceptionEnabled", params);
@@ -220,12 +232,10 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     if ("route".equals(event)) {
       Route route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
       Request request = connection.getExistingObject(params.getAsJsonObject("request").get("guid").getAsString());
-      for (RouteInfo info : routes) {
-        if (info.pattern.matcher(request.url()).find()) {
-          info.handler.accept(route, request);
-        }
+      boolean handled = routes.handle(route, request);
+      if (!handled) {
+        route.continue_();
       }
-      route.continue_();
     } else if ("page".equals(event)) {
       PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
       pages.add(page);
