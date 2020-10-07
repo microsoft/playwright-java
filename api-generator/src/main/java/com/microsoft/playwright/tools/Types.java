@@ -205,7 +205,7 @@ class Types {
     add("BrowserContext.unroute.url", "string|RegExp|function(URL):boolean", "String");
     add("BrowserContext.waitForEvent.optionsOrPredicate", "Function|Object", "String");
     add("Page.waitForNavigation.options.url", "string|RegExp|Function", "String");
-    add("Page.frame.options", "string|Object", "String");
+    add("Page.frame.options", "string|Object", "FrameOptions", new Empty());
     add("Page.route.url", "string|RegExp|function(URL):boolean", "String");
     add("Page.selectOption.values", "null|string|ElementHandle|Array<string>|Object|Array<ElementHandle>|Array<Object>", "String");
     add("Page.setInputFiles.files", "string|Array<string>|Object|Array<Object>", "String");

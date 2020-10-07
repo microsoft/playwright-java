@@ -19,6 +19,10 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.Page.LoadState.DOMCONTENTLOADED;
 import static com.microsoft.playwright.Page.LoadState.LOAD;
@@ -246,4 +250,63 @@ public class TestPageBasic {
   void pageContextShouldReturnTheCorrectInstance() {
     assertEquals(context, page.context());
   }
+
+  @Test
+  void pageFrameShouldRespectName() {
+    page.setContent("<iframe name=target></iframe>");
+    assertNull(page.frame(new Page.FrameOptions().withName("bogus")));
+    Frame frame = page.frame(new Page.FrameOptions().withName("target"));
+    assertNotNull(frame);
+    assertEquals(page.mainFrame().childFrames().get(0), frame);
+  }
+
+  @Test
+  void pageFrameShouldRespectUrl() {
+    page.setContent("<iframe src='" + server.EMPTY_PAGE + "'></iframe>");
+    assertNull(page.frame(new Page.FrameOptions().withUrl(Pattern.compile("bogus"))));
+    Frame frame = page.frame(new Page.FrameOptions().withUrl(Pattern.compile(".*empty.*")));
+    assertNotNull(frame);
+    assertEquals(server.EMPTY_PAGE, frame.url());
+  }
+
+  // TODO:
+  void shouldHaveSaneUserAgent() {
+  }
+
+  @Test
+  void pagePressShouldWork() {
+    page.navigate(server.PREFIX + "/input/textarea.html");
+    page.press("textarea", "a");
+    assertEquals("a", page.evaluate("() => document.querySelector('textarea').value"));
+  }
+
+  @Test
+  void pagePressShouldWorkForEnter() {
+    page.setContent("<input onkeypress='console.log(\"press\")'></input>");
+    List<ConsoleMessage> messages = new ArrayList<>();
+    page.addConsoleListener(message -> messages.add(message));
+    page.press("input", "Enter");
+    assertEquals("press", messages.get(0).text());
+  }
+
+  @Test
+  void framePressShouldWork() {
+    page.setContent("<iframe name=inner src='" + server.PREFIX + "/input/textarea.html'></iframe>");
+    Frame frame = page.frame(new Page.FrameOptions().withName("inner"));
+    frame.press("textarea", "a");
+    assertEquals("a", frame.evaluate("() => document.querySelector('textarea').value"));
+  }
+
+  @Test
+  void frameFocusShouldWorkMultipleTimes() {
+    // TODO:    test.fail(browserName === "firefox");
+    Page page1 = context.newPage();
+    Page page2 = context.newPage();
+    for (Page page : Arrays.asList(page1, page2)) {
+      page.setContent("<button id='foo' onfocus='window.gotFocus=true'></button>");
+      page.focus("#foo");
+      assertEquals(true, page.evaluate("() => !!window['gotFocus']"));
+    }
+  }
+
 }

@@ -268,11 +268,28 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void focus(String selector, FocusOptions options) {
-
+    mainFrame.focus(selector, convertViaJson(options, Frame.FocusOptions.class));
   }
 
   @Override
-  public Frame frame(String options) {
+  public Frame frame(FrameOptions options) {
+    if (options == null) {
+      throw new IllegalArgumentException("Frame criteria should be cpecified");
+    }
+    for (Frame frame : frames) {
+      if (options.name != null && options.name.equals(frame.name())) {
+        return frame;
+      }
+      if (options.url != null && options.url.equals(frame.url())) {
+        return frame;
+      }
+      if (options.urlPattern != null && options.urlPattern.matcher(frame.url()).matches()) {
+        return frame;
+      }
+      if (options.urlPredicate != null && options.urlPredicate.test(frame.url())) {
+        return frame;
+      }
+    }
     return null;
   }
 
@@ -352,7 +369,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void press(String selector, String key, PressOptions options) {
-
+    mainFrame.press(selector, key, convertViaJson(options, Frame.PressOptions.class));
   }
 
   @Override

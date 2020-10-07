@@ -17,7 +17,6 @@
 package com.microsoft.playwright;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
 public interface Logger {
   enum Severity { ERROR, INFO, VERBOSE, WARNING }

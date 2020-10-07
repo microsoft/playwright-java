@@ -490,7 +490,13 @@ class Interface extends TypeDefinition {
   void writeTo(List<String> output, String offset) {
     output.add(header);
     output.add("import java.util.*;");
-    output.add("import java.util.function.BiConsumer;");
+    if (jsonName.equals("Page")) {
+      output.add("import java.util.function.BiConsumer;");
+      output.add("import java.util.function.Predicate;");
+      output.add("import java.util.regex.Pattern;");
+    } else if (jsonName.equals("BrowserContext")) {
+      output.add("import java.util.function.BiConsumer;");
+    }
     output.add("");
 
     String implementsClause = "";
@@ -562,6 +568,31 @@ class Interface extends TypeDefinition {
         output.add(offset + "  }");
         output.add("");
         output.add(offset + "  Object call(Source source, Object... args);");
+        output.add(offset + "}");
+        output.add("");
+
+        output.add(offset + "class FrameOptions {");
+        output.add(offset + "  public String name;");
+        output.add(offset + "  public String url;");
+        output.add(offset + "  public Pattern urlPattern;");
+        output.add(offset + "  public Predicate<String> urlPredicate;");
+        output.add("");
+        output.add(offset + "  FrameOptions withName(String name) {");
+        output.add(offset + "    this.name = name;");
+        output.add(offset + "    return this;");
+        output.add(offset + "  }");
+        output.add(offset + "  FrameOptions withUrl(String url) {");
+        output.add(offset + "    this.url = url;");
+        output.add(offset + "    return this;");
+        output.add(offset + "  }");
+        output.add(offset + "  FrameOptions withUrl(Pattern pattern) {");
+        output.add(offset + "    urlPattern = pattern;");
+        output.add(offset + "    return this;");
+        output.add(offset + "  }");
+        output.add(offset + "  FrameOptions withUrl(Predicate<String> predicate) {");
+        output.add(offset + "    urlPredicate = predicate;");
+        output.add(offset + "    return this;");
+        output.add(offset + "  }");
         output.add(offset + "}");
         break;
       }

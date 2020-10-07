@@ -125,9 +125,8 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public List<Frame> childFrames() {
-    return null;
+    return new ArrayList<>(childFrames);
   }
-
 
   @Override
   public void click(String selector, ClickOptions options) {
@@ -210,7 +209,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void focus(String selector, FocusOptions options) {
-
+    if (options == null) {
+      options = new FocusOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    sendMessage("focus", params);
   }
 
   @Override
@@ -284,7 +288,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void press(String selector, String key, PressOptions options) {
-
+    if (options == null) {
+      options = new PressOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    params.addProperty("key", key);
+    sendMessage("press", params);
   }
 
   @Override

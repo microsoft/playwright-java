@@ -17,7 +17,6 @@
 package com.microsoft.playwright;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
 public interface Request {
   class RequestFailure {
