@@ -318,44 +318,41 @@ public interface Page {
     }
   }
   class GoBackOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
-    public WaitUntil waitUntil;
+    public Frame.LoadState waitUntil;
 
     public GoBackOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
     }
-    public GoBackOptions withWaitUntil(WaitUntil waitUntil) {
+    public GoBackOptions withWaitUntil(Frame.LoadState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
   }
   class GoForwardOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
-    public WaitUntil waitUntil;
+    public Frame.LoadState waitUntil;
 
     public GoForwardOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
     }
-    public GoForwardOptions withWaitUntil(WaitUntil waitUntil) {
+    public GoForwardOptions withWaitUntil(Frame.LoadState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
   }
   class NavigateOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
-    public WaitUntil waitUntil;
+    public Frame.LoadState waitUntil;
     public String referer;
 
     public NavigateOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
     }
-    public NavigateOptions withWaitUntil(WaitUntil waitUntil) {
+    public NavigateOptions withWaitUntil(Frame.LoadState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -538,15 +535,14 @@ public interface Page {
     }
   }
   class ReloadOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
-    public WaitUntil waitUntil;
+    public Frame.LoadState waitUntil;
 
     public ReloadOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
     }
-    public ReloadOptions withWaitUntil(WaitUntil waitUntil) {
+    public ReloadOptions withWaitUntil(Frame.LoadState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -633,15 +629,14 @@ public interface Page {
     }
   }
   class SetContentOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
-    public WaitUntil waitUntil;
+    public Frame.LoadState waitUntil;
 
     public SetContentOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
     }
-    public SetContentOptions withWaitUntil(WaitUntil waitUntil) {
+    public SetContentOptions withWaitUntil(Frame.LoadState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -725,10 +720,9 @@ public interface Page {
     }
   }
   class WaitForNavigationOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
     public String url;
-    public WaitUntil waitUntil;
+    public Frame.LoadState waitUntil;
 
     public WaitForNavigationOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -738,7 +732,7 @@ public interface Page {
       this.url = url;
       return this;
     }
-    public WaitForNavigationOptions withWaitUntil(WaitUntil waitUntil) {
+    public WaitForNavigationOptions withWaitUntil(Frame.LoadState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }

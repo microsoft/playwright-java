@@ -78,7 +78,7 @@ public class Server implements HttpHandler {
     auths.put(path, new Auth(user, password));
   }
 
-  public static class Request {
+  static class Request {
     // TODO: make a copy to ensure thread safety?
     public final Headers headers;
 
@@ -99,6 +99,14 @@ public class Server implements HttpHandler {
 
   void setRoute(String path, HttpHandler handler) {
     routes.put(path, handler);
+  }
+
+  void setRedirect(String from, String to) {
+    setRoute(from, exchange -> {
+      exchange.getResponseHeaders().put("location", Arrays.asList(to));
+      exchange.sendResponseHeaders(302, -1);
+      exchange.getResponseBody().close();
+    });
   }
 
   void reset() {

@@ -19,9 +19,9 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -123,5 +123,57 @@ public class TestPageRoute {
     page.unroute("**/empty.html");
     page.navigate(server.EMPTY_PAGE);
     assertEquals(Arrays.asList(4), intercepted);
+  }
+
+  @Test
+  void shouldWorkWhenPOSTIsRedirectedWith302() {
+    server.setRedirect("/rredirect", "/empty.html");
+    page.navigate(server.EMPTY_PAGE);
+    page.route("**/*", (route, request) -> route.continue_());
+    page.setContent("<form action='/rredirect' method='post'>\n" +
+      "  <input type='hidden' id='foo' name='foo' value='FOOBAR'>\n" +
+      "</form>");
+    page.evalOnSelector("form", "form => form.submit()");
+    page.waitForNavigation().get();
+  }
+
+  // @see https://github.com/GoogleChrome/puppeteer/issues/3973
+  @Test
+  void shouldWorkWhenHeaderManipulationHeadersWithRedirect() {
+    server.setRedirect("/rrredirect", "/empty.html");
+    page.route("**/*", (route, request) -> {
+      Map<String, String> headers = new HashMap<>(route.request().headers());
+      headers.put("foo", "bar");
+      route.continue_(new Route.ContinueOverrides().withHeaders(headers));
+    });
+    page.navigate(server.PREFIX + "/rrredirect");
+  }
+
+  // @see https://github.com/GoogleChrome/puppeteer/issues/4743
+  @Test
+  void shouldBeAbleToRemoveHeaders() throws ExecutionException, InterruptedException {
+    page.route("**/*", (route, request) -> {
+      Map<String, String> headers = new HashMap<>(route.request().headers());
+      headers.put("foo", "bar");
+      headers.remove("accept");
+      route.continue_(new Route.ContinueOverrides().withHeaders(headers));
+    });
+
+    Future<Server.Request> serverRequest = server.waitForRequest("/empty.html");
+    page.navigate(server.PREFIX + "/empty.html");
+    assertFalse(serverRequest.get().headers.containsKey("accept"));
+  }
+
+  @Test
+  void shouldContainRefererHeader() {
+    List<Request> requests = new ArrayList<>();
+    page.route("**/*", (route, request) -> {
+      requests.add(route.request());
+      route.continue_();
+    });
+    page.navigate(server.PREFIX + "/one-style.html");
+    assertTrue(requests.get(1).url().contains("/one-style.css"));
+    assertTrue(requests.get(1).headers().containsKey("referer"));
+    assertTrue(requests.get(1).headers().get("referer").contains("/one-style.html"));
   }
 }

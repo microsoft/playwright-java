@@ -111,4 +111,9 @@ public class RequestImpl extends ChannelOwner implements Request {
   public String url() {
     return initializer.get("url").getAsString();
   }
+
+  Request finalRequest() {
+    return redirectedTo != null ? redirectedTo.finalRequest() : this;
+  }
+
 }

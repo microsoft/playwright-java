@@ -236,16 +236,15 @@ public interface Frame {
     }
   }
   class NavigateOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
-    public WaitUntil waitUntil;
+    public LoadState waitUntil;
     public String referer;
 
     public NavigateOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
     }
-    public NavigateOptions withWaitUntil(WaitUntil waitUntil) {
+    public NavigateOptions withWaitUntil(LoadState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -344,15 +343,14 @@ public interface Frame {
     }
   }
   class SetContentOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
-    public WaitUntil waitUntil;
+    public LoadState waitUntil;
 
     public SetContentOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
     }
-    public SetContentOptions withWaitUntil(WaitUntil waitUntil) {
+    public SetContentOptions withWaitUntil(LoadState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -436,10 +434,9 @@ public interface Frame {
     }
   }
   class WaitForNavigationOptions {
-    public enum WaitUntil { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
     public Integer timeout;
     public String url;
-    public WaitUntil waitUntil;
+    public LoadState waitUntil;
 
     public WaitForNavigationOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
@@ -449,7 +446,7 @@ public interface Frame {
       this.url = url;
       return this;
     }
-    public WaitForNavigationOptions withWaitUntil(WaitUntil waitUntil) {
+    public WaitForNavigationOptions withWaitUntil(LoadState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -586,10 +583,10 @@ public interface Frame {
     waitForLoadState(null);
   }
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
-  default Response waitForNavigation() {
+  default Deferred<Response> waitForNavigation() {
     return waitForNavigation(null);
   }
-  Response waitForNavigation(WaitForNavigationOptions options);
+  Deferred<Response> waitForNavigation(WaitForNavigationOptions options);
   default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }

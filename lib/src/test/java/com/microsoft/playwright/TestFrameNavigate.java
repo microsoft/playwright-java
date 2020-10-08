@@ -20,7 +20,7 @@ import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 
-import static com.microsoft.playwright.Page.NavigateOptions.WaitUntil.NETWORKIDLE;
+import static com.microsoft.playwright.Frame.LoadState.NETWORKIDLE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

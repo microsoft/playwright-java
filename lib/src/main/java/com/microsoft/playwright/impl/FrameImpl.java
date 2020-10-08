@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 import static com.microsoft.playwright.Frame.LoadState.*;
 import static com.microsoft.playwright.impl.Serialization.deserialize;
@@ -34,6 +35,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
   FrameImpl parentFrame;
   Set<FrameImpl> childFrames = new LinkedHashSet<>();
   private final Set<LoadState> loadStates = new HashSet<>();
+  private final List<WaitForNavigationHelper> eventHelpers = new ArrayList<>();
   PageImpl page;
   boolean isDetached;
 
@@ -228,10 +230,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
 
-  private static String toProtocol(NavigateOptions.WaitUntil waitUntil) {
-    return waitUntil.toString().toLowerCase();
-  }
-
   @Override
   public ResponseImpl navigate(String url, NavigateOptions options) {
     if (options == null) {
@@ -303,9 +301,9 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
 
-  private static String toProtocol(SetContentOptions.WaitUntil waitUntil) {
+  private static String toProtocol(LoadState waitUntil) {
     if (waitUntil == null) {
-      waitUntil = SetContentOptions.WaitUntil.LOAD;
+      waitUntil = LoadState.LOAD;
     }
     switch (waitUntil) {
       case DOMCONTENTLOADED: return "domcontentloaded";
@@ -374,9 +372,73 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
   }
 
+  enum State { WAITING_FOR_NAVIGATION, WAITING_FOR_LOAD_STATE, DONE };
+
+  // TODO: switch to listeners or something else less convoluted.
+  private class WaitForNavigationHelper implements Deferred<Response> {
+    private final CompletableFuture<Response> result = new CompletableFuture<>();
+    private final UrlMatcher matcher;
+    private final LoadState loadState;
+    private State state = State.WAITING_FOR_NAVIGATION;
+    private RequestImpl request;
+
+    WaitForNavigationHelper(UrlMatcher matcher, LoadState loadState) {
+      this.matcher = matcher;
+      this.loadState = loadState;
+      eventHelpers.add(this);
+    }
+
+    void handleEvent(String name, JsonObject params) {
+      if (state == State.WAITING_FOR_NAVIGATION) {
+        if (!"navigated".equals(name)) {
+          return;
+        }
+        if (!matcher.test(params.get("url").getAsString())) {
+          return;
+        }
+        if (params.has("error")) {
+          result.completeExceptionally(new RuntimeException(params.get("error").getAsString()));
+          state = State.DONE;
+        } else {
+          if (params.has("newDocument")) {
+            JsonObject jsonReq = params.getAsJsonObject("newDocument").getAsJsonObject("request");
+            if (jsonReq != null) {
+              request = connection.getExistingObject(jsonReq.get("guid").getAsString());
+            }
+          }
+          state = State.WAITING_FOR_LOAD_STATE;
+        }
+      }
+      if (state == State.WAITING_FOR_LOAD_STATE) {
+        if (loadStates.contains(loadState)) {
+          state = State.DONE;
+          if (request == null) {
+            result.complete(null);
+          } else {
+            result.complete(request.finalRequest().response());
+          }
+        } else {
+          return;
+        }
+      }
+      eventHelpers.remove(this);
+    }
+
+    @Override
+    public Response get() {
+      return waitForCompletion(result);
+    }
+  }
+
+
   @Override
-  public Response waitForNavigation(WaitForNavigationOptions options) {
-    return null;
+  public Deferred<Response> waitForNavigation(WaitForNavigationOptions options) {
+    if (options == null) {
+      options = new WaitForNavigationOptions();
+      options.url = "**";
+      options.waitUntil = LOAD;
+    }
+    return new WaitForNavigationHelper(new UrlMatcher(options.url), options.waitUntil);
   }
 
   @Override
@@ -403,6 +465,8 @@ public class FrameImpl extends ChannelOwner implements Frame {
       url = params.get("url").getAsString();
       name = params.get("name").getAsString();
     }
+    for (WaitForNavigationHelper h : new ArrayList<>(eventHelpers)) {
+      h.handleEvent(event, params);
+    }
   }
-
 }

@@ -404,9 +404,6 @@ class Param extends Element {
   Param(Method method, JsonObject jsonElement) {
     super(method, jsonElement);
     type = new TypeRef(this, jsonElement.get("type").getAsJsonObject());
-    if (jsonPath.contains(".route")) {
-      System.out.println(jsonPath + ": " + type.jsonName);
-    }
   }
 
   boolean isOptional() {

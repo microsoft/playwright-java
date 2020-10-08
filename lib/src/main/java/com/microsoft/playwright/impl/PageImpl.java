@@ -529,7 +529,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Deferred<Response> waitForNavigation(WaitForNavigationOptions options) {
-    return null;
+    return mainFrame.waitForNavigation(convertViaJson(options, Frame.WaitForNavigationOptions.class));
   }
 
   private class WaitEventHelper<R> implements Deferred<R> {
