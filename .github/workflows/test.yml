@@ -27,9 +27,8 @@ jobs:
       working-directory: driver
       run: npm install
     - name: Build with Maven
-      run: mvn -B package -D skipTests --file lib/pom.xml
+      run: mvn -B package -D skipTests
     - name: Run tests
-      working-directory: lib
       run: mvn test
       env:
         BROWSER: ${{ matrix.browser }}
