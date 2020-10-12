@@ -727,7 +727,7 @@ public class ApiGenerator {
   ApiGenerator(Reader reader) throws IOException {
     JsonObject api = new Gson().fromJson(reader, JsonObject.class);
     File cwd = FileSystems.getDefault().getPath(".").toFile();
-    File dir = new File(cwd, "lib/src/main/java/com/microsoft/playwright");
+    File dir = new File(cwd, "playwright/src/main/java/com/microsoft/playwright");
     System.out.println("Writing files to: " + dir.getCanonicalPath());
     for (Map.Entry<String, JsonElement> entry: api.entrySet()) {
       String name = entry.getKey();

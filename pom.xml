@@ -11,7 +11,7 @@
   <name>Playwright Java</name>
 
   <modules>
-	<module>lib</module>
+	<module>playwright</module>
 	<module>api-generator</module>
   </modules>
 
