@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public interface Route {
@@ -29,7 +30,7 @@ public interface Route {
       return this;
     }
     public ContinueOverrides withPostData(String postData) {
-      this.postData = postData.getBytes();
+      this.postData = postData.getBytes(StandardCharsets.UTF_8);
       return this;
     }
     public ContinueOverrides withPostData(byte[] postData) {

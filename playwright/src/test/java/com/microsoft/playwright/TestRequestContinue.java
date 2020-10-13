@@ -19,14 +19,15 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static javax.swing.text.html.FormSubmitEvent.MethodType.POST;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestRequestContinue {
   private static Playwright playwright;
