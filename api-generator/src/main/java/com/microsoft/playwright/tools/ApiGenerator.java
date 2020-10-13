@@ -454,6 +454,12 @@ class Field extends Element {
   }
 
   void writeBuilderMethod(List<String> output, String offset, String parentClass) {
+    if (jsonPath.equals("Route.continue.overrides.postData")) {
+      output.add(offset + "public ContinueOverrides withPostData(String postData) {");
+      output.add(offset + "  this.postData = postData.getBytes(StandardCharsets.UTF_8);");
+      output.add(offset + "  return this;");
+      output.add(offset + "}");
+    }
     if (name.equals("httpCredentials")) {
       output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(String username, String password) {");
       output.add(offset + "  this." + name + " = new " + type.toJava() + "(username, password);");
@@ -524,6 +530,9 @@ class Interface extends TypeDefinition {
 
   void writeTo(List<String> output, String offset) {
     output.add(header);
+    if (jsonName.equals("Route")) {
+      output.add("import java.nio.charset.StandardCharsets;");
+    }
     output.add("import java.util.*;");
     if (Arrays.asList("Page", "BrowserContext").contains(jsonName)) {
       output.add("import java.util.function.BiConsumer;");

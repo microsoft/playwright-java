@@ -208,7 +208,7 @@ class Types {
     add("ElementHandle.selectOption.values", "null|string|ElementHandle|Array<string>|Object|Array<ElementHandle>|Array<Object>", "String");
     add("ElementHandle.setInputFiles.files", "string|Array<string>|Object|Array<Object>", "String");
     add("FileChooser.setFiles.files", "string|Array<string>|Object|Array<Object>", "String");
-    add("Route.continue.overrides.postData", "string|Buffer", "String");
+    add("Route.continue.overrides.postData", "string|Buffer", "byte[]");
     add("Route.fulfill.response.body", "string|Buffer", "String");
     add("BrowserType.launch.options.ignoreDefaultArgs", "boolean|Array<string>", "Boolean");
     add("BrowserType.launch.options.firefoxUserPrefs", "Object<string, string|number|boolean>", "String");

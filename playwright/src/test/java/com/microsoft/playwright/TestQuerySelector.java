@@ -15,18 +15,15 @@
  */
 
 package com.microsoft.playwright;
+
 import org.junit.jupiter.api.*;
 
-import javax.swing.text.Element;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.microsoft.playwright.Keyboard.Modifier.SHIFT;
-import static com.microsoft.playwright.Mouse.Button.RIGHT;
-import static com.microsoft.playwright.Page.EventType.CONSOLE;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestQuerySelector {

@@ -79,11 +79,17 @@ public class Server implements HttpHandler {
   }
 
   static class Request {
+    public final String method;
     // TODO: make a copy to ensure thread safety?
     public final Headers headers;
+    public final byte[] postBody;
 
-    public Request(Headers headers) {
-      this.headers = headers;
+    Request(HttpExchange exchange) throws IOException {
+      method = exchange.getRequestMethod();
+      headers = exchange.getRequestHeaders();
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      copy(exchange.getRequestBody(), out);
+      postBody = out.toByteArray();
     }
   }
 
@@ -147,7 +153,7 @@ public class Server implements HttpHandler {
       CompletableFuture<Request> subscriber = requestSubscribers.get(path);
       if (subscriber != null) {
         requestSubscribers.remove(path);
-        subscriber.complete(new Request(exchange.getRequestHeaders()));
+        subscriber.complete(new Request(exchange));
       }
     }
 
