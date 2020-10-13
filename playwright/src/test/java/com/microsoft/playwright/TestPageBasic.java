@@ -259,8 +259,8 @@ public class TestPageBasic {
   @Test
   void pageFrameShouldRespectName() {
     page.setContent("<iframe name=target></iframe>");
-    assertNull(page.frame(new Page.FrameOptions().withName("bogus")));
-    Frame frame = page.frame(new Page.FrameOptions().withName("target"));
+    assertNull(page.frameByName("bogus"));
+    Frame frame = page.frameByName("target");
     assertNotNull(frame);
     assertEquals(page.mainFrame().childFrames().get(0), frame);
   }
@@ -268,8 +268,8 @@ public class TestPageBasic {
   @Test
   void pageFrameShouldRespectUrl() {
     page.setContent("<iframe src='" + server.EMPTY_PAGE + "'></iframe>");
-    assertNull(page.frame(new Page.FrameOptions().withUrl(Pattern.compile("bogus"))));
-    Frame frame = page.frame(new Page.FrameOptions().withUrl(Pattern.compile(".*empty.*")));
+    assertNull(page.frameByUrl(Pattern.compile("bogus")));
+    Frame frame = page.frameByUrl(Pattern.compile(".*empty.*"));
     assertNotNull(frame);
     assertEquals(server.EMPTY_PAGE, frame.url());
   }
@@ -321,7 +321,7 @@ public class TestPageBasic {
   @Test
   void framePressShouldWork() {
     page.setContent("<iframe name=inner src='" + server.PREFIX + "/input/textarea.html'></iframe>");
-    Frame frame = page.frame(new Page.FrameOptions().withName("inner"));
+    Frame frame = page.frameByName("inner");
     frame.press("textarea", "a");
     assertEquals("a", frame.evaluate("() => document.querySelector('textarea').value"));
   }
