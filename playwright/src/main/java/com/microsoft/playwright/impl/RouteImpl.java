@@ -57,8 +57,7 @@ public class RouteImpl extends ChannelOwner implements Route {
       params.add("headers", array);
     }
     if (overrides.postData != null) {
-      byte[] bytes = overrides.postData.getBytes(StandardCharsets.UTF_8);
-      String base64 = Base64.getEncoder().encodeToString(bytes);
+      String base64 = Base64.getEncoder().encodeToString(overrides.postData);
       params.addProperty("postData", base64);
     }
     sendMessage("continue", params);

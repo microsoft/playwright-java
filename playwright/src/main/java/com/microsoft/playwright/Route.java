@@ -21,7 +21,7 @@ import java.util.*;
 public interface Route {
   class ContinueOverrides {
     public String method;
-    public String postData;
+    public byte[] postData;
     public Map<String, String> headers;
 
     public ContinueOverrides withMethod(String method) {
@@ -29,6 +29,10 @@ public interface Route {
       return this;
     }
     public ContinueOverrides withPostData(String postData) {
+      this.postData = postData.getBytes();
+      return this;
+    }
+    public ContinueOverrides withPostData(byte[] postData) {
       this.postData = postData;
       return this;
     }
