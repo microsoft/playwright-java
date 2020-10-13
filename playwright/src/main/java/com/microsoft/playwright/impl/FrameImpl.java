@@ -17,10 +17,15 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -90,7 +95,18 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public List<ElementHandle> querySelectorAll(String selector) {
-    return null;
+    JsonObject params = new JsonObject();
+    params.addProperty("selector", selector);
+    JsonElement json = sendMessage("querySelectorAll", params);
+    JsonArray elements = json.getAsJsonObject().getAsJsonArray("elements");
+    if (elements == null) {
+      return null;
+    }
+    List<ElementHandle> handles = new ArrayList<>();
+    for (JsonElement item : elements) {
+      handles.add(connection.getExistingObject(item.getAsJsonObject().get("guid").getAsString()));
+    }
+    return handles;
   }
 
   @Override
@@ -107,22 +123,68 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public Object evalOnSelectorAll(String selector, String pageFunction, Object arg) {
-    return null;
+    JsonObject params = new JsonObject();
+    params.addProperty("selector", selector);
+    params.addProperty("expression", pageFunction);
+    params.addProperty("isFunction", isFunctionBody(pageFunction));
+    params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
+    JsonElement json = sendMessage("evalOnSelectorAll", params);
+    SerializedValue value = new Gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
+    return deserialize(value);
   }
 
   @Override
   public ElementHandle addScriptTag(AddScriptTagOptions options) {
-    return null;
+    if (options == null) {
+      options = new AddScriptTagOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    if (options.path != null) {
+      params.remove("path");
+      byte[] encoded = new byte[0];
+      try {
+        encoded = Files.readAllBytes(Paths.get(options.path));
+      } catch (IOException e) {
+        throw new RuntimeException("Failed to read from file", e);
+      }
+      String content = new String(encoded, StandardCharsets.UTF_8);
+      content += "//# sourceURL=" + options.path.replace("\n", "");
+      params.addProperty("content", content);
+    }
+    JsonElement json = sendMessage("addScriptTag", params);
+    return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("element").get("guid").getAsString());
   }
 
   @Override
   public ElementHandle addStyleTag(AddStyleTagOptions options) {
-    return null;
+    if (options == null) {
+      options = new AddStyleTagOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    if (options.path != null) {
+      params.remove("path");
+      byte[] encoded = new byte[0];
+      try {
+        encoded = Files.readAllBytes(Paths.get(options.path));
+      } catch (IOException e) {
+        throw new RuntimeException("Failed to read from file", e);
+      }
+      String content = new String(encoded, StandardCharsets.UTF_8);
+      content += "/*# sourceURL=" + options.path.replace("\n", "") + "*/";
+      params.addProperty("content", content);
+    }
+    JsonElement json = sendMessage("addStyleTag", params);
+    return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("element").get("guid").getAsString());
   }
 
   @Override
   public void check(String selector, CheckOptions options) {
-
+    if (options == null) {
+      options = new CheckOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    sendMessage("check", params);
   }
 
   @Override
@@ -153,7 +215,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public String content() {
-    return null;
+    return sendMessage("content", new JsonObject()).getAsJsonObject().get("value").getAsString();
   }
 
   @Override
@@ -332,7 +394,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public String textContent(String selector, TextContentOptions options) {
-    return null;
+    if (options == null) {
+      options = new TextContentOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    return sendMessage("textContent", params).getAsJsonObject().get("value").getAsString();
   }
 
   @Override
@@ -348,7 +415,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void uncheck(String selector, UncheckOptions options) {
-
+    if (options == null) {
+      options = new UncheckOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    sendMessage("uncheck", params);
   }
 
   @Override
