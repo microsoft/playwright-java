@@ -76,10 +76,45 @@ public class PageImpl extends ChannelOwner implements Page {
       String guid = params.getAsJsonObject("page").get("guid").getAsString();
       PageImpl popup = connection.getExistingObject(guid);
       listeners.notify(EventType.POPUP, popup);
+    } else if ("worker".equals(event)) {
+      String guid = params.getAsJsonObject("worker").get("guid").getAsString();
+      Worker worker = connection.getExistingObject(guid);
+      listeners.notify(EventType.WORKER, worker);
     } else if ("console".equals(event)) {
       String guid = params.getAsJsonObject("message").get("guid").getAsString();
       ConsoleMessageImpl message = connection.getExistingObject(guid);
       listeners.notify(EventType.CONSOLE, message);
+    } else if ("download".equals(event)) {
+      String guid = params.getAsJsonObject("download").get("guid").getAsString();
+      DownloadImpl download = connection.getExistingObject(guid);
+      listeners.notify(EventType.DOWNLOAD, download);
+    } else if ("fileChooser".equals(event)) {
+      String guid = params.getAsJsonObject("element").get("guid").getAsString();
+      FileChooser fileChooser = connection.getExistingObject(guid);
+      listeners.notify(EventType.FILECHOOSER, fileChooser);
+    } else if ("load".equals(event)) {
+      listeners.notify(EventType.LOAD, null);
+    } else if ("domcontentloaded".equals(event)) {
+      listeners.notify(EventType.DOMCONTENTLOADED, null);
+    } else if ("request".equals(event)) {
+      String guid = params.getAsJsonObject("request").get("guid").getAsString();
+      Request request = connection.getExistingObject(guid);
+      listeners.notify(EventType.REQUEST, request);
+    } else if ("requestFailed".equals(event)) {
+      String guid = params.getAsJsonObject("request").get("guid").getAsString();
+      RequestImpl request = connection.getExistingObject(guid);
+      if (params.has("failureText")) {
+        request.failureText = new Gson().fromJson(params, Request.RequestFailure.class);
+      }
+      listeners.notify(EventType.REQUESTFAILED, request);
+    } else if ("requestFinished".equals(event)) {
+      String guid = params.getAsJsonObject("request").get("guid").getAsString();
+      Request request = connection.getExistingObject(guid);
+      listeners.notify(EventType.REQUESTFINISHED, request);
+    } else if ("response".equals(event)) {
+      String guid = params.getAsJsonObject("response").get("guid").getAsString();
+      Response response = connection.getExistingObject(guid);
+      listeners.notify(EventType.RESPONSE, response);
     } else if ("frameAttached".equals(event)) {
       String guid = params.getAsJsonObject("frame").get("guid").getAsString();
       FrameImpl frame = connection.getExistingObject(guid);
@@ -108,10 +143,15 @@ public class PageImpl extends ChannelOwner implements Page {
       if (!handled) {
         route.continue_();
       }
+    } else if ("pageError".equals(event)) {
+      SerializedError error = new Gson().fromJson(params.getAsJsonObject("error"), SerializedError.class);
+      listeners.notify(EventType.PAGEERROR, new ErrorImpl(error));
+    } else if ("crash".equals(event)) {
+      listeners.notify(EventType.CRASH, null);
     } else if ("close".equals(event)) {
       isClosed = true;
       browserContext.pages.remove(this);
-      listeners.notify(EventType.CLOSE, this);
+      listeners.notify(EventType.CLOSE, null);
     }
     for (WaitEventHelper h : new ArrayList<>(eventHelpers)) {
       h.handleEvent(event, params);
@@ -522,6 +562,33 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public Deferred<Response> waitForNavigation(WaitForNavigationOptions options) {
     return mainFrame.waitForNavigation(convertViaJson(options, Frame.WaitForNavigationOptions.class));
+  }
+
+  void frameNavigated(FrameImpl frame) {
+    listeners.notify(EventType.FRAMENAVIGATED, frame);
+  }
+
+  private static class ErrorImpl implements Error {
+    private final SerializedError error;
+
+    ErrorImpl(SerializedError error) {
+      this.error = error;
+    }
+
+    @Override
+    public String message() {
+      return error.error.message;
+    }
+
+    @Override
+    public String name() {
+      return error.error.name;
+    }
+
+    @Override
+    public String stack() {
+      return error.error.stack;
+    }
   }
 
   private class WaitEventHelper<R> implements Deferred<R> {

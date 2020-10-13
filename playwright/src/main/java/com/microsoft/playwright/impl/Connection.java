@@ -212,6 +212,9 @@ public class Connection {
       case "Frame":
         result = new FrameImpl(parent, type, guid, initializer);
         break;
+      case "FileChooser":
+        result = new FileChooserImpl(parent, type, guid, initializer);
+        break;
       case "JSHandle":
         result = new JSHandleImpl(parent, type, guid, initializer);
         break;

@@ -629,6 +629,12 @@ class Interface extends TypeDefinition {
         output.add(offset + "  Object call(Source source, Object... args);");
         output.add(offset + "}");
         output.add("");
+        output.add(offset + "interface Error {");
+        output.add(offset + "  String message();");
+        output.add(offset + "  String name();");
+        output.add(offset + "  String stack();");
+        output.add(offset + "}");
+        output.add("");
         break;
       }
       case "BrowserContext": {

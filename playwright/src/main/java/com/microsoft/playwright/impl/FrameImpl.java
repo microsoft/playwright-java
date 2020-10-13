@@ -556,6 +556,10 @@ public class FrameImpl extends ChannelOwner implements Frame {
     } else if ("navigated".equals(event)) {
       url = params.get("url").getAsString();
       name = params.get("name").getAsString();
+//      liste
+      if (!params.has("error") && page != null) {
+        page.frameNavigated(this);
+      }
     }
     for (WaitForNavigationHelper h : new ArrayList<>(eventHelpers)) {
       h.handleEvent(event, params);

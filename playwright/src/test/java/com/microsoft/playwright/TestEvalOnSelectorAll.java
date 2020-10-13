@@ -20,9 +20,8 @@ import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestEvalOnSelectorAll {
   private static Playwright playwright;
