@@ -82,7 +82,6 @@ public class TestQuerySelector {
       page.querySelector(null);
       fail("did not throw");
     } catch (RuntimeException e) {
-      System.out.println(e.getMessage());
       assertTrue(e.getMessage().contains("selector: expected string, got undefined"));
     }
   }

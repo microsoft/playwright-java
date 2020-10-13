@@ -80,7 +80,6 @@ public class TestClick {
     page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
     assertEquals("Clicked", page.evaluate("result"));
-    System.out.println("done 1");
   }
 
   @Test
