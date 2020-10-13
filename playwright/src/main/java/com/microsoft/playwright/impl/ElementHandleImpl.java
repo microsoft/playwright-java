@@ -17,12 +17,14 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.JSHandle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.microsoft.playwright.impl.Serialization.toProtocol;
@@ -51,7 +53,18 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public List<ElementHandle> querySelectorAll(String selector) {
-    return null;
+    JsonObject params = new JsonObject();
+    params.addProperty("selector", selector);
+    JsonElement json = sendMessage("querySelectorAll", params);
+    JsonArray elements = json.getAsJsonObject().getAsJsonArray("elements");
+    if (elements == null) {
+      return null;
+    }
+    List<ElementHandle> handles = new ArrayList<>();
+    for (JsonElement item : elements) {
+      handles.add(connection.getExistingObject(item.getAsJsonObject().get("guid").getAsString()));
+    }
+    return handles;
   }
 
   @Override
@@ -71,7 +84,11 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void check(CheckOptions options) {
-
+    if (options == null) {
+      options = new CheckOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    sendMessage("check", params);
   }
 
   @Override
@@ -199,7 +216,11 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void uncheck(UncheckOptions options) {
-
+    if (options == null) {
+      options = new UncheckOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    sendMessage("uncheck", params);
   }
 
   @Override

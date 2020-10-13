@@ -16,11 +16,17 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.JSHandle;
 
 import java.util.Map;
+
+import static com.microsoft.playwright.impl.Serialization.deserialize;
+import static com.microsoft.playwright.impl.Serialization.serializeArgument;
+import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 public class JSHandleImpl extends ChannelOwner implements JSHandle {
   public JSHandleImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -34,12 +40,25 @@ public class JSHandleImpl extends ChannelOwner implements JSHandle {
 
   @Override
   public Object evaluate(String pageFunction, Object arg) {
-    return null;
+    JsonObject params = new JsonObject();
+    params.addProperty("expression", pageFunction);
+    params.addProperty("world", "main");
+    params.addProperty("isFunction", isFunctionBody(pageFunction));
+    params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
+    JsonElement json = sendMessage("evaluateExpression", params);
+    SerializedValue value = new Gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
+    return deserialize(value);
   }
 
   @Override
   public JSHandle evaluateHandle(String pageFunction, Object arg) {
-    return null;
+    JsonObject params = new JsonObject();
+    params.addProperty("expression", pageFunction);
+    params.addProperty("world", "main");
+    params.addProperty("isFunction", isFunctionBody(pageFunction));
+    params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
+    JsonElement json = sendMessage("evaluateExpressionHandle", params);
+    return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("handle").get("guid").getAsString());
   }
 
   @Override
