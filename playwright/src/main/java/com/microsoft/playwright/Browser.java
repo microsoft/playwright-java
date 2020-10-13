@@ -19,6 +19,12 @@ package com.microsoft.playwright;
 import java.util.*;
 
 public interface Browser {
+  enum EventType {
+    DISCONNECTED,
+  }
+
+  void addListener(EventType type, Listener<EventType> listener);
+  void removeListener(EventType type, Listener<EventType> listener);
   class NewContextOptions {
     public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
     public class Geolocation {

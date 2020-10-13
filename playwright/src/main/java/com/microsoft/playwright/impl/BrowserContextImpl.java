@@ -38,10 +38,21 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private boolean isClosedOrClosing;
   final Map<String, Page.Binding> bindings = new HashMap<String, Page.Binding>();
   PageImpl ownerPage;
+  private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
 
   protected BrowserContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     browser = (BrowserImpl) parent;
+  }
+
+  @Override
+  public void addListener(EventType type, Listener<EventType> listener) {
+    listeners.add(type, listener);
+  }
+
+  @Override
+  public void removeListener(EventType type, Listener<EventType> listener) {
+    listeners.remove(type, listener);
   }
 
   @Override
@@ -203,6 +214,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     unroute(new UrlMatcher(url), handler);
   }
 
+  @Override
+  public Deferred<Event<EventType>> waitForEvent(EventType event, String optionsOrPredicate) {
+    return listeners.waitForEvent(event, connection);
+  }
+
   private void unroute(UrlMatcher matcher, BiConsumer<Route, Request> handler) {
     routes.remove(matcher, handler);
     if (routes.size() == 0) {
@@ -212,12 +228,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
   }
 
-  @Override
-  public Object waitForEvent(String event, String optionsOrPredicate) {
-    return null;
-  }
-
-  @Override
   public Deferred<Page> waitForPage() {
     CompletableFuture<JsonObject> pageFuture = futureForEvent("page");
     return () -> {
@@ -238,6 +248,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       }
     } else if ("page".equals(event)) {
       PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
+      listeners.notify(EventType.PAGE, page);
       pages.add(page);
     } else if ("bindingCall".equals(event)) {
       BindingCall bindingCall = connection.getExistingObject(params.getAsJsonObject("binding").get("guid").getAsString());

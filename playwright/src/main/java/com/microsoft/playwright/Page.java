@@ -78,6 +78,29 @@ public interface Page {
     }
   }
 
+  enum EventType {
+    CLOSE,
+    CONSOLE,
+    CRASH,
+    DIALOG,
+    DOMCONTENTLOADED,
+    DOWNLOAD,
+    FILECHOOSER,
+    FRAMEATTACHED,
+    FRAMEDETACHED,
+    FRAMENAVIGATED,
+    LOAD,
+    PAGEERROR,
+    POPUP,
+    REQUEST,
+    REQUESTFAILED,
+    REQUESTFINISHED,
+    RESPONSE,
+    WORKER,
+  }
+
+  void addListener(EventType type, Listener<EventType> listener);
+  void removeListener(EventType type, Listener<EventType> listener);
   enum LoadState { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
   class CloseOptions {
     public Boolean runBeforeUnload;
@@ -767,11 +790,6 @@ public interface Page {
       return this;
     }
   }
-  void addConsoleListener(Listener<ConsoleMessage> listener);
-  void removeConsoleListener(Listener<ConsoleMessage> listener);
-  void addDialogListener(Listener<Dialog> listener);
-  void removeDialogListener(Listener<Dialog> listener);
-  Deferred<Page> waitForPopup();
   default void close() {
     close(null);
   }
@@ -926,10 +944,10 @@ public interface Page {
   void unroute(Predicate<String> url, BiConsumer<Route, Request> handler);
   String url();
   Viewport viewportSize();
-  default Object waitForEvent(String event) {
+  default Deferred<Event<EventType>> waitForEvent(EventType event) {
     return waitForEvent(event, null);
   }
-  Object waitForEvent(String event, String optionsOrPredicate);
+  Deferred<Event<EventType>> waitForEvent(EventType event, String optionsOrPredicate);
   default JSHandle waitForFunction(String pageFunction, Object arg) {
     return waitForFunction(pageFunction, arg, null);
   }

@@ -26,6 +26,7 @@ import java.util.List;
 
 import static com.microsoft.playwright.Keyboard.Modifier.SHIFT;
 import static com.microsoft.playwright.Mouse.Button.RIGHT;
+import static com.microsoft.playwright.Page.EventType.CONSOLE;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestClick {
@@ -172,7 +173,7 @@ public class TestClick {
   void shouldClickOffscreenButtons() {
     page.navigate(server.PREFIX + "/offscreenbuttons.html");
     List<String> messages = new ArrayList<>();
-    page.addConsoleListener(msg -> messages.add(msg.text()));
+    page.addListener(CONSOLE, event -> messages.add(((ConsoleMessage) event.data()).text()));
     for (int i = 0; i < 11; ++i) {
       // We might've scrolled to click a button - reset to (0, 0).
       page.evaluate("() => window.scrollTo(0, 0)");

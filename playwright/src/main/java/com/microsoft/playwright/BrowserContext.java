@@ -40,6 +40,12 @@ public interface BrowserContext {
     }
   }
 
+  enum EventType {
+    PAGE,
+  }
+
+  void addListener(EventType type, Listener<EventType> listener);
+  void removeListener(EventType type, Listener<EventType> listener);
   class GrantPermissionsOptions {
     public String origin;
 
@@ -66,7 +72,6 @@ public interface BrowserContext {
       return this;
     }
   }
-  Deferred<Page> waitForPage();
   void close();
   void addCookies(List<Object> cookies);
   default void addInitScript(String script) {
@@ -103,9 +108,9 @@ public interface BrowserContext {
   void unroute(String url, BiConsumer<Route, Request> handler);
   void unroute(Pattern url, BiConsumer<Route, Request> handler);
   void unroute(Predicate<String> url, BiConsumer<Route, Request> handler);
-  default Object waitForEvent(String event) {
+  default Deferred<Event<EventType>> waitForEvent(EventType event) {
     return waitForEvent(event, null);
   }
-  Object waitForEvent(String event, String optionsOrPredicate);
+  Deferred<Event<EventType>> waitForEvent(EventType event, String optionsOrPredicate);
 }
 

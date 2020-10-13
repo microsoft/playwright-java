@@ -16,6 +16,6 @@
 
 package com.microsoft.playwright;
 
-public interface Listener<T> {
-  void handle(T event);
+public interface Listener<EventType> {
+  void handle(Event<EventType> event);
 }

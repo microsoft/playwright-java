@@ -23,6 +23,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import static com.microsoft.playwright.Page.EventType.POPUP;
 import static com.microsoft.playwright.Page.LoadState.DOMCONTENTLOADED;
 import static com.microsoft.playwright.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.*;
@@ -73,9 +74,9 @@ public class TestPopup {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a target=_blank rel=noopener href='/popup/popup.html'>link</a>");
     Future<Server.Request> requestPromise = server.waitForRequest("/popup/popup.html");
-    Deferred<Page> popupPromise = context.waitForPage();
+    Deferred<Event<BrowserContext.EventType>> popupEvent = context.waitForEvent(BrowserContext.EventType.PAGE);
     page.click("a");
-    Page popup = popupPromise.get();
+    Page popup = (Page) popupEvent.get().data();
     popup.waitForLoadState(DOMCONTENTLOADED);
     String userAgent = (String) popup.evaluate("() => window['initialUserAgent']");
     Server.Request request = requestPromise.get();
@@ -95,7 +96,7 @@ public class TestPopup {
       route.continue_();
       intercepted[0] = true;
     });
-    Deferred<Page> popup = context.waitForPage();
+    Deferred<Event<BrowserContext.EventType>> popup = context.waitForEvent(BrowserContext.EventType.PAGE);
     page.click("a");
     popup.get();
 
@@ -137,10 +138,11 @@ public class TestPopup {
       .withHttpCredentials("user", "pass"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Page> popup = page.waitForPopup();
+    Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(POPUP);
     page.evaluate("url => window['_popup'] = window.open(url)", server.PREFIX + "/title.html");
-    popup.get().waitForLoadState(DOMCONTENTLOADED);
-    assertEquals("Woof-Woof", popup.get().title());
+    Page popup = (Page) popupEvent.get().data();
+    popup.waitForLoadState(DOMCONTENTLOADED);
+    assertEquals("Woof-Woof", popup.title());
     context.close();
   }
 
@@ -179,12 +181,12 @@ public class TestPopup {
       .withViewport(700, 700));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Page> popupEvent = page.waitForPopup();
+    Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(POPUP);
     Object size = page.evaluate("() => {\n" +
       "  const win = window.open(window.location.href, 'Title', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=300,top=0,left=0');\n" +
       "  return { width: win.innerWidth, height: win.innerHeight };\n" +
       "}");
-    Page popup = popupEvent.get();
+    Page popup = (Page) popupEvent.get().data();
     popup.setViewportSize(500, 400);
     popup.waitForLoadState();
     Object resized = popup.evaluate("() => ({ width: window.innerWidth, height: window.innerHeight })");
@@ -203,7 +205,7 @@ public class TestPopup {
       route.continue_();
       intercepted[0] = true;
     });
-    Deferred<Page> popupEvent = page.waitForPopup();
+    Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(POPUP);
     page.evaluate("url => window['__popup'] = window.open(url)", server.EMPTY_PAGE);
     popupEvent.get();
     assertTrue(intercepted[0]);
@@ -230,9 +232,9 @@ public class TestPopup {
     context.addInitScript("() => window['injected'] = 123");
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Page> popupEvent = page.waitForPopup();
+    Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(POPUP);
     page.evaluate("url => window.open(url)", server.CROSS_PROCESS_PREFIX + "/title.html");
-    Page popup = popupEvent.get();
+    Page popup = (Page) popupEvent.get().data();
     assertEquals(123, popup.evaluate("injected"));
 
     popup.reload();
