@@ -20,12 +20,27 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - uses: actions/setup-node@v2-beta
-      with:
-        node-version: '12'
-    - name: Install driver dependencies
+    - run: mkdir -p driver
+    - name: Install driver
       working-directory: driver
-      run: npm install
+      env:
+        OS: ${{ matrix.os }}
+      shell: bash
+      run: |
+        FILE_NAME="unkwnown"
+        if [[ $OS == *"ubuntu"* ]]; then
+          FILE_NAME=playwright-cli-0.5.3-linux.zip
+        fi
+        if [[ $OS == *"macos"* ]]; then
+          FILE_NAME=playwright-cli-0.5.3-mac.zip
+        fi
+        if [[ $OS == *"windows"* ]]; then
+          FILE_NAME=playwright-cli-0.5.3-win32_x64.zip
+        fi
+        echo "Downloading from $FILE_NAME"
+        curl -O https://playwright.azureedge.net/builds/cli/$FILE_NAME
+        unzip $FILE_NAME -d .
+        ./playwright-cli install
     - name: Build with Maven
       run: mvn -B package -D skipTests
     - name: Run tests

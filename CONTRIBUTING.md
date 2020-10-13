@@ -11,12 +11,14 @@ git clone https://github.com/microsoft/playwright-java
 cd playwright-java
 ```
 
-2. Checkout and build playwright node.js package
+2. Checkout and install playwright-cli node.js package into `driver/` directory
 
 ```bash
+mkdir driver
 cd driver
-npm install
-npm run build
+curl -O https://playwright.azureedge.net/builds/cli/playwright-cli-0.5.3-linux.zip
+unzip playwright-cli-0.5.3-linux.zip -d .
+./playwright-cli install
 ```
 
 ### Generating API
