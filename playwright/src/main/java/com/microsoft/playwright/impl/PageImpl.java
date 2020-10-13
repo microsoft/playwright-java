@@ -165,17 +165,20 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void addInitScript(String script, Object arg) {
-
+    JsonObject params = new JsonObject();
+    // TODO: support or drop arg
+    params.addProperty("source", script);
+    sendMessage("addInitScript", params);
   }
 
   @Override
   public ElementHandle addScriptTag(AddScriptTagOptions options) {
-    return null;
+    return mainFrame.addScriptTag(convertViaJson(options, Frame.AddScriptTagOptions.class));
   }
 
   @Override
   public ElementHandle addStyleTag(AddStyleTagOptions options) {
-    return null;
+    return mainFrame.addStyleTag(convertViaJson(options, Frame.AddStyleTagOptions.class));
   }
 
   @Override
