@@ -198,16 +198,16 @@ public class TestQuerySelector {
     assertEquals(2, elements.size());
   }
 
-//  @Test
-//  void querySelectorAllShouldWorkWithBogusArrayFrom() {
-//    page.setContent("<div>hello</div><div></div>");
-//    JSHandle div1 = page.evaluateHandle("() => {\n" +
-//      "  Array.from = () => [];\n" +
-//      "  return document.querySelector('div');\n" +
-//      "}");
-//    List<ElementHandle> elements = page.querySelectorAll("div");
-//    assertEquals(2, elements.size());
-//    // Check that element handle is functional and belongs to the main world.
-//    assertEquals(true, elements.get(0).evaluate("(div, div1) => div === div1", div1));
-//  }
+  @Test
+  void querySelectorAllShouldWorkWithBogusArrayFrom() throws InterruptedException {
+    page.setContent("<div>hello</div><div></div>");
+    JSHandle div1 = page.evaluateHandle("() => {\n" +
+      "  Array.from = () => [];\n" +
+      "  return document.querySelector('div');\n" +
+      "}");
+    List<ElementHandle> elements = page.querySelectorAll("div");
+    assertEquals(2, elements.size());
+    // Check that element handle is functional and belongs to the main world.
+    assertEquals(true, elements.get(0).evaluate("(div, div1) => div === div1", div1));
+  }
 }
