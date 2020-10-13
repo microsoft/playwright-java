@@ -16,18 +16,7 @@
 
 package com.microsoft.playwright;
 
-import java.util.*;
-
-public interface ChromiumBrowserContext extends BrowserContext {
-  enum EventType {
-    BACKGROUNDPAGE,
-    SERVICEWORKER,
-  }
-
-  void addListener(EventType type, Listener<EventType> listener);
-  void removeListener(EventType type, Listener<EventType> listener);
-  List<Page> backgroundPages();
-  CDPSession newCDPSession(Page page);
-  List<Worker> serviceWorkers();
+public interface Event<EventType> {
+  EventType type();
+  Object data();
 }
-

@@ -537,10 +537,8 @@ class Interface extends TypeDefinition {
     output.add("public interface " + jsonName + implementsClause + " {");
     offset = "  ";
     writeSharedTypes(output, offset);
+    writeEvents(output, offset);
     super.writeTo(output, offset);
-    for (Event e : events) {
-      e.writeTo(output, offset);
-    }
     for (Method m : methods) {
       m.writeTo(output, offset);
     }
@@ -552,7 +550,26 @@ class Interface extends TypeDefinition {
     output.add("\n");
   }
 
-  void writeSharedTypes(List<String> output, String offset) {
+  private void writeEvents(List<String> output, String offset) {
+    if (events.isEmpty()) {
+      return;
+    }
+    output.add(offset + "enum EventType {");
+    // TODO: fix api.json to not miss this event.
+    if ("Page".equals(jsonName)) {
+      output.add(offset + "  CLOSE,");
+    }
+    for (int i = 0; i < events.size(); i++) {
+      String comma = i == events.size() ? "" : ",";
+      output.add(offset + "  " + events.get(i).jsonName.toUpperCase() + comma);
+    }
+    output.add(offset + "}");
+    output.add("");
+    output.add(offset + "void addListener(EventType type, Listener<EventType> listener);");
+    output.add(offset + "void removeListener(EventType type, Listener<EventType> listener);");
+  }
+
+  private void writeSharedTypes(List<String> output, String offset) {
     switch (jsonName) {
       case "Mouse": {
         output.add(offset + "enum Button { LEFT, MIDDLE, RIGHT }");

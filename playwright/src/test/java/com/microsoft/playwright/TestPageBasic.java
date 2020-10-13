@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.microsoft.playwright.Page.EventType.*;
 import static com.microsoft.playwright.Page.LoadState.DOMCONTENTLOADED;
 import static com.microsoft.playwright.Page.LoadState.LOAD;
 import static org.junit.jupiter.api.Assertions.*;
@@ -100,8 +101,9 @@ public class TestPageBasic {
     // fire.
     newPage.click("body");
     boolean[] didShowDialog = {false};
-    newPage.addDialogListener(dialog -> {
+    newPage.addListener(DIALOG, event -> {
       didShowDialog[0] = true;
+      Dialog dialog = (Dialog) event.data();
       assertEquals("beforeunload", dialog.type());
       assertEquals("", dialog.defaultValue());
       if (isChromium) {
@@ -126,7 +128,7 @@ public class TestPageBasic {
     // fire.
     newPage.click("body");
     boolean[] didShowDialog = {false};
-    newPage.addDialogListener(dialog -> didShowDialog[0] = true);
+    newPage.addListener(DIALOG, event -> didShowDialog[0] = true);
     newPage.close();
     assertFalse(didShowDialog[0]);
   }
@@ -181,17 +183,18 @@ public class TestPageBasic {
 
   @Test
   void shouldProvideAccessToTheOpenerPage() {
-    Deferred<Page> popupEvent = page.waitForPopup();
+    Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(POPUP);
     page.evaluate("() => window.open('about:blank')");
-    Page opener = popupEvent.get().opener();
+    Page popup = (Page) popupEvent.get().data();
+    Page opener = popup.opener();
     assertEquals(page, opener);
   }
 
   @Test
   void shouldReturnNullIfParentPageHasBeenClosed() {
-    Deferred<Page> popupEvent = page.waitForPopup();
+    Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(POPUP);
     page.evaluate("() => window.open('about:blank')");
-    Page popup = popupEvent.get();
+    Page popup = (Page) popupEvent.get().data();
     page.close();
     Page opener = popup.opener();
     assertEquals(null, opener);
@@ -232,9 +235,9 @@ public class TestPageBasic {
 
   @Test
   void pageCloseShouldWorkWithWindowClose() {
-    Deferred<Page> newPagePromise = page.waitForPopup();
+    Deferred<Event<Page.EventType>> newPagePromise = page.waitForEvent(POPUP);
     page.evaluate("() => window['newPage'] = window.open('about:blank')");
-    Page newPage = newPagePromise.get();
+    Page newPage = (Page) newPagePromise.get().data();
     Deferred<Void> closedPromise = newPage.waitForClose();
     page.evaluate("() => window['newPage'].close()");
     closedPromise.get();
@@ -310,7 +313,7 @@ public class TestPageBasic {
   void pagePressShouldWorkForEnter() {
     page.setContent("<input onkeypress='console.log(\"press\")'></input>");
     List<ConsoleMessage> messages = new ArrayList<>();
-    page.addConsoleListener(message -> messages.add(message));
+    page.addListener(CONSOLE, event ->  messages.add((ConsoleMessage) event.data()));
     page.press("input", "Enter");
     assertEquals("press", messages.get(0).text());
   }

@@ -20,6 +20,7 @@ import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 
+import static com.microsoft.playwright.Page.EventType.DIALOG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -64,7 +65,8 @@ public class TestDialog {
 
   @Test
   void shouldFire() {
-    page.addDialogListener(dialog -> {
+    page.addListener(DIALOG, event -> {
+      Dialog dialog = (Dialog) event.data();
       assertEquals( "alert", dialog.type());
       assertEquals( "", dialog.defaultValue());
       assertEquals( "yo", dialog.message());
@@ -75,7 +77,8 @@ public class TestDialog {
 
   @Test
   void shouldAllowAcceptingPrompts() {
-    page.addDialogListener(dialog -> {
+    page.addListener(DIALOG, event -> {
+      Dialog dialog = (Dialog) event.data();
       assertEquals("prompt", dialog.type());
       assertEquals("yes.", dialog.defaultValue());
       assertEquals("question?", dialog.message());
@@ -87,7 +90,8 @@ public class TestDialog {
 
   @Test
   void shouldDismissThePrompt() {
-    page.addDialogListener(dialog -> {
+    page.addListener(DIALOG, event -> {
+      Dialog dialog = (Dialog) event.data();
       dialog.dismiss();
     });
     Object result = page.evaluate("() => prompt('question?')");
@@ -96,7 +100,8 @@ public class TestDialog {
 
   @Test
   void shouldAcceptTheConfirmPrompt() {
-    page.addDialogListener(dialog -> {
+    page.addListener(DIALOG, event -> {
+      Dialog dialog = (Dialog) event.data();
       dialog.accept();
     });
     Object result = page.evaluate("() => confirm('boolean?')");
@@ -105,7 +110,8 @@ public class TestDialog {
 
   @Test
   void shouldDismissTheConfirmPrompt() {
-    page.addDialogListener(dialog -> {
+    page.addListener(DIALOG, event -> {
+      Dialog dialog = (Dialog) event.data();
       dialog.dismiss();
     });
     Object result = page.evaluate("() => confirm('boolean?')");

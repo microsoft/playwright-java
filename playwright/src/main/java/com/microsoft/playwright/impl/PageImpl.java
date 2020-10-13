@@ -39,9 +39,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private final Router routes = new Router();
   // TODO: do not rely on the frame order in the tests
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
-  private final List<Listener<ConsoleMessage>> consoleListeners = new ArrayList<>();
-  private final List<Listener<Dialog>> dialogListeners = new ArrayList<>();
-  private final List<Listener<Page>> closeListeners = new ArrayList<>();
+  private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   private final List<WaitEventHelper> eventHelpers = new ArrayList<>();
   final Map<String, Binding> bindings = new HashMap<String, Binding>();
   BrowserContextImpl ownedContext;
@@ -57,35 +55,6 @@ public class PageImpl extends ChannelOwner implements Page {
     frames.add(mainFrame);
   }
 
-  @Override
-  public void addConsoleListener(Listener<ConsoleMessage> listener) {
-    consoleListeners.add(listener);
-  }
-
-  @Override
-  public void removeConsoleListener(Listener<ConsoleMessage> listener) {
-    consoleListeners.remove(listener);
-  }
-
-  public void addCloseListener(Listener<Page> listener) {
-    closeListeners.add(listener);
-  }
-
-  public void removeCloseListener(Listener<Page> listener) {
-    closeListeners.remove(listener);
-  }
-
-  @Override
-  public void addDialogListener(Listener<Dialog> listener) {
-    dialogListeners.add(listener);
-  }
-
-  @Override
-  public void removeDialogListener(Listener<Dialog> listener) {
-    dialogListeners.remove(listener);
-  }
-
-  @Override
   public Deferred<Page> waitForPopup() {
     CompletableFuture<JsonObject> popupFuture = futureForEvent("popup");
     return () -> {
@@ -95,25 +64,23 @@ public class PageImpl extends ChannelOwner implements Page {
     };
   }
 
-  private static <T> void notifyListeners(List<Listener<T>> listeners, T subject) {
-    for (Listener<T> listener: new ArrayList<>(listeners)) {
-      listener.handle(subject);
-    }
-  }
-
   protected void handleEvent(String event, JsonObject params) {
     if ("dialog".equals(event)) {
       String guid = params.getAsJsonObject("dialog").get("guid").getAsString();
       DialogImpl dialog = connection.getExistingObject(guid);
-      notifyListeners(dialogListeners, dialog);
+      listeners.notify(EventType.DIALOG, dialog);
       // If no action taken dismiss dialog to not hang.
       if (!dialog.isHandled()) {
         dialog.dismiss();
       }
+    } else if ("popup".equals(event)) {
+      String guid = params.getAsJsonObject("page").get("guid").getAsString();
+      PageImpl popup = connection.getExistingObject(guid);
+      listeners.notify(EventType.POPUP, popup);
     } else if ("console".equals(event)) {
       String guid = params.getAsJsonObject("message").get("guid").getAsString();
       ConsoleMessageImpl message = connection.getExistingObject(guid);
-      notifyListeners(consoleListeners, message);
+      listeners.notify(EventType.CONSOLE, message);
     } else if ("frameAttached".equals(event)) {
       String guid = params.getAsJsonObject("frame").get("guid").getAsString();
       FrameImpl frame = connection.getExistingObject(guid);
@@ -122,6 +89,7 @@ public class PageImpl extends ChannelOwner implements Page {
       if (frame.parentFrame != null) {
         frame.parentFrame.childFrames.add(frame);
       }
+      listeners.notify(EventType.FRAMEATTACHED, frame);
     } else if ("frameDetached".equals(event)) {
       String guid = params.getAsJsonObject("frame").get("guid").getAsString();
       FrameImpl frame = connection.getExistingObject(guid);
@@ -130,6 +98,7 @@ public class PageImpl extends ChannelOwner implements Page {
       if (frame.parentFrame != null) {
         frame.parentFrame.childFrames.remove(frame);
       }
+      listeners.notify(EventType.FRAMEDETACHED, frame);
     } else if ("route".equals(event)) {
       Route route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
       Request request = connection.getExistingObject(params.getAsJsonObject("request").get("guid").getAsString());
@@ -143,11 +112,21 @@ public class PageImpl extends ChannelOwner implements Page {
     } else if ("close".equals(event)) {
       isClosed = true;
       browserContext.pages.remove(this);
-      notifyListeners(closeListeners, this);
+      listeners.notify(EventType.CLOSE, this);
     }
     for (WaitEventHelper h : new ArrayList<>(eventHelpers)) {
       h.handleEvent(event, params);
     }
+  }
+
+  @Override
+  public void addListener(EventType type, Listener<EventType> listener) {
+    listeners.add(type, listener);
+  }
+
+  @Override
+  public void removeListener(EventType type, Listener<EventType> listener) {
+    listeners.remove(type, listener);
   }
 
   @Override
@@ -512,9 +491,8 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Object waitForEvent(String event, String optionsOrPredicate) {
-    // TODO: do we want to keep this method ?
-    return null;
+  public Deferred<Event<EventType>> waitForEvent(EventType event, String optionsOrPredicate) {
+    return listeners.waitForEvent(event, connection);
   }
 
   @Override

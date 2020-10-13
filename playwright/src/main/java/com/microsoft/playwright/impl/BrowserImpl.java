@@ -20,10 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.Deferred;
-import com.microsoft.playwright.Page;
+import com.microsoft.playwright.*;
 
 import java.util.*;
 
@@ -31,9 +28,20 @@ import static com.microsoft.playwright.impl.Utils.convertViaJson;
 
 class BrowserImpl extends ChannelOwner implements Browser {
   final Set<BrowserContext> contexts = new HashSet<>();
+  private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
 
   BrowserImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+  }
+
+  @Override
+  public void addListener(EventType type, Listener<EventType> listener) {
+    listeners.add(type, listener);
+  }
+
+  @Override
+  public void removeListener(EventType type, Listener<EventType> listener) {
+    listeners.remove(type, listener);
   }
 
   @Override

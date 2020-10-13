@@ -93,20 +93,12 @@ class Types {
     add("Mouse.down.options.button", "\"left\"|\"middle\"|\"right\"", "Button", new Empty());
     add("Mouse.up.options.button", "\"left\"|\"middle\"|\"right\"", "Button", new Empty());
     add("BrowserType.launchPersistentContext.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme");
-    add("ChromiumBrowser.newContext.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme");
-    add("ChromiumBrowser.newPage.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme");
-    add("FirefoxBrowser.newContext.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme");
-    add("FirefoxBrowser.newPage.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme");
-    add("WebKitBrowser.newContext.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme");
-    add("WebKitBrowser.newPage.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme");
 
     // Route
     add("BrowserContext.route.handler", "function(Route, Request)", "BiConsumer<Route, Request>");
     add("BrowserContext.unroute.handler", "function(Route, Request)", "BiConsumer<Route, Request>");
     add("Page.route.handler", "function(Route, Request)", "BiConsumer<Route, Request>");
     add("Page.unroute.handler", "function(Route, Request)", "BiConsumer<Route, Request>");
-    add("ChromiumBrowserContext.route.handler", "function(Route, Request)", "BiConsumer<Route, Request>");
-    add("ChromiumBrowserContext.unroute.handler", "function(Route, Request)", "BiConsumer<Route, Request>");
 
     // Viewport size.
     add("Browser.newContext.options.viewport", "null|Object", "Page.Viewport", new Empty());
@@ -114,12 +106,6 @@ class Types {
     add("Page.setViewportSize.viewportSize", "Object", "Viewport", new Empty());
     add("Page.viewportSize", "null|Object", "Viewport", new Empty());
     add("BrowserType.launchPersistentContext.options.viewport", "null|Object", "Page.Viewport", new Empty());
-    add("ChromiumBrowser.newContext.options.viewport", "null|Object", "Page.Viewport", new Empty());
-    add("ChromiumBrowser.newPage.options.viewport", "null|Object", "Page.Viewport", new Empty());
-    add("FirefoxBrowser.newContext.options.viewport", "null|Object", "Page.Viewport", new Empty());
-    add("FirefoxBrowser.newPage.options.viewport", "null|Object", "Page.Viewport", new Empty());
-    add("WebKitBrowser.newContext.options.viewport", "null|Object", "Page.Viewport", new Empty());
-    add("WebKitBrowser.newPage.options.viewport", "null|Object", "Page.Viewport", new Empty());
 
     // HTTP credentials.
     add("Browser.newContext.options.httpCredentials", "Object", "BrowserContext.HTTPCredentials", new Empty());
@@ -179,8 +165,6 @@ class Types {
     add("Selectors.register.script", "function|string|Object", "String");
     add("Worker.evaluate.pageFunction", "function|string", "String");
     add("Worker.evaluateHandle.pageFunction", "function|string", "String");
-    add("ChromiumBrowserContext.addInitScript.script", "function|string|Object", "String");
-
 
     // Return structures
     add("ConsoleMessage.location", "Object", "Location");
@@ -204,14 +188,18 @@ class Types {
     add("BrowserContext.cookies.urls", "string|Array<string>", "String");
     add("BrowserContext.route.url", "string|RegExp|function(URL):boolean", "String");
     add("BrowserContext.unroute.url", "string|RegExp|function(URL):boolean", "String");
+    add("BrowserContext.waitForEvent.event", "string", "EventType", new Empty());
     add("BrowserContext.waitForEvent.optionsOrPredicate", "Function|Object", "String");
+    add("BrowserContext.waitForEvent", "Promise<Object>", "Deferred<Event<EventType>>", new Empty());
     add("Page.waitForNavigation.options.url", "string|RegExp|Function", "String");
     add("Page.frame.options", "string|Object", "FrameOptions", new Empty());
     add("Page.route.url", "string|RegExp|function(URL):boolean", "String");
     add("Page.selectOption.values", "null|string|ElementHandle|Array<string>|Object|Array<ElementHandle>|Array<Object>", "String");
     add("Page.setInputFiles.files", "string|Array<string>|Object|Array<Object>", "String");
     add("Page.unroute.url", "string|RegExp|function(URL):boolean", "String");
+    add("Page.waitForEvent.event", "string", "EventType", new Empty());
     add("Page.waitForEvent.optionsOrPredicate", "Function|Object", "String");
+    add("Page.waitForEvent", "Promise<Object>", "Deferred<Event<EventType>>", new Empty());
     add("Page.waitForRequest.urlOrPredicate", "string|RegExp|Function", "String");
     add("Page.waitForResponse.urlOrPredicate", "string|RegExp|Function", "String");
     add("Frame.waitForNavigation.options.url", "string|RegExp|Function", "String");
@@ -231,10 +219,6 @@ class Types {
     add("BrowserType.launchServer.options.firefoxUserPrefs", "Object<string, string|number|boolean>", "String");
     add("BrowserType.launchServer.options.env", "Object<string, string|number|boolean>", "String");
     add("Logger.log.message", "string|Error", "String");
-    add("ChromiumBrowserContext.cookies.urls", "string|Array<string>", "String");
-    add("ChromiumBrowserContext.route.url", "string|RegExp|function(URL):boolean", "String");
-    add("ChromiumBrowserContext.unroute.url", "string|RegExp|function(URL):boolean", "String");
-    add("ChromiumBrowserContext.waitForEvent.optionsOrPredicate", "Function|Object", "String");
 
     add("Browser.newContext.options.geolocation.latitude", "number", "double");
     add("Browser.newContext.options.geolocation.longitude", "number", "double");
@@ -245,24 +229,6 @@ class Types {
     add("BrowserType.launchPersistentContext.options.geolocation.latitude", "number", "double");
     add("BrowserType.launchPersistentContext.options.geolocation.longitude", "number", "double");
     add("BrowserType.launchPersistentContext.options.geolocation.accuracy", "number", "double");
-    add("ChromiumBrowser.newContext.options.geolocation.latitude", "number", "double");
-    add("ChromiumBrowser.newContext.options.geolocation.longitude", "number", "double");
-    add("ChromiumBrowser.newContext.options.geolocation.accuracy", "number", "double");
-    add("ChromiumBrowser.newPage.options.geolocation.latitude", "number", "double");
-    add("ChromiumBrowser.newPage.options.geolocation.longitude", "number", "double");
-    add("ChromiumBrowser.newPage.options.geolocation.accuracy", "number", "double");
-    add("FirefoxBrowser.newContext.options.geolocation.latitude", "number", "double");
-    add("FirefoxBrowser.newContext.options.geolocation.longitude", "number", "double");
-    add("FirefoxBrowser.newContext.options.geolocation.accuracy", "number", "double");
-    add("FirefoxBrowser.newPage.options.geolocation.latitude", "number", "double");
-    add("FirefoxBrowser.newPage.options.geolocation.longitude", "number", "double");
-    add("FirefoxBrowser.newPage.options.geolocation.accuracy", "number", "double");
-    add("WebKitBrowser.newContext.options.geolocation.latitude", "number", "double");
-    add("WebKitBrowser.newContext.options.geolocation.longitude", "number", "double");
-    add("WebKitBrowser.newContext.options.geolocation.accuracy", "number", "double");
-    add("WebKitBrowser.newPage.options.geolocation.latitude", "number", "double");
-    add("WebKitBrowser.newPage.options.geolocation.longitude", "number", "double");
-    add("WebKitBrowser.newPage.options.geolocation.accuracy", "number", "double");
 
     add("BrowserContext.setGeolocation.geolocation", "null|Object", "Geolocation");
 
@@ -282,7 +248,6 @@ class Types {
 
     // JSON type
     add("BrowserContext.addInitScript.arg", "Serializable", "Object");
-    add("ChromiumBrowserContext.addInitScript.arg", "Serializable", "Object");
     add("Page.$eval", "Promise<Serializable>", "Object");
     add("Page.$$eval", "Promise<Serializable>", "Object");
     add("Page.addInitScript.arg", "Serializable", "Object");
