@@ -54,29 +54,6 @@ public interface Page {
     Object call(Source source, Object... args);
   }
 
-  class FrameOptions {
-    public String name;
-    public String url;
-    public Pattern urlPattern;
-    public Predicate<String> urlPredicate;
-
-    FrameOptions withName(String name) {
-      this.name = name;
-      return this;
-    }
-    FrameOptions withUrl(String url) {
-      this.url = url;
-      return this;
-    }
-    FrameOptions withUrl(Pattern pattern) {
-      urlPattern = pattern;
-      return this;
-    }
-    FrameOptions withUrl(Predicate<String> predicate) {
-      urlPredicate = predicate;
-      return this;
-    }
-  }
 
   enum EventType {
     CLOSE,
@@ -853,7 +830,10 @@ public interface Page {
     focus(selector, null);
   }
   void focus(String selector, FocusOptions options);
-  Frame frame(FrameOptions options);
+  Frame frameByName(String name);
+  Frame frameByUrl(String glob);
+  Frame frameByUrl(Pattern pattern);
+  Frame frameByUrl(Predicate<String> predicate);
   List<Frame> frames();
   default String getAttribute(String selector, String name) {
     return getAttribute(selector, name, null);

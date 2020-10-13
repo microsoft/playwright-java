@@ -307,6 +307,12 @@ class Method extends Element {
       "void route(Pattern url, BiConsumer<Route, Request> handler);",
       "void route(Predicate<String> url, BiConsumer<Route, Request> handler);",
     });
+    customSignature.put("Page.frame", new String[]{
+      "Frame frameByName(String name);",
+      "Frame frameByUrl(String glob);",
+      "Frame frameByUrl(Pattern pattern);",
+      "Frame frameByUrl(Predicate<String> predicate);",
+    });
     customSignature.put("Page.route", new String[]{
       "void route(String url, BiConsumer<Route, Request> handler);",
       "void route(Pattern url, BiConsumer<Route, Request> handler);",
@@ -614,30 +620,6 @@ class Interface extends TypeDefinition {
         output.add(offset + "  Object call(Source source, Object... args);");
         output.add(offset + "}");
         output.add("");
-
-        output.add(offset + "class FrameOptions {");
-        output.add(offset + "  public String name;");
-        output.add(offset + "  public String url;");
-        output.add(offset + "  public Pattern urlPattern;");
-        output.add(offset + "  public Predicate<String> urlPredicate;");
-        output.add("");
-        output.add(offset + "  FrameOptions withName(String name) {");
-        output.add(offset + "    this.name = name;");
-        output.add(offset + "    return this;");
-        output.add(offset + "  }");
-        output.add(offset + "  FrameOptions withUrl(String url) {");
-        output.add(offset + "    this.url = url;");
-        output.add(offset + "    return this;");
-        output.add(offset + "  }");
-        output.add(offset + "  FrameOptions withUrl(Pattern pattern) {");
-        output.add(offset + "    urlPattern = pattern;");
-        output.add(offset + "    return this;");
-        output.add(offset + "  }");
-        output.add(offset + "  FrameOptions withUrl(Predicate<String> predicate) {");
-        output.add(offset + "    urlPredicate = predicate;");
-        output.add(offset + "    return this;");
-        output.add(offset + "  }");
-        output.add(offset + "}");
         break;
       }
       case "BrowserContext": {

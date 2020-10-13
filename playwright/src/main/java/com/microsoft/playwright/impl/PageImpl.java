@@ -267,21 +267,33 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Frame frame(FrameOptions options) {
-    if (options == null) {
-      throw new IllegalArgumentException("Frame criteria should be specified");
-    }
+  public Frame frameByName(String name) {
     for (Frame frame : frames) {
-      if (options.name != null && options.name.equals(frame.name())) {
+      if (name.equals(frame.name())) {
         return frame;
       }
-      if (options.url != null && options.url.equals(frame.url())) {
-        return frame;
-      }
-      if (options.urlPattern != null && options.urlPattern.matcher(frame.url()).matches()) {
-        return frame;
-      }
-      if (options.urlPredicate != null && options.urlPredicate.test(frame.url())) {
+    }
+    return null;
+  }
+
+  @Override
+  public Frame frameByUrl(String glob) {
+    return frameFor(new UrlMatcher(glob));
+  }
+
+  @Override
+  public Frame frameByUrl(Pattern pattern) {
+    return frameFor(new UrlMatcher(pattern));
+  }
+
+  @Override
+  public Frame frameByUrl(Predicate<String> predicate) {
+    return frameFor(new UrlMatcher(predicate));
+  }
+
+  private Frame frameFor(UrlMatcher matcher) {
+    for (Frame frame : frames) {
+      if (matcher.test(frame.url())) {
         return frame;
       }
     }
