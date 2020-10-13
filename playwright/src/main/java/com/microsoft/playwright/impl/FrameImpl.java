@@ -513,9 +513,29 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return new WaitForNavigationHelper(new UrlMatcher(options.url), options.waitUntil);
   }
 
+  private static String toProtocol(WaitForSelectorOptions.State state) {
+    return state.toString().toLowerCase();
+  }
+
   @Override
-  public ElementHandle waitForSelector(String selector, WaitForSelectorOptions options) {
-    return null;
+  public Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options) {
+    if (options == null) {
+      options = new WaitForSelectorOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    if (options.state != null) {
+      params.remove("state");
+      params.addProperty("state", toProtocol(options.state));
+    }
+    Deferred<JsonElement> json = sendMessageAsync("waitForSelector", params);
+    return () -> {
+      JsonObject element = json.get().getAsJsonObject().getAsJsonObject("element");
+      if (element == null) {
+        return null;
+      }
+      return connection.getExistingObject(element.get("guid").getAsString());
+    };
   }
 
   @Override

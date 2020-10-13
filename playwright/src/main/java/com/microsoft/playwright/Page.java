@@ -954,10 +954,10 @@ public interface Page {
     return waitForResponse(urlOrPredicate, null);
   }
   Deferred<Response> waitForResponse(String urlOrPredicate, WaitForResponseOptions options);
-  default ElementHandle waitForSelector(String selector) {
+  default Deferred<ElementHandle> waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }
-  ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
+  Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options);
   void waitForTimeout(int timeout);
   List<Worker> workers();
   Deferred<Void> waitForClose();

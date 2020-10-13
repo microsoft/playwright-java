@@ -18,6 +18,7 @@ package com.microsoft.playwright.impl;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.Deferred;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -67,16 +68,23 @@ public class Connection {
   }
 
   public JsonElement sendMessage(String guid, String method, JsonObject params) {
-    CompletableFuture<Message> result = internalSendMessage(guid, method, params);
-    while (!result.isDone()) {
-      processOneMessage();
-    }
-    try {
-      return result.get().result;
-    } catch (InterruptedException | ExecutionException e) {
-      throw new RuntimeException(e);
-    }
+    return sendMessageAsync(guid, method, params).get();
   }
+
+  public Deferred<JsonElement> sendMessageAsync(String guid, String method, JsonObject params) {
+    CompletableFuture<Message> result = internalSendMessage(guid, method, params);
+    return () -> {
+      while (!result.isDone()) {
+        processOneMessage();
+      }
+      try {
+        return result.get().result;
+      } catch (InterruptedException | ExecutionException e) {
+        throw new RuntimeException(e);
+      }
+    };
+  }
+
 
   public void sendMessageNoWait(String guid, String method, JsonObject params) {
     internalSendMessage(guid, method, params);

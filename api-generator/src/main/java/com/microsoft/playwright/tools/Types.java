@@ -173,6 +173,9 @@ class Types {
     add("Page.waitForResponse", "Promise<Response>", "Deferred<Response>");
     add("Page.waitForNavigation", "Promise<null|Response>", "Deferred<Response>");
     add("Frame.waitForNavigation", "Promise<null|Response>", "Deferred<Response>");
+    add("Page.waitForSelector", "Promise<null|ElementHandle>", "Deferred<ElementHandle>", new Empty());
+    add("Frame.waitForSelector", "Promise<null|ElementHandle>", "Deferred<ElementHandle>", new Empty());
+    add("ElementHandle.waitForSelector", "Promise<null|ElementHandle>", "Deferred<ElementHandle>", new Empty());
 
     // Custom options
     add("Page.pdf.options.margin.top", "string|number", "String");
