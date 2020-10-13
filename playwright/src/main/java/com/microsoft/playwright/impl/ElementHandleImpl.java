@@ -20,9 +20,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.Deferred;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Frame;
-import com.microsoft.playwright.JSHandle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -229,7 +229,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   }
 
   @Override
-  public ElementHandle waitForSelector(String selector, WaitForSelectorOptions options) {
+  public Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options) {
     return null;
   }
 }

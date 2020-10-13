@@ -17,7 +17,6 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
@@ -569,8 +568,8 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public ElementHandle waitForSelector(String selector, WaitForSelectorOptions options) {
-    return null;
+  public Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options) {
+    return mainFrame.waitForSelector(selector, convertViaJson(options, Frame.WaitForSelectorOptions.class));
   }
 
   @Override

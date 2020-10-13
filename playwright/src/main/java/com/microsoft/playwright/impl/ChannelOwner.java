@@ -18,13 +18,13 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.Deferred;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Supplier;
 
 class ChannelOwner {
   final Connection connection;
@@ -60,6 +60,10 @@ class ChannelOwner {
   }
 
   public void dispose() {
+  }
+
+  Deferred<JsonElement> sendMessageAsync(String method, JsonObject params) {
+    return connection.sendMessageAsync(guid, method, params);
   }
 
   JsonElement sendMessage(String method, JsonObject params) {

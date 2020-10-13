@@ -438,9 +438,9 @@ public interface ElementHandle extends JSHandle {
     waitForElementState(state, null);
   }
   void waitForElementState(ElementState state, WaitForElementStateOptions options);
-  default ElementHandle waitForSelector(String selector) {
+  default Deferred<ElementHandle> waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }
-  ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
+  Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options);
 }
 
