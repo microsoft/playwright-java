@@ -54,6 +54,12 @@ public interface Page {
     Object call(Source source, Object... args);
   }
 
+  interface Error {
+    String message();
+    String name();
+    String stack();
+  }
+
 
   enum EventType {
     CLOSE,

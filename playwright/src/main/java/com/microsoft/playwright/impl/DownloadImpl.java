@@ -18,23 +18,50 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.Download;
 
-public class DownloadImpl extends ChannelOwner {
+public class DownloadImpl extends ChannelOwner implements Download {
   public DownloadImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 
+  @Override
   public String url() {
     return initializer.get("url").getAsString();
   }
 
+  @Override
   public String suggestedFilename() {
     return initializer.get("suggestedFilename").getAsString();
   }
 
+  @Override
+  public Readable createReadStream() {
+    return null;
+  }
+
+  @Override
+  public void delete() {
+    sendMessage("delete", new JsonObject());
+  }
+
+  @Override
+  public String failure() {
+    JsonObject result = sendMessage("failure", new JsonObject()).getAsJsonObject();
+    if (result.has("error")) {
+      return result.get("error").getAsString();
+    }
+    return null;
+  }
+
+  @Override
   public String path() {
     JsonObject params = new JsonObject();
     JsonElement result = sendMessage("path", params);
     return result.getAsJsonObject().get("path").getAsString();
+  }
+
+  @Override
+  public void saveAs(String path) {
   }
 }

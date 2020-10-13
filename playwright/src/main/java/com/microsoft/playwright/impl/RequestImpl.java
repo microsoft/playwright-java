@@ -30,6 +30,8 @@ public class RequestImpl extends ChannelOwner implements Request {
   private RequestImpl redirectedFrom;
   private RequestImpl redirectedTo;
   private final Map<String, String> headers = new HashMap<>();
+  RequestFailure failureText;
+
   RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
 
