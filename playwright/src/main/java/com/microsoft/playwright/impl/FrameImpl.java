@@ -99,6 +99,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     params.addProperty("selector", selector);
     JsonElement json = sendMessage("querySelectorAll", params);
     JsonArray elements = json.getAsJsonObject().getAsJsonArray("elements");
+    System.out.println(new Gson().toJson(elements));
     if (elements == null) {
       return null;
     }
@@ -384,6 +385,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     params.addProperty("html", html);
     params.remove("waitUntil");
     params.addProperty("waitUntil", toProtocol(options.waitUntil));
+//    System.out.println(new Gson().toJson(params));
     sendMessage("setContent", params);
   }
 
