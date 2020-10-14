@@ -18,7 +18,6 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
@@ -41,7 +40,6 @@ public class PageImpl extends ChannelOwner implements Page {
   // TODO: do not rely on the frame order in the tests
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
-  private final List<WaitEventHelper> eventHelpers = new ArrayList<>();
   final Map<String, Binding> bindings = new HashMap<String, Binding>();
   BrowserContextImpl ownedContext;
   private boolean isClosed;
@@ -66,6 +64,7 @@ public class PageImpl extends ChannelOwner implements Page {
     };
   }
 
+  @Override
   protected void handleEvent(String event, JsonObject params) {
     if ("dialog".equals(event)) {
       String guid = params.getAsJsonObject("dialog").get("guid").getAsString();
@@ -157,9 +156,6 @@ public class PageImpl extends ChannelOwner implements Page {
       isClosed = true;
       browserContext.pages.remove(this);
       listeners.notify(EventType.CLOSE, null);
-    }
-    for (WaitEventHelper h : new ArrayList<>(eventHelpers)) {
-      h.handleEvent(event, params);
     }
   }
 
@@ -665,47 +661,55 @@ public class PageImpl extends ChannelOwner implements Page {
     }
   }
 
-  private class WaitEventHelper<R> implements Deferred<R> {
-    private final CompletableFuture<R> result = new CompletableFuture<>();
-    private final String event;
-    private final String fieldName;
+  private class WaitEventHelper<R> implements Deferred<R>, Listener<EventType> {
+    private final CompletableFuture<Event<EventType>> result = new CompletableFuture<>();
+    private final EventType type;
+    private final Predicate<Event<EventType>> predicate;
 
-    WaitEventHelper(String event, String fieldName) {
-      this.event = event;
-      this.fieldName = fieldName;
-      eventHelpers.add(this);
+    WaitEventHelper(EventType type, Predicate<Event<EventType>> predicate) {
+      this.type = type;
+      this.predicate = predicate;
+      addListener(type, this);
     }
 
-    void handleEvent(String name, JsonObject params) {
-      if (event.equals(name)) {
-        if (fieldName != null && params.has(fieldName)) {
-          result.complete(connection.getExistingObject(params.getAsJsonObject(fieldName).get("guid").getAsString()));
-        } else {
-          result.complete(null);
-        }
-      } else if ("close".equals(name)) {
+    @Override
+    public void handle(Event<EventType> event) {
+      if (type.equals(event.type()) && predicate.test(event)) {
+        result.complete(event);
+      } else if (EventType.CLOSE.equals(event.type())) {
         result.completeExceptionally(new RuntimeException("Page closed"));
-      } else if ("crash".equals(name)) {
+      } else if (EventType.CRASH.equals(event.type())) {
         result.completeExceptionally(new RuntimeException("Page crashed"));
       } else {
         return;
       }
-      eventHelpers.remove(this);
+      removeListener(type, this);
     }
 
     public R get() {
-      return waitForCompletion(result);
+      Event<EventType> r = waitForCompletion(result);
+      return (R) r.data();
     }
   }
 
   @Override
   public Deferred<Request> waitForRequest(String urlOrPredicate, WaitForRequestOptions options) {
-    return new WaitEventHelper<>("request", "request");
+    return new WaitEventHelper<>(EventType.REQUEST, e -> {
+      if (urlOrPredicate == null) {
+        return true;
+      }
+      return urlOrPredicate.equals(((Request) e.data()).url());
+    });
   }
 
   @Override
   public Deferred<Response> waitForResponse(String urlOrPredicate, WaitForResponseOptions options) {
-    return new WaitEventHelper<>("response", "response");
+    return new WaitEventHelper<>(EventType.RESPONSE, e -> {
+      if (urlOrPredicate == null) {
+        return true;
+      }
+      return urlOrPredicate.equals(((Response) e.data()).url());
+    });
   }
 
   @Override

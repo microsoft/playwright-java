@@ -212,8 +212,7 @@ public class TestWorkers {
       "`], {type: 'application/javascript'})))", url);
     Request request = requestPromise.get();
     Response response = responsePromise.get();
-    // TODO: implement request filter!
-//    assertEquals(url, request.url());
+    assertEquals(url, request.url());
     assertEquals(request, response.request());
     assertTrue(response.ok());
   }
