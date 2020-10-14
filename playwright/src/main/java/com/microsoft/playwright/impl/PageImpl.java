@@ -661,16 +661,17 @@ public class PageImpl extends ChannelOwner implements Page {
     }
   }
 
-  private class WaitEventHelper<R> implements Deferred<R>, Listener<EventType> {
-    private final CompletableFuture<Event<EventType>> result = new CompletableFuture<>();
-    private final EventType type;
-    private final Predicate<Event<EventType>> predicate;
-    private final List<EventType> subscribedEvents;
 
-    WaitEventHelper(EventType type, Predicate<Event<EventType>> predicate) {
-      this.type = type;
-      this.predicate = predicate;
-      subscribedEvents = Arrays.asList(type, EventType.CLOSE, EventType.CRASH);
+  Waitable createWaitForCloseHelper() {
+    return new WaitablePageClose();
+  }
+
+  class WaitablePageClose implements Waitable, Listener<EventType> {
+    private final List<EventType> subscribedEvents;
+    private RuntimeException exception;
+
+    WaitablePageClose() {
+      subscribedEvents = Arrays.asList(EventType.CLOSE, EventType.CRASH);
       for (EventType e : subscribedEvents) {
         addListener(e, this);
       }
@@ -678,44 +679,101 @@ public class PageImpl extends ChannelOwner implements Page {
 
     @Override
     public void handle(Event<EventType> event) {
-      if (type.equals(event.type()) && predicate.test(event)) {
-        result.complete(event);
-      } else if (EventType.CLOSE.equals(event.type())) {
-        result.completeExceptionally(new RuntimeException("Page closed"));
+      if (EventType.CLOSE.equals(event.type())) {
+        exception = new RuntimeException("Page closed");
       } else if (EventType.CRASH.equals(event.type())) {
-        result.completeExceptionally(new RuntimeException("Page crashed"));
+        exception = new RuntimeException("Page crashed");
       } else {
         return;
       }
+      dispose();
+    }
+
+    @Override
+    public boolean isDone() {
+      return exception != null;
+    }
+
+    @Override
+    public Object get() {
+      throw exception;
+    }
+
+    @Override
+    public void dispose() {
       for (EventType e : subscribedEvents) {
         removeListener(e, this);
       }
     }
+  }
 
-    public R get() {
-      Event<EventType> r = waitForCompletion(result);
-      return (R) r.data();
+  private class WaitableEvent implements Waitable, Listener<EventType> {
+    private final EventType type;
+    private final Predicate<Event<EventType>> predicate;
+    private Event<EventType> event;
+
+    WaitableEvent(EventType type, Predicate<Event<EventType>> predicate) {
+      this.type = type;
+      this.predicate = predicate;
+      addListener(type, this);
+    }
+
+    @Override
+    public void handle(Event<EventType> event) {
+      assert type.equals(event.type());
+      if (!predicate.test(event)) {
+        return;
+      }
+
+      this.event = event;
+      dispose();
+    }
+
+    @Override
+    public boolean isDone() {
+      return event != null;
+    }
+
+    @Override
+    public void dispose() {
+      removeListener(type, this);
+    }
+
+    public Object get() {
+      return event.data();
     }
   }
 
   @Override
   public Deferred<Request> waitForRequest(String urlOrPredicate, WaitForRequestOptions options) {
-    return new WaitEventHelper<>(EventType.REQUEST, e -> {
+    List<Waitable> waitables = new ArrayList<>();
+    waitables.add(new WaitableEvent(EventType.REQUEST, e -> {
       if (urlOrPredicate == null) {
         return true;
       }
       return urlOrPredicate.equals(((Request) e.data()).url());
-    });
+    }));
+    waitables.add(createWaitForCloseHelper());
+    if (options != null && options.timeout != null) {
+      waitables.add(new WaitableTimeout(options.timeout.intValue()));
+    }
+    return toDeferred(new WaitableRace(waitables));
   }
 
   @Override
   public Deferred<Response> waitForResponse(String urlOrPredicate, WaitForResponseOptions options) {
-    return new WaitEventHelper<>(EventType.RESPONSE, e -> {
+    List<Waitable> waitables = new ArrayList<>();
+    waitables.add(new WaitableEvent(EventType.RESPONSE, e -> {
       if (urlOrPredicate == null) {
         return true;
       }
       return urlOrPredicate.equals(((Response) e.data()).url());
-    });
+    }));
+    waitables.add(createWaitForCloseHelper());
+    if (options != null && options.timeout != null) {
+      waitables.add(new WaitableTimeout(options.timeout.intValue()));
+    }
+    return toDeferred(new WaitableRace(waitables));
   }
 
   @Override

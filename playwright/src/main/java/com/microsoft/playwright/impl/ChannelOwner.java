@@ -85,6 +85,15 @@ class ChannelOwner {
     return result;
   }
 
+  <T> Deferred<T> toDeferred(Waitable waitable) {
+    return () -> {
+      while (!waitable.isDone()) {
+        connection.processOneMessage();
+      }
+      return (T) waitable.get();
+    };
+  }
+
   <T> T waitForCompletion(CompletableFuture<T> future) {
     while (!future.isDone()) {
       connection.processOneMessage();
