@@ -112,7 +112,8 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public Frame contentFrame() {
-    return null;
+    JsonObject result = sendMessage("contentFrame", new JsonObject()).getAsJsonObject();
+    return connection.getExistingObject(result.getAsJsonObject("frame").get("guid").getAsString());
   }
 
   @Override

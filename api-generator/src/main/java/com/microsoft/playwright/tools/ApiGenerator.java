@@ -557,9 +557,8 @@ class Interface extends TypeDefinition {
     for (Method m : methods) {
       m.writeTo(output, offset);
     }
-    // TODO: fix api.json generator to avoid name clash between close() method and close event.
-    if ("Page".equals(jsonName)) {
-      output.add(offset + "Deferred<Void> waitForClose();");
+    if ("Worker".equals(jsonName)) {
+      output.add(offset + "Deferred<Event<EventType>> waitForEvent(EventType event);");
     }
     output.add("}");
     output.add("\n");

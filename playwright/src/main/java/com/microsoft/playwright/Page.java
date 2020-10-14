@@ -966,6 +966,5 @@ public interface Page {
   Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options);
   void waitForTimeout(int timeout);
   List<Worker> workers();
-  Deferred<Void> waitForClose();
 }
 
