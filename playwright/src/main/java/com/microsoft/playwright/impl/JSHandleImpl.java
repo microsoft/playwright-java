@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.JSHandle;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.Serialization.deserialize;
@@ -63,16 +64,28 @@ public class JSHandleImpl extends ChannelOwner implements JSHandle {
 
   @Override
   public Map<String, JSHandle> getProperties() {
-    return null;
+    JsonObject json = sendMessage("getPropertyList", new JsonObject()).getAsJsonObject();
+    Map<String, JSHandle> result = new HashMap<>();
+    for (JsonElement e : json.getAsJsonArray("properties")) {
+      JsonObject item = e.getAsJsonObject();
+      JSHandle value = connection.getExistingObject(item.getAsJsonObject("value").get("guid").getAsString());
+      result.put(item.get("name").getAsString(), value);
+    }
+    return result;
   }
 
   @Override
   public JSHandle getProperty(String propertyName) {
-    return null;
+    JsonObject params = new JsonObject();
+    params.addProperty("name", propertyName);
+    JsonObject json = sendMessage("getProperty", params).getAsJsonObject();
+    return connection.getExistingObject(json.getAsJsonObject("handle").get("guid").getAsString());
   }
 
   @Override
   public Object jsonValue() {
-    return null;
+    JsonObject json = sendMessage("jsonValue", new JsonObject()).getAsJsonObject();
+    SerializedValue value = new Gson().fromJson(json.get("value"), SerializedValue.class);
+    return deserialize(value);
   }
 }

@@ -17,10 +17,12 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.ConsoleMessage;
 import com.microsoft.playwright.JSHandle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ConsoleMessageImpl extends ChannelOwner implements ConsoleMessage {
@@ -38,7 +40,11 @@ public class ConsoleMessageImpl extends ChannelOwner implements ConsoleMessage {
 
   @Override
   public List<JSHandle> args() {
-    return null;
+    List<JSHandle> result = new ArrayList<>();
+    for (JsonElement item : initializer.getAsJsonArray("args")) {
+      result.add(connection.getExistingObject(item.getAsJsonObject().get("guid").getAsString()));
+    }
+    return result;
   }
 
   public Location location() {
