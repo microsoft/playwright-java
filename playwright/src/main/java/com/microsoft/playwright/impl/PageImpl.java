@@ -665,11 +665,15 @@ public class PageImpl extends ChannelOwner implements Page {
     private final CompletableFuture<Event<EventType>> result = new CompletableFuture<>();
     private final EventType type;
     private final Predicate<Event<EventType>> predicate;
+    private final List<EventType> subscribedEvents;
 
     WaitEventHelper(EventType type, Predicate<Event<EventType>> predicate) {
       this.type = type;
       this.predicate = predicate;
-      addListener(type, this);
+      subscribedEvents = Arrays.asList(type, EventType.CLOSE, EventType.CRASH);
+      for (EventType e : subscribedEvents) {
+        addListener(e, this);
+      }
     }
 
     @Override
@@ -683,7 +687,9 @@ public class PageImpl extends ChannelOwner implements Page {
       } else {
         return;
       }
-      removeListener(type, this);
+      for (EventType e : subscribedEvents) {
+        removeListener(e, this);
+      }
     }
 
     public R get() {
