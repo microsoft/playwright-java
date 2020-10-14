@@ -27,4 +27,17 @@ class Utils {
     }
     return result;
   }
+
+  static Frame attachFrame(Page page, String name, String url) {
+    JSHandle handle = page.evaluateHandle("async ({ frameId, url }) => {\n" +
+      "  const frame = document.createElement('iframe');\n" +
+      "  frame.src = url;\n" +
+      "  frame.id = frameId;\n" +
+      "  document.body.appendChild(frame);\n" +
+      "  await new Promise(x => frame.onload = x);\n" +
+      "  return frame;\n" +
+      "}", mapOf("frameId", name, "url", url));
+    return handle.asElement().contentFrame();
+  }
+
 }

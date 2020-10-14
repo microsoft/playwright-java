@@ -17,6 +17,8 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
@@ -43,6 +45,7 @@ public class PageImpl extends ChannelOwner implements Page {
   final Map<String, Binding> bindings = new HashMap<String, Binding>();
   BrowserContextImpl ownedContext;
   private boolean isClosed;
+  final Set<Worker> workers = new HashSet<>();
 
   PageImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -78,7 +81,9 @@ public class PageImpl extends ChannelOwner implements Page {
       listeners.notify(EventType.POPUP, popup);
     } else if ("worker".equals(event)) {
       String guid = params.getAsJsonObject("worker").get("guid").getAsString();
-      Worker worker = connection.getExistingObject(guid);
+      WorkerImpl worker = connection.getExistingObject(guid);
+      worker.page = this;
+      workers.add(worker);
       listeners.notify(EventType.WORKER, worker);
     } else if ("console".equals(event)) {
       String guid = params.getAsJsonObject("message").get("guid").getAsString();
@@ -222,7 +227,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void bringToFront() {
-
+    sendMessage("bringToFront", new JsonObject());
   }
 
   @Override
@@ -257,12 +262,38 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options) {
+    mainFrame.dispatchEvent(selector, type, eventInit, convertViaJson(options, Frame.DispatchEventOptions.class));
+  }
 
+  private static String toProtocol(EmulateMediaOptions.Media media) {
+    if (media == null) {
+      return "null";
+    }
+    return media.toString().toLowerCase();
+  }
+
+  private static String toProtocol(EmulateMediaOptions.ColorScheme colorScheme) {
+    if (colorScheme == null) {
+      return "null";
+    }
+    switch (colorScheme) {
+      case DARK:
+        return "dark";
+      case LIGHT:
+        return "light";
+      case NO_PREFERENCE:
+        return "no-preference";
+      default:
+        throw new RuntimeException("Unknown option: " + colorScheme);
+    }
   }
 
   @Override
   public void emulateMedia(EmulateMediaOptions options) {
-
+    JsonObject params = new JsonObject();
+    params.addProperty("media", toProtocol(options.media));
+    params.addProperty("colorScheme", toProtocol(options.colorScheme));
+    sendMessage("emulateMedia", params);
   }
 
   @Override
@@ -346,16 +377,36 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public String getAttribute(String selector, String name, GetAttributeOptions options) {
-    return null;
+    return mainFrame.getAttribute(selector, name, convertViaJson(options, Frame.GetAttributeOptions.class));
   }
 
   @Override
   public Response goBack(GoBackOptions options) {
+    if (options == null) {
+      options = new GoBackOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.remove("waitUntil");
+    params.addProperty("waitUntil", FrameImpl.toProtocol(options.waitUntil));
+    JsonObject json = sendMessage("goBack", params).getAsJsonObject();
+    if (json.has("response")) {
+      return connection.getExistingObject(json.getAsJsonObject("response").get("guid").getAsString());
+    }
     return null;
   }
 
   @Override
   public Response goForward(GoForwardOptions options) {
+    if (options == null) {
+      options = new GoForwardOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.remove("waitUntil");
+    params.addProperty("waitUntil", FrameImpl.toProtocol(options.waitUntil));
+    JsonObject json = sendMessage("goForward", params).getAsJsonObject();
+    if (json.has("response")) {
+      return connection.getExistingObject(json.getAsJsonObject("response").get("guid").getAsString());
+    }
     return null;
   }
 
@@ -366,17 +417,17 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void hover(String selector, HoverOptions options) {
-
+    mainFrame.hover(selector, convertViaJson(options, Frame.HoverOptions.class));
   }
 
   @Override
   public String innerHTML(String selector, InnerHTMLOptions options) {
-    return null;
+    return mainFrame.innerHTML(selector, convertViaJson(options, Frame.InnerHTMLOptions.class));
   }
 
   @Override
   public String innerText(String selector, InnerTextOptions options) {
-    return null;
+    return mainFrame.innerText(selector, convertViaJson(options, Frame.InnerTextOptions.class));
   }
 
   @Override
@@ -420,6 +471,16 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Response reload(ReloadOptions options) {
+    if (options == null) {
+      options = new ReloadOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.remove("waitUntil");
+    params.addProperty("waitUntil", FrameImpl.toProtocol(options.waitUntil));
+    JsonObject json = sendMessage("reload", params).getAsJsonObject();
+    if (json.has("response")) {
+      return connection.getExistingObject(json.getAsJsonObject("response").get("guid").getAsString());
+    }
     return null;
   }
 
@@ -454,7 +515,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public List<String> selectOption(String selector, String values, SelectOptionOptions options) {
-    return null;
+    return mainFrame.selectOption(selector, values, convertViaJson(options, Frame.SelectOptionOptions.class));
   }
 
   @Override
@@ -464,22 +525,35 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void setDefaultNavigationTimeout(int timeout) {
-
+    JsonObject params = new JsonObject();
+    params.addProperty("timeout", timeout);
+    sendMessage("setDefaultNavigationTimeoutNoReply", params);
   }
 
   @Override
   public void setDefaultTimeout(int timeout) {
-
+    JsonObject params = new JsonObject();
+    params.addProperty("timeout", timeout);
+    sendMessage("setDefaultTimeoutNoReply", params);
   }
 
   @Override
   public void setExtraHTTPHeaders(Map<String, String> headers) {
-
+    JsonObject params = new JsonObject();
+    JsonArray jsonHeaders = new JsonArray();
+    for (Map.Entry<String, String> e : headers.entrySet()) {
+      JsonObject header = new JsonObject();
+      header.addProperty("name", e.getKey());
+      header.addProperty("value", e.getValue());
+      jsonHeaders.add(header);
+    }
+    params.add("headers", jsonHeaders);
+    sendMessage("setExtraHTTPHeaders", params);
   }
 
   @Override
   public void setInputFiles(String selector, String files, SetInputFilesOptions options) {
-
+    mainFrame.setInputFiles(selector, files, convertViaJson(options, Frame.SetInputFilesOptions.class));
   }
 
   @Override
@@ -646,11 +720,6 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public List<Worker> workers() {
-    return null;
-  }
-
-  @Override
-  public Deferred<Void> waitForClose() {
-    return new WaitEventHelper<>("close", null);
+    return new ArrayList<>(workers);
   }
 }

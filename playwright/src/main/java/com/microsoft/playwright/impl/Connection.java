@@ -236,6 +236,9 @@ public class Connection {
       case "Selectors":
 //        result = new Playwright(parent, type, guid, initializer);
         break;
+      case "Worker":
+        result = new WorkerImpl(parent, type, guid, initializer);
+        break;
       default:
         throw new RuntimeException("Unknown type " + type);
     }

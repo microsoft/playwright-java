@@ -363,7 +363,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
 
-  private static String toProtocol(LoadState waitUntil) {
+  static String toProtocol(LoadState waitUntil) {
     if (waitUntil == null) {
       waitUntil = LoadState.LOAD;
     }

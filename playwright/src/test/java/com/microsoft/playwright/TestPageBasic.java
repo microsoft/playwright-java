@@ -238,7 +238,7 @@ public class TestPageBasic {
     Deferred<Event<Page.EventType>> newPagePromise = page.waitForEvent(POPUP);
     page.evaluate("() => window['newPage'] = window.open('about:blank')");
     Page newPage = (Page) newPagePromise.get().data();
-    Deferred<Void> closedPromise = newPage.waitForClose();
+    Deferred<Event<Page.EventType>> closedPromise = newPage.waitForEvent(CLOSE);
     page.evaluate("() => window['newPage'].close()");
     closedPromise.get();
   }
@@ -246,7 +246,7 @@ public class TestPageBasic {
   @Test
   void pageCloseShouldWorkWithPageClose() {
     Page newPage = context.newPage();
-    Deferred<Void> closedPromise = newPage.waitForClose();
+    Deferred<Event<Page.EventType>> closedPromise = newPage.waitForEvent(CLOSE);
     newPage.close();
     closedPromise.get();
   }
