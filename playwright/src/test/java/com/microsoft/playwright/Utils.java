@@ -43,14 +43,13 @@ class Utils {
   enum OS { WINDOWS, MAC, LINUX, UNKNOWN }
   static OS getOS() {
     String name = System.getProperty("os.name").toLowerCase();
-    System.out.println(name);
     if (name.contains("win")) {
       return OS.WINDOWS;
     }
     if (name.contains("linux")) {
       return OS.LINUX;
     }
-    if (name.contains("mac")) {
+    if (name.contains("mac os x")) {
       return OS.MAC;
     }
     return OS.UNKNOWN;
@@ -59,7 +58,12 @@ class Utils {
   static String expectedSSLError(String browserName) {
     switch (browserName) {
       case "chromium":
-        return "net::ERR_CERT_AUTHORITY_INVALID";
+        switch (getOS()) {
+          case MAC:
+            return "net::ERR_CERT_INVALID";
+          default:
+            return "net::ERR_CERT_AUTHORITY_INVALID";
+        }
       case "webkit": {
         switch (getOS()) {
           case MAC:

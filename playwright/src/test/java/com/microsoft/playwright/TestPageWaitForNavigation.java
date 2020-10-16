@@ -115,7 +115,6 @@ public class TestPageWaitForNavigation {
 
   @Test
   void shouldWorkWithClickingOnLinksWhichDoNotCommitNavigation() throws InterruptedException {
-    // TODO: https server
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a href='" + httpsServer.EMPTY_PAGE + "'>foobar</a>");
     try {
@@ -124,7 +123,7 @@ public class TestPageWaitForNavigation {
       event.get();
       fail("did not throw");
     } catch (RuntimeException e) {
-      assertTrue(e.getMessage().contains(expectedSSLError(browserType.name())));
+      assertTrue(e.getMessage().contains(expectedSSLError(browserType.name())), e.getMessage());
     }
   }
 
