@@ -16,10 +16,7 @@
 
 package com.microsoft.playwright;
 
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.*;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -55,13 +52,28 @@ public class Server implements HttpHandler {
     }
   }
 
-  Server(int port) throws IOException {
+  static Server createHttp(int port) throws IOException {
+    return new Server(port, false);
+  }
+
+  static Server createHttps(int port) throws IOException {
+    return new Server(port, true);
+  }
+
+  private Server(int port, boolean https) throws IOException {
     PORT = port;
-    PREFIX = "http://localhost:" + PORT;
-    CROSS_PROCESS_PREFIX = "http://127.0.0.1:" + PORT;
+    PREFIX = "http" + (https ? "s" : "") + "://localhost:" + PORT;
+    CROSS_PROCESS_PREFIX = "http" + (https ? "s" : "") + "://127.0.0.1:" + PORT;
     EMPTY_PAGE = PREFIX + "/empty.html";
 
-    server = HttpServer.create(new InetSocketAddress("localhost", port), 0);
+    if (https) {
+      HttpsServer httpsServer = HttpsServer.create(new InetSocketAddress("localhost", port), 0);
+      httpsServer.setHttpsConfigurator(HttpsConfiguratorImpl.create());
+      server = httpsServer;
+    } else {
+      server = HttpServer.create(new InetSocketAddress("localhost", port), 0);
+    }
+
     server.createContext("/", this);
     server.setExecutor(null); // creates a default executor
 

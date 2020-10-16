@@ -50,7 +50,7 @@ public class TestPageBasic {
 
   @BeforeAll
   static void startServer() throws IOException {
-    server = new Server(8907);
+    server = Server.createHttp(8907);
   }
 
   @AfterAll
