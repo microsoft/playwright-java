@@ -941,13 +941,13 @@ public interface Page {
     return waitForFunction(pageFunction, null);
   }
   JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options);
-  default void waitForLoadState(LoadState state) {
-    waitForLoadState(state, null);
+  default Deferred<Void> waitForLoadState(LoadState state) {
+    return waitForLoadState(state, null);
   }
-  default void waitForLoadState() {
-    waitForLoadState(null);
+  default Deferred<Void> waitForLoadState() {
+    return waitForLoadState(null);
   }
-  void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
+  Deferred<Void> waitForLoadState(LoadState state, WaitForLoadStateOptions options);
   default Deferred<Response> waitForNavigation() {
     return waitForNavigation(null);
   }
@@ -964,7 +964,7 @@ public interface Page {
     return waitForSelector(selector, null);
   }
   Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options);
-  void waitForTimeout(int timeout);
+  Deferred<Void> waitForTimeout(int timeout);
   List<Worker> workers();
 }
 

@@ -17,8 +17,10 @@ package com.microsoft.playwright.impl;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class Transport {
   private final BlockingQueue<String> incoming = new ArrayBlockingQueue(1000);
@@ -45,11 +47,11 @@ public class Transport {
     }
   }
 
-  public String read() {
+  public String poll(Duration timeout) {
     try {
-      return incoming.take();
+      return incoming.poll(timeout.toMillis(), TimeUnit.MILLISECONDS);
     } catch (InterruptedException e) {
-      throw new RuntimeException("Failed to send message", e);
+      throw new RuntimeException("Failed to read message", e);
     }
   }
 }

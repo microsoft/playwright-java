@@ -27,8 +27,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
 
 import static com.microsoft.playwright.Frame.LoadState.*;
 import static com.microsoft.playwright.impl.Serialization.deserialize;
@@ -436,14 +434,18 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
+  public Deferred<Void> waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
     if (state == null) {
       state = LOAD;
     }
-    WaitForLoadStateHelper helper = new WaitForLoadStateHelper(state);
-    while (!helper.isDone()) {
-      connection.processOneMessage();
+
+    List<Waitable> waitables = new ArrayList<>();
+    waitables.add(new WaitForLoadStateHelper(state));
+    waitables.add(page.createWaitForCloseHelper());
+    if (options != null && options.timeout != null) {
+      waitables.add(new WaitableTimeout(options.timeout.intValue()));
     }
+    return toDeferred(new WaitableRace(waitables));
   }
 
   private class WaitForLoadStateHelper implements Waitable, Listener<InternalEventType> {
@@ -537,10 +539,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
     @Override
     public Response get() {
-      while (!isDone()) {
-        connection.processOneMessage();
-      }
-
       if (exception != null) {
         throw exception;
       }
@@ -556,19 +554,15 @@ public class FrameImpl extends ChannelOwner implements Frame {
   public Deferred<Response> waitForNavigation(WaitForNavigationOptions options) {
     if (options == null) {
       options = new WaitForNavigationOptions();
-      options.url = "**";
-      options.waitUntil = LOAD;
-    }
-    if (options.url == null) {
-      options.url = "**";
     }
     if (options.waitUntil == null) {
       options.waitUntil = LOAD;
     }
 
     List<Waitable> waitables = new ArrayList<>();
-    waitables.add(new WaitForNavigationHelper(new UrlMatcher(options.url), options.waitUntil));
+    waitables.add(new WaitForNavigationHelper(options.url == null ? UrlMatcher.any() : new UrlMatcher(options.url), options.waitUntil));
     waitables.add(page.createWaitForCloseHelper());
+    waitables.add(page.createWaitableFrameDetach(this));
     if (options.timeout != null) {
       waitables.add(new WaitableTimeout(options.timeout.intValue()));
     }
@@ -601,9 +595,8 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public void waitForTimeout(int timeout) {
-//    return toDeferred(new WaitableTimeout(timeout));
-    toDeferred(new WaitableTimeout(timeout)).get();
+  public Deferred<Void> waitForTimeout(int timeout) {
+    return toDeferred(new WaitableTimeout(timeout));
   }
 
   protected void handleEvent(String event, JsonObject params) {
