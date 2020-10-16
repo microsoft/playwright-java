@@ -22,6 +22,7 @@ import com.microsoft.playwright.Deferred;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -127,7 +128,10 @@ public class Connection {
   }
 
   void processOneMessage() {
-    String messageString = transport.read();
+    String messageString = transport.poll(Duration.ofMillis(100));
+    if (messageString == null) {
+      return;
+    }
     Gson gson = new Gson();
     Message message = gson.fromJson(messageString, Message.class);
     dispatch(message);

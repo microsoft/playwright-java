@@ -30,6 +30,10 @@ class UrlMatcher {
     return s -> pattern.matcher(s).find();
   }
 
+  static UrlMatcher any() {
+    return new UrlMatcher(null, null);
+  }
+
   UrlMatcher(String url) {
     this(url, toPridcate(Pattern.compile(globToRegex(url))));
   }
@@ -47,7 +51,7 @@ class UrlMatcher {
   }
 
   boolean test(String value) {
-    return predicate.test(value);
+    return predicate == null || predicate.test(value);
   }
 
   @Override

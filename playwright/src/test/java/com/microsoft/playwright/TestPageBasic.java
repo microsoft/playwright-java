@@ -174,7 +174,7 @@ public class TestPageBasic {
   @Test
   void shouldFireLoadWhenExpected() {
     page.navigate("about:blank");
-    page.waitForLoadState(LOAD);
+    page.waitForLoadState(LOAD).get();
   }
 
   // TODO: not supported in sync api
@@ -203,7 +203,7 @@ public class TestPageBasic {
   @Test
   void shouldFireDomcontentloadedWhenExpected() {
     page.navigate("about:blank");
-    page.waitForLoadState(DOMCONTENTLOADED);
+    page.waitForLoadState(DOMCONTENTLOADED).get();
   }
 
   // TODO: downloads
