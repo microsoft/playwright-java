@@ -49,7 +49,7 @@ class Utils {
     if (name.contains("linux")) {
       return OS.LINUX;
     }
-    if (name.contains("mac os x")) {
+    if (name.contains("mac")) {
       return OS.MAC;
     }
     return OS.UNKNOWN;
