@@ -17,6 +17,8 @@
 package com.microsoft.playwright;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 public interface Frame {
   enum LoadState { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
@@ -435,15 +437,25 @@ public interface Frame {
   }
   class WaitForNavigationOptions {
     public Integer timeout;
-    public String url;
+    public String glob;
+    public Pattern pattern;
+    public Predicate<String> predicate;
     public LoadState waitUntil;
 
     public WaitForNavigationOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
     }
-    public WaitForNavigationOptions withUrl(String url) {
-      this.url = url;
+    public WaitForNavigationOptions withUrl(String glob) {
+      this.glob = glob;
+      return this;
+    }
+    public WaitForNavigationOptions withUrl(Pattern pattern) {
+      this.pattern = pattern;
+      return this;
+    }
+    public WaitForNavigationOptions withUrl(Predicate<String> predicate) {
+      this.predicate = predicate;
       return this;
     }
     public WaitForNavigationOptions withWaitUntil(LoadState waitUntil) {

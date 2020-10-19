@@ -39,7 +39,7 @@ abstract class Element {
   Element(Element parent, boolean useParentJsonPath, JsonElement jsonElement) {
     this.parent = parent;
     if (jsonElement != null && jsonElement.isJsonObject()) {
-      this.jsonName = jsonElement.getAsJsonObject().get("name").getAsString();;
+      this.jsonName = jsonElement.getAsJsonObject().get("name").getAsString();
     } else {
       this.jsonName = "";
     }
@@ -205,80 +205,9 @@ abstract class TypeDefinition extends Element {
 class Event extends Element {
   private final TypeRef type;
 
-  private enum ApiType {HANDLER, LISTENER, WAIT_FOR}
-
-  private static class Info {
-    final String typePrefix;
-    final ApiType apiType;
-
-    Info(String typePrefix, ApiType apiType) {
-      this.typePrefix = typePrefix;
-      this.apiType = apiType;
-    }
-  }
-
-  private static Map<String, Info> events = new HashMap<>();
-  private static void add(String jsonPath, String typePrefix, ApiType apiType) {
-    events.put(jsonPath, new Info(typePrefix, apiType));
-  }
-  static {
-    add("Browser.disconnected", "Disconnected", ApiType.WAIT_FOR);
-    add("BrowserContext.page", "Page", ApiType.WAIT_FOR);
-    add("Page.console", "Console", ApiType.LISTENER);
-    add("Page.crash", "Crash", ApiType.WAIT_FOR);
-    add("Page.dialog", "Dialog", ApiType.HANDLER);
-    add("Page.domcontentloaded", "DomContentLoaded", ApiType.WAIT_FOR);
-    add("Page.download", "Download", ApiType.WAIT_FOR);
-    add("Page.filechooser", "FileChooser", ApiType.HANDLER);
-    add("Page.frameattached", "FrameAttached", ApiType.WAIT_FOR);
-    add("Page.framedetached", "FrameDetached", ApiType.WAIT_FOR);
-    add("Page.framenavigated", "FrameNavigated", ApiType.WAIT_FOR);
-    add("Page.load", "Load", ApiType.WAIT_FOR);
-    add("Page.pageerror", "Error", ApiType.LISTENER);
-    add("Page.popup", "Popup", ApiType.WAIT_FOR);
-    add("Page.request", "Request", ApiType.WAIT_FOR);
-    add("Page.requestfailed", "RequestFailed", ApiType.WAIT_FOR);
-    add("Page.requestfinished", "RequestFinished", ApiType.WAIT_FOR);
-    add("Page.response", "Response", ApiType.WAIT_FOR);
-    add("Page.worker", "Worker", ApiType.WAIT_FOR);
-    add("Worker.close", "Close", ApiType.WAIT_FOR);
-    add("ChromiumBrowser.disconnected", "Disconnected", ApiType.WAIT_FOR);
-    add("ChromiumBrowserContext.backgroundpage", "BackgroundPage", ApiType.WAIT_FOR);
-    add("ChromiumBrowserContext.serviceworker", "ServiceWorker", ApiType.WAIT_FOR);
-    add("ChromiumBrowserContext.page", "Page", ApiType.WAIT_FOR);
-    add("FirefoxBrowser.disconnected", "Disconnected", ApiType.WAIT_FOR);
-    add("WebKitBrowser.disconnected", "Disconnected", ApiType.WAIT_FOR);
-  }
-
   Event(Element parent, JsonObject jsonElement) {
     super(parent, jsonElement);
     type = new TypeRef(this, jsonElement.get("type"));
-    if (!events.containsKey(jsonPath)) {
-      throw new RuntimeException("Type mapping is missing for event: " + jsonPath);
-    }
-  }
-
-  void writeTo(List<String> output, String offset) {
-    // TODO: only whitelisted events are generated for now as the API may change.
-    if (!"BrowserContext.page".equals(jsonPath) &&
-        !"Page.console".equals(jsonPath) &&
-        !"Page.dialog".equals(jsonPath) &&
-        !"Page.popup".equals(jsonPath)) {
-      return;
-    }
-    Info info = events.get(jsonPath);
-    String templateArg = type.toJava().replace("void", "Void");
-    if (info.apiType == ApiType.WAIT_FOR) {
-      output.add(offset + "Deferred<" + templateArg + "> waitFor" + info.typePrefix + "();");
-      return;
-    }
-    if (info.apiType == ApiType.LISTENER || info.apiType == ApiType.HANDLER) {
-      String listenerType = info.typePrefix;
-      output.add(offset + "void add" + listenerType + "Listener(Listener<" + templateArg + "> listener);");
-      output.add(offset + "void remove" + listenerType + "Listener(Listener<" + templateArg + "> listener);");
-      return;
-    }
-    throw new RuntimeException("Unexpected apiType " + info.apiType + " for: " + jsonPath);
   }
 }
 
@@ -439,12 +368,15 @@ class Field extends Element {
     this.type = new TypeRef(this, jsonElement.getAsJsonObject().get("type"));
   }
 
-  String toJava() {
-    return type.toJava() + " " + name;
-  }
-
   void writeTo(List<String> output, String offset, String access) {
-    output.add(offset + access + toJava() + ";");
+    if (jsonPath.contains("Frame.waitForNavigation.options.url") ||
+        jsonPath.contains("Page.waitForNavigation.options.url")) {
+      output.add(offset + "public String glob;");
+      output.add(offset + "public Pattern pattern;");
+      output.add(offset + "public Predicate<String> predicate;");
+      return;
+    }
+    output.add(offset + access + type.toJava() + " " + name + ";");
   }
 
   void writeGetter(List<String> output, String offset) {
@@ -454,6 +386,22 @@ class Field extends Element {
   }
 
   void writeBuilderMethod(List<String> output, String offset, String parentClass) {
+    if (jsonPath.contains("Frame.waitForNavigation.options.url") ||
+        jsonPath.contains("Page.waitForNavigation.options.url")) {
+      output.add(offset + "public WaitForNavigationOptions withUrl(String glob) {");
+      output.add(offset + "  this.glob = glob;");
+      output.add(offset + "  return this;");
+      output.add(offset + "}");
+      output.add(offset + "public WaitForNavigationOptions withUrl(Pattern pattern) {");
+      output.add(offset + "  this.pattern = pattern;");
+      output.add(offset + "  return this;");
+      output.add(offset + "}");
+      output.add(offset + "public WaitForNavigationOptions withUrl(Predicate<String> predicate) {");
+      output.add(offset + "  this.predicate = predicate;");
+      output.add(offset + "  return this;");
+      output.add(offset + "}");
+      return;
+    }
     if (jsonPath.equals("Route.continue.overrides.postData")) {
       output.add(offset + "public ContinueOverrides withPostData(String postData) {");
       output.add(offset + "  this.postData = postData.getBytes(StandardCharsets.UTF_8);");
@@ -477,7 +425,7 @@ class Field extends Element {
       output.add(offset + "  this." + name + " = new HashSet<>(Arrays.asList(modifiers));");
       output.add(offset + "  return this;");
     } else {
-      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + toJava() + ") {");
+      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + type.toJava() + " " + name + ") {");
       output.add(offset + "  this." + name + " = " + name + ";");
       output.add(offset + "  return this;");
     }
@@ -536,6 +484,8 @@ class Interface extends TypeDefinition {
     output.add("import java.util.*;");
     if (Arrays.asList("Page", "BrowserContext").contains(jsonName)) {
       output.add("import java.util.function.BiConsumer;");
+    }
+    if (Arrays.asList("Page", "Frame", "BrowserContext").contains(jsonName)) {
       output.add("import java.util.function.Predicate;");
       output.add("import java.util.regex.Pattern;");
     }

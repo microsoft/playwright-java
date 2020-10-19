@@ -19,6 +19,9 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.Page.EventType.FRAMENAVIGATED;
 import static com.microsoft.playwright.Utils.expectedSSLError;
@@ -91,7 +94,6 @@ public class TestPageWaitForNavigation {
       promise.get();
       fail("did not throw");
     } catch (RuntimeException e) {
-      System.out.println(e);
 //      assertTrue(e.getMessage().contains("page.waitForNavigation: Timeout 5000ms exceeded."));
       assertTrue(e.getMessage().contains("Timeout 5000ms exceeded"));
 //      assertTrue(e.getMessage().contains("waiting for navigation to '**/frame.html' until 'load'"));
@@ -194,29 +196,35 @@ public class TestPageWaitForNavigation {
     assertTrue(frameWindowStopCalled[0]);
   }
 
-//  @Test
+  @Test
   void shouldWorkWithUrlMatch() {
-    // TODO: predicate
-    Deferred<Response> response1 = page.waitForNavigation(new Page.WaitForNavigationOptions().withUrl("/one-style.html/"));
-    Deferred<Response> response2 = page.waitForNavigation(new Page.WaitForNavigationOptions().withUrl("/frame.html/"));
-    Deferred<Response> response3 = page.waitForNavigation(new Page.WaitForNavigationOptions().withUrl("url => url.searchParams.get(\"foo\") === \"bar\""));
     page.navigate(server.EMPTY_PAGE);
-    page.navigate(server.PREFIX + "/frame.html");
-    assertNotNull(response2.get());
+
+    Deferred<Response> response1 = page.waitForNavigation(new Page.WaitForNavigationOptions().withUrl("**/one-style.html"));
     page.navigate(server.PREFIX + "/one-style.html");
     assertNotNull(response1.get());
+    assertEquals(server.PREFIX + "/one-style.html", response1.get().url());
+
+    Deferred<Response> response2 = page.waitForNavigation(new Page.WaitForNavigationOptions().withUrl(Pattern.compile("frame.html$")));
+    page.navigate(server.PREFIX + "/frame.html");
+    assertNotNull(response2.get());
+    assertEquals(server.PREFIX + "/frame.html", response2.get().url());
+
+    Deferred<Response> response3 = page.waitForNavigation(new Page.WaitForNavigationOptions().withUrl(url -> {
+      try {
+        return new URL(url).getQuery().contains("foo=bar");
+      } catch (MalformedURLException e) {
+        throw new RuntimeException(e);
+      }
+    }));
     page.navigate(server.PREFIX + "/frame.html?foo=bar");
     assertNotNull(response3.get());
-    page.navigate(server.PREFIX + "/empty.html");
-    assertEquals(server.PREFIX + "/one-style.html", response1.get().url());
-    assertEquals(server.PREFIX + "/frame.html", response2.get().url());
     assertEquals(server.PREFIX + "/frame.html?foo=bar", response3.get().url());
   }
 
   @Test
   void shouldWorkWithUrlMatchForSameDocumentNavigations() {
     page.navigate(server.EMPTY_PAGE);
-    // TODO: use regex
     Deferred<Response> waitPromise = page.waitForNavigation(new Page.WaitForNavigationOptions().withUrl("**/third.html"));
     page.evaluate("() => {\n" +
       "  history.pushState({}, '', '/first.html');\n" +
