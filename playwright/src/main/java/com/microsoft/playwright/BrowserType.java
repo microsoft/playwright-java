@@ -78,7 +78,6 @@ public interface BrowserType {
     public Boolean ignoreDefaultArgs;
     public Proxy proxy;
     public String downloadsPath;
-    public String artifactsPath;
     public Boolean chromiumSandbox;
     public String firefoxUserPrefs;
     public Boolean handleSIGINT;
@@ -112,10 +111,6 @@ public interface BrowserType {
     }
     public LaunchOptions withDownloadsPath(String downloadsPath) {
       this.downloadsPath = downloadsPath;
-      return this;
-    }
-    public LaunchOptions withArtifactsPath(String artifactsPath) {
-      this.artifactsPath = artifactsPath;
       return this;
     }
     public LaunchOptions withChromiumSandbox(Boolean chromiumSandbox) {
@@ -240,7 +235,6 @@ public interface BrowserType {
     public Proxy proxy;
     public Boolean acceptDownloads;
     public String downloadsPath;
-    public String artifactsPath;
     public Boolean chromiumSandbox;
     public Boolean handleSIGINT;
     public Boolean handleSIGTERM;
@@ -266,10 +260,8 @@ public interface BrowserType {
     public Boolean offline;
     public BrowserContext.HTTPCredentials httpCredentials;
     public ColorScheme colorScheme;
-    public String relativeArtifactsPath;
-    public Boolean recordVideos;
+    public String videosPath;
     public VideoSize videoSize;
-    public Boolean recordTrace;
 
     public LaunchPersistentContextOptions withHeadless(Boolean headless) {
       this.headless = headless;
@@ -297,10 +289,6 @@ public interface BrowserType {
     }
     public LaunchPersistentContextOptions withDownloadsPath(String downloadsPath) {
       this.downloadsPath = downloadsPath;
-      return this;
-    }
-    public LaunchPersistentContextOptions withArtifactsPath(String artifactsPath) {
-      this.artifactsPath = artifactsPath;
       return this;
     }
     public LaunchPersistentContextOptions withChromiumSandbox(Boolean chromiumSandbox) {
@@ -403,21 +391,13 @@ public interface BrowserType {
       this.colorScheme = colorScheme;
       return this;
     }
-    public LaunchPersistentContextOptions withRelativeArtifactsPath(String relativeArtifactsPath) {
-      this.relativeArtifactsPath = relativeArtifactsPath;
-      return this;
-    }
-    public LaunchPersistentContextOptions withRecordVideos(Boolean recordVideos) {
-      this.recordVideos = recordVideos;
+    public LaunchPersistentContextOptions withVideosPath(String videosPath) {
+      this.videosPath = videosPath;
       return this;
     }
     public VideoSize setVideoSize() {
       this.videoSize = new VideoSize();
       return this.videoSize;
-    }
-    public LaunchPersistentContextOptions withRecordTrace(Boolean recordTrace) {
-      this.recordTrace = recordTrace;
-      return this;
     }
   }
   class LaunchServerOptions {
@@ -457,7 +437,6 @@ public interface BrowserType {
     public String ignoreDefaultArgs;
     public Proxy proxy;
     public String downloadsPath;
-    public String artifactsPath;
     public Boolean chromiumSandbox;
     public String firefoxUserPrefs;
     public Boolean handleSIGINT;
@@ -494,10 +473,6 @@ public interface BrowserType {
     }
     public LaunchServerOptions withDownloadsPath(String downloadsPath) {
       this.downloadsPath = downloadsPath;
-      return this;
-    }
-    public LaunchServerOptions withArtifactsPath(String artifactsPath) {
-      this.artifactsPath = artifactsPath;
       return this;
     }
     public LaunchServerOptions withChromiumSandbox(Boolean chromiumSandbox) {

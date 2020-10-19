@@ -46,6 +46,14 @@ public interface BrowserContext {
 
   void addListener(EventType type, Listener<EventType> listener);
   void removeListener(EventType type, Listener<EventType> listener);
+  class ExposeBindingOptions {
+    public Boolean handle;
+
+    public ExposeBindingOptions withHandle(Boolean handle) {
+      this.handle = handle;
+      return this;
+    }
+  }
   class GrantPermissionsOptions {
     public String origin;
 
@@ -85,7 +93,10 @@ public interface BrowserContext {
     return cookies(null);
   }
   List<Object> cookies(String urls);
-  void exposeBinding(String name, Page.Binding playwrightBinding);
+  default void exposeBinding(String name, Page.Binding playwrightBinding) {
+    exposeBinding(name, playwrightBinding, null);
+  }
+  void exposeBinding(String name, Page.Binding playwrightBinding, ExposeBindingOptions options);
   void exposeFunction(String name, Page.Function playwrightFunction);
   default void grantPermissions(List<String> permissions) {
     grantPermissions(permissions, null);

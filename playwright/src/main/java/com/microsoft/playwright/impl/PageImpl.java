@@ -22,7 +22,6 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -37,10 +36,9 @@ public class PageImpl extends ChannelOwner implements Page {
   private final MouseImpl mouse;
   private Viewport viewport;
   private final Router routes = new Router();
-  // TODO: do not rely on the frame order in the tests
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
-  final Map<String, Binding> bindings = new HashMap<String, Binding>();
+  final Map<String, Binding> bindings = new HashMap<>();
   BrowserContextImpl ownedContext;
   private boolean isClosed;
   final Set<Worker> workers = new HashSet<>();
@@ -53,15 +51,6 @@ public class PageImpl extends ChannelOwner implements Page {
     keyboard = new KeyboardImpl(this);
     mouse = new MouseImpl(this);
     frames.add(mainFrame);
-  }
-
-  public Deferred<Page> waitForPopup() {
-    CompletableFuture<JsonObject> popupFuture = futureForEvent("popup");
-    return () -> {
-      JsonObject params = waitForCompletion(popupFuture);
-      String guid = params.getAsJsonObject("page").get("guid").getAsString();
-      return connection.getExistingObject(guid);
-    };
   }
 
   @Override
@@ -96,6 +85,20 @@ public class PageImpl extends ChannelOwner implements Page {
       String guid = params.getAsJsonObject("element").get("guid").getAsString();
       FileChooser fileChooser = connection.getExistingObject(guid);
       listeners.notify(EventType.FILECHOOSER, fileChooser);
+    } else if ("bindingCall".equals(event)) {
+      String guid = params.getAsJsonObject("binding").get("guid").getAsString();
+      BindingCall bindingCall = connection.getExistingObject(guid);
+      Binding binding = bindings.get(bindingCall.name());
+      if (binding == null) {
+        binding = browserContext.bindings.get(bindingCall.name());
+      }
+      if (binding != null) {
+        try {
+          bindingCall.call(binding);
+        } catch (RuntimeException e) {
+          e.printStackTrace();
+        }
+      }
     } else if ("load".equals(event)) {
       listeners.notify(EventType.LOAD, null);
     } else if ("domcontentloaded".equals(event)) {
@@ -303,17 +306,20 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void exposeBinding(String name, Binding playwrightBinding) {
+  public void exposeBinding(String name, Binding playwrightBinding, ExposeBindingOptions options) {
     if (bindings.containsKey(name)) {
-      throw new RuntimeException("Function " + name + " has already been registered");
+      throw new RuntimeException("Function \"" + name + "\" has been already registered");
     }
     if (browserContext.bindings.containsKey(name)) {
-      throw new RuntimeException("Function " + name + " has already been registered in the browser context");
+      throw new RuntimeException("Function \"" + name + "\" has been already registered in the browser context");
     }
     bindings.put(name, playwrightBinding);
 
     JsonObject params = new JsonObject();
     params.addProperty("name", name);
+    if (options != null && options.handle != null && options.handle) {
+      params.addProperty("needsHandle", true);
+    }
     sendMessage("exposeBinding", params);
   }
 
@@ -610,6 +616,11 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public Video video() {
+    return null;
+  }
+
+  @Override
   public Viewport viewportSize() {
     return viewport;
   }
@@ -740,7 +751,7 @@ public class PageImpl extends ChannelOwner implements Page {
     }));
     waitables.add(createWaitForCloseHelper());
     if (options != null && options.timeout != null) {
-      waitables.add(new WaitableTimeout(options.timeout.intValue()));
+      waitables.add(new WaitableTimeout(options.timeout));
     }
     return toDeferred(new WaitableRace(waitables));
   }
@@ -756,7 +767,7 @@ public class PageImpl extends ChannelOwner implements Page {
     }));
     waitables.add(createWaitForCloseHelper());
     if (options != null && options.timeout != null) {
-      waitables.add(new WaitableTimeout(options.timeout.intValue()));
+      waitables.add(new WaitableTimeout(options.timeout));
     }
     return toDeferred(new WaitableRace(waitables));
   }
