@@ -21,11 +21,14 @@ import org.junit.jupiter.api.*;
 import java.io.IOException;
 
 import static com.microsoft.playwright.Page.EventType.FRAMENAVIGATED;
+import static com.microsoft.playwright.Utils.expectedSSLError;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPageWaitForNavigation {
   private static Playwright playwright;
   private static Server server;
+  private static Server httpsServer;
+  private static BrowserType browserType;
   private static Browser browser;
   private static boolean isChromium;
   private static boolean isWebKit;
@@ -37,7 +40,8 @@ public class TestPageWaitForNavigation {
   static void launchBrowser() {
     playwright = Playwright.create();
     BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
-    browser = playwright.chromium().launch(options);
+    browserType = playwright.chromium();
+    browser = browserType.launch(options);
     isChromium = true;
     isWebKit = false;
     headful = false;
@@ -45,7 +49,8 @@ public class TestPageWaitForNavigation {
 
   @BeforeAll
   static void startServer() throws IOException {
-    server = new Server(8907);
+    server = Server.createHttp(8907);
+    httpsServer = Server.createHttps(8908);
   }
 
   @AfterAll
@@ -109,17 +114,17 @@ public class TestPageWaitForNavigation {
   }
 
   @Test
-  void shouldWorkWithClickingOnLinksWhichDoNotCommitNavigation() {
-    // TODO: https server
-//    page.navigate(server.EMPTY_PAGE);
-//    page.setContent("<a href='" + httpsServer.EMPTY_PAGE + "'>foobar</a>");
-//    try {
-//      page.waitForNavigation();
-//      page.click("a");
-//      fail("did not throw");
-//    } catch (RuntimeException e) {
-//      assertTrue(e.getMessage().contains(expectedSSLError(browserName)));
-//    }
+  void shouldWorkWithClickingOnLinksWhichDoNotCommitNavigation() throws InterruptedException {
+    page.navigate(server.EMPTY_PAGE);
+    page.setContent("<a href='" + httpsServer.EMPTY_PAGE + "'>foobar</a>");
+    try {
+      Deferred<Response> event = page.waitForNavigation();
+      page.click("a");
+      event.get();
+      fail("did not throw");
+    } catch (RuntimeException e) {
+      assertTrue(e.getMessage().contains(expectedSSLError(browserType.name())), e.getMessage());
+    }
   }
 
   @Test
