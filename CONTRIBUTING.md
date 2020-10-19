@@ -16,8 +16,8 @@ cd playwright-java
 ```bash
 mkdir driver
 cd driver
-curl -O https://playwright.azureedge.net/builds/cli/playwright-cli-0.5.3-linux.zip
-unzip playwright-cli-0.5.3-linux.zip -d .
+curl -O https://playwright.azureedge.net/builds/cli/playwright-cli-0.151.0-linux.zip
+unzip playwright-cli-0.151.0-linux.zip -d .
 ./playwright-cli install
 ```
 

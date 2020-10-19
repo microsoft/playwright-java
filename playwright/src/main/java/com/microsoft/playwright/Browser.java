@@ -88,10 +88,8 @@ public interface Browser {
     public BrowserContext.HTTPCredentials httpCredentials;
     public ColorScheme colorScheme;
     public Logger logger;
-    public String relativeArtifactsPath;
-    public Boolean recordVideos;
+    public String videosPath;
     public VideoSize videoSize;
-    public Boolean recordTrace;
 
     public NewContextOptions withAcceptDownloads(Boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
@@ -165,21 +163,13 @@ public interface Browser {
       this.logger = logger;
       return this;
     }
-    public NewContextOptions withRelativeArtifactsPath(String relativeArtifactsPath) {
-      this.relativeArtifactsPath = relativeArtifactsPath;
-      return this;
-    }
-    public NewContextOptions withRecordVideos(Boolean recordVideos) {
-      this.recordVideos = recordVideos;
+    public NewContextOptions withVideosPath(String videosPath) {
+      this.videosPath = videosPath;
       return this;
     }
     public VideoSize setVideoSize() {
       this.videoSize = new VideoSize();
       return this.videoSize;
-    }
-    public NewContextOptions withRecordTrace(Boolean recordTrace) {
-      this.recordTrace = recordTrace;
-      return this;
     }
   }
   class NewPageOptions {
@@ -245,10 +235,8 @@ public interface Browser {
     public BrowserContext.HTTPCredentials httpCredentials;
     public ColorScheme colorScheme;
     public Logger logger;
-    public String relativeArtifactsPath;
-    public Boolean recordVideos;
+    public String videosPath;
     public VideoSize videoSize;
-    public Boolean recordTrace;
 
     public NewPageOptions withAcceptDownloads(Boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
@@ -322,21 +310,13 @@ public interface Browser {
       this.logger = logger;
       return this;
     }
-    public NewPageOptions withRelativeArtifactsPath(String relativeArtifactsPath) {
-      this.relativeArtifactsPath = relativeArtifactsPath;
-      return this;
-    }
-    public NewPageOptions withRecordVideos(Boolean recordVideos) {
-      this.recordVideos = recordVideos;
+    public NewPageOptions withVideosPath(String videosPath) {
+      this.videosPath = videosPath;
       return this;
     }
     public VideoSize setVideoSize() {
       this.videoSize = new VideoSize();
       return this.videoSize;
-    }
-    public NewPageOptions withRecordTrace(Boolean recordTrace) {
-      this.recordTrace = recordTrace;
-      return this;
     }
   }
   void close();

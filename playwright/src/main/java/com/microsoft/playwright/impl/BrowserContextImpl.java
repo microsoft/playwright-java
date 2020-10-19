@@ -102,19 +102,22 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void exposeBinding(String name, Page.Binding playwrightBinding) {
+  public void exposeBinding(String name, Page.Binding playwrightBinding, ExposeBindingOptions options) {
     if (bindings.containsKey(name)) {
-      throw new RuntimeException("Function " + name + " has already been registered");
+      throw new RuntimeException("Function \"" + name + "\" has been already registered");
     }
     for (PageImpl page : pages) {
       if (page.bindings.containsKey(name)) {
-        throw new Error("Function " + name + " has already been registered in one of the pages");
+        throw new RuntimeException("Function \"" + name + "\" has been already registered in one of the pages");
       }
     }
     bindings.put(name, playwrightBinding);
 
     JsonObject params = new JsonObject();
     params.addProperty("name", name);
+    if (options != null && options.handle != null && options.handle) {
+      params.addProperty("needsHandle", true);
+    }
     sendMessage("exposeBinding", params);
   }
 

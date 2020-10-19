@@ -294,6 +294,14 @@ public interface Page {
       return this;
     }
   }
+  class ExposeBindingOptions {
+    public Boolean handle;
+
+    public ExposeBindingOptions withHandle(Boolean handle) {
+      this.handle = handle;
+      return this;
+    }
+  }
   class FillOptions {
     public Boolean noWaitAfter;
     public Integer timeout;
@@ -836,7 +844,10 @@ public interface Page {
     return evaluateHandle(pageFunction, null);
   }
   JSHandle evaluateHandle(String pageFunction, Object arg);
-  void exposeBinding(String name, Binding playwrightBinding);
+  default void exposeBinding(String name, Binding playwrightBinding) {
+    exposeBinding(name, playwrightBinding, null);
+  }
+  void exposeBinding(String name, Binding playwrightBinding, ExposeBindingOptions options);
   void exposeFunction(String name, Function playwrightFunction);
   default void fill(String selector, String value) {
     fill(selector, value, null);
@@ -939,6 +950,7 @@ public interface Page {
   void unroute(Pattern url, BiConsumer<Route, Request> handler);
   void unroute(Predicate<String> url, BiConsumer<Route, Request> handler);
   String url();
+  Video video();
   Viewport viewportSize();
   default Deferred<Event<EventType>> waitForEvent(EventType event) {
     return waitForEvent(event, null);

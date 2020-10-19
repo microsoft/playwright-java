@@ -21,6 +21,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Frame;
+import com.microsoft.playwright.JSHandle;
 import com.microsoft.playwright.Page;
 
 import java.util.ArrayList;
@@ -65,8 +66,13 @@ class BindingCall extends ChannelOwner {
       Frame frame = connection.getExistingObject(initializer.getAsJsonObject("frame").get("guid").getAsString());
       Page.Binding.Source source = new SourceImpl(frame);
       List<Object> args = new ArrayList<>();
-      for (JsonElement arg : initializer.getAsJsonArray("args")) {
-        args.add(deserialize(new Gson().fromJson(arg, SerializedValue.class)));
+      if (initializer.has("handle")) {
+        JSHandle handle = connection.getExistingObject(initializer.getAsJsonObject("handle").get("guid").getAsString());
+        args.add(handle);
+      } else {
+        for (JsonElement arg : initializer.getAsJsonArray("args")) {
+          args.add(deserialize(new Gson().fromJson(arg, SerializedValue.class)));
+        }
       }
       Object result = binding.call(source, args.toArray());
 

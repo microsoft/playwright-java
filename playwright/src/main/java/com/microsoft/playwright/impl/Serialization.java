@@ -24,6 +24,7 @@ import com.microsoft.playwright.Mouse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.Array;
 import java.util.*;
 
 class Serialization {
@@ -49,31 +50,32 @@ class Serialization {
       handles.add((JSHandleImpl) value);
       return result;
     }
-    if (value == null)
+    if (value == null) {
       result.v = "undefined";
-    else if (value instanceof Double) {
+    } else if (value instanceof Double) {
       double d = ((Double) value).doubleValue();
-      if (d == Double.POSITIVE_INFINITY)
+      if (d == Double.POSITIVE_INFINITY) {
         result.v = "Infinity";
-      else if (d == Double.NEGATIVE_INFINITY)
+      } else if (d == Double.NEGATIVE_INFINITY) {
         result.v = "-Infinity";
-      else if (d == -0)
+      } else if (d == -0) {
         result.v = "-0";
-      else if (Double.isNaN(d))
-        result.v="NaN";
-      else
+      } else if (Double.isNaN(d)) {
+        result.v = "NaN";
+      } else {
         result.n = d;
-    }
-    else if (value instanceof Boolean)
+      }
+    } else if (value instanceof Boolean) {
       result.b = (Boolean) value;
-    else if (value instanceof Integer)
+    } else if (value instanceof Integer) {
       result.n = (Integer) value;
-    else if (value instanceof String)
+    } else if (value instanceof String) {
       result.s = (String) value;
-    else if (value instanceof List) {
+    } else if (value instanceof List) {
       List<SerializedValue> list = new ArrayList<>();
-      for (Object o : (List) value)
+      for (Object o : (List) value) {
         list.add(serializeValue(o, handles, depth + 1));
+      }
       result.a = list.toArray(new SerializedValue[0]);
     } else if (value instanceof Map) {
       List<SerializedValue.O> list = new ArrayList<>();
@@ -85,8 +87,15 @@ class Serialization {
         list.add(o);
       }
       result.o = list.toArray(new SerializedValue.O[0]);
-    } else
+    } else if (value instanceof Object[]) {
+      List<SerializedValue> list = new ArrayList<>();
+      for (Object o : (Object[]) value) {
+        list.add(serializeValue(o, handles, depth + 1));
+      }
+      result.a = list.toArray(new SerializedValue[0]);
+    } else {
       throw new RuntimeException("Unsupported type of argument: " + value);
+    }
     return result;
   }
 
@@ -106,8 +115,9 @@ class Serialization {
 
   static <T> T deserialize(SerializedValue value) {
     if (value.n != null) {
-      if (value.n.doubleValue() == (double) value.n.intValue())
+      if (value.n.doubleValue() == (double) value.n.intValue()) {
         return (T) Integer.valueOf(value.n.intValue());
+      }
       return (T) Double.valueOf(value.n.doubleValue());
     }
     if (value.b != null)
@@ -133,14 +143,16 @@ class Serialization {
     }
     if (value.a != null) {
       List list = new ArrayList();
-      for (SerializedValue v : value.a)
+      for (SerializedValue v : value.a) {
         list.add(deserialize(v));
+      }
       return (T) list;
     }
     if (value.o != null) {
       Map map = new LinkedHashMap<>();
-      for (SerializedValue.O o : value.o)
+      for (SerializedValue.O o : value.o) {
         map.put(o.k, deserialize(o.v));
+      }
       return (T) map;
     }
     throw new RuntimeException("Unexpected result: " + new Gson().toJson(value));
