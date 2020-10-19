@@ -26,7 +26,7 @@ class UrlMatcher {
   private final Object rawSource;
   private final Predicate<String> predicate;
 
-  private static Predicate<String> toPridcate(Pattern pattern) {
+  private static Predicate<String> toPredicate(Pattern pattern) {
     return s -> pattern.matcher(s).find();
   }
 
@@ -34,12 +34,33 @@ class UrlMatcher {
     return new UrlMatcher(null, null);
   }
 
+  static UrlMatcher forOneOf(String glob, Pattern pattern, Predicate<String> predicate) {
+    UrlMatcher result = UrlMatcher.any();
+    int conditionCount = 0;
+    if (glob != null) {
+      conditionCount += 1;
+      result = new UrlMatcher(glob);
+    }
+    if (pattern != null) {
+      conditionCount += 1;
+      result = new UrlMatcher(pattern);
+    }
+    if (predicate != null) {
+      conditionCount += 1;
+      result = new UrlMatcher(predicate);
+    }
+    if (conditionCount > 1) {
+      throw new IllegalArgumentException("Only one of glob, pattern and predicate can be specified");
+    }
+    return result;
+  }
+
   UrlMatcher(String url) {
-    this(url, toPridcate(Pattern.compile(globToRegex(url))));
+    this(url, toPredicate(Pattern.compile(globToRegex(url))).or(s -> url == null || url.equals(s)));
   }
 
   UrlMatcher(Pattern pattern) {
-    this(pattern, toPridcate(pattern));
+    this(pattern, toPredicate(pattern));
   }
   UrlMatcher(Predicate<String> predicate) {
     this(predicate, predicate);
