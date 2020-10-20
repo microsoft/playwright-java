@@ -23,8 +23,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class Transport {
-  private final BlockingQueue<String> incoming = new ArrayBlockingQueue(1000);
-  private final BlockingQueue<String> outgoing= new ArrayBlockingQueue(1000);
+  private final BlockingQueue<String> incoming = new ArrayBlockingQueue<>(1000);
+  private final BlockingQueue<String> outgoing= new ArrayBlockingQueue<>(1000);
 
   private final ReaderThread readerThread;
   private final WriterThread writerThread;

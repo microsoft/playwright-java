@@ -61,11 +61,14 @@ public class TestPageWaitForNavigation {
     browser.close();
     server.stop();
     server = null;
+    httpsServer.stop();
+    httpsServer = null;
   }
 
   @BeforeEach
   void setUp() {
     server.reset();
+    httpsServer.reset();
     context = browser.newContext();
     page = context.newPage();
   }

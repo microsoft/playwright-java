@@ -34,7 +34,7 @@ class ListenerCollection <EventType> {
       return;
     }
 
-    Event event = new Event() {
+    Event<EventType> event = new Event<EventType>() {
       @Override
       public EventType type() {
         return eventType;
@@ -51,7 +51,7 @@ class ListenerCollection <EventType> {
     }
   }
 
-  void add(EventType type, Listener listener) {
+  void add(EventType type, Listener<EventType> listener) {
     List<Listener<EventType>> list = listeners.get(type);
     if (list == null) {
       list = new ArrayList<>();
@@ -60,7 +60,7 @@ class ListenerCollection <EventType> {
     list.add(listener);
   }
 
-  void remove(EventType type, Listener listener) {
+  void remove(EventType type, Listener<EventType>  listener) {
     List<Listener<EventType>> list = listeners.get(type);
     if (list == null) {
       return;
@@ -74,7 +74,7 @@ class ListenerCollection <EventType> {
   private class DeferredEvent implements Listener<EventType>, Deferred<Event<EventType>> {
     private final EventType type;
     private final Connection connection;
-    private Event event;
+    private Event<EventType> event;
 
     DeferredEvent(EventType type, Connection connection) {
       add(type, this);
@@ -83,13 +83,13 @@ class ListenerCollection <EventType> {
     }
 
     @Override
-    public void handle(Event e) {
+    public void handle(Event<EventType> e) {
       event = e;
       remove(type, this);
     }
 
     @Override
-    public Event get() {
+    public Event<EventType> get() {
       while (event == null) {
         connection.processOneMessage();
       }

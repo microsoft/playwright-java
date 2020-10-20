@@ -58,6 +58,8 @@ public class TestPageExposeFunction {
   @AfterAll
   static void stopServer() throws IOException {
     browser.close();
+    httpsServer.stop();
+    httpsServer = null;
     server.stop();
     server = null;
   }
@@ -65,6 +67,7 @@ public class TestPageExposeFunction {
   @BeforeEach
   void setUp() {
     server.reset();
+    httpsServer.reset();
     context = browser.newContext();
     page = context.newPage();
   }

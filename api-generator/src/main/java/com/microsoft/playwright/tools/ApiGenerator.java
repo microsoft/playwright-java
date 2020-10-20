@@ -376,6 +376,11 @@ class Field extends Element {
       output.add(offset + "public Predicate<String> predicate;");
       return;
     }
+    if (jsonPath.contains("Frame.waitForFunction.options.polling") ||
+      jsonPath.contains("Page.waitForFunction.options.polling")) {
+      output.add(offset + "public Integer pollingInterval;");
+      return;
+    }
     output.add(offset + access + type.toJava() + " " + name + ";");
   }
 
@@ -398,6 +403,18 @@ class Field extends Element {
       output.add(offset + "}");
       output.add(offset + "public WaitForNavigationOptions withUrl(Predicate<String> predicate) {");
       output.add(offset + "  this.predicate = predicate;");
+      output.add(offset + "  return this;");
+      output.add(offset + "}");
+      return;
+    }
+    if (jsonPath.contains("Frame.waitForFunction.options.polling") ||
+      jsonPath.contains("Page.waitForFunction.options.polling")) {
+      output.add(offset + "public WaitForFunctionOptions withRequestAnimationFrame() {");
+      output.add(offset + "  this.pollingInterval = null;");
+      output.add(offset + "  return this;");
+      output.add(offset + "}");
+      output.add(offset + "public WaitForFunctionOptions withPollingInterval(int millis) {");
+      output.add(offset + "  this.pollingInterval = millis;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
       return;

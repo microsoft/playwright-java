@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
-class WaitableResult<T> implements Waitable {
+class WaitableResult<T> implements Waitable<T> {
   private T result;
   private RuntimeException exception;
   private boolean isDone;

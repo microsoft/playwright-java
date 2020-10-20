@@ -415,11 +415,15 @@ public interface Frame {
     }
   }
   class WaitForFunctionOptions {
-    public double polling;
+    public Integer pollingInterval;
     public Integer timeout;
 
-    public WaitForFunctionOptions withPolling(double polling) {
-      this.polling = polling;
+    public WaitForFunctionOptions withRequestAnimationFrame() {
+      this.pollingInterval = null;
+      return this;
+    }
+    public WaitForFunctionOptions withPollingInterval(int millis) {
+      this.pollingInterval = millis;
       return this;
     }
     public WaitForFunctionOptions withTimeout(Integer timeout) {
@@ -581,13 +585,13 @@ public interface Frame {
   }
   void uncheck(String selector, UncheckOptions options);
   String url();
-  default JSHandle waitForFunction(String pageFunction, Object arg) {
+  default Deferred<JSHandle> waitForFunction(String pageFunction, Object arg) {
     return waitForFunction(pageFunction, arg, null);
   }
-  default JSHandle waitForFunction(String pageFunction) {
+  default Deferred<JSHandle> waitForFunction(String pageFunction) {
     return waitForFunction(pageFunction, null);
   }
-  JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options);
+  Deferred<JSHandle> waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options);
   default Deferred<Void> waitForLoadState(LoadState state) {
     return waitForLoadState(state, null);
   }
