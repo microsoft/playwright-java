@@ -25,8 +25,6 @@ import java.io.OutputStream;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 class Message {
   int id;
@@ -55,7 +53,7 @@ public class Connection {
   private final Map<String, ChannelOwner> objects = new HashMap();
   private final Root root;
   private int lastId = 0;
-  private final Map<Integer, CompletableFuture<Message>> callbacks = new HashMap();
+  private final Map<Integer, WaitableResult<Message>> callbacks = new HashMap();
 
   class Root extends ChannelOwner {
     Root(Connection connection) {
@@ -73,27 +71,18 @@ public class Connection {
   }
 
   public Deferred<JsonElement> sendMessageAsync(String guid, String method, JsonObject params) {
-    CompletableFuture<Message> result = internalSendMessage(guid, method, params);
-    return () -> {
-      while (!result.isDone()) {
-        processOneMessage();
-      }
-      try {
-        return result.get().result;
-      } catch (InterruptedException | ExecutionException e) {
-        throw new RuntimeException(e);
-      }
-    };
+    WaitableResult<Message> result = internalSendMessage(guid, method, params);
+    Deferred<Message> message = root.toDeferred(result);
+    return () -> message.get().result;
   }
-
 
   public void sendMessageNoWait(String guid, String method, JsonObject params) {
     internalSendMessage(guid, method, params);
   }
 
-  private CompletableFuture<Message> internalSendMessage(String guid, String method, JsonObject params) {
+  private WaitableResult<Message> internalSendMessage(String guid, String method, JsonObject params) {
     int id = ++lastId;
-    CompletableFuture<Message> result = new CompletableFuture();
+    WaitableResult<Message> result = new WaitableResult<>();
     callbacks.put(id, result);
     JsonObject message = new JsonObject();
     message.addProperty("id", id);
@@ -140,7 +129,7 @@ public class Connection {
   private void dispatch(Message message) {
 //    System.out.println("Message: " + message.method + " " + message.id);
     if (message.id != 0) {
-      CompletableFuture<Message> callback = callbacks.get(message.id);
+      WaitableResult<Message> callback = callbacks.get(message.id);
       if (callback == null) {
         throw new RuntimeException("Cannot find command to respond: " + message.id);
       }
@@ -155,24 +144,26 @@ public class Connection {
     }
 
     // TODO: throw?
-    if (message.method == null)
+    if (message.method == null) {
       return;
+    }
     if (message.method.equals("__create__")) {
       createRemoteObject(message.guid, message.params);
       return;
     }
     if (message.method.equals("__dispose__")) {
       ChannelOwner object = objects.get(message.guid);
-      if (object == null)
+      if (object == null) {
         throw new RuntimeException("Cannot find object to dispose: " + message.guid);
+      }
       object.dispose();
       return;
     }
     ChannelOwner object = objects.get(message.guid);
-    if (object == null)
+    if (object == null) {
       throw new RuntimeException("Cannot find object to call " + message.method + ": " + message.guid);
-//    object._channel.emit(message.method, this._replaceGuidsWithChannels(message.params));
-    object.onEvent(message.method, message.params);
+    }
+    object.handleEvent(message.method, message.params);
   }
 
   private ChannelOwner createRemoteObject(String parentGuid, JsonObject params) {
@@ -180,11 +171,11 @@ public class Connection {
     String guid = params.get("guid").getAsString();
 
     ChannelOwner parent = objects.get(parentGuid);
-    if (parent == null)
+    if (parent == null) {
       throw new RuntimeException("Cannot find parent object " + parentGuid + " to create " + guid);
+    }
     JsonObject initializer = params.getAsJsonObject("initializer");
     ChannelOwner result = null;
-//    initializer = this._replaceGuidsWithChannels(initializer);
     switch (type) {
       case "BindingCall":
         result = new BindingCall(parent, type, guid, initializer);

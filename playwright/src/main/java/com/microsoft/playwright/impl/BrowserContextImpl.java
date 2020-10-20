@@ -231,15 +231,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
   }
 
-  public Deferred<Page> waitForPage() {
-    CompletableFuture<JsonObject> pageFuture = futureForEvent("page");
-    return () -> {
-      JsonObject params = waitForCompletion(pageFuture);
-      String guid = params.getAsJsonObject("page").get("guid").getAsString();
-      return connection.getExistingObject(guid);
-    };
-  }
-
   @Override
   protected void handleEvent(String event, JsonObject params) {
     if ("route".equals(event)) {
