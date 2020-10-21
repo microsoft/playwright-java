@@ -56,6 +56,8 @@ class WaitableEvent<EventType, ResultType> implements Waitable<ResultType>, List
     listeners.remove(type, this);
   }
 
+  @SuppressWarnings("unchecked")
+  @Override
   public ResultType get() {
     return (ResultType) event.data();
   }

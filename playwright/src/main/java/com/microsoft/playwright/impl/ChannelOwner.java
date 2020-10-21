@@ -68,6 +68,7 @@ class ChannelOwner {
     connection.sendMessageNoWait(guid, method, params);
   }
 
+  @SuppressWarnings("unchecked")
   <T> Deferred<T> toDeferred(Waitable waitable) {
     return () -> {
       while (!waitable.isDone()) {
