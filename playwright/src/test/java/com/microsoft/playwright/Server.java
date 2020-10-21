@@ -40,6 +40,7 @@ public class Server implements HttpHandler {
 
   private final Map<String, CompletableFuture<Request>> requestSubscribers = Collections.synchronizedMap(new HashMap<>());
   private final Map<String, Auth> auths = Collections.synchronizedMap(new HashMap<>());
+  private final Map<String, String> csp = Collections.synchronizedMap(new HashMap<>());
   private final Map<String, HttpHandler> routes = Collections.synchronizedMap(new HashMap<>());
 
   private static class Auth {
@@ -88,6 +89,10 @@ public class Server implements HttpHandler {
 
   void setAuth(String path, String user, String password) {
     auths.put(path, new Auth(user, password));
+  }
+
+  void setCSP(String path, String csp) {
+    this.csp.put(path, csp);
   }
 
   static class Request {
@@ -175,6 +180,9 @@ public class Server implements HttpHandler {
       return;
     }
 
+    if (csp.containsKey(path)) {
+      exchange.getResponseHeaders().put("Content-Security-Policy", singletonList(csp.get(path)));
+    }
     File file = new File(resourcesDir, path.substring(1));
     exchange.getResponseHeaders().put("Content-Type", singletonList(mimeType(file)));
     try (FileInputStream input = new FileInputStream(file)) {
