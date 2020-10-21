@@ -192,15 +192,12 @@ public class TestWaitForFunction {
 
   @Test
   void shouldWorkWithStrictCSPPolicy() {
-    // TODO:
-//    server.setCSP("/empty.html", "script-src " + server.PREFIX);
-//    page.navigate(server.EMPTY_PAGE);
-//    let error = null;
-//
-//    page.waitForFunction(() => window['__FOO'] === 'hit', {}, {polling: 'raf'}).catch(e => error = e),
-//    page.evaluate("() => window['__FOO'] = 'hit'")
-//
-//    assertNull(error);
+    server.setCSP("/empty.html", "script-src " + server.PREFIX);
+    page.navigate(server.EMPTY_PAGE);
+
+    Deferred<JSHandle> result = page.waitForFunction("() => window['__FOO'] === 'hit'");
+    page.evaluate("() => window['__FOO'] = 'hit'");
+    result.get();
   }
 
   void shouldThrowOnBadPollingValue() {
