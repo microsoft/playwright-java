@@ -77,7 +77,6 @@ public class TestBrowserContextExposeFunction extends TestBase {
       context.exposeFunction("baz", args -> null);
       fail("did not throw");
     } catch (RuntimeException e) {
-      System.out.println(e);
       assertTrue(e.getMessage().contains("Function \"baz\" has been already registered in one of the pages"));
     }
   }
