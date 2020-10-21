@@ -623,6 +623,15 @@ class Interface extends TypeDefinition {
         output.add(offset + "}");
         break;
       }
+      case "ElementHandle": {
+        output.add(offset + "class BoundingBox {");
+        output.add(offset + "  public double x;");
+        output.add(offset + "  public double y;");
+        output.add(offset + "  public double width;");
+        output.add(offset + "  public double height;");
+        output.add(offset + "}");
+        break;
+      }
       default: return;
     }
     output.add("");

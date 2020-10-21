@@ -168,6 +168,7 @@ class Types {
 
     // Return structures
     add("ConsoleMessage.location", "Object", "Location");
+    add("ElementHandle.boundingBox", "Promise<null|Object>", "BoundingBox", new Empty());
 
     add("Page.waitForRequest", "Promise<Request>", "Deferred<Request>");
     add("Page.waitForResponse", "Promise<Response>", "Deferred<Response>");

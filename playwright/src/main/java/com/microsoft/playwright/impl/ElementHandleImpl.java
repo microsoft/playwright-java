@@ -91,8 +91,12 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   }
 
   @Override
-  public Object boundingBox() {
-    return null;
+  public BoundingBox boundingBox() {
+    JsonObject json = sendMessage("boundingBox", new JsonObject()).getAsJsonObject();
+    if (!json.has("value")) {
+      return null;
+    }
+    return new Gson().fromJson(json.get("value"), BoundingBox.class);
   }
 
   @Override

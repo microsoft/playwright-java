@@ -19,6 +19,13 @@ package com.microsoft.playwright;
 import java.util.*;
 
 public interface ElementHandle extends JSHandle {
+  class BoundingBox {
+    public double x;
+    public double y;
+    public double width;
+    public double height;
+  }
+
   enum ElementState { DISABLED, ENABLED, HIDDEN, STABLE, VISIBLE }
   class CheckOptions {
     public Boolean force;
@@ -369,7 +376,7 @@ public interface ElementHandle extends JSHandle {
     return evalOnSelectorAll(selector, pageFunction, null);
   }
   Object evalOnSelectorAll(String selector, String pageFunction, Object arg);
-  Object boundingBox();
+  BoundingBox boundingBox();
   default void check() {
     check(null);
   }
