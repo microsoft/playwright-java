@@ -16,50 +16,11 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.*;
-
-import java.io.IOException;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestElementHandleClick {
-  private static Server server;
-  private static Browser browser;
-  private BrowserContext context;
-  private Page page;
-
-  @BeforeAll
-  static void launchBrowser() {
-    Playwright playwright = Playwright.create();
-    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
-    browser = playwright.chromium().launch(options);
-  }
-
-  @BeforeAll
-  static void startServer() throws IOException {
-    server = Server.createHttp(8907);
-  }
-
-  @AfterAll
-  static void stopServer() throws IOException {
-    browser.close();
-    server.stop();
-    server = null;
-  }
-
-  @BeforeEach
-  void setUp() {
-    server.reset();
-    context = browser.newContext();
-    page = context.newPage();
-  }
-
-  @AfterEach
-  void tearDown() {
-    context.close();
-    context = null;
-    page = null;
-  }
+public class TestElementHandleClick extends TestBase {
 
   @Test
   void shouldWork() {

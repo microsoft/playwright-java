@@ -16,9 +16,8 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -26,48 +25,7 @@ import java.util.function.BiConsumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageRoute {
-  private static Server server;
-  private static Browser browser;
-  private static boolean isChromium;
-  private static boolean isWebKit;
-  private static boolean isFirefox;
-  private BrowserContext context;
-  private Page page;
-
-  @BeforeAll
-  static void launchBrowser() {
-    Playwright playwright = Playwright.create();
-    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
-    browser = playwright.chromium().launch(options);
-    isChromium = true;
-
-  }
-
-  @BeforeAll
-  static void startServer() throws IOException {
-    server = Server.createHttp(8907);
-  }
-
-  @AfterAll
-  static void stopServer() throws IOException {
-    browser.close();
-    server.stop();
-    server = null;
-  }
-
-  @BeforeEach
-  void setUp() {
-    context = browser.newContext();
-    page = context.newPage();
-  }
-
-  @AfterEach
-  void tearDown() {
-    context.close();
-    context = null;
-    page = null;
-  }
+public class TestPageRoute extends TestBase {
 
   @Test
   void shouldIntercept() {

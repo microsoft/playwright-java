@@ -16,12 +16,10 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static com.microsoft.playwright.Keyboard.Modifier.SHIFT;
@@ -29,51 +27,7 @@ import static com.microsoft.playwright.Mouse.Button.RIGHT;
 import static com.microsoft.playwright.Page.EventType.CONSOLE;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestClick {
-  private static Playwright playwright;
-  private static Server server;
-  private static Browser browser;
-  private static boolean isChromium;
-  private static boolean isWebKit;
-  private static boolean headful;
-  private BrowserContext context;
-  private Page page;
-
-  @BeforeAll
-  static void launchBrowser() {
-    playwright = Playwright.create();
-    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
-    browser = playwright.chromium().launch(options);
-    isChromium = true;
-    isWebKit = false;
-    headful = false;
-  }
-
-  @BeforeAll
-  static void startServer() throws IOException {
-    server = Server.createHttp(8907);
-  }
-
-  @AfterAll
-  static void stopServer() throws IOException {
-    browser.close();
-    server.stop();
-    server = null;
-  }
-
-  @BeforeEach
-  void setUp() {
-    server.reset();
-    context = browser.newContext();
-    page = context.newPage();
-  }
-
-  @AfterEach
-  void tearDown() {
-    context.close();
-    context = null;
-    page = null;
-  }
+public class TestClick extends TestBase {
 
   @Test
   void shouldClickTheButton() {
