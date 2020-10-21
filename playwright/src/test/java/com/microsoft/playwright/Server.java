@@ -28,8 +28,6 @@ import java.util.concurrent.Future;
 import static java.util.Collections.singletonList;
 
 public class Server implements HttpHandler {
-  private static final int port = 8907;
-  private static final int httpsPort = 8908;
   private final HttpServer server;
 
   public final String PREFIX;
@@ -135,6 +133,7 @@ public class Server implements HttpHandler {
   void reset() {
     requestSubscribers.clear();
     auths.clear();
+    csp.clear();
     routes.clear();
   }
 
