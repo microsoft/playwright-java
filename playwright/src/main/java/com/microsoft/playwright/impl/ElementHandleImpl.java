@@ -20,17 +20,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.Deferred;
-import com.microsoft.playwright.ElementHandle;
-import com.microsoft.playwright.Frame;
+import com.microsoft.playwright.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.microsoft.playwright.impl.Serialization.toProtocol;
+import static com.microsoft.playwright.impl.Serialization.*;
+import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
-public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
-  public ElementHandleImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
+class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
+  ElementHandleImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 
@@ -69,12 +68,26 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public Object evalOnSelector(String selector, String pageFunction, Object arg) {
-    return null;
+    JsonObject params = new JsonObject();
+    params.addProperty("selector", selector);
+    params.addProperty("expression", pageFunction);
+    params.addProperty("isFunction", isFunctionBody(pageFunction));
+    params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
+    JsonElement json = sendMessage("evalOnSelector", params);
+    SerializedValue value = new Gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
+    return deserialize(value);
   }
 
   @Override
   public Object evalOnSelectorAll(String selector, String pageFunction, Object arg) {
-    return null;
+    JsonObject params = new JsonObject();
+    params.addProperty("selector", selector);
+    params.addProperty("expression", pageFunction);
+    params.addProperty("isFunction", isFunctionBody(pageFunction));
+    params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
+    JsonElement json = sendMessage("evalOnSelectorAll", params);
+    SerializedValue value = new Gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
+    return deserialize(value);
   }
 
   @Override
@@ -99,12 +112,12 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
     params.remove("button");
     if (options.button != null) {
-      params.addProperty("button", toProtocol(options.button));
+      params.addProperty("button", Serialization.toProtocol(options.button));
     }
 
     params.remove("modifiers");
     if (options.modifiers != null) {
-      params.add("modifiers", toProtocol(options.modifiers));
+      params.add("modifiers", Serialization.toProtocol(options.modifiers));
     }
 
     sendMessage("click", params);
@@ -124,12 +137,12 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
     params.remove("button");
     if (options.button != null) {
-      params.addProperty("button", toProtocol(options.button));
+      params.addProperty("button", Serialization.toProtocol(options.button));
     }
 
     params.remove("modifiers");
     if (options.modifiers != null) {
-      params.add("modifiers", toProtocol(options.modifiers));
+      params.add("modifiers", Serialization.toProtocol(options.modifiers));
     }
 
     sendMessage("dblclick", params);
@@ -137,47 +150,71 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void dispatchEvent(String type, Object eventInit) {
-
+    JsonObject params = new JsonObject();
+    params.addProperty("type", type);
+    params.add("eventInit", new Gson().toJsonTree(serializeArgument(eventInit)));
+    sendMessage("dispatchEvent", params).getAsJsonObject();
   }
 
   @Override
   public void fill(String value, FillOptions options) {
-
+    if (options == null) {
+      options = new FillOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("value", value);
+    sendMessage("fill", params);
   }
 
   @Override
   public void focus() {
-
+    sendMessage("focus", new JsonObject());
   }
 
   @Override
   public String getAttribute(String name) {
-    return null;
+    JsonObject params = new JsonObject();
+    params.addProperty("name", name);
+    JsonObject json = sendMessage("getAttribute", params).getAsJsonObject();
+    return json.has("value") ? json.get("value").getAsString() : null;
   }
 
   @Override
   public void hover(HoverOptions options) {
-
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.remove("modifiers");
+    if (options.modifiers != null) {
+      params.add("modifiers", Serialization.toProtocol(options.modifiers));
+    }
+    sendMessage("hover", params);
   }
 
   @Override
   public String innerHTML() {
-    return null;
+    JsonObject json = sendMessage("innerHTML", new JsonObject()).getAsJsonObject();
+    return json.get("value").getAsString();
   }
 
   @Override
   public String innerText() {
-    return null;
+    JsonObject json = sendMessage("innerText", new JsonObject()).getAsJsonObject();
+    return json.get("value").getAsString();
   }
 
   @Override
   public Frame ownerFrame() {
-    return null;
+    JsonObject json = sendMessage("ownerFrame", new JsonObject()).getAsJsonObject();
+    return connection.getExistingObject(json.getAsJsonObject("frame").get("guid").getAsString());
   }
 
   @Override
   public void press(String key, PressOptions options) {
-
+    if (options == null) {
+      options = new PressOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("key", key);
+    sendMessage("press", params);
   }
 
   @Override
@@ -187,17 +224,26 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void scrollIntoViewIfNeeded(ScrollIntoViewIfNeededOptions options) {
-
+    if (options == null) {
+      options = new ScrollIntoViewIfNeededOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    sendMessage("scrollIntoViewIfNeeded", params);
   }
 
   @Override
   public List<String> selectOption(String values, SelectOptionOptions options) {
+    // TODO:
     return null;
   }
 
   @Override
   public void selectText(SelectTextOptions options) {
-
+    if (options == null) {
+      options = new SelectTextOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    sendMessage("selectText", params);
   }
 
   @Override
@@ -207,12 +253,18 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public String textContent() {
-    return null;
+    JsonObject json = sendMessage("textContent", new JsonObject()).getAsJsonObject();
+    return json.has("value") ? json.get("value").getAsString() : null;
   }
 
   @Override
   public void type(String text, TypeOptions options) {
-
+    if (options == null) {
+      options = new TypeOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("text", text);
+    sendMessage("type", params);
   }
 
   @Override
@@ -225,12 +277,38 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   }
 
   @Override
-  public void waitForElementState(ElementState state, WaitForElementStateOptions options) {
+  public Deferred<Void> waitForElementState(ElementState state, WaitForElementStateOptions options) {
+    if (options == null) {
+      options = new WaitForElementStateOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("state", toProtocol(state));
+    return toDeferred(sendMessageAsync("waitForElementState", params).apply(json -> null));
+  }
 
+  private static String toProtocol(ElementState state) {
+    if (state == null) {
+      throw new IllegalArgumentException("State cannot by null");
+    }
+    return state.toString().toLowerCase();
   }
 
   @Override
   public Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options) {
-    return null;
+    if (options == null) {
+      options = new WaitForSelectorOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.remove("state");
+    params.addProperty("state", toProtocol(options.state));
+    params.addProperty("selector", selector);
+    return toDeferred(sendMessageAsync("waitForElementState", params).apply(json -> null));
+  }
+
+  private static String toProtocol(WaitForSelectorOptions.State state) {
+    if (state == null) {
+      state = WaitForSelectorOptions.State.VISIBLE;
+    }
+    return state.toString().toLowerCase();
   }
 }
