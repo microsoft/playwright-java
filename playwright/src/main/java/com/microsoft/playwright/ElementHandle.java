@@ -434,10 +434,10 @@ public interface ElementHandle extends JSHandle {
     uncheck(null);
   }
   void uncheck(UncheckOptions options);
-  default void waitForElementState(ElementState state) {
-    waitForElementState(state, null);
+  default Deferred<Void> waitForElementState(ElementState state) {
+    return waitForElementState(state, null);
   }
-  void waitForElementState(ElementState state, WaitForElementStateOptions options);
+  Deferred<Void> waitForElementState(ElementState state, WaitForElementStateOptions options);
   default Deferred<ElementHandle> waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }
