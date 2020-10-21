@@ -92,7 +92,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public BoundingBox boundingBox() {
-    JsonObject json = sendMessage("boundingBox", new JsonObject()).getAsJsonObject();
+    JsonObject json = sendMessage("boundingBox").getAsJsonObject();
     if (!json.has("value")) {
       return null;
     }
@@ -129,7 +129,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public Frame contentFrame() {
-    JsonObject json = sendMessage("contentFrame", new JsonObject()).getAsJsonObject();
+    JsonObject json = sendMessage("contentFrame").getAsJsonObject();
     if (!json.has("frame")) {
       return null;
     }
@@ -175,7 +175,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void focus() {
-    sendMessage("focus", new JsonObject());
+    sendMessage("focus");
   }
 
   @Override
@@ -198,19 +198,19 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public String innerHTML() {
-    JsonObject json = sendMessage("innerHTML", new JsonObject()).getAsJsonObject();
+    JsonObject json = sendMessage("innerHTML").getAsJsonObject();
     return json.get("value").getAsString();
   }
 
   @Override
   public String innerText() {
-    JsonObject json = sendMessage("innerText", new JsonObject()).getAsJsonObject();
+    JsonObject json = sendMessage("innerText").getAsJsonObject();
     return json.get("value").getAsString();
   }
 
   @Override
   public Frame ownerFrame() {
-    JsonObject json = sendMessage("ownerFrame", new JsonObject()).getAsJsonObject();
+    JsonObject json = sendMessage("ownerFrame").getAsJsonObject();
     if (!json.has("frame")) {
       return null;
     }
@@ -263,7 +263,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public String textContent() {
-    JsonObject json = sendMessage("textContent", new JsonObject()).getAsJsonObject();
+    JsonObject json = sendMessage("textContent").getAsJsonObject();
     return json.has("value") ? json.get("value").getAsString() : null;
   }
 

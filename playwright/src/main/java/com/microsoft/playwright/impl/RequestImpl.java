@@ -102,7 +102,7 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public Response response() {
-    JsonObject result = sendMessage("response", new JsonObject()).getAsJsonObject();
+    JsonObject result = sendMessage("response").getAsJsonObject();
     if (!result.has("response")) {
       return null;
     }

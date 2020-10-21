@@ -77,6 +77,7 @@ public class TestElementHandleBoundingBox extends TestBase {
       "</svg>");
     ElementHandle element = page.querySelector("#therect");
     ElementHandle.BoundingBox pwBoundingBox = element.boundingBox();
+    @SuppressWarnings("unchecked")
     Map<String, Integer> webBoundingBox = (Map<String, Integer>) page.evaluate("e => {\n" +
       "  const rect = e.getBoundingClientRect();\n" +
       "  return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };\n" +
@@ -133,6 +134,7 @@ public class TestElementHandleBoundingBox extends TestBase {
       "<span><i>woof</i><b>doggo</b></span>");
     ElementHandle handle = page.querySelector("span");
     ElementHandle.BoundingBox pwBoundingBox = handle.boundingBox();
+    @SuppressWarnings("unchecked")
     Map<String, Object> webBoundingBox = (Map<String, Object>) handle.evaluate("e => {\n" +
       "  const rect = e.getBoundingClientRect();\n" +
       "  return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };\n" +
