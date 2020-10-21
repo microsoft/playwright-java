@@ -60,15 +60,22 @@ class ChannelOwner {
     return connection.sendMessageAsync(guid, method, params);
   }
 
+  JsonElement sendMessage(String method) {
+    return sendMessage(method, new JsonObject());
+  }
+
   JsonElement sendMessage(String method, JsonObject params) {
     return connection.sendMessage(guid, method, params);
+  }
+
+  void sendMessageNoWait(String method) {
+    sendMessageNoWait(method, new JsonObject());
   }
 
   void sendMessageNoWait(String method, JsonObject params) {
     connection.sendMessageNoWait(guid, method, params);
   }
 
-  @SuppressWarnings("unchecked")
   <T> Deferred<T> toDeferred(Waitable waitable) {
     return () -> {
       while (!waitable.isDone()) {

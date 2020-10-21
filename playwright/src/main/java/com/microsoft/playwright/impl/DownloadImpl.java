@@ -42,12 +42,12 @@ public class DownloadImpl extends ChannelOwner implements Download {
 
   @Override
   public void delete() {
-    sendMessage("delete", new JsonObject());
+    sendMessage("delete");
   }
 
   @Override
   public String failure() {
-    JsonObject result = sendMessage("failure", new JsonObject()).getAsJsonObject();
+    JsonObject result = sendMessage("failure").getAsJsonObject();
     if (result.has("error")) {
       return result.get("error").getAsString();
     }
@@ -56,8 +56,7 @@ public class DownloadImpl extends ChannelOwner implements Download {
 
   @Override
   public String path() {
-    JsonObject params = new JsonObject();
-    JsonElement result = sendMessage("path", params);
+    JsonElement result = sendMessage("path");
     return result.getAsJsonObject().get("path").getAsString();
   }
 

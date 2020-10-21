@@ -215,7 +215,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public String content() {
-    return sendMessage("content", new JsonObject()).getAsJsonObject().get("value").getAsString();
+    return sendMessage("content").getAsJsonObject().get("value").getAsString();
   }
 
   @Override
@@ -404,7 +404,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public String title() {
-    JsonElement json = sendMessage("title", new JsonObject());
+    JsonElement json = sendMessage("title");
     return json.getAsJsonObject().get("value").getAsString();
   }
 

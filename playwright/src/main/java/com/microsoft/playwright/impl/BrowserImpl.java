@@ -46,7 +46,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public void close() {
-    sendMessage("close", new JsonObject());
+    sendMessage("close");
   }
 
   @Override

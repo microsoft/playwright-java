@@ -226,7 +226,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void bringToFront() {
-    sendMessage("bringToFront", new JsonObject());
+    sendMessage("bringToFront");
   }
 
   @Override
@@ -454,7 +454,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Page opener() {
-    JsonObject result = sendMessage("opener", new JsonObject()).getAsJsonObject();
+    JsonObject result = sendMessage("opener").getAsJsonObject();
     if (!result.has("page")) {
       return null;
     }

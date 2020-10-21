@@ -62,7 +62,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       throw new RuntimeException("Already closing");
     }
     isClosedOrClosing = true;
-    sendMessage("close", new JsonObject());
+    sendMessage("close");
   }
 
   @Override
@@ -136,9 +136,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     if (ownerPage != null) {
       throw new RuntimeException("Please use browser.newContext()");
     }
-    JsonObject params = new JsonObject();
-    JsonElement result = sendMessage("newPage", params);
-    return connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("page").get("guid").getAsString());
+    JsonObject json = sendMessage("newPage").getAsJsonObject();
+    return connection.getExistingObject(json.getAsJsonObject("page").get("guid").getAsString());
   }
 
   @Override

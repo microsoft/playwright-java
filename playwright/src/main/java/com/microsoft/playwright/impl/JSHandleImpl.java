@@ -64,7 +64,7 @@ public class JSHandleImpl extends ChannelOwner implements JSHandle {
 
   @Override
   public Map<String, JSHandle> getProperties() {
-    JsonObject json = sendMessage("getPropertyList", new JsonObject()).getAsJsonObject();
+    JsonObject json = sendMessage("getPropertyList").getAsJsonObject();
     Map<String, JSHandle> result = new HashMap<>();
     for (JsonElement e : json.getAsJsonArray("properties")) {
       JsonObject item = e.getAsJsonObject();
@@ -84,7 +84,7 @@ public class JSHandleImpl extends ChannelOwner implements JSHandle {
 
   @Override
   public Object jsonValue() {
-    JsonObject json = sendMessage("jsonValue", new JsonObject()).getAsJsonObject();
+    JsonObject json = sendMessage("jsonValue").getAsJsonObject();
     SerializedValue value = new Gson().fromJson(json.get("value"), SerializedValue.class);
     return deserialize(value);
   }

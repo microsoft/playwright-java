@@ -37,7 +37,7 @@ public class DialogImpl extends ChannelOwner implements Dialog {
   @Override
   public void dismiss() {
     handled = true;
-    sendMessageNoWait("dismiss", new JsonObject());
+    sendMessageNoWait("dismiss");
   }
 
   @Override
