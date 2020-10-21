@@ -79,6 +79,7 @@ class Serialization {
       result.a = list.toArray(new SerializedValue[0]);
     } else if (value instanceof Map) {
       List<SerializedValue.O> list = new ArrayList<>();
+      @SuppressWarnings("unchecked")
       Map<String, Object> map = (Map<String, Object>) value;
       for (Map.Entry<String, Object> e : map.entrySet()) {
         SerializedValue.O o = new SerializedValue.O();
@@ -113,6 +114,7 @@ class Serialization {
     return result;
   }
 
+  @SuppressWarnings("unchecked")
   static <T> T deserialize(SerializedValue value) {
     if (value.n != null) {
       if (value.n.doubleValue() == (double) value.n.intValue()) {
@@ -142,14 +144,14 @@ class Serialization {
       }
     }
     if (value.a != null) {
-      List list = new ArrayList();
+      List<Object> list = new ArrayList<>();
       for (SerializedValue v : value.a) {
         list.add(deserialize(v));
       }
       return (T) list;
     }
     if (value.o != null) {
-      Map map = new LinkedHashMap<>();
+      Map<String, Object> map = new LinkedHashMap<>();
       for (SerializedValue.O o : value.o) {
         map.put(o.k, deserialize(o.v));
       }

@@ -136,6 +136,7 @@ public class TestPageExposeFunction {
       "  }\n" +
       "}");
     assertTrue(result instanceof Map);
+    @SuppressWarnings("unchecked")
     Map<String, String> m = (Map<String, String>) result;
     assertEquals("WOOF WOOF", m.get("message"));
     assertTrue(m.get("stack").contains("shouldThrowExceptionInPageContext"));
@@ -202,7 +203,9 @@ public class TestPageExposeFunction {
   @Test
   void shouldWorkWithComplexObjects() {
     page.exposeFunction("complexObject", args -> {
+      @SuppressWarnings("unchecked")
       Map<String, Integer> a = (Map<String, Integer>) args[0];
+      @SuppressWarnings("unchecked")
       Map<String, Integer> b = (Map<String, Integer>) args[1];
       int sum = a.get("x") + b.get("x");
       return mapOf("x", sum);

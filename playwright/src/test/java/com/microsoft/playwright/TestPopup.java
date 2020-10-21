@@ -106,6 +106,7 @@ public class TestPopup {
 
   @Test
   void shouldInheritExtraHeadersFromBrowserContext() throws ExecutionException, InterruptedException {
+    @SuppressWarnings("unchecked")
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .withExtraHTTPHeaders(mapOf("foo", "bar")));
     Page page = context.newPage();

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 class Utils {
+  @SuppressWarnings("unchecked")
   static Map mapOf(Object... entries) {
     Map result = new HashMap();
     for (int i = 0; i + 1 < entries.length; i += 2) {
