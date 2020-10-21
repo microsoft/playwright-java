@@ -16,9 +16,8 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Pattern;
@@ -27,58 +26,7 @@ import static com.microsoft.playwright.Page.EventType.FRAMENAVIGATED;
 import static com.microsoft.playwright.Utils.expectedSSLError;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPageWaitForNavigation {
-  private static Playwright playwright;
-  private static Server server;
-  private static Server httpsServer;
-  private static BrowserType browserType;
-  private static Browser browser;
-  private static boolean isChromium;
-  private static boolean isWebKit;
-  private static boolean headful;
-  private BrowserContext context;
-  private Page page;
-
-  @BeforeAll
-  static void launchBrowser() {
-    playwright = Playwright.create();
-    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
-    browserType = playwright.chromium();
-    browser = browserType.launch(options);
-    isChromium = true;
-    isWebKit = false;
-    headful = false;
-  }
-
-  @BeforeAll
-  static void startServer() throws IOException {
-    server = Server.createHttp(8907);
-    httpsServer = Server.createHttps(8908);
-  }
-
-  @AfterAll
-  static void stopServer() throws IOException {
-    browser.close();
-    server.stop();
-    server = null;
-    httpsServer.stop();
-    httpsServer = null;
-  }
-
-  @BeforeEach
-  void setUp() {
-    server.reset();
-    httpsServer.reset();
-    context = browser.newContext();
-    page = context.newPage();
-  }
-
-  @AfterEach
-  void tearDown() {
-    context.close();
-    context = null;
-    page = null;
-  }
+public class TestPageWaitForNavigation extends TestBase {
 
   @Test
   void shouldWork() {

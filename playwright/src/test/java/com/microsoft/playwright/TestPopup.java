@@ -16,10 +16,11 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -28,44 +29,7 @@ import static com.microsoft.playwright.Page.LoadState.DOMCONTENTLOADED;
 import static com.microsoft.playwright.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestPopup {
-  private static Server server;
-  private static Browser browser;
-  private BrowserContext context;
-  private Page page;
-
-  @BeforeAll
-  static void launchBrowser() {
-    Playwright playwright = Playwright.create();
-    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
-    browser = playwright.chromium().launch(options);
-  }
-
-  @BeforeAll
-  static void startServer() throws IOException {
-    server = Server.createHttp(8907);
-  }
-
-  @AfterAll
-  static void stopServer() throws IOException {
-    browser.close();
-    server.stop();
-    server = null;
-  }
-
-  @BeforeEach
-  void setUp() {
-    server.reset();
-    context = browser.newContext();
-    page = context.newPage();
-  }
-
-  @AfterEach
-  void tearDown() {
-    context.close();
-    context = null;
-    page = null;
-  }
+public class TestPopup extends TestBase {
 
   @Test
   void shouldInheritUserAgentFromBrowserContext() throws ExecutionException, InterruptedException {

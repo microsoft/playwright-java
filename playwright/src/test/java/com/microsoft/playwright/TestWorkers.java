@@ -16,63 +16,14 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.google.gson.internal.bind.TypeAdapters.URL;
 import static com.microsoft.playwright.Page.EventType.*;
 import static com.microsoft.playwright.Utils.attachFrame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestWorkers {
-  private static Playwright playwright;
-  private static Server server;
-  private static Browser browser;
-  private static boolean isChromium;
-  private static boolean isWebKit;
-  private static boolean headful;
-  private BrowserContext context;
-  private Page page;
-
-  @BeforeAll
-  static void launchBrowser() {
-    playwright = Playwright.create();
-    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
-    browser = playwright.chromium().launch(options);
-    isChromium = true;
-    isWebKit = false;
-    headful = false;
-  }
-
-  @BeforeAll
-  static void startServer() throws IOException {
-    server = Server.createHttp(8907);
-  }
-
-  @AfterAll
-  static void stopServer() throws IOException {
-    browser.close();
-    server.stop();
-    server = null;
-  }
-
-  @BeforeEach
-  void setUp() {
-    server.reset();
-    context = browser.newContext();
-    page = context.newPage();
-  }
-
-  @AfterEach
-  void tearDown() {
-    context.close();
-    context = null;
-    page = null;
-  }
+public class TestWorkers extends TestBase {
 
   @Test
   void pageWorkers() {
