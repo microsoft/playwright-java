@@ -16,8 +16,13 @@
 
 package com.microsoft.playwright.impl;
 
-interface Waitable {
+import java.util.function.Function;
+
+interface Waitable<T> {
   boolean isDone();
-  Object get();
+  T get();
   void dispose();
+  default <U> Waitable<U> apply(Function<T, U> transform) {
+    return new WaitableAdapter<T, U>(this, transform);
+  }
 }

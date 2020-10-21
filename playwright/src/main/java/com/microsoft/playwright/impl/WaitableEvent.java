@@ -22,7 +22,7 @@ import com.microsoft.playwright.Page;
 
 import java.util.function.Predicate;
 
-class WaitableEvent<EventType> implements Waitable, Listener<EventType> {
+class WaitableEvent<EventType, ResultType> implements Waitable<ResultType>, Listener<EventType> {
   private final ListenerCollection<EventType> listeners;
   private final EventType type;
   private final Predicate<Event<EventType>> predicate;
@@ -56,7 +56,7 @@ class WaitableEvent<EventType> implements Waitable, Listener<EventType> {
     listeners.remove(type, this);
   }
 
-  public Object get() {
-    return event.data();
+  public ResultType get() {
+    return (ResultType) event.data();
   }
 }

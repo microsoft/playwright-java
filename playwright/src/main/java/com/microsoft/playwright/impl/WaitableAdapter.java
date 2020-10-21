@@ -16,26 +16,28 @@
 
 package com.microsoft.playwright.impl;
 
-class WaitableTimeout<T> implements Waitable<T> {
-  private final long deadline;
-  private final int timeout;
+import java.util.function.Function;
 
-  WaitableTimeout(int millis) {
-    timeout = millis;
-    deadline = System.nanoTime() + millis * 1_000_000;
+class WaitableAdapter<F, T> implements Waitable<T> {
+  private final Waitable<F> waitable;
+  private final Function<F, T> transformation;
+
+  WaitableAdapter(Waitable<F> waitable, Function<F, T> transformation) {
+    this.waitable = waitable;
+    this.transformation = transformation;
   }
-
   @Override
   public boolean isDone() {
-    return System.nanoTime() > deadline;
+    return waitable.isDone();
   }
 
   @Override
   public T get() {
-    throw new RuntimeException("Timeout " + timeout + "ms exceeded");
+    return transformation.apply(waitable.get());
   }
 
   @Override
   public void dispose() {
+    waitable.dispose();
   }
 }

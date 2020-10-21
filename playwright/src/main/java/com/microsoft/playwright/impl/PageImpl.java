@@ -631,8 +631,8 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options) {
-    return null;
+  public Deferred<JSHandle> waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options) {
+    return mainFrame.waitForFunction(pageFunction, arg, convertViaJson(options, Frame.WaitForFunctionOptions.class));
   }
 
   @Override
@@ -680,26 +680,26 @@ public class PageImpl extends ChannelOwner implements Page {
     }
   }
 
-  private class WaitableFrameDetach extends WaitableEvent<EventType> {
+  private class WaitableFrameDetach<R> extends WaitableEvent<EventType, R> {
     WaitableFrameDetach(Frame frame) {
       super(listeners, EventType.FRAMEDETACHED, event -> frame.equals(event.data()));
     }
 
     @Override
-    public Object get() {
+    public R get() {
       throw new RuntimeException("Navigating frame was detached");
     }
   }
 
-  Waitable createWaitableFrameDetach(Frame frame) {
-    return new WaitableFrameDetach(frame);
+  <T> Waitable<T> createWaitableFrameDetach(Frame frame) {
+    return new WaitableFrameDetach<T>(frame);
   }
 
-  Waitable createWaitForCloseHelper() {
-    return new WaitablePageClose();
+  <T> Waitable<T> createWaitForCloseHelper() {
+    return new WaitablePageClose<T>();
   }
 
-  private class WaitablePageClose implements Waitable, Listener<EventType> {
+  private class WaitablePageClose<R> implements Waitable<R>, Listener<EventType> {
     private final List<EventType> subscribedEvents;
     private String errorMessage;
 
@@ -728,7 +728,7 @@ public class PageImpl extends ChannelOwner implements Page {
     }
 
     @Override
-    public Object get() {
+    public R get() {
       throw new RuntimeException(errorMessage);
     }
 
@@ -742,7 +742,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Deferred<Request> waitForRequest(String urlOrPredicate, WaitForRequestOptions options) {
-    List<Waitable> waitables = new ArrayList<>();
+    List<Waitable<Request>> waitables = new ArrayList<>();
     waitables.add(new WaitableEvent<>(listeners, EventType.REQUEST,e -> {
         if (urlOrPredicate == null) {
           return true;
@@ -751,14 +751,14 @@ public class PageImpl extends ChannelOwner implements Page {
     }));
     waitables.add(createWaitForCloseHelper());
     if (options != null && options.timeout != null) {
-      waitables.add(new WaitableTimeout(options.timeout));
+      waitables.add(new WaitableTimeout<>(options.timeout));
     }
-    return toDeferred(new WaitableRace(waitables));
+    return toDeferred(new WaitableRace<>(waitables));
   }
 
   @Override
   public Deferred<Response> waitForResponse(String urlOrPredicate, WaitForResponseOptions options) {
-    List<Waitable> waitables = new ArrayList<>();
+    List<Waitable<Response>> waitables = new ArrayList<>();
     waitables.add(new WaitableEvent<>(listeners, EventType.RESPONSE, e -> {
       if (urlOrPredicate == null) {
         return true;
@@ -767,9 +767,9 @@ public class PageImpl extends ChannelOwner implements Page {
     }));
     waitables.add(createWaitForCloseHelper());
     if (options != null && options.timeout != null) {
-      waitables.add(new WaitableTimeout(options.timeout));
+      waitables.add(new WaitableTimeout<>(options.timeout));
     }
-    return toDeferred(new WaitableRace(waitables));
+    return toDeferred(new WaitableRace<>(waitables));
   }
 
   @Override

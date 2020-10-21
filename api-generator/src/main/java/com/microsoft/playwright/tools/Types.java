@@ -181,6 +181,8 @@ class Types {
     add("Page.waitForLoadState", "Promise", "Deferred<Void>", new Empty());
     add("Frame.waitForTimeout", "Promise", "Deferred<Void>", new Empty());
     add("Page.waitForTimeout", "Promise", "Deferred<Void>", new Empty());
+    add("Frame.waitForFunction", "Promise<JSHandle>", "Deferred<JSHandle>", new Empty());
+    add("Page.waitForFunction", "Promise<JSHandle>", "Deferred<JSHandle>", new Empty());
 
     // Custom options
     add("Page.pdf.options.margin.top", "string|number", "String");

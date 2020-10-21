@@ -26,7 +26,7 @@ import java.util.Map;
 class ChannelOwner {
   final Connection connection;
   private final ChannelOwner parent;
-  private final Map<String, ChannelOwner> objects = new HashMap();
+  private final Map<String, ChannelOwner> objects = new HashMap<>();
 
   final String type;
   final String guid;
@@ -56,7 +56,7 @@ class ChannelOwner {
   public void dispose() {
   }
 
-  Deferred<JsonElement> sendMessageAsync(String method, JsonObject params) {
+  WaitableResult<JsonElement> sendMessageAsync(String method, JsonObject params) {
     return connection.sendMessageAsync(guid, method, params);
   }
 

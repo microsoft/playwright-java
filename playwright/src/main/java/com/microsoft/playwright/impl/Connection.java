@@ -50,10 +50,10 @@ class Message {
 
 public class Connection {
   private final Transport transport;
-  private final Map<String, ChannelOwner> objects = new HashMap();
+  private final Map<String, ChannelOwner> objects = new HashMap<>();
   private final Root root;
   private int lastId = 0;
-  private final Map<Integer, WaitableResult<Message>> callbacks = new HashMap();
+  private final Map<Integer, WaitableResult<JsonElement>> callbacks = new HashMap<>();
 
   class Root extends ChannelOwner {
     Root(Connection connection) {
@@ -67,22 +67,20 @@ public class Connection {
   }
 
   public JsonElement sendMessage(String guid, String method, JsonObject params) {
-    return sendMessageAsync(guid, method, params).get();
+    return (JsonElement) root.toDeferred(sendMessageAsync(guid, method, params)).get();
   }
 
-  public Deferred<JsonElement> sendMessageAsync(String guid, String method, JsonObject params) {
-    WaitableResult<Message> result = internalSendMessage(guid, method, params);
-    Deferred<Message> message = root.toDeferred(result);
-    return () -> message.get().result;
+  public WaitableResult<JsonElement> sendMessageAsync(String guid, String method, JsonObject params) {
+    return internalSendMessage(guid, method, params);
   }
 
   public void sendMessageNoWait(String guid, String method, JsonObject params) {
     internalSendMessage(guid, method, params);
   }
 
-  private WaitableResult<Message> internalSendMessage(String guid, String method, JsonObject params) {
+  private WaitableResult<JsonElement> internalSendMessage(String guid, String method, JsonObject params) {
     int id = ++lastId;
-    WaitableResult<Message> result = new WaitableResult<>();
+    WaitableResult<JsonElement> result = new WaitableResult<>();
     callbacks.put(id, result);
     JsonObject message = new JsonObject();
     message.addProperty("id", id);
@@ -102,7 +100,7 @@ public class Connection {
   }
 
   public <T> T getExistingObject(String guid) {
-    T result = (T) objects.get(guid);
+    @SuppressWarnings("unchecked") T result = (T) objects.get(guid);
     if (result == null)
       throw new RuntimeException("Object doesn't exist: " + guid);
     return result;
@@ -117,7 +115,7 @@ public class Connection {
   }
 
   void processOneMessage() {
-    String messageString = transport.poll(Duration.ofMillis(100));
+    String messageString = transport.poll(Duration.ofMillis(10));
     if (messageString == null) {
       return;
     }
@@ -129,14 +127,14 @@ public class Connection {
   private void dispatch(Message message) {
 //    System.out.println("Message: " + message.method + " " + message.id);
     if (message.id != 0) {
-      WaitableResult<Message> callback = callbacks.get(message.id);
+      WaitableResult<JsonElement> callback = callbacks.get(message.id);
       if (callback == null) {
         throw new RuntimeException("Cannot find command to respond: " + message.id);
       }
       callbacks.remove(message.id);
 //      System.out.println("Message: " + message.id + " " + message);
       if (message.error == null) {
-        callback.complete(message);
+        callback.complete(message.result);
       } else {
         callback.completeExceptionally(new RuntimeException(message.error.toString()));
       }

@@ -19,14 +19,10 @@ package com.microsoft.playwright.impl;
 import java.util.Arrays;
 import java.util.Collection;
 
-class WaitableRace implements Waitable {
-  private final Collection<Waitable> waitables;
+class WaitableRace<T> implements Waitable<T> {
+  private final Collection<Waitable<T>> waitables;
 
-  WaitableRace(Waitable... waitables) {
-    this(Arrays.asList(waitables));
-  }
-
-  WaitableRace(Collection<Waitable> waitables) {
+  WaitableRace(Collection<Waitable<T>> waitables) {
     this.waitables = waitables;
   }
 
@@ -41,10 +37,10 @@ class WaitableRace implements Waitable {
   }
 
   @Override
-  public Object get() {
+  public T get() {
     assert isDone();
     dispose();
-    for (Waitable w : waitables) {
+    for (Waitable<T> w : waitables) {
       if (w.isDone()) {
         return w.get();
       }
@@ -54,7 +50,7 @@ class WaitableRace implements Waitable {
 
   @Override
   public void dispose() {
-    for (Waitable w : waitables) {
+    for (Waitable<T> w : waitables) {
       w.dispose();
     }
   }
