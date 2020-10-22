@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import java.io.File;
 import java.util.*;
 
 public interface ElementHandle extends JSHandle {
@@ -427,10 +428,14 @@ public interface ElementHandle extends JSHandle {
     selectText(null);
   }
   void selectText(SelectTextOptions options);
-  default void setInputFiles(String files) {
-    setInputFiles(files, null);
-  }
-  void setInputFiles(String files, SetInputFilesOptions options);
+  default void setInputFiles(File file) { setInputFiles(file, null); }
+  default void setInputFiles(File file, SetInputFilesOptions options) { setInputFiles(new File[]{ file }, options); }
+  default void setInputFiles(File[] files) { setInputFiles(files, null); }
+  void setInputFiles(File[] files, SetInputFilesOptions options);
+  default void setInputFiles(FileChooser.FilePayload file) { setInputFiles(file, null); }
+  default void setInputFiles(FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(new FileChooser.FilePayload[]{ file }, options); }
+  default void setInputFiles(FileChooser.FilePayload[] files) { setInputFiles(files, null); }
+  void setInputFiles(FileChooser.FilePayload[] files, SetInputFilesOptions options);
   String textContent();
   String toString();
   default void type(String text) {

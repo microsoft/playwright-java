@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import java.io.File;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
@@ -929,10 +930,14 @@ public interface Page {
   void setDefaultNavigationTimeout(int timeout);
   void setDefaultTimeout(int timeout);
   void setExtraHTTPHeaders(Map<String, String> headers);
-  default void setInputFiles(String selector, String files) {
-    setInputFiles(selector, files, null);
-  }
-  void setInputFiles(String selector, String files, SetInputFilesOptions options);
+  default void setInputFiles(String selector, File file) { setInputFiles(selector, file, null); }
+  default void setInputFiles(String selector, File file, SetInputFilesOptions options) { setInputFiles(selector, new File[]{ file }, options); }
+  default void setInputFiles(String selector, File[] files) { setInputFiles(selector, files, null); }
+  void setInputFiles(String selector, File[] files, SetInputFilesOptions options);
+  default void setInputFiles(String selector, FileChooser.FilePayload file) { setInputFiles(selector, file, null); }
+  default void setInputFiles(String selector, FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(selector, new FileChooser.FilePayload[]{ file }, options); }
+  default void setInputFiles(String selector, FileChooser.FilePayload[] files) { setInputFiles(selector, files, null); }
+  void setInputFiles(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options);
   void setViewportSize(int width, int height);
   default String textContent(String selector) {
     return textContent(selector, null);

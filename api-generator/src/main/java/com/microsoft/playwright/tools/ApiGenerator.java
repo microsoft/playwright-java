@@ -263,6 +263,38 @@ class Method extends Element {
       "void unroute(Pattern url, BiConsumer<Route, Request> handler);",
       "void unroute(Predicate<String> url, BiConsumer<Route, Request> handler);",
     });
+    customSignature.put("FileChooser.setFiles", new String[]{
+      "default void setFiles(File file) { setFiles(file, null); }",
+      "default void setFiles(File file, SetFilesOptions options) { setFiles(new File[]{ file }, options); }",
+      "default void setFiles(File[] files) { setFiles(files, null); }",
+      "void setFiles(File[] files, SetFilesOptions options);",
+      "default void setFiles(FileChooser.FilePayload file) { setFiles(file, null); }",
+      "default void setFiles(FileChooser.FilePayload file, SetFilesOptions options)  { setFiles(new FileChooser.FilePayload[]{ file }, options); }",
+      "default void setFiles(FileChooser.FilePayload[] files) { setFiles(files, null); }",
+      "void setFiles(FileChooser.FilePayload[] files, SetFilesOptions options);",
+    });
+    customSignature.put("ElementHandle.setInputFiles", new String[]{
+      "default void setInputFiles(File file) { setInputFiles(file, null); }",
+      "default void setInputFiles(File file, SetInputFilesOptions options) { setInputFiles(new File[]{ file }, options); }",
+      "default void setInputFiles(File[] files) { setInputFiles(files, null); }",
+      "void setInputFiles(File[] files, SetInputFilesOptions options);",
+      "default void setInputFiles(FileChooser.FilePayload file) { setInputFiles(file, null); }",
+      "default void setInputFiles(FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(new FileChooser.FilePayload[]{ file }, options); }",
+      "default void setInputFiles(FileChooser.FilePayload[] files) { setInputFiles(files, null); }",
+      "void setInputFiles(FileChooser.FilePayload[] files, SetInputFilesOptions options);",
+    });
+    String[] setInputFilesWithSelector = {
+      "default void setInputFiles(String selector, File file) { setInputFiles(selector, file, null); }",
+      "default void setInputFiles(String selector, File file, SetInputFilesOptions options) { setInputFiles(selector, new File[]{ file }, options); }",
+      "default void setInputFiles(String selector, File[] files) { setInputFiles(selector, files, null); }",
+      "void setInputFiles(String selector, File[] files, SetInputFilesOptions options);",
+      "default void setInputFiles(String selector, FileChooser.FilePayload file) { setInputFiles(selector, file, null); }",
+      "default void setInputFiles(String selector, FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(selector, new FileChooser.FilePayload[]{ file }, options); }",
+      "default void setInputFiles(String selector, FileChooser.FilePayload[] files) { setInputFiles(selector, files, null); }",
+      "void setInputFiles(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options);",
+    };
+    customSignature.put("Page.setInputFiles", setInputFilesWithSelector);
+    customSignature.put("Frame.setInputFiles", setInputFilesWithSelector);
   }
 
   Method(TypeDefinition parent, JsonObject jsonElement) {
@@ -498,6 +530,9 @@ class Interface extends TypeDefinition {
     if (jsonName.equals("Route")) {
       output.add("import java.nio.charset.StandardCharsets;");
     }
+    if (Arrays.asList("Page", "Frame", "ElementHandle", "FileChooser").contains(jsonName)) {
+      output.add("import java.io.File;");
+    }
     output.add("import java.util.*;");
     if (Arrays.asList("Page", "BrowserContext").contains(jsonName)) {
       output.add("import java.util.function.BiConsumer;");
@@ -629,6 +664,20 @@ class Interface extends TypeDefinition {
         output.add(offset + "  public double y;");
         output.add(offset + "  public double width;");
         output.add(offset + "  public double height;");
+        output.add(offset + "}");
+        break;
+      }
+      case "FileChooser": {
+        output.add(offset + "class FilePayload {");
+        output.add(offset + "  public final String name;");
+        output.add(offset + "  public final String mimeType;");
+        output.add(offset + "  public final byte[] buffer;");
+        output.add("");
+        output.add(offset + "  public FilePayload(String name, String mimeType, byte[] buffer) {");
+        output.add(offset + "    this.name = name;");
+        output.add(offset + "    this.mimeType = mimeType;");
+        output.add(offset + "    this.buffer = buffer;");
+        output.add(offset + "  }");
         output.add(offset + "}");
         break;
       }

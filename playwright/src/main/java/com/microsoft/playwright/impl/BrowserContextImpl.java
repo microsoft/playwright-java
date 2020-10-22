@@ -218,7 +218,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public Deferred<Event<EventType>> waitForEvent(EventType event, String optionsOrPredicate) {
-    return listeners.waitForEvent(event, connection);
+    return toDeferred(new WaitableEvent<>(listeners, event));
   }
 
   private void unroute(UrlMatcher matcher, BiConsumer<Route, Request> handler) {

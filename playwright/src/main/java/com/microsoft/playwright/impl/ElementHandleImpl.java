@@ -20,12 +20,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.*;
+import com.microsoft.playwright.Deferred;
+import com.microsoft.playwright.ElementHandle;
+import com.microsoft.playwright.FileChooser;
+import com.microsoft.playwright.Frame;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.microsoft.playwright.impl.Serialization.*;
+import static com.microsoft.playwright.impl.Serialization.deserialize;
+import static com.microsoft.playwright.impl.Serialization.serializeArgument;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
@@ -257,8 +262,18 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   }
 
   @Override
-  public void setInputFiles(String files, SetInputFilesOptions options) {
+  public void setInputFiles(File[] files, SetInputFilesOptions options) {
+    setInputFiles(Utils.toFilePayloads(files), options);
+  }
 
+  @Override
+  public void setInputFiles(FileChooser.FilePayload[] files, SetInputFilesOptions options) {
+    if (options == null) {
+      options = new SetInputFilesOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.add("files", Serialization.toJsonArray(files));
+    sendMessage("setInputFiles", params);
   }
 
   @Override

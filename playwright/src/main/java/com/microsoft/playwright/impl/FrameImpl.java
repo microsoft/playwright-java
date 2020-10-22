@@ -22,6 +22,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -29,8 +30,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static com.microsoft.playwright.Frame.LoadState.*;
-import static com.microsoft.playwright.impl.Serialization.deserialize;
-import static com.microsoft.playwright.impl.Serialization.serializeArgument;
+import static com.microsoft.playwright.impl.Serialization.*;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 public class FrameImpl extends ChannelOwner implements Frame {
@@ -388,8 +388,19 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public void setInputFiles(String selector, String files, SetInputFilesOptions options) {
+  public void setInputFiles(String selector, File[] files, SetInputFilesOptions options) {
+    setInputFiles(selector, Utils.toFilePayloads(files), options);
+  }
 
+  @Override
+  public void setInputFiles(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options) {
+    if (options == null) {
+      options = new SetInputFilesOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    params.add("files", toJsonArray(files));
+    sendMessage("setInputFiles", params);
   }
 
   @Override
