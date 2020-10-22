@@ -101,7 +101,6 @@ class Utils {
       String mimeType;
       try {
         mimeType = Files.probeContentType(file.toPath());
-        System.out.println("mimeType = " + mimeType);
       } catch (IOException e) {
         throw new RuntimeException("Failed to determine mime type", e);
       }

@@ -165,13 +165,12 @@ public class PageImpl extends ChannelOwner implements Page {
     }
   }
 
-
-
   private void willAddFileChooserListener() {
     if (!listeners.hasListeners(EventType.FILECHOOSER)) {
       updateFileChooserInterception(true);
     }
   }
+
   private void didRemoveFileChooserListener() {
     if (!listeners.hasListeners(EventType.FILECHOOSER)) {
       updateFileChooserInterception(false);
