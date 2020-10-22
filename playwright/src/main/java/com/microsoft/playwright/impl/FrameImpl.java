@@ -457,6 +457,9 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public Deferred<Void> waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
+    if (options == null) {
+      options = new WaitForLoadStateOptions();
+    }
     if (state == null) {
       state = LOAD;
     }
