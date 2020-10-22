@@ -40,6 +40,19 @@ public interface BrowserContext {
     }
   }
 
+  class WaitForEventOptions {
+    public Integer timeout;
+    public Predicate<Event<EventType>> predicate;
+    public WaitForEventOptions withTimeout(int millis) {
+      timeout = millis;
+      return this;
+    }
+    public WaitForEventOptions withPredicate(Predicate<Event<EventType>> predicate) {
+      this.predicate = predicate;
+      return this;
+    }
+  }
+
   enum EventType {
     PAGE,
   }
@@ -120,8 +133,13 @@ public interface BrowserContext {
   void unroute(Pattern url, BiConsumer<Route, Request> handler);
   void unroute(Predicate<String> url, BiConsumer<Route, Request> handler);
   default Deferred<Event<EventType>> waitForEvent(EventType event) {
-    return waitForEvent(event, null);
+    return waitForEvent(event, (WaitForEventOptions) null);
   }
-  Deferred<Event<EventType>> waitForEvent(EventType event, String optionsOrPredicate);
+  default Deferred<Event<EventType>> waitForEvent(EventType event, Predicate<Event<EventType>> predicate) {
+    WaitForEventOptions options = new WaitForEventOptions();
+    options.predicate = predicate;
+    return waitForEvent(event, options);
+  }
+  Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options);
 }
 

@@ -44,6 +44,7 @@ public class PageImpl extends ChannelOwner implements Page {
   BrowserContextImpl ownedContext;
   private boolean isClosed;
   final Set<Worker> workers = new HashSet<>();
+  private final TimeoutSettings timeoutSettings;
 
   PageImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -53,6 +54,7 @@ public class PageImpl extends ChannelOwner implements Page {
     keyboard = new KeyboardImpl(this);
     mouse = new MouseImpl(this);
     frames.add(mainFrame);
+    timeoutSettings = new TimeoutSettings(browserContext.timeoutSettings);
   }
 
   @Override
@@ -550,6 +552,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void setDefaultNavigationTimeout(int timeout) {
+    timeoutSettings.setDefaultNavigationTimeout(timeout);
     JsonObject params = new JsonObject();
     params.addProperty("timeout", timeout);
     sendMessage("setDefaultNavigationTimeoutNoReply", params);
@@ -557,6 +560,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void setDefaultTimeout(int timeout) {
+    timeoutSettings.setDefaultTimeout(timeout);
     JsonObject params = new JsonObject();
     params.addProperty("timeout", timeout);
     sendMessage("setDefaultTimeoutNoReply", params);
@@ -653,22 +657,34 @@ public class PageImpl extends ChannelOwner implements Page {
     return viewport;
   }
 
+  <T> Waitable<T> createWaitableNavigationTimeout(Integer timeout) {
+    return new WaitableTimeout<>(timeoutSettings.navigationTimeout(timeout));
+  }
+
+  <T> Waitable<T> createWaitableTimeout(Integer timeout) {
+    return timeoutSettings.createWaitable(timeout);
+  }
+
   @Override
-  public Deferred<Event<EventType>> waitForEvent(EventType event, String optionsOrPredicate) {
-    Waitable<Event<EventType>> waitable;
+  public Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options) {
+    if (options == null) {
+      options = new WaitForEventOptions();
+    }
+    List<Waitable<Event<EventType>>> waitables = new ArrayList<>();
     if (event == EventType.FILECHOOSER) {
       willAddFileChooserListener();
-      waitable = new WaitableEvent<EventType>(listeners, event) {
+      waitables.add(new WaitableEvent<EventType>(listeners, event, options.predicate) {
         @Override
         public void dispose() {
           super.dispose();
           didRemoveFileChooserListener();
         }
-      };
+      });
     } else {
-      waitable = new WaitableEvent<>(listeners, event);
+      waitables.add(new WaitableEvent<>(listeners, event, options.predicate));
     }
-    return toDeferred(waitable);
+    waitables.add(createWaitableTimeout(options.timeout));
+    return toDeferred(new WaitableRace<>(waitables));
   }
 
   @Override
@@ -785,6 +801,9 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Deferred<Request> waitForRequest(String urlOrPredicate, WaitForRequestOptions options) {
+    if (options == null) {
+      options = new WaitForRequestOptions();
+    }
     List<Waitable<Request>> waitables = new ArrayList<>();
     waitables.add(new WaitableEvent<>(listeners, EventType.REQUEST,e -> {
         if (urlOrPredicate == null) {
@@ -793,14 +812,15 @@ public class PageImpl extends ChannelOwner implements Page {
         return urlOrPredicate.equals(((Request) e.data()).url());
     }).apply(event -> (Request) event.data()));
     waitables.add(createWaitForCloseHelper());
-    if (options != null && options.timeout != null) {
-      waitables.add(new WaitableTimeout<>(options.timeout));
-    }
+    waitables.add(createWaitableTimeout(options.timeout));
     return toDeferred(new WaitableRace<>(waitables));
   }
 
   @Override
   public Deferred<Response> waitForResponse(String urlOrPredicate, WaitForResponseOptions options) {
+    if (options == null) {
+      options = new WaitForResponseOptions();
+    }
     List<Waitable<Response>> waitables = new ArrayList<>();
     waitables.add(new WaitableEvent<>(listeners, EventType.RESPONSE, e -> {
       if (urlOrPredicate == null) {
@@ -809,9 +829,7 @@ public class PageImpl extends ChannelOwner implements Page {
       return urlOrPredicate.equals(((Response) e.data()).url());
     }).apply(event -> (Response) event.data()));
     waitables.add(createWaitForCloseHelper());
-    if (options != null && options.timeout != null) {
-      waitables.add(new WaitableTimeout<>(options.timeout));
-    }
+    waitables.add(createWaitableTimeout(options.timeout));
     return toDeferred(new WaitableRace<>(waitables));
   }
 

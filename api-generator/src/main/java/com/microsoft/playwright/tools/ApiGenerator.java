@@ -24,7 +24,10 @@ import java.io.*;
 import java.nio.file.FileSystems;
 import java.util.*;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static java.util.Arrays.asList;
 
 abstract class Element {
   final String jsonName;
@@ -295,6 +298,20 @@ class Method extends Element {
     };
     customSignature.put("Page.setInputFiles", setInputFilesWithSelector);
     customSignature.put("Frame.setInputFiles", setInputFilesWithSelector);
+
+    String[] waitForEvent = {
+      "default Deferred<Event<EventType>> waitForEvent(EventType event) {",
+      "  return waitForEvent(event, (WaitForEventOptions) null);",
+      "}",
+      "default Deferred<Event<EventType>> waitForEvent(EventType event, Predicate<Event<EventType>> predicate) {",
+      "  WaitForEventOptions options = new WaitForEventOptions();",
+      "  options.predicate = predicate;",
+      "  return waitForEvent(event, options);",
+      "}",
+      "Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options);",
+    };
+    customSignature.put("Page.waitForEvent", waitForEvent);
+    customSignature.put("BrowserContext.waitForEvent", waitForEvent);
   }
 
   Method(TypeDefinition parent, JsonObject jsonElement) {
@@ -503,7 +520,7 @@ class Interface extends TypeDefinition {
     "\n" +
     "package com.microsoft.playwright;\n";
 
-  private static Set<String> allowedBaseInterfaces = new HashSet<>(Arrays.asList("Browser", "JSHandle", "BrowserContext"));
+  private static Set<String> allowedBaseInterfaces = new HashSet<>(asList("Browser", "JSHandle", "BrowserContext"));
 
   Interface(JsonObject jsonElement) {
     super(null, jsonElement);
@@ -530,14 +547,14 @@ class Interface extends TypeDefinition {
     if (jsonName.equals("Route")) {
       output.add("import java.nio.charset.StandardCharsets;");
     }
-    if (Arrays.asList("Page", "Frame", "ElementHandle", "FileChooser").contains(jsonName)) {
+    if (asList("Page", "Frame", "ElementHandle", "FileChooser").contains(jsonName)) {
       output.add("import java.io.File;");
     }
     output.add("import java.util.*;");
-    if (Arrays.asList("Page", "BrowserContext").contains(jsonName)) {
+    if (asList("Page", "BrowserContext").contains(jsonName)) {
       output.add("import java.util.function.BiConsumer;");
     }
-    if (Arrays.asList("Page", "Frame", "BrowserContext").contains(jsonName)) {
+    if (asList("Page", "Frame", "BrowserContext").contains(jsonName)) {
       output.add("import java.util.function.Predicate;");
       output.add("import java.util.regex.Pattern;");
     }
@@ -589,10 +606,12 @@ class Interface extends TypeDefinition {
     switch (jsonName) {
       case "Mouse": {
         output.add(offset + "enum Button { LEFT, MIDDLE, RIGHT }");
+        output.add("");
         break;
       }
       case "Keyboard": {
         output.add(offset + "enum Modifier { ALT, CONTROL, META, SHIFT }");
+        output.add("");
         break;
       }
       case "Page": {
@@ -656,6 +675,7 @@ class Interface extends TypeDefinition {
         output.add(offset + "    return password;");
         output.add(offset + "  }");
         output.add(offset + "}");
+        output.add("");
         break;
       }
       case "ElementHandle": {
@@ -665,6 +685,7 @@ class Interface extends TypeDefinition {
         output.add(offset + "  public double width;");
         output.add(offset + "  public double height;");
         output.add(offset + "}");
+        output.add("");
         break;
       }
       case "FileChooser": {
@@ -679,11 +700,26 @@ class Interface extends TypeDefinition {
         output.add(offset + "    this.buffer = buffer;");
         output.add(offset + "  }");
         output.add(offset + "}");
+        output.add("");
         break;
       }
-      default: return;
     }
-    output.add("");
+    if (asList("Page", "BrowserContext").contains(jsonName)){
+      output.add(offset + "class WaitForEventOptions {");
+      output.add(offset + "  public Integer timeout;");
+      output.add(offset + "  public Predicate<Event<EventType>> predicate;");
+
+      output.add(offset + "  public WaitForEventOptions withTimeout(int millis) {");
+      output.add(offset + "    timeout = millis;");
+      output.add(offset + "    return this;");
+      output.add(offset + "  }");
+      output.add(offset + "  public WaitForEventOptions withPredicate(Predicate<Event<EventType>> predicate) {");
+      output.add(offset + "    this.predicate = predicate;");
+      output.add(offset + "    return this;");
+      output.add(offset + "  }");
+      output.add(offset + "}");
+      output.add("");
+    }
   }
 }
 

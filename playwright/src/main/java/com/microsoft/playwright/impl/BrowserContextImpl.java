@@ -39,6 +39,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   final Map<String, Page.Binding> bindings = new HashMap<String, Page.Binding>();
   PageImpl ownerPage;
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
+  final TimeoutSettings timeoutSettings = new TimeoutSettings();
 
   protected BrowserContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -83,7 +84,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public Browser browser() {
-    return null;
+    return browser;
   }
 
   @Override
@@ -171,12 +172,18 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void setDefaultNavigationTimeout(int timeout) {
-
+    timeoutSettings.setDefaultNavigationTimeout(timeout);
+    JsonObject params = new JsonObject();
+    params.addProperty("timeout", timeout);
+    sendMessage("setDefaultNavigationTimeoutNoReply", params);
   }
 
   @Override
   public void setDefaultTimeout(int timeout) {
-
+    timeoutSettings.setDefaultTimeout(timeout);
+    JsonObject params = new JsonObject();
+    params.addProperty("timeout", timeout);
+    sendMessage("setDefaultTimeoutNoReply", params);
   }
 
   @Override
@@ -217,8 +224,14 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public Deferred<Event<EventType>> waitForEvent(EventType event, String optionsOrPredicate) {
-    return toDeferred(new WaitableEvent<>(listeners, event));
+  public Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options) {
+    if (options == null) {
+      options = new WaitForEventOptions();
+    }
+    List<Waitable<Event<EventType>>> waitables = new ArrayList<>();
+    waitables.add(new WaitableEvent<>(listeners, event, options.predicate));
+    waitables.add(timeoutSettings.createWaitable(options.timeout));
+    return toDeferred(new WaitableRace<>(waitables));
   }
 
   private void unroute(UrlMatcher matcher, BiConsumer<Route, Request> handler) {
