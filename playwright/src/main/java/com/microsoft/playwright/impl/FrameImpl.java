@@ -457,6 +457,9 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public Deferred<Void> waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
+    if (options == null) {
+      options = new WaitForLoadStateOptions();
+    }
     if (state == null) {
       state = LOAD;
     }
@@ -464,9 +467,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     List<Waitable<Void>> waitables = new ArrayList<>();
     waitables.add(new WaitForLoadStateHelper(state));
     waitables.add(page.createWaitForCloseHelper());
-    if (options != null && options.timeout != null) {
-      waitables.add(new WaitableTimeout<>(options.timeout));
-    }
+    waitables.add(page.createWaitableTimeout(options.timeout));
     return toDeferred(new WaitableRace<>(waitables));
   }
 
@@ -586,9 +587,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     waitables.add(new WaitForNavigationHelper(matcher, options.waitUntil));
     waitables.add(page.createWaitForCloseHelper());
     waitables.add(page.createWaitableFrameDetach(this));
-    if (options.timeout != null) {
-      waitables.add(new WaitableTimeout<>(options.timeout));
-    }
+    waitables.add(page.createWaitableNavigationTimeout(options.timeout));
     return toDeferred(new WaitableRace<>(waitables));
   }
 

@@ -16,27 +16,18 @@
 
 package com.microsoft.playwright.impl;
 
-class WaitableTimeout<T> implements Waitable<T> {
-  private final long deadline;
-  private final int timeout;
-
-  WaitableTimeout(int millis) {
-    timeout = millis;
-    deadline = System.nanoTime() + (long) millis * 1_000_000;
-  }
-
+public class WaitableNever<T> implements Waitable<T> {
   @Override
   public boolean isDone() {
-    return System.nanoTime() > deadline;
+    return false;
   }
 
   @Override
   public T get() {
-    throw new RuntimeException("Timeout " + timeout + "ms exceeded");
+    throw new IllegalStateException("Should never be called");
   }
 
   @Override
   public void dispose() {
   }
 }
-

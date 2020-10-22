@@ -210,7 +210,7 @@ class Types {
     add("Page.setInputFiles.files", "string|Array<string>|Object|Array<Object>", "String");
     add("Page.unroute.url", "string|RegExp|function(URL):boolean", "String");
     add("Page.waitForEvent.event", "string", "EventType", new Empty());
-    add("Page.waitForEvent.optionsOrPredicate", "Function|Object", "String");
+    add("Page.waitForEvent.optionsOrPredicate", "Function|Object", "WaitForEventOptions");
     add("Page.waitForEvent", "Promise<Object>", "Deferred<Event<EventType>>", new Empty());
     add("Page.waitForRequest.urlOrPredicate", "string|RegExp|Function", "String");
     add("Page.waitForResponse.urlOrPredicate", "string|RegExp|Function", "String");
