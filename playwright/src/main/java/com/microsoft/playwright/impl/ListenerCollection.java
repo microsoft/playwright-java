@@ -71,34 +71,7 @@ class ListenerCollection <EventType> {
     }
   }
 
-  private class DeferredEvent implements Listener<EventType>, Deferred<Event<EventType>> {
-    private final EventType type;
-    private final Connection connection;
-    private Event<EventType> event;
-
-    DeferredEvent(EventType type, Connection connection) {
-      add(type, this);
-      this.type = type;
-      this.connection = connection;
-    }
-
-    @Override
-    public void handle(Event<EventType> e) {
-      event = e;
-      remove(type, this);
-    }
-
-    @Override
-    public Event<EventType> get() {
-      while (event == null) {
-        connection.processOneMessage();
-      }
-      return event;
-    }
+  boolean hasListeners(EventType type) {
+    return listeners.containsKey(type);
   }
-
-  Deferred<Event<EventType>> waitForEvent(EventType event, Connection connection) {
-    return new DeferredEvent(event, connection);
-  }
-
 }

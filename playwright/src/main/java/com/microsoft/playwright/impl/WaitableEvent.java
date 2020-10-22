@@ -22,11 +22,15 @@ import com.microsoft.playwright.Page;
 
 import java.util.function.Predicate;
 
-class WaitableEvent<EventType, ResultType> implements Waitable<ResultType>, Listener<EventType> {
-  private final ListenerCollection<EventType> listeners;
+class WaitableEvent<EventType> implements Waitable<Event<EventType>>, Listener<EventType> {
+  final ListenerCollection<EventType> listeners;
   private final EventType type;
   private final Predicate<Event<EventType>> predicate;
   private Event<EventType> event;
+
+  WaitableEvent(ListenerCollection<EventType> listeners, EventType type) {
+    this(listeners, type, null);
+  }
 
   WaitableEvent(ListenerCollection<EventType> listeners, EventType type, Predicate<Event<EventType>> predicate) {
     this.listeners = listeners;
@@ -38,7 +42,7 @@ class WaitableEvent<EventType, ResultType> implements Waitable<ResultType>, List
   @Override
   public void handle(Event<EventType> event) {
     assert type.equals(event.type());
-    if (!predicate.test(event)) {
+    if (predicate != null && !predicate.test(event)) {
       return;
     }
 
@@ -56,9 +60,8 @@ class WaitableEvent<EventType, ResultType> implements Waitable<ResultType>, List
     listeners.remove(type, this);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
-  public ResultType get() {
-    return (ResultType) event.data();
+  public Event<EventType> get() {
+    return event;
   }
 }

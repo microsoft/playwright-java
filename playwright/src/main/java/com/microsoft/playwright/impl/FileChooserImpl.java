@@ -16,33 +16,49 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.FileChooser;
 import com.microsoft.playwright.Page;
 
-class FileChooserImpl extends ChannelOwner implements FileChooser {
-  FileChooserImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
-    super(parent, type, guid, initializer);
+import java.io.File;
+
+import static com.microsoft.playwright.impl.Utils.convertViaJson;
+
+class FileChooserImpl implements FileChooser {
+  private final PageImpl page;
+  private final ElementHandle element;
+  private final boolean isMultiple;
+
+  FileChooserImpl(PageImpl page, ElementHandle element, boolean isMultiple) {
+    this.page = page;
+    this.element = element;
+    this.isMultiple = isMultiple;
   }
 
   @Override
   public ElementHandle element() {
-    return null;
+    return element;
   }
 
   @Override
   public boolean isMultiple() {
-    return false;
+    return isMultiple;
   }
 
   @Override
   public Page page() {
-    return null;
+    return page;
   }
 
   @Override
-  public void setFiles(String files, SetFilesOptions options) {
+  public void setFiles(File[] files, SetFilesOptions options) {
+    setFiles(Utils.toFilePayloads(files), options);
+  }
 
+  @Override
+  public void setFiles(FilePayload[] files, SetFilesOptions options) {
+    element.setInputFiles(files, convertViaJson(options, ElementHandle.SetInputFilesOptions.class));
   }
 }

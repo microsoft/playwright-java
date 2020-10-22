@@ -16,9 +16,22 @@
 
 package com.microsoft.playwright;
 
+import java.io.File;
 import java.util.*;
 
 public interface FileChooser {
+  class FilePayload {
+    public final String name;
+    public final String mimeType;
+    public final byte[] buffer;
+
+    public FilePayload(String name, String mimeType, byte[] buffer) {
+      this.name = name;
+      this.mimeType = mimeType;
+      this.buffer = buffer;
+    }
+  }
+
   class SetFilesOptions {
     public Boolean noWaitAfter;
     public Integer timeout;
@@ -35,9 +48,13 @@ public interface FileChooser {
   ElementHandle element();
   boolean isMultiple();
   Page page();
-  default void setFiles(String files) {
-    setFiles(files, null);
-  }
-  void setFiles(String files, SetFilesOptions options);
+  default void setFiles(File file) { setFiles(file, null); }
+  default void setFiles(File file, SetFilesOptions options) { setFiles(new File[]{ file }, options); }
+  default void setFiles(File[] files) { setFiles(files, null); }
+  void setFiles(File[] files, SetFilesOptions options);
+  default void setFiles(FileChooser.FilePayload file) { setFiles(file, null); }
+  default void setFiles(FileChooser.FilePayload file, SetFilesOptions options)  { setFiles(new FileChooser.FilePayload[]{ file }, options); }
+  default void setFiles(FileChooser.FilePayload[] files) { setFiles(files, null); }
+  void setFiles(FileChooser.FilePayload[] files, SetFilesOptions options);
 }
 

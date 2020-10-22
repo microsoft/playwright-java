@@ -18,6 +18,8 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.microsoft.playwright.FileChooser;
 import com.microsoft.playwright.JSHandle;
 import com.microsoft.playwright.Keyboard;
 import com.microsoft.playwright.Mouse;
@@ -184,5 +186,17 @@ class Serialization {
       result.add("Shift");
     }
     return result;
+  }
+
+  static JsonArray toJsonArray(FileChooser.FilePayload[] files) {
+    JsonArray jsonFiles = new JsonArray();
+    for (FileChooser.FilePayload p : files) {
+      JsonObject jsonFile = new JsonObject();
+      jsonFile.addProperty("name", p.name);
+      jsonFile.addProperty("mimeType", p.mimeType);
+      jsonFile.addProperty("buffer", Base64.getEncoder().encodeToString(p.buffer));
+      jsonFiles.add(jsonFile);
+    }
+    return jsonFiles;
   }
 }

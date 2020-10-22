@@ -21,6 +21,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
+import java.io.File;
+import java.nio.file.Watchable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
@@ -83,7 +85,8 @@ public class PageImpl extends ChannelOwner implements Page {
       listeners.notify(EventType.DOWNLOAD, download);
     } else if ("fileChooser".equals(event)) {
       String guid = params.getAsJsonObject("element").get("guid").getAsString();
-      FileChooser fileChooser = connection.getExistingObject(guid);
+      ElementHandle elementHandle = connection.getExistingObject(guid);
+      FileChooser fileChooser = new FileChooserImpl(this, elementHandle, params.get("isMultiple").getAsBoolean());
       listeners.notify(EventType.FILECHOOSER, fileChooser);
     } else if ("bindingCall".equals(event)) {
       String guid = params.getAsJsonObject("binding").get("guid").getAsString();
@@ -162,14 +165,34 @@ public class PageImpl extends ChannelOwner implements Page {
     }
   }
 
+  private void willAddFileChooserListener() {
+    if (!listeners.hasListeners(EventType.FILECHOOSER)) {
+      updateFileChooserInterception(true);
+    }
+  }
+
+  private void didRemoveFileChooserListener() {
+    if (!listeners.hasListeners(EventType.FILECHOOSER)) {
+      updateFileChooserInterception(false);
+    }
+  }
+
+  private void updateFileChooserInterception(boolean enabled) {
+    JsonObject params = new JsonObject();
+    params.addProperty("intercepted", enabled);
+    sendMessage("setFileChooserInterceptedNoReply", params);
+  }
+
   @Override
   public void addListener(EventType type, Listener<EventType> listener) {
+    willAddFileChooserListener();
     listeners.add(type, listener);
   }
 
   @Override
   public void removeListener(EventType type, Listener<EventType> listener) {
     listeners.remove(type, listener);
+    didRemoveFileChooserListener();
   }
 
   @Override
@@ -554,7 +577,12 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void setInputFiles(String selector, String files, SetInputFilesOptions options) {
+  public void setInputFiles(String selector, File[] files, SetInputFilesOptions options) {
+    mainFrame.setInputFiles(selector, files, convertViaJson(options, Frame.SetInputFilesOptions.class));
+  }
+
+  @Override
+  public void setInputFiles(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options) {
     mainFrame.setInputFiles(selector, files, convertViaJson(options, Frame.SetInputFilesOptions.class));
   }
 
@@ -627,7 +655,20 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Deferred<Event<EventType>> waitForEvent(EventType event, String optionsOrPredicate) {
-    return listeners.waitForEvent(event, connection);
+    Waitable<Event<EventType>> waitable;
+    if (event == EventType.FILECHOOSER) {
+      willAddFileChooserListener();
+      waitable = new WaitableEvent<EventType>(listeners, event) {
+        @Override
+        public void dispose() {
+          super.dispose();
+          didRemoveFileChooserListener();
+        }
+      };
+    } else {
+      waitable = new WaitableEvent<>(listeners, event);
+    }
+    return toDeferred(waitable);
   }
 
   @Override
@@ -680,19 +721,21 @@ public class PageImpl extends ChannelOwner implements Page {
     }
   }
 
-  private class WaitableFrameDetach<R> extends WaitableEvent<EventType, R> {
+  private class WaitableFrameDetach extends WaitableEvent<EventType> {
     WaitableFrameDetach(Frame frame) {
-      super(listeners, EventType.FRAMEDETACHED, event -> frame.equals(event.data()));
+      super(PageImpl.this.listeners, EventType.FRAMEDETACHED, event -> frame.equals(event.data()));
     }
 
     @Override
-    public R get() {
+    public Event<EventType> get() {
       throw new RuntimeException("Navigating frame was detached");
     }
   }
 
+  @SuppressWarnings("unchecked")
   <T> Waitable<T> createWaitableFrameDetach(Frame frame) {
-    return new WaitableFrameDetach<T>(frame);
+    // It is safe to cast as WaitableFrameDetach.get() always throws.
+    return (Waitable<T>) new WaitableFrameDetach(frame);
   }
 
   <T> Waitable<T> createWaitForCloseHelper() {
@@ -748,7 +791,7 @@ public class PageImpl extends ChannelOwner implements Page {
           return true;
         }
         return urlOrPredicate.equals(((Request) e.data()).url());
-    }));
+    }).apply(event -> (Request) event.data()));
     waitables.add(createWaitForCloseHelper());
     if (options != null && options.timeout != null) {
       waitables.add(new WaitableTimeout<>(options.timeout));
@@ -764,7 +807,7 @@ public class PageImpl extends ChannelOwner implements Page {
         return true;
       }
       return urlOrPredicate.equals(((Response) e.data()).url());
-    }));
+    }).apply(event -> (Response) event.data()));
     waitables.add(createWaitForCloseHelper());
     if (options != null && options.timeout != null) {
       waitables.add(new WaitableTimeout<>(options.timeout));
