@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) Microsoft Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +21,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
-import java.io.*;
-import java.nio.file.Watchable;
+import java.io.File;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
