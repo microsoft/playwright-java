@@ -108,7 +108,7 @@ public interface Page {
   }
   class AddScriptTagOptions {
     public String url;
-    public String path;
+    public File path;
     public String content;
     public String type;
 
@@ -116,7 +116,7 @@ public interface Page {
       this.url = url;
       return this;
     }
-    public AddScriptTagOptions withPath(String path) {
+    public AddScriptTagOptions withPath(File path) {
       this.path = path;
       return this;
     }
@@ -131,14 +131,14 @@ public interface Page {
   }
   class AddStyleTagOptions {
     public String url;
-    public String path;
+    public File path;
     public String content;
 
     public AddStyleTagOptions withUrl(String url) {
       this.url = url;
       return this;
     }
-    public AddStyleTagOptions withPath(String path) {
+    public AddStyleTagOptions withPath(File path) {
       this.path = path;
       return this;
     }
@@ -476,7 +476,7 @@ public interface Page {
         return this;
       }
     }
-    public String path;
+    public File path;
     public Integer scale;
     public Boolean displayHeaderFooter;
     public String headerTemplate;
@@ -490,7 +490,7 @@ public interface Page {
     public Margin margin;
     public Boolean preferCSSPageSize;
 
-    public PdfOptions withPath(String path) {
+    public PdfOptions withPath(File path) {
       this.path = path;
       return this;
     }
@@ -605,7 +605,7 @@ public interface Page {
         return this;
       }
     }
-    public String path;
+    public File path;
     public Type type;
     public Integer quality;
     public Boolean fullPage;
@@ -613,7 +613,7 @@ public interface Page {
     public Boolean omitBackground;
     public Integer timeout;
 
-    public ScreenshotOptions withPath(String path) {
+    public ScreenshotOptions withPath(File path) {
       this.path = path;
       return this;
     }

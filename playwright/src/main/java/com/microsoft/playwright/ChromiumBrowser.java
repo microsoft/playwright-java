@@ -16,15 +16,16 @@
 
 package com.microsoft.playwright;
 
+import java.io.File;
 import java.util.*;
 
 public interface ChromiumBrowser extends Browser {
   class StartTracingOptions {
-    public String path;
+    public File path;
     public Boolean screenshots;
     public List<String> categories;
 
-    public StartTracingOptions withPath(String path) {
+    public StartTracingOptions withPath(File path) {
       this.path = path;
       return this;
     }

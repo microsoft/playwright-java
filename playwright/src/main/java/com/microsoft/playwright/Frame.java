@@ -25,7 +25,7 @@ public interface Frame {
   enum LoadState { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
   class AddScriptTagOptions {
     public String url;
-    public String path;
+    public File path;
     public String content;
     public String type;
 
@@ -33,7 +33,7 @@ public interface Frame {
       this.url = url;
       return this;
     }
-    public AddScriptTagOptions withPath(String path) {
+    public AddScriptTagOptions withPath(File path) {
       this.path = path;
       return this;
     }
@@ -48,14 +48,14 @@ public interface Frame {
   }
   class AddStyleTagOptions {
     public String url;
-    public String path;
+    public File path;
     public String content;
 
     public AddStyleTagOptions withUrl(String url) {
       this.url = url;
       return this;
     }
-    public AddStyleTagOptions withPath(String path) {
+    public AddStyleTagOptions withPath(File path) {
       this.path = path;
       return this;
     }

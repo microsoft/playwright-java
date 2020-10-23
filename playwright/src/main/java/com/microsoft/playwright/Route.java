@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import java.nio.charset.StandardCharsets;
+import java.io.File;
 import java.util.*;
 
 public interface Route {
@@ -47,7 +48,7 @@ public interface Route {
     public Map<String, String> headers;
     public String contentType;
     public String body;
-    public String path;
+    public File path;
 
     public FulfillResponse withStatus(Integer status) {
       this.status = status;
@@ -65,7 +66,7 @@ public interface Route {
       this.body = body;
       return this;
     }
-    public FulfillResponse withPath(String path) {
+    public FulfillResponse withPath(File path) {
       this.path = path;
       return this;
     }

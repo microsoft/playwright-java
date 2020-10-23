@@ -17,16 +17,18 @@ package com.microsoft.playwright.example;
 
 import com.microsoft.playwright.*;
 
+import java.io.File;
+
 public class Main {
   public static void main(String[] args) {
     Playwright playwright = Playwright.create();
-    Browser browser = playwright.chromium().launch(
-      new BrowserType.LaunchOptions().withHeadless(false).withSlowMo(1000));
+    Browser browser = playwright.chromium().launch();
     BrowserContext context = browser.newContext(
       new Browser.NewContextOptions().withViewport(800, 600));
     Page page = context.newPage();
-    page.navigate("https://webkit.org", null);
+    page.navigate("https://webkit.org");
     page.click("text=check feature status");
+    page.screenshot(new Page.ScreenshotOptions().withPath(new File("s.png")));
     browser.close();
   }
 }

@@ -143,12 +143,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
       params.remove("path");
       byte[] encoded = new byte[0];
       try {
-        encoded = Files.readAllBytes(Paths.get(options.path));
+        encoded = Files.readAllBytes(options.path.toPath());
       } catch (IOException e) {
         throw new RuntimeException("Failed to read from file", e);
       }
       String content = new String(encoded, StandardCharsets.UTF_8);
-      content += "//# sourceURL=" + options.path.replace("\n", "");
+      content += "//# sourceURL=" + options.path.getPath().replace("\n", "");
       params.addProperty("content", content);
     }
     JsonElement json = sendMessage("addScriptTag", params);
@@ -165,12 +165,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
       params.remove("path");
       byte[] encoded = new byte[0];
       try {
-        encoded = Files.readAllBytes(Paths.get(options.path));
+        encoded = Files.readAllBytes(options.path.toPath());
       } catch (IOException e) {
         throw new RuntimeException("Failed to read from file", e);
       }
       String content = new String(encoded, StandardCharsets.UTF_8);
-      content += "/*# sourceURL=" + options.path.replace("\n", "") + "*/";
+      content += "/*# sourceURL=" + options.path.getPath().replace("\n", "") + "*/";
       params.addProperty("content", content);
     }
     JsonElement json = sendMessage("addStyleTag", params);
