@@ -20,18 +20,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.*;
+import com.microsoft.playwright.Deferred;
+import com.microsoft.playwright.ElementHandle;
+import com.microsoft.playwright.FileChooser;
+import com.microsoft.playwright.Frame;
 
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-import static com.microsoft.playwright.impl.Serialization.deserialize;
-import static com.microsoft.playwright.impl.Serialization.serializeArgument;
+import static com.microsoft.playwright.impl.Serialization.*;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
@@ -277,9 +276,32 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   }
 
   @Override
-  public List<String> selectOption(String values, SelectOptionOptions options) {
-    // TODO:
-    return null;
+  public List<String> selectOption(SelectOption[] values, SelectOptionOptions options) {
+    if (options == null) {
+      options = new SelectOptionOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    if (values != null) {
+      params.add("options", new Gson().toJsonTree(values));
+    }
+    return selectOption(params);
+  }
+
+  @Override
+  public List<String> selectOption(ElementHandle[] values, SelectOptionOptions options) {
+    if (options == null) {
+      options = new SelectOptionOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    if (values != null) {
+      params.add("elements", Serialization.toProtocol(values));
+    }
+    return selectOption(params);
+  }
+
+  private List<String> selectOption(JsonObject params) {
+    JsonObject json = sendMessage("selectOption", params).getAsJsonObject();
+    return parseStringList(json.getAsJsonArray("values"));
   }
 
   @Override

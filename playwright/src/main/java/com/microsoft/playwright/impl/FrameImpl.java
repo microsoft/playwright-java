@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 import static com.microsoft.playwright.Frame.LoadState.*;
@@ -358,10 +357,35 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public List<String> selectOption(String selector, String values, SelectOptionOptions options) {
-    return null;
+  public List<String> selectOption(String selector, ElementHandle.SelectOption[] values, SelectOptionOptions options) {
+    if (options == null) {
+      options = new SelectOptionOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    if (values != null) {
+      params.add("options", new Gson().toJsonTree(values));
+    }
+    return selectOption(params);
   }
 
+  @Override
+  public List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options) {
+    if (options == null) {
+      options = new SelectOptionOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    if (values != null) {
+      params.add("elements", Serialization.toProtocol(values));
+    }
+    return selectOption(params);
+  }
+
+  private List<String> selectOption(JsonObject params) {
+    JsonObject json = sendMessage("selectOption", params).getAsJsonObject();
+    return parseStringList(json.getAsJsonArray("values"));
+  }
 
   static String toProtocol(LoadState waitUntil) {
     if (waitUntil == null) {

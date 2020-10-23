@@ -27,6 +27,25 @@ public interface ElementHandle extends JSHandle {
     public double height;
   }
 
+  class SelectOption {
+    public String value;
+    public String label;
+    public Integer index;
+
+    public SelectOption withValue(String value) {
+      this.value = value;
+      return this;
+    }
+    public SelectOption withLabel(String label) {
+      this.label = label;
+      return this;
+    }
+    public SelectOption withIndex(int index) {
+      this.index = index;
+      return this;
+    }
+  }
+
   enum ElementState { DISABLED, ENABLED, HIDDEN, STABLE, VISIBLE }
   class CheckOptions {
     public Boolean force;
@@ -420,10 +439,45 @@ public interface ElementHandle extends JSHandle {
     scrollIntoViewIfNeeded(null);
   }
   void scrollIntoViewIfNeeded(ScrollIntoViewIfNeededOptions options);
-  default List<String> selectOption(String values) {
+  default List<String> selectOption(String value) {
+    return selectOption(value, null);
+  }
+  default List<String> selectOption(String value, SelectOptionOptions options) {
+    String[] values = value == null ? null : new String[]{ value };
+    return selectOption(values, options);
+  }
+  default List<String> selectOption(String[] values) {
     return selectOption(values, null);
   }
-  List<String> selectOption(String values, SelectOptionOptions options);
+  default List<String> selectOption(String[] values, SelectOptionOptions options) {
+    if (values == null) {
+      return selectOption(new SelectOption[0], options);
+    }
+    return selectOption(Arrays.asList(values).stream().map(
+      v -> new SelectOption().withValue(v)).toArray(SelectOption[]::new), options);
+  }
+  default List<String> selectOption(SelectOption value) {
+    return selectOption(value, null);
+  }
+  default List<String> selectOption(SelectOption value, SelectOptionOptions options) {
+    SelectOption[] values = value == null ? null : new SelectOption[]{value};
+    return selectOption(values, options);
+  }
+  default List<String> selectOption(SelectOption[] values) {
+    return selectOption(values, null);
+  }
+  List<String> selectOption(SelectOption[] values, SelectOptionOptions options);
+  default List<String> selectOption(ElementHandle value) {
+    return selectOption(value, null);
+  }
+  default List<String> selectOption(ElementHandle value, SelectOptionOptions options) {
+    ElementHandle[] values = value == null ? null : new ElementHandle[]{value};
+    return selectOption(values, options);
+  }
+  default List<String> selectOption(ElementHandle[] values) {
+    return selectOption(values, null);
+  }
+  List<String> selectOption(ElementHandle[] values, SelectOptionOptions options);
   default void selectText() {
     selectText(null);
   }
