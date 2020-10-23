@@ -24,56 +24,61 @@ import org.junit.jupiter.api.BeforeEach;
 import java.io.IOException;
 
 public class TestBase {
-    static Server server;
-    static Server httpsServer;
-    static BrowserType browserType;
-    static Playwright playwright;
-    static Browser browser;
-    static boolean isChromium;
-    static boolean isWebKit;
-    static boolean isFirefox;
-    static boolean headful;
-    Page page;
-    BrowserContext context;
+  static Server server;
+  static Server httpsServer;
+  static BrowserType browserType;
+  static Playwright playwright;
+  static Browser browser;
+  static boolean isChromium;
+  static boolean isWebKit;
+  static boolean isFirefox;
+  static boolean headful;
+  Page page;
+  BrowserContext context;
 
-    @BeforeAll
-    static void launchBrowser() {
-      playwright = Playwright.create();
-      BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
-      browserType = playwright.chromium();
-      browser = browserType.launch(options);
-      isChromium = true;
-      isWebKit = false;
-      headful = false;
-    }
+  @BeforeAll
+  static void launchBrowser() {
+    playwright = Playwright.create();
+    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
+    browserType = playwright.chromium();
+    browser = browserType.launch(options);
+    isChromium = true;
+    isWebKit = false;
+    headful = false;
+  }
 
-    @BeforeAll
-    static void startServer() throws IOException {
-      server = Server.createHttp(8907);
-      httpsServer = Server.createHttps(8908);
-    }
+  @AfterAll
+  static void closeBrowser() {
+    browser.close();
+    browser = null;
+  }
 
-    @AfterAll
-    static void stopServer() throws IOException {
-      browser.close();
-      server.stop();
-      server = null;
-      httpsServer.stop();
-      httpsServer = null;
-    }
+  @BeforeAll
+  static void startServer() throws IOException {
+    server = Server.createHttp(8907);
+    httpsServer = Server.createHttps(8908);
+  }
 
-    @BeforeEach
-    void setUp() {
-      server.reset();
-      httpsServer.reset();
-      context = browser.newContext();
-      page = context.newPage();
-    }
+  @AfterAll
+  static void stopServer() throws IOException {
+    server.stop();
+    server = null;
+    httpsServer.stop();
+    httpsServer = null;
+  }
 
-    @AfterEach
-    void tearDown() {
-      context.close();
-      context = null;
-      page = null;
-    }
+  @BeforeEach
+  void createContextAndPage() {
+    server.reset();
+    httpsServer.reset();
+    context = browser.newContext();
+    page = context.newPage();
+  }
+
+  @AfterEach
+  void closeContext() {
+    context.close();
+    context = null;
+    page = null;
+  }
 }

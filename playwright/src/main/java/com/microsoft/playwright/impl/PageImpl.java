@@ -187,14 +187,18 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void addListener(EventType type, Listener<EventType> listener) {
-    willAddFileChooserListener();
+    if (type == EventType.FILECHOOSER) {
+      willAddFileChooserListener();
+    }
     listeners.add(type, listener);
   }
 
   @Override
   public void removeListener(EventType type, Listener<EventType> listener) {
     listeners.remove(type, listener);
-    didRemoveFileChooserListener();
+    if (type == EventType.FILECHOOSER) {
+      didRemoveFileChooserListener();
+    }
   }
 
   @Override
