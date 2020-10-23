@@ -11,7 +11,7 @@ git clone https://github.com/microsoft/playwright-java
 cd playwright-java
 ```
 
-2. Checkout and install playwright-cli node.js package into `driver/` directory
+2. Checkout and install playwright-cli node.js package into `driver/` directory. This installs Playwright and browser binaries for Chromium, Firefox and WebKit.
 
 ```bash
 mkdir driver
@@ -20,10 +20,18 @@ curl -O https://playwright.azureedge.net/builds/cli/playwright-cli-0.151.0-linux
 unzip playwright-cli-0.151.0-linux.zip -d .
 ./playwright-cli install
 ```
+Replace `-linux.zip` in the file name with `-win32_x64.zip` or `-mac.zip` for other platforms.
+
+### Compiling and running the tests with Maven
+
+```bash
+mvn compile
+mvn test
+```
 
 ### Generating API
 
-Public Java API is generated from [api.json](https://github.com/microsoft/playwright-java/blob/master/api-generator/src/main/resources/api.json) which in turn is created by [`npm run generate-api-json`](https://github.com/microsoft/playwright/blob/2df6425254232125e46347d5e8cddd71c3cecce6/package.json#L29).
+Public Java API is generated from [api.json](https://github.com/microsoft/playwright-java/blob/master/api-generator/src/main/resources/api.json) which in turn is created by `playwright-cli print-api-json`.
 
 ### Code Style
 
