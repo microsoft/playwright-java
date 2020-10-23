@@ -491,7 +491,20 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public byte[] pdf(PdfOptions options) {
-    return new byte[0];
+    if (!browserContext.browser().isChromium()) {
+      throw new RuntimeException("Page.pdf only supported in headless Chromium");
+    }
+    if (options == null) {
+      options = new PdfOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.remove("path");
+    JsonObject json = sendMessage("pdf", params).getAsJsonObject();
+    byte[] buffer = Base64.getDecoder().decode(json.get("pdf").getAsString());
+    if (options.path != null) {
+      Utils.writeToFile(buffer, options.path);
+    }
+    return buffer;
   }
 
   @Override
