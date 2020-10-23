@@ -560,10 +560,45 @@ public interface Frame {
     press(selector, key, null);
   }
   void press(String selector, String key, PressOptions options);
-  default List<String> selectOption(String selector, String values) {
+  default List<String> selectOption(String selector, String value) {
+    return selectOption(selector, value, null);
+  }
+  default List<String> selectOption(String selector, String value, SelectOptionOptions options) {
+    String[] values = value == null ? null : new String[]{ value };
+    return selectOption(selector, values, options);
+  }
+  default List<String> selectOption(String selector, String[] values) {
     return selectOption(selector, values, null);
   }
-  List<String> selectOption(String selector, String values, SelectOptionOptions options);
+  default List<String> selectOption(String selector, String[] values, SelectOptionOptions options) {
+    if (values == null) {
+      return selectOption(selector, new ElementHandle.SelectOption[0], options);
+    }
+    return selectOption(selector, Arrays.asList(values).stream().map(
+      v -> new ElementHandle.SelectOption().withValue(v)).toArray(ElementHandle.SelectOption[]::new), options);
+  }
+  default List<String> selectOption(String selector, ElementHandle.SelectOption value) {
+    return selectOption(selector, value, null);
+  }
+  default List<String> selectOption(String selector, ElementHandle.SelectOption value, SelectOptionOptions options) {
+    ElementHandle.SelectOption[] values = value == null ? null : new ElementHandle.SelectOption[]{value};
+    return selectOption(selector, values, options);
+  }
+  default List<String> selectOption(String selector, ElementHandle.SelectOption[] values) {
+    return selectOption(selector, values, null);
+  }
+  List<String> selectOption(String selector, ElementHandle.SelectOption[] values, SelectOptionOptions options);
+  default List<String> selectOption(String selector, ElementHandle value) {
+    return selectOption(selector, value, null);
+  }
+  default List<String> selectOption(String selector, ElementHandle value, SelectOptionOptions options) {
+    ElementHandle[] values = value == null ? null : new ElementHandle[]{value};
+    return selectOption(selector, values, options);
+  }
+  default List<String> selectOption(String selector, ElementHandle[] values) {
+    return selectOption(selector, values, null);
+  }
+  List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options);
   default void setContent(String html) {
     setContent(html, null);
   }

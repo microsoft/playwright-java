@@ -312,6 +312,54 @@ class Method extends Element {
     };
     customSignature.put("Page.waitForEvent", waitForEvent);
     customSignature.put("BrowserContext.waitForEvent", waitForEvent);
+
+    String[] selectOption = {
+      "default List<String> selectOption(String selector, String value) {",
+      "  return selectOption(selector, value, null);",
+      "}",
+      "default List<String> selectOption(String selector, String value, SelectOptionOptions options) {",
+      "  String[] values = value == null ? null : new String[]{ value };",
+      "  return selectOption(selector, values, options);",
+      "}",
+      "default List<String> selectOption(String selector, String[] values) {",
+      "  return selectOption(selector, values, null);",
+      "}",
+      "default List<String> selectOption(String selector, String[] values, SelectOptionOptions options) {",
+      "  if (values == null) {",
+      "    return selectOption(selector, new ElementHandle.SelectOption[0], options);",
+      "  }",
+      "  return selectOption(selector, Arrays.asList(values).stream().map(",
+      "    v -> new ElementHandle.SelectOption().withValue(v)).toArray(ElementHandle.SelectOption[]::new), options);",
+      "}",
+      "default List<String> selectOption(String selector, ElementHandle.SelectOption value) {",
+      "  return selectOption(selector, value, null);",
+      "}",
+      "default List<String> selectOption(String selector, ElementHandle.SelectOption value, SelectOptionOptions options) {",
+      "  ElementHandle.SelectOption[] values = value == null ? null : new ElementHandle.SelectOption[]{value};",
+      "  return selectOption(selector, values, options);",
+      "}",
+      "default List<String> selectOption(String selector, ElementHandle.SelectOption[] values) {",
+      "  return selectOption(selector, values, null);",
+      "}",
+      "List<String> selectOption(String selector, ElementHandle.SelectOption[] values, SelectOptionOptions options);",
+      "default List<String> selectOption(String selector, ElementHandle value) {",
+      "  return selectOption(selector, value, null);",
+      "}",
+      "default List<String> selectOption(String selector, ElementHandle value, SelectOptionOptions options) {",
+      "  ElementHandle[] values = value == null ? null : new ElementHandle[]{value};",
+      "  return selectOption(selector, values, options);",
+      "}",
+      "default List<String> selectOption(String selector, ElementHandle[] values) {",
+      "  return selectOption(selector, values, null);",
+      "}",
+      "List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options);",
+    };
+    customSignature.put("Page.selectOption", selectOption);
+    customSignature.put("Frame.selectOption", selectOption);
+    customSignature.put("ElementHandle.selectOption", Arrays.stream(selectOption).map(s -> s
+      .replace("String selector, ", "")
+      .replace("(selector, ", "(")
+      .replace("ElementHandle.", "")).toArray(String[]::new));
   }
 
   Method(TypeDefinition parent, JsonObject jsonElement) {
@@ -502,7 +550,7 @@ class Field extends Element {
 class Interface extends TypeDefinition {
   private final List<Method> methods = new ArrayList<>();
   private final List<Event> events = new ArrayList<>();
-  private static String header = "/**\n" +
+  private static String header = "/*\n" +
     " * Copyright (c) Microsoft Corporation.\n" +
     " *\n" +
     " * Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
@@ -684,6 +732,25 @@ class Interface extends TypeDefinition {
         output.add(offset + "  public double y;");
         output.add(offset + "  public double width;");
         output.add(offset + "  public double height;");
+        output.add(offset + "}");
+        output.add("");
+        output.add(offset + "class SelectOption {");
+        output.add(offset + "  public String value;");
+        output.add(offset + "  public String label;");
+        output.add(offset + "  public Integer index;");
+        output.add("");
+        output.add(offset + "  public SelectOption withValue(String value) {");
+        output.add(offset + "    this.value = value;");
+        output.add(offset + "    return this;");
+        output.add(offset + "  }");
+        output.add(offset + "  public SelectOption withLabel(String label) {");
+        output.add(offset + "    this.label = label;");
+        output.add(offset + "    return this;");
+        output.add(offset + "  }");
+        output.add(offset + "  public SelectOption withIndex(int index) {");
+        output.add(offset + "    this.index = index;");
+        output.add(offset + "    return this;");
+        output.add(offset + "  }");
         output.add(offset + "}");
         output.add("");
         break;

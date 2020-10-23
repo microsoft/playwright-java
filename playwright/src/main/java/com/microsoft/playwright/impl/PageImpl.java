@@ -586,7 +586,12 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public List<String> selectOption(String selector, String values, SelectOptionOptions options) {
+  public List<String> selectOption(String selector, ElementHandle.SelectOption[] values, SelectOptionOptions options) {
+    return mainFrame.selectOption(selector, values, convertViaJson(options, Frame.SelectOptionOptions.class));
+  }
+
+  @Override
+  public List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options) {
     return mainFrame.selectOption(selector, values, convertViaJson(options, Frame.SelectOptionOptions.class));
   }
 

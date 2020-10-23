@@ -18,16 +18,16 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.FileChooser;
-import com.microsoft.playwright.JSHandle;
-import com.microsoft.playwright.Keyboard;
-import com.microsoft.playwright.Mouse;
+import com.microsoft.playwright.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 class Serialization {
   static SerializedError serializeError(Throwable e) {
@@ -198,5 +198,23 @@ class Serialization {
       jsonFiles.add(jsonFile);
     }
     return jsonFiles;
+  }
+
+  static JsonArray toProtocol(ElementHandle[] handles) {
+    JsonArray jsonElements = new JsonArray();
+    for (ElementHandle handle : handles) {
+      JsonObject jsonHandle = new JsonObject();
+      jsonHandle.addProperty("guid", ((ElementHandleImpl) handle).guid);
+      jsonElements.add(jsonHandle);
+    }
+    return jsonElements;
+  }
+
+  static List<String> parseStringList(JsonArray array) {
+    List<String> result = new ArrayList<>();
+    for (JsonElement e : array) {
+      result.add(e.getAsString());
+    }
+    return result;
   }
 }
