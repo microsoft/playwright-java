@@ -96,8 +96,17 @@ class BrowserImpl extends ChannelOwner implements Browser {
     return page;
   }
 
+  private String name() {
+    return initializer.get("name").getAsString();
+  }
+  boolean isChromium() {
+    return "chromium".equals(name());
+  }
+
+
   @Override
   public String version() {
     return initializer.get("version").getAsString();
   }
+
 }

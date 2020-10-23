@@ -83,7 +83,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public Browser browser() {
+  public BrowserImpl browser() {
     return browser;
   }
 
