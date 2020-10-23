@@ -547,7 +547,7 @@ class Interface extends TypeDefinition {
     if (jsonName.equals("Route")) {
       output.add("import java.nio.charset.StandardCharsets;");
     }
-    if (asList("Page", "Frame", "ElementHandle", "FileChooser").contains(jsonName)) {
+    if (asList("Page", "Frame", "ElementHandle", "FileChooser", "ChromiumBrowser", "Route").contains(jsonName)) {
       output.add("import java.io.File;");
     }
     output.add("import java.util.*;");

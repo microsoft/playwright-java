@@ -19,7 +19,9 @@ package com.microsoft.playwright.impl;
 import com.google.gson.Gson;
 import com.microsoft.playwright.FileChooser;
 
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
@@ -116,5 +118,21 @@ class Utils {
       payloads.add(new FileChooser.FilePayload(file.getName(), mimeType, buffer));
     }
     return payloads.toArray(new FileChooser.FilePayload[0]);
+  }
+
+  static void writeToFile(byte[] buffer, File path) {
+    File dir = path.getParentFile();
+    if (dir != null) {
+      if (!dir.exists()) {
+        if (!dir.mkdirs()) {
+          throw new RuntimeException("Failed to create parent directory: " + dir.getPath());
+        }
+      }
+    }
+    try (DataOutputStream out = new DataOutputStream(new FileOutputStream(path));) {
+      out.write(buffer);
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to write to file", e);
+    }
   }
 }

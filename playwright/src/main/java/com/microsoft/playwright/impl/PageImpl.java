@@ -21,7 +21,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
-import java.io.File;
+import java.io.*;
 import java.nio.file.Watchable;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -535,9 +535,38 @@ public class PageImpl extends ChannelOwner implements Page {
     }
   }
 
+  private static String toProtocol(ScreenshotOptions.Type type) {
+    return type.toString().toLowerCase();
+  }
+
   @Override
   public byte[] screenshot(ScreenshotOptions options) {
-    return new byte[0];
+    if (options == null) {
+      options = new ScreenshotOptions();
+    }
+    if (options.type == null) {
+      options.type = ScreenshotOptions.Type.PNG;
+      if (options.path != null) {
+        int extStart = options.path.getName().lastIndexOf('.');
+        if (extStart != -1) {
+          String extension = options.path.getName().substring(extStart).toLowerCase();
+          if (".jpeg".equals(extension) || ".jpg".equals(extension)) {
+            options.type = ScreenshotOptions.Type.JPEG;
+          }
+        }
+      }
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.remove("type");
+    params.addProperty("type", toProtocol(options.type));
+    params.remove("path");
+    JsonObject json = sendMessage("screenshot", params).getAsJsonObject();
+
+    byte[] buffer = Base64.getDecoder().decode(json.get("binary").getAsString());
+    if (options.path != null) {
+      Utils.writeToFile(buffer, options.path);
+    }
+    return buffer;
   }
 
   @Override

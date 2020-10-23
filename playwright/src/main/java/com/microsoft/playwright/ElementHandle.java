@@ -240,13 +240,13 @@ public interface ElementHandle extends JSHandle {
   }
   class ScreenshotOptions {
     public enum Type { JPEG, PNG }
-    public String path;
+    public File path;
     public Type type;
     public Integer quality;
     public Boolean omitBackground;
     public Integer timeout;
 
-    public ScreenshotOptions withPath(String path) {
+    public ScreenshotOptions withPath(File path) {
       this.path = path;
       return this;
     }
