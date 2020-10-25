@@ -68,7 +68,7 @@ public class TestBrowser {
     try {
       page.context().newPage();
       fail("newPage should throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Please use browser.newContext()"));
     }
     page.close();

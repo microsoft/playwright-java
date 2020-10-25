@@ -15,6 +15,8 @@
  */
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.PlaywrightException;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -43,7 +45,7 @@ public class Transport {
     try {
       outgoing.put(message);
     } catch (InterruptedException e) {
-      throw new RuntimeException("Failed to send message", e);
+      throw new PlaywrightException("Failed to send message", e);
     }
   }
 
@@ -51,7 +53,7 @@ public class Transport {
     try {
       return incoming.poll(timeout.toMillis(), TimeUnit.MILLISECONDS);
     } catch (InterruptedException e) {
-      throw new RuntimeException("Failed to read message", e);
+      throw new PlaywrightException("Failed to read message", e);
     }
   }
 }

@@ -45,7 +45,7 @@ public class TestPdf extends TestBase {
         return;
       }
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertFalse(e.getMessage().contains("did not throw"));
     }
   }

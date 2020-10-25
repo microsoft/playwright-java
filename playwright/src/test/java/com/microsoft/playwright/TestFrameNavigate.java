@@ -45,7 +45,7 @@ public class TestFrameNavigate extends TestBase {
     String url = server.PREFIX + "/frames/child-redirect.html";
     try {
       page.navigate(url, new Page.NavigateOptions().withTimeout(5000).withWaitUntil(NETWORKIDLE));
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout 5000ms exceeded."));
       assertTrue(e.getMessage().contains("navigating to \"" + url +"\", waiting until \"networkidle\""));
     }

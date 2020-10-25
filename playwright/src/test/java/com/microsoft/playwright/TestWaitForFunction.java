@@ -83,7 +83,7 @@ public class TestWaitForFunction extends TestBase {
     try {
       result.get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout 1000ms exceeded"));
     }
 
@@ -108,7 +108,7 @@ public class TestWaitForFunction extends TestBase {
     try {
       page.waitForFunction("() => { throw new Error('oh my'); }").get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("oh my"));
     }
   }
@@ -123,7 +123,7 @@ public class TestWaitForFunction extends TestBase {
         "  return window['counter'] === 5 ? 'result' : false;\n" +
         "}").get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Bad counter!"));
     }
   }
@@ -133,7 +133,7 @@ public class TestWaitForFunction extends TestBase {
     try {
       page.waitForFunction("() => globalVar === 123").get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("globalVar"));
     }
   }
@@ -157,7 +157,7 @@ public class TestWaitForFunction extends TestBase {
     try {
       page.waitForFunction("() => !!document.body", null, new Page.WaitForFunctionOptions().withPollingInterval(-10)).get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Cannot poll with non-positive interval"));
     }
   }
@@ -186,7 +186,7 @@ public class TestWaitForFunction extends TestBase {
     try {
       page.waitForFunction("false", null, new Page.WaitForFunctionOptions().withTimeout(10)).get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout 10ms exceeded"));
     }
   }
@@ -197,7 +197,7 @@ public class TestWaitForFunction extends TestBase {
     try {
       page.waitForFunction("false").get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
     }
   }
@@ -296,7 +296,7 @@ public class TestWaitForFunction extends TestBase {
         "}");
       result.get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("waitForFunction1"));
     }
     page.reload();
@@ -305,7 +305,7 @@ public class TestWaitForFunction extends TestBase {
         "  console.log('waitForFunction2');\n" +
         "  throw new Error('waitForFunction2');\n" +
         "}").get();
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("waitForFunction2"));
     }
     page.reload();
@@ -314,7 +314,7 @@ public class TestWaitForFunction extends TestBase {
         "  console.log('waitForFunction3');\n" +
         "  throw new Error('waitForFunction3');\n" +
         "}").get();
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("waitForFunction3"));
     }
     assertEquals(asList("waitForFunction1", "waitForFunction2", "waitForFunction3"), messages);

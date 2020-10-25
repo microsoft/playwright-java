@@ -32,7 +32,7 @@ public class TestQuerySelector extends TestBase {
     try {
       page.querySelector(null);
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("selector: expected string, got undefined"));
     }
   }

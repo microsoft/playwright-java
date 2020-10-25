@@ -161,7 +161,7 @@ public class TestClick extends TestBase {
     Exception exception = null;
     try {
       page.click("button", new Page.ClickOptions().withForce(true));
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       exception = e;
     }
     assertNotNull(exception);

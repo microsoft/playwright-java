@@ -55,7 +55,7 @@ public class TestElementHandleWaitForElementState extends TestBase {
     try {
       result.get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout 1000ms exceeded"));
     }
   }
@@ -69,7 +69,7 @@ public class TestElementHandleWaitForElementState extends TestBase {
     try {
       promise.get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
     }
   }
@@ -121,7 +121,7 @@ public class TestElementHandleWaitForElementState extends TestBase {
     try {
       promise.get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
     }
   }

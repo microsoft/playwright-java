@@ -136,7 +136,7 @@ public class TestPageSelectOption extends TestBase {
     try {
       page.selectOption("body", "");
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Element is not a <select> element."));
     }
   }
@@ -180,7 +180,7 @@ public class TestPageSelectOption extends TestBase {
     try {
       page.selectOption("select", new String[]{"blue", null, "black","magenta"});
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("options.get(1): expected object, got null"));
     }
   }

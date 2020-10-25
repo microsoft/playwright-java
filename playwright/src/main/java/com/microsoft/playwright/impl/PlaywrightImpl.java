@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.DeviceDescriptor;
 import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.PlaywrightException;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +44,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       PlaywrightImpl playwright = (PlaywrightImpl)connection.waitForObjectWithKnownName("Playwright");
       return playwright;
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new PlaywrightException("Failed to launch driver", e);
     }
   }
 

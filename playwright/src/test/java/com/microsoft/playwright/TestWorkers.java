@@ -48,7 +48,7 @@ public class TestWorkers extends TestBase {
     assertEquals(worker, workerDestroyedPromise.get().data());
     try {
       workerThisObj.getProperty("self");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Most likely the worker has been closed."));
     }
   }

@@ -311,7 +311,7 @@ public class PageImpl extends ChannelOwner implements Page {
       case NO_PREFERENCE:
         return "no-preference";
       default:
-        throw new RuntimeException("Unknown option: " + colorScheme);
+        throw new PlaywrightException("Unknown option: " + colorScheme);
     }
   }
 
@@ -336,10 +336,10 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void exposeBinding(String name, Binding playwrightBinding, ExposeBindingOptions options) {
     if (bindings.containsKey(name)) {
-      throw new RuntimeException("Function \"" + name + "\" has been already registered");
+      throw new PlaywrightException("Function \"" + name + "\" has been already registered");
     }
     if (browserContext.bindings.containsKey(name)) {
-      throw new RuntimeException("Function \"" + name + "\" has been already registered in the browser context");
+      throw new PlaywrightException("Function \"" + name + "\" has been already registered in the browser context");
     }
     bindings.put(name, playwrightBinding);
 
@@ -492,7 +492,7 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public byte[] pdf(PdfOptions options) {
     if (!browserContext.browser().isChromium()) {
-      throw new RuntimeException("Page.pdf only supported in headless Chromium");
+      throw new PlaywrightException("Page.pdf only supported in headless Chromium");
     }
     if (options == null) {
       options = new PdfOptions();
@@ -794,7 +794,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
     @Override
     public Event<EventType> get() {
-      throw new RuntimeException("Navigating frame was detached");
+      throw new PlaywrightException("Navigating frame was detached");
     }
   }
 
@@ -838,7 +838,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
     @Override
     public R get() {
-      throw new RuntimeException(errorMessage);
+      throw new PlaywrightException(errorMessage);
     }
 
     @Override

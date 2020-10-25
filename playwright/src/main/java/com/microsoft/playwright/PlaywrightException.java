@@ -14,31 +14,14 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright.impl;
+package com.microsoft.playwright;
 
-import com.microsoft.playwright.PlaywrightException;
-
-class WaitableTimeout<T> implements Waitable<T> {
-  private final long deadline;
-  private final int timeout;
-
-  WaitableTimeout(int millis) {
-    timeout = millis;
-    deadline = System.nanoTime() + (long) millis * 1_000_000;
+public class PlaywrightException extends RuntimeException {
+  public PlaywrightException(String message) {
+    super(message);
   }
 
-  @Override
-  public boolean isDone() {
-    return System.nanoTime() > deadline;
-  }
-
-  @Override
-  public T get() {
-    throw new PlaywrightException("Timeout " + timeout + "ms exceeded");
-  }
-
-  @Override
-  public void dispose() {
+  public PlaywrightException(String message, Throwable cause) {
+    super(message, cause);
   }
 }
-

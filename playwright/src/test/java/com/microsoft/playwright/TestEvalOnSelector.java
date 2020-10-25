@@ -122,7 +122,7 @@ public class TestEvalOnSelector extends TestBase {
     try {
       page.evalOnSelector("section", "e => e.id");
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("failed to find element matching selector \"section\""));
     }
   }
@@ -169,7 +169,7 @@ public class TestEvalOnSelector extends TestBase {
     try {
       page.evalOnSelector("*css=div >> *css=span", "e => e.outerHTML");
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Only one of the selectors can capture using * modifier"));
     }
   }
@@ -179,7 +179,7 @@ public class TestEvalOnSelector extends TestBase {
     try {
       page.evalOnSelector("*=div", "e => e.outerHTML");
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Unknown engine \"\" while parsing selector *=div"));
     }
   }

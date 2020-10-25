@@ -38,7 +38,7 @@ public class TestPageBasic extends TestBase {
     try {
       newPage.evaluate("() => new Promise(r => {})");
       fail("evaluate should throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Protocol error"));
     }
   }
@@ -108,14 +108,14 @@ public class TestPageBasic extends TestBase {
     try {
       request.get();
       fail("get() should throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Page closed"));
       assertFalse(e.getMessage().contains("Timeout"));
     }
     try {
       response.get();
       fail("get() should throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Page closed"));
       assertFalse(e.getMessage().contains("Timeout"));
     }

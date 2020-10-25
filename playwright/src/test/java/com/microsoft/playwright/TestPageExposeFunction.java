@@ -198,7 +198,7 @@ public class TestPageExposeFunction extends TestBase {
     try {
       page.exposeFunction("foo", args -> null);
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Function \"foo\" has been already registered"));
     }
   }
@@ -222,7 +222,7 @@ public class TestPageExposeFunction extends TestBase {
         "  return window['logme'](1, 2);\n" +
         "}");
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("exposeBindingHandle supports a single argument, 2 received"));
     }
   }
