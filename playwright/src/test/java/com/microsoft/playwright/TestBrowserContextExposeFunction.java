@@ -60,7 +60,7 @@ public class TestBrowserContextExposeFunction extends TestBase {
     try {
       context.exposeFunction("foo", args -> null);
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Function \"foo\" has been already registered"));
     }
 
@@ -68,7 +68,7 @@ public class TestBrowserContextExposeFunction extends TestBase {
     try {
       page.exposeFunction("foo", args -> null);
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Function \"foo\" has been already registered in the browser context"));
     }
 
@@ -76,7 +76,7 @@ public class TestBrowserContextExposeFunction extends TestBase {
     try {
       context.exposeFunction("baz", args -> null);
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Function \"baz\" has been already registered in one of the pages"));
     }
   }

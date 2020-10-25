@@ -18,7 +18,7 @@ package com.microsoft.playwright.impl;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.Deferred;
+import com.microsoft.playwright.PlaywrightException;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -102,7 +102,7 @@ public class Connection {
   public <T> T getExistingObject(String guid) {
     @SuppressWarnings("unchecked") T result = (T) objects.get(guid);
     if (result == null)
-      throw new RuntimeException("Object doesn't exist: " + guid);
+      throw new PlaywrightException("Object doesn't exist: " + guid);
     return result;
   }
 
@@ -129,14 +129,14 @@ public class Connection {
     if (message.id != 0) {
       WaitableResult<JsonElement> callback = callbacks.get(message.id);
       if (callback == null) {
-        throw new RuntimeException("Cannot find command to respond: " + message.id);
+        throw new PlaywrightException("Cannot find command to respond: " + message.id);
       }
       callbacks.remove(message.id);
 //      System.out.println("Message: " + message.id + " " + message);
       if (message.error == null) {
         callback.complete(message.result);
       } else {
-        callback.completeExceptionally(new RuntimeException(message.error.toString()));
+        callback.completeExceptionally(new PlaywrightException(message.error.toString()));
       }
       return;
     }
@@ -152,14 +152,14 @@ public class Connection {
     if (message.method.equals("__dispose__")) {
       ChannelOwner object = objects.get(message.guid);
       if (object == null) {
-        throw new RuntimeException("Cannot find object to dispose: " + message.guid);
+        throw new PlaywrightException("Cannot find object to dispose: " + message.guid);
       }
       object.dispose();
       return;
     }
     ChannelOwner object = objects.get(message.guid);
     if (object == null) {
-      throw new RuntimeException("Cannot find object to call " + message.method + ": " + message.guid);
+      throw new PlaywrightException("Cannot find object to call " + message.method + ": " + message.guid);
     }
     object.handleEvent(message.method, message.params);
   }
@@ -170,7 +170,7 @@ public class Connection {
 
     ChannelOwner parent = objects.get(parentGuid);
     if (parent == null) {
-      throw new RuntimeException("Cannot find parent object " + parentGuid + " to create " + guid);
+      throw new PlaywrightException("Cannot find parent object " + parentGuid + " to create " + guid);
     }
     JsonObject initializer = params.getAsJsonObject("initializer");
     ChannelOwner result = null;
@@ -230,7 +230,7 @@ public class Connection {
         result = new WorkerImpl(parent, type, guid, initializer);
         break;
       default:
-        throw new RuntimeException("Unknown type " + type);
+        throw new PlaywrightException("Unknown type " + type);
     }
 
     return result;

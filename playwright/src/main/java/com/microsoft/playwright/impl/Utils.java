@@ -18,6 +18,7 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
 import com.microsoft.playwright.FileChooser;
+import com.microsoft.playwright.PlaywrightException;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -104,7 +105,7 @@ class Utils {
       try {
         mimeType = Files.probeContentType(file.toPath());
       } catch (IOException e) {
-        throw new RuntimeException("Failed to determine mime type", e);
+        throw new PlaywrightException("Failed to determine mime type", e);
       }
       if (mimeType == null) {
         mimeType = "application/octet-stream";
@@ -113,7 +114,7 @@ class Utils {
       try {
         buffer = Files.readAllBytes(file.toPath());
       } catch (IOException e) {
-        throw new RuntimeException("Failed to read from file", e);
+        throw new PlaywrightException("Failed to read from file", e);
       }
       payloads.add(new FileChooser.FilePayload(file.getName(), mimeType, buffer));
     }
@@ -125,14 +126,14 @@ class Utils {
     if (dir != null) {
       if (!dir.exists()) {
         if (!dir.mkdirs()) {
-          throw new RuntimeException("Failed to create parent directory: " + dir.getPath());
+          throw new PlaywrightException("Failed to create parent directory: " + dir.getPath());
         }
       }
     }
     try (DataOutputStream out = new DataOutputStream(new FileOutputStream(path));) {
       out.write(buffer);
     } catch (IOException e) {
-      throw new RuntimeException("Failed to write to file", e);
+      throw new PlaywrightException("Failed to write to file", e);
     }
   }
 }

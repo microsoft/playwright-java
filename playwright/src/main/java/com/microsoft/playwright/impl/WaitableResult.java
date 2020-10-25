@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.PlaywrightException;
+
 class WaitableResult<T> implements Waitable<T> {
   private T result;
   private RuntimeException exception;
@@ -45,7 +47,7 @@ class WaitableResult<T> implements Waitable<T> {
   @Override
   public T get() {
     if (exception != null) {
-      throw new RuntimeException(exception);
+      throw new PlaywrightException(exception.getMessage(), exception);
     }
     return result;
   }

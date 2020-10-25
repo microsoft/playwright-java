@@ -44,7 +44,7 @@ public class TestPageFill extends TestBase {
       try {
         page.fill("input", "");
         fail("fill should throw");
-      } catch (RuntimeException e) {
+      } catch (PlaywrightException e) {
         assertTrue(e.getMessage().contains("input of type \"" + type + "\" cannot be filled"), e.getMessage());
       }
     }
@@ -75,7 +75,7 @@ public class TestPageFill extends TestBase {
     try {
       page.fill("input", "2020-13-05");
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Malformed value"));
     }
   }
@@ -94,7 +94,7 @@ public class TestPageFill extends TestBase {
     try {
       page.fill("input", "25:05");
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Malformed value"));
     }
   }
@@ -113,7 +113,7 @@ public class TestPageFill extends TestBase {
     try {
       page.fill("input", "abc");
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Malformed value"));
     }
   }
@@ -158,7 +158,7 @@ public class TestPageFill extends TestBase {
     try {
       page.fill("body", "");
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Element is not an <input>"));
     }
   }
@@ -222,7 +222,7 @@ public class TestPageFill extends TestBase {
     try {
       page.fill("input", "abc");
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Cannot type text into input[type=number]"));
     }
   }

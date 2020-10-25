@@ -44,7 +44,7 @@ class Serialization {
 
   private static SerializedValue serializeValue(Object value, List<JSHandleImpl> handles, int depth) {
     if (depth > 100) {
-      throw new RuntimeException("Maximum argument depth exceeded");
+      throw new PlaywrightException("Maximum argument depth exceeded");
     }
     SerializedValue result = new SerializedValue();
     if (value instanceof JSHandleImpl) {
@@ -97,7 +97,7 @@ class Serialization {
       }
       result.a = list.toArray(new SerializedValue[0]);
     } else {
-      throw new RuntimeException("Unsupported type of argument: " + value);
+      throw new PlaywrightException("Unsupported type of argument: " + value);
     }
     return result;
   }
@@ -142,7 +142,7 @@ class Serialization {
         case "NaN":
           return (T) Double.valueOf(Double.NaN);
         default:
-          throw new RuntimeException("Unexpected value: " + value.v);
+          throw new PlaywrightException("Unexpected value: " + value.v);
       }
     }
     if (value.a != null) {
@@ -159,7 +159,7 @@ class Serialization {
       }
       return (T) map;
     }
-    throw new RuntimeException("Unexpected result: " + new Gson().toJson(value));
+    throw new PlaywrightException("Unexpected result: " + new Gson().toJson(value));
   }
 
   static String toProtocol(Mouse.Button button) {
@@ -167,7 +167,7 @@ class Serialization {
       case LEFT: return "left";
       case RIGHT: return "right";
       case MIDDLE: return "middle";
-      default: throw new RuntimeException("Unexpected value: " + button);
+      default: throw new PlaywrightException("Unexpected value: " + button);
     }
   }
 

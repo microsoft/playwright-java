@@ -63,7 +63,7 @@ public class TestElementHandleClick extends TestBase {
     try {
       button.click();
       fail("click should throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
     }
   }
@@ -76,7 +76,7 @@ public class TestElementHandleClick extends TestBase {
     try {
       button.click(new ElementHandle.ClickOptions().withForce(true));
       fail("click should throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Element is not visible"));
     }
   }
@@ -89,7 +89,7 @@ public class TestElementHandleClick extends TestBase {
     try {
       button.click(new ElementHandle.ClickOptions().withForce(true));
       fail("click should throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Element is not visible"));
     }
   }
@@ -101,7 +101,7 @@ public class TestElementHandleClick extends TestBase {
     try {
       br.click(new ElementHandle.ClickOptions().withForce(true));
       fail("click should throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Element is outside of the viewport"));
     }
   }

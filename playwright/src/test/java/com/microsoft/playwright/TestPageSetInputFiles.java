@@ -129,7 +129,7 @@ public class TestPageSetInputFiles extends TestBase {
       Deferred<Event<Page.EventType>> event = page.waitForEvent(Page.EventType.FILECHOOSER, new Page.WaitForEventOptions().withTimeout(1));
       event.get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
     }
   }
@@ -141,7 +141,7 @@ public class TestPageSetInputFiles extends TestBase {
       Deferred<Event<Page.EventType>> event = page.waitForEvent(Page.EventType.FILECHOOSER);
       event.get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
     }
   }
@@ -154,7 +154,7 @@ public class TestPageSetInputFiles extends TestBase {
     try {
       event.get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
     }
   }
@@ -259,7 +259,7 @@ public class TestPageSetInputFiles extends TestBase {
     try {
       fileChooser.setFiles(new File[]{FILE_TO_UPLOAD, new File("src/test/resources/pptr.png")});
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Non-multiple file input can only accept single file"));
     }
   }

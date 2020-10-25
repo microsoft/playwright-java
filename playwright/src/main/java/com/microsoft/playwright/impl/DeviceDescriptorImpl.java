@@ -17,6 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.DeviceDescriptor;
+import com.microsoft.playwright.PlaywrightException;
 
 class DeviceDescriptorImpl implements DeviceDescriptor {
   private static class ViewportImpl implements Viewport{
@@ -72,7 +73,7 @@ class DeviceDescriptorImpl implements DeviceDescriptor {
       case "chromium": return BrowserType.CHROMIUM;
       case "firefox": return BrowserType.FIREFOX;
       case "webkit": return BrowserType.WEBKIT;
-      default: throw new RuntimeException("Unknown type: " + defaultBrowserType);
+      default: throw new PlaywrightException("Unknown type: " + defaultBrowserType);
     }
   }
 }

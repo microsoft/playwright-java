@@ -62,7 +62,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
       case "load": return LOAD;
       case "domcontentloaded": return DOMCONTENTLOADED;
       case "networkidle": return NETWORKIDLE;
-      default: throw new RuntimeException("Unexpected value: " + value);
+      default: throw new PlaywrightException("Unexpected value: " + value);
     }
   }
 
@@ -144,7 +144,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
       try {
         encoded = Files.readAllBytes(options.path.toPath());
       } catch (IOException e) {
-        throw new RuntimeException("Failed to read from file", e);
+        throw new PlaywrightException("Failed to read from file", e);
       }
       String content = new String(encoded, StandardCharsets.UTF_8);
       content += "//# sourceURL=" + options.path.getPath().replace("\n", "");
@@ -166,7 +166,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
       try {
         encoded = Files.readAllBytes(options.path.toPath());
       } catch (IOException e) {
-        throw new RuntimeException("Failed to read from file", e);
+        throw new PlaywrightException("Failed to read from file", e);
       }
       String content = new String(encoded, StandardCharsets.UTF_8);
       content += "/*# sourceURL=" + options.path.getPath().replace("\n", "") + "*/";
@@ -395,7 +395,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
       case DOMCONTENTLOADED: return "domcontentloaded";
       case LOAD: return "load";
       case NETWORKIDLE: return "networkidle";
-      default: throw new RuntimeException("Unexpected value: " + waitUntil);
+      default: throw new PlaywrightException("Unexpected value: " + waitUntil);
     }
   }
 
@@ -552,7 +552,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
         return;
       }
       if (params.has("error")) {
-        exception = new RuntimeException(params.get("error").getAsString());
+        exception = new PlaywrightException(params.get("error").getAsString());
       } else {
         if (params.has("newDocument")) {
           JsonObject jsonReq = params.getAsJsonObject("newDocument").getAsJsonObject("request");

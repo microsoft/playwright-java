@@ -44,7 +44,7 @@ public class TestPageWaitForNavigation extends TestBase {
     try {
       promise.get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
 //      assertTrue(e.getMessage().contains("page.waitForNavigation: Timeout 5000ms exceeded."));
       assertTrue(e.getMessage().contains("Timeout 5000ms exceeded"));
 //      assertTrue(e.getMessage().contains("waiting for navigation to '**/frame.html' until 'load'"));
@@ -75,7 +75,7 @@ public class TestPageWaitForNavigation extends TestBase {
       page.click("a");
       event.get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains(expectedSSLError(browserType.name())), e.getMessage());
     }
   }
@@ -226,7 +226,7 @@ public class TestPageWaitForNavigation extends TestBase {
         "}\n");
       response.get();
       fail("did not throw");
-    } catch (RuntimeException e) {
+    } catch (PlaywrightException e) {
 //      assertTrue(e.getMessage().contains("waiting for navigation until \"load\""));
       assertTrue(e.getMessage().contains("frame was detached"));
     }

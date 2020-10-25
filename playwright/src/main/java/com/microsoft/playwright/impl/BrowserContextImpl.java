@@ -60,7 +60,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   public void close() {
     if (isClosedOrClosing) {
       // TODO: wait close event instead?
-      throw new RuntimeException("Already closing");
+      throw new PlaywrightException("Already closing");
     }
     isClosedOrClosing = true;
     sendMessage("close");
@@ -105,11 +105,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   public void exposeBinding(String name, Page.Binding playwrightBinding, ExposeBindingOptions options) {
     if (bindings.containsKey(name)) {
-      throw new RuntimeException("Function \"" + name + "\" has been already registered");
+      throw new PlaywrightException("Function \"" + name + "\" has been already registered");
     }
     for (PageImpl page : pages) {
       if (page.bindings.containsKey(name)) {
-        throw new RuntimeException("Function \"" + name + "\" has been already registered in one of the pages");
+        throw new PlaywrightException("Function \"" + name + "\" has been already registered in one of the pages");
       }
     }
     bindings.put(name, playwrightBinding);
@@ -135,7 +135,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   public PageImpl newPage() {
     if (ownerPage != null) {
-      throw new RuntimeException("Please use browser.newContext()");
+      throw new PlaywrightException("Please use browser.newContext()");
     }
     JsonObject json = sendMessage("newPage").getAsJsonObject();
     return connection.getExistingObject(json.getAsJsonObject("page").get("guid").getAsString());
