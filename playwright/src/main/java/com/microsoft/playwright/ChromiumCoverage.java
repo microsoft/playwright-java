@@ -40,6 +40,40 @@ public interface ChromiumCoverage {
       return this;
     }
   }
+  class ChromiumCoverageStopCSSCoverage {
+    private String url;
+    private String text;
+    private List<Object> ranges;
+
+    public String url() {
+      return this.url;
+    }
+    public String text() {
+      return this.text;
+    }
+    public List<Object> ranges() {
+      return this.ranges;
+    }
+  }
+  class ChromiumCoverageStopJSCoverage {
+    private String url;
+    private String scriptId;
+    private String source;
+    private List<Object> functions;
+
+    public String url() {
+      return this.url;
+    }
+    public String scriptId() {
+      return this.scriptId;
+    }
+    public String source() {
+      return this.source;
+    }
+    public List<Object> functions() {
+      return this.functions;
+    }
+  }
   default void startCSSCoverage() {
     startCSSCoverage(null);
   }
@@ -48,7 +82,7 @@ public interface ChromiumCoverage {
     startJSCoverage(null);
   }
   void startJSCoverage(StartJSCoverageOptions options);
-  List<Object> stopCSSCoverage();
-  List<Object> stopJSCoverage();
+  ChromiumCoverageStopCSSCoverage stopCSSCoverage();
+  ChromiumCoverageStopJSCoverage stopJSCoverage();
 }
 

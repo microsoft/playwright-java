@@ -208,7 +208,12 @@ class Types {
     add("Page.goto.options", "Object", "NavigateOptions");
     add("Frame.goto.options", "Object", "NavigateOptions");
 
-    add("BrowserContext.cookies.urls", "string|Array<string>", "String");
+    // The method has custom signatures
+    add("BrowserContext.cookies", "Promise<Array<Object>>", "Cookie");
+    add("BrowserContext.cookies.sameSite", "\"Lax\"|\"None\"|\"Strict\"", "SameSite", new Empty());
+    add("BrowserContext.cookies.expires", "number", "long");
+    add("BrowserContext.addCookies.cookies", "Array<Object>", "AddCookie");
+    add("BrowserContext.addCookies.cookies.sameSite", "\"Lax\"|\"None\"|\"Strict\"", "SameSite", new Empty());
     add("BrowserContext.route.url", "string|RegExp|function(URL):boolean", "String");
     add("BrowserContext.unroute.url", "string|RegExp|function(URL):boolean", "String");
     add("BrowserContext.waitForEvent.event", "string", "EventType", new Empty());
