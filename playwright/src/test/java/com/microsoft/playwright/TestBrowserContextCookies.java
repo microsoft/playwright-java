@@ -16,24 +16,17 @@
 
 package com.microsoft.playwright;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
 import java.util.List;
 
+import static com.microsoft.playwright.Utils.assertJsonEquals;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestBrowserContextCookies extends TestBase {
-  private static void assertJsonEquals(String expected, Object actual) {
-    JsonElement actualJson = JsonParser.parseString(new Gson().toJson(actual));
-    assertEquals(JsonParser.parseString(expected), actualJson);
-  }
-
   @Test
   void shouldGetACookie() {
     page.navigate(server.EMPTY_PAGE);

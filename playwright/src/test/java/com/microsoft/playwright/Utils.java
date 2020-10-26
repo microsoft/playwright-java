@@ -16,10 +16,21 @@
 
 package com.microsoft.playwright;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class Utils {
+  static void assertJsonEquals(String expected, Object actual) {
+    JsonElement actualJson = JsonParser.parseString(new Gson().toJson(actual));
+    assertEquals(JsonParser.parseString(expected), actualJson);
+  }
+
   @SuppressWarnings("unchecked")
   static Map mapOf(Object... entries) {
     Map result = new HashMap();

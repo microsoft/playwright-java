@@ -214,6 +214,7 @@ class Types {
     add("BrowserContext.cookies.expires", "number", "long");
     add("BrowserContext.addCookies.cookies", "Array<Object>", "AddCookie");
     add("BrowserContext.addCookies.cookies.sameSite", "\"Lax\"|\"None\"|\"Strict\"", "SameSite", new Empty());
+    add("BrowserContext.addCookies.cookies.expires", "number", "Long", new Empty());
     add("BrowserContext.route.url", "string|RegExp|function(URL):boolean", "String");
     add("BrowserContext.unroute.url", "string|RegExp|function(URL):boolean", "String");
     add("BrowserContext.waitForEvent.event", "string", "EventType", new Empty());

@@ -67,7 +67,7 @@ public interface BrowserContext {
     public String url;
     public String domain;
     public String path;
-    public Integer expires;
+    public Long expires;
     public Boolean httpOnly;
     public Boolean secure;
     public SameSite sameSite;
@@ -92,7 +92,7 @@ public interface BrowserContext {
       this.path = path;
       return this;
     }
-    public AddCookie withExpires(Integer expires) {
+    public AddCookie withExpires(Long expires) {
       this.expires = expires;
       return this;
     }
