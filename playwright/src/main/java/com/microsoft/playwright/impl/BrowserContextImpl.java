@@ -16,15 +16,15 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.JsonWriter;
 import com.microsoft.playwright.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+import java.io.IOException;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -67,8 +67,10 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void addCookies(List<Object> cookies) {
-
+  public void addCookies(List<AddCookie> cookies) {
+    JsonObject params = new JsonObject();
+    params.add("cookies", new Gson().toJsonTree(cookies));
+    sendMessage("addCookies", params);
   }
 
   @Override
@@ -89,17 +91,52 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void clearCookies() {
-
+    sendMessage("clearCookies");
   }
 
   @Override
   public void clearPermissions() {
+    sendMessage("clearPermissions");
+  }
 
+  private static class SameSiteAdapter extends TypeAdapter<SameSite> {
+    @Override
+    public void write(JsonWriter out, SameSite value) throws IOException {
+      String stringValue;
+      switch (value) {
+        case STRICT:
+          stringValue = "Strict";
+          break;
+        case LAX:
+          stringValue = "Lax";
+          break;
+        case NONE:
+          stringValue = "None";
+          break;
+        default:
+          throw new PlaywrightException("Unexpected value: " + value);
+      }
+      out.value(stringValue);
+    }
+
+    @Override
+    public SameSite read(JsonReader in) throws IOException {
+      String value = in.nextString();
+      return SameSite.valueOf(value.toUpperCase());
+    }
   }
 
   @Override
-  public List<Object> cookies(String urls) {
-    return null;
+  public List<Cookie> cookies(List<String> urls) {
+    JsonObject params = new JsonObject();
+    if (urls == null) {
+      urls = Collections.emptyList();
+    }
+    params.add("urls", new Gson().toJsonTree(urls));
+    JsonObject json = sendMessage("cookies", params).getAsJsonObject();
+    Gson gson = new GsonBuilder().registerTypeAdapter(SameSite.class, new SameSiteAdapter().nullSafe()).create();
+    Cookie[] cookies = gson.fromJson(json.getAsJsonArray("cookies"), Cookie[].class);
+    return Arrays.asList(cookies);
   }
 
   @Override

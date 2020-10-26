@@ -22,6 +22,8 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 public interface BrowserContext {
+  enum SameSite { STRICT, LAX, NONE }
+
   class HTTPCredentials {
     private final String username;
     private final String password;
@@ -59,6 +61,89 @@ public interface BrowserContext {
 
   void addListener(EventType type, Listener<EventType> listener);
   void removeListener(EventType type, Listener<EventType> listener);
+  class AddCookie {
+    public String name;
+    public String value;
+    public String url;
+    public String domain;
+    public String path;
+    public Integer expires;
+    public Boolean httpOnly;
+    public Boolean secure;
+    public SameSite sameSite;
+
+    public AddCookie withName(String name) {
+      this.name = name;
+      return this;
+    }
+    public AddCookie withValue(String value) {
+      this.value = value;
+      return this;
+    }
+    public AddCookie withUrl(String url) {
+      this.url = url;
+      return this;
+    }
+    public AddCookie withDomain(String domain) {
+      this.domain = domain;
+      return this;
+    }
+    public AddCookie withPath(String path) {
+      this.path = path;
+      return this;
+    }
+    public AddCookie withExpires(Integer expires) {
+      this.expires = expires;
+      return this;
+    }
+    public AddCookie withHttpOnly(Boolean httpOnly) {
+      this.httpOnly = httpOnly;
+      return this;
+    }
+    public AddCookie withSecure(Boolean secure) {
+      this.secure = secure;
+      return this;
+    }
+    public AddCookie withSameSite(SameSite sameSite) {
+      this.sameSite = sameSite;
+      return this;
+    }
+  }
+  class Cookie {
+    private String name;
+    private String value;
+    private String domain;
+    private String path;
+    private long expires;
+    private boolean httpOnly;
+    private boolean secure;
+    private SameSite sameSite;
+
+    public String name() {
+      return this.name;
+    }
+    public String value() {
+      return this.value;
+    }
+    public String domain() {
+      return this.domain;
+    }
+    public String path() {
+      return this.path;
+    }
+    public long expires() {
+      return this.expires;
+    }
+    public boolean httpOnly() {
+      return this.httpOnly;
+    }
+    public boolean secure() {
+      return this.secure;
+    }
+    public SameSite sameSite() {
+      return this.sameSite;
+    }
+  }
   class ExposeBindingOptions {
     public Boolean handle;
 
@@ -94,7 +179,7 @@ public interface BrowserContext {
     }
   }
   void close();
-  void addCookies(List<Object> cookies);
+  void addCookies(List<AddCookie> cookies);
   default void addInitScript(String script) {
     addInitScript(script, null);
   }
@@ -102,10 +187,9 @@ public interface BrowserContext {
   Browser browser();
   void clearCookies();
   void clearPermissions();
-  default List<Object> cookies() {
-    return cookies(null);
-  }
-  List<Object> cookies(String urls);
+  default List<Cookie> cookies() { return cookies((List<String>) null); }
+  default List<Cookie> cookies(String url) { return cookies(Arrays.asList(url)); }
+  List<Cookie> cookies(List<String> urls);
   default void exposeBinding(String name, Page.Binding playwrightBinding) {
     exposeBinding(name, playwrightBinding, null);
   }

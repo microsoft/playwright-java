@@ -77,9 +77,13 @@ class TypeRef extends Element {
 
   void createCustomType() {
     boolean isEnum = jsonName.contains("|\"");
-    boolean isClass = jsonName.replace("null|", "").equals("Object");
+    boolean isClass = jsonName.replace("null|", "").equals("Object")
+      || jsonName.equals("Promise<Array<Object>>");
     // Use path to the corresponding method, param of field as the key.
     String parentPath = parent.jsonPath;
+    if (jsonName.equals("Array<Object>") && "BrowserContext.addCookies.cookies".equals(jsonPath)) {
+      isClass = true;
+    }
     Types.Mapping mapping = TypeDefinition.types.findForPath(parentPath);
     if (mapping == null) {
       if (isEnum) {
@@ -265,6 +269,14 @@ class Method extends Element {
       "void unroute(String url, BiConsumer<Route, Request> handler);",
       "void unroute(Pattern url, BiConsumer<Route, Request> handler);",
       "void unroute(Predicate<String> url, BiConsumer<Route, Request> handler);",
+    });
+    customSignature.put("BrowserContext.cookies", new String[]{
+      "default List<Cookie> cookies() { return cookies((List<String>) null); }",
+      "default List<Cookie> cookies(String url) { return cookies(Arrays.asList(url)); }",
+      "List<Cookie> cookies(List<String> urls);",
+    });
+    customSignature.put("BrowserContext.addCookies", new String[]{
+      "void addCookies(List<AddCookie> cookies);"
     });
     customSignature.put("FileChooser.setFiles", new String[]{
       "default void setFiles(File file) { setFiles(file, null); }",
@@ -706,6 +718,8 @@ class Interface extends TypeDefinition {
         break;
       }
       case "BrowserContext": {
+        output.add(offset + "enum SameSite { STRICT, LAX, NONE }");
+        output.add("");
         output.add(offset + "class HTTPCredentials {");
         output.add(offset + "  private final String username;");
         output.add(offset + "  private final String password;");
