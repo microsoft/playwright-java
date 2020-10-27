@@ -24,8 +24,7 @@ import java.nio.file.FileSystems;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-
-import static java.util.Collections.singletonList;
+import java.util.zip.GZIPOutputStream;
 
 public class Server implements HttpHandler {
   private final HttpServer server;
@@ -40,6 +39,7 @@ public class Server implements HttpHandler {
   private final Map<String, Auth> auths = Collections.synchronizedMap(new HashMap<>());
   private final Map<String, String> csp = Collections.synchronizedMap(new HashMap<>());
   private final Map<String, HttpHandler> routes = Collections.synchronizedMap(new HashMap<>());
+  private final Set<String> gzipRoutes = Collections.synchronizedSet(new HashSet<>());
 
   private static class Auth {
     public final String user;
@@ -93,6 +93,10 @@ public class Server implements HttpHandler {
     this.csp.put(path, csp);
   }
 
+  void enableGzip(String path) {
+    gzipRoutes.add(path);
+  }
+
   static class Request {
     public final String method;
     // TODO: make a copy to ensure thread safety?
@@ -135,6 +139,7 @@ public class Server implements HttpHandler {
     auths.clear();
     csp.clear();
     routes.clear();
+    gzipRoutes.clear();
   }
 
   @Override
@@ -154,7 +159,7 @@ public class Server implements HttpHandler {
         }
       }
       if (!authorized) {
-        exchange.getResponseHeaders().put("WWW-Authenticate", Arrays.asList("Basic realm=\"Secure Area\""));
+        exchange.getResponseHeaders().add("WWW-Authenticate", "Basic realm=\"Secure Area\"");
         exchange.sendResponseHeaders(401, 0);
         try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
           writer.write("HTTP Error 401 Unauthorized: Access is denied");
@@ -180,20 +185,27 @@ public class Server implements HttpHandler {
     }
 
     if (csp.containsKey(path)) {
-      exchange.getResponseHeaders().put("Content-Security-Policy", singletonList(csp.get(path)));
+      exchange.getResponseHeaders().add("Content-Security-Policy", csp.get(path));
     }
     File file = new File(resourcesDir, path.substring(1));
-    exchange.getResponseHeaders().put("Content-Type", singletonList(mimeType(file)));
+    exchange.getResponseHeaders().add("Content-Type", mimeType(file));
+    OutputStream output = exchange.getResponseBody();
+    if (gzipRoutes.contains(path)) {
+      exchange.getResponseHeaders().add("Content-Encoding", "gzip");
+    }
     try (FileInputStream input = new FileInputStream(file)) {
       exchange.sendResponseHeaders(200, 0);
-      copy(input, exchange.getResponseBody());
+      if (gzipRoutes.contains(path)) {
+        output = new GZIPOutputStream(output);
+      }
+      copy(input, output);
     } catch (IOException e) {
       exchange.sendResponseHeaders(404, 0);
       try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
         writer.write("File not found: " + file.getCanonicalPath());
       }
     }
-    exchange.getResponseBody().close();
+    output.close();
   }
 
   private static void copy(InputStream in, OutputStream out) throws IOException {

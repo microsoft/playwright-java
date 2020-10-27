@@ -273,6 +273,7 @@ class Types {
     add("ElementHandle.screenshot", "Promise<Buffer>", "byte[]");
     add("Request.postDataBuffer", "null|Buffer", "byte[]");
     add("Response.body", "Promise<Buffer>", "byte[]");
+    add("Response.finished", "Promise<null|Error>", "String");
     add("ChromiumBrowser.stopTracing", "Promise<Buffer>", "byte[]");
 
     // JSON type

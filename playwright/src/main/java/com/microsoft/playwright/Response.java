@@ -20,10 +20,9 @@ import java.util.*;
 
 public interface Response {
   byte[] body();
-  Error finished();
+  String finished();
   Frame frame();
   Map<String, String> headers();
-  Object json();
   boolean ok();
   Request request();
   int status();
