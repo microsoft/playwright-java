@@ -208,7 +208,6 @@ public interface BrowserContext {
   void setDefaultTimeout(int timeout);
   void setExtraHTTPHeaders(Map<String, String> headers);
   void setGeolocation(Geolocation geolocation);
-  void setHTTPCredentials(String username, String password);
   void setOffline(boolean offline);
   default void unroute(String url) { unroute(url, null); }
   default void unroute(Pattern url) { unroute(url, null); }
