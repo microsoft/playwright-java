@@ -25,6 +25,7 @@ import com.microsoft.playwright.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -38,7 +39,7 @@ class Serialization {
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     e.printStackTrace(new PrintStream(out));
-    result.error.stack = new String(out.toByteArray());
+    result.error.stack = new String(out.toByteArray(), StandardCharsets.UTF_8);
     return  result;
   }
 

@@ -16,20 +16,27 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Response;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
 
-import static com.microsoft.playwright.impl.Serialization.deserialize;
-
 public class ResponseImpl extends ChannelOwner implements Response {
+  private final Map<String, String> headers = new HashMap<>();
+
   ResponseImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+
+    for (JsonElement e : initializer.getAsJsonArray("headers")) {
+      JsonObject item = e.getAsJsonObject();
+      headers.put(item.get("name").getAsString().toLowerCase(), item.get("value").getAsString());
+    }
   }
 
   @Override
@@ -39,7 +46,11 @@ public class ResponseImpl extends ChannelOwner implements Response {
   }
 
   @Override
-  public Error finished() {
+  public String finished() {
+    JsonObject json = sendMessage("finished").getAsJsonObject();
+    if (json.has("error")) {
+      return json.get("error").getAsString();
+    }
     return null;
   }
 
@@ -50,12 +61,7 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   @Override
   public Map<String, String> headers() {
-    return null;
-  }
-
-  @Override
-  public Object json() {
-    return null;
+    return headers;
   }
 
   @Override
@@ -80,7 +86,7 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   @Override
   public String text() {
-    return null;
+    return new String(body(), StandardCharsets.UTF_8);
   }
 
   @Override

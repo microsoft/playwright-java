@@ -1,0 +1,135 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.microsoft.playwright;
+
+import org.junit.jupiter.api.Test;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.concurrent.Future;
+
+import static com.microsoft.playwright.Page.EventType.REQUESTFINISHED;
+import static com.microsoft.playwright.Page.EventType.RESPONSE;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TestNetworkResponse extends TestBase {
+  @Test
+  void shouldWork() {
+    server.setRoute("/empty.html", exchange -> {
+      exchange.getResponseHeaders().add("foo", "bar");
+      exchange.getResponseHeaders().add("BaZ", "bAz");
+      exchange.sendResponseHeaders(200, 0);
+      exchange.getResponseBody().close();
+    });
+    Response response = page.navigate(server.EMPTY_PAGE);
+    assertEquals("bar", response.headers().get("foo"));
+    assertEquals("bAz", response.headers().get("baz"));
+    assertNull(response.headers().get("BaZ"));
+  }
+
+  @Test
+  void shouldReturnText() {
+    Response response = page.navigate(server.PREFIX + "/simple.json");
+    assertEquals("{\"foo\": \"bar\"}\n", response.text());
+  }
+
+  @Test
+  void shouldReturnUncompressedText() {
+    server.enableGzip("/simple.json");
+    Response response = page.navigate(server.PREFIX + "/simple.json");
+    assertEquals("gzip", response.headers().get("content-encoding"));
+    assertEquals("{\"foo\": \"bar\"}\n", response.text());
+  }
+
+  @Test
+  void shouldThrowWhenRequestingBodyOfRedirectedResponse() {
+    server.setRedirect("/foo.html", "/empty.html");
+    Response response = page.navigate(server.PREFIX + "/foo.html");
+    Request redirectedFrom = response.request().redirectedFrom();
+    assertNotNull(redirectedFrom);
+    Response redirected = redirectedFrom.response();
+    assertEquals(302, redirected.status());
+    try {
+      redirected.text();
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Response body is unavailable for redirect responses"));
+    }
+  }
+
+  @Test
+  void shouldWaitUntilResponseCompletes() {
+    page.navigate(server.EMPTY_PAGE);
+    server.setRoute("/get", exchange -> {
+      // In Firefox, |fetch| will be hanging until it receives |Content-Type| header
+      // from server.
+      exchange.getResponseHeaders().add("Content-Type", "text/plain; charset=utf-8");
+      exchange.sendResponseHeaders(200, 0);
+      try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write("hello ");
+        writer.flush();
+        writer.write("wor");
+        writer.flush();
+        writer.write("ld!");
+      }
+    });
+    // Setup page to trap response.
+    boolean[] requestFinished = {false};
+    page.addListener(REQUESTFINISHED, event -> {
+      requestFinished[0] |= ((Request) event.data()).url().contains("/get");
+    });
+    // send request and wait for server response
+    Deferred<Event<Page.EventType>> responseEvent = page.waitForEvent(RESPONSE);
+    Future<Server.Request> request = server.waitForRequest("/get");
+    page.evaluate("() => fetch('./get', { method: 'GET'})");
+    assertNotNull(responseEvent.get());
+    Response pageResponse = (Response) responseEvent.get().data();
+    assertEquals(200, pageResponse.status());
+    assertEquals(false, requestFinished[0]);
+    assertEquals("hello world!", pageResponse.text());
+  }
+
+  void shouldReturnJson() {
+    // Not exposed in Java.
+  }
+  @Test
+  void shouldReturnBody() throws IOException {
+    Response response = page.navigate(server.PREFIX + "/pptr.png");
+    byte[] expected = Files.readAllBytes(new File("src/test/resources/pptr.png").toPath());
+    assertTrue(Arrays.equals(expected, response.body()));
+  }
+
+  @Test
+  void shouldReturnBodyWithCompression() throws IOException {
+    server.enableGzip("/pptr.png");
+    Response response = page.navigate(server.PREFIX + "/pptr.png");
+    byte[] expected = Files.readAllBytes(new File("src/test/resources/pptr.png").toPath());
+    assertTrue(Arrays.equals(expected, response.body()));
+  }
+
+  @Test
+  void shouldReturnStatusText() {
+    server.setRoute("/cool", exchange -> {
+      exchange.sendResponseHeaders(200, 0);
+      exchange.getResponseBody().close();
+    });
+    Response response = page.navigate(server.PREFIX + "/cool");
+    assertEquals("OK", response.statusText());
+  }
+}
