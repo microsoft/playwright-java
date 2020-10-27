@@ -236,8 +236,8 @@ class Method extends Element {
   private static Map<String, String[]> customSignature = new HashMap<>();
   static {
     customSignature.put("Page.setViewportSize", new String[]{"void setViewportSize(int width, int height);"});
-    customSignature.put("BrowserContext.setHTTPCredentials", new String[]{
-      "void setHTTPCredentials(String username, String password);"});
+    // The method is deprecated in ts, just remove it in Java.
+    customSignature.put("BrowserContext.setHTTPCredentials", new String[0]);
     customSignature.put("BrowserContext.route", new String[]{
       "void route(String url, BiConsumer<Route, Request> handler);",
       "void route(Pattern url, BiConsumer<Route, Request> handler);",

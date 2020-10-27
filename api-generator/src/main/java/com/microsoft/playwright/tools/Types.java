@@ -122,7 +122,7 @@ class Types {
     add("Browser.newContext.options.httpCredentials", "Object", "BrowserContext.HTTPCredentials", new Empty());
     add("Browser.newPage.options.httpCredentials", "Object", "BrowserContext.HTTPCredentials", new Empty());
     add("BrowserType.launchPersistentContext.options.httpCredentials", "Object", "BrowserContext.HTTPCredentials", new Empty());
-    add("BrowserContext.setHTTPCredentials.httpCredentials", "null|Object", "HTTPCredentials", new Empty());
+    add("BrowserContext.setHTTPCredentials.httpCredentials", "null|Object", "do nothing", new Empty());
 
     // EvaluationArgument
     add("Page.$eval.arg", "EvaluationArgument", "Object");

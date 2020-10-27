@@ -16,12 +16,16 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Response;
 
+import java.util.Base64;
 import java.util.Map;
+
+import static com.microsoft.playwright.impl.Serialization.deserialize;
 
 public class ResponseImpl extends ChannelOwner implements Response {
   ResponseImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -30,7 +34,8 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   @Override
   public byte[] body() {
-    return new byte[0];
+    JsonObject json = sendMessage("body").getAsJsonObject();
+    return Base64.getDecoder().decode(json.get("binary").getAsString());
   }
 
   @Override

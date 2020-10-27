@@ -243,11 +243,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void setHTTPCredentials(String username, String password) {
-
-  }
-
-  @Override
   public void setOffline(boolean offline) {
     JsonObject params = new JsonObject();
     params.addProperty("offline", offline);
