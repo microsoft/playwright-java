@@ -32,6 +32,8 @@ public class TestBase {
   static boolean isChromium;
   static boolean isWebKit;
   static boolean isFirefox;
+  static boolean isMac = Utils.getOS() == Utils.OS.MAC;
+  static boolean isWindows = Utils.getOS() == Utils.OS.WINDOWS;
   static boolean headful;
   Page page;
   BrowserContext context;

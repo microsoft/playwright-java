@@ -834,6 +834,9 @@ class NestedClass extends TypeDefinition {
       f.writeTo(output, bodyOffset, fieldAccess);
     }
     output.add("");
+    if ("Request.failure".equals(jsonPath)) {
+      writeConstructor(output, bodyOffset);
+    }
     if (isReturnType) {
       for (Field f : fields) {
         f.writeGetter(output, bodyOffset);
@@ -858,6 +861,19 @@ class NestedClass extends TypeDefinition {
       f.writeBuilderMethod(output, bodyOffset, name);
     }
   }
+
+  private void writeConstructor(List<String> output, String bodyOffset) {
+    List<String> args = new ArrayList<>();
+    for (Field f : fields) {
+      args.add(f.type.toJava() + " " + f.name);
+    }
+    output.add(bodyOffset + "public " + name + "(" + String.join(", ", args) + ") {");
+    for (Field f : fields) {
+      output.add(bodyOffset + "  this." + f.name + " = " + f.name + ";");
+    }
+    output.add(bodyOffset + "}");
+  }
+
 }
 
 class Enum extends TypeDefinition {
