@@ -165,7 +165,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     JsonObject params = new JsonObject();
     params.addProperty("type", type);
     params.add("eventInit", new Gson().toJsonTree(serializeArgument(eventInit)));
-    sendMessage("dispatchEvent", params).getAsJsonObject();
+    sendMessage("dispatchEvent", params);
   }
 
   @Override
