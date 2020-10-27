@@ -22,13 +22,16 @@ import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Response;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RequestImpl extends ChannelOwner implements Request {
+  private final byte[] postData;
   private RequestImpl redirectedFrom;
   private RequestImpl redirectedTo;
-  private final Map<String, String> headers = new HashMap<>();
+  final Map<String, String> headers = new HashMap<>();
   RequestFailure failure;
 
   RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -41,6 +44,11 @@ public class RequestImpl extends ChannelOwner implements Request {
     for (JsonElement e : initializer.getAsJsonArray("headers")) {
       JsonObject item = e.getAsJsonObject();
       headers.put(item.get("name").getAsString().toLowerCase(), item.get("value").getAsString());
+    }
+    if (initializer.has("postData")) {
+      postData = Base64.getDecoder().decode(initializer.get("postData").getAsString());
+    } else {
+      postData = null;
     }
   }
 
@@ -71,17 +79,15 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public String postData() {
-    return null;
+    if (postData == null) {
+      return null;
+    }
+    return new String(postData, StandardCharsets.UTF_8);
   }
 
   @Override
   public byte[] postDataBuffer() {
-    return new byte[0];
-  }
-
-  @Override
-  public RequestPostDataJSON postDataJSON() {
-    return null;
+    return postData;
   }
 
   @Override

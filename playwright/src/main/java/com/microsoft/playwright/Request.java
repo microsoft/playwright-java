@@ -39,7 +39,6 @@ public interface Request {
   String method();
   String postData();
   byte[] postDataBuffer();
-  RequestPostDataJSON postDataJSON();
   Request redirectedFrom();
   Request redirectedTo();
   String resourceType();

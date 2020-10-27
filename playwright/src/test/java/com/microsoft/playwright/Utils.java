@@ -32,7 +32,7 @@ class Utils {
   }
 
   @SuppressWarnings("unchecked")
-  static Map mapOf(Object... entries) {
+  static <K,V> Map<K, V> mapOf(Object... entries) {
     Map result = new HashMap();
     for (int i = 0; i + 1 < entries.length; i += 2) {
       result.put(entries[i], entries[i + 1]);
