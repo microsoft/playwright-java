@@ -225,7 +225,16 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void setExtraHTTPHeaders(Map<String, String> headers) {
-
+    JsonObject params = new JsonObject();
+    JsonArray jsonHeaders = new JsonArray();
+    for (Map.Entry<String, String> e : headers.entrySet()) {
+      JsonObject header = new JsonObject();
+      header.addProperty("name", e.getKey());
+      header.addProperty("value", e.getValue());
+      jsonHeaders.add(header);
+    }
+    params.add("headers", jsonHeaders);
+    sendMessage("setExtraHTTPHeaders", params);
   }
 
   @Override
