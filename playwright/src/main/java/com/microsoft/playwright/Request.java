@@ -22,6 +22,9 @@ public interface Request {
   class RequestFailure {
     private String errorText;
 
+    public RequestFailure(String errorText) {
+      this.errorText = errorText;
+    }
     public String errorText() {
       return this.errorText;
     }

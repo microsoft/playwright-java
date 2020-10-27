@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Frame;
@@ -30,7 +29,7 @@ public class RequestImpl extends ChannelOwner implements Request {
   private RequestImpl redirectedFrom;
   private RequestImpl redirectedTo;
   private final Map<String, String> headers = new HashMap<>();
-  RequestFailure failureText;
+  RequestFailure failure;
 
   RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -47,7 +46,7 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public RequestFailure failure() {
-    return null;
+    return failure;
   }
 
   @Override

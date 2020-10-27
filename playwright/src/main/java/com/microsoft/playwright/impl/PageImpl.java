@@ -16,12 +16,13 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.microsoft.playwright.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
@@ -115,7 +116,7 @@ public class PageImpl extends ChannelOwner implements Page {
       String guid = params.getAsJsonObject("request").get("guid").getAsString();
       RequestImpl request = connection.getExistingObject(guid);
       if (params.has("failureText")) {
-        request.failureText = new Gson().fromJson(params, Request.RequestFailure.class);
+        request.failure = new Request.RequestFailure(params.get("failureText").getAsString());
       }
       listeners.notify(EventType.REQUESTFAILED, request);
     } else if ("requestFinished".equals(event)) {
