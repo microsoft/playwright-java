@@ -38,7 +38,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
   FrameImpl parentFrame;
   Set<FrameImpl> childFrames = new LinkedHashSet<>();
   private final Set<LoadState> loadStates = new HashSet<>();
-  enum InternalEventType { NAVIGATED, LOADSTATE };
+  enum InternalEventType { NAVIGATED, LOADSTATE }
   private final ListenerCollection<InternalEventType> internalListeners = new ListenerCollection<>();
   PageImpl page;
   boolean isDetached;
@@ -64,20 +64,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
       case "networkidle": return NETWORKIDLE;
       default: throw new PlaywrightException("Unexpected value: " + value);
     }
-  }
-
-  private Object evaluate(String expression, Object arg, boolean forceExpression) {
-    JsonObject params = new JsonObject();
-    params.addProperty("expression", expression);
-    params.addProperty("world", "main");
-    if (!isFunctionBody(expression)) {
-      forceExpression = true;
-    }
-    params.addProperty("isFunction", !forceExpression);
-    params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
-    JsonElement json = sendMessage("evaluateExpression", params);
-    SerializedValue value = new Gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
-    return deserialize(value);
   }
 
   @Override
@@ -140,7 +126,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
     if (options.path != null) {
       params.remove("path");
-      byte[] encoded = new byte[0];
+      byte[] encoded;
       try {
         encoded = Files.readAllBytes(options.path.toPath());
       } catch (IOException e) {
@@ -162,7 +148,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
     if (options.path != null) {
       params.remove("path");
-      byte[] encoded = new byte[0];
+      byte[] encoded;
       try {
         encoded = Files.readAllBytes(options.path.toPath());
       } catch (IOException e) {
@@ -240,12 +226,26 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options) {
-
+    if (options == null) {
+      options = new DispatchEventOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    params.addProperty("type", type);
+    params.add("eventInit", new Gson().toJsonTree(serializeArgument(eventInit)));
+    sendMessage("dispatchEvent", params);
   }
 
   @Override
-  public Object evaluate(String pageFunction, Object arg) {
-    return evaluate(pageFunction, arg, false);
+  public Object evaluate(String expression, Object arg) {
+    JsonObject params = new JsonObject();
+    params.addProperty("expression", expression);
+    params.addProperty("world", "main");
+    params.addProperty("isFunction", isFunctionBody(expression));
+    params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
+    JsonElement json = sendMessage("evaluateExpression", params);
+    SerializedValue value = new Gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
+    return deserialize(value);
   }
 
   @Override
@@ -282,14 +282,24 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public ElementHandle frameElement() {
-    return null;
+    JsonObject json = sendMessage("frameElement").getAsJsonObject();
+    return connection.getExistingObject(json.getAsJsonObject("element").get("guid").getAsString());
   }
 
   @Override
   public String getAttribute(String selector, String name, GetAttributeOptions options) {
+    if (options == null) {
+      options = new GetAttributeOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    params.addProperty("name", name);
+    JsonObject json = sendMessage("getAttribute", params).getAsJsonObject();
+    if (json.has("value")) {
+      return json.get("value").getAsString();
+    }
     return null;
   }
-
 
   @Override
   public ResponseImpl navigate(String url, NavigateOptions options) {
@@ -312,17 +322,34 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void hover(String selector, HoverOptions options) {
-
+    if (options == null) {
+      options = new HoverOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    sendMessage("hover", params);
   }
 
   @Override
   public String innerHTML(String selector, InnerHTMLOptions options) {
-    return null;
+    if (options == null) {
+      options = new InnerHTMLOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    JsonObject json = sendMessage("innerHTML", params).getAsJsonObject();
+    return json.get("value").getAsString();
   }
 
   @Override
   public String innerText(String selector, InnerTextOptions options) {
-    return null;
+    if (options == null) {
+      options = new InnerTextOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    JsonObject json = sendMessage("innerText", params).getAsJsonObject();
+    return json.get("value").getAsString();
   }
 
   @Override
@@ -445,7 +472,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void type(String selector, String text, TypeOptions options) {
-
+    if (options == null) {
+      options = new TypeOptions();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    params.addProperty("text", text);
+    sendMessage("type", params);
   }
 
   @Override
@@ -642,7 +675,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public Deferred<Void> waitForTimeout(int timeout) {
-    return toDeferred(new WaitableTimeout(timeout) {
+    return toDeferred(new WaitableTimeout<Void>(timeout) {
       @Override
       public Void get() {
         // Override to not throw.
