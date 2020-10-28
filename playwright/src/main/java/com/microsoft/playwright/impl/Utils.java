@@ -18,6 +18,7 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
 import com.microsoft.playwright.FileChooser;
+import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
 
 import java.io.DataOutputStream;
@@ -136,4 +137,13 @@ class Utils {
       throw new PlaywrightException("Failed to write to file", e);
     }
   }
+
+  static boolean isSafeCloseError(PlaywrightException exception) {
+    return isSafeCloseError(exception.getMessage());
+  }
+
+  static boolean isSafeCloseError(String error) {
+    return error.endsWith("Browser has been closed") || error.endsWith("Target browser or context has been closed");
+  }
+
 }

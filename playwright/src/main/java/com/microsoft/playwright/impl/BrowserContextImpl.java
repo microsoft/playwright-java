@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
+import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 
 class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private final BrowserImpl browser;
@@ -57,11 +58,16 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   public void close() {
     if (isClosedOrClosing) {
-      // TODO: wait close event instead?
-      throw new PlaywrightException("Already closing");
+      return;
     }
     isClosedOrClosing = true;
-    sendMessage("close");
+    try {
+      sendMessage("close");
+    } catch (PlaywrightException e) {
+      if (!isSafeCloseError(e)) {
+        throw e;
+      }
+    }
   }
 
   @Override

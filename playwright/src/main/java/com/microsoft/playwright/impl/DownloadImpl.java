@@ -16,9 +16,12 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Download;
+
+import java.io.InputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 
 public class DownloadImpl extends ChannelOwner implements Download {
   public DownloadImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -36,8 +39,13 @@ public class DownloadImpl extends ChannelOwner implements Download {
   }
 
   @Override
-  public Readable createReadStream() {
-    return null;
+  public InputStream createReadStream() {
+    JsonObject result = sendMessage("stream").getAsJsonObject();
+    if (!result.has("stream")) {
+      return null;
+    }
+    Stream stream = connection.getExistingObject(result.getAsJsonObject("stream").get("guid").getAsString());
+    return stream.stream();
   }
 
   @Override
@@ -55,12 +63,15 @@ public class DownloadImpl extends ChannelOwner implements Download {
   }
 
   @Override
-  public String path() {
-    JsonElement result = sendMessage("path");
-    return result.getAsJsonObject().get("path").getAsString();
+  public Path path() {
+    JsonObject json = sendMessage("path").getAsJsonObject();
+    return FileSystems.getDefault().getPath(json.get("value").getAsString());
   }
 
   @Override
-  public void saveAs(String path) {
+  public void saveAs(Path path) {
+    JsonObject params = new JsonObject();
+    params.addProperty("path", path.toString());
+    sendMessage("saveAs", params);
   }
 }

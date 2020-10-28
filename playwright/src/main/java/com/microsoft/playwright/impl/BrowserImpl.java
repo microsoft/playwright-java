@@ -25,6 +25,7 @@ import com.microsoft.playwright.*;
 import java.util.*;
 
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
+import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 
 class BrowserImpl extends ChannelOwner implements Browser {
   final Set<BrowserContext> contexts = new HashSet<>();
@@ -46,7 +47,13 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public void close() {
-    sendMessage("close");
+    try {
+      sendMessage("close");
+    } catch (PlaywrightException e) {
+      if (!isSafeCloseError(e)) {
+        throw e;
+      }
+    }
   }
 
   @Override

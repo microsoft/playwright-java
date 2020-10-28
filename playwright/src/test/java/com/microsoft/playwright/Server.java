@@ -26,6 +26,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.zip.GZIPOutputStream;
 
+import static com.microsoft.playwright.Utils.copy;
+
 public class Server implements HttpHandler {
   private final HttpServer server;
 
@@ -206,14 +208,6 @@ public class Server implements HttpHandler {
       }
     }
     output.close();
-  }
-
-  private static void copy(InputStream in, OutputStream out) throws IOException {
-    byte[] buffer = new byte[8192];
-    int read;
-    while ((read = in.read(buffer, 0, 8192)) != -1) {
-      out.write(buffer, 0, read);
-    }
   }
 
   private static String mimeType(File file) {

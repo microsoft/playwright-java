@@ -273,6 +273,9 @@ class Types {
     add("Browser.newContext.options.geolocation", "Object", "Geolocation", new Empty());
     add("Browser.newPage.options.geolocation", "Object", "Geolocation", new Empty());
     add("BrowserType.launchPersistentContext.options.geolocation", "Object", "Geolocation", new Empty());
+    add("Download.saveAs.path", "string", "Path", new Empty());
+    add("Download.path", "Promise<null|string>", "Path", new Empty());
+    add("Download.createReadStream", "Promise<null|Readable>", "InputStream", new Empty());
 
     // Single field options
     add("Keyboard.type.options", "Object", "int", new Empty());

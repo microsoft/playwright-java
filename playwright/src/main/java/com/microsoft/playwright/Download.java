@@ -16,14 +16,16 @@
 
 package com.microsoft.playwright;
 
+import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.*;
 
 public interface Download {
-  Readable createReadStream();
+  InputStream createReadStream();
   void delete();
   String failure();
-  String path();
-  void saveAs(String path);
+  Path path();
+  void saveAs(Path path);
   String suggestedFilename();
   String url();
 }
