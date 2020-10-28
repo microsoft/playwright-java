@@ -16,22 +16,18 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.microsoft.playwright.Browser;
+import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.BrowserServer;
 import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.PlaywrightException;
+
+import java.io.IOException;
 
 class BrowserTypeImpl extends ChannelOwner implements BrowserType {
   BrowserTypeImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
-  }
-
-  @Override
-  public Browser connect(ConnectOptions options) {
-    return null;
   }
 
   @Override
@@ -48,14 +44,49 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     return initializer.get("executablePath").getAsString();
   }
 
-  @Override
-  public BrowserContext launchPersistentContext(String userDataDir, LaunchPersistentContextOptions options) {
-    return null;
+
+  private static class ColorSchemeAdapter extends TypeAdapter<LaunchPersistentContextOptions.ColorScheme> {
+    @Override
+    public void write(JsonWriter out, LaunchPersistentContextOptions.ColorScheme value) throws IOException {
+      String stringValue;
+      switch (value) {
+        case DARK:
+          stringValue = "dark";
+          break;
+        case LIGHT:
+          stringValue = "light";
+          break;
+        case NO_PREFERENCE:
+          stringValue = "no-preference";
+          break;
+        default:
+          throw new PlaywrightException("Unexpected value: " + value);
+      }
+      out.value(stringValue);
+    }
+
+    @Override
+    public LaunchPersistentContextOptions.ColorScheme read(JsonReader in) throws IOException {
+      String value = in.nextString();
+      switch (value) {
+        case "dark": return LaunchPersistentContextOptions.ColorScheme.DARK;
+        case "light": return LaunchPersistentContextOptions.ColorScheme.LIGHT;
+        case "no-preference": return LaunchPersistentContextOptions.ColorScheme.NO_PREFERENCE;
+        default: throw new PlaywrightException("Unexpected value: " + value);
+      }
+    }
   }
 
   @Override
-  public BrowserServer launchServer(LaunchServerOptions options) {
-    return null;
+  public BrowserContext launchPersistentContext(String userDataDir, LaunchPersistentContextOptions options) {
+    if (options == null) {
+      options = new LaunchPersistentContextOptions();
+    }
+    Gson gson = new GsonBuilder().registerTypeAdapter(LaunchPersistentContextOptions.ColorScheme.class, new ColorSchemeAdapter().nullSafe()).create();
+    JsonObject params = gson.toJsonTree(options).getAsJsonObject();
+    params.addProperty("userDataDir", userDataDir);
+    JsonObject json = sendMessage("launchPersistentContext", params).getAsJsonObject();
+    return connection.getExistingObject(json.getAsJsonObject("context").get("guid").getAsString());
   }
 
   public String name() {
