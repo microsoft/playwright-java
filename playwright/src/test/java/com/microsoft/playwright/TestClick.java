@@ -311,7 +311,7 @@ public class TestClick extends TestBase {
   void shouldClickTheButtonWithPxBorderWithOffset() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => button.style.borderWidth = '8px'");
-    page.click("button", new Page.ClickOptions().setPosition().withX(20).withY(10).done());
+    page.click("button", new Page.ClickOptions().withPosition(20, 10));
     assertEquals(page.evaluate("result"), "Clicked");
     // Safari reports border-relative offsetX/offsetY.
     assertEquals(isWebKit ? 20 + 8 : 20, page.evaluate("offsetX"));
@@ -323,7 +323,7 @@ public class TestClick extends TestBase {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => button.style.borderWidth = '2em'");
     page.evalOnSelector("button", "button => button.style.fontSize = '12px'");
-    page.click("button", new Page.ClickOptions().setPosition().withX(20).withY(10).done());
+    page.click("button", new Page.ClickOptions().withPosition(20, 10));
     assertEquals("Clicked", page.evaluate("result"));
     // Safari reports border-relative offsetX/offsetY.
     assertEquals(isWebKit ? 12 * 2 + 20 : 20, page.evaluate("offsetX"));
@@ -335,7 +335,7 @@ public class TestClick extends TestBase {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => button.style.borderWidth = '8px'");
     page.evalOnSelector("button", "button => button.style.height = button.style.width = '2000px'");
-    page.click("button", new Page.ClickOptions().setPosition().withX(1900).withY(1910).done());
+    page.click("button", new Page.ClickOptions().withPosition(1900, 1910));
     assertEquals("Clicked", page.evaluate("() => window['result']"));
     // Safari reports border-relative offsetX/offsetY.
     assertEquals(isWebKit ? 1900 + 8 : 1900, page.evaluate("offsetX"));
@@ -356,7 +356,7 @@ public class TestClick extends TestBase {
       "  button.style.width = '2000px';\n" +
       "  button.style.borderWidth = '8px';\n" +
       "}");
-    page.click("button", new Page.ClickOptions().setPosition().withX(1900).withY(1910).done());
+    page.click("button", new Page.ClickOptions().withPosition(1900, 1910));
     assertEquals("Clicked", page.evaluate("() => window['result']"));
     // Safari reports border-relative offsetX/offsetY.
     assertEquals(isWebKit ? 1900 + 8 : 1900, page.evaluate("offsetX"));
@@ -375,7 +375,7 @@ public class TestClick extends TestBase {
       "  button.style.borderWidth = '8px';\n" +
       "  document.body.style.margin = '0';\n" +
       "}");
-    page.click("button", new Page.ClickOptions().setPosition().withX(20).withY(10).done());
+    page.click("button", new Page.ClickOptions().withPosition(20, 10));
     assertEquals("Clicked", page.evaluate("result"));
     // 20;10 + 8px of border in each direction
     int expectedX = 28;
