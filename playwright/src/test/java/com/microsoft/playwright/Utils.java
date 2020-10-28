@@ -20,6 +20,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,6 +53,14 @@ class Utils {
       "  return frame;\n" +
       "}", mapOf("frameId", name, "url", url));
     return handle.asElement().contentFrame();
+  }
+
+  static void copy(InputStream in, OutputStream out) throws IOException {
+    byte[] buffer = new byte[8192];
+    int read;
+    while ((read = in.read(buffer, 0, 8192)) != -1) {
+      out.write(buffer, 0, read);
+    }
   }
 
   enum OS { WINDOWS, MAC, LINUX, UNKNOWN }

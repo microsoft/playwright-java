@@ -223,6 +223,9 @@ public class Connection {
       case "Route":
         result = new RouteImpl(parent, type, guid, initializer);
         break;
+      case "Stream":
+        result = new Stream(parent, type, guid, initializer);
+        break;
       case "Selectors":
 //        result = new Playwright(parent, type, guid, initializer);
         break;

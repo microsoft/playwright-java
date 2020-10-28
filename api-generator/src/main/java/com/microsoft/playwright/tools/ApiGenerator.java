@@ -478,10 +478,6 @@ class Field extends Element {
     super(parent, jsonElement);
     this.name = name;
     this.type = new TypeRef(this, jsonElement.getAsJsonObject().get("type"));
-
-    if (name.equals("position")) {
-      System.out.println(jsonPath + " " + type.jsonName);
-    }
   }
 
   void writeTo(List<String> output, String offset, String access) {
@@ -635,6 +631,10 @@ class Interface extends TypeDefinition {
     }
     if (asList("Page", "Frame", "ElementHandle", "FileChooser", "ChromiumBrowser", "Route").contains(jsonName)) {
       output.add("import java.io.File;");
+    }
+    if (jsonName.equals("Download")) {
+      output.add("import java.io.InputStream;");
+      output.add("import java.nio.file.Path;");
     }
     output.add("import java.util.*;");
     if (asList("Page", "BrowserContext").contains(jsonName)) {
