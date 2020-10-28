@@ -160,24 +160,6 @@ public interface BrowserContext {
       return this;
     }
   }
-  class Geolocation {
-    public int latitude;
-    public int longitude;
-    public Integer accuracy;
-
-    public Geolocation withLatitude(int latitude) {
-      this.latitude = latitude;
-      return this;
-    }
-    public Geolocation withLongitude(int longitude) {
-      this.longitude = longitude;
-      return this;
-    }
-    public Geolocation withAccuracy(Integer accuracy) {
-      this.accuracy = accuracy;
-      return this;
-    }
-  }
   void close();
   void addCookies(List<AddCookie> cookies);
   default void addInitScript(String script) {

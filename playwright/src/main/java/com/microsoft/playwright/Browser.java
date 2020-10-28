@@ -27,30 +27,6 @@ public interface Browser {
   void removeListener(EventType type, Listener<EventType> listener);
   class NewContextOptions {
     public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
-    public class Geolocation {
-      public double latitude;
-      public double longitude;
-      public double accuracy;
-
-      Geolocation() {
-      }
-      public NewContextOptions done() {
-        return NewContextOptions.this;
-      }
-
-      public Geolocation withLatitude(double latitude) {
-        this.latitude = latitude;
-        return this;
-      }
-      public Geolocation withLongitude(double longitude) {
-        this.longitude = longitude;
-        return this;
-      }
-      public Geolocation withAccuracy(double accuracy) {
-        this.accuracy = accuracy;
-        return this;
-      }
-    }
     public class VideoSize {
       public int width;
       public int height;
@@ -131,9 +107,9 @@ public interface Browser {
       this.timezoneId = timezoneId;
       return this;
     }
-    public Geolocation setGeolocation() {
-      this.geolocation = new Geolocation();
-      return this.geolocation;
+    public NewContextOptions withGeolocation(Geolocation geolocation) {
+      this.geolocation = geolocation;
+      return this;
     }
     public NewContextOptions withLocale(String locale) {
       this.locale = locale;
@@ -174,30 +150,6 @@ public interface Browser {
   }
   class NewPageOptions {
     public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
-    public class Geolocation {
-      public double latitude;
-      public double longitude;
-      public double accuracy;
-
-      Geolocation() {
-      }
-      public NewPageOptions done() {
-        return NewPageOptions.this;
-      }
-
-      public Geolocation withLatitude(double latitude) {
-        this.latitude = latitude;
-        return this;
-      }
-      public Geolocation withLongitude(double longitude) {
-        this.longitude = longitude;
-        return this;
-      }
-      public Geolocation withAccuracy(double accuracy) {
-        this.accuracy = accuracy;
-        return this;
-      }
-    }
     public class VideoSize {
       public int width;
       public int height;
@@ -278,9 +230,9 @@ public interface Browser {
       this.timezoneId = timezoneId;
       return this;
     }
-    public Geolocation setGeolocation() {
-      this.geolocation = new Geolocation();
-      return this.geolocation;
+    public NewPageOptions withGeolocation(Geolocation geolocation) {
+      this.geolocation = geolocation;
+      return this;
     }
     public NewPageOptions withLocale(String locale) {
       this.locale = locale;
