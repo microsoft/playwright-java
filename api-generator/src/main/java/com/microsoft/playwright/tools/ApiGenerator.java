@@ -478,6 +478,10 @@ class Field extends Element {
     super(parent, jsonElement);
     this.name = name;
     this.type = new TypeRef(this, jsonElement.getAsJsonObject().get("type"));
+
+    if (name.equals("position")) {
+      System.out.println(jsonPath + " " + type.jsonName);
+    }
   }
 
   void writeTo(List<String> output, String offset, String access) {
@@ -531,6 +535,25 @@ class Field extends Element {
       output.add(offset + "}");
       return;
     }
+    if (asList("Page.click.options.position",
+      "Page.dblclick.options.position",
+      "Page.hover.options.position",
+      "Frame.click.options.position",
+      "Frame.dblclick.options.position",
+      "Frame.hover.options.position",
+      "ElementHandle.click.options.position",
+      "ElementHandle.dblclick.options.position",
+      "ElementHandle.hover.options.position").contains(jsonPath)) {
+      output.add(offset + "public " + parentClass + " withPosition(Position position) {");
+      output.add(offset + "  this.position = position;");
+      output.add(offset + "  return this;");
+      output.add(offset + "}");
+      output.add(offset + "public " + parentClass + " withPosition(int x, int y) {");
+      output.add(offset + "  return withPosition(new Position(x, y));");
+      output.add(offset + "}");
+      return;
+    }
+
     if (jsonPath.equals("Route.continue.overrides.postData")) {
       output.add(offset + "public ContinueOverrides withPostData(String postData) {");
       output.add(offset + "  this.postData = postData.getBytes(StandardCharsets.UTF_8);");

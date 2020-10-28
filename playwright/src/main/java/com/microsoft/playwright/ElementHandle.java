@@ -66,25 +66,6 @@ public interface ElementHandle extends JSHandle {
     }
   }
   class ClickOptions {
-    public class Position {
-      public int x;
-      public int y;
-
-      Position() {
-      }
-      public ClickOptions done() {
-        return ClickOptions.this;
-      }
-
-      public Position withX(int x) {
-        this.x = x;
-        return this;
-      }
-      public Position withY(int y) {
-        this.y = y;
-        return this;
-      }
-    }
     public Mouse.Button button;
     public Integer clickCount;
     public Integer delay;
@@ -106,9 +87,12 @@ public interface ElementHandle extends JSHandle {
       this.delay = delay;
       return this;
     }
-    public Position setPosition() {
-      this.position = new Position();
-      return this.position;
+    public ClickOptions withPosition(Position position) {
+      this.position = position;
+      return this;
+    }
+    public ClickOptions withPosition(int x, int y) {
+      return withPosition(new Position(x, y));
     }
     public ClickOptions withModifiers(Keyboard.Modifier... modifiers) {
       this.modifiers = new HashSet<>(Arrays.asList(modifiers));
@@ -128,25 +112,6 @@ public interface ElementHandle extends JSHandle {
     }
   }
   class DblclickOptions {
-    public class Position {
-      public int x;
-      public int y;
-
-      Position() {
-      }
-      public DblclickOptions done() {
-        return DblclickOptions.this;
-      }
-
-      public Position withX(int x) {
-        this.x = x;
-        return this;
-      }
-      public Position withY(int y) {
-        this.y = y;
-        return this;
-      }
-    }
     public Mouse.Button button;
     public Integer delay;
     public Position position;
@@ -163,9 +128,12 @@ public interface ElementHandle extends JSHandle {
       this.delay = delay;
       return this;
     }
-    public Position setPosition() {
-      this.position = new Position();
-      return this.position;
+    public DblclickOptions withPosition(Position position) {
+      this.position = position;
+      return this;
+    }
+    public DblclickOptions withPosition(int x, int y) {
+      return withPosition(new Position(x, y));
     }
     public DblclickOptions withModifiers(Keyboard.Modifier... modifiers) {
       this.modifiers = new HashSet<>(Arrays.asList(modifiers));
@@ -198,33 +166,17 @@ public interface ElementHandle extends JSHandle {
     }
   }
   class HoverOptions {
-    public class Position {
-      public int x;
-      public int y;
-
-      Position() {
-      }
-      public HoverOptions done() {
-        return HoverOptions.this;
-      }
-
-      public Position withX(int x) {
-        this.x = x;
-        return this;
-      }
-      public Position withY(int y) {
-        this.y = y;
-        return this;
-      }
-    }
     public Position position;
     public Set<Keyboard.Modifier> modifiers;
     public Boolean force;
     public Integer timeout;
 
-    public Position setPosition() {
-      this.position = new Position();
-      return this.position;
+    public HoverOptions withPosition(Position position) {
+      this.position = position;
+      return this;
+    }
+    public HoverOptions withPosition(int x, int y) {
+      return withPosition(new Position(x, y));
     }
     public HoverOptions withModifiers(Keyboard.Modifier... modifiers) {
       this.modifiers = new HashSet<>(Arrays.asList(modifiers));

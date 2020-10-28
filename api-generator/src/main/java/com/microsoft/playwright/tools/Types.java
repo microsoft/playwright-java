@@ -208,6 +208,16 @@ class Types {
     add("Page.goto.options", "Object", "NavigateOptions");
     add("Frame.goto.options", "Object", "NavigateOptions");
 
+    add("Page.click.options.position", "Object", "Position", new Empty());
+    add("Page.dblclick.options.position", "Object", "Position", new Empty());
+    add("Page.hover.options.position", "Object", "Position", new Empty());
+    add("Frame.click.options.position", "Object", "Position", new Empty());
+    add("Frame.dblclick.options.position", "Object", "Position", new Empty());
+    add("Frame.hover.options.position", "Object", "Position", new Empty());
+    add("ElementHandle.click.options.position", "Object", "Position", new Empty());
+    add("ElementHandle.dblclick.options.position", "Object", "Position", new Empty());
+    add("ElementHandle.hover.options.position", "Object", "Position", new Empty());
+
     // The method has custom signatures
     add("BrowserContext.cookies", "Promise<Array<Object>>", "Cookie");
     add("BrowserContext.cookies.sameSite", "\"Lax\"|\"None\"|\"Strict\"", "SameSite", new Empty());
