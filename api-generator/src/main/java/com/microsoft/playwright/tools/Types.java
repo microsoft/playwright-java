@@ -259,7 +259,10 @@ class Types {
     add("BrowserType.launchPersistentContext.options.geolocation.longitude", "number", "double");
     add("BrowserType.launchPersistentContext.options.geolocation.accuracy", "number", "double");
 
-    add("BrowserContext.setGeolocation.geolocation", "null|Object", "Geolocation");
+    add("BrowserContext.setGeolocation.geolocation", "null|Object", "Geolocation", new Empty());
+    add("Browser.newContext.options.geolocation", "Object", "Geolocation", new Empty());
+    add("Browser.newPage.options.geolocation", "Object", "Geolocation", new Empty());
+    add("BrowserType.launchPersistentContext.options.geolocation", "Object", "Geolocation", new Empty());
 
     // Single field options
     add("Keyboard.type.options", "Object", "int", new Empty());

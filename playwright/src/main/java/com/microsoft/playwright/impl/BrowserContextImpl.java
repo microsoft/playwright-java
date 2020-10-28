@@ -17,9 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.microsoft.playwright.*;
 
@@ -36,7 +34,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   final List<PageImpl> pages = new ArrayList<>();
   final Router routes = new Router();
   private boolean isClosedOrClosing;
-  final Map<String, Page.Binding> bindings = new HashMap<String, Page.Binding>();
+  final Map<String, Page.Binding> bindings = new HashMap<>();
   PageImpl ownerPage;
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   final TimeoutSettings timeoutSettings = new TimeoutSettings();
@@ -166,7 +164,15 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void grantPermissions(List<String> permissions, GrantPermissionsOptions options) {
-
+    if (options == null) {
+      options = new GrantPermissionsOptions();
+    }
+    if (permissions == null) {
+      permissions = Collections.emptyList();
+    }
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.add("permissions", new Gson().toJsonTree(permissions));
+    sendMessage("grantPermissions", params);
   }
 
   @Override
@@ -239,7 +245,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void setGeolocation(Geolocation geolocation) {
-
+    JsonObject params = new JsonObject();
+    if (geolocation != null) {
+      params.add("geolocation", new Gson().toJsonTree(geolocation));
+    }
+    sendMessage("setGeolocation", params);
   }
 
   @Override

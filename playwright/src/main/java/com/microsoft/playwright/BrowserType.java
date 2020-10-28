@@ -185,30 +185,6 @@ public interface BrowserType {
         return this;
       }
     }
-    public class Geolocation {
-      public double latitude;
-      public double longitude;
-      public double accuracy;
-
-      Geolocation() {
-      }
-      public LaunchPersistentContextOptions done() {
-        return LaunchPersistentContextOptions.this;
-      }
-
-      public Geolocation withLatitude(double latitude) {
-        this.latitude = latitude;
-        return this;
-      }
-      public Geolocation withLongitude(double longitude) {
-        this.longitude = longitude;
-        return this;
-      }
-      public Geolocation withAccuracy(double accuracy) {
-        this.accuracy = accuracy;
-        return this;
-      }
-    }
     public class VideoSize {
       public int width;
       public int height;
@@ -363,9 +339,9 @@ public interface BrowserType {
       this.timezoneId = timezoneId;
       return this;
     }
-    public Geolocation setGeolocation() {
-      this.geolocation = new Geolocation();
-      return this.geolocation;
+    public LaunchPersistentContextOptions withGeolocation(Geolocation geolocation) {
+      this.geolocation = geolocation;
+      return this;
     }
     public LaunchPersistentContextOptions withLocale(String locale) {
       this.locale = locale;
