@@ -24,6 +24,7 @@ import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.PlaywrightException;
 
 import java.io.IOException;
+import java.util.Map;
 
 class BrowserTypeImpl extends ChannelOwner implements BrowserType {
   BrowserTypeImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -84,6 +85,17 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     }
     Gson gson = new GsonBuilder().registerTypeAdapter(LaunchPersistentContextOptions.ColorScheme.class, new ColorSchemeAdapter().nullSafe()).create();
     JsonObject params = gson.toJsonTree(options).getAsJsonObject();
+    if (options.extraHTTPHeaders != null) {
+      params.remove("extraHTTPHeaders");
+      JsonArray jsonArray = new JsonArray();
+      for (Map.Entry<String, String> e : options.extraHTTPHeaders.entrySet()) {
+        JsonObject header = new JsonObject();
+        header.addProperty("name", e.getKey());
+        header.addProperty("value", e.getValue());
+        jsonArray.add(header);
+      }
+      params.add("extraHTTPHeaders", jsonArray);
+    }
     params.addProperty("userDataDir", userDataDir);
     JsonObject json = sendMessage("launchPersistentContext", params).getAsJsonObject();
     return connection.getExistingObject(json.getAsJsonObject("context").get("guid").getAsString());
