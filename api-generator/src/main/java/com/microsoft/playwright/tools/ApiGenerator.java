@@ -238,6 +238,9 @@ class Method extends Element {
     customSignature.put("Page.setViewportSize", new String[]{"void setViewportSize(int width, int height);"});
     // The method is deprecated in ts, just remove it in Java.
     customSignature.put("BrowserContext.setHTTPCredentials", new String[0]);
+    // No connect for now.
+    customSignature.put("BrowserType.connect", new String[0]);
+    customSignature.put("BrowserType.launchServer", new String[0]);
     customSignature.put("BrowserContext.route", new String[]{
       "void route(String url, BiConsumer<Route, Request> handler);",
       "void route(Pattern url, BiConsumer<Route, Request> handler);",
@@ -928,6 +931,9 @@ public class ApiGenerator {
     System.out.println("Writing files to: " + dir.getCanonicalPath());
     for (Map.Entry<String, JsonElement> entry: api.entrySet()) {
       String name = entry.getKey();
+      if ("BrowserServer".equals(name)) {
+        continue;
+      }
       List<String> lines = new ArrayList<>();
       new Interface(entry.getValue().getAsJsonObject()).writeTo(lines, "");
       String text = String.join("\n", lines);

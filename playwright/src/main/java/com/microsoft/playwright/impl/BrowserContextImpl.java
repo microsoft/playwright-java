@@ -42,7 +42,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   protected BrowserContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
-    browser = (BrowserImpl) parent;
+    if (parent instanceof BrowserImpl) {
+      browser = (BrowserImpl) parent;
+    } else {
+      browser = null;
+    }
   }
 
   @Override

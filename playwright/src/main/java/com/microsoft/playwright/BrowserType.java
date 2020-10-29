@@ -488,7 +488,6 @@ public interface BrowserType {
       return this;
     }
   }
-  Browser connect(ConnectOptions options);
   String executablePath();
   default Browser launch() {
     return launch(null);
@@ -498,10 +497,6 @@ public interface BrowserType {
     return launchPersistentContext(userDataDir, null);
   }
   BrowserContext launchPersistentContext(String userDataDir, LaunchPersistentContextOptions options);
-  default BrowserServer launchServer() {
-    return launchServer(null);
-  }
-  BrowserServer launchServer(LaunchServerOptions options);
   String name();
 }
 
