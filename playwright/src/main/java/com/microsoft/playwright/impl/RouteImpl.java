@@ -16,11 +16,18 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Route;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class RouteImpl extends ChannelOwner implements Route {
   public RouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -55,6 +62,53 @@ public class RouteImpl extends ChannelOwner implements Route {
 
   @Override
   public void fulfill(FulfillResponse response) {
+    if (response == null) {
+      response = new FulfillResponse();
+    }
+
+    int status = response.status == 0 ? 200 : response.status;
+    String body = "";
+    boolean isBase64 = false;
+    int length = 0;
+    if (response.path != null) {
+      try {
+         byte[] buffer = Files.readAllBytes(response.path);
+         body = Base64.getEncoder().encodeToString(buffer);
+         isBase64 = true;
+         length = buffer.length;
+      } catch (IOException e) {
+        throw new PlaywrightException("Failed to read from file: " + response.path, e);
+      }
+    } else if (response.body != null) {
+      body = response.body;
+      isBase64 = false;
+      length = body.getBytes().length;
+    } else if (response.bodyBytes != null) {
+      body = Base64.getEncoder().encodeToString(response.bodyBytes);
+      isBase64 = true;
+      length = response.bodyBytes.length;
+    }
+
+    Map<String, String> headers = new LinkedHashMap<>();
+    if (response.headers != null) {
+      for (Map.Entry<String, String> h : response.headers.entrySet()) {
+        headers.put(h.getKey().toLowerCase(), h.getValue());
+      }
+    }
+    if (response.contentType != null) {
+      headers.put("content-type", response.contentType);
+    } else if (response.path != null) {
+      headers.put("content-type", Utils.mimeType(response.path));
+    }
+    if (length != 0 && !headers.containsKey("content-length")) {
+      headers.put("content-length", Integer.toString(length));
+    }
+    JsonObject params = new JsonObject();
+    params.addProperty("status", status);
+    params.add("headers", Serialization.toProtocol(headers));
+    params.addProperty("isBase64", isBase64);
+    params.addProperty("body", body);
+    sendMessage("fulfill", params);
   }
 
   @Override

@@ -190,6 +190,13 @@ public class Server implements HttpHandler {
       exchange.getResponseHeaders().add("Content-Security-Policy", csp.get(path));
     }
     File file = new File(resourcesDir, path.substring(1));
+    if (!file.exists()) {
+      exchange.sendResponseHeaders(404, 0);
+      try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write("File not found: " + file.getCanonicalPath());
+      }
+      return;
+    }
     exchange.getResponseHeaders().add("Content-Type", mimeType(file));
     OutputStream output = exchange.getResponseBody();
     if (gzipRoutes.contains(path)) {
@@ -202,10 +209,10 @@ public class Server implements HttpHandler {
       }
       copy(input, output);
     } catch (IOException e) {
-      exchange.sendResponseHeaders(404, 0);
       try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
-        writer.write("File not found: " + file.getCanonicalPath());
+        writer.write("Exception: " + e);
       }
+      return;
     }
     output.close();
   }

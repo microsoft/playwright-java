@@ -102,7 +102,8 @@ class Types {
     add("Frame.addScriptTag.options.path", "string", "File");
     add("Frame.addStyleTag.options.path", "string", "File");
     add("ElementHandle.screenshot.options.path", "string", "File");
-    add("Route.fulfill.response.path", "string", "File");
+    add("Route.fulfill.response.path", "string", "Path");
+    add("Route.fulfill.response.status", "number", "int");
     add("ChromiumBrowser.startTracing.options.path", "string", "File");
 
     // Route

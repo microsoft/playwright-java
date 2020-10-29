@@ -484,16 +484,21 @@ class Field extends Element {
   }
 
   void writeTo(List<String> output, String offset, String access) {
-    if (jsonPath.contains("Frame.waitForNavigation.options.url") ||
-        jsonPath.contains("Page.waitForNavigation.options.url")) {
+    if (asList("Frame.waitForNavigation.options.url",
+               "Page.waitForNavigation.options.url").contains(jsonPath)) {
       output.add(offset + "public String glob;");
       output.add(offset + "public Pattern pattern;");
       output.add(offset + "public Predicate<String> predicate;");
       return;
     }
-    if (jsonPath.contains("Frame.waitForFunction.options.polling") ||
-      jsonPath.contains("Page.waitForFunction.options.polling")) {
+    if (asList("Frame.waitForFunction.options.polling",
+               "Page.waitForFunction.options.polling").contains(jsonPath)) {
       output.add(offset + "public Integer pollingInterval;");
+      return;
+    }
+    if ("Route.fulfill.response.body".equals(jsonPath)) {
+      output.add(offset + "public String body;");
+      output.add(offset + "public byte[] bodyBytes;");
       return;
     }
     output.add(offset + access + type.toJava() + " " + name + ";");
@@ -506,8 +511,8 @@ class Field extends Element {
   }
 
   void writeBuilderMethod(List<String> output, String offset, String parentClass) {
-    if (jsonPath.contains("Frame.waitForNavigation.options.url") ||
-        jsonPath.contains("Page.waitForNavigation.options.url")) {
+    if (asList("Frame.waitForNavigation.options.url",
+               "Page.waitForNavigation.options.url").contains(jsonPath)) {
       output.add(offset + "public WaitForNavigationOptions withUrl(String glob) {");
       output.add(offset + "  this.glob = glob;");
       output.add(offset + "  return this;");
@@ -522,8 +527,8 @@ class Field extends Element {
       output.add(offset + "}");
       return;
     }
-    if (jsonPath.contains("Frame.waitForFunction.options.polling") ||
-      jsonPath.contains("Page.waitForFunction.options.polling")) {
+    if (asList("Frame.waitForFunction.options.polling",
+               "Page.waitForFunction.options.polling").contains(jsonPath)) {
       output.add(offset + "public WaitForFunctionOptions withRequestAnimationFrame() {");
       output.add(offset + "  this.pollingInterval = null;");
       output.add(offset + "  return this;");
@@ -553,9 +558,15 @@ class Field extends Element {
       return;
     }
 
-    if (jsonPath.equals("Route.continue.overrides.postData")) {
+    if ("Route.continue.overrides.postData".equals(jsonPath)) {
       output.add(offset + "public ContinueOverrides withPostData(String postData) {");
       output.add(offset + "  this.postData = postData.getBytes(StandardCharsets.UTF_8);");
+      output.add(offset + "  return this;");
+      output.add(offset + "}");
+    }
+    if ("Route.fulfill.response.body".equals(jsonPath)) {
+      output.add(offset + "public FulfillResponse withBody(byte[] body) {");
+      output.add(offset + "  this.bodyBytes = body;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
     }
@@ -632,11 +643,13 @@ class Interface extends TypeDefinition {
     if (jsonName.equals("Route")) {
       output.add("import java.nio.charset.StandardCharsets;");
     }
-    if (asList("Page", "Frame", "ElementHandle", "FileChooser", "ChromiumBrowser", "Route").contains(jsonName)) {
+    if (asList("Page", "Frame", "ElementHandle", "FileChooser", "ChromiumBrowser").contains(jsonName)) {
       output.add("import java.io.File;");
     }
-    if (jsonName.equals("Download")) {
+    if ("Download".equals(jsonName)) {
       output.add("import java.io.InputStream;");
+    }
+    if (asList("Download", "Route").contains(jsonName)) {
       output.add("import java.nio.file.Path;");
     }
     output.add("import java.util.*;");
