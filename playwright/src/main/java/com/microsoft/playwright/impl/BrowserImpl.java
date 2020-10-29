@@ -17,12 +17,14 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
@@ -30,6 +32,7 @@ import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 class BrowserImpl extends ChannelOwner implements Browser {
   final Set<BrowserContext> contexts = new HashSet<>();
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
+  private boolean isConnected = true;
 
   BrowserImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -63,19 +66,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public boolean isConnected() {
-    return false;
-  }
-
-
-  private static JsonArray toProtocol(Map<String, String> map) {
-    JsonArray array = new JsonArray();
-    for (Map.Entry<String, String> e : map.entrySet()) {
-      JsonObject item = new JsonObject();
-      item.addProperty("name", e.getKey());
-      item.addProperty("value", e.getValue());
-      array.add(item);
-    }
-    return array;
+    return isConnected;
   }
 
   @Override
@@ -86,7 +77,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
     if (options.extraHTTPHeaders != null) {
       params.remove("extraHTTPHeaders");
-      params.add("extraHTTPHeaders", toProtocol(options.extraHTTPHeaders));
+      params.add("extraHTTPHeaders", Serialization.toProtocol(options.extraHTTPHeaders));
     }
     JsonElement result = sendMessage("newContext", params);
     BrowserContextImpl context = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("context").get("guid").getAsString());
@@ -116,4 +107,11 @@ class BrowserImpl extends ChannelOwner implements Browser {
     return initializer.get("version").getAsString();
   }
 
+  @Override
+  void handleEvent(String event, JsonObject parameters) {
+    if ("close".equals(event)) {
+      isConnected = false;
+      listeners.notify(EventType.DISCONNECTED, null);
+    }
+  }
 }

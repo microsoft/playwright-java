@@ -16,14 +16,11 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Route;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Map;
 
 public class RouteImpl extends ChannelOwner implements Route {
   public RouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -47,14 +44,7 @@ public class RouteImpl extends ChannelOwner implements Route {
       params.addProperty("method", overrides.method);
     }
     if (overrides.headers != null) {
-      JsonArray array = new JsonArray();
-      for (Map.Entry<String, String> header : overrides.headers.entrySet()) {
-        JsonObject item = new JsonObject();
-        item.addProperty("name", header.getKey());
-        item.addProperty("value", header.getValue());
-        array.add(item);
-      }
-      params.add("headers", array);
+      params.add("headers", Serialization.toProtocol(overrides.headers));
     }
     if (overrides.postData != null) {
       String base64 = Base64.getEncoder().encodeToString(overrides.postData);
