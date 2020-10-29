@@ -211,6 +211,17 @@ class Serialization {
     return jsonElements;
   }
 
+  static JsonArray toProtocol(Map<String, String> map) {
+    JsonArray array = new JsonArray();
+    for (Map.Entry<String, String> e : map.entrySet()) {
+      JsonObject item = new JsonObject();
+      item.addProperty("name", e.getKey());
+      item.addProperty("value", e.getValue());
+      array.add(item);
+    }
+    return array;
+  }
+
   static List<String> parseStringList(JsonArray array) {
     List<String> result = new ArrayList<>();
     for (JsonElement e : array) {
