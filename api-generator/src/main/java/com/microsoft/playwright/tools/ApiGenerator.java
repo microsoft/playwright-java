@@ -240,9 +240,9 @@ class Method extends Element {
     customSignature.put("BrowserType.connect", new String[0]);
     customSignature.put("BrowserType.launchServer", new String[0]);
     customSignature.put("BrowserContext.route", new String[]{
-      "void route(String url, BiConsumer<Route, Request> handler);",
-      "void route(Pattern url, BiConsumer<Route, Request> handler);",
-      "void route(Predicate<String> url, BiConsumer<Route, Request> handler);",
+      "void route(String url, Consumer<Route> handler);",
+      "void route(Pattern url, Consumer<Route> handler);",
+      "void route(Predicate<String> url, Consumer<Route> handler);",
     });
     // There is no standard JSON type in Java.
     customSignature.put("Response.json", new String[0]);
@@ -254,25 +254,25 @@ class Method extends Element {
       "Frame frameByUrl(Predicate<String> predicate);",
     });
     customSignature.put("Page.route", new String[]{
-      "void route(String url, BiConsumer<Route, Request> handler);",
-      "void route(Pattern url, BiConsumer<Route, Request> handler);",
-      "void route(Predicate<String> url, BiConsumer<Route, Request> handler);",
+      "void route(String url, Consumer<Route> handler);",
+      "void route(Pattern url, Consumer<Route> handler);",
+      "void route(Predicate<String> url, Consumer<Route> handler);",
     });
     customSignature.put("BrowserContext.unroute", new String[]{
       "default void unroute(String url) { unroute(url, null); }",
       "default void unroute(Pattern url) { unroute(url, null); }",
       "default void unroute(Predicate<String> url) { unroute(url, null); }",
-      "void unroute(String url, BiConsumer<Route, Request> handler);",
-      "void unroute(Pattern url, BiConsumer<Route, Request> handler);",
-      "void unroute(Predicate<String> url, BiConsumer<Route, Request> handler);",
+      "void unroute(String url, Consumer<Route> handler);",
+      "void unroute(Pattern url, Consumer<Route> handler);",
+      "void unroute(Predicate<String> url, Consumer<Route> handler);",
     });
     customSignature.put("Page.unroute", new String[]{
       "default void unroute(String url) { unroute(url, null); }",
       "default void unroute(Pattern url) { unroute(url, null); }",
       "default void unroute(Predicate<String> url) { unroute(url, null); }",
-      "void unroute(String url, BiConsumer<Route, Request> handler);",
-      "void unroute(Pattern url, BiConsumer<Route, Request> handler);",
-      "void unroute(Predicate<String> url, BiConsumer<Route, Request> handler);",
+      "void unroute(String url, Consumer<Route> handler);",
+      "void unroute(Pattern url, Consumer<Route> handler);",
+      "void unroute(Predicate<String> url, Consumer<Route> handler);",
     });
     customSignature.put("BrowserContext.cookies", new String[]{
       "default List<Cookie> cookies() { return cookies((List<String>) null); }",
@@ -661,7 +661,7 @@ class Interface extends TypeDefinition {
     }
     output.add("import java.util.*;");
     if (asList("Page", "BrowserContext").contains(jsonName)) {
-      output.add("import java.util.function.BiConsumer;");
+      output.add("import java.util.function.Consumer;");
     }
     if (asList("Page", "Frame", "BrowserContext").contains(jsonName)) {
       output.add("import java.util.function.Predicate;");

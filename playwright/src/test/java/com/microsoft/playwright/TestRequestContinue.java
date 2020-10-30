@@ -32,13 +32,13 @@ public class TestRequestContinue extends TestBase {
 
   @Test
   void shouldWork() {
-    page.route("**/*", (route, request) -> route.continue_());
+    page.route("**/*", route -> route.continue_());
     page.navigate(server.EMPTY_PAGE);
   }
 
   @Test
   void shouldAmendHTTPHeaders() throws ExecutionException, InterruptedException {
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       Map<String, String> headers = new HashMap<>(route.request().headers());
       headers.put("FOO", "bar");
       route.continue_(new Route.ContinueOverrides().withHeaders(headers));
@@ -53,7 +53,7 @@ public class TestRequestContinue extends TestBase {
   void shouldAmendMethod() throws ExecutionException, InterruptedException {
     Future<Server.Request> sRequest = server.waitForRequest("/sleep.zzz");
     page.navigate(server.EMPTY_PAGE);
-    page.route("**/*", (route, request) -> route.continue_(new Route.ContinueOverrides().withMethod("POST")));
+    page.route("**/*", route -> route.continue_(new Route.ContinueOverrides().withMethod("POST")));
     Future<Server.Request> request = server.waitForRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz')");
     assertEquals("POST", request.get().method);
@@ -63,7 +63,7 @@ public class TestRequestContinue extends TestBase {
   @Test
   void shouldAmendMethodOnMainRequest() throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.waitForRequest("/empty.html");
-    page.route("**/*", (route, req) -> route.continue_(new Route.ContinueOverrides().withMethod("POST")));
+    page.route("**/*", route -> route.continue_(new Route.ContinueOverrides().withMethod("POST")));
     page.navigate(server.EMPTY_PAGE);
     assertEquals("POST", request.get().method);
   }
@@ -71,7 +71,7 @@ public class TestRequestContinue extends TestBase {
   @Test
   void shouldAmendPostData() throws ExecutionException, InterruptedException {
     page.navigate(server.EMPTY_PAGE);
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       route.continue_(new Route.ContinueOverrides().withPostData("doggo"));
     });
     Future<Server.Request> serverRequest = server.waitForRequest("/sleep.zzz");
@@ -82,7 +82,7 @@ public class TestRequestContinue extends TestBase {
   @Test
   void shouldAmendUtf8PostData() throws ExecutionException, InterruptedException {
     page.navigate(server.EMPTY_PAGE);
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       route.continue_(new Route.ContinueOverrides().withPostData("пушкин"));
     });
     Future<Server.Request> serverRequest = server.waitForRequest("/sleep.zzz");
@@ -94,7 +94,7 @@ public class TestRequestContinue extends TestBase {
   @Test
   void shouldAmendLongerPostData() throws ExecutionException, InterruptedException {
     page.navigate(server.EMPTY_PAGE);
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       route.continue_(new Route.ContinueOverrides().withPostData("doggo-is-longer-than-birdy"));
     });
     Future<Server.Request> serverRequest = server.waitForRequest("/sleep.zzz");
@@ -110,7 +110,7 @@ public class TestRequestContinue extends TestBase {
     for (int i = 0; i < arr.length; i++) {
       arr[i] = (byte) i;
     }
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       route.continue_(new Route.ContinueOverrides().withPostData(arr));
     });
     Future<Server.Request> serverRequest = server.waitForRequest("/sleep.zzz");

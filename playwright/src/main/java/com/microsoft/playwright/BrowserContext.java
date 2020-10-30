@@ -17,7 +17,7 @@
 package com.microsoft.playwright;
 
 import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -183,9 +183,9 @@ public interface BrowserContext {
   void grantPermissions(List<String> permissions, GrantPermissionsOptions options);
   Page newPage();
   List<Page> pages();
-  void route(String url, BiConsumer<Route, Request> handler);
-  void route(Pattern url, BiConsumer<Route, Request> handler);
-  void route(Predicate<String> url, BiConsumer<Route, Request> handler);
+  void route(String url, Consumer<Route> handler);
+  void route(Pattern url, Consumer<Route> handler);
+  void route(Predicate<String> url, Consumer<Route> handler);
   void setDefaultNavigationTimeout(int timeout);
   void setDefaultTimeout(int timeout);
   void setExtraHTTPHeaders(Map<String, String> headers);
@@ -194,9 +194,9 @@ public interface BrowserContext {
   default void unroute(String url) { unroute(url, null); }
   default void unroute(Pattern url) { unroute(url, null); }
   default void unroute(Predicate<String> url) { unroute(url, null); }
-  void unroute(String url, BiConsumer<Route, Request> handler);
-  void unroute(Pattern url, BiConsumer<Route, Request> handler);
-  void unroute(Predicate<String> url, BiConsumer<Route, Request> handler);
+  void unroute(String url, Consumer<Route> handler);
+  void unroute(Pattern url, Consumer<Route> handler);
+  void unroute(Predicate<String> url, Consumer<Route> handler);
   default Deferred<Event<EventType>> waitForEvent(EventType event) {
     return waitForEvent(event, (WaitForEventOptions) null);
   }

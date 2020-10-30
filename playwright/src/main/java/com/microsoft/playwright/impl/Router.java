@@ -22,6 +22,7 @@ import com.microsoft.playwright.Route;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 class Router {
@@ -29,19 +30,19 @@ class Router {
 
   private static class RouteInfo {
     final UrlMatcher matcher;
-    final BiConsumer<Route, Request> handler;
+    final Consumer<Route> handler;
 
-    RouteInfo(UrlMatcher matcher, BiConsumer<Route, Request> handler) {
+    RouteInfo(UrlMatcher matcher, Consumer<Route> handler) {
       this.matcher = matcher;
       this.handler = handler;
     }
   }
 
-  void add(UrlMatcher matcher, BiConsumer<Route, Request> handler) {
+  void add(UrlMatcher matcher, Consumer<Route> handler) {
     routes.add(new RouteInfo(matcher, handler));
   }
 
-  void remove(UrlMatcher matcher, BiConsumer<Route, Request> handler) {
+  void remove(UrlMatcher matcher, Consumer<Route> handler) {
     routes = routes.stream()
       .filter(info -> !info.matcher.equals(matcher) || (handler != null && info.handler != handler))
       .collect(Collectors.toList());
@@ -51,10 +52,10 @@ class Router {
     return routes.size();
   }
 
-  boolean handle(Route route, Request request) {
+  boolean handle(Route route) {
     for (RouteInfo info : routes) {
-      if (info.matcher.test(request.url())) {
-        info.handler.accept(route, request);
+      if (info.matcher.test(route.request().url())) {
+        info.handler.accept(route);
         return true;
       }
     }

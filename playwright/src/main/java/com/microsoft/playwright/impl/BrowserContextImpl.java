@@ -24,6 +24,7 @@ import com.microsoft.playwright.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -173,21 +174,21 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void route(String url, BiConsumer<Route, Request> handler) {
+  public void route(String url, Consumer<Route> handler) {
     route(new UrlMatcher(url), handler);
   }
 
   @Override
-  public void route(Pattern url, BiConsumer<Route, Request> handler) {
+  public void route(Pattern url, Consumer<Route> handler) {
     route(new UrlMatcher(url), handler);
   }
 
   @Override
-  public void route(Predicate<String> url, BiConsumer<Route, Request> handler) {
+  public void route(Predicate<String> url, Consumer<Route> handler) {
     route(new UrlMatcher(url), handler);
   }
 
-  private void route(UrlMatcher matcher, BiConsumer<Route, Request> handler) {
+  private void route(UrlMatcher matcher, Consumer<Route> handler) {
     routes.add(matcher, handler);
     if (routes.size() == 1) {
       JsonObject params = new JsonObject();
@@ -243,17 +244,17 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void unroute(String url, BiConsumer<Route, Request> handler) {
+  public void unroute(String url, Consumer<Route> handler) {
     unroute(new UrlMatcher(url), handler);
   }
 
   @Override
-  public void unroute(Pattern url, BiConsumer<Route, Request> handler) {
+  public void unroute(Pattern url, Consumer<Route> handler) {
     unroute(new UrlMatcher(url), handler);
   }
 
   @Override
-  public void unroute(Predicate<String> url, BiConsumer<Route, Request> handler) {
+  public void unroute(Predicate<String> url, Consumer<Route> handler) {
     unroute(new UrlMatcher(url), handler);
   }
 
@@ -268,7 +269,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     return toDeferred(new WaitableRace<>(waitables));
   }
 
-  private void unroute(UrlMatcher matcher, BiConsumer<Route, Request> handler) {
+  private void unroute(UrlMatcher matcher, Consumer<Route> handler) {
     routes.remove(matcher, handler);
     if (routes.size() == 0) {
       JsonObject params = new JsonObject();
@@ -281,8 +282,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   protected void handleEvent(String event, JsonObject params) {
     if ("route".equals(event)) {
       Route route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
-      Request request = connection.getExistingObject(params.getAsJsonObject("request").get("guid").getAsString());
-      boolean handled = routes.handle(route, request);
+      boolean handled = routes.handle(route);
       if (!handled) {
         route.continue_();
       }

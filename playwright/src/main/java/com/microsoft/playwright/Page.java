@@ -18,7 +18,7 @@ package com.microsoft.playwright;
 
 import java.nio.file.Path;
 import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -875,9 +875,9 @@ public interface Page {
     return reload(null);
   }
   Response reload(ReloadOptions options);
-  void route(String url, BiConsumer<Route, Request> handler);
-  void route(Pattern url, BiConsumer<Route, Request> handler);
-  void route(Predicate<String> url, BiConsumer<Route, Request> handler);
+  void route(String url, Consumer<Route> handler);
+  void route(Pattern url, Consumer<Route> handler);
+  void route(Predicate<String> url, Consumer<Route> handler);
   default byte[] screenshot() {
     return screenshot(null);
   }
@@ -953,9 +953,9 @@ public interface Page {
   default void unroute(String url) { unroute(url, null); }
   default void unroute(Pattern url) { unroute(url, null); }
   default void unroute(Predicate<String> url) { unroute(url, null); }
-  void unroute(String url, BiConsumer<Route, Request> handler);
-  void unroute(Pattern url, BiConsumer<Route, Request> handler);
-  void unroute(Predicate<String> url, BiConsumer<Route, Request> handler);
+  void unroute(String url, Consumer<Route> handler);
+  void unroute(Pattern url, Consumer<Route> handler);
+  void unroute(Predicate<String> url, Consumer<Route> handler);
   String url();
   Video video();
   Viewport viewportSize();

@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TestRequestFulfill extends TestBase {
   @Test
   void shouldWork() {
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       route.fulfill(new Route.FulfillResponse()
         .withStatus(201)
         .withContentType("text/html")
@@ -44,7 +44,7 @@ public class TestRequestFulfill extends TestBase {
 
   @Test
   void shouldWorkWithStatusCode422() {
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       route.fulfill(new Route.FulfillResponse()
         .withStatus(422)
         .withBody("Yo, page!"));
@@ -58,7 +58,7 @@ public class TestRequestFulfill extends TestBase {
   @Test
   void shouldAllowMockingBinaryResponses() {
 // TODO:    test.skip(browserName === "firefox" && headful, "// Firefox headful produces a different image.");
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       byte[] imageBuffer;
       try {
         imageBuffer = Files.readAllBytes(new File("src/test/resources/pptr.png").toPath());
@@ -84,7 +84,7 @@ public class TestRequestFulfill extends TestBase {
   void shouldAllowMockingSvgWithCharset() {
     // TODO: test.skip(browserName === "firefox" && headful, "// Firefox headful produces a different image.");
     // Firefox headful produces a different image.
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       route.fulfill(new Route.FulfillResponse()
         .withContentType("image/svg+xml ; charset=utf-8")
         .withBody("<svg width=\"50\" height=\"50\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"10\" y=\"10\" width=\"30\" height=\"30\" stroke=\"black\" fill=\"transparent\" stroke-width=\"5\"/></svg>"));

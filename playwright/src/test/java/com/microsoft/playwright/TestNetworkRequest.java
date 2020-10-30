@@ -81,7 +81,7 @@ public class TestNetworkRequest extends TestBase {
   void shouldNotWorkForARedirectAndInterception() {
     server.setRedirect("/foo.html", "/empty.html");
     List<Request> requests = new ArrayList<>();
-    page.route("**", (route, request) -> {
+    page.route("**", route -> {
       requests.add(route.request());
       route.continue_();
     });
@@ -189,7 +189,7 @@ public class TestNetworkRequest extends TestBase {
     });
     Request[] request = {null};
     page.addListener(REQUEST, event -> request[0] = (Request) event.data());
-    page.route("/post", (route, req) -> route.continue_());
+    page.route("/post", route -> route.continue_());
     page.evaluate("async () => {\n" +
       "  await fetch('./post', { method: 'POST', body: new Uint8Array(Array.from(Array(256).keys())) });\n" +
       "}");
