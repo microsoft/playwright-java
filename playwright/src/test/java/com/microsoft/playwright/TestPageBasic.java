@@ -62,7 +62,7 @@ public class TestPageBasic extends TestBase {
     newPage.addListener(DIALOG, event -> {
       didShowDialog[0] = true;
       Dialog dialog = (Dialog) event.data();
-      assertEquals("beforeunload", dialog.type());
+      assertEquals(Dialog.Type.BEFOREUNLOAD, dialog.type());
       assertEquals("", dialog.defaultValue());
       if (isChromium) {
         assertEquals("", dialog.message());

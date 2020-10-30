@@ -179,6 +179,7 @@ class Types {
     add("Worker.evaluateHandle.pageFunction", "function|string", "String");
 
     // Return structures
+    add("Dialog.type", "string", "Type", new Empty());
     add("ConsoleMessage.location", "Object", "Location");
     add("ElementHandle.boundingBox", "Promise<null|Object>", "BoundingBox", new Empty());
 
