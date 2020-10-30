@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 class Utils {
@@ -99,25 +100,29 @@ class Utils {
     return tokens.toString();
   }
 
+  static String mimeType(Path path) {
+    String mimeType;
+    try {
+      mimeType = Files.probeContentType(path);
+    } catch (IOException e) {
+      throw new PlaywrightException("Failed to determine mime type", e);
+    }
+    if (mimeType == null) {
+      mimeType = "application/octet-stream";
+    }
+    return mimeType;
+  }
+
   static FileChooser.FilePayload[] toFilePayloads(File[] files) {
     List<FileChooser.FilePayload> payloads = new ArrayList<>();
     for (File file : files) {
-      String mimeType;
-      try {
-        mimeType = Files.probeContentType(file.toPath());
-      } catch (IOException e) {
-        throw new PlaywrightException("Failed to determine mime type", e);
-      }
-      if (mimeType == null) {
-        mimeType = "application/octet-stream";
-      }
       byte[] buffer;
       try {
         buffer = Files.readAllBytes(file.toPath());
       } catch (IOException e) {
         throw new PlaywrightException("Failed to read from file", e);
       }
-      payloads.add(new FileChooser.FilePayload(file.getName(), mimeType, buffer));
+      payloads.add(new FileChooser.FilePayload(file.getName(), mimeType(file.toPath()), buffer));
     }
     return payloads.toArray(new FileChooser.FilePayload[0]);
   }
