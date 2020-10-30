@@ -262,16 +262,15 @@ public interface Page {
   }
   class EmulateMediaOptions {
     public enum Media { PRINT, SCREEN }
-    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
-    public Media media;
-    public ColorScheme colorScheme;
+    public Optional<Media> media;
+    public Optional<ColorScheme> colorScheme;
 
     public EmulateMediaOptions withMedia(Media media) {
-      this.media = media;
+      this.media = Optional.ofNullable(media);
       return this;
     }
     public EmulateMediaOptions withColorScheme(ColorScheme colorScheme) {
-      this.colorScheme = colorScheme;
+      this.colorScheme = Optional.ofNullable(colorScheme);
       return this;
     }
   }

@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import static com.microsoft.playwright.BrowserType.LaunchPersistentContextOptions.ColorScheme.DARK;
+import static com.microsoft.playwright.ColorScheme.DARK;
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;

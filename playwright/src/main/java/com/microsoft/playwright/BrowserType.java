@@ -155,7 +155,6 @@ public interface BrowserType {
     }
   }
   class LaunchPersistentContextOptions {
-    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
     public class Proxy {
       public String server;
       public String bypass;

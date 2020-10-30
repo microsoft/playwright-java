@@ -17,6 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.microsoft.playwright.*;
@@ -36,7 +37,9 @@ class Serialization {
     if (gson == null) {
       gson = new GsonBuilder()
         .registerTypeAdapter(BrowserContext.SameSite.class, new SameSiteAdapter().nullSafe())
-        .registerTypeAdapter(BrowserType.LaunchPersistentContextOptions.ColorScheme.class, new ColorSchemeAdapter().nullSafe())
+        .registerTypeAdapter(ColorScheme.class, new ColorSchemeAdapter().nullSafe())
+        .registerTypeAdapter(Page.EmulateMediaOptions.Media.class, new MediaSerializer())
+        .registerTypeAdapter(Optional.class, new OptionalSerializer())
         .registerTypeAdapter(Path.class, new PathSerializer()).create();
     }
     return gson;
@@ -87,7 +90,7 @@ class Serialization {
       result.s = (String) value;
     } else if (value instanceof List) {
       List<SerializedValue> list = new ArrayList<>();
-      for (Object o : (List) value) {
+      for (Object o : (List<Object>) value) {
         list.add(serializeValue(o, handles, depth + 1));
       }
       result.a = list.toArray(new SerializedValue[0]);
@@ -245,6 +248,29 @@ class Serialization {
     return result;
   }
 
+  private static class OptionalSerializer implements JsonSerializer<Optional<?>> {
+    private static boolean isSupported(Type type) {
+      return new TypeToken<Optional<Page.EmulateMediaOptions.Media>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
+        new TypeToken<Optional<ColorScheme>>() {}.getType().getTypeName().equals(type.getTypeName());
+    }
+
+    @Override
+    public JsonElement serialize(Optional<?> src, Type typeOfSrc, JsonSerializationContext context) {
+      assert isSupported(typeOfSrc);
+      if (!src.isPresent()) {
+        return new JsonPrimitive("null");
+      }
+      return context.serialize(src.get());
+    }
+  }
+
+  private static class MediaSerializer implements JsonSerializer<Page.EmulateMediaOptions.Media> {
+    @Override
+    public JsonElement serialize(Page.EmulateMediaOptions.Media src, Type typeOfSrc, JsonSerializationContext context) {
+      return new JsonPrimitive(src.toString().toLowerCase());
+    }
+  }
+
   private static class PathSerializer implements JsonSerializer<Path> {
     @Override
     public JsonElement serialize(Path src, Type typeOfSrc, JsonSerializationContext context) {
@@ -279,9 +305,9 @@ class Serialization {
     }
   }
 
-  private static class ColorSchemeAdapter extends TypeAdapter<BrowserType.LaunchPersistentContextOptions.ColorScheme> {
+  private static class ColorSchemeAdapter extends TypeAdapter<ColorScheme> {
     @Override
-    public void write(JsonWriter out, BrowserType.LaunchPersistentContextOptions.ColorScheme value) throws IOException {
+    public void write(JsonWriter out, ColorScheme value) throws IOException {
       String stringValue;
       switch (value) {
         case DARK:
@@ -300,12 +326,12 @@ class Serialization {
     }
 
     @Override
-    public BrowserType.LaunchPersistentContextOptions.ColorScheme read(JsonReader in) throws IOException {
+    public ColorScheme read(JsonReader in) throws IOException {
       String value = in.nextString();
       switch (value) {
-        case "dark": return BrowserType.LaunchPersistentContextOptions.ColorScheme.DARK;
-        case "light": return BrowserType.LaunchPersistentContextOptions.ColorScheme.LIGHT;
-        case "no-preference": return BrowserType.LaunchPersistentContextOptions.ColorScheme.NO_PREFERENCE;
+        case "dark": return ColorScheme.DARK;
+        case "light": return ColorScheme.LIGHT;
+        case "no-preference": return ColorScheme.NO_PREFERENCE;
         default: throw new PlaywrightException("Unexpected value: " + value);
       }
     }
