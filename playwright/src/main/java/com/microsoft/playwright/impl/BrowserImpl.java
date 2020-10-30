@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
@@ -26,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 
@@ -74,7 +74,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     if (options == null) {
       options = new NewContextOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     if (options.extraHTTPHeaders != null) {
       params.remove("extraHTTPHeaders");
       params.add("extraHTTPHeaders", Serialization.toProtocol(options.extraHTTPHeaders));

@@ -95,16 +95,16 @@ class Types {
     add("BrowserType.launchPersistentContext.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme");
 
     // File
-    add("Page.addScriptTag.options.path", "string", "File");
-    add("Page.addStyleTag.options.path", "string", "File");
-    add("Page.pdf.options.path", "string", "File");
-    add("Page.screenshot.options.path", "string", "File");
-    add("Frame.addScriptTag.options.path", "string", "File");
-    add("Frame.addStyleTag.options.path", "string", "File");
-    add("ElementHandle.screenshot.options.path", "string", "File");
+    add("Page.addScriptTag.options.path", "string", "Path");
+    add("Page.addStyleTag.options.path", "string", "Path");
+    add("Page.pdf.options.path", "string", "Path");
+    add("Page.screenshot.options.path", "string", "Path");
+    add("Frame.addScriptTag.options.path", "string", "Path");
+    add("Frame.addStyleTag.options.path", "string", "Path");
+    add("ElementHandle.screenshot.options.path", "string", "Path");
     add("Route.fulfill.response.path", "string", "Path");
     add("Route.fulfill.response.status", "number", "int");
-    add("ChromiumBrowser.startTracing.options.path", "string", "File");
+    add("ChromiumBrowser.startTracing.options.path", "string", "Path");
 
     // Route
     add("BrowserContext.route.handler", "function(Route, Request)", "BiConsumer<Route, Request>");

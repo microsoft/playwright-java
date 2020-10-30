@@ -285,30 +285,30 @@ class Method extends Element {
       "void addCookies(List<AddCookie> cookies);"
     });
     customSignature.put("FileChooser.setFiles", new String[]{
-      "default void setFiles(File file) { setFiles(file, null); }",
-      "default void setFiles(File file, SetFilesOptions options) { setFiles(new File[]{ file }, options); }",
-      "default void setFiles(File[] files) { setFiles(files, null); }",
-      "void setFiles(File[] files, SetFilesOptions options);",
+      "default void setFiles(Path file) { setFiles(file, null); }",
+      "default void setFiles(Path file, SetFilesOptions options) { setFiles(new Path[]{ file }, options); }",
+      "default void setFiles(Path[] files) { setFiles(files, null); }",
+      "void setFiles(Path[] files, SetFilesOptions options);",
       "default void setFiles(FileChooser.FilePayload file) { setFiles(file, null); }",
       "default void setFiles(FileChooser.FilePayload file, SetFilesOptions options)  { setFiles(new FileChooser.FilePayload[]{ file }, options); }",
       "default void setFiles(FileChooser.FilePayload[] files) { setFiles(files, null); }",
       "void setFiles(FileChooser.FilePayload[] files, SetFilesOptions options);",
     });
     customSignature.put("ElementHandle.setInputFiles", new String[]{
-      "default void setInputFiles(File file) { setInputFiles(file, null); }",
-      "default void setInputFiles(File file, SetInputFilesOptions options) { setInputFiles(new File[]{ file }, options); }",
-      "default void setInputFiles(File[] files) { setInputFiles(files, null); }",
-      "void setInputFiles(File[] files, SetInputFilesOptions options);",
+      "default void setInputFiles(Path file) { setInputFiles(file, null); }",
+      "default void setInputFiles(Path file, SetInputFilesOptions options) { setInputFiles(new Path[]{ file }, options); }",
+      "default void setInputFiles(Path[] files) { setInputFiles(files, null); }",
+      "void setInputFiles(Path[] files, SetInputFilesOptions options);",
       "default void setInputFiles(FileChooser.FilePayload file) { setInputFiles(file, null); }",
       "default void setInputFiles(FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(new FileChooser.FilePayload[]{ file }, options); }",
       "default void setInputFiles(FileChooser.FilePayload[] files) { setInputFiles(files, null); }",
       "void setInputFiles(FileChooser.FilePayload[] files, SetInputFilesOptions options);",
     });
     String[] setInputFilesWithSelector = {
-      "default void setInputFiles(String selector, File file) { setInputFiles(selector, file, null); }",
-      "default void setInputFiles(String selector, File file, SetInputFilesOptions options) { setInputFiles(selector, new File[]{ file }, options); }",
-      "default void setInputFiles(String selector, File[] files) { setInputFiles(selector, files, null); }",
-      "void setInputFiles(String selector, File[] files, SetInputFilesOptions options);",
+      "default void setInputFiles(String selector, Path file) { setInputFiles(selector, file, null); }",
+      "default void setInputFiles(String selector, Path file, SetInputFilesOptions options) { setInputFiles(selector, new Path[]{ file }, options); }",
+      "default void setInputFiles(String selector, Path[] files) { setInputFiles(selector, files, null); }",
+      "void setInputFiles(String selector, Path[] files, SetInputFilesOptions options);",
       "default void setInputFiles(String selector, FileChooser.FilePayload file) { setInputFiles(selector, file, null); }",
       "default void setInputFiles(String selector, FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(selector, new FileChooser.FilePayload[]{ file }, options); }",
       "default void setInputFiles(String selector, FileChooser.FilePayload[] files) { setInputFiles(selector, files, null); }",
@@ -643,13 +643,10 @@ class Interface extends TypeDefinition {
     if (jsonName.equals("Route")) {
       output.add("import java.nio.charset.StandardCharsets;");
     }
-    if (asList("Page", "Frame", "ElementHandle", "FileChooser", "ChromiumBrowser").contains(jsonName)) {
-      output.add("import java.io.File;");
-    }
     if ("Download".equals(jsonName)) {
       output.add("import java.io.InputStream;");
     }
-    if (asList("Download", "Route").contains(jsonName)) {
+    if (asList("Page", "Frame", "ElementHandle", "FileChooser", "ChromiumBrowser", "Download", "Route").contains(jsonName)) {
       output.add("import java.nio.file.Path;");
     }
     output.add("import java.util.*;");

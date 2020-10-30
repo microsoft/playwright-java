@@ -26,6 +26,8 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.microsoft.playwright.impl.Serialization.gson;
+
 class Message {
   int id;
   String guid;
@@ -87,7 +89,7 @@ public class Connection {
     message.addProperty("guid", guid);
     message.addProperty("method", method);
     message.add("params", params);
-    transport.send(new Gson().toJson(message));
+    transport.send(gson().toJson(message));
     return result;
   }
 
@@ -119,7 +121,7 @@ public class Connection {
     if (messageString == null) {
       return;
     }
-    Gson gson = new Gson();
+    Gson gson = gson();
     Message message = gson.fromJson(messageString, Message.class);
     dispatch(message);
   }

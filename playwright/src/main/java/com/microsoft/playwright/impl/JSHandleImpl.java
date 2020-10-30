@@ -25,8 +25,7 @@ import com.microsoft.playwright.JSHandle;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.microsoft.playwright.impl.Serialization.deserialize;
-import static com.microsoft.playwright.impl.Serialization.serializeArgument;
+import static com.microsoft.playwright.impl.Serialization.*;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 public class JSHandleImpl extends ChannelOwner implements JSHandle {
@@ -45,9 +44,9 @@ public class JSHandleImpl extends ChannelOwner implements JSHandle {
     params.addProperty("expression", pageFunction);
     params.addProperty("world", "main");
     params.addProperty("isFunction", isFunctionBody(pageFunction));
-    params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
+    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
     JsonElement json = sendMessage("evaluateExpression", params);
-    SerializedValue value = new Gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
+    SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
     return deserialize(value);
   }
 
@@ -57,7 +56,7 @@ public class JSHandleImpl extends ChannelOwner implements JSHandle {
     params.addProperty("expression", pageFunction);
     params.addProperty("world", "main");
     params.addProperty("isFunction", isFunctionBody(pageFunction));
-    params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
+    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
     JsonElement json = sendMessage("evaluateExpressionHandle", params);
     return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("handle").get("guid").getAsString());
   }
@@ -85,7 +84,7 @@ public class JSHandleImpl extends ChannelOwner implements JSHandle {
   @Override
   public Object jsonValue() {
     JsonObject json = sendMessage("jsonValue").getAsJsonObject();
-    SerializedValue value = new Gson().fromJson(json.get("value"), SerializedValue.class);
+    SerializedValue value = gson().fromJson(json.get("value"), SerializedValue.class);
     return deserialize(value);
   }
 }

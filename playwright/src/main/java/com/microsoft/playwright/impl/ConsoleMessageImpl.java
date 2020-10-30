@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.ConsoleMessage;
@@ -24,6 +23,8 @@ import com.microsoft.playwright.JSHandle;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.microsoft.playwright.impl.Serialization.gson;
 
 public class ConsoleMessageImpl extends ChannelOwner implements ConsoleMessage {
   public ConsoleMessageImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -48,6 +49,6 @@ public class ConsoleMessageImpl extends ChannelOwner implements ConsoleMessage {
   }
 
   public Location location() {
-    return new Gson().fromJson(initializer.get("location"), Location.class);
+    return gson().fromJson(initializer.get("location"), Location.class);
   }
 }

@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.BrowserContext;
@@ -71,17 +70,17 @@ class BindingCall extends ChannelOwner {
         args.add(handle);
       } else {
         for (JsonElement arg : initializer.getAsJsonArray("args")) {
-          args.add(deserialize(new Gson().fromJson(arg, SerializedValue.class)));
+          args.add(deserialize(gson().fromJson(arg, SerializedValue.class)));
         }
       }
       Object result = binding.call(source, args.toArray());
 
       JsonObject params = new JsonObject();
-      params.add("result", new Gson().toJsonTree(serializeArgument(result)));
+      params.add("result", gson().toJsonTree(serializeArgument(result)));
       sendMessage("resolve", params);
     } catch (RuntimeException exception) {
       JsonObject params = new JsonObject();
-      params.add("error", new Gson().toJsonTree(serializeError(exception)));
+      params.add("error", gson().toJsonTree(serializeError(exception)));
       sendMessage("reject", params);
     }
   }

@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
@@ -108,7 +108,7 @@ public interface Page {
   }
   class AddScriptTagOptions {
     public String url;
-    public File path;
+    public Path path;
     public String content;
     public String type;
 
@@ -116,7 +116,7 @@ public interface Page {
       this.url = url;
       return this;
     }
-    public AddScriptTagOptions withPath(File path) {
+    public AddScriptTagOptions withPath(Path path) {
       this.path = path;
       return this;
     }
@@ -131,14 +131,14 @@ public interface Page {
   }
   class AddStyleTagOptions {
     public String url;
-    public File path;
+    public Path path;
     public String content;
 
     public AddStyleTagOptions withUrl(String url) {
       this.url = url;
       return this;
     }
-    public AddStyleTagOptions withPath(File path) {
+    public AddStyleTagOptions withPath(Path path) {
       this.path = path;
       return this;
     }
@@ -428,7 +428,7 @@ public interface Page {
         return this;
       }
     }
-    public File path;
+    public Path path;
     public Integer scale;
     public Boolean displayHeaderFooter;
     public String headerTemplate;
@@ -442,7 +442,7 @@ public interface Page {
     public Margin margin;
     public Boolean preferCSSPageSize;
 
-    public PdfOptions withPath(File path) {
+    public PdfOptions withPath(Path path) {
       this.path = path;
       return this;
     }
@@ -557,7 +557,7 @@ public interface Page {
         return this;
       }
     }
-    public File path;
+    public Path path;
     public Type type;
     public Integer quality;
     public Boolean fullPage;
@@ -565,7 +565,7 @@ public interface Page {
     public Boolean omitBackground;
     public Integer timeout;
 
-    public ScreenshotOptions withPath(File path) {
+    public ScreenshotOptions withPath(Path path) {
       this.path = path;
       return this;
     }
@@ -929,10 +929,10 @@ public interface Page {
   void setDefaultNavigationTimeout(int timeout);
   void setDefaultTimeout(int timeout);
   void setExtraHTTPHeaders(Map<String, String> headers);
-  default void setInputFiles(String selector, File file) { setInputFiles(selector, file, null); }
-  default void setInputFiles(String selector, File file, SetInputFilesOptions options) { setInputFiles(selector, new File[]{ file }, options); }
-  default void setInputFiles(String selector, File[] files) { setInputFiles(selector, files, null); }
-  void setInputFiles(String selector, File[] files, SetInputFilesOptions options);
+  default void setInputFiles(String selector, Path file) { setInputFiles(selector, file, null); }
+  default void setInputFiles(String selector, Path file, SetInputFilesOptions options) { setInputFiles(selector, new Path[]{ file }, options); }
+  default void setInputFiles(String selector, Path[] files) { setInputFiles(selector, files, null); }
+  void setInputFiles(String selector, Path[] files, SetInputFilesOptions options);
   default void setInputFiles(String selector, FileChooser.FilePayload file) { setInputFiles(selector, file, null); }
   default void setInputFiles(String selector, FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(selector, new FileChooser.FilePayload[]{ file }, options); }
   default void setInputFiles(String selector, FileChooser.FilePayload[] files) { setInputFiles(selector, files, null); }

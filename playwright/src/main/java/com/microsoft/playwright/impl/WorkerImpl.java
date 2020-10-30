@@ -21,8 +21,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
-import static com.microsoft.playwright.impl.Serialization.deserialize;
-import static com.microsoft.playwright.impl.Serialization.serializeArgument;
+import static com.microsoft.playwright.impl.Serialization.*;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 class WorkerImpl extends ChannelOwner implements Worker {
@@ -48,9 +47,9 @@ class WorkerImpl extends ChannelOwner implements Worker {
     JsonObject params = new JsonObject();
     params.addProperty("expression", pageFunction);
     params.addProperty("isFunction", isFunctionBody(pageFunction));
-    params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
+    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
     JsonElement json = sendMessage("evaluateExpression", params);
-    SerializedValue value = new Gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
+    SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
     return deserialize(value);
   }
 
@@ -59,7 +58,7 @@ class WorkerImpl extends ChannelOwner implements Worker {
     JsonObject params = new JsonObject();
     params.addProperty("expression", pageFunction);
     params.addProperty("isFunction", isFunctionBody(pageFunction));
-    params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
+    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
     JsonElement json = sendMessage("evaluateExpressionHandle", params);
     return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("handle").get("guid").getAsString());
   }

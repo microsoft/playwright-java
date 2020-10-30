@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Mouse;
 
+import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Serialization.toProtocol;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 
@@ -35,7 +36,7 @@ class MouseImpl implements Mouse {
     if (options == null) {
       options = new ClickOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("x", x);
     params.addProperty("y", y);
     if (options.button != null) {
@@ -62,7 +63,7 @@ class MouseImpl implements Mouse {
     if (options == null) {
       options = new DownOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     page.sendMessage("mouseDown", params);
   }
 
@@ -71,7 +72,7 @@ class MouseImpl implements Mouse {
     if (options == null) {
       options = new MoveOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("x", x);
     params.addProperty("y", y);
     page.sendMessage("mouseMove", params);
@@ -82,7 +83,7 @@ class MouseImpl implements Mouse {
     if (options == null) {
       options = new UpOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     page.sendMessage("mouseUp", params);
   }
 }

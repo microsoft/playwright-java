@@ -26,6 +26,7 @@ import com.microsoft.playwright.FileChooser;
 import com.microsoft.playwright.Frame;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -77,9 +78,9 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     params.addProperty("selector", selector);
     params.addProperty("expression", pageFunction);
     params.addProperty("isFunction", isFunctionBody(pageFunction));
-    params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
+    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
     JsonElement json = sendMessage("evalOnSelector", params);
-    SerializedValue value = new Gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
+    SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
     return deserialize(value);
   }
 
@@ -89,9 +90,9 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     params.addProperty("selector", selector);
     params.addProperty("expression", pageFunction);
     params.addProperty("isFunction", isFunctionBody(pageFunction));
-    params.add("arg", new Gson().toJsonTree(serializeArgument(arg)));
+    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
     JsonElement json = sendMessage("evalOnSelectorAll", params);
-    SerializedValue value = new Gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
+    SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
     return deserialize(value);
   }
 
@@ -101,7 +102,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (!json.has("value")) {
       return null;
     }
-    return new Gson().fromJson(json.get("value"), BoundingBox.class);
+    return gson().fromJson(json.get("value"), BoundingBox.class);
   }
 
   @Override
@@ -109,7 +110,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new CheckOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("check", params);
   }
 
@@ -118,7 +119,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new ClickOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.remove("button");
     if (options.button != null) {
       params.addProperty("button", Serialization.toProtocol(options.button));
@@ -146,7 +147,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new DblclickOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.remove("button");
     if (options.button != null) {
       params.addProperty("button", Serialization.toProtocol(options.button));
@@ -164,7 +165,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   public void dispatchEvent(String type, Object eventInit) {
     JsonObject params = new JsonObject();
     params.addProperty("type", type);
-    params.add("eventInit", new Gson().toJsonTree(serializeArgument(eventInit)));
+    params.add("eventInit", gson().toJsonTree(serializeArgument(eventInit)));
     sendMessage("dispatchEvent", params);
   }
 
@@ -173,7 +174,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new FillOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("value", value);
     sendMessage("fill", params);
   }
@@ -193,7 +194,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void hover(HoverOptions options) {
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.remove("modifiers");
     if (options.modifiers != null) {
       params.add("modifiers", Serialization.toProtocol(options.modifiers));
@@ -227,7 +228,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new PressOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("key", key);
     sendMessage("press", params);
   }
@@ -244,16 +245,17 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options.type == null) {
       options.type = ScreenshotOptions.Type.PNG;
       if (options.path != null) {
-        int extStart = options.path.getName().lastIndexOf('.');
+        String fileName = options.path.getFileName().toString();
+        int extStart = fileName.lastIndexOf('.');
         if (extStart != -1) {
-          String extension = options.path.getName().substring(extStart).toLowerCase();
+          String extension = fileName.substring(extStart).toLowerCase();
           if (".jpeg".equals(extension) || ".jpg".equals(extension)) {
             options.type = ScreenshotOptions.Type.JPEG;
           }
         }
       }
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.remove("type");
     params.addProperty("type", toProtocol(options.type));
     params.remove("path");
@@ -271,7 +273,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new ScrollIntoViewIfNeededOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("scrollIntoViewIfNeeded", params);
   }
 
@@ -280,9 +282,9 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new SelectOptionOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     if (values != null) {
-      params.add("options", new Gson().toJsonTree(values));
+      params.add("options", gson().toJsonTree(values));
     }
     return selectOption(params);
   }
@@ -292,7 +294,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new SelectOptionOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     if (values != null) {
       params.add("elements", Serialization.toProtocol(values));
     }
@@ -309,12 +311,12 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new SelectTextOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("selectText", params);
   }
 
   @Override
-  public void setInputFiles(File[] files, SetInputFilesOptions options) {
+  public void setInputFiles(Path[] files, SetInputFilesOptions options) {
     setInputFiles(Utils.toFilePayloads(files), options);
   }
 
@@ -323,7 +325,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new SetInputFilesOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.add("files", Serialization.toJsonArray(files));
     sendMessage("setInputFiles", params);
   }
@@ -339,7 +341,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new TypeOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("text", text);
     sendMessage("type", params);
   }
@@ -349,7 +351,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new UncheckOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("uncheck", params);
   }
 
@@ -358,7 +360,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new WaitForElementStateOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("state", toProtocol(state));
     return toDeferred(sendMessageAsync("waitForElementState", params).apply(json -> null));
   }
@@ -375,7 +377,7 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new WaitForSelectorOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.remove("state");
     params.addProperty("state", toProtocol(options.state));
     params.addProperty("selector", selector);

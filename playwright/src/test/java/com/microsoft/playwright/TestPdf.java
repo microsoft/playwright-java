@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,12 +29,10 @@ public class TestPdf extends TestBase {
   @Test
   void shouldBeAbleToSaveFile() throws IOException {
 // TODO:   test.skip(headful || browserName !== "chromium", "Printing to pdf is currently only supported in headless chromium.");
-    File path = File.createTempFile("output", ".pdf");
+    Path path = File.createTempFile("output", ".pdf").toPath();
     page.pdf(new Page.PdfOptions().withPath(path));
-    long size = Files.size(path.toPath());
+    long size = Files.size(path);
     assertTrue(size > 0);
-    Browser b = playwright.webkit().launch();
-    System.out.println(b.version());
   }
 
   @Test
