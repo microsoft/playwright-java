@@ -34,7 +34,7 @@ import java.util.List;
 import static com.microsoft.playwright.impl.Serialization.*;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
-class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
+public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   ElementHandleImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
@@ -382,6 +382,16 @@ class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     params.addProperty("state", toProtocol(options.state));
     params.addProperty("selector", selector);
     return toDeferred(sendMessageAsync("waitForElementState", params).apply(json -> null));
+  }
+
+  public String createSelectorForTest(String name) {
+    JsonObject params = new JsonObject();
+    params.addProperty("name", name);
+    JsonObject json = sendMessage("createSelectorForTest", params).getAsJsonObject();
+    if (json.has("value")) {
+      return json.get("value").getAsString();
+    }
+    return null;
   }
 
   private static String toProtocol(WaitForSelectorOptions.State state) {

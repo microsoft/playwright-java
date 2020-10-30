@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import java.nio.file.Path;
 import java.util.*;
 
 public interface Selectors {
@@ -27,9 +28,9 @@ public interface Selectors {
       return this;
     }
   }
-  default void register(String name, String script) {
-    register(name, script, null);
-  }
+  default void register(String name, String script) { register(name, script, null); }
   void register(String name, String script, RegisterOptions options);
+  default void register(String name, Path path) { register(name, path, null); }
+  void register(String name, Path path, RegisterOptions options);
 }
 

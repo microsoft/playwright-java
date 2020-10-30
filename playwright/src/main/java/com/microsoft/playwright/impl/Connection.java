@@ -228,7 +228,7 @@ public class Connection {
         result = new Stream(parent, type, guid, initializer);
         break;
       case "Selectors":
-//        result = new Playwright(parent, type, guid, initializer);
+        result = new SelectorsImpl(parent, type, guid, initializer);
         break;
       case "Worker":
         result = new WorkerImpl(parent, type, guid, initializer);
