@@ -60,7 +60,7 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldRoundtripUnserializableValues() {
-  Map<String, ?> value = mapOf(
+    Map<String, ?> value = mapOf(
       "infinity", Double.POSITIVE_INFINITY,
       "nInfinity", Double.NEGATIVE_INFINITY,
       "nZero", -0,
@@ -110,7 +110,7 @@ public class TestPageEvaluate extends TestBase {
     assertEquals(true, result);
   }
 
-//  @Test
+  //  @Test
   void shouldTransferMapsAsEmptyObjects() {
     // Not applicable.
   }
@@ -135,9 +135,9 @@ public class TestPageEvaluate extends TestBase {
       "  a[Symbol('foo4')] = 42;\n" +
       "  return a;\n" +
       "}"));
-  assertEquals(mapOf("foo", asList(mapOf("a", null))), page.evaluate("() => {\n" +
-    "  return { foo: [{ a: Symbol('foo4') }] };\n" +
-    "}"));
+    assertEquals(mapOf("foo", asList(mapOf("a", null))), page.evaluate("() => {\n" +
+      "  return { foo: [{ a: Symbol('foo4') }] };\n" +
+      "}"));
   }
 
   void shouldWorkWithFunctionShorthands() {
