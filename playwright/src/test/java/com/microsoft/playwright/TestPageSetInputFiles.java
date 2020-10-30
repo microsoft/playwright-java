@@ -19,6 +19,8 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class TestPageSetInputFiles extends TestBase {
-  static File FILE_TO_UPLOAD = new File("src/test/resources/file-to-upload.txt");
+  static Path FILE_TO_UPLOAD = Paths.get("src/test/resources/file-to-upload.txt");
 
   @Test
   void shouldUploadTheFile() {
@@ -238,7 +240,7 @@ public class TestPageSetInputFiles extends TestBase {
       @Override
       public void handle(Event<Page.EventType> event) {
         FileChooser fileChooser = (FileChooser) event.data();
-        fileChooser.setFiles(new File[0]);
+        fileChooser.setFiles(new Path[0]);
         page.removeListener(Page.EventType.FILECHOOSER, this);
       }
     });
@@ -257,7 +259,7 @@ public class TestPageSetInputFiles extends TestBase {
     page.click("input");
     FileChooser fileChooser = (FileChooser) event.get().data();
     try {
-      fileChooser.setFiles(new File[]{FILE_TO_UPLOAD, new File("src/test/resources/pptr.png")});
+      fileChooser.setFiles(new Path[]{FILE_TO_UPLOAD, Paths.get("src/test/resources/pptr.png")});
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Non-multiple file input can only accept single file"));

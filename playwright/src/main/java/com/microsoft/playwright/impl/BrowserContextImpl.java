@@ -27,6 +27,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 
@@ -77,7 +78,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   public void addCookies(List<AddCookie> cookies) {
     JsonObject params = new JsonObject();
-    params.add("cookies", new Gson().toJsonTree(cookies));
+    params.add("cookies", gson().toJsonTree(cookies));
     sendMessage("addCookies", params);
   }
 
@@ -107,43 +108,15 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     sendMessage("clearPermissions");
   }
 
-  private static class SameSiteAdapter extends TypeAdapter<SameSite> {
-    @Override
-    public void write(JsonWriter out, SameSite value) throws IOException {
-      String stringValue;
-      switch (value) {
-        case STRICT:
-          stringValue = "Strict";
-          break;
-        case LAX:
-          stringValue = "Lax";
-          break;
-        case NONE:
-          stringValue = "None";
-          break;
-        default:
-          throw new PlaywrightException("Unexpected value: " + value);
-      }
-      out.value(stringValue);
-    }
-
-    @Override
-    public SameSite read(JsonReader in) throws IOException {
-      String value = in.nextString();
-      return SameSite.valueOf(value.toUpperCase());
-    }
-  }
-
   @Override
   public List<Cookie> cookies(List<String> urls) {
     JsonObject params = new JsonObject();
     if (urls == null) {
       urls = Collections.emptyList();
     }
-    params.add("urls", new Gson().toJsonTree(urls));
+    params.add("urls", gson().toJsonTree(urls));
     JsonObject json = sendMessage("cookies", params).getAsJsonObject();
-    Gson gson = new GsonBuilder().registerTypeAdapter(SameSite.class, new SameSiteAdapter().nullSafe()).create();
-    Cookie[] cookies = gson.fromJson(json.getAsJsonArray("cookies"), Cookie[].class);
+    Cookie[] cookies = gson().fromJson(json.getAsJsonArray("cookies"), Cookie[].class);
     return Arrays.asList(cookies);
   }
 
@@ -180,8 +153,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     if (permissions == null) {
       permissions = Collections.emptyList();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
-    params.add("permissions", new Gson().toJsonTree(permissions));
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.add("permissions", gson().toJsonTree(permissions));
     sendMessage("grantPermissions", params);
   }
 
@@ -257,7 +230,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   public void setGeolocation(Geolocation geolocation) {
     JsonObject params = new JsonObject();
     if (geolocation != null) {
-      params.add("geolocation", new Gson().toJsonTree(geolocation));
+      params.add("geolocation", gson().toJsonTree(geolocation));
     }
     sendMessage("setGeolocation", params);
   }

@@ -32,8 +32,9 @@ import java.util.*;
 class Utils {
   // TODO: generate converter.
   static <F, T> T convertViaJson(F f, Class<T> t) {
-    String json = new Gson().toJson(f);
-    return new Gson().fromJson(json, t);
+    Gson gson = new Gson();
+    String json = gson.toJson(f);
+    return gson.fromJson(json, t);
   }
 
   static boolean isFunctionBody(String expression) {
@@ -113,30 +114,32 @@ class Utils {
     return mimeType;
   }
 
-  static FileChooser.FilePayload[] toFilePayloads(File[] files) {
+  static FileChooser.FilePayload[] toFilePayloads(Path[] files) {
     List<FileChooser.FilePayload> payloads = new ArrayList<>();
-    for (File file : files) {
+    for (Path file : files) {
       byte[] buffer;
       try {
-        buffer = Files.readAllBytes(file.toPath());
+        buffer = Files.readAllBytes(file);
       } catch (IOException e) {
         throw new PlaywrightException("Failed to read from file", e);
       }
-      payloads.add(new FileChooser.FilePayload(file.getName(), mimeType(file.toPath()), buffer));
+      payloads.add(new FileChooser.FilePayload(file.getFileName().toString(), mimeType(file), buffer));
     }
     return payloads.toArray(new FileChooser.FilePayload[0]);
   }
 
-  static void writeToFile(byte[] buffer, File path) {
-    File dir = path.getParentFile();
+  static void writeToFile(byte[] buffer, Path path) {
+    Path dir = path.getParent();
     if (dir != null) {
-      if (!dir.exists()) {
-        if (!dir.mkdirs()) {
-          throw new PlaywrightException("Failed to create parent directory: " + dir.getPath());
+      if (!Files.exists(dir)) {
+        try {
+          Files.createDirectories(dir);
+        } catch (IOException e) {
+          throw new PlaywrightException("Failed to create parent directory: " + dir.toString(), e);
         }
       }
     }
-    try (DataOutputStream out = new DataOutputStream(new FileOutputStream(path));) {
+    try (DataOutputStream out = new DataOutputStream(new FileOutputStream(path.toFile()));) {
       out.write(buffer);
     } catch (IOException e) {
       throw new PlaywrightException("Failed to write to file", e);

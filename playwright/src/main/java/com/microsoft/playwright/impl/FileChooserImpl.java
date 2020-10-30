@@ -23,6 +23,7 @@ import com.microsoft.playwright.FileChooser;
 import com.microsoft.playwright.Page;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 
@@ -53,7 +54,7 @@ class FileChooserImpl implements FileChooser {
   }
 
   @Override
-  public void setFiles(File[] files, SetFilesOptions options) {
+  public void setFiles(Path[] files, SetFilesOptions options) {
     setFiles(Utils.toFilePayloads(files), options);
   }
 

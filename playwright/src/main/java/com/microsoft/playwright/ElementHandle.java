@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.*;
 
 public interface ElementHandle extends JSHandle {
@@ -211,13 +211,13 @@ public interface ElementHandle extends JSHandle {
   }
   class ScreenshotOptions {
     public enum Type { JPEG, PNG }
-    public File path;
+    public Path path;
     public Type type;
     public Integer quality;
     public Boolean omitBackground;
     public Integer timeout;
 
-    public ScreenshotOptions withPath(File path) {
+    public ScreenshotOptions withPath(Path path) {
       this.path = path;
       return this;
     }
@@ -434,10 +434,10 @@ public interface ElementHandle extends JSHandle {
     selectText(null);
   }
   void selectText(SelectTextOptions options);
-  default void setInputFiles(File file) { setInputFiles(file, null); }
-  default void setInputFiles(File file, SetInputFilesOptions options) { setInputFiles(new File[]{ file }, options); }
-  default void setInputFiles(File[] files) { setInputFiles(files, null); }
-  void setInputFiles(File[] files, SetInputFilesOptions options);
+  default void setInputFiles(Path file) { setInputFiles(file, null); }
+  default void setInputFiles(Path file, SetInputFilesOptions options) { setInputFiles(new Path[]{ file }, options); }
+  default void setInputFiles(Path[] files) { setInputFiles(files, null); }
+  void setInputFiles(Path[] files, SetInputFilesOptions options);
   default void setInputFiles(FileChooser.FilePayload file) { setInputFiles(file, null); }
   default void setInputFiles(FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(new FileChooser.FilePayload[]{ file }, options); }
   default void setInputFiles(FileChooser.FilePayload[] files) { setInputFiles(files, null); }

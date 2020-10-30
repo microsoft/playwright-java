@@ -16,21 +16,32 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.microsoft.playwright.*;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 class Serialization {
+  private static Gson gson;
+
+  static Gson gson() {
+    if (gson == null) {
+      gson = new GsonBuilder()
+        .registerTypeAdapter(BrowserContext.SameSite.class, new SameSiteAdapter().nullSafe())
+        .registerTypeAdapter(BrowserType.LaunchPersistentContextOptions.ColorScheme.class, new ColorSchemeAdapter().nullSafe())
+        .registerTypeAdapter(Path.class, new PathSerializer()).create();
+    }
+    return gson;
+  }
+
   static SerializedError serializeError(Throwable e) {
     SerializedError result = new SerializedError();
     result.error = new SerializedError.Error();
@@ -40,7 +51,7 @@ class Serialization {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     e.printStackTrace(new PrintStream(out));
     result.error.stack = new String(out.toByteArray(), StandardCharsets.UTF_8);
-    return  result;
+    return result;
   }
 
   private static SerializedValue serializeValue(Object value, List<JSHandleImpl> handles, int depth) {
@@ -56,7 +67,7 @@ class Serialization {
     if (value == null) {
       result.v = "undefined";
     } else if (value instanceof Double) {
-      double d = ((Double) value).doubleValue();
+      double d = ((Double) value);
       if (d == Double.POSITIVE_INFINITY) {
         result.v = "Infinity";
       } else if (d == Double.NEGATIVE_INFINITY) {
@@ -160,15 +171,19 @@ class Serialization {
       }
       return (T) map;
     }
-    throw new PlaywrightException("Unexpected result: " + new Gson().toJson(value));
+    throw new PlaywrightException("Unexpected result: " + gson().toJson(value));
   }
 
   static String toProtocol(Mouse.Button button) {
     switch (button) {
-      case LEFT: return "left";
-      case RIGHT: return "right";
-      case MIDDLE: return "middle";
-      default: throw new PlaywrightException("Unexpected value: " + button);
+      case LEFT:
+        return "left";
+      case RIGHT:
+        return "right";
+      case MIDDLE:
+        return "middle";
+      default:
+        throw new PlaywrightException("Unexpected value: " + button);
     }
   }
 
@@ -229,4 +244,71 @@ class Serialization {
     }
     return result;
   }
+
+  private static class PathSerializer implements JsonSerializer<Path> {
+    @Override
+    public JsonElement serialize(Path src, Type typeOfSrc, JsonSerializationContext context) {
+      return new JsonPrimitive(src.toString());
+    }
+  }
+
+  private static class SameSiteAdapter extends TypeAdapter<BrowserContext.SameSite> {
+    @Override
+    public void write(JsonWriter out, BrowserContext.SameSite value) throws IOException {
+      String stringValue;
+      switch (value) {
+        case STRICT:
+          stringValue = "Strict";
+          break;
+        case LAX:
+          stringValue = "Lax";
+          break;
+        case NONE:
+          stringValue = "None";
+          break;
+        default:
+          throw new PlaywrightException("Unexpected value: " + value);
+      }
+      out.value(stringValue);
+    }
+
+    @Override
+    public BrowserContext.SameSite read(JsonReader in) throws IOException {
+      String value = in.nextString();
+      return BrowserContext.SameSite.valueOf(value.toUpperCase());
+    }
+  }
+
+  private static class ColorSchemeAdapter extends TypeAdapter<BrowserType.LaunchPersistentContextOptions.ColorScheme> {
+    @Override
+    public void write(JsonWriter out, BrowserType.LaunchPersistentContextOptions.ColorScheme value) throws IOException {
+      String stringValue;
+      switch (value) {
+        case DARK:
+          stringValue = "dark";
+          break;
+        case LIGHT:
+          stringValue = "light";
+          break;
+        case NO_PREFERENCE:
+          stringValue = "no-preference";
+          break;
+        default:
+          throw new PlaywrightException("Unexpected value: " + value);
+      }
+      out.value(stringValue);
+    }
+
+    @Override
+    public BrowserType.LaunchPersistentContextOptions.ColorScheme read(JsonReader in) throws IOException {
+      String value = in.nextString();
+      switch (value) {
+        case "dark": return BrowserType.LaunchPersistentContextOptions.ColorScheme.DARK;
+        case "light": return BrowserType.LaunchPersistentContextOptions.ColorScheme.LIGHT;
+        case "no-preference": return BrowserType.LaunchPersistentContextOptions.ColorScheme.NO_PREFERENCE;
+        default: throw new PlaywrightException("Unexpected value: " + value);
+      }
+    }
+  }
 }
+

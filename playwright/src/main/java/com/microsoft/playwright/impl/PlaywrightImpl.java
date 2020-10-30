@@ -59,7 +59,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
     firefox = parent.connection.getExistingObject(initializer.getAsJsonObject("firefox").get("guid").getAsString());
     webkit = parent.connection.getExistingObject(initializer.getAsJsonObject("webkit").get("guid").getAsString());
 
-    Gson gson = new Gson();
+    Gson gson = Serialization.gson();
     for (JsonElement item : initializer.getAsJsonArray("deviceDescriptors")) {
       JsonObject o = item.getAsJsonObject();
       String name = o.get("name").getAsString();

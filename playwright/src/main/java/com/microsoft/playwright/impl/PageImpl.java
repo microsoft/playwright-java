@@ -23,11 +23,13 @@ import com.microsoft.playwright.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 
 
@@ -156,7 +158,7 @@ public class PageImpl extends ChannelOwner implements Page {
         route.continue_();
       }
     } else if ("pageError".equals(event)) {
-      SerializedError error = new Gson().fromJson(params.getAsJsonObject("error"), SerializedError.class);
+      SerializedError error = gson().fromJson(params.getAsJsonObject("error"), SerializedError.class);
       listeners.notify(EventType.PAGEERROR, new ErrorImpl(error));
     } else if ("crash".equals(event)) {
       listeners.notify(EventType.CRASH, null);
@@ -203,7 +205,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void close(CloseOptions options) {
-    JsonObject params = options == null ? new JsonObject() : new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = options == null ? new JsonObject() : gson().toJsonTree(options).getAsJsonObject();
     sendMessage("close", params);
     if (ownedContext != null) {
       ownedContext.close();
@@ -416,7 +418,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new GoBackOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.remove("waitUntil");
     params.addProperty("waitUntil", FrameImpl.toProtocol(options.waitUntil));
     JsonObject json = sendMessage("goBack", params).getAsJsonObject();
@@ -431,7 +433,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new GoForwardOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.remove("waitUntil");
     params.addProperty("waitUntil", FrameImpl.toProtocol(options.waitUntil));
     JsonObject json = sendMessage("goForward", params).getAsJsonObject();
@@ -498,7 +500,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new PdfOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.remove("path");
     JsonObject json = sendMessage("pdf", params).getAsJsonObject();
     byte[] buffer = Base64.getDecoder().decode(json.get("pdf").getAsString());
@@ -518,7 +520,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new ReloadOptions();
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.remove("waitUntil");
     params.addProperty("waitUntil", FrameImpl.toProtocol(options.waitUntil));
     JsonObject json = sendMessage("reload", params).getAsJsonObject();
@@ -564,16 +566,17 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options.type == null) {
       options.type = ScreenshotOptions.Type.PNG;
       if (options.path != null) {
-        int extStart = options.path.getName().lastIndexOf('.');
+        String fileName = options.path.getFileName().toString();
+        int extStart = fileName.lastIndexOf('.');
         if (extStart != -1) {
-          String extension = options.path.getName().substring(extStart).toLowerCase();
+          String extension = fileName.substring(extStart).toLowerCase();
           if (".jpeg".equals(extension) || ".jpg".equals(extension)) {
             options.type = ScreenshotOptions.Type.JPEG;
           }
         }
       }
     }
-    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.remove("type");
     params.addProperty("type", toProtocol(options.type));
     params.remove("path");
@@ -632,7 +635,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void setInputFiles(String selector, File[] files, SetInputFilesOptions options) {
+  public void setInputFiles(String selector, Path[] files, SetInputFilesOptions options) {
     mainFrame.setInputFiles(selector, files, convertViaJson(options, Frame.SetInputFilesOptions.class));
   }
 
@@ -645,7 +648,7 @@ public class PageImpl extends ChannelOwner implements Page {
   public void setViewportSize(int width, int height) {
     viewport = new Viewport(width, height);
     JsonObject params = new JsonObject();
-    params.add("viewportSize", new Gson().toJsonTree(viewport));
+    params.add("viewportSize", gson().toJsonTree(viewport));
     sendMessage("setViewportSize", params);
   }
 
