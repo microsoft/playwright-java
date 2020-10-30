@@ -93,7 +93,6 @@ public class Connection {
     return result;
   }
 
-
   public ChannelOwner waitForObjectWithKnownName(String guid) {
     while (!objects.containsKey(guid)) {
       processOneMessage();
@@ -112,7 +111,7 @@ public class Connection {
     objects.put(guid, object);
   }
 
-  void unregisterObject(String guid, ChannelOwner object) {
+  void unregisterObject(String guid) {
     objects.remove(guid);
   }
 
