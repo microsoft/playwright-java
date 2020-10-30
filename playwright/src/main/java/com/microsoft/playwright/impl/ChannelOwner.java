@@ -20,6 +20,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Deferred;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,11 +50,22 @@ class ChannelOwner {
     this.initializer = initializer;
 
     connection.registerObject(guid, this);
-    if (parent != null)
+    if (parent != null) {
       parent.objects.put(guid, this);
+    }
   }
 
-  public void dispose() {
+  void disconnect() {
+    // Clean up from parent and connection.
+    if (parent != null) {
+      parent.objects.remove(guid);
+    }
+    connection.unregisterObject(guid);
+    // Dispose all children.
+    for (ChannelOwner child : new ArrayList<>(objects.values())) {
+      child.disconnect();
+    }
+    objects.clear();
   }
 
   WaitableResult<JsonElement> sendMessageAsync(String method, JsonObject params) {
