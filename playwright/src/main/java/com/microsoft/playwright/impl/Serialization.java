@@ -152,8 +152,9 @@ class Serialization {
           return (T) Double.valueOf(Double.POSITIVE_INFINITY);
         case "-Infinity":
           return (T) Double.valueOf(Double.NEGATIVE_INFINITY);
-        case "-0":
-          return (T) Double.valueOf(-0);
+        case "-0": {
+          return (T) Double.valueOf(-0.0);
+        }
         case "NaN":
           return (T) Double.valueOf(Double.NaN);
         default:
