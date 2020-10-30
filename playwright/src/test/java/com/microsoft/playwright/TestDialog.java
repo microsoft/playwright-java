@@ -30,7 +30,7 @@ public class TestDialog extends TestBase {
   void shouldFire() {
     page.addListener(DIALOG, event -> {
       Dialog dialog = (Dialog) event.data();
-      assertEquals( ALERT, dialog.type());
+      assertEquals(ALERT, dialog.type());
       assertEquals( "", dialog.defaultValue());
       assertEquals( "yo", dialog.message());
       dialog.accept();
