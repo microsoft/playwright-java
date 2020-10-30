@@ -61,7 +61,7 @@ public class TestRequestFulfill extends TestBase {
     page.route("**/*", route -> {
       byte[] imageBuffer;
       try {
-        imageBuffer = Files.readAllBytes(new File("src/test/resources/pptr.png").toPath());
+        imageBuffer = Files.readAllBytes(Paths.get("src/test/resources/pptr.png"));
       } catch (IOException e) {
         e.printStackTrace();
         throw new RuntimeException(e);

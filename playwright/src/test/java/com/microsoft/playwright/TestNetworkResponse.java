@@ -18,9 +18,10 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.concurrent.Future;
 
@@ -111,7 +112,7 @@ public class TestNetworkResponse extends TestBase {
   @Test
   void shouldReturnBody() throws IOException {
     Response response = page.navigate(server.PREFIX + "/pptr.png");
-    byte[] expected = Files.readAllBytes(new File("src/test/resources/pptr.png").toPath());
+    byte[] expected = Files.readAllBytes(Paths.get("src/test/resources/pptr.png"));
     assertTrue(Arrays.equals(expected, response.body()));
   }
 
@@ -119,7 +120,7 @@ public class TestNetworkResponse extends TestBase {
   void shouldReturnBodyWithCompression() throws IOException {
     server.enableGzip("/pptr.png");
     Response response = page.navigate(server.PREFIX + "/pptr.png");
-    byte[] expected = Files.readAllBytes(new File("src/test/resources/pptr.png").toPath());
+    byte[] expected = Files.readAllBytes(Paths.get("src/test/resources/pptr.png"));
     assertTrue(Arrays.equals(expected, response.body()));
   }
 

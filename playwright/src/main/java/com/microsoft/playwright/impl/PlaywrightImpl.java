@@ -20,10 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.DeviceDescriptor;
-import com.microsoft.playwright.Playwright;
-import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +48,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private final BrowserTypeImpl chromium;
   private final BrowserTypeImpl firefox;
   private final BrowserTypeImpl webkit;
+  private final Selectors selectors;
   private final Map<String, DeviceDescriptor> devices = new HashMap<>();
 
   public PlaywrightImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -58,6 +56,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
     chromium = parent.connection.getExistingObject(initializer.getAsJsonObject("chromium").get("guid").getAsString());
     firefox = parent.connection.getExistingObject(initializer.getAsJsonObject("firefox").get("guid").getAsString());
     webkit = parent.connection.getExistingObject(initializer.getAsJsonObject("webkit").get("guid").getAsString());
+    selectors = parent.connection.getExistingObject(initializer.getAsJsonObject("selectors").get("guid").getAsString());
 
     Gson gson = Serialization.gson();
     for (JsonElement item : initializer.getAsJsonArray("deviceDescriptors")) {
@@ -86,5 +85,10 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   @Override
   public Map<String, DeviceDescriptor> devices() {
     return devices;
+  }
+
+  @Override
+  public Selectors selectors() {
+    return selectors;
   }
 }

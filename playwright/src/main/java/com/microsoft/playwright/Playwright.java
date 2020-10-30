@@ -31,4 +31,6 @@ public interface Playwright {
   BrowserType webkit();
 
   Map<String, DeviceDescriptor> devices();
+
+  Selectors selectors();
 }

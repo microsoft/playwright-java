@@ -376,6 +376,13 @@ class Method extends Element {
       .replace("String selector, ", "")
       .replace("(selector, ", "(")
       .replace("ElementHandle.", "")).toArray(String[]::new));
+
+    customSignature.put("Selectors.register", new String[] {
+      "default void register(String name, String script) { register(name, script, null); }",
+      "void register(String name, String script, RegisterOptions options);",
+      "default void register(String name, Path path) { register(name, path, null); }",
+      "void register(String name, Path path, RegisterOptions options);"
+    });
   }
 
   Method(TypeDefinition parent, JsonObject jsonElement) {
@@ -656,7 +663,7 @@ class Interface extends TypeDefinition {
     if ("Download".equals(jsonName)) {
       output.add("import java.io.InputStream;");
     }
-    if (asList("Page", "Frame", "ElementHandle", "FileChooser", "ChromiumBrowser", "Download", "Route").contains(jsonName)) {
+    if (asList("Page", "Frame", "ElementHandle", "FileChooser", "ChromiumBrowser", "Download", "Route", "Selectors").contains(jsonName)) {
       output.add("import java.nio.file.Path;");
     }
     output.add("import java.util.*;");
