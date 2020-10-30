@@ -26,7 +26,6 @@ public interface Browser {
   void addListener(EventType type, Listener<EventType> listener);
   void removeListener(EventType type, Listener<EventType> listener);
   class NewContextOptions {
-    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
     public class VideoSize {
       public int width;
       public int height;
@@ -149,7 +148,6 @@ public interface Browser {
     }
   }
   class NewPageOptions {
-    public enum ColorScheme { DARK, LIGHT, NO_PREFERENCE }
     public class VideoSize {
       public int width;
       public int height;

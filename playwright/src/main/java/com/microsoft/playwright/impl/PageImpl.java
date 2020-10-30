@@ -16,13 +16,11 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.microsoft.playwright.*;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -295,34 +293,12 @@ public class PageImpl extends ChannelOwner implements Page {
     mainFrame.dispatchEvent(selector, type, eventInit, convertViaJson(options, Frame.DispatchEventOptions.class));
   }
 
-  private static String toProtocol(EmulateMediaOptions.Media media) {
-    if (media == null) {
-      return "null";
-    }
-    return media.toString().toLowerCase();
-  }
-
-  private static String toProtocol(EmulateMediaOptions.ColorScheme colorScheme) {
-    if (colorScheme == null) {
-      return "null";
-    }
-    switch (colorScheme) {
-      case DARK:
-        return "dark";
-      case LIGHT:
-        return "light";
-      case NO_PREFERENCE:
-        return "no-preference";
-      default:
-        throw new PlaywrightException("Unknown option: " + colorScheme);
-    }
-  }
-
   @Override
   public void emulateMedia(EmulateMediaOptions options) {
-    JsonObject params = new JsonObject();
-    params.addProperty("media", toProtocol(options.media));
-    params.addProperty("colorScheme", toProtocol(options.colorScheme));
+    if (options == null) {
+      options = new EmulateMediaOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("emulateMedia", params);
   }
 

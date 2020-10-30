@@ -23,8 +23,6 @@ import com.google.gson.JsonObject;
 import java.io.*;
 import java.nio.file.FileSystems;
 import java.util.*;
-import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -501,6 +499,11 @@ class Field extends Element {
       output.add(offset + "public byte[] bodyBytes;");
       return;
     }
+    if (asList("Page.emulateMedia.options.media",
+      "Page.emulateMedia.options.colorScheme").contains(jsonPath)) {
+      output.add(offset + access + "Optional<" + type.toJava() + "> " + name + ";");
+      return;
+    }
     output.add(offset + access + type.toJava() + " " + name + ";");
   }
 
@@ -557,7 +560,14 @@ class Field extends Element {
       output.add(offset + "}");
       return;
     }
-
+    if (asList("Page.emulateMedia.options.media",
+               "Page.emulateMedia.options.colorScheme").contains(jsonPath)) {
+      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + type.toJava() + " " + name + ") {");
+      output.add(offset + "  this." + name + " = Optional.ofNullable(" + name + ");");
+      output.add(offset + "  return this;");
+      output.add(offset + "}");
+      return;
+    }
     if ("Route.continue.overrides.postData".equals(jsonPath)) {
       output.add(offset + "public ContinueOverrides withPostData(String postData) {");
       output.add(offset + "  this.postData = postData.getBytes(StandardCharsets.UTF_8);");
