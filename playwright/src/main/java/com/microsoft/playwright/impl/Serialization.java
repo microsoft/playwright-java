@@ -90,15 +90,15 @@ class Serialization {
       result.s = (String) value;
     } else if (value instanceof List) {
       List<SerializedValue> list = new ArrayList<>();
-      for (Object o : (List<Object>) value) {
+      for (Object o : (List<?>) value) {
         list.add(serializeValue(o, handles, depth + 1));
       }
       result.a = list.toArray(new SerializedValue[0]);
     } else if (value instanceof Map) {
       List<SerializedValue.O> list = new ArrayList<>();
       @SuppressWarnings("unchecked")
-      Map<String, Object> map = (Map<String, Object>) value;
-      for (Map.Entry<String, Object> e : map.entrySet()) {
+      Map<String, ?> map = (Map<String, ?>) value;
+      for (Map.Entry<String, ?> e : map.entrySet()) {
         SerializedValue.O o = new SerializedValue.O();
         o.k = e.getKey();
         o.v = serializeValue(e.getValue(), handles, depth + 1);

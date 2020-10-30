@@ -55,7 +55,7 @@ class ChannelOwner {
     }
   }
 
-  void dispose() {
+  void disconnect() {
     // Clean up from parent and connection.
     if (parent != null) {
       parent.objects.remove(guid);
@@ -63,7 +63,7 @@ class ChannelOwner {
     connection.unregisterObject(guid);
     // Dispose all children.
     for (ChannelOwner child : new ArrayList<>(objects.values())) {
-      child.dispose();
+      child.disconnect();
     }
     objects.clear();
   }

@@ -39,6 +39,11 @@ public class JSHandleImpl extends ChannelOwner implements JSHandle {
   }
 
   @Override
+  public void dispose() {
+    sendMessage("dispose");
+  }
+
+  @Override
   public Object evaluate(String pageFunction, Object arg) {
     JsonObject params = new JsonObject();
     params.addProperty("expression", pageFunction);

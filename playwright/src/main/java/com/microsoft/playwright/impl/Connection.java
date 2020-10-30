@@ -155,7 +155,7 @@ public class Connection {
       if (object == null) {
         throw new PlaywrightException("Cannot find object to dispose: " + message.guid);
       }
-      object.dispose();
+      object.disconnect();
       return;
     }
     ChannelOwner object = objects.get(message.guid);
