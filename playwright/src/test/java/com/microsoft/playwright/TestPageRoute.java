@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.Page.EventType.REQUEST;
@@ -37,7 +38,8 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldIntercept() {
     boolean[] intercepted = {false};
-    page.route("**/empty.html", (route, request) -> {
+    page.route("**/empty.html", route -> {
+      Request request = route.request();
       assertEquals(request, route.request());
       assertTrue(request.url().contains("empty.html"));
       assertNotNull(request.headers().get("user-agent"));
@@ -59,20 +61,20 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldUnroute() {
     List<Integer> intercepted = new ArrayList<>();
-    BiConsumer<Route, Request> handler1 = (route, request) -> {
+    Consumer<Route> handler1 = route -> {
       intercepted.add(1);
       route.continue_();
     };
     page.route("**/empty.html", handler1);
-    page.route("**/empty.html", (route, request) -> {
+    page.route("**/empty.html", route -> {
       intercepted.add(2);
       route.continue_();
     });
-    page.route("**/empty.html", (route, request) -> {
+    page.route("**/empty.html", route -> {
       intercepted.add(3);
       route.continue_();
     });
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       intercepted.add(4);
       route.continue_();
     });
@@ -94,7 +96,7 @@ public class TestPageRoute extends TestBase {
   void shouldWorkWhenPOSTIsRedirectedWith302() {
     server.setRedirect("/rredirect", "/empty.html");
     page.navigate(server.EMPTY_PAGE);
-    page.route("**/*", (route, request) -> route.continue_());
+    page.route("**/*", route -> route.continue_());
     page.setContent("<form action='/rredirect' method='post'>\n" +
       "  <input type='hidden' id='foo' name='foo' value='FOOBAR'>\n" +
       "</form>");
@@ -106,7 +108,7 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldWorkWhenHeaderManipulationHeadersWithRedirect() {
     server.setRedirect("/rrredirect", "/empty.html");
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       Map<String, String> headers = new HashMap<>(route.request().headers());
       headers.put("foo", "bar");
       route.continue_(new Route.ContinueOverrides().withHeaders(headers));
@@ -117,7 +119,7 @@ public class TestPageRoute extends TestBase {
   // @see https://github.com/GoogleChrome/puppeteer/issues/4743
   @Test
   void shouldBeAbleToRemoveHeaders() throws ExecutionException, InterruptedException {
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       Map<String, String> headers = new HashMap<>(route.request().headers());
       headers.put("foo", "bar");
       headers.remove("accept");
@@ -132,7 +134,7 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldContainRefererHeader() {
     List<Request> requests = new ArrayList<>();
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       requests.add(route.request());
       route.continue_();
     });
@@ -149,7 +151,7 @@ public class TestPageRoute extends TestBase {
     context.addCookies(asList(new BrowserContext.AddCookie()
       .withUrl(server.EMPTY_PAGE).withName("foo").withValue("bar")));
     // Setup request interception.
-    page.route("**/*", (route, request) -> route.continue_());
+    page.route("**/*", route -> route.continue_());
     Response response = page.reload();
     assertEquals(200, response.status());
   }
@@ -157,8 +159,8 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldShowCustomHTTPHeaders() {
     page.setExtraHTTPHeaders(mapOf("foo", "bar"));
-    page.route("**/*", (route, request) -> {
-      assertEquals("bar", request.headers().get("foo"));
+    page.route("**/*", route -> {
+      assertEquals("bar", route.request().headers().get("foo"));
       route.continue_();
     });
     Response response = page.navigate(server.EMPTY_PAGE);
@@ -170,7 +172,7 @@ public class TestPageRoute extends TestBase {
   void shouldWorkWithRedirectInsideSyncXHR() {
     page.navigate(server.EMPTY_PAGE);
     server.setRedirect("/logo.png", "/pptr.png");
-    page.route("**/*", (route, request) -> route.continue_());
+    page.route("**/*", route -> route.continue_());
     Object status = page.evaluate("async () => {\n" +
       "  const request = new XMLHttpRequest();\n" +
       "  request.open('GET', '/logo.png', false);  // `false` makes the request synchronous\n" +
@@ -183,7 +185,7 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldWorkWithCustomRefererHeaders() {
     page.setExtraHTTPHeaders(mapOf("referer", server.EMPTY_PAGE));
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       assertEquals(server.EMPTY_PAGE, route.request().headers().get("referer"));
       route.continue_();
     });
@@ -193,7 +195,7 @@ public class TestPageRoute extends TestBase {
 
   @Test
   void shouldBeAbortable() {
-    page.route(Pattern.compile(".*\\.css$"), (route, request) -> route.abort());
+    page.route(Pattern.compile(".*\\.css$"), route -> route.abort());
     boolean[] failed = {false};
     page.addListener(REQUESTFAILED, event -> {
       Request request = (Request) event.data();
@@ -208,7 +210,7 @@ public class TestPageRoute extends TestBase {
 
   @Test
   void shouldBeAbortableWithCustomErrorCodes() {
-    page.route("**/*", (route, request) -> route.abort("internetdisconnected"));
+    page.route("**/*", route -> route.abort("internetdisconnected"));
     Request[] failedRequest = {null};
     page.addListener(REQUESTFAILED, event -> failedRequest[0] = (Request) event.data());
     try {
@@ -227,7 +229,7 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldSendReferer() throws ExecutionException, InterruptedException {
     page.setExtraHTTPHeaders(mapOf("referer", "http://google.com/"));
-    page.route("**/*", (route, request) -> route.continue_());
+    page.route("**/*", route -> route.continue_());
     Future<Server.Request> request = server.waitForRequest("/grid.html");
     page.navigate(server.PREFIX + "/grid.html");
     assertEquals(asList("http://google.com/"), request.get().headers.get("referer"));
@@ -235,7 +237,7 @@ public class TestPageRoute extends TestBase {
 
   @Test
   void shouldFailNavigationWhenAbortingMainResource() {
-    page.route("**/*", (route, request) -> route.abort());
+    page.route("**/*", route -> route.abort());
     try {
       page.navigate(server.EMPTY_PAGE);
       fail("did not throw");
@@ -253,7 +255,7 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldNotWorkWithRedirects() {
     List<Request> intercepted = new ArrayList<>();
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       route.continue_();
       intercepted.add(route.request());
     });
@@ -290,7 +292,7 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldWorkWithRedirectsForSubresources() {
     List<Request> intercepted = new ArrayList<>();
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       route.continue_();
       intercepted.add(route.request());
     });
@@ -333,7 +335,7 @@ public class TestPageRoute extends TestBase {
 
     boolean[] spinner = {false};
     // Cancel 2nd request.
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       if (spinner[0]) {
         route.abort();
       } else {
@@ -351,7 +353,7 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldNavigateToDataURLAndNotFireDataURLRequests() {
     List<Request> requests = new ArrayList<>();
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       requests.add(route.request());
       route.continue_();
     });
@@ -365,7 +367,7 @@ public class TestPageRoute extends TestBase {
   void shouldBeAbleToFetchDataURLAndNotFireDataURLRequests() {
     page.navigate(server.EMPTY_PAGE);
     List<Request> requests = new ArrayList<>();
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       requests.add(route.request());
       route.continue_();
     });
@@ -378,7 +380,7 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldNavigateToURLWithHashAndAndFireRequestsWithoutHash() {
     List<Request> requests = new ArrayList<>();
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       requests.add(route.request());
       route.continue_();
     });
@@ -393,7 +395,7 @@ public class TestPageRoute extends TestBase {
   void shouldWorkWithEncodedServer() throws InterruptedException {
     // The requestWillBeSent will report encoded URL, whereas interception will
     // report URL as-is. @see crbug.com/759388
-    page.route("**/*", (route, request) -> route.continue_());
+    page.route("**/*", route -> route.continue_());
     Response response = page.navigate(server.PREFIX + "/some nonexisting page");
     assertEquals(404, response.status());
   }
@@ -404,7 +406,7 @@ public class TestPageRoute extends TestBase {
       exchange.sendResponseHeaders(200, 0);
       exchange.getResponseBody().close();
     });
-    page.route("**/*", (route, request) -> route.continue_());
+    page.route("**/*", route -> route.continue_());
     Response response = page.navigate(server.PREFIX + "/malformed?rnd=%911");
     assertEquals(200, response.status());
   }
@@ -414,7 +416,7 @@ public class TestPageRoute extends TestBase {
     // The requestWillBeSent will report URL as-is, whereas interception will
     // report encoded URL for stylesheet. @see crbug.com/759388
     List<Request> requests = new ArrayList<>();
-    page.route("**/*", (route, request) -> {
+    page.route("**/*", route -> {
       route.continue_();
       requests.add(route.request());
     });
@@ -428,7 +430,7 @@ public class TestPageRoute extends TestBase {
   void shouldNotThrowInvalidInterceptionIdIfTheRequestWasCancelled() {
     page.setContent("<iframe></iframe>");
     Route[] route = {null};
-    page.route("**/*", (r, req) -> route[0] = r);
+    page.route("**/*", r -> route[0] = r);
     // Wait for request interception.
     Deferred<Event<Page.EventType>> event = page.waitForEvent(REQUEST);
     page.evalOnSelector("iframe", "(frame, url) => frame.src = url", server.EMPTY_PAGE);
@@ -446,7 +448,7 @@ public class TestPageRoute extends TestBase {
   void shouldInterceptMainResourceDuringCrossProcessNavigation() {
     page.navigate(server.EMPTY_PAGE);
     boolean[] intercepted = {false};
-    page.route(server.CROSS_PROCESS_PREFIX + "/empty.html", (route, request) -> {
+    page.route(server.CROSS_PROCESS_PREFIX + "/empty.html", route -> {
       intercepted[0] = true;
       route.continue_();
     });
@@ -458,9 +460,8 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldCreateARedirect() {
     page.navigate(server.PREFIX + "/empty.html");
-    page.route("**/*", (route, request) -> {
-      System.out.println(request.url());
-      if (!request.url().equals(server.PREFIX + "/redirect_this")) {
+    page.route("**/*", route -> {
+      if (!route.request().url().equals(server.PREFIX + "/redirect_this")) {
         route.continue_();
         return;
       }
@@ -478,9 +479,9 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldSupportCorsWithGET() {
     page.navigate(server.EMPTY_PAGE);
-    page.route("**/cars*", (route, request) -> {
+    page.route("**/cars*", route -> {
       Map<String, String> headers = new HashMap<>();
-      if (request.url().endsWith("allow")) {
+      if (route.request().url().endsWith("allow")) {
         headers.put("access-control-allow-origin", "*");
       }
       route.fulfill(new Route.FulfillResponse()
@@ -514,7 +515,7 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldSupportCorsWithPOST() {
     page.navigate(server.EMPTY_PAGE);
-    page.route("**/cars", (route, request) -> {
+    page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillResponse()
         .withStatus(200)
         .withContentType("application/json")
@@ -536,7 +537,7 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldSupportCorsWithCredentials() {
     page.navigate(server.EMPTY_PAGE);
-    page.route("**/cars", (route, request) -> {
+    page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillResponse()
         .withStatus(200)
         .withContentType("application/json")
@@ -560,7 +561,7 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldRejectCorsWithDisallowedCredentials() {
     page.navigate(server.EMPTY_PAGE);
-    page.route("**/cars", (route, request) -> {
+    page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillResponse()
         .withStatus(200)
         .withContentType("application/json")
@@ -588,12 +589,12 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldSupportCorsForDifferentMethods() {
     page.navigate(server.EMPTY_PAGE);
-    page.route("**/cars", (route, request) -> {
+    page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillResponse()
         .withStatus(200)
         .withContentType("application/json")
         .withHeaders(mapOf("Access-Control-Allow-Origin", "*"))
-        .withBody("[\"" + request.method() + "\",\"electric\",\"gas\"]"));
+        .withBody("[\"" + route.request().method() + "\",\"electric\",\"gas\"]"));
     });
     // First POST
     {

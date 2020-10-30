@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,7 +33,7 @@ public class TestBrowserContextRoute extends TestBase {
     BrowserContext context = browser.newContext();
     boolean[] intercepted = {false};
     Page page = context.newPage();
-    context.route("**/empty.html", (route, req) -> {
+    context.route("**/empty.html", route -> {
       intercepted[0] = true;
       Request request = route.request();
       assertTrue(request.url().contains("empty.html"));
@@ -57,20 +58,20 @@ public class TestBrowserContextRoute extends TestBase {
     Page page = context.newPage();
 
     List<Integer> intercepted = new ArrayList<>();
-    BiConsumer<Route, Request>  handler1 = (route, request) -> {
+    Consumer<Route> handler1 = route -> {
       intercepted.add(1);
       route.continue_();
     };
     context.route("**/empty.html", handler1);
-    context.route("**/empty.html", (route, request) -> {
+    context.route("**/empty.html", route -> {
       intercepted.add(2);
       route.continue_();
     });
-    context.route("**/empty.html", (route, request) -> {
+    context.route("**/empty.html", route -> {
       intercepted.add(3);
       route.continue_();
     });
-    context.route("**/*", (route, request) -> {
+    context.route("**/*", route -> {
       intercepted.add(4);
       route.continue_();
     });
@@ -93,11 +94,11 @@ public class TestBrowserContextRoute extends TestBase {
   @Test
   void shouldYieldToPageRoute() {
     BrowserContext context = browser.newContext();
-    context.route("**/empty.html", (route, request) -> {
+    context.route("**/empty.html", route -> {
       route.fulfill(new Route.FulfillResponse().withStatus(200).withBody("context"));
     });
     Page page = context.newPage();
-    page.route("**/empty.html", (route, request) -> {
+    page.route("**/empty.html", route -> {
       route.fulfill(new Route.FulfillResponse().withStatus(200).withBody("page"));
     });
     Response response = page.navigate(server.EMPTY_PAGE);
@@ -109,11 +110,11 @@ public class TestBrowserContextRoute extends TestBase {
   @Test
   void shouldFallBackToContextRoute() {
     BrowserContext context = browser.newContext();
-    context.route("**/empty.html", (route, request) -> {
+    context.route("**/empty.html", route -> {
       route.fulfill(new Route.FulfillResponse().withStatus(200).withBody("context"));
     });
     Page page = context.newPage();
-    page.route("**/non-empty.html", (route, request) -> {
+    page.route("**/non-empty.html", route -> {
       route.fulfill(new Route.FulfillResponse().withStatus(200).withBody("page"));
     });
     Response response = page.navigate(server.EMPTY_PAGE);

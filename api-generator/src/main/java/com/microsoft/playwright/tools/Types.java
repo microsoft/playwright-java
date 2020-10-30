@@ -107,10 +107,10 @@ class Types {
     add("ChromiumBrowser.startTracing.options.path", "string", "Path");
 
     // Route
-    add("BrowserContext.route.handler", "function(Route, Request)", "BiConsumer<Route, Request>");
-    add("BrowserContext.unroute.handler", "function(Route, Request)", "BiConsumer<Route, Request>");
-    add("Page.route.handler", "function(Route, Request)", "BiConsumer<Route, Request>");
-    add("Page.unroute.handler", "function(Route, Request)", "BiConsumer<Route, Request>");
+    add("BrowserContext.route.handler", "function(Route, Request)", "Consumer<Route>");
+    add("BrowserContext.unroute.handler", "function(Route, Request)", "Consumer<Route>");
+    add("Page.route.handler", "function(Route, Request)", "Consumer<Route>");
+    add("Page.unroute.handler", "function(Route, Request)", "Consumer<Route>");
 
     // Viewport size.
     add("Browser.newContext.options.viewport", "null|Object", "Page.Viewport", new Empty());
