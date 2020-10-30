@@ -18,6 +18,8 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
+import static com.microsoft.playwright.Dialog.Type.ALERT;
+import static com.microsoft.playwright.Dialog.Type.PROMPT;
 import static com.microsoft.playwright.Page.EventType.DIALOG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -28,7 +30,7 @@ public class TestDialog extends TestBase {
   void shouldFire() {
     page.addListener(DIALOG, event -> {
       Dialog dialog = (Dialog) event.data();
-      assertEquals( "alert", dialog.type());
+      assertEquals(ALERT, dialog.type());
       assertEquals( "", dialog.defaultValue());
       assertEquals( "yo", dialog.message());
       dialog.accept();
@@ -40,7 +42,7 @@ public class TestDialog extends TestBase {
   void shouldAllowAcceptingPrompts() {
     page.addListener(DIALOG, event -> {
       Dialog dialog = (Dialog) event.data();
-      assertEquals("prompt", dialog.type());
+      assertEquals(PROMPT, dialog.type());
       assertEquals("yes.", dialog.defaultValue());
       assertEquals("question?", dialog.message());
       dialog.accept("answer!");

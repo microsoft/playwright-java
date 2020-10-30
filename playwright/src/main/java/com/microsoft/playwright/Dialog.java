@@ -19,6 +19,8 @@ package com.microsoft.playwright;
 import java.util.*;
 
 public interface Dialog {
+  enum Type { ALERT, BEFOREUNLOAD, CONFIRM, PROMPT }
+
   default void accept() {
     accept(null);
   }
@@ -26,6 +28,6 @@ public interface Dialog {
   String defaultValue();
   void dismiss();
   String message();
-  String type();
+  Type type();
 }
 

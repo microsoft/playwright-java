@@ -74,7 +74,6 @@ public class TestPageSetExtraHttpHeaders extends TestBase {
       browser.newContext(new Browser.NewContextOptions().withExtraHTTPHeaders(mapOf("foo", null)));
       fail("did not throw");
     } catch (PlaywrightException e) {
-      System.out.println(e.getMessage());
       assertTrue(e.getMessage().contains("expected string, got undefined"));
     }
   }

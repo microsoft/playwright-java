@@ -18,6 +18,7 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Dialog;
+import com.microsoft.playwright.PlaywrightException;
 
 public class DialogImpl extends ChannelOwner implements Dialog {
   private boolean handled;
@@ -50,10 +51,15 @@ public class DialogImpl extends ChannelOwner implements Dialog {
     return initializer.get("message").getAsString();
   }
 
-  //  public enum Type { Alert, BeforeUnload, Confirm, Prompt }
   @Override
-  public String type() {
-     return initializer.get("type").getAsString();
+  public Type type() {
+    switch (initializer.get("type").getAsString()) {
+      case "alert": return Type.ALERT;
+      case "beforeunload": return Type.BEFOREUNLOAD;
+      case "confirm": return Type.CONFIRM;
+      case "prompt": return Type.PROMPT;
+      default: throw new PlaywrightException("Unexpected dialog type: " + initializer.get("type").getAsString());
+    }
   }
 
   boolean isHandled() {
