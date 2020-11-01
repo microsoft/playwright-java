@@ -32,9 +32,9 @@ public interface Accessibility {
       return this;
     }
   }
-  default Object snapshot() {
+  default AccessibilityNode snapshot() {
     return snapshot(null);
   }
-  Object snapshot(SnapshotOptions options);
+  AccessibilityNode snapshot(SnapshotOptions options);
 }
 

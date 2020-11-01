@@ -182,6 +182,7 @@ class Types {
     add("Dialog.type", "string", "Type", new Empty());
     add("ConsoleMessage.location", "Object", "Location");
     add("ElementHandle.boundingBox", "Promise<null|Object>", "BoundingBox", new Empty());
+    add("Accessibility.snapshot", "Promise<null|Object>", "AccessibilityNode", new Empty());
 
     add("Page.waitForRequest", "Promise<Request>", "Deferred<Request>");
     add("Page.waitForResponse", "Promise<Response>", "Deferred<Response>");
