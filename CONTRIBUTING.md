@@ -11,16 +11,19 @@ git clone https://github.com/microsoft/playwright-java
 cd playwright-java
 ```
 
-2. Checkout and install playwright-cli node.js package into `driver/` directory. This installs Playwright and browser binaries for Chromium, Firefox and WebKit.
+2. Download playwright-cli binary package into `driver/` directory and run `install` command. It will install Playwright and download browser binaries for Chromium, Firefox and WebKit.
 
 ```bash
 mkdir driver
 cd driver
-curl -O https://playwright.azureedge.net/builds/cli/playwright-cli-0.151.0-linux.zip
-unzip playwright-cli-0.151.0-linux.zip -d .
+FILENAME=playwright-cli-0.160.0-next.1604089209904-linux.zip
+curl -O  https://playwright.azureedge.net/builds/cli/next/${FILENAME}
+unzip ${FILENAME} -d .
 ./playwright-cli install
 ```
 Replace `-linux.zip` in the file name with `-win32_x64.zip` or `-mac.zip` for other platforms.
+
+Names of published driver archives can be found at https://github.com/microsoft/playwright-cli/actions
 
 ### Compiling and running the tests with Maven
 
