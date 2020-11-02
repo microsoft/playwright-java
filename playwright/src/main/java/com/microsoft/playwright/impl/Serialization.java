@@ -40,6 +40,7 @@ class Serialization {
         .registerTypeAdapter(ColorScheme.class, new ColorSchemeAdapter().nullSafe())
         .registerTypeAdapter(Page.EmulateMediaOptions.Media.class, new MediaSerializer())
         .registerTypeAdapter(Optional.class, new OptionalSerializer())
+        .registerTypeHierarchyAdapter(JSHandleImpl.class, new HandleSerializer())
         .registerTypeAdapter(Path.class, new PathSerializer()).create();
     }
     return gson;
@@ -262,6 +263,15 @@ class Serialization {
         return new JsonPrimitive("null");
       }
       return context.serialize(src.get());
+    }
+  }
+
+  private static class HandleSerializer implements JsonSerializer<JSHandleImpl> {
+    @Override
+    public JsonElement serialize(JSHandleImpl src, Type typeOfSrc, JsonSerializationContext context) {
+      JsonObject json = new JsonObject();
+      json.addProperty("guid", src.guid);
+      return json;
     }
   }
 
