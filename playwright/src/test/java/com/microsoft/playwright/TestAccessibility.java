@@ -146,45 +146,45 @@ public class TestAccessibility extends TestBase {
     page.waitForFunction("() => document.activeElement.hasAttribute('autofocus')");
 
     String golden = isFirefox ? "{\n" +
-      "    role: 'document',\n" +
-      "    name: 'Accessibility Test',\n" +
-      "    children: [\n" +
-      "      {role: 'heading', name: 'Inputs', level: 1},\n" +
-      "      {role: 'textbox', name: 'Empty input', focused: true},\n" +
-      "      {role: 'textbox', name: 'readonly input', readonly: true},\n" +
-      "      {role: 'textbox', name: 'disabled input', disabled: true},\n" +
-      "      {role: 'textbox', name: 'Input with whitespace', valueString: '  '},\n" +
-      "      {role: 'textbox', name: '', valueString: 'value only'},\n" +
-      "      {role: 'textbox', name: '', valueString: 'and a value'}, // firefox doesn't use aria-placeholder for the name\n" +
-      "      {role: 'textbox', name: '', valueString: 'and a value', description: 'This is a description!'} // and here\n" +
-      "    ]\n" +
-      "  }" : isChromium ? "{\n" +
-      "    role: 'WebArea',\n" +
-      "    name: 'Accessibility Test',\n" +
-      "    children: [\n" +
-      "      {role: 'heading', name: 'Inputs', level: 1},\n" +
-      "      {role: 'textbox', name: 'Empty input', focused: true},\n" +
-      "      {role: 'textbox', name: 'readonly input', readonly: true},\n" +
-      "      {role: 'textbox', name: 'disabled input', disabled: true},\n" +
-      "      {role: 'textbox', name: 'Input with whitespace', valueString: '  '},\n" +
-      "      {role: 'textbox', name: '', valueString: 'value only'},\n" +
-      "      {role: 'textbox', name: 'placeholder', valueString: 'and a value'},\n" +
-      "      {role: 'textbox', name: 'placeholder', valueString: 'and a value', description: 'This is a description!'}\n" +
-      "    ]\n" +
-      "  }" : "{\n" +
-      "    role: 'WebArea',\n" +
-      "    name: 'Accessibility Test',\n" +
-      "    children: [\n" +
-      "      {role: 'heading', name: 'Inputs', level: 1},\n" +
-      "      {role: 'textbox', name: 'Empty input', focused: true},\n" +
-      "      {role: 'textbox', name: 'readonly input', readonly: true},\n" +
-      "      {role: 'textbox', name: 'disabled input', disabled: true},\n" +
-      "      {role: 'textbox', name: 'Input with whitespace', valueString: '  ' },\n" +
-      "      {role: 'textbox', name: '', valueString: 'value only' },\n" +
-      "      {role: 'textbox', name: 'placeholder', valueString: 'and a value'},\n" +
-      "      {role: 'textbox', name: 'This is a description!',valueString: 'and a value'} // webkit uses the description over placeholder for the name\n" +
-      "    ]\n" +
-      "  }";
+      "  role: 'document',\n" +
+      "  name: 'Accessibility Test',\n" +
+      "  children: [\n" +
+      "    {role: 'heading', name: 'Inputs', level: 1},\n" +
+      "    {role: 'textbox', name: 'Empty input', focused: true},\n" +
+      "    {role: 'textbox', name: 'readonly input', readonly: true},\n" +
+      "    {role: 'textbox', name: 'disabled input', disabled: true},\n" +
+      "    {role: 'textbox', name: 'Input with whitespace', valueString: '  '},\n" +
+      "    {role: 'textbox', name: '', valueString: 'value only'},\n" +
+      "    {role: 'textbox', name: '', valueString: 'and a value'}, // firefox doesn't use aria-placeholder for the name\n" +
+      "    {role: 'textbox', name: '', valueString: 'and a value', description: 'This is a description!'} // and here\n" +
+      "  ]\n" +
+      "}" : isChromium ? "{\n" +
+      "  role: 'WebArea',\n" +
+      "  name: 'Accessibility Test',\n" +
+      "  children: [\n" +
+      "    {role: 'heading', name: 'Inputs', level: 1},\n" +
+      "    {role: 'textbox', name: 'Empty input', focused: true},\n" +
+      "    {role: 'textbox', name: 'readonly input', readonly: true},\n" +
+      "    {role: 'textbox', name: 'disabled input', disabled: true},\n" +
+      "    {role: 'textbox', name: 'Input with whitespace', valueString: '  '},\n" +
+      "    {role: 'textbox', name: '', valueString: 'value only'},\n" +
+      "    {role: 'textbox', name: 'placeholder', valueString: 'and a value'},\n" +
+      "    {role: 'textbox', name: 'placeholder', valueString: 'and a value', description: 'This is a description!'}\n" +
+      "  ]\n" +
+      "}" : "{\n" +
+      "  role: 'WebArea',\n" +
+      "  name: 'Accessibility Test',\n" +
+      "  children: [\n" +
+      "    {role: 'heading', name: 'Inputs', level: 1},\n" +
+      "    {role: 'textbox', name: 'Empty input', focused: true},\n" +
+      "    {role: 'textbox', name: 'readonly input', readonly: true},\n" +
+      "    {role: 'textbox', name: 'disabled input', disabled: true},\n" +
+      "    {role: 'textbox', name: 'Input with whitespace', valueString: '  ' },\n" +
+      "    {role: 'textbox', name: '', valueString: 'value only' },\n" +
+      "    {role: 'textbox', name: 'placeholder', valueString: 'and a value'},\n" +
+      "    {role: 'textbox', name: 'This is a description!',valueString: 'and a value'} // webkit uses the description over placeholder for the name\n" +
+      "  ]\n" +
+      "}";
     assertNodeEquals(golden, page.accessibility().snapshot());
   }
 
@@ -239,17 +239,17 @@ public class TestAccessibility extends TestBase {
       "  <div role='tab'>Tab2</div>\n" +
       "</div>");
     String golden = "{\n" +
-      "    role: '" + (isFirefox ? "document" : "WebArea") + "',\n" +
-      "    name: '',\n" +
-      "    children: [{\n" +
-      "      role: 'tab',\n" +
-      "      name: 'Tab1',\n" +
-      "      selected: true\n" +
-      "    }, {\n" +
-      "      role: 'tab',\n" +
-      "      name: 'Tab2'\n" +
-      "    }]\n" +
-      "  }";
+      "  role: '" + (isFirefox ? "document" : "WebArea") + "',\n" +
+      "  name: '',\n" +
+      "  children: [{\n" +
+      "    role: 'tab',\n" +
+      "    name: 'Tab1',\n" +
+      "    selected: true\n" +
+      "  }, {\n" +
+      "    role: 'tab',\n" +
+      "    name: 'Tab2'\n" +
+      "  }]\n" +
+      "}";
     assertNodeEquals(golden, page.accessibility().snapshot());
   }
 
@@ -260,27 +260,27 @@ public class TestAccessibility extends TestBase {
       "  Edit this image: <img src='fakeimage.png' alt='my fake image'>\n" +
       "</div>");
     String golden = isFirefox ? "{\n" +
-      "    role: 'section',\n" +
-      "    name: '',\n" +
-      "    children: [{\n" +
-      "      role: 'text leaf',\n" +
-      "      name: 'Edit this image: '\n" +
-      "    }, {\n" +
-      "      role: 'text',\n" +
-      "      name: 'my fake image'\n" +
-      "    }]\n" +
-      "  }" : "{\n" +
-      "    role: 'generic',\n" +
-      "    name: '',\n" +
-      "    valueString: 'Edit this image: ',\n" +
-      "    children: [{\n" +
-      "      role: 'text',\n" +
-      "      name: 'Edit this image:'\n" +
-      "    }, {\n" +
-      "      role: 'img',\n" +
-      "      name: 'my fake image'\n" +
-      "    }]\n" +
-      "  }";
+      "  role: 'section',\n" +
+      "  name: '',\n" +
+      "  children: [{\n" +
+      "    role: 'text leaf',\n" +
+      "    name: 'Edit this image: '\n" +
+      "  }, {\n" +
+      "    role: 'text',\n" +
+      "    name: 'my fake image'\n" +
+      "  }]\n" +
+      "}" : "{\n" +
+      "  role: 'generic',\n" +
+      "  name: '',\n" +
+      "  valueString: 'Edit this image: ',\n" +
+      "  children: [{\n" +
+      "    role: 'text',\n" +
+      "    name: 'Edit this image:'\n" +
+      "  }, {\n" +
+      "    role: 'img',\n" +
+      "    name: 'my fake image'\n" +
+      "  }]\n" +
+      "}";
     AccessibilityNode snapshot = page.accessibility().snapshot();
     assertNodeEquals(golden, snapshot.children().get(0));
   }
@@ -292,25 +292,25 @@ public class TestAccessibility extends TestBase {
       "  Edit this image: <img src='fakeimage.png' alt='my fake image'>\n" +
       "</div>");
     String golden = isFirefox ? "{\n" +
-      "    role: 'textbox',\n" +
-      "    name: '',\n" +
-      "    valueString: 'Edit this image: my fake image',\n" +
-      "    children: [{\n" +
-      "      role: 'text',\n" +
-      "      name: 'my fake image'\n" +
-      "    }]\n" +
-      "  }" : "{\n" +
-      "    role: 'textbox',\n" +
-      "    name: '',\n" +
-      "    valueString: 'Edit this image: ',\n" +
-      "    children: [{\n" +
-      "      role: 'text',\n" +
-      "      name: 'Edit this image:'\n" +
-      "    }, {\n" +
-      "      role: 'img',\n" +
-      "      name: 'my fake image'\n" +
-      "    }]\n" +
-      "  }";
+      "  role: 'textbox',\n" +
+      "  name: '',\n" +
+      "  valueString: 'Edit this image: my fake image',\n" +
+      "  children: [{\n" +
+      "    role: 'text',\n" +
+      "    name: 'my fake image'\n" +
+      "  }]\n" +
+      "}" : "{\n" +
+      "  role: 'textbox',\n" +
+      "  name: '',\n" +
+      "  valueString: 'Edit this image: ',\n" +
+      "  children: [{\n" +
+      "    role: 'text',\n" +
+      "    name: 'Edit this image:'\n" +
+      "  }, {\n" +
+      "    role: 'img',\n" +
+      "    name: 'my fake image'\n" +
+      "  }]\n" +
+      "}";
     AccessibilityNode snapshot = page.accessibility().snapshot();
     assertNodeEquals(golden, snapshot.children().get(0));
   }
@@ -347,25 +347,26 @@ public class TestAccessibility extends TestBase {
       "  name: ''\n" +
       "}", snapshot.children().get(0));
   }
+
   @Test
   void nonEditableTextboxWithRoleAndTabIndexAndLabelShouldNotHaveChildren() {
     page.setContent("<div role='textbox' tabIndex=0 aria-checked='true' aria-label='my favorite textbox'>\n" +
       "this is the inner content\n" +
       "<img alt='yo' src='fakeimg.png'>\n" +
       "</div>");
-  String golden = isFirefox ? "{\n" +
-    "    role: 'textbox',\n" +
-    "    name: 'my favorite textbox',\n" +
-    "    valueString: 'this is the inner content yo'\n" +
-    "  }" : isChromium ? "{\n" +
-    "    role: 'textbox',\n" +
-    "    name: 'my favorite textbox',\n" +
-    "    valueString: 'this is the inner content '\n" +
-    "  }" : "{\n" +
-    "    role: 'textbox',\n" +
-    "    name: 'my favorite textbox',\n" +
-    "    valueString: 'this is the inner content  ',\n" +
-    "  }";
+    String golden = isFirefox ? "{\n" +
+      "  role: 'textbox',\n" +
+      "  name: 'my favorite textbox',\n" +
+      "  valueString: 'this is the inner content yo'\n" +
+      "}" : isChromium ? "{\n" +
+      "  role: 'textbox',\n" +
+      "  name: 'my favorite textbox',\n" +
+      "  valueString: 'this is the inner content '\n" +
+      "}" : "{\n" +
+      "  role: 'textbox',\n" +
+      "  name: 'my favorite textbox',\n" +
+      "  valueString: 'this is the inner content  ',\n" +
+      "}";
     AccessibilityNode snapshot = page.accessibility().snapshot();
     assertNodeEquals(golden, snapshot.children().get(0));
   }
@@ -376,11 +377,11 @@ public class TestAccessibility extends TestBase {
       "this is the inner content\n" +
       "<img alt='yo' src='fakeimg.png'>\n" +
       "</div>");
-  String golden = "{\n" +
-    "  role: 'checkbox',\n" +
-    "  name: 'my favorite checkbox',\n" +
-    "  checked: 'checked'\n" +
-    "}";
+    String golden = "{\n" +
+      "  role: 'checkbox',\n" +
+      "  name: 'my favorite checkbox',\n" +
+      "  checked: 'checked'\n" +
+      "}";
     AccessibilityNode snapshot = page.accessibility().snapshot();
     assertNodeEquals(golden, snapshot.children().get(0));
   }
@@ -391,15 +392,15 @@ public class TestAccessibility extends TestBase {
       "this is the inner content\n" +
       "<img alt='yo' src='fakeimg.png'>\n" +
       "</div>");
-  String golden = isFirefox ? "{\n" +
-    "    role: 'checkbox',\n" +
-    "    name: 'this is the inner content yo',\n" +
-    "    checked: 'checked'\n" +
-    "  }" : "{\n" +
-    "    role: 'checkbox',\n" +
-    "    name: 'this is the inner content yo',\n" +
-    "    checked: 'checked'\n" +
-    "  }";
+    String golden = isFirefox ? "{\n" +
+      "  role: 'checkbox',\n" +
+      "  name: 'this is the inner content yo',\n" +
+      "  checked: 'checked'\n" +
+      "}" : "{\n" +
+      "  role: 'checkbox',\n" +
+      "  name: 'this is the inner content yo',\n" +
+      "  checked: 'checked'\n" +
+      "}";
     AccessibilityNode snapshot = page.accessibility().snapshot();
     assertNodeEquals(golden, snapshot.children().get(0));
   }
@@ -421,29 +422,29 @@ public class TestAccessibility extends TestBase {
 
     ElementHandle input = page.querySelector("input");
     assertNodeEquals("{\n" +
-      "    role: 'textbox',\n" +
-      "    name: 'My Input',\n" +
-      "    valueString: 'My Value'\n" +
-      "  }", page.accessibility().snapshot(new Accessibility.SnapshotOptions().withRoot(input)));
+      "  role: 'textbox',\n" +
+      "  name: 'My Input',\n" +
+      "  valueString: 'My Value'\n" +
+      "}", page.accessibility().snapshot(new Accessibility.SnapshotOptions().withRoot(input)));
   }
 
   @Test
   void shouldWorkOnAMenu() {
     page.setContent("<div role='menu' title='My Menu'>\n" +
-      "      <div role='menuitem'>First Item</div>\n" +
-      "      <div role='menuitem'>Second Item</div>\n" +
-      "      <div role='menuitem'>Third Item</div>\n" +
-      "    </div>");
+      "  <div role='menuitem'>First Item</div>\n" +
+      "  <div role='menuitem'>Second Item</div>\n" +
+      "  <div role='menuitem'>Third Item</div>\n" +
+      "</div>");
 
     ElementHandle menu = page.querySelector("div[role='menu']");
     assertNodeEquals("{\n" +
-      "    role: 'menu',\n" +
-      "    name: 'My Menu',\n" +
-      "    children:\n" +
-      "    [ { role: 'menuitem', name: 'First Item' },\n" +
-      "      { role: 'menuitem', name: 'Second Item' },\n" +
-      "      { role: 'menuitem', name: 'Third Item' } ]\n" +
-      "    " + (isWebKit ? ", orientation: 'vertical'" : "") + "\n" +
+      "  role: 'menu',\n" +
+      "  name: 'My Menu',\n" +
+      "  children:\n" +
+      "  [ { role: 'menuitem', name: 'First Item' },\n" +
+      "    { role: 'menuitem', name: 'Second Item' },\n" +
+      "    { role: 'menuitem', name: 'Third Item' } ]\n" +
+      (isWebKit ? ", orientation: 'vertical'" : "") +
       "  }", page.accessibility().snapshot(new Accessibility.SnapshotOptions().withRoot(menu)));
   }
 
@@ -458,13 +459,13 @@ public class TestAccessibility extends TestBase {
   @Test
   void shouldShowUninterestingNodes() {
     page.setContent("<div id='root' role='textbox'>\n" +
-      "      <div>\n" +
-      "      hello\n" +
-      "      <div>\n" +
-      "      world\n" +
-      "      </div>\n" +
-      "      </div>\n" +
-      "    </div>");
+      "  <div>\n" +
+      "  hello\n" +
+      "    <div>\n" +
+      "    world\n" +
+      "    </div>\n" +
+      "  </div>\n" +
+      "</div>");
     ElementHandle root = page.querySelector("#root");
     AccessibilityNode snapshot = page.accessibility().snapshot(
       new Accessibility.SnapshotOptions().withRoot(root).withInterestingOnly(false));
