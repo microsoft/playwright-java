@@ -99,14 +99,6 @@ public interface Page {
   void addListener(EventType type, Listener<EventType> listener);
   void removeListener(EventType type, Listener<EventType> listener);
   enum LoadState { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
-  class CloseOptions {
-    public Boolean runBeforeUnload;
-
-    public CloseOptions withRunBeforeUnload(Boolean runBeforeUnload) {
-      this.runBeforeUnload = runBeforeUnload;
-      return this;
-    }
-  }
   class AddScriptTagOptions {
     public String url;
     public Path path;
@@ -209,6 +201,14 @@ public interface Page {
     }
     public ClickOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
+      return this;
+    }
+  }
+  class CloseOptions {
+    public Boolean runBeforeUnload;
+
+    public CloseOptions withRunBeforeUnload(Boolean runBeforeUnload) {
+      this.runBeforeUnload = runBeforeUnload;
       return this;
     }
   }
@@ -807,10 +807,6 @@ public interface Page {
       return this;
     }
   }
-  default void close() {
-    close(null);
-  }
-  void close(CloseOptions options);
   ElementHandle querySelector(String selector);
   List<ElementHandle> querySelectorAll(String selector);
   default Object evalOnSelector(String selector, String pageFunction) {
@@ -821,7 +817,6 @@ public interface Page {
     return evalOnSelectorAll(selector, pageFunction, null);
   }
   Object evalOnSelectorAll(String selector, String pageFunction, Object arg);
-  Accessibility accessibility();
   default void addInitScript(String script) {
     addInitScript(script, null);
   }
@@ -837,9 +832,12 @@ public interface Page {
     click(selector, null);
   }
   void click(String selector, ClickOptions options);
+  default void close() {
+    close(null);
+  }
+  void close(CloseOptions options);
   String content();
   BrowserContext context();
-  ChromiumCoverage coverage();
   default void dblclick(String selector) {
     dblclick(selector, null);
   }
@@ -907,9 +905,7 @@ public interface Page {
   }
   String innerText(String selector, InnerTextOptions options);
   boolean isClosed();
-  Keyboard keyboard();
   Frame mainFrame();
-  Mouse mouse();
   Page opener();
   default byte[] pdf() {
     return pdf(null);
@@ -994,7 +990,6 @@ public interface Page {
   }
   String textContent(String selector, TextContentOptions options);
   String title();
-  Touchscreen touchscreen();
   default void type(String selector, String text) {
     type(selector, text, null);
   }
@@ -1053,5 +1048,10 @@ public interface Page {
   Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options);
   Deferred<Void> waitForTimeout(int timeout);
   List<Worker> workers();
+  Accessibility accessibility();
+  ChromiumCoverage coverage();
+  Keyboard keyboard();
+  Mouse mouse();
+  Touchscreen touchscreen();
 }
 
