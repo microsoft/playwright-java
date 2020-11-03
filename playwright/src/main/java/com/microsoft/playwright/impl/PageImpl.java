@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
+import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 
 
 public class PageImpl extends ChannelOwner implements Page {
@@ -206,7 +207,13 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void close(CloseOptions options) {
     JsonObject params = options == null ? new JsonObject() : gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("close", params);
+    try {
+      sendMessage("close", params);
+    } catch (PlaywrightException exception) {
+      if (!isSafeCloseError(exception)) {
+        throw exception;
+      }
+    }
     if (ownedContext != null) {
       ownedContext.close();
     }
