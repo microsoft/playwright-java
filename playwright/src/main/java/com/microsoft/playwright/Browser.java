@@ -18,6 +18,15 @@ package com.microsoft.playwright;
 
 import java.util.*;
 
+/**
+ * A Browser is created when Playwright connects to a browser instance, either through {@code browserType.launch} or {@code browserType.connect}.
+ * <p>
+ * An example of using a Browser to create a Page:
+ * <p>
+ * 
+ * <p>
+ * See ChromiumBrowser, FirefoxBrowser and WebKitBrowser for browser-specific features. Note that browserType.connect(options) and browserType.launch([options]) always return a specific browser instance, based on the browser being connected to or launched.
+ */
 public interface Browser {
   enum EventType {
     DISCONNECTED,
@@ -385,17 +394,45 @@ public interface Browser {
       return this.recordHar;
     }
   }
+  /**
+   * In case this browser is obtained using browserType.launch, closes the browser and all of its pages (if any were opened).
+   * <p>
+   * In case this browser is obtained using browserType.connect, clears all created contexts belonging to this browser and disconnects from the browser server.
+   * <p>
+   * The Browser object itself is considered to be disposed and cannot be used anymore.
+   */
   void close();
+  /**
+   * Returns an array of all open browser contexts. In a newly created browser, this will return zero
+   * <p>
+   * browser contexts.
+   * <p>
+   */
   List<BrowserContext> contexts();
+  /**
+   * Indicates that the browser is connected.
+   */
   boolean isConnected();
   default BrowserContext newContext() {
     return newContext(null);
   }
+  /**
+   * Creates a new browser context. It won't share cookies/cache with other browser contexts.
+   * <p>
+   */
   BrowserContext newContext(NewContextOptions options);
   default Page newPage() {
     return newPage(null);
   }
+  /**
+   * Creates a new page in a new browser context. Closing this page will close the context as well.
+   * <p>
+   * This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and testing frameworks should explicitly create browser.newContext followed by the browserContext.newPage to control their exact life times.
+   */
   Page newPage(NewPageOptions options);
+  /**
+   * Returns the browser version.
+   */
   String version();
 }
 

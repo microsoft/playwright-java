@@ -18,6 +18,9 @@ package com.microsoft.playwright;
 
 import java.util.*;
 
+/**
+ * WebKit browser instance does not expose WebKit-specific features.
+ */
 public interface WebKitBrowser extends Browser {
 }
 

@@ -60,6 +60,36 @@ abstract class Element {
   static String toTitle(String name) {
     return Character.toUpperCase(name.charAt(0)) + name.substring(1);
   }
+
+  void writeJavadoc(List<String> output, String offset, String text) {
+    if (text.isEmpty()) {
+      return;
+    }
+    output.add(offset + "/**");
+    String[] lines = text.split("\\n");
+    for (String line : lines) {
+      output.add(offset + " * " + line
+        .replace("*/", "*\\/")
+        .replace("**NOTE**", "<strong>NOTE</strong>")
+        .replaceAll("`([^`]+)`", "{@code $1}"));
+    }
+    output.add(offset + " */");
+  }
+
+  String formattedComment() {
+    return comment()
+      // Remove any code snippets between ``` and ```.
+      .replaceAll("```((?<!`)`(?!`)|[^`])+```", "")
+      .replaceAll("\\n", "\n<p>\n");
+  }
+
+  String comment() {
+    JsonObject json = jsonElement.getAsJsonObject();
+    if (!json.has("comment")) {
+      return "";
+    }
+    return json.get("comment").getAsString();
+  }
 }
 
 // Represents return type of a method, type of a method param or type of a field.
@@ -409,8 +439,12 @@ class Method extends Element {
 
   void writeTo(List<String> output, String offset) {
     if (customSignature.containsKey(jsonPath)) {
-      for (String signature : customSignature.get(jsonPath)) {
-        output.add(offset + signature);
+      String[] signatures = customSignature.get(jsonPath);
+      for (int i = 0; i < signatures.length; i++) {
+        if (i == signatures.length - 1) {
+          writeJavadoc(output, offset);
+        }
+        output.add(offset + signatures[i]);
       }
       return;
     }
@@ -421,6 +455,7 @@ class Method extends Element {
       }
       writeDefaultOverloadedMethod(i, output, offset);
     }
+    writeJavadoc(output, offset);
     output.add(offset + toJava());
   }
 
@@ -445,6 +480,25 @@ class Method extends Element {
     output.add(offset + "  " + returns + name + "(" + argList + ");");
     output.add(offset + "}");
   }
+
+  private void writeJavadoc(List<String> output, String offset) {
+    List<String> sections = new ArrayList<>();
+    sections.add(formattedComment());
+    if (!params.isEmpty()) {
+      for (Param p : params) {
+        String comment = p.comment();
+        if (comment.isEmpty()) {
+          continue;
+        }
+        sections.add("@param " + p.name() + " " + comment);
+      }
+    }
+    if (jsonElement.getAsJsonObject().has("returnComment")) {
+      String returnComment = jsonElement.getAsJsonObject().get("returnComment").getAsString();
+      sections.add("@return " + returnComment);
+    }
+    writeJavadoc(output, offset, String.join("\n", sections));
+  }
 }
 
 class Param extends Element {
@@ -465,7 +519,7 @@ class Param extends Element {
     return !jsonElement.getAsJsonObject().get("required").getAsBoolean();
   }
 
-  private String name() {
+  String name() {
     String name = customName.get(jsonPath);
     if (name != null) {
       return name;
@@ -637,7 +691,6 @@ class Interface extends TypeDefinition {
 
   Interface(JsonObject jsonElement) {
     super(null, jsonElement);
-
     for (Map.Entry<String, JsonElement> m : jsonElement.get("methods").getAsJsonObject().entrySet()) {
       methods.add(new Method(this, m.getValue().getAsJsonObject()));
     }
@@ -679,6 +732,7 @@ class Interface extends TypeDefinition {
       }
     }
 
+    writeJavadoc(output, offset, formattedComment());
     output.add("public interface " + jsonName + implementsClause + " {");
     offset = "  ";
     writeSharedTypes(output, offset);

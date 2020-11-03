@@ -18,7 +18,15 @@ package com.microsoft.playwright;
 
 import java.util.*;
 
+/**
+ * The Touchscreen class operates in main-frame CSS pixels relative to the top-left corner of the viewport. Methods on the
+ * <p>
+ * touchscreen can only be used in browser contexts that have been intialized with {@code hasTouch} set to true.
+ */
 public interface Touchscreen {
+  /**
+   * Dispatches a {@code touchstart} and {@code touchend} event with a single touch at the position ({@code x},{@code y}).
+   */
   void tap(int x, int y);
 }
 

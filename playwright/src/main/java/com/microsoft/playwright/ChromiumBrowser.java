@@ -19,6 +19,12 @@ package com.microsoft.playwright;
 import java.nio.file.Path;
 import java.util.*;
 
+/**
+ * Chromium-specific features including Tracing, service worker support, etc.
+ * <p>
+ * You can use {@code chromiumBrowser.startTracing} and {@code chromiumBrowser.stopTracing} to create a trace file which can be opened in Chrome DevTools or timeline viewer.
+ * <p>
+ */
 public interface ChromiumBrowser extends Browser {
   class StartTracingOptions {
     public Path path;
@@ -38,6 +44,11 @@ public interface ChromiumBrowser extends Browser {
       return this;
     }
   }
+  /**
+   * 
+   * @return Promise that resolves to the newly created browser
+   * session.
+   */
   CDPSession newBrowserCDPSession();
   default void startTracing(Page page) {
     startTracing(page, null);
@@ -45,7 +56,15 @@ public interface ChromiumBrowser extends Browser {
   default void startTracing() {
     startTracing(null);
   }
+  /**
+   * Only one trace can be active at a time per browser.
+   * @param page Optional, if specified, tracing includes screenshots of the given page.
+   */
   void startTracing(Page page, StartTracingOptions options);
+  /**
+   * 
+   * @return Promise which resolves to buffer with trace data.
+   */
   byte[] stopTracing();
 }
 

@@ -21,6 +21,18 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+/**
+ * BrowserContexts provide a way to operate multiple independent browser sessions.
+ * <p>
+ * If a page opens another page, e.g. with a {@code window.open} call, the popup will belong to the parent page's browser
+ * <p>
+ * context.
+ * <p>
+ * Playwright allows creation of "incognito" browser contexts with {@code browser.newContext()} method.
+ * <p>
+ * "Incognito" browser contexts don't write any browsing data to disk.
+ * <p>
+ */
 public interface BrowserContext {
   enum SameSite { STRICT, LAX, NONE }
 
@@ -165,38 +177,232 @@ public interface BrowserContext {
   default void addInitScript(String script) {
     addInitScript(script, null);
   }
+  /**
+   * Adds a script which would be evaluated in one of the following scenarios:
+   * <p>
+   * 
+   * <p>
+   * Whenever a page is created in the browser context or is navigated.
+   * <p>
+   * Whenever a child frame is attached or navigated in any page in the browser context. In this case, the script is evaluated in the context of the newly attached frame.
+   * <p>
+   * 
+   * <p>
+   * The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend  the JavaScript environment, e.g. to seed {@code Math.random}.
+   * <p>
+   * An example of overriding {@code Math.random} before the page loads:
+   * <p>
+   * 
+   * <p>
+   * 
+   * <p>
+   * 
+   * <p>
+   * <strong>NOTE</strong> The order of evaluation of multiple scripts installed via browserContext.addInitScript(script[, arg]) and page.addInitScript(script[, arg]) is not defined.
+   * @param script Script to be evaluated in all pages in the browser context.
+   * @param arg Optional argument to pass to {@code script} (only supported when passing a function).
+   */
   void addInitScript(String script, Object arg);
+  /**
+   * 
+   * @return Returns the browser instance of the context. If it was launched as a persistent context null gets returned.
+   */
   Browser browser();
+  /**
+   * Clears context cookies.
+   */
   void clearCookies();
+  /**
+   * Clears all permission overrides for the browser context.
+   * <p>
+   */
   void clearPermissions();
+  /**
+   * Closes the browser context. All the pages that belong to the browser context
+   * <p>
+   * will be closed.
+   * <p>
+   * 
+   * <p>
+   * <strong>NOTE</strong> the default browser context cannot be closed.
+   */
   void close();
   default List<Cookie> cookies() { return cookies((List<String>) null); }
   default List<Cookie> cookies(String url) { return cookies(Arrays.asList(url)); }
+  /**
+   * If no URLs are specified, this method returns all cookies.
+   * <p>
+   * If URLs are specified, only cookies that affect those URLs are returned.
+   */
   List<Cookie> cookies(List<String> urls);
   default void exposeBinding(String name, Page.Binding playwrightBinding) {
     exposeBinding(name, playwrightBinding, null);
   }
+  /**
+   * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context.
+   * <p>
+   * When called, the function executes {@code playwrightBinding} in Node.js and returns a Promise which resolves to the return value of {@code playwrightBinding}.
+   * <p>
+   * If the {@code playwrightBinding} returns a Promise, it will be awaited.
+   * <p>
+   * The first argument of the {@code playwrightBinding} function contains information about the caller:
+   * <p>
+   * {@code { browserContext: BrowserContext, page: Page, frame: Frame }}.
+   * <p>
+   * See page.exposeBinding(name, playwrightBinding) for page-only version.
+   * <p>
+   * An example of exposing page URL to all frames in all pages in the context:
+   * <p>
+   * 
+   * <p>
+   * An example of passing an element handle:
+   * <p>
+   * 
+   * @param name Name of the function on the window object.
+   * @param playwrightBinding Callback function that will be called in the Playwright's context.
+   */
   void exposeBinding(String name, Page.Binding playwrightBinding, ExposeBindingOptions options);
+  /**
+   * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context.
+   * <p>
+   * When called, the function executes {@code playwrightFunction} in Node.js and returns a Promise which resolves to the return value of {@code playwrightFunction}.
+   * <p>
+   * If the {@code playwrightFunction} returns a Promise, it will be awaited.
+   * <p>
+   * See page.exposeFunction(name, playwrightFunction) for page-only version.
+   * <p>
+   * An example of adding an {@code md5} function to all pages in the context:
+   * <p>
+   * 
+   * @param name Name of the function on the window object.
+   * @param playwrightFunction Callback function that will be called in the Playwright's context.
+   */
   void exposeFunction(String name, Page.Function playwrightFunction);
   default void grantPermissions(List<String> permissions) {
     grantPermissions(permissions, null);
   }
+  /**
+   * Grants specified permissions to the browser context. Only grants corresponding permissions to the given origin if specified.
+   * @param permissions A permission or an array of permissions to grant. Permissions can be one of the following values:
+   *  - {@code 'geolocation'}
+   *  - {@code 'midi'}
+   *  - {@code 'midi-sysex'} (system-exclusive midi)
+   *  - {@code 'notifications'}
+   *  - {@code 'push'}
+   *  - {@code 'camera'}
+   *  - {@code 'microphone'}
+   *  - {@code 'background-sync'}
+   *  - {@code 'ambient-light-sensor'}
+   *  - {@code 'accelerometer'}
+   *  - {@code 'gyroscope'}
+   *  - {@code 'magnetometer'}
+   *  - {@code 'accessibility-events'}
+   *  - {@code 'clipboard-read'}
+   *  - {@code 'clipboard-write'}
+   *  - {@code 'payment-handler'}
+   */
   void grantPermissions(List<String> permissions, GrantPermissionsOptions options);
+  /**
+   * Creates a new page in the browser context.
+   */
   Page newPage();
+  /**
+   * 
+   * @return All open pages in the context. Non visible pages, such as {@code "background_page"}, will not be listed here. You can find them using chromiumBrowserContext.backgroundPages().
+   */
   List<Page> pages();
   void route(String url, Consumer<Route> handler);
   void route(Pattern url, Consumer<Route> handler);
+  /**
+   * Routing provides the capability to modify network requests that are made by any page in the browser context.
+   * <p>
+   * Once route is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   * <p>
+   * An example of a naïve handler that aborts all image requests:
+   * <p>
+   * 
+   * <p>
+   * or the same snippet using a regex pattern instead:
+   * <p>
+   * 
+   * <p>
+   * Page routes (set up with page.route(url, handler)) take precedence over browser context routes when request matches both handlers.
+   * <p>
+   * 
+   * <p>
+   * <strong>NOTE</strong> Enabling routing disables http cache.
+   * @param url A glob pattern, regex pattern or predicate receiving URL to match while routing.
+   * @param handler handler function to route the request.
+   */
   void route(Predicate<String> url, Consumer<Route> handler);
+  /**
+   * This setting will change the default maximum navigation time for the following methods and related shortcuts:
+   * <p>
+   * 
+   * <p>
+   * page.goBack([options])
+   * <p>
+   * page.goForward([options])
+   * <p>
+   * page.goto(url[, options])
+   * <p>
+   * page.reload([options])
+   * <p>
+   * page.setContent(html[, options])
+   * <p>
+   * page.waitForNavigation([options])
+   * <p>
+   * 
+   * <p>
+   * 
+   * <p>
+   * <strong>NOTE</strong> {@code page.setDefaultNavigationTimeout} and {@code page.setDefaultTimeout} take priority over {@code browserContext.setDefaultNavigationTimeout}.
+   * @param timeout Maximum navigation time in milliseconds
+   */
   void setDefaultNavigationTimeout(int timeout);
+  /**
+   * This setting will change the default maximum time for all the methods accepting {@code timeout} option.
+   * <p>
+   * 
+   * <p>
+   * <strong>NOTE</strong> {@code page.setDefaultNavigationTimeout}, {@code page.setDefaultTimeout} and {@code browserContext.setDefaultNavigationTimeout} take priority over {@code browserContext.setDefaultTimeout}.
+   * @param timeout Maximum time in milliseconds
+   */
   void setDefaultTimeout(int timeout);
+  /**
+   * The extra HTTP headers will be sent with every request initiated by any page in the context. These headers are merged with page-specific extra HTTP headers set with page.setExtraHTTPHeaders(). If page overrides a particular header, page-specific header value will be used instead of the browser context header value.
+   * <p>
+   * 
+   * <p>
+   * <strong>NOTE</strong> {@code browserContext.setExtraHTTPHeaders} does not guarantee the order of headers in the outgoing requests.
+   * @param headers An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+   */
   void setExtraHTTPHeaders(Map<String, String> headers);
+  /**
+   * Sets the context's geolocation. Passing {@code null} or {@code undefined} emulates position unavailable.
+   * <p>
+   * 
+   * <p>
+   * 
+   * <p>
+   * <strong>NOTE</strong> Consider using browserContext.grantPermissions to grant permissions for the browser context pages to read its geolocation.
+   */
   void setGeolocation(Geolocation geolocation);
+  /**
+   * 
+   * @param offline Whether to emulate network being offline for the browser context.
+   */
   void setOffline(boolean offline);
   default void unroute(String url) { unroute(url, null); }
   default void unroute(Pattern url) { unroute(url, null); }
   default void unroute(Predicate<String> url) { unroute(url, null); }
   void unroute(String url, Consumer<Route> handler);
   void unroute(Pattern url, Consumer<Route> handler);
+  /**
+   * Removes a route created with browserContext.route(url, handler). When {@code handler} is not specified, removes all routes for the {@code url}.
+   * @param url A glob pattern, regex pattern or predicate receiving URL used to register a routing with browserContext.route(url, handler).
+   * @param handler Handler function used to register a routing with browserContext.route(url, handler).
+   */
   void unroute(Predicate<String> url, Consumer<Route> handler);
   default Deferred<Event<EventType>> waitForEvent(EventType event) {
     return waitForEvent(event, (WaitForEventOptions) null);
@@ -206,6 +412,16 @@ public interface BrowserContext {
     options.predicate = predicate;
     return waitForEvent(event, options);
   }
+  /**
+   * Waits for event to fire and passes its value into the predicate function. Resolves when the predicate returns truthy value. Will throw an error if the context closes before the event
+   * <p>
+   * is fired.
+   * <p>
+   * 
+   * @param event Event name, same one would pass into {@code browserContext.on(event)}.
+   * @param optionsOrPredicate Either a predicate that receives an event or an options object.
+   * @return Promise which resolves to the event data value.
+   */
   Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options);
 }
 

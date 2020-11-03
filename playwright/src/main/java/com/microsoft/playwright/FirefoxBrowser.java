@@ -18,6 +18,9 @@ package com.microsoft.playwright;
 
 import java.util.*;
 
+/**
+ * Firefox browser instance does not expose Firefox-specific features.
+ */
 public interface FirefoxBrowser extends Browser {
 }
 

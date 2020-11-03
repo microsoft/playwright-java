@@ -18,6 +18,9 @@ package com.microsoft.playwright;
 
 import java.util.*;
 
+/**
+ * The WebSocket class represents websocket connections in the page.
+ */
 public interface WebSocket {
   enum EventType {
     CLOSE,
@@ -44,11 +47,25 @@ public interface WebSocket {
       return this;
     }
   }
+  /**
+   * Indicates that the web socket has been closed.
+   */
   boolean isClosed();
+  /**
+   * Contains the URL of the WebSocket.
+   */
   String url();
   default Object waitForEvent(String event) {
     return waitForEvent(event, null);
   }
+  /**
+   * Waits for event to fire and passes its value into the predicate function. Resolves when the predicate returns truthy value. Will throw an error if the webSocket is closed before the event
+   * <p>
+   * is fired.
+   * @param event Event name, same one would pass into {@code webSocket.on(event)}.
+   * @param optionsOrPredicate Either a predicate that receives an event or an options object.
+   * @return Promise which resolves to the event data value.
+   */
   Object waitForEvent(String event, String optionsOrPredicate);
 }
 
