@@ -323,6 +323,53 @@ public interface Frame {
       return this;
     }
   }
+  class TapOptions {
+    public class Position {
+      public int x;
+      public int y;
+
+      Position() {
+      }
+      public TapOptions done() {
+        return TapOptions.this;
+      }
+
+      public Position withX(int x) {
+        this.x = x;
+        return this;
+      }
+      public Position withY(int y) {
+        this.y = y;
+        return this;
+      }
+    }
+    public Position position;
+    public Set<Keyboard.Modifier> modifiers;
+    public Boolean noWaitAfter;
+    public Boolean force;
+    public Integer timeout;
+
+    public Position setPosition() {
+      this.position = new Position();
+      return this.position;
+    }
+    public TapOptions withModifiers(Keyboard.Modifier... modifiers) {
+      this.modifiers = new HashSet<>(Arrays.asList(modifiers));
+      return this;
+    }
+    public TapOptions withNoWaitAfter(Boolean noWaitAfter) {
+      this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    public TapOptions withForce(Boolean force) {
+      this.force = force;
+      return this;
+    }
+    public TapOptions withTimeout(Integer timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class TextContentOptions {
     public Integer timeout;
 
@@ -563,6 +610,10 @@ public interface Frame {
   default void setInputFiles(String selector, FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(selector, new FileChooser.FilePayload[]{ file }, options); }
   default void setInputFiles(String selector, FileChooser.FilePayload[] files) { setInputFiles(selector, files, null); }
   void setInputFiles(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options);
+  default void tap(String selector) {
+    tap(selector, null);
+  }
+  void tap(String selector, TapOptions options);
   default String textContent(String selector) {
     return textContent(selector, null);
   }

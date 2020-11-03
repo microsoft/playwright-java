@@ -456,6 +456,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
+  public void tap(String selector, TapOptions options) {
+
+  }
+
+  @Override
   public String textContent(String selector, TextContentOptions options) {
     if (options == null) {
       options = new TextContentOptions();

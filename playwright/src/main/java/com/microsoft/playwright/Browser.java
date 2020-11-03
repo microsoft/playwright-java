@@ -26,6 +26,35 @@ public interface Browser {
   void addListener(EventType type, Listener<EventType> listener);
   void removeListener(EventType type, Listener<EventType> listener);
   class NewContextOptions {
+    public class Proxy {
+      public String server;
+      public String bypass;
+      public String username;
+      public String password;
+
+      Proxy() {
+      }
+      public NewContextOptions done() {
+        return NewContextOptions.this;
+      }
+
+      public Proxy withServer(String server) {
+        this.server = server;
+        return this;
+      }
+      public Proxy withBypass(String bypass) {
+        this.bypass = bypass;
+        return this;
+      }
+      public Proxy withUsername(String username) {
+        this.username = username;
+        return this;
+      }
+      public Proxy withPassword(String password) {
+        this.password = password;
+        return this;
+      }
+    }
     public class VideoSize {
       public int width;
       public int height;
@@ -42,6 +71,25 @@ public interface Browser {
       }
       public VideoSize withHeight(int height) {
         this.height = height;
+        return this;
+      }
+    }
+    public class RecordHar {
+      public Boolean omitContent;
+      public String path;
+
+      RecordHar() {
+      }
+      public NewContextOptions done() {
+        return NewContextOptions.this;
+      }
+
+      public RecordHar withOmitContent(Boolean omitContent) {
+        this.omitContent = omitContent;
+        return this;
+      }
+      public RecordHar withPath(String path) {
+        this.path = path;
         return this;
       }
     }
@@ -63,8 +111,10 @@ public interface Browser {
     public BrowserContext.HTTPCredentials httpCredentials;
     public ColorScheme colorScheme;
     public Logger logger;
+    public Proxy proxy;
     public String videosPath;
     public VideoSize videoSize;
+    public RecordHar recordHar;
 
     public NewContextOptions withAcceptDownloads(Boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
@@ -138,6 +188,10 @@ public interface Browser {
       this.logger = logger;
       return this;
     }
+    public Proxy setProxy() {
+      this.proxy = new Proxy();
+      return this.proxy;
+    }
     public NewContextOptions withVideosPath(String videosPath) {
       this.videosPath = videosPath;
       return this;
@@ -146,8 +200,41 @@ public interface Browser {
       this.videoSize = new VideoSize();
       return this.videoSize;
     }
+    public RecordHar setRecordHar() {
+      this.recordHar = new RecordHar();
+      return this.recordHar;
+    }
   }
   class NewPageOptions {
+    public class Proxy {
+      public String server;
+      public String bypass;
+      public String username;
+      public String password;
+
+      Proxy() {
+      }
+      public NewPageOptions done() {
+        return NewPageOptions.this;
+      }
+
+      public Proxy withServer(String server) {
+        this.server = server;
+        return this;
+      }
+      public Proxy withBypass(String bypass) {
+        this.bypass = bypass;
+        return this;
+      }
+      public Proxy withUsername(String username) {
+        this.username = username;
+        return this;
+      }
+      public Proxy withPassword(String password) {
+        this.password = password;
+        return this;
+      }
+    }
     public class VideoSize {
       public int width;
       public int height;
@@ -164,6 +251,25 @@ public interface Browser {
       }
       public VideoSize withHeight(int height) {
         this.height = height;
+        return this;
+      }
+    }
+    public class RecordHar {
+      public Boolean omitContent;
+      public String path;
+
+      RecordHar() {
+      }
+      public NewPageOptions done() {
+        return NewPageOptions.this;
+      }
+
+      public RecordHar withOmitContent(Boolean omitContent) {
+        this.omitContent = omitContent;
+        return this;
+      }
+      public RecordHar withPath(String path) {
+        this.path = path;
         return this;
       }
     }
@@ -185,8 +291,10 @@ public interface Browser {
     public BrowserContext.HTTPCredentials httpCredentials;
     public ColorScheme colorScheme;
     public Logger logger;
+    public Proxy proxy;
     public String videosPath;
     public VideoSize videoSize;
+    public RecordHar recordHar;
 
     public NewPageOptions withAcceptDownloads(Boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
@@ -260,6 +368,10 @@ public interface Browser {
       this.logger = logger;
       return this;
     }
+    public Proxy setProxy() {
+      this.proxy = new Proxy();
+      return this.proxy;
+    }
     public NewPageOptions withVideosPath(String videosPath) {
       this.videosPath = videosPath;
       return this;
@@ -267,6 +379,10 @@ public interface Browser {
     public VideoSize setVideoSize() {
       this.videoSize = new VideoSize();
       return this.videoSize;
+    }
+    public RecordHar setRecordHar() {
+      this.recordHar = new RecordHar();
+      return this.recordHar;
     }
   }
   void close();

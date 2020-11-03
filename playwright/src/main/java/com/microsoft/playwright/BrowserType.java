@@ -203,6 +203,25 @@ public interface BrowserType {
         return this;
       }
     }
+    public class RecordHar {
+      public Boolean omitContent;
+      public String path;
+
+      RecordHar() {
+      }
+      public LaunchPersistentContextOptions done() {
+        return LaunchPersistentContextOptions.this;
+      }
+
+      public RecordHar withOmitContent(Boolean omitContent) {
+        this.omitContent = omitContent;
+        return this;
+      }
+      public RecordHar withPath(String path) {
+        this.path = path;
+        return this;
+      }
+    }
     public Boolean headless;
     public String executablePath;
     public List<String> args;
@@ -237,6 +256,7 @@ public interface BrowserType {
     public ColorScheme colorScheme;
     public String videosPath;
     public VideoSize videoSize;
+    public RecordHar recordHar;
 
     public LaunchPersistentContextOptions withHeadless(Boolean headless) {
       this.headless = headless;
@@ -373,6 +393,10 @@ public interface BrowserType {
     public VideoSize setVideoSize() {
       this.videoSize = new VideoSize();
       return this.videoSize;
+    }
+    public RecordHar setRecordHar() {
+      this.recordHar = new RecordHar();
+      return this.recordHar;
     }
   }
   class LaunchServerOptions {

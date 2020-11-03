@@ -16,7 +16,7 @@ cd playwright-java
 ```bash
 mkdir driver
 cd driver
-FILENAME=playwright-cli-0.160.0-next.1604089209904-linux.zip
+FILENAME=playwright-cli-0.160.0-next.1604357190081-linux.zip
 curl -O  https://playwright.azureedge.net/builds/cli/next/${FILENAME}
 unzip ${FILENAME} -d .
 ./playwright-cli install

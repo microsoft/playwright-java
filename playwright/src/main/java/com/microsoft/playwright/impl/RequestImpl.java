@@ -115,6 +115,11 @@ public class RequestImpl extends ChannelOwner implements Request {
   }
 
   @Override
+  public RequestTiming timing() {
+    return null;
+  }
+
+  @Override
   public String url() {
     return initializer.get("url").getAsString();
   }

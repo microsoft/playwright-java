@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
+import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 
 
 public class PageImpl extends ChannelOwner implements Page {
@@ -206,7 +207,13 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void close(CloseOptions options) {
     JsonObject params = options == null ? new JsonObject() : gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("close", params);
+    try {
+      sendMessage("close", params);
+    } catch (PlaywrightException exception) {
+      if (!isSafeCloseError(exception)) {
+        throw exception;
+      }
+    }
     if (ownedContext != null) {
       ownedContext.close();
     }
@@ -631,6 +638,11 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public void tap(String selector, TapOptions options) {
+    mainFrame.tap(selector, convertViaJson(options, Frame.TapOptions.class));
+  }
+
+  @Override
   public String textContent(String selector, TextContentOptions options) {
     return mainFrame.textContent(selector, convertViaJson(options, Frame.TextContentOptions.class));
   }
@@ -638,6 +650,11 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public String title() {
     return mainFrame.title();
+  }
+
+  @Override
+  public Touchscreen touchscreen() {
+    return null;
   }
 
   @Override
