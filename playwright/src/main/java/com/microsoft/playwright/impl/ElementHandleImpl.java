@@ -331,6 +331,11 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   }
 
   @Override
+  public void tap(TapOptions options) {
+
+  }
+
+  @Override
   public String textContent() {
     JsonObject json = sendMessage("textContent").getAsJsonObject();
     return json.has("value") ? json.get("value").getAsString() : null;

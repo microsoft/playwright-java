@@ -280,6 +280,53 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
   }
+  class TapOptions {
+    public class Position {
+      public int x;
+      public int y;
+
+      Position() {
+      }
+      public TapOptions done() {
+        return TapOptions.this;
+      }
+
+      public Position withX(int x) {
+        this.x = x;
+        return this;
+      }
+      public Position withY(int y) {
+        this.y = y;
+        return this;
+      }
+    }
+    public Position position;
+    public Set<Keyboard.Modifier> modifiers;
+    public Boolean force;
+    public Boolean noWaitAfter;
+    public Integer timeout;
+
+    public Position setPosition() {
+      this.position = new Position();
+      return this.position;
+    }
+    public TapOptions withModifiers(Keyboard.Modifier... modifiers) {
+      this.modifiers = new HashSet<>(Arrays.asList(modifiers));
+      return this;
+    }
+    public TapOptions withForce(Boolean force) {
+      this.force = force;
+      return this;
+    }
+    public TapOptions withNoWaitAfter(Boolean noWaitAfter) {
+      this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    public TapOptions withTimeout(Integer timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class TypeOptions {
     public Integer delay;
     public Boolean noWaitAfter;
@@ -442,6 +489,10 @@ public interface ElementHandle extends JSHandle {
   default void setInputFiles(FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(new FileChooser.FilePayload[]{ file }, options); }
   default void setInputFiles(FileChooser.FilePayload[] files) { setInputFiles(files, null); }
   void setInputFiles(FileChooser.FilePayload[] files, SetInputFilesOptions options);
+  default void tap() {
+    tap(null);
+  }
+  void tap(TapOptions options);
   String textContent();
   String toString();
   default void type(String text) {

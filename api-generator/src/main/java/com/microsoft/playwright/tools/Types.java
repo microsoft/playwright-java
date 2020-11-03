@@ -59,6 +59,7 @@ class Types {
     add("Page.click.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("Page.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
     add("Page.dblclick.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
+    add("Page.tap.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("Page.emulateMedia.options.media", "null|\"print\"|\"screen\"", "Media");
     add("Page.emulateMedia.options.colorScheme", "null|\"dark\"|\"light\"|\"no-preference\"", "ColorScheme", new Empty());
     add("Page.goBack.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "Frame.LoadState", new Empty());
@@ -75,6 +76,7 @@ class Types {
     add("Frame.click.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("Frame.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
     add("Frame.dblclick.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
+    add("Frame.tap.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("Frame.goto.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
     add("Frame.hover.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("Frame.setContent.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
@@ -85,6 +87,7 @@ class Types {
     add("ElementHandle.click.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("ElementHandle.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
     add("ElementHandle.dblclick.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
+    add("ElementHandle.tap.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("ElementHandle.hover.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("ElementHandle.screenshot.options.type", "\"jpeg\"|\"png\"", "Type");
     add("ElementHandle.waitForSelector.options.state", "\"attached\"|\"detached\"|\"hidden\"|\"visible\"", "State");
@@ -177,6 +180,7 @@ class Types {
     add("Selectors.register.script", "function|string|Object", "String");
     add("Worker.evaluate.pageFunction", "function|string", "String");
     add("Worker.evaluateHandle.pageFunction", "function|string", "String");
+    add("WebSocket.waitForEvent.optionsOrPredicate", "Function|Object", "String");
 
     // Return structures
     add("Dialog.type", "string", "Type", new Empty());
@@ -294,6 +298,9 @@ class Types {
     add("Response.body", "Promise<Buffer>", "byte[]");
     add("Response.finished", "Promise<null|Error>", "String");
     add("ChromiumBrowser.stopTracing", "Promise<Buffer>", "byte[]");
+    add("WebSocket.framereceived.payload", "string|Buffer", "byte[]");
+    add("WebSocket.framesent.payload", "string|Buffer", "byte[]");
+
 
     // JSON type
     add("BrowserContext.addInitScript.arg", "Serializable", "Object");

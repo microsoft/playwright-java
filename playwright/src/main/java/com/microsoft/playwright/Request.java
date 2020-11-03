@@ -32,6 +32,45 @@ public interface Request {
   class RequestPostDataJSON {
 
   }
+  class RequestTiming {
+    private int startTime;
+    private int domainLookupStart;
+    private int domainLookupEnd;
+    private int connectStart;
+    private int secureConnectionStart;
+    private int connectEnd;
+    private int requestStart;
+    private int responseStart;
+    private int responseEnd;
+
+    public int startTime() {
+      return this.startTime;
+    }
+    public int domainLookupStart() {
+      return this.domainLookupStart;
+    }
+    public int domainLookupEnd() {
+      return this.domainLookupEnd;
+    }
+    public int connectStart() {
+      return this.connectStart;
+    }
+    public int secureConnectionStart() {
+      return this.secureConnectionStart;
+    }
+    public int connectEnd() {
+      return this.connectEnd;
+    }
+    public int requestStart() {
+      return this.requestStart;
+    }
+    public int responseStart() {
+      return this.responseStart;
+    }
+    public int responseEnd() {
+      return this.responseEnd;
+    }
+  }
   RequestFailure failure();
   Frame frame();
   Map<String, String> headers();
@@ -43,6 +82,7 @@ public interface Request {
   Request redirectedTo();
   String resourceType();
   Response response();
+  RequestTiming timing();
   String url();
 }
 

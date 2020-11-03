@@ -92,6 +92,7 @@ public interface Page {
     REQUESTFAILED,
     REQUESTFINISHED,
     RESPONSE,
+    WEBSOCKET,
     WORKER,
   }
 
@@ -632,6 +633,53 @@ public interface Page {
       return this;
     }
   }
+  class TapOptions {
+    public class Position {
+      public int x;
+      public int y;
+
+      Position() {
+      }
+      public TapOptions done() {
+        return TapOptions.this;
+      }
+
+      public Position withX(int x) {
+        this.x = x;
+        return this;
+      }
+      public Position withY(int y) {
+        this.y = y;
+        return this;
+      }
+    }
+    public Position position;
+    public Set<Keyboard.Modifier> modifiers;
+    public Boolean noWaitAfter;
+    public Boolean force;
+    public Integer timeout;
+
+    public Position setPosition() {
+      this.position = new Position();
+      return this.position;
+    }
+    public TapOptions withModifiers(Keyboard.Modifier... modifiers) {
+      this.modifiers = new HashSet<>(Arrays.asList(modifiers));
+      return this;
+    }
+    public TapOptions withNoWaitAfter(Boolean noWaitAfter) {
+      this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    public TapOptions withForce(Boolean force) {
+      this.force = force;
+      return this;
+    }
+    public TapOptions withTimeout(Integer timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class TextContentOptions {
     public Integer timeout;
 
@@ -937,11 +985,16 @@ public interface Page {
   default void setInputFiles(String selector, FileChooser.FilePayload[] files) { setInputFiles(selector, files, null); }
   void setInputFiles(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options);
   void setViewportSize(int width, int height);
+  default void tap(String selector) {
+    tap(selector, null);
+  }
+  void tap(String selector, TapOptions options);
   default String textContent(String selector) {
     return textContent(selector, null);
   }
   String textContent(String selector, TextContentOptions options);
   String title();
+  Touchscreen touchscreen();
   default void type(String selector, String text) {
     type(selector, text, null);
   }

@@ -631,6 +631,11 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public void tap(String selector, TapOptions options) {
+    mainFrame.tap(selector, convertViaJson(options, Frame.TapOptions.class));
+  }
+
+  @Override
   public String textContent(String selector, TextContentOptions options) {
     return mainFrame.textContent(selector, convertViaJson(options, Frame.TextContentOptions.class));
   }
@@ -638,6 +643,11 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public String title() {
     return mainFrame.title();
+  }
+
+  @Override
+  public Touchscreen touchscreen() {
+    return null;
   }
 
   @Override
