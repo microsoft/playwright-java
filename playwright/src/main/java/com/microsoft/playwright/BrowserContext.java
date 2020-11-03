@@ -56,6 +56,7 @@ public interface BrowserContext {
   }
 
   enum EventType {
+    CLOSE,
     PAGE,
   }
 
@@ -160,7 +161,6 @@ public interface BrowserContext {
       return this;
     }
   }
-  void close();
   void addCookies(List<AddCookie> cookies);
   default void addInitScript(String script) {
     addInitScript(script, null);
@@ -169,6 +169,7 @@ public interface BrowserContext {
   Browser browser();
   void clearCookies();
   void clearPermissions();
+  void close();
   default List<Cookie> cookies() { return cookies((List<String>) null); }
   default List<Cookie> cookies(String url) { return cookies(Arrays.asList(url)); }
   List<Cookie> cookies(List<String> urls);

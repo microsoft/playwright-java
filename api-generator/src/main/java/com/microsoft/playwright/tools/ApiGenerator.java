@@ -638,20 +638,15 @@ class Interface extends TypeDefinition {
   Interface(JsonObject jsonElement) {
     super(null, jsonElement);
 
-    JsonObject members = jsonElement.get("members").getAsJsonObject();
-    for (Map.Entry<String, JsonElement> m : members.entrySet()) {
-      JsonObject json = m.getValue().getAsJsonObject();
-      String kind = json.get("kind").getAsString();
-      if ("method".equals(kind)) {
-        methods.add(new Method(this, json));
-      }
+    for (Map.Entry<String, JsonElement> m : jsonElement.get("methods").getAsJsonObject().entrySet()) {
+      methods.add(new Method(this, m.getValue().getAsJsonObject()));
+    }
+    for (Map.Entry<String, JsonElement> m : jsonElement.get("properties").getAsJsonObject().entrySet()) {
       // All properties are converted to methods in Java.
-      if ("property".equals(kind)) {
-        methods.add(new Method(this, json));
-      }
-      if ("event".equals(kind)) {
-        events.add(new Event(this, json));
-      }
+      methods.add(new Method(this, m.getValue().getAsJsonObject()));
+    }
+    for (Map.Entry<String, JsonElement> m : jsonElement.get("events").getAsJsonObject().entrySet()) {
+      events.add(new Event(this, m.getValue().getAsJsonObject()));
     }
   }
 
@@ -704,10 +699,6 @@ class Interface extends TypeDefinition {
       return;
     }
     output.add(offset + "enum EventType {");
-    // TODO: fix api.json to not miss this event.
-    if ("Page".equals(jsonName)) {
-      output.add(offset + "  CLOSE,");
-    }
     for (int i = 0; i < events.size(); i++) {
       String comma = i == events.size() ? "" : ",";
       output.add(offset + "  " + events.get(i).jsonName.toUpperCase() + comma);
