@@ -137,7 +137,11 @@ public class Connection {
       if (message.error == null) {
         callback.complete(message.result);
       } else {
-        callback.completeExceptionally(new PlaywrightException(message.error.toString()));
+        if (message.error.error != null) {
+          callback.completeExceptionally(new ServerException(message.error.error));
+        } else {
+          callback.completeExceptionally(new PlaywrightException(message.error.toString()));
+        }
       }
       return;
     }

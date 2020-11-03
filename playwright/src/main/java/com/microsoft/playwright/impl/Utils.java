@@ -151,7 +151,7 @@ class Utils {
   }
 
   static boolean isSafeCloseError(String error) {
-    return error.endsWith("Browser has been closed") || error.endsWith("Target browser or context has been closed");
+    return error.endsWith("Browser has been closed") || error.endsWith("Target page, context or browser has been closed");
   }
 
 }
