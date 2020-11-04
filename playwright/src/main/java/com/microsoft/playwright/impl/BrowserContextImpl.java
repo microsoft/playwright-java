@@ -301,6 +301,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       if (browser != null) {
         browser.contexts.remove(this);
       }
+      listeners.notify(EventType.CLOSE, null);
     }
   }
 }
