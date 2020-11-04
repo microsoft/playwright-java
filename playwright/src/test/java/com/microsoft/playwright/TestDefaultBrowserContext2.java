@@ -6,8 +6,10 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.ColorScheme.DARK;
 import static com.microsoft.playwright.Utils.mapOf;
@@ -23,12 +25,14 @@ public class TestDefaultBrowserContext2 extends TestBase {
   private void closePersistentContext() {
     if (persistentContext != null) {
       persistentContext.close();
+      persistentContext = null;
     }
   }
 
   private Page launchPersistent() {
     return launchPersistent(null);
   }
+
   private Page launchPersistent(BrowserType.LaunchPersistentContextOptions options) {
     Path userDataDir = null;
     try {
@@ -53,7 +57,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
 // TODO:   test.skip(browserName === "firefox");
     // Firefox does not support mobile.
     Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions()
-      .withViewport(320,480).withIsMobile(true));
+      .withViewport(320, 480).withIsMobile(true));
     page.navigate(server.PREFIX + "/empty.html");
     assertEquals(980, page.evaluate("() => window.innerWidth"));
   }
@@ -92,7 +96,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
     assertEquals(mapOf("latitude", 10, "longitude", 10), geolocation);
   }
 
-//  @Test
+  //  @Test
   void shouldSupportIgnoreHTTPSErrorsOption() {
     // TODO: net::ERR_EMPTY_RESPONSE at https://localhost:8908/empty.html
 //    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().withIgnoreHTTPSErrors(true));
@@ -143,4 +147,103 @@ public class TestDefaultBrowserContext2 extends TestBase {
     assertNotEquals("hello", page3.evaluate("localStorage.hey"));
     browserContext3.close();
   }
+
+  @Test
+  void shouldRestoreCookiesFromUserDataDir() throws IOException {
+// TODO:   test.flaky(browserName === "chromium");
+    Path userDataDir = Files.createTempDirectory("user-data-dir-");
+    BrowserType.LaunchPersistentContextOptions browserOptions = null;
+    BrowserContext browserContext = browserType.launchPersistentContext(userDataDir.toString(), browserOptions);
+    Page page = browserContext.newPage();
+    page.navigate(server.EMPTY_PAGE);
+    Object documentCookie = page.evaluate("() => {\n" +
+      "    document.cookie = 'doSomethingOnlyOnce=true; expires=Fri, 31 Dec 9999 23:59:59 GMT';\n" +
+      "    return document.cookie;\n" +
+      "  }");
+    assertEquals("doSomethingOnlyOnce=true", documentCookie);
+    browserContext.close();
+
+    BrowserContext browserContext2 = browserType.launchPersistentContext(userDataDir.toString(), browserOptions);
+    Page page2 = browserContext2.newPage();
+    page2.navigate(server.EMPTY_PAGE);
+    assertEquals("doSomethingOnlyOnce=true", page2.evaluate("() => document.cookie"));
+    browserContext2.close();
+
+    Path userDataDir2 = Files.createTempDirectory("user-data-dir-");
+    BrowserContext browserContext3 = browserType.launchPersistentContext(userDataDir2.toString(), browserOptions);
+    Page page3 = browserContext3.newPage();
+    page3.navigate(server.EMPTY_PAGE);
+    assertNotEquals("doSomethingOnlyOnce=true", page3.evaluate("() => document.cookie"));
+    browserContext3.close();
+  }
+
+  @Test
+  void shouldHaveDefaultURLWhenLaunchingBrowser() {
+    launchPersistent();
+    List<String> urls = persistentContext.pages().stream().map(page -> page.url()).collect(Collectors.toList());
+    assertEquals(asList("about:blank"), urls);
+  }
+
+  @Test
+  void shouldThrowIfPageArgumentIsPassed() throws IOException {
+// TODO:   test.skip(browserName === "firefox");
+    BrowserType.LaunchPersistentContextOptions options = new BrowserType.LaunchPersistentContextOptions()
+      .withArgs(asList(server.EMPTY_PAGE));
+    Path userDataDir = Files.createTempDirectory("user-data-dir-");
+    try {
+      browserType.launchPersistentContext(userDataDir.toString(), options);
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("can not specify page"));
+    }
+  }
+
+  void shouldHavePassedURLWhenLaunchingWithIgnoreDefaultArgsTrue() {
+//  test.skip(wire);
+  }
+
+  void shouldHandleTimeout() {
+//  test.skip(wire);
+  }
+
+  void shouldHandleException() {
+//  test.skip(wire);
+  }
+
+  @Test
+  void shouldFireCloseEventForAPersistentContext() {
+    launchPersistent();
+    boolean[] closed = {false};
+    persistentContext.addListener(BrowserContext.EventType.CLOSE, event -> closed[0] = true);
+    closePersistentContext();
+    assertTrue(closed[0]);
+  }
+
+  void coverageShouldWork() {
+    // TODO:
+  }
+
+  void coverageShouldBeMissing() {
+    // TODO:
+  }
+
+  @Test
+  void shouldRespectSelectors() {
+    Page page = launchPersistent();
+    String defaultContextCSS = "{\n" +
+      "  create(root, target) {},\n" +
+      "  query(root, selector) {\n" +
+      "    return root.querySelector(selector);\n" +
+      "  },\n" +
+      "  queryAll(root, selector) {\n" +
+      "    return Array.from(root.querySelectorAll(selector));\n" +
+      "  }\n" +
+      "}";
+    playwright.selectors().register("defaultContextCSS", defaultContextCSS);
+
+    page.setContent("<div>hello</div>");
+    assertEquals("hello", page.innerHTML("css=div"));
+    assertEquals("hello", page.innerHTML("defaultContextCSS=div"));
+  }
+
 }
