@@ -27,8 +27,17 @@ import java.util.*;
  */
 public interface ChromiumBrowser extends Browser {
   class StartTracingOptions {
+    /**
+     * A path to write the trace file to.
+     */
     public Path path;
+    /**
+     * captures screenshots in the trace.
+     */
     public Boolean screenshots;
+    /**
+     * specify custom categories to use instead of default.
+     */
     public List<String> categories;
 
     public StartTracingOptions withPath(Path path) {

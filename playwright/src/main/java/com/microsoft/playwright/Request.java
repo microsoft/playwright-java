@@ -35,6 +35,9 @@ import java.util.*;
  */
 public interface Request {
   class RequestFailure {
+    /**
+     * Human-readable error message, e.g. {@code 'net::ERR_FAILED'}.
+     */
     private String errorText;
 
     public RequestFailure(String errorText) {
@@ -48,14 +51,42 @@ public interface Request {
 
   }
   class RequestTiming {
+    /**
+     * Request start time in milliseconds elapsed since January 1, 1970 00:00:00 UTC
+     */
     private int startTime;
+    /**
+     * Time immediately before the browser starts the domain name lookup for the resource. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
+     */
     private int domainLookupStart;
+    /**
+     * Time immediately after the browser starts the domain name lookup for the resource. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
+     */
     private int domainLookupEnd;
+    /**
+     * Time immediately before the user agent starts establishing the connection to the server to retrieve the resource. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
+     */
     private int connectStart;
+    /**
+     * Time immediately before the browser starts the handshake process to secure the current connection. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
+     */
     private int secureConnectionStart;
+    /**
+     * Time immediately before the user agent starts establishing the connection to the server to retrieve the resource. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
+     */
     private int connectEnd;
+    /**
+     * Time immediately before the browser starts requesting the resource from the server, cache, or local resource. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
+     */
     private int requestStart;
+    /**
+     * Time immediately after the browser starts requesting the resource from the server, cache, or local resource. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
+     */
     private int responseStart;
+    /**
+     * Time immediately after the browser receives the last byte of the resource or immediately before the transport connection is closed, whichever comes first. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
+     * };
+     */
     private int responseEnd;
 
     public int startTime() {

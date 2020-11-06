@@ -23,8 +23,17 @@ import java.util.*;
  */
 public interface ConsoleMessage {
   class Location {
+    /**
+     * URL of the resource if available, otherwise empty string.
+     */
     private String url;
+    /**
+     * 0-based line number in the resource.
+     */
     private int lineNumber;
+    /**
+     * 0-based column number in the resource.
+     */
     private int columnNumber;
 
     public String url() {

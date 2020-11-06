@@ -75,11 +75,29 @@ public interface BrowserContext {
   void addListener(EventType type, Listener<EventType> listener);
   void removeListener(EventType type, Listener<EventType> listener);
   class AddCookie {
+    /**
+     * **required**
+     */
     public String name;
+    /**
+     * **required**
+     */
     public String value;
+    /**
+     * either url or domain / path are required
+     */
     public String url;
+    /**
+     * either url or domain / path are required
+     */
     public String domain;
+    /**
+     * either url or domain / path are required
+     */
     public String path;
+    /**
+     * Unix time in seconds.
+     */
     public Long expires;
     public Boolean httpOnly;
     public Boolean secure;
@@ -127,6 +145,9 @@ public interface BrowserContext {
     private String value;
     private String domain;
     private String path;
+    /**
+     * Unix time in seconds.
+     */
     private long expires;
     private boolean httpOnly;
     private boolean secure;
@@ -158,6 +179,9 @@ public interface BrowserContext {
     }
   }
   class ExposeBindingOptions {
+    /**
+     * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument is supported. When passing by value, multiple arguments are supported.
+     */
     public Boolean handle;
 
     public ExposeBindingOptions withHandle(Boolean handle) {
@@ -166,6 +190,9 @@ public interface BrowserContext {
     }
   }
   class GrantPermissionsOptions {
+    /**
+     * The origin to grant permissions to, e.g. "https://example.com".
+     */
     public String origin;
 
     public GrantPermissionsOptions withOrigin(String origin) {

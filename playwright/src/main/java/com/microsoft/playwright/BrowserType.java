@@ -26,9 +26,21 @@ import java.util.*;
  */
 public interface BrowserType {
   class ConnectOptions {
+    /**
+     * A browser websocket endpoint to connect to. **required**
+     */
     public String wsEndpoint;
+    /**
+     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on. Defaults to 0.
+     */
     public Integer slowMo;
+    /**
+     * Logger sink for Playwright logging.
+     */
     public Logger logger;
+    /**
+     * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
+     */
     public Integer timeout;
 
     public ConnectOptions withWsEndpoint(String wsEndpoint) {
@@ -50,9 +62,21 @@ public interface BrowserType {
   }
   class LaunchOptions {
     public class Proxy {
+      /**
+       * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example {@code http://myproxy.com:3128} or {@code socks5://myproxy.com:3128}. Short form {@code myproxy.com:3128} is considered an HTTP proxy.
+       */
       public String server;
+      /**
+       * Optional coma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
+       */
       public String bypass;
+      /**
+       * Optional username to use if HTTP proxy requires authentication.
+       */
       public String username;
+      /**
+       * Optional password to use if HTTP proxy requires authentication.
+       */
       public String password;
 
       Proxy() {
@@ -78,21 +102,69 @@ public interface BrowserType {
         return this;
       }
     }
+    /**
+     * Whether to run browser in headless mode. More details for Chromium and Firefox. Defaults to {@code true} unless the {@code devtools} option is {@code true}.
+     */
     public Boolean headless;
+    /**
+     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is resolved relative to current working directory. Note that Playwright only works with the bundled Chromium, Firefox or WebKit, use at your own risk.
+     */
     public String executablePath;
+    /**
+     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found here.
+     */
     public List<String> args;
+    /**
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. If an array is given, then filters out the given default arguments. Dangerous option; use with care. Defaults to {@code false}.
+     */
     public Boolean ignoreDefaultArgs;
+    /**
+     * Network proxy settings.
+     */
     public Proxy proxy;
+    /**
+     * If specified, accepted downloads are downloaded into this folder. Otherwise, temporary folder is created and is deleted when browser is closed.
+     */
     public String downloadsPath;
+    /**
+     * Enable Chromium sandboxing. Defaults to {@code false}.
+     */
     public Boolean chromiumSandbox;
+    /**
+     * Firefox user preferences. Learn more about the Firefox user preferences at {@code about:config}.
+     */
     public String firefoxUserPrefs;
+    /**
+     * Close the browser process on Ctrl-C. Defaults to {@code true}.
+     */
     public Boolean handleSIGINT;
+    /**
+     * Close the browser process on SIGTERM. Defaults to {@code true}.
+     */
     public Boolean handleSIGTERM;
+    /**
+     * Close the browser process on SIGHUP. Defaults to {@code true}.
+     */
     public Boolean handleSIGHUP;
+    /**
+     * Logger sink for Playwright logging.
+     */
     public Logger logger;
+    /**
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
+     */
     public Integer timeout;
+    /**
+     * Specify environment variables that will be visible to the browser. Defaults to {@code process.env}.
+     */
     public String env;
+    /**
+     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless} option will be set {@code false}.
+     */
     public Boolean devtools;
+    /**
+     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
+     */
     public Integer slowMo;
 
     public LaunchOptions withHeadless(Boolean headless) {
@@ -162,9 +234,21 @@ public interface BrowserType {
   }
   class LaunchPersistentContextOptions {
     public class Proxy {
+      /**
+       * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example {@code http://myproxy.com:3128} or {@code socks5://myproxy.com:3128}. Short form {@code myproxy.com:3128} is considered an HTTP proxy.
+       */
       public String server;
+      /**
+       * Optional coma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
+       */
       public String bypass;
+      /**
+       * Optional username to use if HTTP proxy requires authentication.
+       */
       public String username;
+      /**
+       * Optional password to use if HTTP proxy requires authentication.
+       */
       public String password;
 
       Proxy() {
@@ -191,7 +275,13 @@ public interface BrowserType {
       }
     }
     public class VideoSize {
+      /**
+       * Video frame width.
+       */
       public int width;
+      /**
+       * Video frame height.
+       */
       public int height;
 
       VideoSize() {
@@ -210,7 +300,13 @@ public interface BrowserType {
       }
     }
     public class RecordHar {
+      /**
+       * Optional setting to control whether to omit request content from the HAR. Defaults to false.
+       */
       public Boolean omitContent;
+      /**
+       * Path on the filesystem to write the HAR file to.
+       */
       public String path;
 
       RecordHar() {
@@ -228,40 +324,142 @@ public interface BrowserType {
         return this;
       }
     }
+    /**
+     * Whether to run browser in headless mode. More details for Chromium and Firefox. Defaults to {@code true} unless the {@code devtools} option is {@code true}.
+     */
     public Boolean headless;
+    /**
+     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is resolved relative to current working directory. **BEWARE**: Playwright is only guaranteed to work with the bundled Chromium, Firefox or WebKit, use at your own risk.
+     */
     public String executablePath;
+    /**
+     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found here.
+     */
     public List<String> args;
+    /**
+     * If {@code true}, then do not use any of the default arguments. If an array is given, then filter out the given default arguments. Dangerous option; use with care. Defaults to {@code false}.
+     */
     public String ignoreDefaultArgs;
+    /**
+     * Network proxy settings.
+     */
     public Proxy proxy;
+    /**
+     * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
+     */
     public Boolean acceptDownloads;
+    /**
+     * If specified, accepted downloads are downloaded into this folder. Otherwise, temporary folder is created and is deleted when browser is closed.
+     */
     public String downloadsPath;
+    /**
+     * Enable Chromium sandboxing. Defaults to {@code true}.
+     */
     public Boolean chromiumSandbox;
+    /**
+     * Close the browser process on Ctrl-C. Defaults to {@code true}.
+     */
     public Boolean handleSIGINT;
+    /**
+     * Close the browser process on SIGTERM. Defaults to {@code true}.
+     */
     public Boolean handleSIGTERM;
+    /**
+     * Close the browser process on SIGHUP. Defaults to {@code true}.
+     */
     public Boolean handleSIGHUP;
+    /**
+     * Logger sink for Playwright logging.
+     */
     public Logger logger;
+    /**
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
+     */
     public Integer timeout;
+    /**
+     * Specify environment variables that will be visible to the browser. Defaults to {@code process.env}.
+     */
     public String env;
+    /**
+     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless} option will be set {@code false}.
+     */
     public Boolean devtools;
+    /**
+     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on. Defaults to 0.
+     */
     public Integer slowMo;
+    /**
+     * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
+     */
     public Boolean ignoreHTTPSErrors;
+    /**
+     * Toggles bypassing page's Content-Security-Policy.
+     */
     public Boolean bypassCSP;
+    /**
+     * Sets a consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     */
     public Page.Viewport viewport;
+    /**
+     * Specific user agent to use in this context.
+     */
     public String userAgent;
+    /**
+     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
+     */
     public Integer deviceScaleFactor;
+    /**
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported in Firefox.
+     */
     public Boolean isMobile;
+    /**
+     * Specifies if viewport supports touch events. Defaults to false.
+     */
     public Boolean hasTouch;
+    /**
+     * Whether or not to enable JavaScript in the context. Defaults to true.
+     */
     public Boolean javaScriptEnabled;
+    /**
+     * Changes the timezone of the context. See ICU’s {@code metaZones.txt} for a list of supported timezone IDs.
+     */
     public String timezoneId;
     public Geolocation geolocation;
+    /**
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language} request header value as well as number and date formatting rules.
+     */
     public String locale;
+    /**
+     * A list of permissions to grant to all pages in this context. See browserContext.grantPermissions for more details.
+     */
     public List<String> permissions;
+    /**
+     * An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+     */
     public Map<String, String> extraHTTPHeaders;
+    /**
+     * Whether to emulate network being offline. Defaults to {@code false}.
+     */
     public Boolean offline;
+    /**
+     * Credentials for HTTP authentication.
+     */
     public BrowserContext.HTTPCredentials httpCredentials;
+    /**
+     * Emulates {@code 'prefers-colors-scheme'} media feature, supported values are {@code 'light'}, {@code 'dark'}, {@code 'no-preference'}. See page.emulateMedia(options) for more details. Defaults to '{@code light}'.
+     */
     public ColorScheme colorScheme;
+    /**
+     * Enables video recording for all pages to {@code videosPath} folder. If not specified, videos are not recorded. Make sure to await {@code browserContext.close} for videos to be saved.
+     */
     public String videosPath;
+    /**
+     * Specifies dimensions of the automatically recorded video. Can only be used if {@code videosPath} is set. If not specified the size will be equal to {@code viewport}. If {@code viewport} is not configured explicitly the video size defaults to 1280x720. Actual picture of the page will be scaled down if necessary to fit specified size.
+     */
     public VideoSize videoSize;
+    /**
+     * Enables HAR recording for all the pages into {@code har.path} file. If not specified, HAR is not recorded. Make sure to await {@code page.close} for HAR to be saved.
+     */
     public RecordHar recordHar;
 
     public LaunchPersistentContextOptions withHeadless(Boolean headless) {
@@ -407,9 +605,21 @@ public interface BrowserType {
   }
   class LaunchServerOptions {
     public class Proxy {
+      /**
+       * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example {@code http://myproxy.com:3128} or {@code socks5://myproxy.com:3128}. Short form {@code myproxy.com:3128} is considered an HTTP proxy.
+       */
       public String server;
+      /**
+       * Optional coma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
+       */
       public String bypass;
+      /**
+       * Optional username to use if HTTP proxy requires authentication.
+       */
       public String username;
+      /**
+       * Optional password to use if HTTP proxy requires authentication.
+       */
       public String password;
 
       Proxy() {
@@ -435,21 +645,69 @@ public interface BrowserType {
         return this;
       }
     }
+    /**
+     * Whether to run browser in headless mode. More details for Chromium and Firefox. Defaults to {@code true} unless the {@code devtools} option is {@code true}.
+     */
     public Boolean headless;
+    /**
+     * Port to use for the web socket. Defaults to 0 that picks any available port.
+     */
     public Integer port;
+    /**
+     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is resolved relative to current working directory. **BEWARE**: Playwright is only guaranteed to work with the bundled Chromium, Firefox or WebKit, use at your own risk.
+     */
     public String executablePath;
+    /**
+     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found here.
+     */
     public List<String> args;
+    /**
+     * If {@code true}, then do not use any of the default arguments. If an array is given, then filter out the given default arguments. Dangerous option; use with care. Defaults to {@code false}.
+     */
     public String ignoreDefaultArgs;
+    /**
+     * Network proxy settings.
+     */
     public Proxy proxy;
+    /**
+     * If specified, accepted downloads are downloaded into this folder. Otherwise, temporary folder is created and is deleted when browser is closed.
+     */
     public String downloadsPath;
+    /**
+     * Enable Chromium sandboxing. Defaults to {@code true}.
+     */
     public Boolean chromiumSandbox;
+    /**
+     * Firefox user preferences. Learn more about the Firefox user preferences at {@code about:config}.
+     */
     public String firefoxUserPrefs;
+    /**
+     * Close the browser process on Ctrl-C. Defaults to {@code true}.
+     */
     public Boolean handleSIGINT;
+    /**
+     * Close the browser process on SIGTERM. Defaults to {@code true}.
+     */
     public Boolean handleSIGTERM;
+    /**
+     * Close the browser process on SIGHUP. Defaults to {@code true}.
+     */
     public Boolean handleSIGHUP;
+    /**
+     * Logger sink for Playwright logging.
+     */
     public Logger logger;
+    /**
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
+     */
     public Integer timeout;
+    /**
+     * Specify environment variables that will be visible to the browser. Defaults to {@code process.env}.
+     */
     public String env;
+    /**
+     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless} option will be set {@code false}.
+     */
     public Boolean devtools;
 
     public LaunchServerOptions withHeadless(Boolean headless) {
