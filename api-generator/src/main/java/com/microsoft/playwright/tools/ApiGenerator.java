@@ -273,6 +273,8 @@ class Method extends Element {
     // No connect for now.
     customSignature.put("BrowserType.connect", new String[0]);
     customSignature.put("BrowserType.launchServer", new String[0]);
+    // We don't expose Chromium-specific APIs at the moment.
+    customSignature.put("Page.coverage", new String[0]);
     customSignature.put("BrowserContext.route", new String[]{
       "void route(String url, Consumer<Route> handler);",
       "void route(Pattern url, Consumer<Route> handler);",
@@ -419,6 +421,11 @@ class Method extends Element {
     });
   }
 
+  private static Set<String> skipJavadoc = new HashSet<>(asList(
+    "Page.waitForEvent.optionsOrPredicate",
+    "Page.frame.options"
+  ));
+
   Method(TypeDefinition parent, JsonObject jsonElement) {
     super(parent, jsonElement);
     returnType = new TypeRef(this, jsonElement.get("type"));
@@ -492,6 +499,9 @@ class Method extends Element {
       for (Param p : params) {
         String comment = p.comment();
         if (comment.isEmpty()) {
+          continue;
+        }
+        if (skipJavadoc.contains(p.jsonPath)) {
           continue;
         }
         sections.add("@param " + p.name() + " " + comment);
@@ -1006,6 +1016,16 @@ class Enum extends TypeDefinition {
 }
 
 public class ApiGenerator {
+  private static Set<String> skipList = new HashSet<>(Arrays.asList(
+    "BrowserServer",
+    "ChromiumBrowser",
+    "ChromiumBrowserContext",
+    "ChromiumCoverage",
+    "CDPSession",
+    "FirefoxBrowser",
+    "WebKitBrowser"
+  ));
+
   ApiGenerator(Reader reader) throws IOException {
     JsonObject api = new Gson().fromJson(reader, JsonObject.class);
     File cwd = FileSystems.getDefault().getPath(".").toFile();
@@ -1013,7 +1033,7 @@ public class ApiGenerator {
     System.out.println("Writing files to: " + dir.getCanonicalPath());
     for (Map.Entry<String, JsonElement> entry: api.entrySet()) {
       String name = entry.getKey();
-      if ("BrowserServer".equals(name)) {
+      if (skipList.contains(name)) {
         continue;
       }
       List<String> lines = new ArrayList<>();

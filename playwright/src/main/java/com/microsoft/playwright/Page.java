@@ -1503,7 +1503,6 @@ public interface Page {
    * 
    * <p>
    * Returns frame matching the specified criteria. Either {@code name} or {@code url} must be specified.
-   * @param options Frame name or other frame lookup options.
    * @return frame matching the criteria. Returns {@code null} if no frame matches.
    */
   Frame frameByUrl(Predicate<String> predicate);
@@ -1976,7 +1975,6 @@ public interface Page {
    * <p>
    * is fired.
    * @param event Event name, same one would pass into {@code page.on(event)}.
-   * @param optionsOrPredicate Either a predicate that receives an event or an options object.
    * @return Promise which resolves to the event data value.
    */
   Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options);
@@ -2082,10 +2080,6 @@ public interface Page {
    */
   List<Worker> workers();
   Accessibility accessibility();
-  /**
-   * Browser-specific Coverage implementation, only available for Chromium atm. See ChromiumCoverage for more details.
-   */
-  ChromiumCoverage coverage();
   Keyboard keyboard();
   Mouse mouse();
   Touchscreen touchscreen();

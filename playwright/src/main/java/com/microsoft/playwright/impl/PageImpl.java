@@ -288,11 +288,6 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public ChromiumCoverage coverage() {
-    return null;
-  }
-
-  @Override
   public void dblclick(String selector, DblclickOptions options) {
     mainFrame.dblclick(selector, convertViaJson(options, Frame.DblclickOptions.class));
   }
