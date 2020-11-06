@@ -21,23 +21,15 @@ import java.util.*;
 /**
  * The {@code CDPSession} instances are used to talk raw Chrome Devtools Protocol:
  * <p>
- * 
- * <p>
  * protocol methods can be called with {@code session.send} method.
  * <p>
  * protocol events can be subscribed to with {@code session.on} method.
  * <p>
- * 
- * <p>
  * Useful links:
- * <p>
- * 
  * <p>
  * Documentation on DevTools Protocol can be found here: DevTools Protocol Viewer.
  * <p>
  * Getting Started with DevTools Protocol: https://github.com/aslushnikov/getting-started-with-cdp/blob/master/README.md
- * <p>
- * 
  * <p>
  */
 public interface CDPSession {

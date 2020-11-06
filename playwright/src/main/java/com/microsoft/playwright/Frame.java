@@ -26,21 +26,11 @@ import java.util.regex.Pattern;
  * <p>
  * Frame object's lifecycle is controlled by three events, dispatched on the page object:
  * <p>
- * 
- * <p>
  * 'frameattached' - fired when the frame gets attached to the page. A Frame can be attached to the page only once.
  * <p>
  * 'framenavigated' - fired when the frame commits navigation to a different URL.
  * <p>
  * 'framedetached' - fired when the frame gets detached from the page.  A Frame can be detached from the page only once.
- * <p>
- * 
- * <p>
- * An example of dumping frame tree:
- * <p>
- * 
- * <p>
- * An example of getting text from an iframe element:
  * <p>
  */
 public interface Frame {
@@ -565,8 +555,6 @@ public interface Frame {
   /**
    * This method checks an element matching {@code selector} by performing the following steps:
    * <p>
-   * 
-   * <p>
    * Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
    * <p>
    * Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already checked, this method returns immediately.
@@ -581,8 +569,6 @@ public interface Frame {
    * <p>
    * Ensure that the element is now checked. If not, this method rejects.
    * <p>
-   * 
-   * <p>
    * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
    * @param selector A selector to search for checkbox to check. If there are multiple elements satisfying the selector, the first will be checked. See working with selectors for more details.
    * @return Promise that resolves when the element matching {@code selector} is successfully checked.
@@ -595,8 +581,6 @@ public interface Frame {
   /**
    * This method clicks an element matching {@code selector} by performing the following steps:
    * <p>
-   * 
-   * <p>
    * Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
    * <p>
    * Wait for actionability checks on the matched element, unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.
@@ -606,8 +590,6 @@ public interface Frame {
    * Use page.mouse to click in the center of the element, or the specified {@code position}.
    * <p>
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * <p>
-   * 
    * <p>
    * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
    * @param selector A selector to search for element to click. If there are multiple elements satisfying the selector, the first will be clicked. See working with selectors for more details.
@@ -624,8 +606,6 @@ public interface Frame {
   /**
    * This method double clicks an element matching {@code selector} by performing the following steps:
    * <p>
-   * 
-   * <p>
    * Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
    * <p>
    * Wait for actionability checks on the matched element, unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.
@@ -636,11 +616,7 @@ public interface Frame {
    * <p>
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first click of the {@code dblclick()} triggers a navigation event, this method will reject.
    * <p>
-   * 
-   * <p>
    * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
-   * <p>
-   * 
    * <p>
    * <strong>NOTE</strong> {@code frame.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    * @param selector A selector to search for element to double click. If there are multiple elements satisfying the selector, the first will be double clicked. See working with selectors for more details.
@@ -656,13 +632,9 @@ public interface Frame {
   /**
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click} is dispatched. This is equivalend to calling {@code element.click()}.
    * <p>
-   * 
-   * <p>
    * Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
    * <p>
    * Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
-   * <p>
-   * 
    * <p>
    * DragEvent
    * <p>
@@ -677,8 +649,6 @@ public interface Frame {
    * TouchEvent
    * <p>
    * Event
-   * <p>
-   * 
    * <p>
    * You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
    * <p>
@@ -696,11 +666,7 @@ public interface Frame {
    * <p>
    * If the function passed to the {@code frame.evaluate} returns a non-Serializable value, then {@code frame.evaluate} resolves to {@code undefined}. DevTools Protocol also supports transferring some additional values that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}, and bigint literals.
    * <p>
-   * 
-   * <p>
    * A string can also be passed in instead of a function.
-   * <p>
-   * 
    * <p>
    * ElementHandle instances can be passed as an argument to the {@code frame.evaluate}:
    * <p>
@@ -718,11 +684,7 @@ public interface Frame {
    * <p>
    * If the function, passed to the {@code frame.evaluateHandle}, returns a Promise, then {@code frame.evaluateHandle} would wait for the promise to resolve and return its value.
    * <p>
-   * 
-   * <p>
    * A string can also be passed in instead of a function.
-   * <p>
-   * 
    * <p>
    * JSHandle instances can be passed as an argument to the {@code frame.evaluateHandle}:
    * <p>
@@ -782,8 +744,6 @@ public interface Frame {
   /**
    * {@code frame.goto} will throw an error if:
    * <p>
-   * 
-   * <p>
    * there's an SSL error (e.g. in case of self-signed certificates).
    * <p>
    * target URL is invalid.
@@ -794,15 +754,9 @@ public interface Frame {
    * <p>
    * the main resource failed to load.
    * <p>
-   * 
-   * <p>
    * {@code frame.goto} will not throw an error when any valid HTTP status code is returned by the remote server, including 404 "Not Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling response.status().
    * <p>
-   * 
-   * <p>
    * <strong>NOTE</strong> {@code frame.goto} either throws an error or returns a main resource response. The only exceptions are navigation to {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
-   * <p>
-   * 
    * <p>
    * 
    * <p>
@@ -818,8 +772,6 @@ public interface Frame {
   /**
    * This method hovers over an element matching {@code selector} by performing the following steps:
    * <p>
-   * 
-   * <p>
    * Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
    * <p>
    * Wait for actionability checks on the matched element, unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.
@@ -829,8 +781,6 @@ public interface Frame {
    * Use page.mouse to hover over the center of the element, or the specified {@code position}.
    * <p>
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * <p>
-   * 
    * <p>
    * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
    * @param selector A selector to search for element to hover. If there are multiple elements satisfying the selector, the first will be hovered. See working with selectors for more details.
@@ -861,8 +811,6 @@ public interface Frame {
    * Returns frame's name attribute as specified in the tag.
    * <p>
    * If the name is empty, returns the id attribute instead.
-   * <p>
-   * 
    * <p>
    * <strong>NOTE</strong> This value is calculated once when the frame is created, and will not update if the attribute is changed later.
    */
@@ -973,8 +921,6 @@ public interface Frame {
   /**
    * This method taps an element matching {@code selector} by performing the following steps:
    * <p>
-   * 
-   * <p>
    * Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
    * <p>
    * Wait for actionability checks on the matched element, unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.
@@ -985,11 +931,7 @@ public interface Frame {
    * <p>
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
    * <p>
-   * 
-   * <p>
    * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
-   * <p>
-   * 
    * <p>
    * <strong>NOTE</strong> {@code frame.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    * @param selector A selector to search for element to tap. If there are multiple elements satisfying the selector, the first will be tapped. See working with selectors for more details.
@@ -1028,8 +970,6 @@ public interface Frame {
   /**
    * This method checks an element matching {@code selector} by performing the following steps:
    * <p>
-   * 
-   * <p>
    * Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
    * <p>
    * Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already unchecked, this method returns immediately.
@@ -1043,8 +983,6 @@ public interface Frame {
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
    * <p>
    * Ensure that the element is now unchecked. If not, this method rejects.
-   * <p>
-   * 
    * <p>
    * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
    * @param selector A selector to search for uncheckbox to check. If there are multiple elements satisfying the selector, the first will be checked. See working with selectors for more details.
@@ -1063,8 +1001,6 @@ public interface Frame {
   }
   /**
    * The {@code waitForFunction} can be used to observe viewport size change:
-   * <p>
-   * 
    * <p>
    * To pass an argument from Node.js to the predicate of {@code frame.waitForFunction} function:
    * <p>
@@ -1099,8 +1035,6 @@ public interface Frame {
    * This resolves when the frame navigates to a new URL. It is useful for when you run code
    * <p>
    * which will indirectly cause the frame to navigate. Consider this example:
-   * <p>
-   * 
    * <p>
    * <strong>NOTE</strong> Usage of the History API to change the URL is considered a navigation.
    * @param options Navigation parameters which might have the following properties:

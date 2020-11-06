@@ -23,14 +23,6 @@ import java.util.*;
  * <p>
  * For finer control, you can use {@code keyboard.down}, {@code keyboard.up}, and {@code keyboard.insertText} to manually fire events as if they were generated from a real keyboard.
  * <p>
- * An example of holding down {@code Shift} in order to select and delete some text:
- * <p>
- * 
- * <p>
- * An example of pressing uppercase {@code A}
- * <p>
- * 
- * <p>
  * An example to trigger select-all with the keyboard
  * <p>
  */
@@ -54,16 +46,12 @@ public interface Keyboard {
    * <p>
    * After the key is pressed once, subsequent calls to {@code keyboard.down} will have repeat set to true. To release the key, use {@code keyboard.up}.
    * <p>
-   * 
-   * <p>
    * <strong>NOTE</strong> Modifier keys DO influence {@code keyboard.down}. Holding down {@code Shift} will type the text in upper case.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
   void down(String key);
   /**
    * Dispatches only {@code input} event, does not emit the {@code keydown}, {@code keyup} or {@code keypress} events.
-   * <p>
-   * 
    * <p>
    * 
    * <p>
@@ -87,8 +75,6 @@ public interface Keyboard {
    * <p>
    * Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the modifier, modifier is pressed and being held while the subsequent key is being pressed.
    * <p>
-   * 
-   * <p>
    * Shortcut for {@code keyboard.down} and {@code keyboard.up}.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
@@ -100,8 +86,6 @@ public interface Keyboard {
    * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
    * <p>
    * To press a special key, like {@code Control} or {@code ArrowDown}, use {@code keyboard.press}.
-   * <p>
-   * 
    * <p>
    * 
    * <p>

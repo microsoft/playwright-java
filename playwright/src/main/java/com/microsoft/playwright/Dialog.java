@@ -20,9 +20,6 @@ import java.util.*;
 
 /**
  * Dialog objects are dispatched by page via the 'dialog' event.
- * <p>
- * An example of using {@code Dialog} class:
- * <p>
  */
 public interface Dialog {
   enum Type { ALERT, BEFOREUNLOAD, CONFIRM, PROMPT }

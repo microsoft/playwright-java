@@ -20,9 +20,6 @@ import java.util.*;
 
 /**
  * Coverage gathers information about parts of JavaScript and CSS that were used by the page.
- * <p>
- * An example of using JavaScript coverage to produce Istambul report for page load:
- * <p>
  */
 public interface ChromiumCoverage {
   class StartCSSCoverageOptions {

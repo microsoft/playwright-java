@@ -115,14 +115,6 @@ public interface Route {
   void continue_(ContinueOverrides overrides);
   /**
    * Fulfills route's request with given response.
-   * <p>
-   * An example of fulfilling all requests with 404 responses:
-   * <p>
-   * 
-   * <p>
-   * An example of serving static file:
-   * <p>
-   * 
    * @param response Response that will fulfill this route's request.
    */
   void fulfill(FulfillResponse response);

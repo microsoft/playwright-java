@@ -530,8 +530,6 @@ public interface BrowserType {
    * <p>
    * 
    * <p>
-   * 
-   * <p>
    * **Chromium-only** Playwright can also be used to control the Chrome browser, but it works best with the version of Chromium it is bundled with. There is no guarantee it will work with any other version. Use {@code executablePath} option with extreme caution.
    * <p>
    * If Google Chrome (rather than Chromium) is preferred, a Chrome Canary or Dev Channel build is suggested.

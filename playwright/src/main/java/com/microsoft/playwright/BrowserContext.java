@@ -180,21 +180,11 @@ public interface BrowserContext {
   /**
    * Adds a script which would be evaluated in one of the following scenarios:
    * <p>
-   * 
-   * <p>
    * Whenever a page is created in the browser context or is navigated.
    * <p>
    * Whenever a child frame is attached or navigated in any page in the browser context. In this case, the script is evaluated in the context of the newly attached frame.
    * <p>
-   * 
-   * <p>
    * The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend  the JavaScript environment, e.g. to seed {@code Math.random}.
-   * <p>
-   * An example of overriding {@code Math.random} before the page loads:
-   * <p>
-   * 
-   * <p>
-   * 
    * <p>
    * 
    * <p>
@@ -222,8 +212,6 @@ public interface BrowserContext {
    * <p>
    * will be closed.
    * <p>
-   * 
-   * <p>
    * <strong>NOTE</strong> the default browser context cannot be closed.
    */
   void close();
@@ -250,14 +238,6 @@ public interface BrowserContext {
    * {@code { browserContext: BrowserContext, page: Page, frame: Frame }}.
    * <p>
    * See page.exposeBinding(name, playwrightBinding) for page-only version.
-   * <p>
-   * An example of exposing page URL to all frames in all pages in the context:
-   * <p>
-   * 
-   * <p>
-   * An example of passing an element handle:
-   * <p>
-   * 
    * @param name Name of the function on the window object.
    * @param playwrightBinding Callback function that will be called in the Playwright's context.
    */
@@ -270,10 +250,6 @@ public interface BrowserContext {
    * If the {@code playwrightFunction} returns a Promise, it will be awaited.
    * <p>
    * See page.exposeFunction(name, playwrightFunction) for page-only version.
-   * <p>
-   * An example of adding an {@code md5} function to all pages in the context:
-   * <p>
-   * 
    * @param name Name of the function on the window object.
    * @param playwrightFunction Callback function that will be called in the Playwright's context.
    */
@@ -318,17 +294,9 @@ public interface BrowserContext {
    * <p>
    * Once route is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    * <p>
-   * An example of a naïve handler that aborts all image requests:
-   * <p>
-   * 
-   * <p>
    * or the same snippet using a regex pattern instead:
    * <p>
-   * 
-   * <p>
    * Page routes (set up with page.route(url, handler)) take precedence over browser context routes when request matches both handlers.
-   * <p>
-   * 
    * <p>
    * <strong>NOTE</strong> Enabling routing disables http cache.
    * @param url A glob pattern, regex pattern or predicate receiving URL to match while routing.
@@ -337,8 +305,6 @@ public interface BrowserContext {
   void route(Predicate<String> url, Consumer<Route> handler);
   /**
    * This setting will change the default maximum navigation time for the following methods and related shortcuts:
-   * <p>
-   * 
    * <p>
    * page.goBack([options])
    * <p>
@@ -354,16 +320,12 @@ public interface BrowserContext {
    * <p>
    * 
    * <p>
-   * 
-   * <p>
    * <strong>NOTE</strong> {@code page.setDefaultNavigationTimeout} and {@code page.setDefaultTimeout} take priority over {@code browserContext.setDefaultNavigationTimeout}.
    * @param timeout Maximum navigation time in milliseconds
    */
   void setDefaultNavigationTimeout(int timeout);
   /**
    * This setting will change the default maximum time for all the methods accepting {@code timeout} option.
-   * <p>
-   * 
    * <p>
    * <strong>NOTE</strong> {@code page.setDefaultNavigationTimeout}, {@code page.setDefaultTimeout} and {@code browserContext.setDefaultNavigationTimeout} take priority over {@code browserContext.setDefaultTimeout}.
    * @param timeout Maximum time in milliseconds
@@ -372,16 +334,12 @@ public interface BrowserContext {
   /**
    * The extra HTTP headers will be sent with every request initiated by any page in the context. These headers are merged with page-specific extra HTTP headers set with page.setExtraHTTPHeaders(). If page overrides a particular header, page-specific header value will be used instead of the browser context header value.
    * <p>
-   * 
-   * <p>
    * <strong>NOTE</strong> {@code browserContext.setExtraHTTPHeaders} does not guarantee the order of headers in the outgoing requests.
    * @param headers An object containing additional HTTP headers to be sent with every request. All header values must be strings.
    */
   void setExtraHTTPHeaders(Map<String, String> headers);
   /**
    * Sets the context's geolocation. Passing {@code null} or {@code undefined} emulates position unavailable.
-   * <p>
-   * 
    * <p>
    * 
    * <p>

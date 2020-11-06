@@ -80,7 +80,12 @@ abstract class Element {
     return comment()
       // Remove any code snippets between ``` and ```.
       .replaceAll("```((?<!`)`(?!`)|[^`])+```", "")
+      .replaceAll("\\nAn example of[^\\n]+\\n", "")
+      .replaceAll("\\nThis example [^\\n]+\\n", "")
+      .replaceAll("\\nSee ChromiumBrowser[^\\n]+", "\n")
+      .replaceAll("\\n\\n", "\n")
       .replaceAll("\\n", "\n<p>\n");
+//      .replaceAll("\\n\\n", "\n<p>\n");
   }
 
   String comment() {

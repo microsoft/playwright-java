@@ -21,8 +21,6 @@ import java.util.*;
 /**
  * JSHandle represents an in-page JavaScript object. JSHandles can be created with the page.evaluateHandle method.
  * <p>
- * 
- * <p>
  * JSHandle prevents the referenced JavaScript object being garbage collected unless the handle is disposed. JSHandles are auto-disposed when their origin frame gets navigated or the parent context gets destroyed.
  * <p>
  * JSHandle instances can be used as an argument in {@code page.$eval()}, {@code page.evaluate()} and {@code page.evaluateHandle()} methods.
@@ -85,8 +83,6 @@ public interface JSHandle {
    * {@code toJSON}
    * <p>
    * function, it **will not be called**.
-   * <p>
-   * 
    * <p>
    * <strong>NOTE</strong> The method will return an empty JSON object if the referenced object is not stringifiable. It will throw an error if the object has circular references.
    */

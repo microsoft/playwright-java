@@ -22,8 +22,6 @@ import java.util.*;
 /**
  * ElementHandle represents an in-page DOM element. ElementHandles can be created with the page.$ method.
  * <p>
- * 
- * <p>
  * ElementHandle prevents DOM element from garbage collection unless the handle is disposed. ElementHandles are auto-disposed when their origin frame gets navigated.
  * <p>
  * ElementHandle instances can be used as an argument in {@code page.$eval()} and {@code page.evaluate()} methods.
@@ -432,8 +430,6 @@ public interface ElementHandle extends JSHandle {
    * Examples:
    * <p>
    * 
-   * <p>
-   * 
    * @param selector A selector to query element for. See working with selectors for more details.
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
@@ -450,8 +446,6 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method checks the element by performing the following steps:
    * <p>
-   * 
-   * <p>
    * Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already checked, this method returns immediately.
    * <p>
    * Wait for actionability checks on the element, unless {@code force} option is set.
@@ -463,8 +457,6 @@ public interface ElementHandle extends JSHandle {
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
    * <p>
    * Ensure that the element is now checked. If not, this method rejects.
-   * <p>
-   * 
    * <p>
    * If the element is detached from the DOM at any moment during the action, this method rejects.
    * <p>
@@ -478,8 +470,6 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method clicks the element by performing the following steps:
    * <p>
-   * 
-   * <p>
    * Wait for actionability checks on the element, unless {@code force} option is set.
    * <p>
    * Scroll the element into view if needed.
@@ -487,8 +477,6 @@ public interface ElementHandle extends JSHandle {
    * Use page.mouse to click in the center of the element, or the specified {@code position}.
    * <p>
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * <p>
-   * 
    * <p>
    * If the element is detached from the DOM at any moment during the action, this method rejects.
    * <p>
@@ -507,8 +495,6 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method double clicks the element by performing the following steps:
    * <p>
-   * 
-   * <p>
    * Wait for actionability checks on the element, unless {@code force} option is set.
    * <p>
    * Scroll the element into view if needed.
@@ -517,13 +503,9 @@ public interface ElementHandle extends JSHandle {
    * <p>
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first click of the {@code dblclick()} triggers a navigation event, this method will reject.
    * <p>
-   * 
-   * <p>
    * If the element is detached from the DOM at any moment during the action, this method rejects.
    * <p>
    * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
-   * <p>
-   * 
    * <p>
    * <strong>NOTE</strong> {@code elementHandle.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    * @return Promise that resolves when the element is successfully double clicked.
@@ -535,13 +517,9 @@ public interface ElementHandle extends JSHandle {
   /**
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click} is dispatched. This is equivalend to calling {@code element.click()}.
    * <p>
-   * 
-   * <p>
    * Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
    * <p>
    * Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
-   * <p>
-   * 
    * <p>
    * DragEvent
    * <p>
@@ -556,8 +534,6 @@ public interface ElementHandle extends JSHandle {
    * TouchEvent
    * <p>
    * Event
-   * <p>
-   * 
    * <p>
    * You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
    * <p>
@@ -593,8 +569,6 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method hovers over the element by performing the following steps:
    * <p>
-   * 
-   * <p>
    * Wait for actionability checks on the element, unless {@code force} option is set.
    * <p>
    * Scroll the element into view if needed.
@@ -602,8 +576,6 @@ public interface ElementHandle extends JSHandle {
    * Use page.mouse to hover over the center of the element, or the specified {@code position}.
    * <p>
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * <p>
-   * 
    * <p>
    * If the element is detached from the DOM at any moment during the action, this method rejects.
    * <p>
@@ -738,8 +710,6 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method taps the element by performing the following steps:
    * <p>
-   * 
-   * <p>
    * Wait for actionability checks on the element, unless {@code force} option is set.
    * <p>
    * Scroll the element into view if needed.
@@ -748,13 +718,9 @@ public interface ElementHandle extends JSHandle {
    * <p>
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
    * <p>
-   * 
-   * <p>
    * If the element is detached from the DOM at any moment during the action, this method rejects.
    * <p>
    * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
-   * <p>
-   * 
    * <p>
    * <strong>NOTE</strong> {@code elementHandle.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    * @return Promise that resolves when the element is successfully tapped.
@@ -775,10 +741,6 @@ public interface ElementHandle extends JSHandle {
    * To press a special key, like {@code Control} or {@code ArrowDown}, use {@code elementHandle.press}.
    * <p>
    * 
-   * <p>
-   * An example of typing into a text field and then submitting the form:
-   * <p>
-   * 
    * @param text A text to type into a focused element.
    */
   void type(String text, TypeOptions options);
@@ -787,8 +749,6 @@ public interface ElementHandle extends JSHandle {
   }
   /**
    * This method checks the element by performing the following steps:
-   * <p>
-   * 
    * <p>
    * Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already unchecked, this method returns immediately.
    * <p>
@@ -802,8 +762,6 @@ public interface ElementHandle extends JSHandle {
    * <p>
    * Ensure that the element is now unchecked. If not, this method rejects.
    * <p>
-   * 
-   * <p>
    * If the element is detached from the DOM at any moment during the action, this method rejects.
    * <p>
    * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
@@ -816,8 +774,6 @@ public interface ElementHandle extends JSHandle {
   /**
    * Depending on the {@code state} parameter, this method waits for one of the actionability checks to pass. This method throws when the element is detached while waiting, unless waiting for the {@code "hidden"} state.
    * <p>
-   * 
-   * <p>
    * {@code "visible"} Wait until the element is visible.
    * <p>
    * {@code "hidden"} Wait until the element is not visible or not attached. Note that waiting for hidden does not throw when the element detaches.
@@ -827,8 +783,6 @@ public interface ElementHandle extends JSHandle {
    * {@code "enabled"} Wait until the element is enabled.
    * <p>
    * {@code "disabled"} Wait until the element is not enabled.
-   * <p>
-   * 
    * <p>
    * If the element does not satisfy the condition for the {@code timeout} milliseconds, this method will throw.
    * @param state A state to wait for, see below for more details.
@@ -840,8 +794,6 @@ public interface ElementHandle extends JSHandle {
   }
   /**
    * Wait for the {@code selector} relative to the element handle to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
-   * <p>
-   * 
    * <p>
    * 
    * <p>

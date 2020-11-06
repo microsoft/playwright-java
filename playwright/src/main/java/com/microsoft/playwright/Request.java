@@ -21,23 +21,15 @@ import java.util.*;
 /**
  * Whenever the page sends a request for a network resource the following sequence of events are emitted by Page:
  * <p>
- * 
- * <p>
  * {@code 'request'} emitted when the request is issued by the page.
  * <p>
  * {@code 'response'} emitted when/if the response status and headers are received for the request.
  * <p>
  * {@code 'requestfinished'} emitted when the response body is downloaded and the request is complete.
  * <p>
- * 
- * <p>
  * If request fails at some point, then instead of {@code 'requestfinished'} event (and possibly instead of 'response' event), the  {@code 'requestfailed'} event is emitted.
  * <p>
- * 
- * <p>
  * <strong>NOTE</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will complete with {@code 'requestfinished'} event.
- * <p>
- * 
  * <p>
  * If request gets a 'redirect' response, the request is successfully finished with the 'requestfinished' event, and a new request is  issued to a redirected url.
  */
@@ -138,8 +130,6 @@ public interface Request {
    * When the server responds with a redirect, Playwright creates a new Request object. The two requests are connected by {@code redirectedFrom()} and {@code redirectedTo()} methods. When multiple server redirects has happened, it is possible to construct the whole redirect chain by repeatedly calling {@code redirectedFrom()}.
    * <p>
    * For example, if the website {@code http://example.com} redirects to {@code https://example.com}:
-   * <p>
-   * 
    * <p>
    * If the website {@code https://google.com} has no redirects:
    * <p>

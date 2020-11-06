@@ -49,21 +49,11 @@ public interface Accessibility {
   /**
    * Captures the current state of the accessibility tree. The returned object represents the root accessible node of the page.
    * <p>
-   * 
-   * <p>
    * <strong>NOTE</strong> The Chromium accessibility tree contains nodes that go unused on most platforms and by
    * <p>
    * most screen readers. Playwright will discard them as well for an easier to process tree,
    * <p>
    * unless {@code interestingOnly} is set to {@code false}.
-   * <p>
-   * 
-   * <p>
-   * An example of dumping the entire accessibility tree:
-   * <p>
-   * 
-   * <p>
-   * An example of logging the focused node's name:
    * <p>
    * 
    * @return An AXNode object with the following properties:

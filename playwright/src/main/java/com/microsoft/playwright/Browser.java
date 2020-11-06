@@ -21,11 +21,6 @@ import java.util.*;
 /**
  * A Browser is created when Playwright connects to a browser instance, either through {@code browserType.launch} or {@code browserType.connect}.
  * <p>
- * An example of using a Browser to create a Page:
- * <p>
- * 
- * <p>
- * See ChromiumBrowser, FirefoxBrowser and WebKitBrowser for browser-specific features. Note that browserType.connect(options) and browserType.launch([options]) always return a specific browser instance, based on the browser being connected to or launched.
  */
 public interface Browser {
   enum EventType {
