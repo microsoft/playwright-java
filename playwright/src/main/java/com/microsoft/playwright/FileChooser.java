@@ -19,6 +19,10 @@ package com.microsoft.playwright;
 import java.nio.file.Path;
 import java.util.*;
 
+/**
+ * FileChooser objects are dispatched by the page in the 'filechooser' event.
+ * <p>
+ */
 public interface FileChooser {
   class FilePayload {
     public final String name;
@@ -45,8 +49,17 @@ public interface FileChooser {
       return this;
     }
   }
+  /**
+   * Returns input element associated with this file chooser.
+   */
   ElementHandle element();
+  /**
+   * Returns whether this file chooser accepts multiple files.
+   */
   boolean isMultiple();
+  /**
+   * Returns page this file chooser belongs to.
+   */
   Page page();
   default void setFiles(Path file) { setFiles(file, null); }
   default void setFiles(Path file, SetFilesOptions options) { setFiles(new Path[]{ file }, options); }
@@ -55,6 +68,9 @@ public interface FileChooser {
   default void setFiles(FileChooser.FilePayload file) { setFiles(file, null); }
   default void setFiles(FileChooser.FilePayload file, SetFilesOptions options)  { setFiles(new FileChooser.FilePayload[]{ file }, options); }
   default void setFiles(FileChooser.FilePayload[] files) { setFiles(files, null); }
+  /**
+   * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then they are resolved relative to the current working directory. For empty array, clears the selected files.
+   */
   void setFiles(FileChooser.FilePayload[] files, SetFilesOptions options);
 }
 

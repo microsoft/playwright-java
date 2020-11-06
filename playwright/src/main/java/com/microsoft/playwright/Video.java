@@ -18,7 +18,14 @@ package com.microsoft.playwright;
 
 import java.util.*;
 
+/**
+ * When browser context is created with the {@code videosPath} option, each page has a video object associated with it.
+ * <p>
+ */
 public interface Video {
+  /**
+   * Returns the file system path this video will be recorded to. The video is guaranteed to be written to the filesystem upon closing the browser context.
+   */
   String path();
 }
 

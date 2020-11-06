@@ -18,6 +18,12 @@ package com.microsoft.playwright;
 
 import java.util.*;
 
+/**
+ * BrowserType provides methods to launch a specific browser instance or connect to an existing one.
+ * <p>
+ * The following is a typical example of using Playwright to drive automation:
+ * <p>
+ */
 public interface BrowserType {
   class ConnectOptions {
     public String wsEndpoint;
@@ -511,15 +517,43 @@ public interface BrowserType {
       return this;
     }
   }
+  /**
+   * 
+   * @return A path where Playwright expects to find a bundled browser executable.
+   */
   String executablePath();
   default Browser launch() {
     return launch(null);
   }
+  /**
+   * You can use {@code ignoreDefaultArgs} to filter out {@code --mute-audio} from default arguments:
+   * <p>
+   * 
+   * <p>
+   * **Chromium-only** Playwright can also be used to control the Chrome browser, but it works best with the version of Chromium it is bundled with. There is no guarantee it will work with any other version. Use {@code executablePath} option with extreme caution.
+   * <p>
+   * If Google Chrome (rather than Chromium) is preferred, a Chrome Canary or Dev Channel build is suggested.
+   * <p>
+   * In browserType.launch([options]) above, any mention of Chromium also applies to Chrome.
+   * <p>
+   * See {@code this article} for a description of the differences between Chromium and Chrome. {@code This article} describes some differences for Linux users.
+   * @param options Set of configurable options to set on the browser. Can have the following fields:
+   * @return Promise which resolves to browser instance.
+   */
   Browser launch(LaunchOptions options);
   default BrowserContext launchPersistentContext(String userDataDir) {
     return launchPersistentContext(userDataDir, null);
   }
+  /**
+   * Launches browser that uses persistent storage located at {@code userDataDir} and returns the only context. Closing this context will automatically close the browser.
+   * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for Chromium and Firefox.
+   * @param options Set of configurable options to set on the browser. Can have the following fields:
+   * @return Promise that resolves to the persistent browser context instance.
+   */
   BrowserContext launchPersistentContext(String userDataDir, LaunchPersistentContextOptions options);
+  /**
+   * Returns browser name. For example: {@code 'chromium'}, {@code 'webkit'} or {@code 'firefox'}.
+   */
   String name();
 }
 

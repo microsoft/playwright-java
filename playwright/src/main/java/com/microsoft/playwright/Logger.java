@@ -18,6 +18,10 @@ package com.microsoft.playwright;
 
 import java.util.*;
 
+/**
+ * Playwright generates a lot of logs and they are accessible via the pluggable logger sink.
+ * <p>
+ */
 public interface Logger {
   enum Severity { ERROR, INFO, VERBOSE, WARNING }
   class LogHints {
@@ -28,7 +32,18 @@ public interface Logger {
       return this;
     }
   }
+  /**
+   * Determines whether sink is interested in the logger with the given name and severity.
+   * @param name logger name
+   */
   boolean isEnabled(String name, Severity severity);
+  /**
+   * 
+   * @param name logger name
+   * @param message log message format
+   * @param args message arguments
+   * @param hints optional formatting hints
+   */
   void log(String name, Severity severity, String message, List<Object> args, LogHints hints);
 }
 

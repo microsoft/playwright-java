@@ -18,6 +18,12 @@ package com.microsoft.playwright;
 
 import java.util.*;
 
+/**
+ * The Mouse class operates in main-frame CSS pixels relative to the top-left corner of the viewport.
+ * <p>
+ * Every {@code page} object has its own Mouse, accessible with {@code page.mouse}.
+ * <p>
+ */
 public interface Mouse {
   enum Button { LEFT, MIDDLE, RIGHT }
 
@@ -89,22 +95,37 @@ public interface Mouse {
   default void click(int x, int y) {
     click(x, y, null);
   }
+  /**
+   * Shortcut for {@code mouse.move}, {@code mouse.down} and {@code mouse.up}.
+   */
   void click(int x, int y, ClickOptions options);
   default void dblclick(int x, int y) {
     dblclick(x, y, null);
   }
+  /**
+   * Shortcut for {@code mouse.move}, {@code mouse.down}, {@code mouse.up}, {@code mouse.down} and {@code mouse.up}.
+   */
   void dblclick(int x, int y, DblclickOptions options);
   default void down() {
     down(null);
   }
+  /**
+   * Dispatches a {@code mousedown} event.
+   */
   void down(DownOptions options);
   default void move(int x, int y) {
     move(x, y, null);
   }
+  /**
+   * Dispatches a {@code mousemove} event.
+   */
   void move(int x, int y, MoveOptions options);
   default void up() {
     up(null);
   }
+  /**
+   * Dispatches a {@code mouseup} event.
+   */
   void up(UpOptions options);
 }
 

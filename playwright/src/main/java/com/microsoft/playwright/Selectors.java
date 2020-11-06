@@ -19,6 +19,9 @@ package com.microsoft.playwright;
 import java.nio.file.Path;
 import java.util.*;
 
+/**
+ * Selectors can be used to install custom selector engines. See Working with selectors for more information.
+ */
 public interface Selectors {
   class RegisterOptions {
     public Boolean contentScript;
@@ -31,6 +34,13 @@ public interface Selectors {
   default void register(String name, String script) { register(name, script, null); }
   void register(String name, String script, RegisterOptions options);
   default void register(String name, Path path) { register(name, path, null); }
+  /**
+   * An example of registering selector engine that queries elements based on a tag name:
+   * <p>
+   * 
+   * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May only contain {@code [a-zA-Z0-9_]} characters.
+   * @param script Script that evaluates to a selector engine instance.
+   */
   void register(String name, Path path, RegisterOptions options);
 }
 

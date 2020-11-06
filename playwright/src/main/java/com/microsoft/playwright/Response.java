@@ -18,16 +18,55 @@ package com.microsoft.playwright;
 
 import java.util.*;
 
+/**
+ * Response class represents responses which are received by page.
+ */
 public interface Response {
+  /**
+   * 
+   * @return Promise which resolves to a buffer with response body.
+   */
   byte[] body();
+  /**
+   * 
+   * @return Waits for this response to finish, returns failure error if request failed.
+   */
   String finished();
+  /**
+   * 
+   * @return A Frame that initiated this response.
+   */
   Frame frame();
+  /**
+   * 
+   * @return An object with HTTP headers associated with the response. All header names are lower-case.
+   */
   Map<String, String> headers();
+  /**
+   * Contains a boolean stating whether the response was successful (status in the range 200-299) or not.
+   */
   boolean ok();
+  /**
+   * 
+   * @return A matching Request object.
+   */
   Request request();
+  /**
+   * Contains the status code of the response (e.g., 200 for a success).
+   */
   int status();
+  /**
+   * Contains the status text of the response (e.g. usually an "OK" for a success).
+   */
   String statusText();
+  /**
+   * 
+   * @return Promise which resolves to a text representation of response body.
+   */
   String text();
+  /**
+   * Contains the URL of the response.
+   */
   String url();
 }
 

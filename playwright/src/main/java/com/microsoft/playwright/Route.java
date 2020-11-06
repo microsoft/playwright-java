@@ -20,6 +20,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
 
+/**
+ * Whenever a network route is set up with page.route(url, handler) or browserContext.route(url, handler), the {@code Route} object allows to handle the route.
+ */
 public interface Route {
   class ContinueOverrides {
     public String method;
@@ -79,12 +82,46 @@ public interface Route {
   default void abort() {
     abort(null);
   }
+  /**
+   * Aborts the route's request.
+   * @param errorCode Optional error code. Defaults to {@code failed}, could be
+   * one of the following:
+   *  - {@code 'aborted'} - An operation was aborted (due to user action)
+   *  - {@code 'accessdenied'} - Permission to access a resource, other than the network, was denied
+   *  - {@code 'addressunreachable'} - The IP address is unreachable. This usually means
+   *  - that there is no route to the specified host or network.
+   *  - {@code 'blockedbyclient'} - The client chose to block the request.
+   *  - {@code 'blockedbyresponse'} - The request failed because the response was delivered along with requirements which are not met ('X-Frame-Options' and 'Content-Security-Policy' ancestor checks, for instance).
+   *  - {@code 'connectionaborted'} - A connection timed out as a result of not receiving an ACK for data sent.
+   *  - {@code 'connectionclosed'} - A connection was closed (corresponding to a TCP FIN).
+   *  - {@code 'connectionfailed'} - A connection attempt failed.
+   *  - {@code 'connectionrefused'} - A connection attempt was refused.
+   *  - {@code 'connectionreset'} - A connection was reset (corresponding to a TCP RST).
+   *  - {@code 'internetdisconnected'} - The Internet connection has been lost.
+   *  - {@code 'namenotresolved'} - The host name could not be resolved.
+   *  - {@code 'timedout'} - An operation timed out.
+   *  - {@code 'failed'} - A generic failure occurred.
+   */
   void abort(String errorCode);
   default void continue_() {
     continue_(null);
   }
+  /**
+   * Continues route's request with optional overrides.
+   * <p>
+   * 
+   * @param overrides Optional request overrides, can override following properties:
+   */
   void continue_(ContinueOverrides overrides);
+  /**
+   * Fulfills route's request with given response.
+   * @param response Response that will fulfill this route's request.
+   */
   void fulfill(FulfillResponse response);
+  /**
+   * 
+   * @return A request to be routed.
+   */
   Request request();
 }
 

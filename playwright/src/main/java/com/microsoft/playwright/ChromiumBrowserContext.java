@@ -18,6 +18,10 @@ package com.microsoft.playwright;
 
 import java.util.*;
 
+/**
+ * Chromium-specific features including background pages, service worker support, etc.
+ * <p>
+ */
 public interface ChromiumBrowserContext extends BrowserContext {
   enum EventType {
     BACKGROUNDPAGE,
@@ -26,8 +30,21 @@ public interface ChromiumBrowserContext extends BrowserContext {
 
   void addListener(EventType type, Listener<EventType> listener);
   void removeListener(EventType type, Listener<EventType> listener);
+  /**
+   * 
+   * @return All existing background pages in the context.
+   */
   List<Page> backgroundPages();
+  /**
+   * 
+   * @param page Page to create new session for.
+   * @return Promise that resolves to the newly created session.
+   */
   CDPSession newCDPSession(Page page);
+  /**
+   * 
+   * @return All existing service workers in the context.
+   */
   List<Worker> serviceWorkers();
 }
 

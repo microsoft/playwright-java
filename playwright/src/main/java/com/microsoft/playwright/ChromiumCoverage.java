@@ -18,6 +18,9 @@ package com.microsoft.playwright;
 
 import java.util.*;
 
+/**
+ * Coverage gathers information about parts of JavaScript and CSS that were used by the page.
+ */
 public interface ChromiumCoverage {
   class StartCSSCoverageOptions {
     public Boolean resetOnNavigation;
@@ -77,12 +80,32 @@ public interface ChromiumCoverage {
   default void startCSSCoverage() {
     startCSSCoverage(null);
   }
+  /**
+   * 
+   * @param options Set of configurable options for coverage
+   * @return Promise that resolves when coverage is started
+   */
   void startCSSCoverage(StartCSSCoverageOptions options);
   default void startJSCoverage() {
     startJSCoverage(null);
   }
+  /**
+   * <strong>NOTE</strong> Anonymous scripts are ones that don't have an associated url. These are scripts that are dynamically created on the page using {@code eval} or {@code new Function}. If {@code reportAnonymousScripts} is set to {@code true}, anonymous scripts will have {@code __playwright_evaluation_script__} as their URL.
+   * @param options Set of configurable options for coverage
+   * @return Promise that resolves when coverage is started
+   */
   void startJSCoverage(StartJSCoverageOptions options);
+  /**
+   * <strong>NOTE</strong> CSS Coverage doesn't include dynamically injected style tags without sourceURLs.
+   * @return Promise that resolves to the array of coverage reports for all stylesheets
+   */
   ChromiumCoverageStopCSSCoverage stopCSSCoverage();
+  /**
+   * <strong>NOTE</strong> JavaScript Coverage doesn't include anonymous scripts by default. However, scripts with sourceURLs are
+   * <p>
+   * reported.
+   * @return Promise that resolves to the array of coverage reports for all scripts
+   */
   ChromiumCoverageStopJSCoverage stopJSCoverage();
 }
 

@@ -62,6 +62,16 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <source>8</source>
+            <detectJavaApiLink>false</detectJavaApiLink>
+            <excludes>com.microsoft.playwright.impl</excludes>
+            <additionalOptions>--allow-script-in-comments</additionalOptions>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
