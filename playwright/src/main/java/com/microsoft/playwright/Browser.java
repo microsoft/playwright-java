@@ -31,9 +31,21 @@ public interface Browser {
   void removeListener(EventType type, Listener<EventType> listener);
   class NewContextOptions {
     public class Proxy {
+      /**
+       * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example {@code http://myproxy.com:3128} or {@code socks5://myproxy.com:3128}. Short form {@code myproxy.com:3128} is considered an HTTP proxy.
+       */
       public String server;
+      /**
+       * Optional coma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
+       */
       public String bypass;
+      /**
+       * Optional username to use if HTTP proxy requires authentication.
+       */
       public String username;
+      /**
+       * Optional password to use if HTTP proxy requires authentication.
+       */
       public String password;
 
       Proxy() {
@@ -60,7 +72,13 @@ public interface Browser {
       }
     }
     public class VideoSize {
+      /**
+       * Video frame width.
+       */
       public int width;
+      /**
+       * Video frame height.
+       */
       public int height;
 
       VideoSize() {
@@ -79,7 +97,13 @@ public interface Browser {
       }
     }
     public class RecordHar {
+      /**
+       * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
+       */
       public Boolean omitContent;
+      /**
+       * Path on the filesystem to write the HAR file to.
+       */
       public String path;
 
       RecordHar() {
@@ -97,27 +121,90 @@ public interface Browser {
         return this;
       }
     }
+    /**
+     * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
+     */
     public Boolean acceptDownloads;
+    /**
+     * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
+     */
     public Boolean ignoreHTTPSErrors;
+    /**
+     * Toggles bypassing page's Content-Security-Policy.
+     */
     public Boolean bypassCSP;
+    /**
+     * Sets a consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     */
     public Page.Viewport viewport;
+    /**
+     * Specific user agent to use in this context.
+     */
     public String userAgent;
+    /**
+     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
+     */
     public Integer deviceScaleFactor;
+    /**
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported in Firefox.
+     */
     public Boolean isMobile;
+    /**
+     * Specifies if viewport supports touch events. Defaults to false.
+     */
     public Boolean hasTouch;
+    /**
+     * Whether or not to enable JavaScript in the context. Defaults to true.
+     */
     public Boolean javaScriptEnabled;
+    /**
+     * Changes the timezone of the context. See ICU’s {@code metaZones.txt} for a list of supported timezone IDs.
+     */
     public String timezoneId;
     public Geolocation geolocation;
+    /**
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language} request header value as well as number and date formatting rules.
+     */
     public String locale;
+    /**
+     * A list of permissions to grant to all pages in this context. See browserContext.grantPermissions for more details.
+     */
     public List<String> permissions;
+    /**
+     * An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+     */
     public Map<String, String> extraHTTPHeaders;
+    /**
+     * Whether to emulate network being offline. Defaults to {@code false}.
+     */
     public Boolean offline;
+    /**
+     * Credentials for HTTP authentication.
+     */
     public BrowserContext.HTTPCredentials httpCredentials;
+    /**
+     * Emulates {@code 'prefers-colors-scheme'} media feature, supported values are {@code 'light'}, {@code 'dark'}, {@code 'no-preference'}. See page.emulateMedia(options) for more details. Defaults to '{@code light}'.
+     */
     public ColorScheme colorScheme;
+    /**
+     * Logger sink for Playwright logging.
+     */
     public Logger logger;
+    /**
+     * Network proxy settings to use with this context. Note that browser needs to be launched with the global proxy for this option to work. If all contexts override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server: 'per-context' } })}.
+     */
     public Proxy proxy;
+    /**
+     * Enables video recording for all pages to {@code videosPath} folder. If not specified, videos are not recorded. Make sure to await {@code browserContext.close} for videos to be saved.
+     */
     public String videosPath;
+    /**
+     * Specifies dimensions of the automatically recorded video. Can only be used if {@code videosPath} is set. If not specified the size will be equal to {@code viewport}. If {@code viewport} is not configured explicitly the video size defaults to 1280x720. Actual picture of the page will be scaled down if necessary to fit specified size.
+     */
     public VideoSize videoSize;
+    /**
+     * Enables HAR recording for all pages into {@code har.path} file. If not specified, the HAR is not recorded. Make sure to await {@code browserContext.close} for the HAR to be saved.
+     */
     public RecordHar recordHar;
 
     public NewContextOptions withAcceptDownloads(Boolean acceptDownloads) {
@@ -211,9 +298,21 @@ public interface Browser {
   }
   class NewPageOptions {
     public class Proxy {
+      /**
+       * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example {@code http://myproxy.com:3128} or {@code socks5://myproxy.com:3128}. Short form {@code myproxy.com:3128} is considered an HTTP proxy.
+       */
       public String server;
+      /**
+       * Optional coma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
+       */
       public String bypass;
+      /**
+       * Optional username to use if HTTP proxy requires authentication.
+       */
       public String username;
+      /**
+       * Optional password to use if HTTP proxy requires authentication.
+       */
       public String password;
 
       Proxy() {
@@ -240,7 +339,13 @@ public interface Browser {
       }
     }
     public class VideoSize {
+      /**
+       * Video frame width.
+       */
       public int width;
+      /**
+       * Video frame height.
+       */
       public int height;
 
       VideoSize() {
@@ -259,7 +364,13 @@ public interface Browser {
       }
     }
     public class RecordHar {
+      /**
+       * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
+       */
       public Boolean omitContent;
+      /**
+       * Path on the filesystem to write the HAR file to.
+       */
       public String path;
 
       RecordHar() {
@@ -277,27 +388,90 @@ public interface Browser {
         return this;
       }
     }
+    /**
+     * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
+     */
     public Boolean acceptDownloads;
+    /**
+     * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
+     */
     public Boolean ignoreHTTPSErrors;
+    /**
+     * Toggles bypassing page's Content-Security-Policy.
+     */
     public Boolean bypassCSP;
+    /**
+     * Sets a consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     */
     public Page.Viewport viewport;
+    /**
+     * Specific user agent to use in this context.
+     */
     public String userAgent;
+    /**
+     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
+     */
     public Integer deviceScaleFactor;
+    /**
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported in Firefox.
+     */
     public Boolean isMobile;
+    /**
+     * Specifies if viewport supports touch events. Defaults to false.
+     */
     public Boolean hasTouch;
+    /**
+     * Whether or not to enable JavaScript in the context. Defaults to {@code true}.
+     */
     public Boolean javaScriptEnabled;
+    /**
+     * Changes the timezone of the context. See ICU’s {@code metaZones.txt} for a list of supported timezone IDs.
+     */
     public String timezoneId;
     public Geolocation geolocation;
+    /**
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language} request header value as well as number and date formatting rules.
+     */
     public String locale;
+    /**
+     * A list of permissions to grant to all pages in this context. See browserContext.grantPermissions for more details.
+     */
     public List<String> permissions;
+    /**
+     * An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+     */
     public Map<String, String> extraHTTPHeaders;
+    /**
+     * Whether to emulate network being offline. Defaults to {@code false}.
+     */
     public Boolean offline;
+    /**
+     * Credentials for HTTP authentication.
+     */
     public BrowserContext.HTTPCredentials httpCredentials;
+    /**
+     * Emulates {@code 'prefers-colors-scheme'} media feature, supported values are {@code 'light'}, {@code 'dark'}, {@code 'no-preference'}. See page.emulateMedia(options) for more details. Defaults to '{@code light}'.
+     */
     public ColorScheme colorScheme;
+    /**
+     * Logger sink for Playwright logging.
+     */
     public Logger logger;
+    /**
+     * Network proxy settings to use with this context. Note that browser needs to be launched with the global proxy for this option to work. If all contexts override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server: 'per-context' } })}.
+     */
     public Proxy proxy;
+    /**
+     * Enables video recording for all pages to {@code videosPath} folder. If not specified, videos are not recorded. Make sure to await {@code page.close} for videos to be saved.
+     */
     public String videosPath;
+    /**
+     * Specifies dimensions of the automatically recorded video. Can only be used if {@code videosPath} is set. If not specified the size will be equal to {@code viewport}. If {@code viewport} is not configured explicitly the video size defaults to 1280x720. Actual picture of the page will be scaled down if necessary to fit specified size.
+     */
     public VideoSize videoSize;
+    /**
+     * Enables HAR recording for all pages into {@code har.path} file. If not specified, the HAR is not recorded. Make sure to await {@code page.close} for the HAR to be saved.
+     */
     public RecordHar recordHar;
 
     public NewPageOptions withAcceptDownloads(Boolean acceptDownloads) {

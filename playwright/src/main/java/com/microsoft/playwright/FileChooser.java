@@ -37,7 +37,13 @@ public interface FileChooser {
   }
 
   class SetFilesOptions {
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public SetFilesOptions withNoWaitAfter(Boolean noWaitAfter) {

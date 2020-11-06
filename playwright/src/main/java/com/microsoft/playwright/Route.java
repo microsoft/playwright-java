@@ -25,8 +25,17 @@ import java.util.*;
  */
 public interface Route {
   class ContinueOverrides {
+    /**
+     * If set changes the request method (e.g. GET or POST)
+     */
     public String method;
+    /**
+     * If set changes the post data of request
+     */
     public byte[] postData;
+    /**
+     * If set changes the request HTTP headers. Header values will be converted to a string.
+     */
     public Map<String, String> headers;
 
     public ContinueOverrides withMethod(String method) {
@@ -47,11 +56,26 @@ public interface Route {
     }
   }
   class FulfillResponse {
+    /**
+     * Response status code, defaults to {@code 200}.
+     */
     public int status;
+    /**
+     * Optional response headers. Header values will be converted to a string.
+     */
     public Map<String, String> headers;
+    /**
+     * If set, equals to setting {@code Content-Type} response header.
+     */
     public String contentType;
+    /**
+     * Optional response body.
+     */
     public String body;
     public byte[] bodyBytes;
+    /**
+     * Optional file path to respond with. The content type will be inferred from file extension. If {@code path} is a relative path, then it is resolved relative to current working directory.
+     */
     public Path path;
 
     public FulfillResponse withStatus(int status) {

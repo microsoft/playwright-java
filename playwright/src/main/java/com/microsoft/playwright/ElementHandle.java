@@ -55,8 +55,17 @@ public interface ElementHandle extends JSHandle {
 
   enum ElementState { DISABLED, ENABLED, HIDDEN, STABLE, VISIBLE }
   class CheckOptions {
+    /**
+     * Whether to bypass the actionability checks. Defaults to {@code false}.
+     */
     public Boolean force;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public CheckOptions withForce(Boolean force) {
@@ -73,13 +82,37 @@ public interface ElementHandle extends JSHandle {
     }
   }
   class ClickOptions {
+    /**
+     * Defaults to {@code left}.
+     */
     public Mouse.Button button;
+    /**
+     * defaults to 1. See UIEvent.detail.
+     */
     public Integer clickCount;
+    /**
+     * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
+     */
     public Integer delay;
+    /**
+     * A point to click relative to the top-left corner of element padding box. If not specified, clicks to some visible point of the element.
+     */
     public Position position;
+    /**
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the click, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
+     */
     public Set<Keyboard.Modifier> modifiers;
+    /**
+     * Whether to bypass the actionability checks. Defaults to {@code false}.
+     */
     public Boolean force;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public ClickOptions withButton(Mouse.Button button) {
@@ -119,12 +152,33 @@ public interface ElementHandle extends JSHandle {
     }
   }
   class DblclickOptions {
+    /**
+     * Defaults to {@code left}.
+     */
     public Mouse.Button button;
+    /**
+     * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
+     */
     public Integer delay;
+    /**
+     * A point to double click relative to the top-left corner of element padding box. If not specified, double clicks to some visible point of the element.
+     */
     public Position position;
+    /**
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the double click, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
+     */
     public Set<Keyboard.Modifier> modifiers;
+    /**
+     * Whether to bypass the actionability checks. Defaults to {@code false}.
+     */
     public Boolean force;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public DblclickOptions withButton(Mouse.Button button) {
@@ -160,7 +214,13 @@ public interface ElementHandle extends JSHandle {
     }
   }
   class FillOptions {
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public FillOptions withNoWaitAfter(Boolean noWaitAfter) {
@@ -173,9 +233,21 @@ public interface ElementHandle extends JSHandle {
     }
   }
   class HoverOptions {
+    /**
+     * A point to hover relative to the top-left corner of element padding box. If not specified, hovers over some visible point of the element.
+     */
     public Position position;
+    /**
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the hover, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
+     */
     public Set<Keyboard.Modifier> modifiers;
+    /**
+     * Whether to bypass the actionability checks. Defaults to {@code false}.
+     */
     public Boolean force;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public HoverOptions withPosition(Position position) {
@@ -199,8 +271,17 @@ public interface ElementHandle extends JSHandle {
     }
   }
   class PressOptions {
+    /**
+     * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
+     */
     public Integer delay;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public PressOptions withDelay(Integer delay) {
@@ -218,10 +299,25 @@ public interface ElementHandle extends JSHandle {
   }
   class ScreenshotOptions {
     public enum Type { JPEG, PNG }
+    /**
+     * The file path to save the image to. The screenshot type will be inferred from file extension. If {@code path} is a relative path, then it is resolved relative to current working directory. If no path is provided, the image won't be saved to the disk.
+     */
     public Path path;
+    /**
+     * Specify screenshot type, defaults to {@code png}.
+     */
     public Type type;
+    /**
+     * The quality of the image, between 0-100. Not applicable to {@code png} images.
+     */
     public Integer quality;
+    /**
+     * Hides default white background and allows capturing screenshots with transparency. Not applicable to {@code jpeg} images. Defaults to {@code false}.
+     */
     public Boolean omitBackground;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public ScreenshotOptions withPath(Path path) {
@@ -246,6 +342,9 @@ public interface ElementHandle extends JSHandle {
     }
   }
   class ScrollIntoViewIfNeededOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public ScrollIntoViewIfNeededOptions withTimeout(Integer timeout) {
@@ -254,7 +353,13 @@ public interface ElementHandle extends JSHandle {
     }
   }
   class SelectOptionOptions {
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public SelectOptionOptions withNoWaitAfter(Boolean noWaitAfter) {
@@ -267,6 +372,9 @@ public interface ElementHandle extends JSHandle {
     }
   }
   class SelectTextOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public SelectTextOptions withTimeout(Integer timeout) {
@@ -275,7 +383,13 @@ public interface ElementHandle extends JSHandle {
     }
   }
   class SetInputFilesOptions {
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public SetInputFilesOptions withNoWaitAfter(Boolean noWaitAfter) {
@@ -307,10 +421,25 @@ public interface ElementHandle extends JSHandle {
         return this;
       }
     }
+    /**
+     * A point to tap relative to the top-left corner of element padding box. If not specified, taps some visible point of the element.
+     */
     public Position position;
+    /**
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the tap, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
+     */
     public Set<Keyboard.Modifier> modifiers;
+    /**
+     * Whether to bypass the actionability checks. Defaults to {@code false}.
+     */
     public Boolean force;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public Position setPosition() {
@@ -335,8 +464,17 @@ public interface ElementHandle extends JSHandle {
     }
   }
   class TypeOptions {
+    /**
+     * Time to wait between key presses in milliseconds. Defaults to 0.
+     */
     public Integer delay;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public TypeOptions withDelay(Integer delay) {
@@ -353,8 +491,17 @@ public interface ElementHandle extends JSHandle {
     }
   }
   class UncheckOptions {
+    /**
+     * Whether to bypass the actionability checks. Defaults to {@code false}.
+     */
     public Boolean force;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public UncheckOptions withForce(Boolean force) {
@@ -371,6 +518,9 @@ public interface ElementHandle extends JSHandle {
     }
   }
   class WaitForElementStateOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public WaitForElementStateOptions withTimeout(Integer timeout) {
@@ -380,7 +530,17 @@ public interface ElementHandle extends JSHandle {
   }
   class WaitForSelectorOptions {
     public enum State { ATTACHED, DETACHED, HIDDEN, VISIBLE }
+    /**
+     * Defaults to {@code 'visible'}. Can be either:
+     *  - {@code 'attached'} - wait for element to be present in DOM.
+     *  - {@code 'detached'} - wait for element to not be present in DOM.
+     *  - {@code 'visible'} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any content or with {@code display:none} has an empty bounding box and is not considered visible.
+     *  - {@code 'hidden'} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This is opposite to the {@code 'visible'} option.
+     */
     public State state;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public WaitForSelectorOptions withState(State state) {

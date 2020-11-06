@@ -31,7 +31,13 @@ import java.util.*;
  */
 public interface Accessibility {
   class SnapshotOptions {
+    /**
+     * Prune uninteresting nodes from the tree. Defaults to {@code true}.
+     */
     public Boolean interestingOnly;
+    /**
+     * The root DOM element for the snapshot. Defaults to the whole page.
+     */
     public ElementHandle root;
 
     public SnapshotOptions withInterestingOnly(Boolean interestingOnly) {

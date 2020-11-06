@@ -36,9 +36,21 @@ import java.util.regex.Pattern;
 public interface Frame {
   enum LoadState { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
   class AddScriptTagOptions {
+    /**
+     * URL of a script to be added.
+     */
     public String url;
+    /**
+     * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to current working directory.
+     */
     public Path path;
+    /**
+     * Raw JavaScript content to be injected into frame.
+     */
     public String content;
+    /**
+     * Script type. Use 'module' in order to load a Javascript ES6 module. See script for more details.
+     */
     public String type;
 
     public AddScriptTagOptions withUrl(String url) {
@@ -59,8 +71,17 @@ public interface Frame {
     }
   }
   class AddStyleTagOptions {
+    /**
+     * URL of the {@code <link>} tag.
+     */
     public String url;
+    /**
+     * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to current working directory.
+     */
     public Path path;
+    /**
+     * Raw CSS content to be injected into frame.
+     */
     public String content;
 
     public AddStyleTagOptions withUrl(String url) {
@@ -77,8 +98,17 @@ public interface Frame {
     }
   }
   class CheckOptions {
+    /**
+     * Whether to bypass the actionability checks. Defaults to {@code false}.
+     */
     public Boolean force;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public CheckOptions withForce(Boolean force) {
@@ -95,13 +125,37 @@ public interface Frame {
     }
   }
   class ClickOptions {
+    /**
+     * Defaults to {@code left}.
+     */
     public Mouse.Button button;
+    /**
+     * defaults to 1. See UIEvent.detail.
+     */
     public Integer clickCount;
+    /**
+     * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
+     */
     public Integer delay;
+    /**
+     * A point to click relative to the top-left corner of element padding box. If not specified, clicks to some visible point of the element.
+     */
     public Position position;
+    /**
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the click, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
+     */
     public Set<Keyboard.Modifier> modifiers;
+    /**
+     * Whether to bypass the actionability checks. Defaults to {@code false}.
+     */
     public Boolean force;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public ClickOptions withButton(Mouse.Button button) {
@@ -141,12 +195,33 @@ public interface Frame {
     }
   }
   class DblclickOptions {
+    /**
+     * Defaults to {@code left}.
+     */
     public Mouse.Button button;
+    /**
+     * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
+     */
     public Integer delay;
+    /**
+     * A point to double click relative to the top-left corner of element padding box. If not specified, double clicks to some visible point of the element.
+     */
     public Position position;
+    /**
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the double click, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
+     */
     public Set<Keyboard.Modifier> modifiers;
+    /**
+     * Whether to bypass the actionability checks. Defaults to {@code false}.
+     */
     public Boolean force;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public DblclickOptions withButton(Mouse.Button button) {
@@ -182,6 +257,9 @@ public interface Frame {
     }
   }
   class DispatchEventOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public DispatchEventOptions withTimeout(Integer timeout) {
@@ -190,7 +268,13 @@ public interface Frame {
     }
   }
   class FillOptions {
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public FillOptions withNoWaitAfter(Boolean noWaitAfter) {
@@ -203,6 +287,9 @@ public interface Frame {
     }
   }
   class FocusOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public FocusOptions withTimeout(Integer timeout) {
@@ -211,6 +298,9 @@ public interface Frame {
     }
   }
   class GetAttributeOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public GetAttributeOptions withTimeout(Integer timeout) {
@@ -219,8 +309,20 @@ public interface Frame {
     }
   }
   class NavigateOptions {
+    /**
+     * Maximum navigation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
+    /**
+     * When to consider navigation succeeded, defaults to {@code load}. Events can be either:
+     *  - {@code 'domcontentloaded'} - consider navigation to be finished when the {@code DOMContentLoaded} event is fired.
+     *  - {@code 'load'} - consider navigation to be finished when the {@code load} event is fired.
+     *  - {@code 'networkidle'} - consider navigation to be finished when there are no network connections for at least {@code 500} ms.
+     */
     public LoadState waitUntil;
+    /**
+     * Referer header value. If provided it will take preference over the referer header value set by page.setExtraHTTPHeaders().
+     */
     public String referer;
 
     public NavigateOptions withTimeout(Integer timeout) {
@@ -237,9 +339,21 @@ public interface Frame {
     }
   }
   class HoverOptions {
+    /**
+     * A point to hover relative to the top-left corner of element padding box. If not specified, hovers over some visible point of the element.
+     */
     public Position position;
+    /**
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the hover, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
+     */
     public Set<Keyboard.Modifier> modifiers;
+    /**
+     * Whether to bypass the actionability checks. Defaults to {@code false}.
+     */
     public Boolean force;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public HoverOptions withPosition(Position position) {
@@ -263,6 +377,9 @@ public interface Frame {
     }
   }
   class InnerHTMLOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public InnerHTMLOptions withTimeout(Integer timeout) {
@@ -271,6 +388,9 @@ public interface Frame {
     }
   }
   class InnerTextOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public InnerTextOptions withTimeout(Integer timeout) {
@@ -279,8 +399,17 @@ public interface Frame {
     }
   }
   class PressOptions {
+    /**
+     * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
+     */
     public Integer delay;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public PressOptions withDelay(Integer delay) {
@@ -297,7 +426,13 @@ public interface Frame {
     }
   }
   class SelectOptionOptions {
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public SelectOptionOptions withNoWaitAfter(Boolean noWaitAfter) {
@@ -310,7 +445,16 @@ public interface Frame {
     }
   }
   class SetContentOptions {
+    /**
+     * Maximum time in milliseconds for resources to load, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
+    /**
+     * When to consider navigation succeeded, defaults to {@code load}. Events can be either:
+     *  - {@code 'domcontentloaded'} - consider setting content to be finished when the {@code DOMContentLoaded} event is fired.
+     *  - {@code 'load'} - consider setting content to be finished when the {@code load} event is fired.
+     *  - {@code 'networkidle'} - consider setting content to be finished when there are no network connections for at least {@code 500} ms.
+     */
     public LoadState waitUntil;
 
     public SetContentOptions withTimeout(Integer timeout) {
@@ -323,7 +467,13 @@ public interface Frame {
     }
   }
   class SetInputFilesOptions {
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public SetInputFilesOptions withNoWaitAfter(Boolean noWaitAfter) {
@@ -355,10 +505,25 @@ public interface Frame {
         return this;
       }
     }
+    /**
+     * A point to tap relative to the top-left corner of element padding box. If not specified, taps some visible point of the element.
+     */
     public Position position;
+    /**
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the tap, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
+     */
     public Set<Keyboard.Modifier> modifiers;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Whether to bypass the actionability checks. Defaults to {@code false}.
+     */
     public Boolean force;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public Position setPosition() {
@@ -383,6 +548,9 @@ public interface Frame {
     }
   }
   class TextContentOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public TextContentOptions withTimeout(Integer timeout) {
@@ -391,8 +559,17 @@ public interface Frame {
     }
   }
   class TypeOptions {
+    /**
+     * Time to wait between key presses in milliseconds. Defaults to 0.
+     */
     public Integer delay;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public TypeOptions withDelay(Integer delay) {
@@ -409,8 +586,17 @@ public interface Frame {
     }
   }
   class UncheckOptions {
+    /**
+     * Whether to bypass the actionability checks. Defaults to {@code false}.
+     */
     public Boolean force;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     */
     public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public UncheckOptions withForce(Boolean force) {
@@ -427,7 +613,13 @@ public interface Frame {
     }
   }
   class WaitForFunctionOptions {
+    /**
+     * If {@code polling} is {@code 'raf'}, then {@code pageFunction} is constantly executed in {@code requestAnimationFrame} callback. If {@code polling} is a number, then it is treated as an interval in milliseconds at which the function would be executed. Defaults to {@code raf}.
+     */
     public Integer pollingInterval;
+    /**
+     * maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public WaitForFunctionOptions withRequestAnimationFrame() {
@@ -444,6 +636,9 @@ public interface Frame {
     }
   }
   class WaitForLoadStateOptions {
+    /**
+     * Maximum waiting time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public WaitForLoadStateOptions withTimeout(Integer timeout) {
@@ -452,10 +647,22 @@ public interface Frame {
     }
   }
   class WaitForNavigationOptions {
+    /**
+     * Maximum navigation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
+    /**
+     * URL string, URL regex pattern or predicate receiving URL to match while waiting for the navigation.
+     */
     public String glob;
     public Pattern pattern;
     public Predicate<String> predicate;
+    /**
+     * When to consider navigation succeeded, defaults to {@code load}. Events can be either:
+     *  - {@code 'domcontentloaded'} - consider navigation to be finished when the {@code DOMContentLoaded} event is fired.
+     *  - {@code 'load'} - consider navigation to be finished when the {@code load} event is fired.
+     *  - {@code 'networkidle'} - consider navigation to be finished when there are no network connections for at least {@code 500} ms.
+     */
     public LoadState waitUntil;
 
     public WaitForNavigationOptions withTimeout(Integer timeout) {
@@ -481,7 +688,17 @@ public interface Frame {
   }
   class WaitForSelectorOptions {
     public enum State { ATTACHED, DETACHED, HIDDEN, VISIBLE }
+    /**
+     * Defaults to {@code 'visible'}. Can be either:
+     *  - {@code 'attached'} - wait for element to be present in DOM.
+     *  - {@code 'detached'} - wait for element to not be present in DOM.
+     *  - {@code 'visible'} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any content or with {@code display:none} has an empty bounding box and is not considered visible.
+     *  - {@code 'hidden'} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This is opposite to the {@code 'visible'} option.
+     */
     public State state;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     */
     public Integer timeout;
 
     public WaitForSelectorOptions withState(State state) {

@@ -32,6 +32,9 @@ public interface WebSocket {
   void addListener(EventType type, Listener<EventType> listener);
   void removeListener(EventType type, Listener<EventType> listener);
   class WebSocketFramereceived {
+    /**
+     * frame payload
+     */
     public byte[] payload;
 
     public WebSocketFramereceived withPayload(byte[] payload) {
@@ -40,6 +43,9 @@ public interface WebSocket {
     }
   }
   class WebSocketFramesent {
+    /**
+     * frame payload
+     */
     public byte[] payload;
 
     public WebSocketFramesent withPayload(byte[] payload) {

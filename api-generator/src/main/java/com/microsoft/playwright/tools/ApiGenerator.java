@@ -85,7 +85,6 @@ abstract class Element {
       .replaceAll("\\nSee ChromiumBrowser[^\\n]+", "\n")
       .replaceAll("\\n\\n", "\n")
       .replaceAll("\\n", "\n<p>\n");
-//      .replaceAll("\\n\\n", "\n<p>\n");
   }
 
   String comment() {
@@ -548,6 +547,7 @@ class Field extends Element {
   }
 
   void writeTo(List<String> output, String offset, String access) {
+    writeJavadoc(output, offset, comment());
     if (asList("Frame.waitForNavigation.options.url",
                "Page.waitForNavigation.options.url").contains(jsonPath)) {
       output.add(offset + "public String glob;");

@@ -28,8 +28,17 @@ public interface Mouse {
   enum Button { LEFT, MIDDLE, RIGHT }
 
   class ClickOptions {
+    /**
+     * Defaults to {@code left}.
+     */
     public Button button;
+    /**
+     * defaults to 1. See UIEvent.detail.
+     */
     public Integer clickCount;
+    /**
+     * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
+     */
     public Integer delay;
 
     public ClickOptions withButton(Button button) {
@@ -46,7 +55,13 @@ public interface Mouse {
     }
   }
   class DblclickOptions {
+    /**
+     * Defaults to {@code left}.
+     */
     public Button button;
+    /**
+     * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
+     */
     public Integer delay;
 
     public DblclickOptions withButton(Button button) {
@@ -59,7 +74,13 @@ public interface Mouse {
     }
   }
   class DownOptions {
+    /**
+     * Defaults to {@code left}.
+     */
     public Button button;
+    /**
+     * defaults to 1. See UIEvent.detail.
+     */
     public Integer clickCount;
 
     public DownOptions withButton(Button button) {
@@ -72,6 +93,9 @@ public interface Mouse {
     }
   }
   class MoveOptions {
+    /**
+     * defaults to 1. Sends intermediate {@code mousemove} events.
+     */
     public Integer steps;
 
     public MoveOptions withSteps(Integer steps) {
@@ -80,7 +104,13 @@ public interface Mouse {
     }
   }
   class UpOptions {
+    /**
+     * Defaults to {@code left}.
+     */
     public Button button;
+    /**
+     * defaults to 1. See UIEvent.detail.
+     */
     public Integer clickCount;
 
     public UpOptions withButton(Button button) {

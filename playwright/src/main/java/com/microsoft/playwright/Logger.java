@@ -25,6 +25,9 @@ import java.util.*;
 public interface Logger {
   enum Severity { ERROR, INFO, VERBOSE, WARNING }
   class LogHints {
+    /**
+     * preferred logger color
+     */
     public String color;
 
     public LogHints withColor(String color) {
