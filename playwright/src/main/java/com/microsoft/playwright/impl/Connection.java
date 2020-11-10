@@ -20,6 +20,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.Duration;
@@ -66,6 +67,10 @@ public class Connection {
   public Connection(InputStream in, OutputStream out) {
     transport = new Transport(in, out);
     root = new Root(this);
+  }
+
+  void close() throws IOException {
+    transport.close();
   }
 
   public JsonElement sendMessage(String guid, String method, JsonObject params) {
