@@ -41,4 +41,4 @@ esac
 curl -O  https://playwright.azureedge.net/builds/cli/next/${FILE_NAME}
 unzip ${FILE_NAME} -d .
 rm $FILE_NAME
-# ./playwright-cli install
+./playwright-cli install
