@@ -29,44 +29,50 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private static Path driverTempDir;
+  private Process driverProcess;
 
   public static PlaywrightImpl create() {
     try {
-      Path driver = ensureDriverExtracted();
+      Path driver = ensureDriverInstalled();
       ProcessBuilder pb = new ProcessBuilder(driver.toString(), "run-driver");
       pb.redirectError(ProcessBuilder.Redirect.INHERIT);
 //      pb.environment().put("DEBUG", "pw:pro*");
       Process p = pb.start();
       Connection connection = new Connection(p.getInputStream(), p.getOutputStream());
-      return (PlaywrightImpl) connection.waitForObjectWithKnownName("Playwright");
-    } catch (IOException e) {
+      PlaywrightImpl result = (PlaywrightImpl) connection.waitForObjectWithKnownName("Playwright");
+      result.driverProcess = p;
+      return result;
+    } catch (IOException | InterruptedException | URISyntaxException e) {
       throw new PlaywrightException("Failed to launch driver", e);
     }
   }
 
-  private static Path ensureDriverExtracted() {
+  private static synchronized Path ensureDriverInstalled() throws IOException, InterruptedException, URISyntaxException {
     if (driverTempDir == null) {
-      try {
-        driverTempDir = Files.createTempDirectory("playwright-java-");
-        driverTempDir.toFile().deleteOnExit();
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        Path path = Paths.get(classloader.getResource("driver").toURI());
-        Files.list(path).forEach(filePath -> {
-          try {
-            extractResource(filePath, driverTempDir);
-          } catch (IOException e) {
-            throw new RuntimeException("Failed to extract driver from " + path, e);
-          }
-        });
-      } catch (IOException | URISyntaxException e) {
-        throw new PlaywrightException("Failed to launch driver", e);
-      }
+      driverTempDir = Files.createTempDirectory("playwright-java-");
+      driverTempDir.toFile().deleteOnExit();
+      ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+      Path path = Paths.get(classloader.getResource("driver").toURI());
+      Files.list(path).forEach(filePath -> {
+        try {
+          extractResource(filePath, driverTempDir);
+        } catch (IOException e) {
+          throw new PlaywrightException("Failed to extract driver from " + path, e);
+        }
+      });
+
+      Path driver = driverTempDir.resolve("playwright-cli");
+      ProcessBuilder pb = new ProcessBuilder(driver.toString(), "install");
+      pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+      Process p = pb.start();
+      p.waitFor();
     }
-    // TODO: remove dir on exit
     return driverTempDir.resolve("playwright-cli");
   }
 
@@ -75,7 +81,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
     Files.copy(from, path);
     path.toFile().setExecutable(true);
     path.toFile().deleteOnExit();
-    System.out.println("extracting: " + from.toString() + " to " + path.toString());
+//    System.out.println("extracting: " + from.toString() + " to " + path.toString());
     return path;
   }
 
@@ -85,7 +91,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private final Selectors selectors;
   private final Map<String, DeviceDescriptor> devices = new HashMap<>();
 
-  public PlaywrightImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
+  PlaywrightImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     chromium = parent.connection.getExistingObject(initializer.getAsJsonObject("chromium").get("guid").getAsString());
     firefox = parent.connection.getExistingObject(initializer.getAsJsonObject("firefox").get("guid").getAsString());
@@ -126,11 +132,16 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
     return selectors;
   }
 
-  public void close() {
+  @Override
+  public void close() throws Exception {
     try {
       connection.close();
-    } catch (IOException e) {
-      throw new PlaywrightException("Failed to close", e);
+    } finally {
+      driverProcess.destroy();
+      boolean didClose = driverProcess.waitFor(30, TimeUnit.SECONDS);
+      if (!didClose) {
+        System.err.println("WARNING: Timed out while waiting for driver to process to exit");
+      }
     }
   }
 }

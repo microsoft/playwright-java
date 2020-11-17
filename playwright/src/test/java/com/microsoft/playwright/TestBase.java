@@ -69,6 +69,12 @@ public class TestBase {
     httpsServer = null;
   }
 
+  @AfterAll
+  static void closePlaywright() throws Exception {
+    playwright.close();
+    playwright = null;
+  }
+
   @BeforeEach
   void createContextAndPage() {
     server.reset();
