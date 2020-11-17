@@ -11,17 +11,11 @@ git clone https://github.com/microsoft/playwright-java
 cd playwright-java
 ```
 
-2. Download playwright-cli binary package into `driver/` directory and run `install` command. It will install Playwright and download browser binaries for Chromium, Firefox and WebKit.
+2. Run the following script to download playwright-cli binary for your platform into `playwright/src/main/resources/driver/` directory. It will also install Playwright and download browser binaries for Chromium, Firefox and WebKit.
 
 ```bash
-mkdir driver
-cd driver
-FILENAME=playwright-cli-0.160.0-next.1604373941495-linux.zip
-curl -O  https://playwright.azureedge.net/builds/cli/next/${FILENAME}
-unzip ${FILENAME} -d .
-./playwright-cli install
+scripts/download_driver.sh
 ```
-Replace `-linux.zip` in the file name with `-win32_x64.zip` or `-mac.zip` for other platforms.
 
 Names of published driver archives can be found at https://github.com/microsoft/playwright-cli/actions
 

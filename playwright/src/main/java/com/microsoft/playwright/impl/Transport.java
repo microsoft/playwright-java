@@ -31,17 +31,21 @@ public class Transport {
   private final ReaderThread readerThread;
   private final WriterThread writerThread;
 
+  private boolean isClosed;
+
   Transport(InputStream input, OutputStream output) {
     DataInputStream in = new DataInputStream(new BufferedInputStream(input));
     readerThread = new ReaderThread(in, incoming);
     readerThread.start();
-    // TODO: buffer?
     DataOutputStream out = new DataOutputStream(output);
     writerThread = new WriterThread(out, outgoing);
     writerThread.start();
   }
 
   public void send(String message) {
+    if (isClosed) {
+      throw new PlaywrightException("Playwright connection closed");
+    }
     try {
       outgoing.put(message);
     } catch (InterruptedException e) {
@@ -50,16 +54,30 @@ public class Transport {
   }
 
   public String poll(Duration timeout) {
+    if (isClosed) {
+      throw new PlaywrightException("Playwright connection closed");
+    }
     try {
       return incoming.poll(timeout.toMillis(), TimeUnit.MILLISECONDS);
     } catch (InterruptedException e) {
       throw new PlaywrightException("Failed to read message", e);
     }
   }
+
+  void close() throws IOException {
+    if (isClosed) {
+      return;
+    }
+    isClosed = true;
+    readerThread.interrupt();
+    readerThread.in.close();
+    writerThread.interrupt();
+    writerThread.out.close();
+  }
 }
 
 class ReaderThread extends Thread {
-  private final DataInputStream in;
+  final DataInputStream in;
   private final BlockingQueue<String> queue;
 
   private static int readIntLE(DataInputStream in) throws IOException {
@@ -85,7 +103,8 @@ class ReaderThread extends Thread {
       try {
         queue.put(readMessage());
       } catch (IOException e) {
-        e.printStackTrace();
+        if (!isInterrupted())
+          e.printStackTrace();
         break;
       } catch (InterruptedException e) {
         break;
@@ -102,7 +121,7 @@ class ReaderThread extends Thread {
 }
 
 class WriterThread extends Thread {
-  private final DataOutputStream out;
+  final DataOutputStream out;
   private final BlockingQueue<String> queue;
 
   private static void writeIntLE(DataOutputStream out, int v) throws IOException {
@@ -125,7 +144,8 @@ class WriterThread extends Thread {
           out.flush();
         sendMessage(queue.take());
       } catch (IOException e) {
-        e.printStackTrace();
+        if (!isInterrupted())
+          e.printStackTrace();
         break;
       } catch (InterruptedException e) {
         break;

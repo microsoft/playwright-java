@@ -17,32 +17,66 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.*;
+import com.microsoft.playwright.DeviceDescriptor;
+import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.Selectors;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class PlaywrightImpl extends ChannelOwner implements Playwright {
+  private static Path driverTempDir;
+
   public static PlaywrightImpl create() {
     try {
-      File cwd = FileSystems.getDefault().getPath(".").toFile();
-      File driver = new File(cwd, "../driver/playwright-cli");
-      ProcessBuilder pb = new ProcessBuilder(driver.getCanonicalPath(), "run-driver");
+      Path driver = ensureDriverExtracted();
+      ProcessBuilder pb = new ProcessBuilder(driver.toString(), "run-driver");
       pb.redirectError(ProcessBuilder.Redirect.INHERIT);
 //      pb.environment().put("DEBUG", "pw:pro*");
       Process p = pb.start();
       Connection connection = new Connection(p.getInputStream(), p.getOutputStream());
-      PlaywrightImpl playwright = (PlaywrightImpl)connection.waitForObjectWithKnownName("Playwright");
-      return playwright;
+      return (PlaywrightImpl) connection.waitForObjectWithKnownName("Playwright");
     } catch (IOException e) {
       throw new PlaywrightException("Failed to launch driver", e);
     }
+  }
+
+  private static Path ensureDriverExtracted() {
+    if (driverTempDir == null) {
+      try {
+        driverTempDir = Files.createTempDirectory("playwright-java-");
+        driverTempDir.toFile().deleteOnExit();
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        Path path = Paths.get(classloader.getResource("driver").toURI());
+        Files.list(path).forEach(filePath -> {
+          try {
+            extractResource(filePath, driverTempDir);
+          } catch (IOException e) {
+            throw new RuntimeException("Failed to extract driver from " + path, e);
+          }
+        });
+      } catch (IOException | URISyntaxException e) {
+        throw new PlaywrightException("Failed to launch driver", e);
+      }
+    }
+    // TODO: remove dir on exit
+    return driverTempDir.resolve("playwright-cli");
+  }
+
+  private static Path extractResource(Path from, Path toDir) throws IOException {
+    Path path = toDir.resolve(from.getFileName());
+    Files.copy(from, path);
+    path.toFile().setExecutable(true);
+    path.toFile().deleteOnExit();
+    System.out.println("extracting: " + from.toString() + " to " + path.toString());
+    return path;
   }
 
   private final BrowserTypeImpl chromium;
@@ -90,5 +124,13 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   @Override
   public Selectors selectors() {
     return selectors;
+  }
+
+  public void close() {
+    try {
+      connection.close();
+    } catch (IOException e) {
+      throw new PlaywrightException("Failed to close", e);
+    }
   }
 }
