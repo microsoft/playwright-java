@@ -47,7 +47,6 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       Connection connection = new Connection(p.getInputStream(), p.getOutputStream());
       PlaywrightImpl result = (PlaywrightImpl) connection.waitForObjectWithKnownName("Playwright");
       result.driverProcess = p;
-      System.out.println("started driver");
       return result;
     } catch (IOException | InterruptedException | URISyntaxException e) {
       throw new PlaywrightException("Failed to launch driver", e);
@@ -139,12 +138,11 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
 
   @Override
   public void close() throws Exception {
-    System.out.println("closing playwright");
     connection.close();
+    // playwright-cli will exit when its stdin is closed, we wait for that.
     boolean didClose = driverProcess.waitFor(30, TimeUnit.SECONDS);
-    System.out.println("did close process: " + didClose);
     if (!didClose) {
-      System.err.println("WARNING: Timed out while waiting for driver to process to exit");
+      System.err.println("WARNING: Timed out while waiting for driver process to exit");
     }
   }
 }
