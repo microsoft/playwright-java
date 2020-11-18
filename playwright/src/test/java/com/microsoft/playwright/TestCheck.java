@@ -17,6 +17,10 @@
 package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.EnabledIf;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,6 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestCheck extends TestBase {
 
   @Test
+//  @DisabledOnOs({OS.LINUX})
+  @EnabledIf("com.microsoft.playwright.TestBase#isChromium")
   void shouldCheckTheBox() {
     page.setContent("<input id='checkbox' type='checkbox'></input>");
     page.check("input");

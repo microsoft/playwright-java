@@ -17,8 +17,6 @@
 package com.microsoft.playwright;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -352,7 +350,7 @@ public class TestBrowserContextAddCookies extends TestBase {
       "}", server.CROSS_PROCESS_PREFIX + "/grid.html");
     page.frames().get(1).evaluate("document.cookie = 'username=John Doe'");
     page.waitForTimeout(2000);
-    boolean allowsThirdParty = isChromium || isFirefox;
+    boolean allowsThirdParty = isChromium() || isFirefox();
     List<BrowserContext.Cookie> cookies = context.cookies(server.CROSS_PROCESS_PREFIX + "/grid.html");
     if (allowsThirdParty) {
       assertJsonEquals("[{\n" +

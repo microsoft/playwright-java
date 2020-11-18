@@ -17,15 +17,21 @@
 package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestElementHandleBoundingBox extends TestBase {
+
+  static boolean isFirefoxHeadful() {
+    return isFirefox() && isHeadful();
+  }
+
   @Test
+  @DisabledIf(value="isFirefoxHeadful", disabledReason="fail")
   void shouldWork() {
-    // TODO: test.fail(browserName === "firefox" && headful);
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");
     ElementHandle elementHandle = page.querySelector(".box:nth-of-type(13)");
@@ -89,8 +95,8 @@ public class TestElementHandleBoundingBox extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
   void shouldWorkWithPageScale() {
-    // TODO: test.skip(browserName === "firefox");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .withViewport(400, 400).withIsMobile(true));
     Page page = context.newPage();

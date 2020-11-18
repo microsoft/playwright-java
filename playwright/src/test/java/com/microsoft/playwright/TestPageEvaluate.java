@@ -17,6 +17,8 @@
 package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.util.Map;
 
@@ -458,8 +460,8 @@ public class TestPageEvaluate extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fixme")
   void shouldNotThrowAnErrorWhenEvaluationDoesASynchronousNavigationAndReturnsAnObject() {
-// TODO: test.fixme(browserName === "webkit");
     // It is imporant to be on about:blank for sync reload.
     Object result = page.evaluate("() => {\n" +
       "  window.location.reload();\n" +

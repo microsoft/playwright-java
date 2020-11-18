@@ -17,6 +17,8 @@
 package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.condition.EnabledIf;
 
 import static com.microsoft.playwright.Dialog.Type.ALERT;
 import static com.microsoft.playwright.Dialog.Type.PROMPT;
@@ -81,9 +83,13 @@ public class TestDialog extends TestBase {
     assertEquals(false, result);
   }
 
+  static boolean isWebKitMac() {
+    return isWebKit() && Utils.getOS() == Utils.OS.MAC;
+  }
+
   @Test
+  @DisabledIf(value="isWebKitMac", disabledReason="fixme")
   void shouldBeAbleToCloseContextWithOpenAlert() {
-//    test.fixme(browserName === "webkit" && platform === "darwin");
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
 //    const alertPromise = page.waitForEvent("dialog");

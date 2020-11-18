@@ -2,6 +2,7 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -53,8 +54,8 @@ public class TestDefaultBrowserContext2 extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
   void shouldWorkInPersistentContext() {
-// TODO:   test.skip(browserName === "firefox");
     // Firefox does not support mobile.
     Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions()
       .withViewport(320, 480).withIsMobile(true));
@@ -185,8 +186,8 @@ public class TestDefaultBrowserContext2 extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
   void shouldThrowIfPageArgumentIsPassed() throws IOException {
-// TODO:   test.skip(browserName === "firefox");
     BrowserType.LaunchPersistentContextOptions options = new BrowserType.LaunchPersistentContextOptions()
       .withArgs(asList(server.EMPTY_PAGE));
     Path userDataDir = Files.createTempDirectory("user-data-dir-");
@@ -199,15 +200,12 @@ public class TestDefaultBrowserContext2 extends TestBase {
   }
 
   void shouldHavePassedURLWhenLaunchingWithIgnoreDefaultArgsTrue() {
-//  test.skip(wire);
   }
 
   void shouldHandleTimeout() {
-//  test.skip(wire);
   }
 
   void shouldHandleException() {
-//  test.skip(wire);
   }
 
   @Test

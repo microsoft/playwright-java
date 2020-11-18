@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,9 +56,13 @@ public class TestRequestFulfill extends TestBase {
     assertEquals("Yo, page!", page.evaluate("document.body.textContent"));
   }
 
+  static boolean isFirefoxHeadful() {
+    return isFirefox() && isHeadful();
+  }
+
   @Test
+  @DisabledIf(value="isFirefoxHeadful", disabledReason="skip")
   void shouldAllowMockingBinaryResponses() {
-// TODO:    test.skip(browserName === "firefox" && headful, "// Firefox headful produces a different image.");
     page.route("**/*", route -> {
       byte[] imageBuffer;
       try {
@@ -81,8 +86,8 @@ public class TestRequestFulfill extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="isFirefoxHeadful", disabledReason="skip")
   void shouldAllowMockingSvgWithCharset() {
-    // TODO: test.skip(browserName === "firefox" && headful, "// Firefox headful produces a different image.");
     // Firefox headful produces a different image.
     page.route("**/*", route -> {
       route.fulfill(new Route.FulfillResponse()

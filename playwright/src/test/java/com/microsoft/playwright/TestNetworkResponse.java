@@ -23,7 +23,9 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 
 import static com.microsoft.playwright.Page.EventType.REQUESTFINISHED;
 import static com.microsoft.playwright.Page.EventType.RESPONSE;
@@ -75,8 +77,10 @@ public class TestNetworkResponse extends TestBase {
   }
 
   @Test
-  void shouldWaitUntilResponseCompletes() {
+  void shouldWaitUntilResponseCompletes() throws ExecutionException, InterruptedException {
     page.navigate(server.EMPTY_PAGE);
+    Semaphore responseWritten = new Semaphore(0);
+    Semaphore responseRead = new Semaphore(0);
     server.setRoute("/get", exchange -> {
       // In Firefox, |fetch| will be hanging until it receives |Content-Type| header
       // from server.
@@ -85,10 +89,15 @@ public class TestNetworkResponse extends TestBase {
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
         writer.write("hello ");
         writer.flush();
+        responseWritten.release();
+        responseRead.acquire();
         writer.write("wor");
         writer.flush();
         writer.write("ld!");
+      } catch (InterruptedException e) {
+        e.printStackTrace();
       }
+      responseWritten.release();
     });
     // Setup page to trap response.
     boolean[] requestFinished = {false};
@@ -97,13 +106,16 @@ public class TestNetworkResponse extends TestBase {
     });
     // send request and wait for server response
     Deferred<Event<Page.EventType>> responseEvent = page.waitForEvent(RESPONSE);
-    Future<Server.Request> request = server.waitForRequest("/get");
     page.evaluate("() => fetch('./get', { method: 'GET'})");
     assertNotNull(responseEvent.get());
+    responseWritten.acquire();
     Response pageResponse = (Response) responseEvent.get().data();
     assertEquals(200, pageResponse.status());
     assertEquals(false, requestFinished[0]);
+    responseRead.release();
+    responseWritten.acquire();
     assertEquals("hello world!", pageResponse.text());
+    assertEquals(true, requestFinished[0]);
   }
 
   void shouldReturnJson() {

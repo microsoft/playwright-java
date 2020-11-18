@@ -17,6 +17,8 @@
 package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +29,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPdf extends TestBase {
   @Test
+  @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isHeadful", disabledReason="skip")
   void shouldBeAbleToSaveFile() throws IOException {
-// TODO:   test.skip(headful || browserName !== "chromium", "Printing to pdf is currently only supported in headless chromium.");
     Path path = File.createTempFile("output", ".pdf").toPath();
     page.pdf(new Page.PdfOptions().withPath(path));
     long size = Files.size(path);
@@ -36,11 +39,11 @@ public class TestPdf extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
   void shouldOnlyHavePdfInChromium() {
-// TODO:   test.skip(browserName === "chromium");
     try {
       page.pdf();
-      if (isChromium) {
+      if (isChromium()) {
         return;
       }
       fail("did not throw");

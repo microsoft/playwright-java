@@ -17,6 +17,8 @@
 package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.condition.EnabledIf;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -69,8 +71,8 @@ public class TestPageFill extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="skip")
   void shouldThrowOnIncorrectDate() {
-    // TODO: test.skip(browserName === "webkit");
     page.setContent("<input type=date>");
     try {
       page.fill("input", "2020-13-05");
@@ -88,8 +90,8 @@ public class TestPageFill extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="skip")
   void shouldThrowOnIncorrectTime() {
-    // TODO: test.skip(browserName === "webkit");
     page.setContent("<input type=time>");
     try {
       page.fill("input", "25:05");
@@ -107,8 +109,8 @@ public class TestPageFill extends TestBase {
   }
 
   @Test
+  @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
   void shouldThrowOnIncorrectDatetimeLocal() {
-    // TODO: test.skip(browserName === "webkit" || browserName === "firefox");
     page.setContent("<input type=datetime-local>");
     try {
       page.fill("input", "abc");

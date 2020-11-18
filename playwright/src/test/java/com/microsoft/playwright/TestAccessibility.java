@@ -18,6 +18,8 @@ package com.microsoft.playwright;
 
 import com.google.gson.*;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.lang.reflect.Type;
 
@@ -145,7 +147,7 @@ public class TestAccessibility extends TestBase {
     // autofocus happens after a delay in chrome these days
     page.waitForFunction("() => document.activeElement.hasAttribute('autofocus')");
 
-    String golden = isFirefox ? "{\n" +
+    String golden = isFirefox() ? "{\n" +
       "  role: 'document',\n" +
       "  name: 'Accessibility Test',\n" +
       "  children: [\n" +
@@ -158,7 +160,7 @@ public class TestAccessibility extends TestBase {
       "    {role: 'textbox', name: '', valueString: 'and a value'}, // firefox doesn't use aria-placeholder for the name\n" +
       "    {role: 'textbox', name: '', valueString: 'and a value', description: 'This is a description!'} // and here\n" +
       "  ]\n" +
-      "}" : isChromium ? "{\n" +
+      "}" : isChromium() ? "{\n" +
       "  role: 'WebArea',\n" +
       "  name: 'Accessibility Test',\n" +
       "  children: [\n" +
@@ -193,7 +195,7 @@ public class TestAccessibility extends TestBase {
     page.setContent("<div>Hello World</div>");
     AccessibilityNode snapshot = page.accessibility().snapshot();
     AccessibilityNode node = snapshot.children().get(0);
-    assertEquals(isFirefox ? "text leaf" : "text", node.role());
+    assertEquals(isFirefox() ? "text leaf" : "text", node.role());
     assertEquals("Hello World", node.name());
   }
 
@@ -239,7 +241,7 @@ public class TestAccessibility extends TestBase {
       "  <div role='tab'>Tab2</div>\n" +
       "</div>");
     String golden = "{\n" +
-      "  role: '" + (isFirefox ? "document" : "WebArea") + "',\n" +
+      "  role: '" + (isFirefox() ? "document" : "WebArea") + "',\n" +
       "  name: '',\n" +
       "  children: [{\n" +
       "    role: 'tab',\n" +
@@ -254,12 +256,12 @@ public class TestAccessibility extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="skip")
   void richTextEditableFieldsShouldHaveChildren() {
-// TODO:   test.skip(browserName === "webkit", "WebKit rich text accessibility is iffy");
     page.setContent("<div contenteditable='true'>\n" +
       "  Edit this image: <img src='fakeimage.png' alt='my fake image'>\n" +
       "</div>");
-    String golden = isFirefox ? "{\n" +
+    String golden = isFirefox() ? "{\n" +
       "  role: 'section',\n" +
       "  name: '',\n" +
       "  children: [{\n" +
@@ -286,12 +288,12 @@ public class TestAccessibility extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="skip")
   void richTextEditableFieldsWithRoleShouldHaveChildren() {
-// TODO:   test.skip(browserName === "webkit", "WebKit rich text accessibility is iffy");
     page.setContent("<div contenteditable='true' role=\"textbox\">\n" +
       "  Edit this image: <img src='fakeimage.png' alt='my fake image'>\n" +
       "</div>");
-    String golden = isFirefox ? "{\n" +
+    String golden = isFirefox() ? "{\n" +
       "  role: 'textbox',\n" +
       "  name: '',\n" +
       "  valueString: 'Edit this image: my fake image',\n" +
@@ -315,9 +317,8 @@ public class TestAccessibility extends TestBase {
     assertNodeEquals(golden, snapshot.children().get(0));
   }
 
-  // TODO:   suite.skip(browserName === "firefox", "Firefox does not support contenteditable='plaintext-only'");
-// TODO:   suite.skip(browserName === "webkit", "WebKit rich text accessibility is iffy");
   @Test
+  @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
   void plainTextFieldWithRoleShouldNotHaveChildren() {
     page.setContent("<div contenteditable='plaintext-only' role='textbox'>Edit this image:<img src='fakeimage.png' alt='my fake image'></div>");
     AccessibilityNode snapshot = page.accessibility().snapshot();
@@ -329,6 +330,7 @@ public class TestAccessibility extends TestBase {
   }
 
   @Test
+  @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
   void plainTextFieldWithoutRoleShouldNotHaveContent() {
     page.setContent("<div contenteditable='plaintext-only'>Edit this image:<img src='fakeimage.png' alt='my fake image'></div>");
     AccessibilityNode snapshot = page.accessibility().snapshot();
@@ -339,6 +341,7 @@ public class TestAccessibility extends TestBase {
   }
 
   @Test
+  @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
   void plainTextFieldWithTabindexAndWithoutRoleShouldNotHaveContent() {
     page.setContent("<div contenteditable='plaintext-only' tabIndex=0>Edit this image:<img src='fakeimage.png' alt='my fake image'></div>");
     AccessibilityNode snapshot = page.accessibility().snapshot();
@@ -354,18 +357,18 @@ public class TestAccessibility extends TestBase {
       "this is the inner content\n" +
       "<img alt='yo' src='fakeimg.png'>\n" +
       "</div>");
-    String golden = isFirefox ? "{\n" +
+    String golden = isFirefox() ? "{\n" +
       "  role: 'textbox',\n" +
       "  name: 'my favorite textbox',\n" +
       "  valueString: 'this is the inner content yo'\n" +
-      "}" : isChromium ? "{\n" +
+      "}" : isChromium() ? "{\n" +
       "  role: 'textbox',\n" +
       "  name: 'my favorite textbox',\n" +
       "  valueString: 'this is the inner content '\n" +
       "}" : "{\n" +
       "  role: 'textbox',\n" +
       "  name: 'my favorite textbox',\n" +
-      "  valueString: 'this is the inner content  ',\n" +
+      "  valueString: 'this is the inner content '\n" +
       "}";
     AccessibilityNode snapshot = page.accessibility().snapshot();
     assertNodeEquals(golden, snapshot.children().get(0));
@@ -392,7 +395,7 @@ public class TestAccessibility extends TestBase {
       "this is the inner content\n" +
       "<img alt='yo' src='fakeimg.png'>\n" +
       "</div>");
-    String golden = isFirefox ? "{\n" +
+    String golden = isFirefox() ? "{\n" +
       "  role: 'checkbox',\n" +
       "  name: 'this is the inner content yo',\n" +
       "  checked: 'checked'\n" +
@@ -444,7 +447,7 @@ public class TestAccessibility extends TestBase {
       "  [ { role: 'menuitem', name: 'First Item' },\n" +
       "    { role: 'menuitem', name: 'Second Item' },\n" +
       "    { role: 'menuitem', name: 'Third Item' } ]\n" +
-      (isWebKit ? ", orientation: 'vertical'" : "") +
+      (isWebKit() ? ", orientation: 'vertical'" : "") +
       "  }", page.accessibility().snapshot(new Accessibility.SnapshotOptions().withRoot(menu)));
   }
 

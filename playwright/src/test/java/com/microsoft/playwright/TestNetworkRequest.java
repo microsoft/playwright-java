@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -25,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.microsoft.playwright.Page.EventType.REQUEST;
 import static com.microsoft.playwright.Page.EventType.RESPONSE;
@@ -96,17 +95,17 @@ public class TestNetworkRequest extends TestBase {
   @Test
   void shouldReturnHeaders() {
     Response response = page.navigate(server.EMPTY_PAGE);
-    if (isChromium)
+    if (isChromium())
       assertTrue(response.request().headers().get("user-agent").contains("Chrome"));
-    else if (isFirefox)
+    else if (isFirefox())
       assertTrue(response.request().headers().get("user-agent").contains("Firefox"));
-    else if (isWebKit)
+    else if (isWebKit())
       assertTrue(response.request().headers().get("user-agent").contains("WebKit"));
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fail")
   void shouldGetTheSameHeadersAsTheServer() throws ExecutionException, InterruptedException {
-// TODO:    test.fail(browserName === "webkit", "Provisional headers differ from those in network stack");
     Future<Server.Request> serverRequest = server.waitForRequest("/empty.html");
     server.setRoute("/empty.html", exchange -> {
       exchange.sendResponseHeaders(200, 0);
@@ -122,8 +121,8 @@ public class TestNetworkRequest extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fail")
   void shouldGetTheSameHeadersAsTheServerCORP() throws ExecutionException, InterruptedException {
-// TODO:    test.fail(browserName === "webkit", "Provisional headers differ from those in network stack");
     page.navigate(server.PREFIX + "/empty.html");
     Future<Server.Request> serverRequest = server.waitForRequest("/something");
     server.setRoute("/something", exchange -> {
