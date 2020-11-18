@@ -140,9 +140,6 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   public void close() throws Exception {
     System.out.println("closing playwright");
     try {
-      connection.close();
-      System.out.println("closed connection");
-    } finally {
       driverProcess.destroy();
       System.out.println("called driverProcess.destroy");
       boolean didClose = driverProcess.waitFor(30, TimeUnit.SECONDS);
@@ -150,6 +147,9 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       if (!didClose) {
         System.err.println("WARNING: Timed out while waiting for driver to process to exit");
       }
+    } finally {
+      connection.close();
+      System.out.println("closed connection");
     }
   }
 }
