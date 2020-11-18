@@ -47,6 +47,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       Connection connection = new Connection(p.getInputStream(), p.getOutputStream());
       PlaywrightImpl result = (PlaywrightImpl) connection.waitForObjectWithKnownName("Playwright");
       result.driverProcess = p;
+      System.out.println("started driver");
       return result;
     } catch (IOException | InterruptedException | URISyntaxException e) {
       throw new PlaywrightException("Failed to launch driver", e);
@@ -67,11 +68,13 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
         }
       });
 
+      System.out.println("calling playwright-cli install");
       Path driver = driverTempDir.resolve("playwright-cli");
       ProcessBuilder pb = new ProcessBuilder(driver.toString(), "install");
       pb.redirectError(ProcessBuilder.Redirect.INHERIT);
       Process p = pb.start();
-      p.waitFor();
+      int result = p.waitFor();
+      System.out.println("done playwright-cli install: " + result);
     }
     return driverTempDir.resolve("playwright-cli");
   }
@@ -81,7 +84,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
     Files.copy(from, path);
     path.toFile().setExecutable(true);
     path.toFile().deleteOnExit();
-//    System.out.println("extracting: " + from.toString() + " to " + path.toString());
+    System.out.println("extracting: " + from.toString() + " to " + path.toString());
     return path;
   }
 
@@ -134,11 +137,15 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
 
   @Override
   public void close() throws Exception {
+    System.out.println("closing playwright");
     try {
       connection.close();
+      System.out.println("closed connection");
     } finally {
       driverProcess.destroy();
+      System.out.println("called driverProcess.destroy");
       boolean didClose = driverProcess.waitFor(30, TimeUnit.SECONDS);
+      System.out.println("did close process: " + didClose);
       if (!didClose) {
         System.err.println("WARNING: Timed out while waiting for driver to process to exit");
       }
