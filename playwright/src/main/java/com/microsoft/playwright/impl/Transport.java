@@ -69,16 +69,19 @@ public class Transport {
       return;
     }
     isClosed = true;
-    readerThread.interrupt();
-    readerThread.in.close();
-    writerThread.interrupt();
+    // We interrupt only the outgoing pipe and keep reader thread running as
+    // otherwise child process may block on writing to its stdout and never
+    // exit (observed on Windows).
+    readerThread.isClosing = true;
     writerThread.out.close();
+    writerThread.interrupt();
   }
 }
 
 class ReaderThread extends Thread {
-  final DataInputStream in;
+  private final DataInputStream in;
   private final BlockingQueue<String> queue;
+  volatile boolean isClosing;
 
   private static int readIntLE(DataInputStream in) throws IOException {
     int ch1 = in.read();
@@ -103,8 +106,9 @@ class ReaderThread extends Thread {
       try {
         queue.put(readMessage());
       } catch (IOException e) {
-        if (!isInterrupted())
+        if (!isInterrupted() && !isClosing) {
           e.printStackTrace();
+        }
         break;
       } catch (InterruptedException e) {
         break;
