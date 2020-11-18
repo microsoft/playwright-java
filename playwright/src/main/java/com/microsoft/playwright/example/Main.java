@@ -21,7 +21,7 @@ import java.io.File;
 import java.nio.file.Paths;
 
 public class Main {
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
     Playwright playwright = Playwright.create();
     Browser browser = playwright.chromium().launch();
     BrowserContext context = browser.newContext(
@@ -31,5 +31,6 @@ public class Main {
     page.click("text=check feature status");
     page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("s.png")));
     browser.close();
+    playwright.close();
   }
 }
