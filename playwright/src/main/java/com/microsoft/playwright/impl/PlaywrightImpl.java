@@ -72,6 +72,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       Path driver = driverTempDir.resolve("playwright-cli");
       ProcessBuilder pb = new ProcessBuilder(driver.toString(), "install");
       pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+      pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
       Process p = pb.start();
       boolean result = p.waitFor(30, TimeUnit.SECONDS);
       System.out.println("done playwright-cli install: " + result);
