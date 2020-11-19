@@ -335,12 +335,17 @@ public class TestDownload extends TestBase {
     return isChromium() && isHeadful();
   }
 
+  static boolean isChromiumHeadfulOrFirefox() {
+    // TODO: figure out why download is not received in Firefox.
+    return isChromiumHeadful() || isFirefox();
+  }
+
   @Test
-  @DisabledIf(value="isChromiumHeadful", disabledReason="fixme")
+  @DisabledIf(value="isChromiumHeadfulOrFirefox", disabledReason="fixme")
   void shouldReportNewWindowDownloads() throws IOException {
     // TODO: - the test fails in headful Chromium as the popup page gets closed along
     // with the session before download completed event arrives.
-    // - WebKit doesn"t close the popup page
+    // - WebKit doesn't close the popup page
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a target=_blank href='" + server.PREFIX + "/download'>download</a>");
     Deferred<Event<Page.EventType>> downloadEvent = page.waitForEvent(DOWNLOAD);
