@@ -3,7 +3,7 @@
 set -e
 set +x
 
-FILE_PREFIX=playwright-cli-0.160.0-next.1604373941495
+FILE_PREFIX=playwright-cli-0.170.0-next.1605573954344
 
 trap "cd $(pwd -P)" EXIT
 cd "$(dirname $0)"
