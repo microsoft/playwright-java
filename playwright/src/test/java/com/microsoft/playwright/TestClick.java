@@ -18,6 +18,7 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,7 +69,9 @@ public class TestClick extends TestBase {
     assertEquals(42, page.evaluate("CLICKED"));
   }
 
-  // TODO: it('should not throw UnhandledPromiseRejection when page closes'
+  void shouldNotThrowUnhandledPromiseRejectionWhenPageCloses() {
+    // not supported in sync api
+  }
 
   @Test
   void shouldClickThe1x1Div() {
@@ -95,7 +98,19 @@ public class TestClick extends TestBase {
     assertEquals("Clicked", page.evaluate("result"));
   }
 
-  // TODO: it('should click with disabled javascript'
+  @Test
+  void shouldClickWithDisabledJavascript() {
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withJavaScriptEnabled(false));
+    Page page = context.newPage();
+    page.navigate(server.PREFIX + "/wrappedlink.html");
+
+    Deferred<Response> navigationPromise = page.waitForNavigation();
+    page.click("a");
+    navigationPromise.get();
+
+    assertEquals(server.PREFIX + "/wrappedlink.html#clicked", page.url());
+    context.close();
+  }
 
   @Test
   void shouldClickWhenOneOfInlineBoxChildrenIsOutsideOfViewport() {
@@ -170,14 +185,16 @@ public class TestClick extends TestBase {
     assertEquals("Was not clicked", page.evaluate("result"));
   }
 
-  // TODO: not supported in sync api
   void shouldWaitForDisplayNoneToBeGone() {
+    // not supported in sync api
   }
 
   void shouldWaitForVisibilityHiddenToBeGone() {
+    // not supported in sync api
   }
 
   void shouldWaitForVisibleWhenParentIsHidden() {
+    // not supported in sync api
   }
 
   @Test
@@ -295,17 +312,48 @@ public class TestClick extends TestBase {
     page.click("a");
   }
 
-  // TODO: support element handle
+  @Test
   void shouldClickTheButtonInsideAnIframe() {
+    page.navigate(server.EMPTY_PAGE);
+    page.setContent("<div style='width:100px;height:100px'>spacer</div>");
+    Utils.attachFrame(page, "button-test", server.PREFIX + "/input/button.html");
+    Frame frame = page.frames().get(1);
+    ElementHandle button = frame.querySelector("button");
+    button.click();
+    assertEquals("Clicked", frame.evaluate("() => window['result']"));
   }
 
-  // TODO: do we need it in java?
-  //  void shouldClickTheButtonWithFixedPositionInsideAnIframe() {
-  //    test.fixme(browserName === "chromium" || browserName === "webkit");
+  @Test
+  @EnabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="fixme")
+  void shouldClickTheButtonWithFixedPositionInsideAnIframe() {
+    // @see https://github.com/GoogleChrome/puppeteer/issues/4110
+    // @see https://bugs.chromium.org/p/chromium/issues/detail?id=986390
+    // @see https://chromium-review.googlesource.com/c/chromium/src/+/1742784
+    page.navigate(server.EMPTY_PAGE);
+    page.setViewportSize(500, 500);
+    page.setContent("<div style='width:100px;height:2000px'>spacer</div>");
+    Utils.attachFrame(page, "button-test", server.CROSS_PROCESS_PREFIX + "/input/button.html");
+    Frame frame = page.frames().get(1);
+    frame.evalOnSelector("button", "button => button.style.setProperty('position', 'fixed')");
+    frame.click("button");
+    assertEquals("Clicked", frame.evaluate("() => window['result']"));
+  }
 
 
-  // TODO: support element handle
+  @Test
   void shouldClickTheButtonWithDeviceScaleFactorSet() {
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .withViewport(400, 400)
+      .withDeviceScaleFactor(5));
+    Page page = context.newPage();
+    assertEquals(5, page.evaluate("() => window.devicePixelRatio"));
+    page.setContent("<div style='width:100px;height:100px'>spacer</div>");
+    Utils.attachFrame(page, "button-test", server.PREFIX + "/input/button.html");
+    Frame frame = page.frames().get(1);
+    ElementHandle button = frame.querySelector("button");
+    button.click();
+    assertEquals("Clicked", frame.evaluate("window['result']"));
+    context.close();
   }
 
   @Test
@@ -415,22 +463,38 @@ public class TestClick extends TestBase {
     assertEquals(10, page.evaluate("pageY"));
   }
 
-  // TODO: not supported in sync api
   void shouldWaitForBecomingHitTarget() {
+    // not supported in sync api
   }
 
-  // TODO: support element handle
+  @Test
   void shouldFailWhenObscuredAndNotWaitingForHitTarget() {
+    page.navigate(server.PREFIX + "/input/button.html");
+    ElementHandle button = page.querySelector("button");
+    page.evaluate("() => {\n" +
+      "  document.body.style.position = 'relative';\n" +
+      "  const blocker = document.createElement('div');\n" +
+      "  blocker.style.position = 'absolute';\n" +
+      "  blocker.style.width = '400px';\n" +
+      "  blocker.style.height = '20px';\n" +
+      "  blocker.style.left = '0';\n" +
+      "  blocker.style.top = '0';\n" +
+      "  document.body.appendChild(blocker);\n" +
+      "}");
+    button.click(new ElementHandle.ClickOptions().withForce(true));
+    assertEquals("Was not clicked", page.evaluate("window['result']"));
   }
 
-  // TODO: not supported in sync api
   void shouldWaitForButtonToBeEnabled() {
+    // not supported in sync api
   }
 
   void shouldWaitForInputToBeEnabled() {
+    // not supported in sync api
   }
 
   void shouldWaitForSelectToBeEnabled() {
+    // not supported in sync api
   }
 
   @Test
@@ -454,11 +518,12 @@ public class TestClick extends TestBase {
     assertEquals(true, page.evaluate("__CLICKED"));
   }
 
-  // TODO: not supported in sync api
   void shouldWaitForBUTTONToBeClickableWhenItHasPointerEventsNone() {
+    // not supported in sync api
   }
 
   void shouldWaitForLABELToBeClickableWhenItHasPointerEventsNone() {
+    // not supported in sync api
   }
 
   @Test
@@ -489,18 +554,32 @@ public class TestClick extends TestBase {
     assertEquals(true, page.evaluate("window.clicked"));
   }
 
-  // TODO: support element handle
+  @Test
   void shouldReportNiceErrorWhenElementIsDetachedAndForceClicked() {
+    page.navigate(server.PREFIX + "/input/animating-button.html");
+    page.evaluate("addButton()");
+    ElementHandle handle = page.querySelector("button");
+    page.evaluate("stopButton(true)");
+    try {
+      handle.click(new ElementHandle.ClickOptions().withForce(true));
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
+    }
+    assertEquals(null, page.evaluate("window.clicked"));
   }
 
-  // TODO: not supported in sync api
   void shouldFailWhenElementDetachesAfterAnimation() {
+    // not supported in sync api
   }
   void shouldRetryWhenElementDetachesAfterAnimation() {
+    // not supported in sync api
   }
   void shouldRetryWhenElementIsAnimatingFromOutsideTheViewport() {
+    // not supported in sync api
   }
   void shouldFailWhenElementIsAnimatingFromOutsideTheViewportWithForce() {
+    // not supported in sync api
   }
   @Test
   void shouldDispatchMicrotasksInOrder() {
