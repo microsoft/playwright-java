@@ -29,24 +29,55 @@ public class TestBase {
   static BrowserType browserType;
   static Playwright playwright;
   static Browser browser;
-  static boolean isChromium;
-  static boolean isWebKit;
-  static boolean isFirefox;
   static boolean isMac = Utils.getOS() == Utils.OS.MAC;
   static boolean isWindows = Utils.getOS() == Utils.OS.WINDOWS;
   static boolean headful;
   Page page;
   BrowserContext context;
 
+  static boolean isHeadful() {
+    return headful;
+  }
+
+  static boolean isChromium() {
+    return "chromium".equals(browserType.name());
+  }
+
+  static boolean isWebKit() {
+    return "webkit".equals(browserType.name());
+  }
+
+  static boolean isFirefox() {
+    return "firefox".equals(browserType.name());
+  }
+
   @BeforeAll
   static void launchBrowser() {
     playwright = Playwright.create();
+
+
+    String browserName = System.getenv("BROWSER");
+    if (browserName == null) {
+      browserName = "chromium";
+    }
+    switch (browserName) {
+      case "webkit":
+        browserType = playwright.webkit();
+        break;
+      case "firefox":
+        browserType = playwright.firefox();
+        break;
+      case "chromium":
+        browserType = playwright.chromium();
+        break;
+      default:
+        throw new IllegalArgumentException("Unknown browser: " + browserName);
+    }
+    String headfulEnv = System.getenv("HEADFUL");
+    headful = headfulEnv != null && !"0".equals(headfulEnv) && !"false".equals(headfulEnv);
     BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
-    browserType = playwright.chromium();
+    options.headless = !headful;
     browser = browserType.launch(options);
-    isChromium = true;
-    isWebKit = false;
-    headful = false;
   }
 
   @AfterAll

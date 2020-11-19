@@ -17,13 +17,14 @@
 package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.io.OutputStreamWriter;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
@@ -119,16 +120,16 @@ public class TestPageRoute extends TestBase {
   // @see https://github.com/GoogleChrome/puppeteer/issues/4743
   @Test
   void shouldBeAbleToRemoveHeaders() throws ExecutionException, InterruptedException {
+    page.navigate(server.PREFIX + "/empty.html");
     page.route("**/*", route -> {
       Map<String, String> headers = new HashMap<>(route.request().headers());
-      headers.put("foo", "bar");
-      headers.remove("accept");
+      headers.remove("foo");
       route.continue_(new Route.ContinueOverrides().withHeaders(headers));
     });
 
-    Future<Server.Request> serverRequest = server.waitForRequest("/empty.html");
-    page.navigate(server.PREFIX + "/empty.html");
-    assertFalse(serverRequest.get().headers.containsKey("accept"));
+    Future<Server.Request> serverRequest = server.waitForRequest("/title.html");
+    page.evaluate("url => fetch(url, { headers: {foo: 'bar'} })", server.PREFIX + "/title.html");
+    assertFalse(serverRequest.get().headers.containsKey("foo"));
   }
 
   @Test
@@ -169,6 +170,7 @@ public class TestPageRoute extends TestBase {
 
   // @see https://github.com/GoogleChrome/puppeteer/issues/4337
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fixme")
   void shouldWorkWithRedirectInsideSyncXHR() {
     page.navigate(server.EMPTY_PAGE);
     server.setRedirect("/logo.png", "/pptr.png");
@@ -218,9 +220,9 @@ public class TestPageRoute extends TestBase {
     } catch (PlaywrightException e) {
     }
     assertNotNull(failedRequest[0]);
-    if (isWebKit)
+    if (isWebKit())
       assertEquals("Request intercepted", failedRequest[0].failure().errorText());
-    else if (isFirefox)
+    else if (isFirefox())
       assertEquals("NS_ERROR_OFFLINE", failedRequest[0].failure().errorText());
     else
       assertEquals("net::ERR_INTERNET_DISCONNECTED", failedRequest[0].failure().errorText());
@@ -242,9 +244,9 @@ public class TestPageRoute extends TestBase {
       page.navigate(server.EMPTY_PAGE);
       fail("did not throw");
     } catch (PlaywrightException e) {
-      if (isWebKit)
+      if (isWebKit())
         assertTrue(e.getMessage().contains("Request intercepted"));
-      else if (isFirefox)
+      else if (isFirefox())
         assertTrue(e.getMessage().contains("NS_ERROR_FAILURE"));
       else
         assertTrue(e.getMessage().contains("net::ERR_FAILED"));

@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import static com.microsoft.playwright.ElementHandle.ElementState.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -136,9 +137,12 @@ public class TestElementHandleWaitForElementState extends TestBase {
     promise.get();
   }
 
+  static boolean isFirefoxLinux() {
+    return isFirefox() && Utils.getOS() == Utils.OS.LINUX;
+  }
   @Test
+  @DisabledIf(value="isFirefoxLinux", disabledReason="fixme")
   void shouldWaitForStablePosition() {
-    // TODO: test.fixme(browserName === "firefox" && platform === "linux");
     page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     page.evalOnSelector("button", "button => {\n" +

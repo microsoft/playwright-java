@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -314,8 +315,8 @@ public class TestClick extends TestBase {
     page.click("button", new Page.ClickOptions().withPosition(20, 10));
     assertEquals(page.evaluate("result"), "Clicked");
     // Safari reports border-relative offsetX/offsetY.
-    assertEquals(isWebKit ? 20 + 8 : 20, page.evaluate("offsetX"));
-    assertEquals(isWebKit ? 10 + 8 : 10, page.evaluate("offsetY"));
+    assertEquals(isWebKit() ? 20 + 8 : 20, page.evaluate("offsetX"));
+    assertEquals(isWebKit() ? 10 + 8 : 10, page.evaluate("offsetY"));
   }
 
   @Test
@@ -326,8 +327,8 @@ public class TestClick extends TestBase {
     page.click("button", new Page.ClickOptions().withPosition(20, 10));
     assertEquals("Clicked", page.evaluate("result"));
     // Safari reports border-relative offsetX/offsetY.
-    assertEquals(isWebKit ? 12 * 2 + 20 : 20, page.evaluate("offsetX"));
-    assertEquals(isWebKit ? 12 * 2 + 10 : 10, page.evaluate("offsetY"));
+    assertEquals(isWebKit() ? 12 * 2 + 20 : 20, page.evaluate("offsetX"));
+    assertEquals(isWebKit() ? 12 * 2 + 10 : 10, page.evaluate("offsetY"));
   }
 
   @Test
@@ -338,8 +339,8 @@ public class TestClick extends TestBase {
     page.click("button", new Page.ClickOptions().withPosition(1900, 1910));
     assertEquals("Clicked", page.evaluate("() => window['result']"));
     // Safari reports border-relative offsetX/offsetY.
-    assertEquals(isWebKit ? 1900 + 8 : 1900, page.evaluate("offsetX"));
-    assertEquals(isWebKit ? 1910 + 8 : 1910, page.evaluate("offsetY"));
+    assertEquals(isWebKit() ? 1900 + 8 : 1900, page.evaluate("offsetX"));
+    assertEquals(isWebKit() ? 1910 + 8 : 1910, page.evaluate("offsetY"));
   }
 
   @Test
@@ -359,13 +360,13 @@ public class TestClick extends TestBase {
     page.click("button", new Page.ClickOptions().withPosition(1900, 1910));
     assertEquals("Clicked", page.evaluate("() => window['result']"));
     // Safari reports border-relative offsetX/offsetY.
-    assertEquals(isWebKit ? 1900 + 8 : 1900, page.evaluate("offsetX"));
-    assertEquals(isWebKit ? 1910 + 8 : 1910, page.evaluate("offsetY"));
+    assertEquals(isWebKit() ? 1900 + 8 : 1900, page.evaluate("offsetX"));
+    assertEquals(isWebKit() ? 1910 + 8 : 1910, page.evaluate("offsetY"));
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
   void shouldClickTheButtonWithOffsetWithPageScale() {
-    // TODO:    test.skip(browserName === "firefox");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .withViewport(400, 400)
       .withIsMobile(true));
@@ -380,11 +381,11 @@ public class TestClick extends TestBase {
     // 20;10 + 8px of border in each direction
     int expectedX = 28;
     int expectedY = 18;
-    if (isWebKit) {
+    if (isWebKit()) {
       // WebKit rounds up during css -> dip -> css conversion.
       expectedX = 29;
       expectedY = 19;
-    } else if (isChromium && !headful) {
+    } else if (isChromium() && !headful) {
       // Headless Chromium rounds down during css -> dip -> css conversion.
       expectedX = 27;
       expectedY = 18;

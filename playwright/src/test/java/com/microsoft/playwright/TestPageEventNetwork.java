@@ -62,9 +62,9 @@ public class TestPageEventNetwork extends TestBase {
     assertTrue(failedRequests.get(0).url().contains("one-style.css"));
     assertNull(failedRequests.get(0).response());
     assertEquals("stylesheet", failedRequests.get(0).resourceType());
-    if (isChromium) {
+    if (isChromium()) {
       assertEquals("net::ERR_EMPTY_RESPONSE", failedRequests.get(0).failure().errorText());
-    } else if (isWebKit) {
+    } else if (isWebKit()) {
       if (isMac)
         assertEquals("The network connection was lost.", failedRequests.get(0).failure().errorText());
       else if (isWindows)

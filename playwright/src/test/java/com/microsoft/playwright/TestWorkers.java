@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIf;
 
 import static com.microsoft.playwright.Page.EventType.*;
 import static com.microsoft.playwright.Utils.attachFrame;
@@ -120,8 +121,9 @@ public class TestWorkers extends TestBase {
     assertEquals(0, page.workers().size());
   }
 
+  @Test
+  @EnabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fixme")
   void shouldAttributeNetworkActivityForWorkerInsideIframeToTheIframe() {
-    // TODO: test.fixme(browserName === "firefox" || browserName === "chromium");
     page.navigate(server.PREFIX + "/empty.html");
     Deferred<Event<Page.EventType>> workerEvent = page.waitForEvent(WORKER);
     Frame frame = attachFrame(page, "frame1", server.PREFIX + "/worker/worker.html");

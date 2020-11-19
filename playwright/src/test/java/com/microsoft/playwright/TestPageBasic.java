@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,9 +65,9 @@ public class TestPageBasic extends TestBase {
       Dialog dialog = (Dialog) event.data();
       assertEquals(Dialog.Type.BEFOREUNLOAD, dialog.type());
       assertEquals("", dialog.defaultValue());
-      if (isChromium) {
+      if (isChromium()) {
         assertEquals("", dialog.message());
-      } else if (isWebKit) {
+      } else if (isWebKit()) {
         assertEquals("Leave?", dialog.message());
       } else {
         assertEquals("This page is asking you to confirm that you want to leave - data you have entered may not be saved.", dialog.message());
@@ -241,7 +242,7 @@ public class TestPageBasic extends TestBase {
     // Second part in parenthesis is platform - ignore it.
 
     // Third part for Firefox is the last one and encodes engine and browser versions.
-    if (isFirefox) {
+    if (isFirefox()) {
       String[] engineAndBrowser = parts.get(2).split(" ");
       assertTrue(engineAndBrowser[0].startsWith("Gecko"));
       assertTrue(engineAndBrowser[1].startsWith("Firefox"));
@@ -253,7 +254,7 @@ public class TestPageBasic extends TestBase {
     // 5th part encodes real browser name and engine version.
     String[] engineAndBrowser = parts.get(4).split(" ");
     assertTrue(engineAndBrowser[1].startsWith("Safari"));
-    if (isChromium) {
+    if (isChromium()) {
       assertTrue(engineAndBrowser[0].contains("Chrome/"));
     } else {
       assertTrue(engineAndBrowser[0].startsWith("Version/"));
@@ -285,8 +286,8 @@ public class TestPageBasic extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="fail")
   void frameFocusShouldWorkMultipleTimes() {
-    // TODO:    test.fail(browserName === "firefox");
     Page page1 = context.newPage();
     Page page2 = context.newPage();
     for (Page page : Arrays.asList(page1, page2)) {

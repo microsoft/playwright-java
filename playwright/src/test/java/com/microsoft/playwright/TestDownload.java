@@ -18,6 +18,8 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -305,8 +307,8 @@ public class TestDownload extends TestBase {
   }
 
   @Test
+  @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="fixme")
   void shouldReportAltClickDownloads() throws IOException {
-// TODO:   test.fixme(browserName === "firefox" || browserName === "webkit");
     // Firefox does not download on alt-click by default.
     // Our WebKit embedder does not download on alt-click, although Safari does.
     server.setRoute("/download", exchange -> {
@@ -328,12 +330,22 @@ public class TestDownload extends TestBase {
     page.close();
   }
 
+
+  static boolean isChromiumHeadful() {
+    return isChromium() && isHeadful();
+  }
+
+  static boolean isChromiumHeadfulOrFirefox() {
+    // TODO: figure out why download is not received in Firefox.
+    return isChromiumHeadful() || isFirefox();
+  }
+
   @Test
+  @DisabledIf(value="isChromiumHeadfulOrFirefox", disabledReason="fixme")
   void shouldReportNewWindowDownloads() throws IOException {
-// TODO:    test.fixme(browserName === "chromium" && headful);
     // TODO: - the test fails in headful Chromium as the popup page gets closed along
     // with the session before download completed event arrives.
-    // - WebKit doesn"t close the popup page
+    // - WebKit doesn't close the popup page
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a target=_blank href='" + server.PREFIX + "/download'>download</a>");
     Deferred<Event<Page.EventType>> downloadEvent = page.waitForEvent(DOWNLOAD);

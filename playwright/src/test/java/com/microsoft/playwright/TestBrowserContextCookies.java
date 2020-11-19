@@ -17,11 +17,13 @@
 package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.util.Comparator;
 import java.util.List;
 
 import static com.microsoft.playwright.Utils.assertJsonEquals;
+import static com.microsoft.playwright.Utils.getOS;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -84,9 +86,13 @@ public class TestBrowserContextCookies extends TestBase {
     assertTrue(cookies.get(0).httpOnly());
   }
 
+  static boolean isWebKitWindows() {
+    return isWebKit() && getOS() == Utils.OS.WINDOWS;
+  }
+
   @Test
+  @DisabledIf(value="isWebKitWindows", disabledReason="fail")
   void shouldProperlyReportStrictSameSiteCookie() {
-// TODO:   test.fail(browserName === "webkit" && platform === "win32");
     server.setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "name=value;SameSite=Strict");
       exchange.sendResponseHeaders(200, 0);
@@ -99,8 +105,8 @@ public class TestBrowserContextCookies extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="isWebKitWindows", disabledReason="fail")
   void shouldProperlyReportLaxSameSiteCookie() {
-// TODO:   test.fail(browserName === "webkit" && platform === "win32");
     server.setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "name=value;SameSite=Lax");
       exchange.sendResponseHeaders(200, 0);
