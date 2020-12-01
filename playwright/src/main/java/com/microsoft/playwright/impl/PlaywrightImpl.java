@@ -25,21 +25,17 @@ import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Selectors;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class PlaywrightImpl extends ChannelOwner implements Playwright {
-  private static Path driverTempDir;
   private Process driverProcess;
 
   public static PlaywrightImpl create() {
     try {
-      Path driver = ensureDriverInstalled();
+      Path driver = Driver.ensureDriverInstalled();
       ProcessBuilder pb = new ProcessBuilder(driver.toString(), "run-driver");
       pb.redirectError(ProcessBuilder.Redirect.INHERIT);
 //      pb.environment().put("DEBUG", "pw:pro*");
@@ -48,45 +44,9 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       PlaywrightImpl result = (PlaywrightImpl) connection.waitForObjectWithKnownName("Playwright");
       result.driverProcess = p;
       return result;
-    } catch (IOException | InterruptedException | URISyntaxException e) {
+    } catch (IOException e) {
       throw new PlaywrightException("Failed to launch driver", e);
     }
-  }
-
-  private static synchronized Path ensureDriverInstalled() throws IOException, InterruptedException, URISyntaxException {
-    if (driverTempDir == null) {
-      driverTempDir = Files.createTempDirectory("playwright-java-");
-      driverTempDir.toFile().deleteOnExit();
-      ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-      Path path = Paths.get(classloader.getResource("driver").toURI());
-      Files.list(path).forEach(filePath -> {
-        try {
-          extractResource(filePath, driverTempDir);
-        } catch (IOException e) {
-          throw new PlaywrightException("Failed to extract driver from " + path, e);
-        }
-      });
-
-      Path driver = driverTempDir.resolve("playwright-cli");
-      ProcessBuilder pb = new ProcessBuilder(driver.toString(), "install");
-      pb.redirectError(ProcessBuilder.Redirect.INHERIT);
-      pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-      Process p = pb.start();
-      boolean result = p.waitFor(10, TimeUnit.MINUTES);
-      if (!result) {
-        System.err.println("Timed out waiting for browsers to install");
-      }
-    }
-    return driverTempDir.resolve("playwright-cli");
-  }
-
-  private static Path extractResource(Path from, Path toDir) throws IOException {
-    Path path = toDir.resolve(from.getFileName());
-    Files.copy(from, path);
-    path.toFile().setExecutable(true);
-    path.toFile().deleteOnExit();
-//    System.out.println("extracting: " + from.toString() + " to " + path.toString());
-    return path;
   }
 
   private final BrowserTypeImpl chromium;

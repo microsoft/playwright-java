@@ -11,8 +11,9 @@
   <name>Playwright Java</name>
 
   <modules>
-	<module>playwright</module>
-	<module>api-generator</module>
+    <module>playwright</module>
+    <module>api-generator</module>
+    <module>driver</module>
   </modules>
 
   <properties>
