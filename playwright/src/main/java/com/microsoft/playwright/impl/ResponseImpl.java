@@ -40,12 +40,11 @@ public class ResponseImpl extends ChannelOwner implements Response {
     }
 
     request = connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());
-// TODO: uncomment when server changes are published.
-//    request.headers.clear();
-//    for (JsonElement e : initializer.getAsJsonArray("requestHeaders")) {
-//      JsonObject item = e.getAsJsonObject();
-//      request.headers.put(item.get("name").getAsString().toLowerCase(), item.get("value").getAsString());
-//    }
+    request.headers.clear();
+    for (JsonElement e : initializer.getAsJsonArray("requestHeaders")) {
+      JsonObject item = e.getAsJsonObject();
+      request.headers.put(item.get("name").getAsString().toLowerCase(), item.get("value").getAsString());
+    }
   }
 
   @Override

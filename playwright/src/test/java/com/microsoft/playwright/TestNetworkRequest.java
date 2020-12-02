@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.Page.EventType.REQUEST;
 import static com.microsoft.playwright.Page.EventType.RESPONSE;
@@ -113,11 +114,10 @@ public class TestNetworkRequest extends TestBase {
         writer.write("done");
       }
     });
-// TODO: uncomment when server changes are published
-//    Response response = page.navigate(server.PREFIX + "/empty.html");
-//    Map<String, String> expectedHeaders = serverRequest.get().headers.entrySet().stream().collect(
-//      Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get(0)));
-//    assertEquals(expectedHeaders, response.request().headers());
+    Response response = page.navigate(server.PREFIX + "/empty.html");
+    Map<String, String> expectedHeaders = serverRequest.get().headers.entrySet().stream().collect(
+      Collectors.toMap(e -> e.getKey().toLowerCase(), e -> e.getValue().get(0)));
+    assertEquals(expectedHeaders, response.request().headers());
   }
 
   @Test
@@ -138,11 +138,10 @@ public class TestNetworkRequest extends TestBase {
       "  return data.text();\n" +
       "}", server.CROSS_PROCESS_PREFIX + "/something");
     assertEquals("done", text);
-// TODO: uncomment when server changes are published
-//    Response response = (Response) responsePromise.get().data();
-//    Map<String, String> expectedHeaders = serverRequest.get().headers.entrySet().stream().collect(
-//      Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get(0)));
-//    assertEquals(expectedHeaders, response.request().headers());
+    Response response = (Response) responsePromise.get().data();
+    Map<String, String> expectedHeaders = serverRequest.get().headers.entrySet().stream().collect(
+      Collectors.toMap(e -> e.getKey().toLowerCase(), e -> e.getValue().get(0)));
+    assertEquals(expectedHeaders, response.request().headers());
   }
 
   @Test
