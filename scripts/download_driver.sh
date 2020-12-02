@@ -8,7 +8,7 @@ FILE_PREFIX=playwright-cli-0.170.0-next.1605573954344
 trap "cd $(pwd -P)" EXIT
 cd "$(dirname $0)"
 
-cd ../playwright/src/main/resources
+cd ../driver/src/main/resources
 if [[ -d driver ]]; then
   echo "$(pwd)/driver already exists, delete it first"
   exit 1;
