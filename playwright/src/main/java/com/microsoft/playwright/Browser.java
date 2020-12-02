@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -104,7 +105,7 @@ public interface Browser {
       /**
        * Path on the filesystem to write the HAR file to.
        */
-      public String path;
+      public Path path;
 
       RecordHar() {
       }
@@ -116,7 +117,7 @@ public interface Browser {
         this.omitContent = omitContent;
         return this;
       }
-      public RecordHar withPath(String path) {
+      public RecordHar withPath(Path path) {
         this.path = path;
         return this;
       }

@@ -107,6 +107,9 @@ class Types {
     add("ElementHandle.screenshot.options.path", "string", "Path");
     add("Route.fulfill.response.path", "string", "Path");
     add("Route.fulfill.response.status", "number", "int");
+    add("Browser.newContext.options.recordHar.path", "string", "Path");
+    add("BrowserType.launchPersistentContext.options.recordHar.path", "string", "Path");
+    add("BrowserType.launchPersistentContext.userDataDir", "string", "Path");
     add("ChromiumBrowser.startTracing.options.path", "string", "Path");
 
     // Route

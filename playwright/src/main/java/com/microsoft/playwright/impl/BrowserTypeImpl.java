@@ -21,6 +21,8 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
 
+import java.nio.file.Path;
+
 import static com.microsoft.playwright.impl.Serialization.gson;
 
 class BrowserTypeImpl extends ChannelOwner implements BrowserType {
@@ -44,7 +46,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
 
 
   @Override
-  public BrowserContext launchPersistentContext(String userDataDir, LaunchPersistentContextOptions options) {
+  public BrowserContext launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options) {
     if (options == null) {
       options = new LaunchPersistentContextOptions();
     }
@@ -53,7 +55,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       params.remove("extraHTTPHeaders");
       params.add("extraHTTPHeaders", Serialization.toProtocol(options.extraHTTPHeaders));
     }
-    params.addProperty("userDataDir", userDataDir);
+    params.addProperty("userDataDir", userDataDir.toString());
     JsonObject json = sendMessage("launchPersistentContext", params).getAsJsonObject();
     return connection.getExistingObject(json.getAsJsonObject("context").get("guid").getAsString());
   }

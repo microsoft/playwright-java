@@ -726,7 +726,7 @@ class Interface extends TypeDefinition {
     if ("Download".equals(jsonName)) {
       output.add("import java.io.InputStream;");
     }
-    if (asList("Page", "Frame", "ElementHandle", "FileChooser", "ChromiumBrowser", "Download", "Route", "Selectors").contains(jsonName)) {
+    if (asList("Page", "Frame", "ElementHandle", "FileChooser", "Browser", "BrowserType", "Download", "Route", "Selectors").contains(jsonName)) {
       output.add("import java.nio.file.Path;");
     }
     output.add("import java.util.*;");
