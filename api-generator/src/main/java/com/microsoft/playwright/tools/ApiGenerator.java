@@ -428,10 +428,14 @@ class Method extends Element {
 
   Method(TypeDefinition parent, JsonObject jsonElement) {
     super(parent, jsonElement);
-    returnType = new TypeRef(this, jsonElement.get("type"));
-    if (jsonElement.get("args") != null) {
-      for (Map.Entry<String, JsonElement> arg : jsonElement.get("args").getAsJsonObject().entrySet()) {
-        params.add(new Param(this, arg.getValue().getAsJsonObject()));
+    if (customSignature.containsKey(jsonPath) && customSignature.get(jsonPath).length == 0) {
+      returnType = null;
+    } else {
+      returnType = new TypeRef(this, jsonElement.get("type"));
+      if (jsonElement.get("args") != null) {
+        for (Map.Entry<String, JsonElement> arg : jsonElement.get("args").getAsJsonObject().entrySet()) {
+          params.add(new Param(this, arg.getValue().getAsJsonObject()));
+        }
       }
     }
     name = tsToJavaMethodName.containsKey(jsonName) ? tsToJavaMethodName.get(jsonName) : jsonName;

@@ -26,41 +26,6 @@ import java.util.*;
  * <p>
  */
 public interface BrowserType {
-  class ConnectOptions {
-    /**
-     * A browser websocket endpoint to connect to. **required**
-     */
-    public String wsEndpoint;
-    /**
-     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on. Defaults to 0.
-     */
-    public Integer slowMo;
-    /**
-     * Logger sink for Playwright logging.
-     */
-    public Logger logger;
-    /**
-     * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
-     */
-    public Integer timeout;
-
-    public ConnectOptions withWsEndpoint(String wsEndpoint) {
-      this.wsEndpoint = wsEndpoint;
-      return this;
-    }
-    public ConnectOptions withSlowMo(Integer slowMo) {
-      this.slowMo = slowMo;
-      return this;
-    }
-    public ConnectOptions withLogger(Logger logger) {
-      this.logger = logger;
-      return this;
-    }
-    public ConnectOptions withTimeout(Integer timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
   class LaunchOptions {
     public class Proxy {
       /**
@@ -110,7 +75,7 @@ public interface BrowserType {
     /**
      * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is resolved relative to current working directory. Note that Playwright only works with the bundled Chromium, Firefox or WebKit, use at your own risk.
      */
-    public String executablePath;
+    public Path executablePath;
     /**
      * Additional arguments to pass to the browser instance. The list of Chromium flags can be found here.
      */
@@ -126,7 +91,7 @@ public interface BrowserType {
     /**
      * If specified, accepted downloads are downloaded into this folder. Otherwise, temporary folder is created and is deleted when browser is closed.
      */
-    public String downloadsPath;
+    public Path downloadsPath;
     /**
      * Enable Chromium sandboxing. Defaults to {@code false}.
      */
@@ -172,7 +137,7 @@ public interface BrowserType {
       this.headless = headless;
       return this;
     }
-    public LaunchOptions withExecutablePath(String executablePath) {
+    public LaunchOptions withExecutablePath(Path executablePath) {
       this.executablePath = executablePath;
       return this;
     }
@@ -188,7 +153,7 @@ public interface BrowserType {
       this.proxy = new Proxy();
       return this.proxy;
     }
-    public LaunchOptions withDownloadsPath(String downloadsPath) {
+    public LaunchOptions withDownloadsPath(Path downloadsPath) {
       this.downloadsPath = downloadsPath;
       return this;
     }
@@ -332,7 +297,7 @@ public interface BrowserType {
     /**
      * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is resolved relative to current working directory. **BEWARE**: Playwright is only guaranteed to work with the bundled Chromium, Firefox or WebKit, use at your own risk.
      */
-    public String executablePath;
+    public Path executablePath;
     /**
      * Additional arguments to pass to the browser instance. The list of Chromium flags can be found here.
      */
@@ -352,7 +317,7 @@ public interface BrowserType {
     /**
      * If specified, accepted downloads are downloaded into this folder. Otherwise, temporary folder is created and is deleted when browser is closed.
      */
-    public String downloadsPath;
+    public Path downloadsPath;
     /**
      * Enable Chromium sandboxing. Defaults to {@code true}.
      */
@@ -467,7 +432,7 @@ public interface BrowserType {
       this.headless = headless;
       return this;
     }
-    public LaunchPersistentContextOptions withExecutablePath(String executablePath) {
+    public LaunchPersistentContextOptions withExecutablePath(Path executablePath) {
       this.executablePath = executablePath;
       return this;
     }
@@ -487,7 +452,7 @@ public interface BrowserType {
       this.acceptDownloads = acceptDownloads;
       return this;
     }
-    public LaunchPersistentContextOptions withDownloadsPath(String downloadsPath) {
+    public LaunchPersistentContextOptions withDownloadsPath(Path downloadsPath) {
       this.downloadsPath = downloadsPath;
       return this;
     }
@@ -602,178 +567,6 @@ public interface BrowserType {
     public RecordHar setRecordHar() {
       this.recordHar = new RecordHar();
       return this.recordHar;
-    }
-  }
-  class LaunchServerOptions {
-    public class Proxy {
-      /**
-       * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example {@code http://myproxy.com:3128} or {@code socks5://myproxy.com:3128}. Short form {@code myproxy.com:3128} is considered an HTTP proxy.
-       */
-      public String server;
-      /**
-       * Optional coma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
-       */
-      public String bypass;
-      /**
-       * Optional username to use if HTTP proxy requires authentication.
-       */
-      public String username;
-      /**
-       * Optional password to use if HTTP proxy requires authentication.
-       */
-      public String password;
-
-      Proxy() {
-      }
-      public LaunchServerOptions done() {
-        return LaunchServerOptions.this;
-      }
-
-      public Proxy withServer(String server) {
-        this.server = server;
-        return this;
-      }
-      public Proxy withBypass(String bypass) {
-        this.bypass = bypass;
-        return this;
-      }
-      public Proxy withUsername(String username) {
-        this.username = username;
-        return this;
-      }
-      public Proxy withPassword(String password) {
-        this.password = password;
-        return this;
-      }
-    }
-    /**
-     * Whether to run browser in headless mode. More details for Chromium and Firefox. Defaults to {@code true} unless the {@code devtools} option is {@code true}.
-     */
-    public Boolean headless;
-    /**
-     * Port to use for the web socket. Defaults to 0 that picks any available port.
-     */
-    public Integer port;
-    /**
-     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is resolved relative to current working directory. **BEWARE**: Playwright is only guaranteed to work with the bundled Chromium, Firefox or WebKit, use at your own risk.
-     */
-    public String executablePath;
-    /**
-     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found here.
-     */
-    public List<String> args;
-    /**
-     * If {@code true}, then do not use any of the default arguments. If an array is given, then filter out the given default arguments. Dangerous option; use with care. Defaults to {@code false}.
-     */
-    public String ignoreDefaultArgs;
-    /**
-     * Network proxy settings.
-     */
-    public Proxy proxy;
-    /**
-     * If specified, accepted downloads are downloaded into this folder. Otherwise, temporary folder is created and is deleted when browser is closed.
-     */
-    public String downloadsPath;
-    /**
-     * Enable Chromium sandboxing. Defaults to {@code true}.
-     */
-    public Boolean chromiumSandbox;
-    /**
-     * Firefox user preferences. Learn more about the Firefox user preferences at {@code about:config}.
-     */
-    public String firefoxUserPrefs;
-    /**
-     * Close the browser process on Ctrl-C. Defaults to {@code true}.
-     */
-    public Boolean handleSIGINT;
-    /**
-     * Close the browser process on SIGTERM. Defaults to {@code true}.
-     */
-    public Boolean handleSIGTERM;
-    /**
-     * Close the browser process on SIGHUP. Defaults to {@code true}.
-     */
-    public Boolean handleSIGHUP;
-    /**
-     * Logger sink for Playwright logging.
-     */
-    public Logger logger;
-    /**
-     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
-     */
-    public Integer timeout;
-    /**
-     * Specify environment variables that will be visible to the browser. Defaults to {@code process.env}.
-     */
-    public String env;
-    /**
-     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless} option will be set {@code false}.
-     */
-    public Boolean devtools;
-
-    public LaunchServerOptions withHeadless(Boolean headless) {
-      this.headless = headless;
-      return this;
-    }
-    public LaunchServerOptions withPort(Integer port) {
-      this.port = port;
-      return this;
-    }
-    public LaunchServerOptions withExecutablePath(String executablePath) {
-      this.executablePath = executablePath;
-      return this;
-    }
-    public LaunchServerOptions withArgs(List<String> args) {
-      this.args = args;
-      return this;
-    }
-    public LaunchServerOptions withIgnoreDefaultArgs(String ignoreDefaultArgs) {
-      this.ignoreDefaultArgs = ignoreDefaultArgs;
-      return this;
-    }
-    public Proxy setProxy() {
-      this.proxy = new Proxy();
-      return this.proxy;
-    }
-    public LaunchServerOptions withDownloadsPath(String downloadsPath) {
-      this.downloadsPath = downloadsPath;
-      return this;
-    }
-    public LaunchServerOptions withChromiumSandbox(Boolean chromiumSandbox) {
-      this.chromiumSandbox = chromiumSandbox;
-      return this;
-    }
-    public LaunchServerOptions withFirefoxUserPrefs(String firefoxUserPrefs) {
-      this.firefoxUserPrefs = firefoxUserPrefs;
-      return this;
-    }
-    public LaunchServerOptions withHandleSIGINT(Boolean handleSIGINT) {
-      this.handleSIGINT = handleSIGINT;
-      return this;
-    }
-    public LaunchServerOptions withHandleSIGTERM(Boolean handleSIGTERM) {
-      this.handleSIGTERM = handleSIGTERM;
-      return this;
-    }
-    public LaunchServerOptions withHandleSIGHUP(Boolean handleSIGHUP) {
-      this.handleSIGHUP = handleSIGHUP;
-      return this;
-    }
-    public LaunchServerOptions withLogger(Logger logger) {
-      this.logger = logger;
-      return this;
-    }
-    public LaunchServerOptions withTimeout(Integer timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-    public LaunchServerOptions withEnv(String env) {
-      this.env = env;
-      return this;
-    }
-    public LaunchServerOptions withDevtools(Boolean devtools) {
-      this.devtools = devtools;
-      return this;
     }
   }
   /**

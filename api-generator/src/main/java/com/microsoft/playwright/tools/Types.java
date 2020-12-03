@@ -108,8 +108,14 @@ class Types {
     add("Route.fulfill.response.path", "string", "Path");
     add("Route.fulfill.response.status", "number", "int");
     add("Browser.newContext.options.recordHar.path", "string", "Path");
+    add("Browser.newPage.options.recordHar.path", "string", "Path");
     add("BrowserType.launchPersistentContext.options.recordHar.path", "string", "Path");
     add("BrowserType.launchPersistentContext.userDataDir", "string", "Path");
+    add("BrowserType.launchPersistentContext.options.executablePath", "string", "Path");
+    add("BrowserType.launchServer.options.executablePath", "string", "Path");
+    add("BrowserType.launchPersistentContext.options.downloadsPath", "string", "Path");
+    add("BrowserType.launch.options.executablePath", "string", "Path");
+    add("BrowserType.launch.options.downloadsPath", "string", "Path");
     add("ChromiumBrowser.startTracing.options.path", "string", "Path");
 
     // Route
