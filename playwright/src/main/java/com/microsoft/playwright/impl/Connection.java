@@ -239,6 +239,9 @@ public class Connection {
       case "Selectors":
         result = new SelectorsImpl(parent, type, guid, initializer);
         break;
+      case "WebSocket":
+        result = new WebSocketImpl(parent, type, guid, initializer);
+        break;
       case "Worker":
         result = new WorkerImpl(parent, type, guid, initializer);
         break;

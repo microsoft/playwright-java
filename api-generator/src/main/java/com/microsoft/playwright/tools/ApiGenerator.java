@@ -364,6 +364,7 @@ class Method extends Element {
     };
     customSignature.put("Page.waitForEvent", waitForEvent);
     customSignature.put("BrowserContext.waitForEvent", waitForEvent);
+    customSignature.put("WebSocket.waitForEvent", waitForEvent);
 
     String[] selectOption = {
       "default List<String> selectOption(String selector, String value) {",
@@ -423,8 +424,9 @@ class Method extends Element {
 
   private static Set<String> skipJavadoc = new HashSet<>(asList(
     "Page.waitForEvent.optionsOrPredicate",
-    "Page.frame.options"
-  ));
+    "Page.frame.options",
+    "WebSocket.waitForEvent.optionsOrPredicate"
+    ));
 
   Method(TypeDefinition parent, JsonObject jsonElement) {
     super(parent, jsonElement);
@@ -737,8 +739,10 @@ class Interface extends TypeDefinition {
     if (asList("Page", "BrowserContext").contains(jsonName)) {
       output.add("import java.util.function.Consumer;");
     }
-    if (asList("Page", "Frame", "BrowserContext").contains(jsonName)) {
+    if (asList("Page", "Frame", "BrowserContext", "WebSocket").contains(jsonName)) {
       output.add("import java.util.function.Predicate;");
+    }
+    if (asList("Page", "Frame", "BrowserContext").contains(jsonName)) {
       output.add("import java.util.regex.Pattern;");
     }
     output.add("");
@@ -909,8 +913,16 @@ class Interface extends TypeDefinition {
         output.add("");
         break;
       }
+      case "WebSocket": {
+        output.add(offset + "interface FrameData {");
+        output.add(offset + "  byte[] body();");
+        output.add(offset + "  String text();");
+        output.add(offset + "}");
+        output.add("");
+        break;
+      }
     }
-    if (asList("Page", "BrowserContext").contains(jsonName)){
+    if (asList("Page", "BrowserContext", "WebSocket").contains(jsonName)){
       output.add(offset + "class WaitForEventOptions {");
       output.add(offset + "  public Integer timeout;");
       output.add(offset + "  public Predicate<Event<EventType>> predicate;");
