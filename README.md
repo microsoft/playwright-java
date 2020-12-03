@@ -15,7 +15,7 @@ package com.microsoft.playwright.example;
 
 import com.microsoft.playwright.*;
 
-import java.io.File;
+import java.nio.file.Paths;
 
 public class Main {
   public static void main(String[] args) {
@@ -26,7 +26,7 @@ public class Main {
     Page page = context.newPage();
     page.navigate("https://webkit.org");
     page.click("text=check feature status");
-    page.screenshot(new Page.ScreenshotOptions().withPath(new File("s.png")));
+    page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("s.png")));
     browser.close();
   }
 }
