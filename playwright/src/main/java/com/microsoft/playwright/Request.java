@@ -47,9 +47,6 @@ public interface Request {
       return this.errorText;
     }
   }
-  class RequestPostDataJSON {
-
-  }
   class RequestTiming {
     /**
      * Request start time in milliseconds elapsed since January 1, 1970 00:00:00 UTC
