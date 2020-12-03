@@ -96,9 +96,9 @@ public class TestHar extends TestBase {
 
   @Test
   void shouldHavePages() throws FileNotFoundException {
+    pageWithHar.page.navigate("data:text/html,<title>Hello</title>");
     // For data: load comes before domcontentloaded...
     Deferred<Void> loadEvent = pageWithHar.page.waitForLoadState(Page.LoadState.DOMCONTENTLOADED);
-    pageWithHar.page.navigate("data:text/html,<title>Hello</title>");
     loadEvent.get();
     JsonObject log = pageWithHar.log();
 
@@ -120,8 +120,9 @@ public class TestHar extends TestBase {
       .setRecordHar().withPath(harPath).done().withIgnoreHTTPSErrors(true));
     Page page = context.pages().get(0);
 
-    Deferred<Void> loadEvent = page.waitForLoadState(Page.LoadState.DOMCONTENTLOADED);
     page.navigate("data:text/html,<title>Hello</title>");
+    // For data: load comes before domcontentloaded...
+    Deferred<Void> loadEvent = page.waitForLoadState(Page.LoadState.DOMCONTENTLOADED);
     loadEvent.get();
     context.close();
     JsonObject log = new Gson().fromJson(new FileReader(harPath.toFile()), JsonObject.class).getAsJsonObject("log");
