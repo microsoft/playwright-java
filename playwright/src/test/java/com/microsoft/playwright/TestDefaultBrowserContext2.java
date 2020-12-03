@@ -42,7 +42,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
       throw new RuntimeException(e);
     }
     assertNull(persistentContext);
-    persistentContext = browserType.launchPersistentContext(userDataDir.toString(), options);
+    persistentContext = browserType.launchPersistentContext(userDataDir, options);
     return persistentContext.pages().get(0);
   }
 
@@ -118,7 +118,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
   void shouldAcceptUserDataDir() throws IOException {
 // TODO:   test.flaky(browserName === "chromium");
     Path userDataDir = Files.createTempDirectory("user-data-dir-");
-    BrowserContext context = browserType.launchPersistentContext(userDataDir.toString());
+    BrowserContext context = browserType.launchPersistentContext(userDataDir);
     assertTrue(userDataDir.toFile().listFiles().length > 0);
     context.close();
     assertTrue(userDataDir.toFile().listFiles().length > 0);
@@ -129,20 +129,20 @@ public class TestDefaultBrowserContext2 extends TestBase {
 //  TODO:  test.slow();
     Path userDataDir = Files.createTempDirectory("user-data-dir-");
     BrowserType.LaunchPersistentContextOptions browserOptions = null;
-    BrowserContext browserContext = browserType.launchPersistentContext(userDataDir.toString(), browserOptions);
+    BrowserContext browserContext = browserType.launchPersistentContext(userDataDir, browserOptions);
     Page page = browserContext.newPage();
     page.navigate(server.EMPTY_PAGE);
     page.evaluate("() => localStorage.hey = 'hello'");
     browserContext.close();
 
-    BrowserContext browserContext2 = browserType.launchPersistentContext(userDataDir.toString(), browserOptions);
+    BrowserContext browserContext2 = browserType.launchPersistentContext(userDataDir, browserOptions);
     Page page2 = browserContext2.newPage();
     page2.navigate(server.EMPTY_PAGE);
     assertEquals("hello", page2.evaluate("localStorage.hey"));
     browserContext2.close();
 
     Path userDataDir2 = Files.createTempDirectory("user-data-dir-");
-    BrowserContext browserContext3 = browserType.launchPersistentContext(userDataDir2.toString(), browserOptions);
+    BrowserContext browserContext3 = browserType.launchPersistentContext(userDataDir2, browserOptions);
     Page page3 = browserContext3.newPage();
     page3.navigate(server.EMPTY_PAGE);
     assertNotEquals("hello", page3.evaluate("localStorage.hey"));
@@ -154,7 +154,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
 // TODO:   test.flaky(browserName === "chromium");
     Path userDataDir = Files.createTempDirectory("user-data-dir-");
     BrowserType.LaunchPersistentContextOptions browserOptions = null;
-    BrowserContext browserContext = browserType.launchPersistentContext(userDataDir.toString(), browserOptions);
+    BrowserContext browserContext = browserType.launchPersistentContext(userDataDir, browserOptions);
     Page page = browserContext.newPage();
     page.navigate(server.EMPTY_PAGE);
     Object documentCookie = page.evaluate("() => {\n" +
@@ -164,14 +164,14 @@ public class TestDefaultBrowserContext2 extends TestBase {
     assertEquals("doSomethingOnlyOnce=true", documentCookie);
     browserContext.close();
 
-    BrowserContext browserContext2 = browserType.launchPersistentContext(userDataDir.toString(), browserOptions);
+    BrowserContext browserContext2 = browserType.launchPersistentContext(userDataDir, browserOptions);
     Page page2 = browserContext2.newPage();
     page2.navigate(server.EMPTY_PAGE);
     assertEquals("doSomethingOnlyOnce=true", page2.evaluate("() => document.cookie"));
     browserContext2.close();
 
     Path userDataDir2 = Files.createTempDirectory("user-data-dir-");
-    BrowserContext browserContext3 = browserType.launchPersistentContext(userDataDir2.toString(), browserOptions);
+    BrowserContext browserContext3 = browserType.launchPersistentContext(userDataDir2, browserOptions);
     Page page3 = browserContext3.newPage();
     page3.navigate(server.EMPTY_PAGE);
     assertNotEquals("doSomethingOnlyOnce=true", page3.evaluate("() => document.cookie"));
@@ -192,7 +192,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
       .withArgs(asList(server.EMPTY_PAGE));
     Path userDataDir = Files.createTempDirectory("user-data-dir-");
     try {
-      browserType.launchPersistentContext(userDataDir.toString(), options);
+      browserType.launchPersistentContext(userDataDir, options);
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("can not specify page"));

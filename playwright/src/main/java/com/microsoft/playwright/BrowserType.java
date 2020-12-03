@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -307,7 +308,7 @@ public interface BrowserType {
       /**
        * Path on the filesystem to write the HAR file to.
        */
-      public String path;
+      public Path path;
 
       RecordHar() {
       }
@@ -319,7 +320,7 @@ public interface BrowserType {
         this.omitContent = omitContent;
         return this;
       }
-      public RecordHar withPath(String path) {
+      public RecordHar withPath(Path path) {
         this.path = path;
         return this;
       }
@@ -799,7 +800,7 @@ public interface BrowserType {
    * @return Promise which resolves to browser instance.
    */
   Browser launch(LaunchOptions options);
-  default BrowserContext launchPersistentContext(String userDataDir) {
+  default BrowserContext launchPersistentContext(Path userDataDir) {
     return launchPersistentContext(userDataDir, null);
   }
   /**
@@ -808,7 +809,7 @@ public interface BrowserType {
    * @param options Set of configurable options to set on the browser. Can have the following fields:
    * @return Promise that resolves to the persistent browser context instance.
    */
-  BrowserContext launchPersistentContext(String userDataDir, LaunchPersistentContextOptions options);
+  BrowserContext launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options);
   /**
    * Returns browser name. For example: {@code 'chromium'}, {@code 'webkit'} or {@code 'firefox'}.
    */
