@@ -674,6 +674,10 @@ class Field extends Element {
       output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(int width, int height) {");
       output.add(offset + "  this." + name + " = new " + type.toJava() + "(width, height);");
       output.add(offset + "  return this;");
+    } else if ("Browser.VideoSize".equals(type.toJava()) || "VideoSize".equals(type.toJava())) {
+      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(int width, int height) {");
+      output.add(offset + "  this." + name + " = new " + type.toJava() + "(width, height);");
+      output.add(offset + "  return this;");
     } else if ("Set<Keyboard.Modifier>".equals(type.toJava())) {
       output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(Keyboard.Modifier... modifiers) {");
       output.add(offset + "  this." + name + " = new HashSet<>(Arrays.asList(modifiers));");
@@ -869,6 +873,27 @@ class Interface extends TypeDefinition {
         output.add("");
         break;
       }
+      case "Browser": {
+        output.add(offset + "class VideoSize {");
+        output.add(offset + "  private final int width;");
+        output.add(offset + "  private final int height;");
+        output.add("");
+        output.add(offset + "  public VideoSize(int width, int height) {");
+        output.add(offset + "    this.width = width;");
+        output.add(offset + "    this.height = height;");
+        output.add(offset + "  }");
+        output.add("");
+        output.add(offset + "  public int width() {");
+        output.add(offset + "    return width;");
+        output.add(offset + "  }");
+        output.add("");
+        output.add(offset + "  public int height() {");
+        output.add(offset + "    return height;");
+        output.add(offset + "  }");
+        output.add(offset + "}");
+        output.add("");
+        break;
+      }
       case "ElementHandle": {
         output.add(offset + "class BoundingBox {");
         output.add(offset + "  public double x;");
@@ -945,6 +970,16 @@ class NestedClass extends TypeDefinition {
   final String name;
   final List<Field> fields = new ArrayList<>();
 
+  private static Set<String> deprecatedOptions = new HashSet<>();
+  static {
+    deprecatedOptions.add("Browser.newPage.options.videosPath");
+    deprecatedOptions.add("Browser.newPage.options.videoSize");
+    deprecatedOptions.add("Browser.newContext.options.videosPath");
+    deprecatedOptions.add("Browser.newContext.options.videoSize");
+    deprecatedOptions.add("BrowserType.launchPersistentContext.options.videosPath");
+    deprecatedOptions.add("BrowserType.launchPersistentContext.options.videoSize");
+  }
+
   NestedClass(Element parent, String name, JsonObject jsonElement) {
     super(parent, true, jsonElement);
     this.name = name;
@@ -952,6 +987,9 @@ class NestedClass extends TypeDefinition {
     if (jsonElement.has("properties")) {
       JsonObject properties = jsonElement.get("properties").getAsJsonObject();
       for (Map.Entry<String, JsonElement> m : properties.entrySet()) {
+        if (deprecatedOptions.contains(jsonPath + "." + m.getKey())) {
+          continue;
+        }
         fields.add(new Field(this, m.getKey(), m.getValue().getAsJsonObject()));
       }
     }

@@ -138,11 +138,11 @@ public interface Frame {
      */
     public Integer delay;
     /**
-     * A point to click relative to the top-left corner of element padding box. If not specified, clicks to some visible point of the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
      */
     public Position position;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the click, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
      */
     public Set<Keyboard.Modifier> modifiers;
     /**
@@ -204,11 +204,11 @@ public interface Frame {
      */
     public Integer delay;
     /**
-     * A point to double click relative to the top-left corner of element padding box. If not specified, double clicks to some visible point of the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
      */
     public Position position;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the double click, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
      */
     public Set<Keyboard.Modifier> modifiers;
     /**
@@ -310,14 +310,14 @@ public interface Frame {
   }
   class NavigateOptions {
     /**
-     * Maximum navigation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
      */
     public Integer timeout;
     /**
-     * When to consider navigation succeeded, defaults to {@code load}. Events can be either:
-     *  - {@code 'domcontentloaded'} - consider navigation to be finished when the {@code DOMContentLoaded} event is fired.
-     *  - {@code 'load'} - consider navigation to be finished when the {@code load} event is fired.
-     *  - {@code 'networkidle'} - consider navigation to be finished when there are no network connections for at least {@code 500} ms.
+     * When to consider operation succeeded, defaults to {@code load}. Events can be either:
+     *  - {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.
+     *  - {@code 'load'} - consider operation to be finished when the {@code load} event is fired.
+     *  - {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.
      */
     public LoadState waitUntil;
     /**
@@ -340,11 +340,11 @@ public interface Frame {
   }
   class HoverOptions {
     /**
-     * A point to hover relative to the top-left corner of element padding box. If not specified, hovers over some visible point of the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
      */
     public Position position;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the hover, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
      */
     public Set<Keyboard.Modifier> modifiers;
     /**
@@ -446,14 +446,14 @@ public interface Frame {
   }
   class SetContentOptions {
     /**
-     * Maximum time in milliseconds for resources to load, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
      */
     public Integer timeout;
     /**
-     * When to consider navigation succeeded, defaults to {@code load}. Events can be either:
-     *  - {@code 'domcontentloaded'} - consider setting content to be finished when the {@code DOMContentLoaded} event is fired.
-     *  - {@code 'load'} - consider setting content to be finished when the {@code load} event is fired.
-     *  - {@code 'networkidle'} - consider setting content to be finished when there are no network connections for at least {@code 500} ms.
+     * When to consider operation succeeded, defaults to {@code load}. Events can be either:
+     *  - {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.
+     *  - {@code 'load'} - consider operation to be finished when the {@code load} event is fired.
+     *  - {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.
      */
     public LoadState waitUntil;
 
@@ -506,11 +506,11 @@ public interface Frame {
       }
     }
     /**
-     * A point to tap relative to the top-left corner of element padding box. If not specified, taps some visible point of the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
      */
     public Position position;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the tap, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
      */
     public Set<Keyboard.Modifier> modifiers;
     /**
@@ -618,7 +618,7 @@ public interface Frame {
      */
     public Integer pollingInterval;
     /**
-     * maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout).
      */
     public Integer timeout;
 
@@ -637,7 +637,7 @@ public interface Frame {
   }
   class WaitForLoadStateOptions {
     /**
-     * Maximum waiting time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
      */
     public Integer timeout;
 
@@ -648,7 +648,7 @@ public interface Frame {
   }
   class WaitForNavigationOptions {
     /**
-     * Maximum navigation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
      */
     public Integer timeout;
     /**
@@ -658,10 +658,10 @@ public interface Frame {
     public Pattern pattern;
     public Predicate<String> predicate;
     /**
-     * When to consider navigation succeeded, defaults to {@code load}. Events can be either:
-     *  - {@code 'domcontentloaded'} - consider navigation to be finished when the {@code DOMContentLoaded} event is fired.
-     *  - {@code 'load'} - consider navigation to be finished when the {@code load} event is fired.
-     *  - {@code 'networkidle'} - consider navigation to be finished when there are no network connections for at least {@code 500} ms.
+     * When to consider operation succeeded, defaults to {@code load}. Events can be either:
+     *  - {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.
+     *  - {@code 'load'} - consider operation to be finished when the {@code load} event is fired.
+     *  - {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.
      */
     public LoadState waitUntil;
 
@@ -712,13 +712,13 @@ public interface Frame {
   }
   /**
    * The method finds an element matching the specified selector within the frame. See Working with selectors for more details. If no elements match the selector, the return value resolves to {@code null}.
-   * @param selector A selector to query frame for. See working with selectors for more details.
+   * @param selector A selector to query for. See working with selectors for more details.
    * @return Promise which resolves to ElementHandle pointing to the frame element.
    */
   ElementHandle querySelector(String selector);
   /**
    * The method finds all elements matching the specified selector within the frame. See Working with selectors for more details. If no elements match the selector, the return value resolves to {@code []}.
-   * @param selector A selector to query frame for. See working with selectors for more details.
+   * @param selector A selector to query for. See working with selectors for more details.
    * @return Promise which resolves to ElementHandles pointing to the frame elements.
    */
   List<ElementHandle> querySelectorAll(String selector);
@@ -733,7 +733,7 @@ public interface Frame {
    * Examples:
    * <p>
    * 
-   * @param selector A selector to query frame for. See working with selectors for more details.
+   * @param selector A selector to query for. See working with selectors for more details.
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
    * @return Promise which resolves to the return value of {@code pageFunction}
@@ -750,7 +750,7 @@ public interface Frame {
    * Examples:
    * <p>
    * 
-   * @param selector A selector to query frame for. See working with selectors for more details.
+   * @param selector A selector to query for. See working with selectors for more details.
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
    * @return Promise which resolves to the return value of {@code pageFunction}
@@ -787,7 +787,7 @@ public interface Frame {
    * Ensure that the element is now checked. If not, this method rejects.
    * <p>
    * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
-   * @param selector A selector to search for checkbox to check. If there are multiple elements satisfying the selector, the first will be checked. See working with selectors for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @return Promise that resolves when the element matching {@code selector} is successfully checked.
    */
   void check(String selector, CheckOptions options);
@@ -809,7 +809,7 @@ public interface Frame {
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
    * <p>
    * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
-   * @param selector A selector to search for element to click. If there are multiple elements satisfying the selector, the first will be clicked. See working with selectors for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @return Promise that resolves when the element matching {@code selector} is successfully clicked.
    */
   void click(String selector, ClickOptions options);
@@ -836,7 +836,7 @@ public interface Frame {
    * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
    * <p>
    * <strong>NOTE</strong> {@code frame.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
-   * @param selector A selector to search for element to double click. If there are multiple elements satisfying the selector, the first will be double clicked. See working with selectors for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @return Promise that resolves when the element matching {@code selector} is successfully double clicked.
    */
   void dblclick(String selector, DblclickOptions options);
@@ -870,7 +870,7 @@ public interface Frame {
    * You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
    * <p>
    * 
-   * @param selector A selector to search for element to use. If there are multiple elements satisfying the selector, the first will be double clicked. See working with selectors for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    * @param eventInit event-specific initialization properties.
    */
@@ -922,7 +922,7 @@ public interface Frame {
    * Note that you can pass an empty string to clear the input field.
    * <p>
    * To send fine-grained keyboard events, use {@code frame.type}.
-   * @param selector A selector to query page for. See working with selectors for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
   void fill(String selector, String value, FillOptions options);
@@ -933,7 +933,7 @@ public interface Frame {
    * This method fetches an element with {@code selector} and focuses it.
    * <p>
    * If there's no element matching {@code selector}, the method waits until a matching element appears in the DOM.
-   * @param selector A selector of an element to focus. If there are multiple elements satisfying the selector, the first will be focused. See working with selectors for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @return Promise which resolves when the element matching {@code selector} is successfully focused. The promise will be rejected if there is no element matching {@code selector}.
    */
   void focus(String selector, FocusOptions options);
@@ -951,7 +951,7 @@ public interface Frame {
   }
   /**
    * Returns element attribute value.
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be picked. See working with selectors for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @param name Attribute name to get the value for.
    */
   String getAttribute(String selector, String name, GetAttributeOptions options);
@@ -1000,7 +1000,7 @@ public interface Frame {
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
    * <p>
    * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
-   * @param selector A selector to search for element to hover. If there are multiple elements satisfying the selector, the first will be hovered. See working with selectors for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @return Promise that resolves when the element matching {@code selector} is successfully hovered.
    */
   void hover(String selector, HoverOptions options);
@@ -1009,7 +1009,7 @@ public interface Frame {
   }
   /**
    * Resolves to the {@code element.innerHTML}.
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be picked. See working with selectors for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    */
   String innerHTML(String selector, InnerHTMLOptions options);
   default String innerText(String selector) {
@@ -1017,7 +1017,7 @@ public interface Frame {
   }
   /**
    * Resolves to the {@code element.innerText}.
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be picked. See working with selectors for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    */
   String innerText(String selector, InnerTextOptions options);
   /**
@@ -1056,7 +1056,7 @@ public interface Frame {
    * If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective texts.
    * <p>
    * Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the modifier, modifier is pressed and being held while the subsequent key is being pressed.
-   * @param selector A selector of an element to type into. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
   void press(String selector, String key, PressOptions options);
@@ -1104,7 +1104,7 @@ public interface Frame {
    * If there's no {@code <select>} element matching {@code selector}, the method throws an error.
    * <p>
    * 
-   * @param selector A selector to query frame for. See working with selectors for more details.
+   * @param selector A selector to query for. See working with selectors for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option is considered matching if all specified properties match.
    * @return An array of option values that have been successfully selected.
    */
@@ -1129,7 +1129,7 @@ public interface Frame {
    * This method expects {@code selector} to point to an input element.
    * <p>
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they are resolved relative to the current working directory. For empty array, clears the selected files.
-   * @param selector A selector to search for element to click. If there are multiple elements satisfying the selector, the first will be clicked. See working with selectors for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    */
   void setInputFiles(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options);
   default void tap(String selector) {
@@ -1151,7 +1151,7 @@ public interface Frame {
    * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
    * <p>
    * <strong>NOTE</strong> {@code frame.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
-   * @param selector A selector to search for element to tap. If there are multiple elements satisfying the selector, the first will be tapped. See working with selectors for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @return Promise that resolves when the element matching {@code selector} is successfully tapped.
    */
   void tap(String selector, TapOptions options);
@@ -1160,7 +1160,7 @@ public interface Frame {
   }
   /**
    * Resolves to the {@code element.textContent}.
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be picked. See working with selectors for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    */
   String textContent(String selector, TextContentOptions options);
   /**
@@ -1177,7 +1177,7 @@ public interface Frame {
    * To press a special key, like {@code Control} or {@code ArrowDown}, use {@code keyboard.press}.
    * <p>
    * 
-   * @param selector A selector of an element to type into. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @param text A text to type into a focused element.
    */
   void type(String selector, String text, TypeOptions options);
@@ -1202,7 +1202,7 @@ public interface Frame {
    * Ensure that the element is now unchecked. If not, this method rejects.
    * <p>
    * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
-   * @param selector A selector to search for uncheckbox to check. If there are multiple elements satisfying the selector, the first will be checked. See working with selectors for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @return Promise that resolves when the element matching {@code selector} is successfully unchecked.
    */
   void uncheck(String selector, UncheckOptions options);
@@ -1267,7 +1267,7 @@ public interface Frame {
    * This method works across navigations:
    * <p>
    * 
-   * @param selector A selector of an element to wait for. See working with selectors for more details.
+   * @param selector A selector to query for. See working with selectors for more details.
    * @return Promise which resolves when element specified by selector satisfies {@code state} option. Resolves to {@code null} if waiting for {@code hidden} or {@code detached}.
    */
   Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options);

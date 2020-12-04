@@ -16,14 +16,11 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -241,6 +238,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     JsonObject params = new JsonObject();
     params.addProperty("offline", offline);
     sendMessage("setOffline", params);
+  }
+
+  @Override
+  public Object storageState() {
+    return null;
   }
 
   @Override
