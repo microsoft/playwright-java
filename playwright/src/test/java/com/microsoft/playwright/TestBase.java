@@ -16,10 +16,7 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 
@@ -51,10 +48,17 @@ public class TestBase {
     return "firefox".equals(browserType.name());
   }
 
-  @BeforeAll
-  static void launchBrowser() {
-    playwright = Playwright.create();
+  static BrowserType.LaunchOptions createLaunchOptions() {
+    String headfulEnv = System.getenv("HEADFUL");
+    headful = headfulEnv != null && !"0".equals(headfulEnv) && !"false".equals(headfulEnv);
+    BrowserType.LaunchOptions options;
+    options = new BrowserType.LaunchOptions();
+    options.headless = !headful;
+    return options;
+  }
 
+  static void launchBrowser(BrowserType.LaunchOptions launchOptions) {
+    playwright = Playwright.create();
 
     String browserName = System.getenv("BROWSER");
     if (browserName == null) {
@@ -73,11 +77,12 @@ public class TestBase {
       default:
         throw new IllegalArgumentException("Unknown browser: " + browserName);
     }
-    String headfulEnv = System.getenv("HEADFUL");
-    headful = headfulEnv != null && !"0".equals(headfulEnv) && !"false".equals(headfulEnv);
-    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
-    options.headless = !headful;
-    browser = browserType.launch(options);
+    browser = browserType.launch(launchOptions);
+  }
+
+  @BeforeAll
+  static void launchBrowser() {
+    launchBrowser(createLaunchOptions());
   }
 
   @AfterAll
