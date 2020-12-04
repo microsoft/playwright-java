@@ -81,6 +81,10 @@ public class PageImpl extends ChannelOwner implements Page {
       worker.page = this;
       workers.add(worker);
       listeners.notify(EventType.WORKER, worker);
+    } else if ("webSocket".equals(event)) {
+      String guid = params.getAsJsonObject("webSocket").get("guid").getAsString();
+      WebSocketImpl webSocket = connection.getExistingObject(guid);
+      listeners.notify(EventType.WEBSOCKET, webSocket);
     } else if ("console".equals(event)) {
       String guid = params.getAsJsonObject("message").get("guid").getAsString();
       ConsoleMessageImpl message = connection.getExistingObject(guid);

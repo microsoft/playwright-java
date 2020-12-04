@@ -17,11 +17,30 @@
 package com.microsoft.playwright;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * The WebSocket class represents websocket connections in the page.
  */
 public interface WebSocket {
+  interface FrameData {
+    byte[] body();
+    String text();
+  }
+
+  class WaitForEventOptions {
+    public Integer timeout;
+    public Predicate<Event<EventType>> predicate;
+    public WaitForEventOptions withTimeout(int millis) {
+      timeout = millis;
+      return this;
+    }
+    public WaitForEventOptions withPredicate(Predicate<Event<EventType>> predicate) {
+      this.predicate = predicate;
+      return this;
+    }
+  }
+
   enum EventType {
     CLOSE,
     FRAMERECEIVED,
@@ -31,28 +50,6 @@ public interface WebSocket {
 
   void addListener(EventType type, Listener<EventType> listener);
   void removeListener(EventType type, Listener<EventType> listener);
-  class WebSocketFramereceived {
-    /**
-     * frame payload
-     */
-    public byte[] payload;
-
-    public WebSocketFramereceived withPayload(byte[] payload) {
-      this.payload = payload;
-      return this;
-    }
-  }
-  class WebSocketFramesent {
-    /**
-     * frame payload
-     */
-    public byte[] payload;
-
-    public WebSocketFramesent withPayload(byte[] payload) {
-      this.payload = payload;
-      return this;
-    }
-  }
   /**
    * Indicates that the web socket has been closed.
    */
@@ -61,17 +58,21 @@ public interface WebSocket {
    * Contains the URL of the WebSocket.
    */
   String url();
-  default Object waitForEvent(String event) {
-    return waitForEvent(event, null);
+  default Deferred<Event<EventType>> waitForEvent(EventType event) {
+    return waitForEvent(event, (WaitForEventOptions) null);
+  }
+  default Deferred<Event<EventType>> waitForEvent(EventType event, Predicate<Event<EventType>> predicate) {
+    WaitForEventOptions options = new WaitForEventOptions();
+    options.predicate = predicate;
+    return waitForEvent(event, options);
   }
   /**
    * Waits for event to fire and passes its value into the predicate function. Resolves when the predicate returns truthy value. Will throw an error if the webSocket is closed before the event
    * <p>
    * is fired.
    * @param event Event name, same one would pass into {@code webSocket.on(event)}.
-   * @param optionsOrPredicate Either a predicate that receives an event or an options object.
    * @return Promise which resolves to the event data value.
    */
-  Object waitForEvent(String event, String optionsOrPredicate);
+  Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options);
 }
 

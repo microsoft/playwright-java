@@ -196,6 +196,8 @@ class Types {
     add("ConsoleMessage.location", "Object", "Location");
     add("ElementHandle.boundingBox", "Promise<null|Object>", "BoundingBox", new Empty());
     add("Accessibility.snapshot", "Promise<null|Object>", "AccessibilityNode", new Empty());
+    add("WebSocket.framereceived", "Object", "FrameData", new Empty());
+    add("WebSocket.framesent", "Object", "FrameData", new Empty());
 
     add("Page.waitForRequest", "Promise<Request>", "Deferred<Request>");
     add("Page.waitForResponse", "Promise<Response>", "Deferred<Response>");
