@@ -82,7 +82,6 @@ public interface Request {
     private int responseStart;
     /**
      * Time immediately after the browser receives the last byte of the resource or immediately before the transport connection is closed, whichever comes first. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
-     * };
      */
     private int responseEnd;
 

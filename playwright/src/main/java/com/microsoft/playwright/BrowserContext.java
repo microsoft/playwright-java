@@ -378,6 +378,10 @@ public interface BrowserContext {
    * @param offline Whether to emulate network being offline for the browser context.
    */
   void setOffline(boolean offline);
+  /**
+   * Returns storage state for this browser context, contains current cookies and local storage snapshot.
+   */
+  Object storageState();
   default void unroute(String url) { unroute(url, null); }
   default void unroute(Pattern url) { unroute(url, null); }
   default void unroute(Predicate<String> url) { unroute(url, null); }

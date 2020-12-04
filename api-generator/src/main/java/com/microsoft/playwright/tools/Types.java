@@ -108,8 +108,11 @@ class Types {
     add("Route.fulfill.response.path", "string", "Path");
     add("Route.fulfill.response.status", "number", "int");
     add("Browser.newContext.options.recordHar.path", "string", "Path");
+    add("Browser.newContext.options.recordVideo.dir", "string", "Path");
     add("Browser.newPage.options.recordHar.path", "string", "Path");
+    add("Browser.newPage.options.recordVideo.dir", "string", "Path");
     add("BrowserType.launchPersistentContext.options.recordHar.path", "string", "Path");
+    add("BrowserType.launchPersistentContext.options.recordVideo.dir", "string", "Path");
     add("BrowserType.launchPersistentContext.userDataDir", "string", "Path");
     add("BrowserType.launchPersistentContext.options.executablePath", "string", "Path");
     add("BrowserType.launchServer.options.executablePath", "string", "Path");
@@ -130,6 +133,11 @@ class Types {
     add("Page.setViewportSize.viewportSize", "Object", "Viewport", new Empty());
     add("Page.viewportSize", "null|Object", "Viewport", new Empty());
     add("BrowserType.launchPersistentContext.options.viewport", "null|Object", "Page.Viewport", new Empty());
+
+    // RecordVideo size.
+    add("Browser.newContext.options.recordVideo.size", "Object", "VideoSize", new Empty());
+    add("Browser.newPage.options.recordVideo.size", "Object", "VideoSize", new Empty());
+    add("BrowserType.launchPersistentContext.recordVideo.size", "Object", "Browser.VideoSize", new Empty());
 
     // HTTP credentials.
     add("Browser.newContext.options.httpCredentials", "Object", "BrowserContext.HTTPCredentials", new Empty());
@@ -258,7 +266,7 @@ class Types {
     add("Page.waitForEvent.optionsOrPredicate", "Function|Object", "WaitForEventOptions");
     add("Page.waitForEvent", "Promise<Object>", "Deferred<Event<EventType>>", new Empty());
     add("Page.waitForRequest.urlOrPredicate", "string|RegExp|Function", "String");
-    add("Page.waitForResponse.urlOrPredicate", "string|RegExp|Function", "String");
+    add("Page.waitForResponse.urlOrPredicate", "string|RegExp|function(Response):boolean", "String");
     add("Frame.waitForNavigation.options.url", "string|RegExp|Function", "String");
     add("Frame.selectOption.values", "null|string|ElementHandle|Array<string>|Object|Array<ElementHandle>|Array<Object>", "String");
     add("Frame.setInputFiles.files", "string|Array<string>|Object|Array<Object>", "String");

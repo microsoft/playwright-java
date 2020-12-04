@@ -89,7 +89,7 @@ public interface BrowserType {
      */
     public Proxy proxy;
     /**
-     * If specified, accepted downloads are downloaded into this folder. Otherwise, temporary folder is created and is deleted when browser is closed.
+     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is deleted when browser is closed.
      */
     public Path downloadsPath;
     /**
@@ -240,34 +240,9 @@ public interface BrowserType {
         return this;
       }
     }
-    public class VideoSize {
-      /**
-       * Video frame width.
-       */
-      public int width;
-      /**
-       * Video frame height.
-       */
-      public int height;
-
-      VideoSize() {
-      }
-      public LaunchPersistentContextOptions done() {
-        return LaunchPersistentContextOptions.this;
-      }
-
-      public VideoSize withWidth(int width) {
-        this.width = width;
-        return this;
-      }
-      public VideoSize withHeight(int height) {
-        this.height = height;
-        return this;
-      }
-    }
     public class RecordHar {
       /**
-       * Optional setting to control whether to omit request content from the HAR. Defaults to false.
+       * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
        */
       public Boolean omitContent;
       /**
@@ -288,6 +263,56 @@ public interface BrowserType {
       public RecordHar withPath(Path path) {
         this.path = path;
         return this;
+      }
+    }
+    public class RecordVideo {
+      public class Size {
+        /**
+         * Video frame width.
+         */
+        public int width;
+        /**
+         * Video frame height.
+         */
+        public int height;
+
+        Size() {
+        }
+        public RecordVideo done() {
+          return RecordVideo.this;
+        }
+
+        public Size withWidth(int width) {
+          this.width = width;
+          return this;
+        }
+        public Size withHeight(int height) {
+          this.height = height;
+          return this;
+        }
+      }
+      /**
+       * Path to the directory to put videos into.
+       */
+      public Path dir;
+      /**
+       * Optional dimensions of the recorded videos. If not specified the size will be equal to {@code viewport}. If {@code viewport} is not configured explicitly the video size defaults to 1280x720. Actual picture of each page will be scaled down if necessary to fit the specified size.
+       */
+      public Size size;
+
+      RecordVideo() {
+      }
+      public LaunchPersistentContextOptions done() {
+        return LaunchPersistentContextOptions.this;
+      }
+
+      public RecordVideo withDir(Path dir) {
+        this.dir = dir;
+        return this;
+      }
+      public Size setSize() {
+        this.size = new Size();
+        return this.size;
       }
     }
     /**
@@ -311,11 +336,7 @@ public interface BrowserType {
      */
     public Proxy proxy;
     /**
-     * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
-     */
-    public Boolean acceptDownloads;
-    /**
-     * If specified, accepted downloads are downloaded into this folder. Otherwise, temporary folder is created and is deleted when browser is closed.
+     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is deleted when browser is closed.
      */
     public Path downloadsPath;
     /**
@@ -335,10 +356,6 @@ public interface BrowserType {
      */
     public Boolean handleSIGHUP;
     /**
-     * Logger sink for Playwright logging.
-     */
-    public Logger logger;
-    /**
      * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
      */
     public Integer timeout;
@@ -354,6 +371,10 @@ public interface BrowserType {
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on. Defaults to 0.
      */
     public Integer slowMo;
+    /**
+     * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
+     */
+    public Boolean acceptDownloads;
     /**
      * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
      */
@@ -383,7 +404,7 @@ public interface BrowserType {
      */
     public Boolean hasTouch;
     /**
-     * Whether or not to enable JavaScript in the context. Defaults to true.
+     * Whether or not to enable JavaScript in the context. Defaults to {@code true}.
      */
     public Boolean javaScriptEnabled;
     /**
@@ -416,17 +437,17 @@ public interface BrowserType {
      */
     public ColorScheme colorScheme;
     /**
-     * Enables video recording for all pages to {@code videosPath} folder. If not specified, videos are not recorded. Make sure to await {@code browserContext.close} for videos to be saved.
+     * Logger sink for Playwright logging.
      */
-    public String videosPath;
+    public Logger logger;
     /**
-     * Specifies dimensions of the automatically recorded video. Can only be used if {@code videosPath} is set. If not specified the size will be equal to {@code viewport}. If {@code viewport} is not configured explicitly the video size defaults to 1280x720. Actual picture of the page will be scaled down if necessary to fit specified size.
-     */
-    public VideoSize videoSize;
-    /**
-     * Enables HAR recording for all the pages into {@code har.path} file. If not specified, HAR is not recorded. Make sure to await {@code page.close} for HAR to be saved.
+     * Enables HAR recording for all pages into {@code recordHar.path} file. If not specified, the HAR is not recorded. Make sure to await {@code browserContext.close} for the HAR to be saved.
      */
     public RecordHar recordHar;
+    /**
+     * Enables video recording for all pages into {@code recordVideo.dir} directory. If not specified videos are not recorded. Make sure to await {@code browserContext.close} for videos to be saved.
+     */
+    public RecordVideo recordVideo;
 
     public LaunchPersistentContextOptions withHeadless(Boolean headless) {
       this.headless = headless;
@@ -448,10 +469,6 @@ public interface BrowserType {
       this.proxy = new Proxy();
       return this.proxy;
     }
-    public LaunchPersistentContextOptions withAcceptDownloads(Boolean acceptDownloads) {
-      this.acceptDownloads = acceptDownloads;
-      return this;
-    }
     public LaunchPersistentContextOptions withDownloadsPath(Path downloadsPath) {
       this.downloadsPath = downloadsPath;
       return this;
@@ -472,10 +489,6 @@ public interface BrowserType {
       this.handleSIGHUP = handleSIGHUP;
       return this;
     }
-    public LaunchPersistentContextOptions withLogger(Logger logger) {
-      this.logger = logger;
-      return this;
-    }
     public LaunchPersistentContextOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
@@ -490,6 +503,10 @@ public interface BrowserType {
     }
     public LaunchPersistentContextOptions withSlowMo(Integer slowMo) {
       this.slowMo = slowMo;
+      return this;
+    }
+    public LaunchPersistentContextOptions withAcceptDownloads(Boolean acceptDownloads) {
+      this.acceptDownloads = acceptDownloads;
       return this;
     }
     public LaunchPersistentContextOptions withIgnoreHTTPSErrors(Boolean ignoreHTTPSErrors) {
@@ -556,17 +573,17 @@ public interface BrowserType {
       this.colorScheme = colorScheme;
       return this;
     }
-    public LaunchPersistentContextOptions withVideosPath(String videosPath) {
-      this.videosPath = videosPath;
+    public LaunchPersistentContextOptions withLogger(Logger logger) {
+      this.logger = logger;
       return this;
-    }
-    public VideoSize setVideoSize() {
-      this.videoSize = new VideoSize();
-      return this.videoSize;
     }
     public RecordHar setRecordHar() {
       this.recordHar = new RecordHar();
       return this.recordHar;
+    }
+    public RecordVideo setRecordVideo() {
+      this.recordVideo = new RecordVideo();
+      return this.recordVideo;
     }
   }
   /**

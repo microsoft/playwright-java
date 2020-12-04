@@ -95,11 +95,11 @@ public interface ElementHandle extends JSHandle {
      */
     public Integer delay;
     /**
-     * A point to click relative to the top-left corner of element padding box. If not specified, clicks to some visible point of the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
      */
     public Position position;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the click, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
      */
     public Set<Keyboard.Modifier> modifiers;
     /**
@@ -161,11 +161,11 @@ public interface ElementHandle extends JSHandle {
      */
     public Integer delay;
     /**
-     * A point to double click relative to the top-left corner of element padding box. If not specified, double clicks to some visible point of the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
      */
     public Position position;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the double click, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
      */
     public Set<Keyboard.Modifier> modifiers;
     /**
@@ -234,11 +234,11 @@ public interface ElementHandle extends JSHandle {
   }
   class HoverOptions {
     /**
-     * A point to hover relative to the top-left corner of element padding box. If not specified, hovers over some visible point of the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
      */
     public Position position;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the hover, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
      */
     public Set<Keyboard.Modifier> modifiers;
     /**
@@ -422,11 +422,11 @@ public interface ElementHandle extends JSHandle {
       }
     }
     /**
-     * A point to tap relative to the top-left corner of element padding box. If not specified, taps some visible point of the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element.
      */
     public Position position;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the tap, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used.
      */
     public Set<Keyboard.Modifier> modifiers;
     /**
@@ -554,12 +554,12 @@ public interface ElementHandle extends JSHandle {
   }
   /**
    * The method finds an element matching the specified selector in the {@code ElementHandle}'s subtree. See Working with selectors for more details. If no elements match the selector, the return value resolves to {@code null}.
-   * @param selector A selector to query element for. See working with selectors for more details.
+   * @param selector A selector to query for. See working with selectors for more details.
    */
   ElementHandle querySelector(String selector);
   /**
    * The method finds all elements matching the specified selector in the {@code ElementHandle}s subtree. See Working with selectors for more details. If no elements match the selector, the return value resolves to {@code []}.
-   * @param selector A selector to query element for. See working with selectors for more details.
+   * @param selector A selector to query for. See working with selectors for more details.
    */
   List<ElementHandle> querySelectorAll(String selector);
   default Object evalOnSelector(String selector, String pageFunction) {
@@ -573,7 +573,7 @@ public interface ElementHandle extends JSHandle {
    * Examples:
    * <p>
    * 
-   * @param selector A selector to query element for. See working with selectors for more details.
+   * @param selector A selector to query for. See working with selectors for more details.
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
    * @return Promise which resolves to the return value of {@code pageFunction}
@@ -590,14 +590,21 @@ public interface ElementHandle extends JSHandle {
    * Examples:
    * <p>
    * 
-   * @param selector A selector to query element for. See working with selectors for more details.
+   * @param selector A selector to query for. See working with selectors for more details.
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
    * @return Promise which resolves to the return value of {@code pageFunction}
    */
   Object evalOnSelectorAll(String selector, String pageFunction, Object arg);
   /**
-   * This method returns the bounding box of the element (relative to the main frame), or {@code null} if the element is not visible.
+   * This method returns the bounding box of the element, or {@code null} if the element is not visible. The bounding box is calculated relative to the main frame viewport - which is usually the same as the browser window.
+   * <p>
+   * Scrolling affects the returned bonding box, similarly to Element.getBoundingClientRect. That means {@code x} and/or {@code y} may be negative.
+   * <p>
+   * Elements from child frames return the bounding box relative to the main frame, unlike the Element.getBoundingClientRect.
+   * <p>
+   * Assuming the page is static, it is safe to use bounding box coordinates to perform input. For example, the following snippet should click the center of the element.
+   * <p>
    */
   BoundingBox boundingBox();
   default void check() {
@@ -958,7 +965,7 @@ public interface ElementHandle extends JSHandle {
    * 
    * <p>
    * <strong>NOTE</strong> This method does not work across navigations, use page.waitForSelector(selector[, options]) instead.
-   * @param selector A selector of an element to wait for, relative to the element handle. See working with selectors for more details.
+   * @param selector A selector to query for. See working with selectors for more details.
    * @return Promise that resolves when element specified by selector satisfies {@code state} option. Resolves to {@code null} if waiting for {@code hidden} or {@code detached}.
    */
   Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options);

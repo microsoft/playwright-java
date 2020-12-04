@@ -26,6 +26,10 @@ import java.util.*;
 public interface Route {
   class ContinueOverrides {
     /**
+     * If set changes the request URL. New URL must have same protocol as original one.
+     */
+    public String url;
+    /**
      * If set changes the request method (e.g. GET or POST)
      */
     public String method;
@@ -38,6 +42,10 @@ public interface Route {
      */
     public Map<String, String> headers;
 
+    public ContinueOverrides withUrl(String url) {
+      this.url = url;
+      return this;
+    }
     public ContinueOverrides withMethod(String method) {
       this.method = method;
       return this;
