@@ -460,8 +460,15 @@ public class TestPageRoute extends TestBase {
   }
 
   @Test
-  void shouldCreateARedirect() {
-    page.navigate(server.PREFIX + "/empty.html");
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fixme")
+  void shouldFulfillWithRedirectStatus() {
+    page.navigate(server.PREFIX + "/title.html");
+    server.setRoute("/final", exchange -> {
+      exchange.sendResponseHeaders(200, 0);
+      try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write("foo");
+      }
+    });
     page.route("**/*", route -> {
       if (!route.request().url().equals(server.PREFIX + "/redirect_this")) {
         route.continue_();
