@@ -140,31 +140,6 @@ public interface Browser {
         return this;
       }
     }
-    public class StorageState {
-      /**
-       * Optional cookies to set for context
-       */
-      public List<Object> cookies;
-      /**
-       * Optional localStorage to set for context
-       */
-      public List<Object> origins;
-
-      StorageState() {
-      }
-      public NewContextOptions done() {
-        return NewContextOptions.this;
-      }
-
-      public StorageState withCookies(List<Object> cookies) {
-        this.cookies = cookies;
-        return this;
-      }
-      public StorageState withOrigins(List<Object> origins) {
-        this.origins = origins;
-        return this;
-      }
-    }
     /**
      * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
      */
@@ -249,7 +224,7 @@ public interface Browser {
     /**
      * Populates context with given storage state. This method can be used to initialize context with logged-in information obtained via browserContext.storageState().
      */
-    public StorageState storageState;
+    public BrowserContext.StorageState storageState;
 
     public NewContextOptions withAcceptDownloads(Boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
@@ -335,9 +310,9 @@ public interface Browser {
       this.proxy = new Proxy();
       return this.proxy;
     }
-    public StorageState setStorageState() {
-      this.storageState = new StorageState();
-      return this.storageState;
+    public NewContextOptions withStorageState(BrowserContext.StorageState storageState) {
+      this.storageState = storageState;
+      return this;
     }
   }
   class NewPageOptions {
@@ -432,31 +407,6 @@ public interface Browser {
         return this;
       }
     }
-    public class StorageState {
-      /**
-       * Optional cookies to set for context
-       */
-      public List<Object> cookies;
-      /**
-       * Optional localStorage to set for context
-       */
-      public List<Object> origins;
-
-      StorageState() {
-      }
-      public NewPageOptions done() {
-        return NewPageOptions.this;
-      }
-
-      public StorageState withCookies(List<Object> cookies) {
-        this.cookies = cookies;
-        return this;
-      }
-      public StorageState withOrigins(List<Object> origins) {
-        this.origins = origins;
-        return this;
-      }
-    }
     /**
      * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
      */
@@ -541,7 +491,7 @@ public interface Browser {
     /**
      * Populates context with given storage state. This method can be used to initialize context with logged-in information obtained via browserContext.storageState().
      */
-    public StorageState storageState;
+    public BrowserContext.StorageState storageState;
 
     public NewPageOptions withAcceptDownloads(Boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
@@ -627,9 +577,9 @@ public interface Browser {
       this.proxy = new Proxy();
       return this.proxy;
     }
-    public StorageState setStorageState() {
-      this.storageState = new StorageState();
-      return this.storageState;
+    public NewPageOptions withStorageState(BrowserContext.StorageState storageState) {
+      this.storageState = storageState;
+      return this;
     }
   }
   /**

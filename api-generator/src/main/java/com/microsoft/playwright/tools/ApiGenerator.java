@@ -116,6 +116,9 @@ class TypeRef extends Element {
     if (jsonName.equals("Array<Object>") && "BrowserContext.addCookies.cookies".equals(jsonPath)) {
       isClass = true;
     }
+    if (jsonName.equals("Promise<Object>") && "BrowserContext.storageState".equals(jsonPath)) {
+      isClass = true;
+    }
     Types.Mapping mapping = TypeDefinition.types.findForPath(parentPath);
     if (mapping == null) {
       if (isEnum) {
@@ -423,6 +426,7 @@ class Method extends Element {
   }
 
   private static Set<String> skipJavadoc = new HashSet<>(asList(
+    "BrowserContext.waitForEvent.optionsOrPredicate",
     "Page.waitForEvent.optionsOrPredicate",
     "Page.frame.options",
     "WebSocket.waitForEvent.optionsOrPredicate"
@@ -868,6 +872,46 @@ class Interface extends TypeDefinition {
         output.add("");
         output.add(offset + "  public String password() {");
         output.add(offset + "    return password;");
+        output.add(offset + "  }");
+        output.add(offset + "}");
+        output.add("");
+        output.add(offset + "class StorageState {");
+        output.add(offset + "  public List<AddCookie> cookies;");
+        output.add(offset + "  public List<OriginState> origins;");
+        output.add("");
+        output.add(offset + "  public static class OriginState {");
+        output.add(offset + "    public final String origin;");
+        output.add(offset + "    public List<LocalStorageItem> localStorage;");
+        output.add("");
+        output.add(offset + "    public static class LocalStorageItem {");
+        output.add(offset + "      public String name;");
+        output.add(offset + "      public String value;");
+        output.add(offset + "      public LocalStorageItem(String name, String value) {");
+        output.add(offset + "        this.name = name;");
+        output.add(offset + "        this.value = value;");
+        output.add(offset + "      }");
+        output.add(offset + "    }");
+        output.add("");
+        output.add(offset + "    public OriginState(String origin) {");
+        output.add(offset + "      this.origin = origin;");
+        output.add(offset + "    }");
+        output.add("");
+        output.add(offset + "    public OriginState withLocalStorage(List<LocalStorageItem> localStorage) {");
+        output.add(offset + "      this.localStorage = localStorage;");
+        output.add(offset + "      return this;");
+        output.add(offset + "    }");
+        output.add(offset + "  }");
+        output.add("");
+        output.add(offset + "  public StorageState() {");
+        output.add(offset + "    cookies = new ArrayList<>();");
+        output.add(offset + "    origins = new ArrayList<>();");
+        output.add(offset + "  }");
+        output.add("");
+        output.add(offset + "  public List<AddCookie> cookies() {");
+        output.add(offset + "    return this.cookies;");
+        output.add(offset + "  }");
+        output.add(offset + "  public List<OriginState> origins() {");
+        output.add(offset + "    return this.origins;");
         output.add(offset + "  }");
         output.add(offset + "}");
         output.add("");
