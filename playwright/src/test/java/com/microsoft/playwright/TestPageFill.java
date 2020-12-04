@@ -41,7 +41,7 @@ public class TestPageFill extends TestBase {
   @Test
   void shouldThrowOnUnsupportedInputs() {
     page.navigate(server.PREFIX + "/input/textarea.html");
-    for (String type : new String[]{"color", "file"}) {
+    for (String type : new String[]{"button", "checkbox", "file", "image", "radio", "range", "reset", "submit"}) {
       page.evalOnSelector("input", "(input, type) => input.setAttribute('type', type)", type);
       try {
         page.fill("input", "");
