@@ -253,6 +253,7 @@ class Types {
     add("BrowserContext.addCookies.cookies.expires", "number", "Long", new Empty());
     add("BrowserContext.route.url", "string|RegExp|function(URL):boolean", "String");
     add("BrowserContext.unroute.url", "string|RegExp|function(URL):boolean", "String");
+    add("BrowserContext.storageState", "Promise<Object>", "StorageState", new Empty());
     add("BrowserContext.waitForEvent.event", "string", "EventType", new Empty());
     add("BrowserContext.waitForEvent.optionsOrPredicate", "Function|Object", "String");
     add("BrowserContext.waitForEvent", "Promise<Object>", "Deferred<Event<EventType>>", new Empty());
@@ -297,6 +298,8 @@ class Types {
 
     add("BrowserContext.setGeolocation.geolocation", "null|Object", "Geolocation", new Empty());
     add("Browser.newContext.options.geolocation", "Object", "Geolocation", new Empty());
+    add("Browser.newContext.options.storageState", "Object", "BrowserContext.StorageState", new Empty());
+    add("Browser.newPage.options.storageState", "Object", "BrowserContext.StorageState", new Empty());
     add("Browser.newPage.options.geolocation", "Object", "Geolocation", new Empty());
     add("BrowserType.launchPersistentContext.options.geolocation", "Object", "Geolocation", new Empty());
     add("Download.saveAs.path", "string", "Path", new Empty());

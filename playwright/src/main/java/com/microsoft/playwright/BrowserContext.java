@@ -54,6 +54,46 @@ public interface BrowserContext {
     }
   }
 
+  class StorageState {
+    public List<AddCookie> cookies;
+    public List<OriginState> origins;
+
+    public static class OriginState {
+      public final String origin;
+      public List<LocalStorageItem> localStorage;
+
+      public static class LocalStorageItem {
+        public String name;
+        public String value;
+        public LocalStorageItem(String name, String value) {
+          this.name = name;
+          this.value = value;
+        }
+      }
+
+      public OriginState(String origin) {
+        this.origin = origin;
+      }
+
+      public OriginState withLocalStorage(List<LocalStorageItem> localStorage) {
+        this.localStorage = localStorage;
+        return this;
+      }
+    }
+
+    public StorageState() {
+      cookies = new ArrayList<>();
+      origins = new ArrayList<>();
+    }
+
+    public List<AddCookie> cookies() {
+      return this.cookies;
+    }
+    public List<OriginState> origins() {
+      return this.origins;
+    }
+  }
+
   class WaitForEventOptions {
     public Integer timeout;
     public Predicate<Event<EventType>> predicate;
@@ -381,7 +421,7 @@ public interface BrowserContext {
   /**
    * Returns storage state for this browser context, contains current cookies and local storage snapshot.
    */
-  Object storageState();
+  StorageState storageState();
   default void unroute(String url) { unroute(url, null); }
   default void unroute(Pattern url) { unroute(url, null); }
   default void unroute(Predicate<String> url) { unroute(url, null); }
@@ -408,7 +448,6 @@ public interface BrowserContext {
    * <p>
    * 
    * @param event Event name, same one would pass into {@code browserContext.on(event)}.
-   * @param optionsOrPredicate Either a predicate that receives an event or an options object.
    * @return Promise which resolves to the event data value.
    */
   Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options);

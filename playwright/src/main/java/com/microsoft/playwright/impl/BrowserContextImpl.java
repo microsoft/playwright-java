@@ -17,6 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
@@ -241,8 +242,9 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public Object storageState() {
-    return null;
+  public StorageState storageState() {
+    JsonElement json = sendMessage("storageState");
+    return gson().fromJson(json, StorageState.class);
   }
 
   @Override
