@@ -11,6 +11,10 @@
 
 # Maven output dir
 target/
+.classpath
+.factorypath
+.project
+.settings
 
 .DS_Store
 *.swp

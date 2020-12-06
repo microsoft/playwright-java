@@ -22,8 +22,8 @@ Names of published driver archives can be found at https://github.com/microsoft/
 ### Compiling and running the tests with Maven
 
 ```bash
-mvn compile
-mvn test
+./mvnw compile
+./mvnw test
 ```
 
 ### Generating API

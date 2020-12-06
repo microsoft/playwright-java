@@ -24,8 +24,8 @@ jobs:
       shell: bash
       run: scripts/download_driver.sh
     - name: Build with Maven
-      run: mvn -B package -D skipTests --no-transfer-progress
+      run: ./mvnw -B package -D skipTests --no-transfer-progress
     - name: Run tests
-      run: mvn test --no-transfer-progress
+      run: ./mvnw test --no-transfer-progress
       env:
         BROWSER: ${{ matrix.browser }}
