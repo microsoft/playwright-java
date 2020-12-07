@@ -498,6 +498,8 @@ public class TestPageRoute extends TestBase {
         .withContentType("application/json")
         .withHeaders(headers)
         .withBody("[\"electric\",\"gas\"]"));
+
+
     });
     {
       // Should succeed

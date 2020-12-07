@@ -47,6 +47,9 @@ public class RouteImpl extends ChannelOwner implements Route {
       overrides = new ContinueOverrides();
     }
     JsonObject params = new JsonObject();
+    if (overrides.url != null) {
+      params.addProperty("url", overrides.url);
+    }
     if (overrides.method != null) {
       params.addProperty("method", overrides.method);
     }

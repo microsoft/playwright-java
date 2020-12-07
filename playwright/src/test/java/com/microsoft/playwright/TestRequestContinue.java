@@ -24,9 +24,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import static com.microsoft.playwright.Page.EventType.RESPONSE;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestRequestContinue extends TestBase {
 
@@ -58,6 +58,46 @@ public class TestRequestContinue extends TestBase {
     page.evaluate("() => fetch('/sleep.zzz')");
     assertEquals("POST", request.get().method);
     assertEquals("POST", sRequest.get().method);
+  }
+
+  @Test
+  void shouldOverrideRequestUrl() throws ExecutionException, InterruptedException {
+    Future<Server.Request> serverRequest = server.waitForRequest("/global-var.html");
+    page.route("**/foo", route -> {
+      route.continue_(new Route.ContinueOverrides().withUrl(server.PREFIX + "/global-var.html"));
+    });
+    Deferred<Event<Page.EventType>> responseEvent = page.waitForEvent(RESPONSE);
+    page.navigate(server.PREFIX + "/foo");
+    Response response = (Response) responseEvent.get().data();
+    assertEquals(server.PREFIX + "/foo", response.url());
+    assertEquals(123, page.evaluate("window['globalVar']"));
+    assertEquals("GET", serverRequest.get().method);
+  }
+
+  @Test
+  void shouldNotAllowChangingProtocolWhenOverridingUrl() {
+    PlaywrightException[] error = {null};
+    page.route("**/*", route -> {
+      try {
+        route.continue_(new Route.ContinueOverrides().withUrl("file:///tmp/foo"));
+      } catch (PlaywrightException e) {
+        error[0] = e;
+        route.continue_();
+      }
+    });
+    page.navigate(server.EMPTY_PAGE);
+    assertNotNull(error[0]);
+    assertTrue(error[0].getMessage().contains("New URL must have same protocol as overriden URL"));
+  }
+
+  @Test
+  void shouldOverrideMethodAlongWithUrl() throws ExecutionException, InterruptedException {
+    Future<Server.Request> serverRequest = server.waitForRequest("/empty.html");
+    page.route("**/foo", route -> {
+      route.continue_(new Route.ContinueOverrides().withUrl(server.EMPTY_PAGE).withMethod("POST"));
+    });
+    page.navigate(server.PREFIX + "/foo");
+    assertEquals("POST", serverRequest.get().method);
   }
 
   @Test
