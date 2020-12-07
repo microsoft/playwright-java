@@ -51,10 +51,10 @@ RUN apt-get install -y --no-install-recommends \
     xvfb
 
 RUN apt-get install -y --no-install-recommends \
-    maven curl unzip && rm -rf /var/lib/apt/lists/*
+    curl unzip && rm -rf /var/lib/apt/lists/*
 
 COPY . /tmp/playwright/
 
-RUN cd /tmp/playwright && mvn install -DskipTests && \
+RUN cd /tmp/playwright && ./mvnw install -DskipTests && \
     sh scripts/download_driver.sh && \
-    rm -rf /tmp/playwright 
+    rm -rf /tmp/playwright

@@ -1,0 +1,26 @@
+name: Test Docker
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  build:
+    timeout-minutes: 60
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - uses: microsoft/playwright-github-action@v1
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - name: Install driver
+      shell: bash
+      run: scripts/download_driver.sh
+    - name: Build Docker Image
+      run: docker build -t playwright-java:localbuild .
+    - name: Test Docker
+      run: |
+        CONTAINER_ID="$(docker run --rm -v $(pwd):/root/playwright --name playwright-docker-test -d -t playwright-java:localbuild /bin/bash)"
+        docker exec --workdir /root/playwright/ "${CONTAINER_ID}" ./mvnw test --no-transfer-progress
