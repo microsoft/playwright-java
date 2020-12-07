@@ -54,7 +54,11 @@ public class TestHar extends TestBase {
 
     void dispose() throws IOException {
       context.close();
-      Files.deleteIfExists(harFile);
+      try {
+        Files.deleteIfExists(harFile);
+      } catch (IOException e) {
+        e.printStackTrace(System.err);
+      }
     }
   }
 
