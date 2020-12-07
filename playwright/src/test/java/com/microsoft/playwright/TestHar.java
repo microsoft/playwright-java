@@ -47,18 +47,16 @@ public class TestHar extends TestBase {
       page = context.newPage();
     }
 
-    JsonObject log() throws FileNotFoundException {
+    JsonObject log() throws IOException {
       context.close();
-      return new Gson().fromJson(new FileReader(harFile.toFile()), JsonObject.class).getAsJsonObject("log");
+      try (FileReader json = new FileReader(harFile.toFile())) {
+        return new Gson().fromJson(json, JsonObject.class).getAsJsonObject("log");
+      }
     }
 
     void dispose() throws IOException {
       context.close();
-      try {
-        Files.deleteIfExists(harFile);
-      } catch (IOException e) {
-        e.printStackTrace(System.err);
-      }
+      Files.deleteIfExists(harFile);
     }
   }
 
@@ -83,7 +81,7 @@ public class TestHar extends TestBase {
   }
 
   @Test
-  void shouldHaveVersionAndCreator() throws FileNotFoundException {
+  void shouldHaveVersionAndCreator() throws IOException {
     pageWithHar.page.navigate(server.EMPTY_PAGE);
     JsonObject log = pageWithHar.log();
     assertEquals("1.2", log.get("version").getAsString());
@@ -91,7 +89,7 @@ public class TestHar extends TestBase {
   }
 
   @Test
-  void shouldHaveBrowser() throws FileNotFoundException {
+  void shouldHaveBrowser() throws IOException {
     pageWithHar.page.navigate(server.EMPTY_PAGE);
     JsonObject log = pageWithHar.log();
     assertEquals(browserType.name(), log.getAsJsonObject("browser").get("name").getAsString().toLowerCase());
@@ -99,7 +97,7 @@ public class TestHar extends TestBase {
   }
 
   @Test
-  void shouldHavePages() throws FileNotFoundException {
+  void shouldHavePages() throws IOException {
     pageWithHar.page.navigate("data:text/html,<title>Hello</title>");
     // For data: load comes before domcontentloaded...
     Deferred<Void> loadEvent = pageWithHar.page.waitForLoadState(Page.LoadState.DOMCONTENTLOADED);
@@ -140,7 +138,7 @@ public class TestHar extends TestBase {
   }
 
   @Test
-  void shouldIncludeRequest() throws FileNotFoundException {
+  void shouldIncludeRequest() throws IOException {
     pageWithHar.page.navigate(server.EMPTY_PAGE);
     JsonObject log = pageWithHar.log();
     assertEquals(1, log.getAsJsonArray("entries").size());
@@ -161,7 +159,7 @@ public class TestHar extends TestBase {
   }
 
   @Test
-  void shouldIncludeResponse() throws FileNotFoundException {
+  void shouldIncludeResponse() throws IOException {
     pageWithHar.page.navigate(server.EMPTY_PAGE);
     JsonObject log = pageWithHar.log();
     JsonObject entry = log.getAsJsonArray("entries").get(0).getAsJsonObject();
