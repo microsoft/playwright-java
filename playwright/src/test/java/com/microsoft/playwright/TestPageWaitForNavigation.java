@@ -76,7 +76,7 @@ public class TestPageWaitForNavigation extends TestBase {
       event.get();
       fail("did not throw");
     } catch (PlaywrightException e) {
-      if (!e.getMessage().contains(expectedSSLError(browserType.name())) {
+      if (!e.getMessage().contains(expectedSSLError(browserType.name()))) {
         e.printStackTrace(System.err);
         fail("Unexpected exception: '" + e.getMessage() + "'");
       }
