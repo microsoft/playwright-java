@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -127,8 +128,10 @@ public class TestHar extends TestBase {
     Deferred<Void> loadEvent = page.waitForLoadState(Page.LoadState.DOMCONTENTLOADED);
     loadEvent.get();
     context.close();
-    JsonObject log = new Gson().fromJson(new FileReader(harPath.toFile()), JsonObject.class).getAsJsonObject("log");
-
+    JsonObject log;
+    try (Reader reader = new FileReader(harPath.toFile())) {
+      log = new Gson().fromJson(reader, JsonObject.class).getAsJsonObject("log");
+    }
     assertEquals(1, log.getAsJsonArray("pages").size());
     JsonObject pageEntry = log.getAsJsonArray("pages").get(0).getAsJsonObject();
     assertEquals("page_0", pageEntry.get("id").getAsString());
