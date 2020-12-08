@@ -140,8 +140,8 @@ public class TestWebSocket extends TestBase {
       "    ws.addEventListener('message', () => { ws.close(); });\n" +
       "  }", webSocketServer.getPort());
     waitForCondition(socketClosed);
-    assertEquals("open", log.get(0));
-    assertEquals("close", log.get(3));
+    assertEquals("open", log.get(0), "Events: " + log);
+    assertEquals("close", log.get(3), "Events: " + log);
     log.sort(String::compareTo);
     assertEquals(asList("close", "open", "received<incoming>", "sent<outgoing>"), log);
   }
