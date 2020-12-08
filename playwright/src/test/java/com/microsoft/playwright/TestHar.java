@@ -133,8 +133,6 @@ public class TestHar extends TestBase {
     JsonObject pageEntry = log.getAsJsonArray("pages").get(0).getAsJsonObject();
     assertEquals("page_0", pageEntry.get("id").getAsString());
     assertEquals("Hello", pageEntry.get("title").getAsString());
-
-    Files.deleteIfExists(harPath);
   }
 
   @Test
