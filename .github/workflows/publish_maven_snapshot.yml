@@ -28,6 +28,6 @@ jobs:
     - name: Build with Maven
       run: mvn -B package -D skipTests --no-transfer-progress
     - name: Publish to GitHub Packages
-      run: mvn -B deploy
+      run: mvn -B deploy -D skipTests
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
