@@ -66,4 +66,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN mkdir /tmp/pw-java
 COPY . /tmp/pw-java
-RUN cd /tmp/pw-java && ./scripts/download_driver.sh && mvn install -D skipTests --no-transfer-progress
+RUN cd /tmp/pw-java && ./scripts/download_driver.sh && mvn install -D skipTests --no-transfer-progress && \
+    rm -rf /tmp/pw-java
