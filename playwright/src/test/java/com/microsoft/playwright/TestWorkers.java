@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.condition.EnabledIf;
 
 import static com.microsoft.playwright.Page.EventType.*;
@@ -94,6 +95,7 @@ public class TestWorkers extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="flaky upstream")
   void shouldClearUponNavigation() {
     page.navigate(server.EMPTY_PAGE);
     Deferred<Event<Page.EventType>> workerCreatedPromise = page.waitForEvent(WORKER);
