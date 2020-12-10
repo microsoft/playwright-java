@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.microsoft.playwright</groupId>
-  <artifactId>playwright-java</artifactId>
+  <artifactId>parent-pom</artifactId>
   <version>0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Playwright Java</name>
