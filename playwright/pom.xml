@@ -11,7 +11,24 @@
   </parent>
 
   <artifactId>playwright</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <name>Playwright Java - Main Library</name>
+  <description>Java library to automate Chromium, Firefox and WebKit with a single API.
+    Playwright is built to enable cross-browser web automation that is ever-green, capable,
+    reliable and fast.
+
+    This is the main package that provides Playwright Java client.
+  </description>
+  <url>https://github.com/microsoft/playwright-java</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/microsoft/playwright-java.git</url>
+  </scm>
 
   <build>
     <plugins>
@@ -26,7 +43,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M5</version>
         <configuration>
           <systemPropertyVariables>
             <playwright.cli.dir>${project.parent.basedir}/driver/src/main/resources/driver</playwright.cli.dir>
@@ -47,7 +63,6 @@
     <dependency>
       <groupId>org.java-websocket</groupId>
       <artifactId>Java-WebSocket</artifactId>
-      <version>1.5.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
