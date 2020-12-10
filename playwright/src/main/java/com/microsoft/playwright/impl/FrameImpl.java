@@ -457,7 +457,16 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void tap(String selector, TapOptions options) {
-
+    if (options == null) {
+      options = new TapOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.remove("modifiers");
+    if (options.modifiers != null) {
+      params.add("modifiers", Serialization.toProtocol(options.modifiers));
+    }
+    params.addProperty("selector", selector);
+    sendMessage("tap", params);
   }
 
   @Override

@@ -111,11 +111,15 @@ public class TestBase {
     playwright = null;
   }
 
+  BrowserContext createContext() {
+    return browser.newContext();
+  }
+
   @BeforeEach
   void createContextAndPage() {
     server.reset();
     httpsServer.reset();
-    context = browser.newContext();
+    context = createContext();
     page = context.newPage();
   }
 
