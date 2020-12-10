@@ -76,7 +76,6 @@ public class TestTap extends TestBase {
     JSHandle eventsHandle = trackEvents(page.querySelector("div"));
     page.tap("div");
     assertEquals(asList("pointerover",  "pointerenter",
-      "pointerover",  "pointerenter",
       "pointerdown",  "touchstart",
       "pointerup",    "pointerout",
       "pointerleave", "touchend"),
