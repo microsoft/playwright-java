@@ -18,17 +18,6 @@
     This module includes playwright-cli binary and related utilities. It is intended to be
     used on the systems where Playwright driver is not preinstalled.
   </description>
-  <url>https://github.com/microsoft/playwright-java</url>
-  <licenses>
-    <license>
-      <name>Apache License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  <scm>
-    <url>https://github.com/microsoft/playwright-java.git</url>
-  </scm>
 
   <build>
     <plugins>
