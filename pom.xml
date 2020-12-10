@@ -12,9 +12,10 @@
   <description>Java library to automate Chromium, Firefox and WebKit with a single API.
     Playwright is built to enable cross-browser web automation that is ever-green, capable,
     reliable and fast.
+
+    This is the parent POM of the project.
   </description>
   <url>https://github.com/microsoft/playwright-java</url>
-
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
@@ -22,7 +23,6 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
   <scm>
     <url>https://github.com/microsoft/playwright-java.git</url>
   </scm>
@@ -51,6 +51,12 @@
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
         <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.java-websocket</groupId>
+        <artifactId>Java-WebSocket</artifactId>
+        <version>1.5.1</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -89,6 +95,11 @@
             <excludes>com.microsoft.playwright.impl</excludes>
             <additionalOptions>--allow-script-in-comments</additionalOptions>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.0.0-M5</version>
         </plugin>
       </plugins>
     </pluginManagement>
