@@ -39,6 +39,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private final KeyboardImpl keyboard;
   private final MouseImpl mouse;
   private final AccessibilityImpl accessibility;
+  private final TouchscreenImpl touchscreen;
   private Viewport viewport;
   private final Router routes = new Router();
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
@@ -56,6 +57,7 @@ public class PageImpl extends ChannelOwner implements Page {
     mainFrame.page = this;
     keyboard = new KeyboardImpl(this);
     mouse = new MouseImpl(this);
+    touchscreen = new TouchscreenImpl(this);
     accessibility = new AccessibilityImpl(this);
     frames.add(mainFrame);
     timeoutSettings = new TimeoutSettings(browserContext.timeoutSettings);
@@ -653,7 +655,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Touchscreen touchscreen() {
-    return null;
+    return touchscreen;
   }
 
   @Override
