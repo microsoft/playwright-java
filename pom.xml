@@ -6,7 +6,7 @@
 
   <groupId>com.microsoft.playwright</groupId>
   <artifactId>parent-pom</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.162.0</version>
   <packaging>pom</packaging>
   <name>Playwright Java</name>
   <description>Java library to automate Chromium, Firefox and WebKit with a single API.
@@ -23,6 +23,12 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+  <developers>
+    <developer>
+      <organization>Microsoft</organization>
+      <organizationUrl>http://www.microsoft.com/</organizationUrl>
+    </developer>
+  </developers>
   <scm>
     <connection>scm:git:https://github.com/microsoft/playwright-java.git</connection>
     <developerConnection>scm:git:https://github.com/microsoft/playwright-java.git</developerConnection>
@@ -91,12 +97,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-            <source>8</source>
-            <detectJavaApiLink>false</detectJavaApiLink>
-            <excludes>com.microsoft.playwright.impl</excludes>
-            <additionalOptions>--allow-script-in-comments</additionalOptions>
-          </configuration>
+          <version>3.2.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

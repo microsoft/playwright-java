@@ -25,7 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
-class DriverJar extends Driver {
+public class DriverJar extends Driver {
   private final Path driverTempDir;
 
   DriverJar() throws IOException, URISyntaxException, InterruptedException {
