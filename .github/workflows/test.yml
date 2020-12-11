@@ -28,7 +28,7 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
     - name: Install driver
       shell: bash
-      run: scripts/download_driver.sh
+      run: scripts/download_driver_for_all_platforms.sh
     - name: Build with Maven
       run: mvn -B package -D skipTests --no-transfer-progress
     - name: Run tests

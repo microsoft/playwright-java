@@ -9,10 +9,11 @@
     <version>0.162.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>driver</artifactId>
-  <name>Playwright Java - Driver</name>
+  <artifactId>driver-bundle</artifactId>
+  <name>Playwright Java - Drivers For All Platforms</name>
   <description>
-    This module provides API for discovery and launching of playwright-cli binary.
+    This module includes playwright-cli binary and related utilities for all supported platforms.
+    It is intended to be used on the systems where Playwright driver is not preinstalled.
   </description>
 
   <build>
@@ -20,6 +21,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
+        <configuration>
+          <excludeResources>true</excludeResources>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -40,10 +44,17 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M5</version>
       </plugin>
     </plugins>
   </build>
   <dependencies>
+    <dependency>
+      <groupId>com.microsoft.playwright</groupId>
+      <artifactId>driver</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
