@@ -9,13 +9,13 @@ trap "cd $(pwd -P)" EXIT
 cd "$(dirname $0)"
 
 cd ../driver/src/main/resources
-if [[ -d driver ]]; then
+if [[ -d local-driver ]]; then
   echo "$(pwd)/driver already exists, delete it first"
   exit 1;
 fi
 
-mkdir driver
-cd driver
+mkdir local-driver
+cd local-driver
 echo "Created directory: $(pwd)"
 
 FILE_NAME="unknown"

@@ -16,8 +16,6 @@
 
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.PlaywrightException;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -32,12 +30,12 @@ public class DriverJar extends Driver {
     driverTempDir = Files.createTempDirectory("playwright-java-");
     driverTempDir.toFile().deleteOnExit();
     ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-    Path path = Paths.get(classloader.getResource("driver").toURI());
+    Path path = Paths.get(classloader.getResource("driver/" + platformDir()).toURI());
     Files.list(path).forEach(filePath -> {
       try {
         extractResource(filePath, driverTempDir);
       } catch (IOException e) {
-        throw new PlaywrightException("Failed to extract driver from " + path, e);
+        throw new RuntimeException("Failed to extract driver from " + path, e);
       }
     });
 
@@ -50,6 +48,20 @@ public class DriverJar extends Driver {
     if (!result) {
       System.err.println("Timed out waiting for browsers to install");
     }
+  }
+
+  private static String platformDir() {
+    String name = System.getProperty("os.name").toLowerCase();
+    if (name.contains("windows")) {
+      return "win32_x64";
+    }
+    if (name.contains("linux")) {
+      return "linux";
+    }
+    if (name.contains("mac os x")) {
+      return "mac";
+    }
+    throw new RuntimeException("Unexpected os.name value: " + name);
   }
 
   private static Path extractResource(Path from, Path toDir) throws IOException {

@@ -16,12 +16,15 @@
 
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.PlaywrightException;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-abstract class Driver {
+/**
+ * This class provides access to playwright-cli. It can be either preinstalled
+ * in the host system and its path is passed as a system property or it can be
+ * loaded from the driver-bundle module if that module is in the classpath.
+ */
+public abstract class Driver {
   private static Driver instance;
 
   private static class PreinstalledDriver extends Driver {
@@ -35,15 +38,17 @@ abstract class Driver {
     }
   }
 
-  static synchronized Path ensureDriverInstalled() {
+  public static synchronized Path ensureDriverInstalled() {
     if (instance == null) {
       try {
         instance = createDriver();
       } catch (Exception exception) {
-        throw new PlaywrightException("Failed to find playwright-cli", exception);
+        throw new RuntimeException("Failed to find playwright-cli", exception);
       }
     }
-    return instance.driverDir().resolve("playwright-cli");
+    String name = System.getProperty("os.name").toLowerCase().contains("windows") ?
+      "playwright-cli.exe" : "playwright-cli";
+    return instance.driverDir().resolve(name);
   }
 
   private static Driver createDriver() throws Exception {
