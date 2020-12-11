@@ -3,12 +3,19 @@
 set -e
 set +x
 
-FILE_PREFIX=playwright-cli-0.170.0-next.1607022026758
-
 trap "cd $(pwd -P)" EXIT
 cd "$(dirname $0)"
 
+CLI_VERSION=$(head -1 ./CLI_VERSION)
+FILE_PREFIX=playwright-cli-$CLI_VERSION
+
 cd ../driver-bundle/src/main/resources
+
+if [[ $1 == '-f' ]]; then
+  echo "Deleting existing drivers from $(pwd)"
+  rm -rf driver
+fi
+
 mkdir -p driver
 cd driver
 

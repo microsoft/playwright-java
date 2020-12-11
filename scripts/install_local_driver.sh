@@ -3,10 +3,11 @@
 set -e
 set +x
 
-FILE_PREFIX=playwright-cli-0.170.0-next.1607022026758
-
 trap "cd $(pwd -P)" EXIT
 cd "$(dirname $0)"
+
+CLI_VERSION=$(head -1 ./CLI_VERSION)
+FILE_PREFIX=playwright-cli-$CLI_VERSION
 
 cd ../driver/src/main/resources
 if [[ -d local-driver ]]; then
