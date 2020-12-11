@@ -32,6 +32,7 @@
           <subpackages>com.microsoft.playwright</subpackages>
           <excludePackageNames>com.microsoft.playwright.impl</excludePackageNames>
           <additionalOptions>--allow-script-in-comments</additionalOptions>
+          <failOnError>false</failOnError>
         </configuration>
         <executions>
           <execution>
