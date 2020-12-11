@@ -30,6 +30,7 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <source>8</source>
+          <failOnError>false</failOnError>
         </configuration>
         <executions>
           <execution>
