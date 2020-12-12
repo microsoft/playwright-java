@@ -29,10 +29,13 @@ Linux)
   FILE_NAME=${FILE_PREFIX}-linux.zip
   echo "Downloading driver for Linux"
   ;;
-MINGW*)
-  FILE_NAME=${FILE_PREFIX}-win32_x64.zip
+MINGW32*)
+  FILE_NAME=${FILE_PREFIX}-win32.zip
   echo "Downloading driver for Windows"
   ;;
+MINGW64*)
+  FILE_NAME=${FILE_PREFIX}-win32_x64.zip
+  echo "Downloading driver for Windows"
 *)
   echo "Unknown platform '$(uname)'"
   exit 1;
