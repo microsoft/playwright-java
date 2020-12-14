@@ -9,38 +9,48 @@ cd "$(dirname $0)"
 CLI_VERSION=$(head -1 ./CLI_VERSION)
 FILE_PREFIX=playwright-cli-$CLI_VERSION
 
-cd ../driver/src/main/resources
+cd ../driver-bundle/src/main/resources
+
 if [[ -d local-driver ]]; then
   echo "$(pwd)/driver already exists, delete it first"
   exit 1;
 fi
 
-mkdir local-driver
-cd local-driver
-echo "Created directory: $(pwd)"
-
-FILE_NAME="unknown"
+PLATFORM="unknown"
 case $(uname) in
 Darwin)
-  FILE_NAME=${FILE_PREFIX}-mac.zip
+  PLATFORM=mac
   echo "Downloading driver for macOS"
   ;;
 Linux)
-  FILE_NAME=${FILE_PREFIX}-linux.zip
+  PLATFORM=linux
   echo "Downloading driver for Linux"
   ;;
 MINGW32*)
-  FILE_NAME=${FILE_PREFIX}-win32.zip
-  echo "Downloading driver for Windows"
+  PLATFORM=win32
+  echo "Downloading driver for Win32"
   ;;
 MINGW64*)
-  FILE_NAME=${FILE_PREFIX}-win32_x64.zip
-  echo "Downloading driver for Windows"
+  PLATFORM=win32_x64
+  echo "Downloading driver for Win64"
+  ;;
 *)
   echo "Unknown platform '$(uname)'"
   exit 1;
   ;;
 esac
+
+mkdir -p driver
+cd driver
+if [[ -d $PLATFORM ]]; then
+  echo "$(pwd)/$PLATFORM already exists, delete it first"
+  exit 1
+fi
+mkdir $PLATFORM
+cd $PLATFORM
+
+FILE_NAME=$FILE_PREFIX-$PLATFORM.zip
+echo "Downloading driver for $PLATFORM to $(pwd)"
 
 curl -O  https://playwright.azureedge.net/builds/cli/next/${FILE_NAME}
 unzip ${FILE_NAME} -d .
