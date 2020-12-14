@@ -87,8 +87,10 @@ public class TestBase {
 
   @AfterAll
   static void closeBrowser() {
-    browser.close();
-    browser = null;
+    if (browser != null) {
+      browser.close();
+      browser = null;
+    }
   }
 
   @BeforeAll
@@ -99,16 +101,22 @@ public class TestBase {
 
   @AfterAll
   static void stopServer() throws IOException {
-    server.stop();
-    server = null;
-    httpsServer.stop();
-    httpsServer = null;
+    if (server != null) {
+      server.stop();
+      server = null;
+    }
+    if (httpsServer != null) {
+      httpsServer.stop();
+      httpsServer = null;
+    }
   }
 
   @AfterAll
   static void closePlaywright() throws Exception {
-    playwright.close();
-    playwright = null;
+    if (playwright != null) {
+      playwright.close();
+      playwright = null;
+    }
   }
 
   BrowserContext createContext() {
