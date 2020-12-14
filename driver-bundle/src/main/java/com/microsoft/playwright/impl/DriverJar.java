@@ -17,10 +17,10 @@
 package com.microsoft.playwright.impl;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 public class DriverJar extends Driver {
@@ -29,16 +29,12 @@ public class DriverJar extends Driver {
   DriverJar() throws IOException, URISyntaxException, InterruptedException {
     driverTempDir = Files.createTempDirectory("playwright-java-");
     driverTempDir.toFile().deleteOnExit();
-    ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-    Path path = Paths.get(classloader.getResource("driver/" + platformDir()).toURI());
-    Files.list(path).forEach(filePath -> {
-      try {
-        extractResource(filePath, driverTempDir);
-      } catch (IOException e) {
-        throw new RuntimeException("Failed to extract driver from " + path, e);
-      }
-    });
+    System.err.println("extracting driver to " + driverTempDir);
+    extractDriverToTempDir();
+    installBrowsers();
+  }
 
+  private void installBrowsers() throws IOException, InterruptedException {
     Path driver = driverTempDir.resolve("playwright-cli");
     ProcessBuilder pb = new ProcessBuilder(driver.toString(), "install");
     pb.redirectError(ProcessBuilder.Redirect.INHERIT);
@@ -47,6 +43,22 @@ public class DriverJar extends Driver {
     boolean result = p.waitFor(10, TimeUnit.MINUTES);
     if (!result) {
       System.err.println("Timed out waiting for browsers to install");
+    }
+  }
+
+  private void extractDriverToTempDir() throws URISyntaxException, IOException {
+    ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+    URI uri = classloader.getResource("driver/" + platformDir()).toURI();
+    System.out.println(uri);
+    // Create zip filesystem if loading from jar.
+    try (FileSystem fileSystem = "jar".equals(uri.getScheme()) ? FileSystems.newFileSystem(uri, Collections.emptyMap()) : null) {
+      Files.list(Paths.get(uri)).forEach(filePath -> {
+        try {
+          extractResource(filePath, driverTempDir);
+        } catch (IOException e) {
+          throw new RuntimeException("Failed to extract driver from " + uri, e);
+        }
+      });
     }
   }
 
@@ -65,12 +77,10 @@ public class DriverJar extends Driver {
   }
 
   private static Path extractResource(Path from, Path toDir) throws IOException {
-    Path path = toDir.resolve(from.getFileName());
+    Path path = toDir.resolve(from.getFileName().toString());
     Files.copy(from, path);
     path.toFile().setExecutable(true);
     path.toFile().deleteOnExit();
-    // System.out.println("extracting: " + from.toString() + " to " +
-    // path.toString());
     return path;
   }
 
