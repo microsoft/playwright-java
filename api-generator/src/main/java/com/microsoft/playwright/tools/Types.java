@@ -60,8 +60,8 @@ class Types {
     add("Page.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
     add("Page.dblclick.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("Page.tap.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
-    add("Page.emulateMedia.options.media", "null|\"print\"|\"screen\"", "Media");
-    add("Page.emulateMedia.options.colorScheme", "null|\"dark\"|\"light\"|\"no-preference\"", "ColorScheme", new Empty());
+    add("Page.emulateMedia.params.media", "null|\"print\"|\"screen\"", "Media");
+    add("Page.emulateMedia.params.colorScheme", "null|\"dark\"|\"light\"|\"no-preference\"", "ColorScheme", new Empty());
     add("Page.goBack.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "Frame.LoadState", new Empty());
     add("Page.goForward.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "Frame.LoadState", new Empty());
     add("Page.goto.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "Frame.LoadState", new Empty());
@@ -98,12 +98,12 @@ class Types {
     add("BrowserType.launchPersistentContext.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme", new Empty());
 
     // File
-    add("Page.addScriptTag.options.path", "string", "Path");
-    add("Page.addStyleTag.options.path", "string", "Path");
+    add("Page.addScriptTag.script.path", "string", "Path");
+    add("Page.addStyleTag.style.path", "string", "Path");
     add("Page.pdf.options.path", "string", "Path");
     add("Page.screenshot.options.path", "string", "Path");
-    add("Frame.addScriptTag.options.path", "string", "Path");
-    add("Frame.addStyleTag.options.path", "string", "Path");
+    add("Frame.addScriptTag.script.path", "string", "Path");
+    add("Frame.addStyleTag.style.path", "string", "Path");
     add("ElementHandle.screenshot.options.path", "string", "Path");
     add("Route.fulfill.response.path", "string", "Path");
     add("Route.fulfill.response.status", "number", "int");

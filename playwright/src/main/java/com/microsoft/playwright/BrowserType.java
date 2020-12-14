@@ -20,9 +20,9 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * BrowserType provides methods to launch a specific browser instance or connect to an existing one.
+ * BrowserType provides methods to launch a specific browser instance or connect to an existing one. The following is a
  * <p>
- * The following is a typical example of using Playwright to drive automation:
+ * typical example of using Playwright to drive automation:
  * <p>
  */
 public interface BrowserType {
@@ -417,7 +417,7 @@ public interface BrowserType {
      */
     public String locale;
     /**
-     * A list of permissions to grant to all pages in this context. See browserContext.grantPermissions for more details.
+     * A list of permissions to grant to all pages in this context. See browserContext.grantPermissions(permissions[, options]) for more details.
      */
     public List<String> permissions;
     /**
@@ -433,7 +433,7 @@ public interface BrowserType {
      */
     public BrowserContext.HTTPCredentials httpCredentials;
     /**
-     * Emulates {@code 'prefers-colors-scheme'} media feature, supported values are {@code 'light'}, {@code 'dark'}, {@code 'no-preference'}. See page.emulateMedia(options) for more details. Defaults to '{@code light}'.
+     * Emulates {@code 'prefers-colors-scheme'} media feature, supported values are {@code 'light'}, {@code 'dark'}, {@code 'no-preference'}. See page.emulateMedia(params) for more details. Defaults to '{@code light}'.
      */
     public ColorScheme colorScheme;
     /**
@@ -441,11 +441,11 @@ public interface BrowserType {
      */
     public Logger logger;
     /**
-     * Enables HAR recording for all pages into {@code recordHar.path} file. If not specified, the HAR is not recorded. Make sure to await {@code browserContext.close} for the HAR to be saved.
+     * Enables HAR recording for all pages into {@code recordHar.path} file. If not specified, the HAR is not recorded. Make sure to await browserContext.close() for the HAR to be saved.
      */
     public RecordHar recordHar;
     /**
-     * Enables video recording for all pages into {@code recordVideo.dir} directory. If not specified videos are not recorded. Make sure to await {@code browserContext.close} for videos to be saved.
+     * Enables video recording for all pages into {@code recordVideo.dir} directory. If not specified videos are not recorded. Make sure to await browserContext.close() for videos to be saved.
      */
     public RecordVideo recordVideo;
 
@@ -587,37 +587,50 @@ public interface BrowserType {
     }
   }
   /**
-   * 
-   * @return A path where Playwright expects to find a bundled browser executable.
+   * A path where Playwright expects to find a bundled browser executable.
    */
   String executablePath();
   default Browser launch() {
     return launch(null);
   }
   /**
+   * Returns the browser instance.
+   * <p>
    * You can use {@code ignoreDefaultArgs} to filter out {@code --mute-audio} from default arguments:
    * <p>
    * 
    * <p>
-   * **Chromium-only** Playwright can also be used to control the Chrome browser, but it works best with the version of Chromium it is bundled with. There is no guarantee it will work with any other version. Use {@code executablePath} option with extreme caution.
+   * **Chromium-only** Playwright can also be used to control the Chrome browser, but it works best with the version of
    * <p>
-   * If Google Chrome (rather than Chromium) is preferred, a Chrome Canary or Dev Channel build is suggested.
+   * Chromium it is bundled with. There is no guarantee it will work with any other version. Use {@code executablePath} option with
+   * <p>
+   * extreme caution.
+   * <p>
+   * If Google Chrome (rather than Chromium) is preferred, a Chrome
+   * <p>
+   * Canary or Dev
+   * <p>
+   * Channel build is suggested.
    * <p>
    * In browserType.launch([options]) above, any mention of Chromium also applies to Chrome.
    * <p>
-   * See {@code this article} for a description of the differences between Chromium and Chrome. {@code This article} describes some differences for Linux users.
-   * @param options Set of configurable options to set on the browser. Can have the following fields:
-   * @return Promise which resolves to browser instance.
+   * See {@code this article} for
+   * <p>
+   * a description of the differences between Chromium and Chrome. {@code This article} describes
+   * <p>
+   * some differences for Linux users.
    */
   Browser launch(LaunchOptions options);
   default BrowserContext launchPersistentContext(Path userDataDir) {
     return launchPersistentContext(userDataDir, null);
   }
   /**
-   * Launches browser that uses persistent storage located at {@code userDataDir} and returns the only context. Closing this context will automatically close the browser.
+   * Returns the persistent browser context instance.
+   * <p>
+   * Launches browser that uses persistent storage located at {@code userDataDir} and returns the only context. Closing this
+   * <p>
+   * context will automatically close the browser.
    * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for Chromium and Firefox.
-   * @param options Set of configurable options to set on the browser. Can have the following fields:
-   * @return Promise that resolves to the persistent browser context instance.
    */
   BrowserContext launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options);
   /**

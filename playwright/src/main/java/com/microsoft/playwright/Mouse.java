@@ -21,7 +21,7 @@ import java.util.*;
 /**
  * The Mouse class operates in main-frame CSS pixels relative to the top-left corner of the viewport.
  * <p>
- * Every {@code page} object has its own Mouse, accessible with {@code page.mouse}.
+ * Every {@code page} object has its own Mouse, accessible with page.mouse.
  * <p>
  */
 public interface Mouse {
@@ -126,14 +126,14 @@ public interface Mouse {
     click(x, y, null);
   }
   /**
-   * Shortcut for {@code mouse.move}, {@code mouse.down} and {@code mouse.up}.
+   * Shortcut for mouse.move(x, y[, options]), mouse.down([options]), mouse.up([options]).
    */
   void click(int x, int y, ClickOptions options);
   default void dblclick(int x, int y) {
     dblclick(x, y, null);
   }
   /**
-   * Shortcut for {@code mouse.move}, {@code mouse.down}, {@code mouse.up}, {@code mouse.down} and {@code mouse.up}.
+   * Shortcut for mouse.move(x, y[, options]), mouse.down([options]), mouse.up([options]), mouse.down([options]) and mouse.up([options]).
    */
   void dblclick(int x, int y, DblclickOptions options);
   default void down() {

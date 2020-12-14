@@ -38,7 +38,7 @@ class Serialization {
       gson = new GsonBuilder()
         .registerTypeAdapter(BrowserContext.SameSite.class, new SameSiteAdapter().nullSafe())
         .registerTypeAdapter(ColorScheme.class, new ColorSchemeAdapter().nullSafe())
-        .registerTypeAdapter(Page.EmulateMediaOptions.Media.class, new MediaSerializer())
+        .registerTypeAdapter(Page.EmulateMediaParams.Media.class, new MediaSerializer())
         .registerTypeAdapter(Optional.class, new OptionalSerializer())
         .registerTypeHierarchyAdapter(JSHandleImpl.class, new HandleSerializer())
         .registerTypeAdapter(Path.class, new PathSerializer()).create();
@@ -252,7 +252,7 @@ class Serialization {
 
   private static class OptionalSerializer implements JsonSerializer<Optional<?>> {
     private static boolean isSupported(Type type) {
-      return new TypeToken<Optional<Page.EmulateMediaOptions.Media>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
+      return new TypeToken<Optional<Page.EmulateMediaParams.Media>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
         new TypeToken<Optional<ColorScheme>>() {}.getType().getTypeName().equals(type.getTypeName());
     }
 
@@ -275,9 +275,9 @@ class Serialization {
     }
   }
 
-  private static class MediaSerializer implements JsonSerializer<Page.EmulateMediaOptions.Media> {
+  private static class MediaSerializer implements JsonSerializer<Page.EmulateMediaParams.Media> {
     @Override
-    public JsonElement serialize(Page.EmulateMediaOptions.Media src, Type typeOfSrc, JsonSerializationContext context) {
+    public JsonElement serialize(Page.EmulateMediaParams.Media src, Type typeOfSrc, JsonSerializationContext context) {
       return new JsonPrimitive(src.toString().toLowerCase());
     }
   }

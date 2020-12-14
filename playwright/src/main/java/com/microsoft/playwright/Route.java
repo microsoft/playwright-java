@@ -21,7 +21,9 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * Whenever a network route is set up with page.route(url, handler) or browserContext.route(url, handler), the {@code Route} object allows to handle the route.
+ * Whenever a network route is set up with page.route(url, handler) or browserContext.route(url, handler), the {@code Route} object allows to
+ * <p>
+ * handle the route.
  */
 public interface Route {
   class ContinueOverrides {
@@ -116,12 +118,10 @@ public interface Route {
   }
   /**
    * Aborts the route's request.
-   * @param errorCode Optional error code. Defaults to {@code failed}, could be
-   * one of the following:
+   * @param errorCode Optional error code. Defaults to {@code failed}, could be one of the following:
    *  - {@code 'aborted'} - An operation was aborted (due to user action)
    *  - {@code 'accessdenied'} - Permission to access a resource, other than the network, was denied
-   *  - {@code 'addressunreachable'} - The IP address is unreachable. This usually means
-   *  - that there is no route to the specified host or network.
+   *  - {@code 'addressunreachable'} - The IP address is unreachable. This usually means that there is no route to the specified host or network.
    *  - {@code 'blockedbyclient'} - The client chose to block the request.
    *  - {@code 'blockedbyresponse'} - The request failed because the response was delivered along with requirements which are not met ('X-Frame-Options' and 'Content-Security-Policy' ancestor checks, for instance).
    *  - {@code 'connectionaborted'} - A connection timed out as a result of not receiving an ACK for data sent.
@@ -151,8 +151,7 @@ public interface Route {
    */
   void fulfill(FulfillResponse response);
   /**
-   * 
-   * @return A request to be routed.
+   * A request to be routed.
    */
   Request request();
 }

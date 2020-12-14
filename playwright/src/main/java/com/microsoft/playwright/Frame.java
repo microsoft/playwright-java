@@ -22,20 +22,22 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
- * At every point of time, page exposes its current frame tree via the page.mainFrame() and frame.childFrames() methods.
+ * At every point of time, page exposes its current frame tree via the page.mainFrame() and frame.childFrames()
+ * <p>
+ * methods.
  * <p>
  * Frame object's lifecycle is controlled by three events, dispatched on the page object:
  * <p>
- * 'frameattached' - fired when the frame gets attached to the page. A Frame can be attached to the page only once.
+ * page.on('frameattached') - fired when the frame gets attached to the page. A Frame can be attached to the page only once.
  * <p>
- * 'framenavigated' - fired when the frame commits navigation to a different URL.
+ * page.on('framenavigated') - fired when the frame commits navigation to a different URL.
  * <p>
- * 'framedetached' - fired when the frame gets detached from the page.  A Frame can be detached from the page only once.
+ * page.on('framedetached') - fired when the frame gets detached from the page.  A Frame can be detached from the page only once.
  * <p>
  */
 public interface Frame {
   enum LoadState { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
-  class AddScriptTagOptions {
+  class AddScriptTagScript {
     /**
      * URL of a script to be added.
      */
@@ -53,24 +55,24 @@ public interface Frame {
      */
     public String type;
 
-    public AddScriptTagOptions withUrl(String url) {
+    public AddScriptTagScript withUrl(String url) {
       this.url = url;
       return this;
     }
-    public AddScriptTagOptions withPath(Path path) {
+    public AddScriptTagScript withPath(Path path) {
       this.path = path;
       return this;
     }
-    public AddScriptTagOptions withContent(String content) {
+    public AddScriptTagScript withContent(String content) {
       this.content = content;
       return this;
     }
-    public AddScriptTagOptions withType(String type) {
+    public AddScriptTagScript withType(String type) {
       this.type = type;
       return this;
     }
   }
-  class AddStyleTagOptions {
+  class AddStyleTagStyle {
     /**
      * URL of the {@code <link>} tag.
      */
@@ -84,15 +86,15 @@ public interface Frame {
      */
     public String content;
 
-    public AddStyleTagOptions withUrl(String url) {
+    public AddStyleTagStyle withUrl(String url) {
       this.url = url;
       return this;
     }
-    public AddStyleTagOptions withPath(Path path) {
+    public AddStyleTagStyle withPath(Path path) {
       this.path = path;
       return this;
     }
-    public AddStyleTagOptions withContent(String content) {
+    public AddStyleTagStyle withContent(String content) {
       this.content = content;
       return this;
     }
@@ -321,7 +323,7 @@ public interface Frame {
      */
     public LoadState waitUntil;
     /**
-     * Referer header value. If provided it will take preference over the referer header value set by page.setExtraHTTPHeaders().
+     * Referer header value. If provided it will take preference over the referer header value set by page.setExtraHTTPHeaders(headers).
      */
     public String referer;
 
@@ -711,22 +713,38 @@ public interface Frame {
     }
   }
   /**
-   * The method finds an element matching the specified selector within the frame. See Working with selectors for more details. If no elements match the selector, the return value resolves to {@code null}.
+   * Returns the ElementHandle pointing to the frame element.
+   * <p>
+   * The method finds an element matching the specified selector within the frame. See Working with
+   * <p>
+   * selectors for more details. If no elements match the selector, the return value resolves to
+   * <p>
+   * {@code null}.
    * @param selector A selector to query for. See working with selectors for more details.
-   * @return Promise which resolves to ElementHandle pointing to the frame element.
    */
   ElementHandle querySelector(String selector);
   /**
-   * The method finds all elements matching the specified selector within the frame. See Working with selectors for more details. If no elements match the selector, the return value resolves to {@code []}.
+   * Returns the ElementHandles pointing to the frame elements.
+   * <p>
+   * The method finds all elements matching the specified selector within the frame. See Working with
+   * <p>
+   * selectors for more details. If no elements match the selector, the return value resolves to
+   * <p>
+   * {@code []}.
    * @param selector A selector to query for. See working with selectors for more details.
-   * @return Promise which resolves to ElementHandles pointing to the frame elements.
    */
   List<ElementHandle> querySelectorAll(String selector);
   default Object evalOnSelector(String selector, String pageFunction) {
     return evalOnSelector(selector, pageFunction, null);
   }
   /**
-   * The method finds an element matching the specified selector within the frame and passes it as a first argument to {@code pageFunction}. See Working with selectors for more details. If no elements match the selector, the method throws an error.
+   * Returns the return value of {@code pageFunction}
+   * <p>
+   * The method finds an element matching the specified selector within the frame and passes it as a first argument to
+   * <p>
+   * {@code pageFunction}. See Working with selectors for more details. If no elements match the
+   * <p>
+   * selector, the method throws an error.
    * <p>
    * If {@code pageFunction} returns a Promise, then {@code frame.$eval} would wait for the promise to resolve and return its value.
    * <p>
@@ -736,14 +754,17 @@ public interface Frame {
    * @param selector A selector to query for. See working with selectors for more details.
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
-   * @return Promise which resolves to the return value of {@code pageFunction}
    */
   Object evalOnSelector(String selector, String pageFunction, Object arg);
   default Object evalOnSelectorAll(String selector, String pageFunction) {
     return evalOnSelectorAll(selector, pageFunction, null);
   }
   /**
-   * The method finds all elements matching the specified selector within the frame and passes an array of matched elements as a first argument to {@code pageFunction}. See Working with selectors for more details.
+   * Returns the return value of {@code pageFunction}
+   * <p>
+   * The method finds all elements matching the specified selector within the frame and passes an array of matched elements
+   * <p>
+   * as a first argument to {@code pageFunction}. See Working with selectors for more details.
    * <p>
    * If {@code pageFunction} returns a Promise, then {@code frame.$$eval} would wait for the promise to resolve and return its value.
    * <p>
@@ -753,19 +774,22 @@ public interface Frame {
    * @param selector A selector to query for. See working with selectors for more details.
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
-   * @return Promise which resolves to the return value of {@code pageFunction}
    */
   Object evalOnSelectorAll(String selector, String pageFunction, Object arg);
   /**
+   * Returns the added tag when the script's onload fires or when the script content was injected into frame.
+   * <p>
    * Adds a {@code <script>} tag into the page with the desired url or content.
-   * @return which resolves to the added tag when the script's onload fires or when the script content was injected into frame.
    */
-  ElementHandle addScriptTag(AddScriptTagOptions options);
+  ElementHandle addScriptTag(AddScriptTagScript script);
   /**
-   * Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag with the content.
-   * @return which resolves to the added tag when the stylesheet's onload fires or when the CSS content was injected into frame.
+   * Returns the added tag when the stylesheet's onload fires or when the CSS content was injected into frame.
+   * <p>
+   * Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag with the
+   * <p>
+   * content.
    */
-  ElementHandle addStyleTag(AddStyleTagOptions options);
+  ElementHandle addStyleTag(AddStyleTagStyle style);
   default void check(String selector) {
     check(selector, null);
   }
@@ -786,9 +810,10 @@ public interface Frame {
    * <p>
    * Ensure that the element is now checked. If not, this method rejects.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
+   * <p>
+   * Passing zero timeout disables this.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
-   * @return Promise that resolves when the element matching {@code selector} is successfully checked.
    */
   void check(String selector, CheckOptions options);
   List<Frame> childFrames();
@@ -808,9 +833,10 @@ public interface Frame {
    * <p>
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
+   * <p>
+   * Passing zero timeout disables this.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
-   * @return Promise that resolves when the element matching {@code selector} is successfully clicked.
    */
   void click(String selector, ClickOptions options);
   /**
@@ -833,11 +859,12 @@ public interface Frame {
    * <p>
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first click of the {@code dblclick()} triggers a navigation event, this method will reject.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
+   * <p>
+   * Passing zero timeout disables this.
    * <p>
    * <strong>NOTE</strong> {@code frame.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
-   * @return Promise that resolves when the element matching {@code selector} is successfully double clicked.
    */
   void dblclick(String selector, DblclickOptions options);
   default void dispatchEvent(String selector, String type, Object eventInit) {
@@ -847,9 +874,15 @@ public interface Frame {
     dispatchEvent(selector, type, null);
   }
   /**
-   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click} is dispatched. This is equivalend to calling {@code element.click()}.
+   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
    * <p>
-   * Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
+   * is dispatched. This is equivalend to calling
+   * <p>
+   * element.click().
+   * <p>
+   * Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
+   * <p>
+   * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
    * <p>
    * Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
    * <p>
@@ -872,16 +905,24 @@ public interface Frame {
    * 
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
-   * @param eventInit event-specific initialization properties.
+   * @param eventInit Optional event-specific initialization properties.
    */
   void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options);
   default Object evaluate(String pageFunction) {
     return evaluate(pageFunction, null);
   }
   /**
-   * If the function passed to the {@code frame.evaluate} returns a Promise, then {@code frame.evaluate} would wait for the promise to resolve and return its value.
+   * Returns the return value of {@code pageFunction}
    * <p>
-   * If the function passed to the {@code frame.evaluate} returns a non-Serializable value, then {@code frame.evaluate} resolves to {@code undefined}. DevTools Protocol also supports transferring some additional values that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}, and bigint literals.
+   * If the function passed to the {@code frame.evaluate} returns a Promise, then {@code frame.evaluate} would wait for the promise to
+   * <p>
+   * resolve and return its value.
+   * <p>
+   * If the function passed to the {@code frame.evaluate} returns a non-Serializable value, then {@code frame.evaluate} resolves to
+   * <p>
+   * {@code undefined}. DevTools Protocol also supports transferring some additional values that are not serializable by {@code JSON}:
+   * <p>
+   * {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}, and bigint literals.
    * <p>
    * A string can also be passed in instead of a function.
    * <p>
@@ -890,16 +931,21 @@ public interface Frame {
    * 
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
-   * @return Promise which resolves to the return value of {@code pageFunction}
    */
   Object evaluate(String pageFunction, Object arg);
   default JSHandle evaluateHandle(String pageFunction) {
     return evaluateHandle(pageFunction, null);
   }
   /**
-   * The only difference between {@code frame.evaluate} and {@code frame.evaluateHandle} is that {@code frame.evaluateHandle} returns in-page object (JSHandle).
+   * Returns the return value of {@code pageFunction} as in-page object (JSHandle).
    * <p>
-   * If the function, passed to the {@code frame.evaluateHandle}, returns a Promise, then {@code frame.evaluateHandle} would wait for the promise to resolve and return its value.
+   * The only difference between {@code frame.evaluate} and {@code frame.evaluateHandle} is that {@code frame.evaluateHandle} returns in-page
+   * <p>
+   * object (JSHandle).
+   * <p>
+   * If the function, passed to the {@code frame.evaluateHandle}, returns a Promise, then {@code frame.evaluateHandle} would wait for
+   * <p>
+   * the promise to resolve and return its value.
    * <p>
    * A string can also be passed in instead of a function.
    * <p>
@@ -908,20 +954,21 @@ public interface Frame {
    * 
    * @param pageFunction Function to be evaluated in the page context
    * @param arg Optional argument to pass to {@code pageFunction}
-   * @return Promise which resolves to the return value of {@code pageFunction} as in-page object (JSHandle)
    */
   JSHandle evaluateHandle(String pageFunction, Object arg);
   default void fill(String selector, String value) {
     fill(selector, value, null);
   }
   /**
-   * This method waits for an element matching {@code selector}, waits for actionability checks, focuses the element, fills it and triggers an {@code input} event after filling.
+   * This method waits for an element matching {@code selector}, waits for actionability checks, focuses the
    * <p>
-   * If the element matching {@code selector} is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
+   * element, fills it and triggers an {@code input} event after filling. If the element matching {@code selector} is not an {@code <input>},
    * <p>
-   * Note that you can pass an empty string to clear the input field.
+   * {@code <textarea>} or {@code [contenteditable]} element, this method throws an error. Note that you can pass an empty string to
    * <p>
-   * To send fine-grained keyboard events, use {@code frame.type}.
+   * clear the input field.
+   * <p>
+   * To send fine-grained keyboard events, use frame.type(selector, text[, options]).
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
@@ -930,20 +977,19 @@ public interface Frame {
     focus(selector, null);
   }
   /**
-   * This method fetches an element with {@code selector} and focuses it.
+   * This method fetches an element with {@code selector} and focuses it. If there's no element matching {@code selector}, the method
    * <p>
-   * If there's no element matching {@code selector}, the method waits until a matching element appears in the DOM.
+   * waits until a matching element appears in the DOM.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
-   * @return Promise which resolves when the element matching {@code selector} is successfully focused. The promise will be rejected if there is no element matching {@code selector}.
    */
   void focus(String selector, FocusOptions options);
   /**
+   * Returns the {@code frame} or {@code iframe} element handle which corresponds to this frame.
+   * <p>
    * This is an inverse of elementHandle.contentFrame(). Note that returned handle actually belongs to the parent frame.
    * <p>
    * This method throws an error if the frame has been detached before {@code frameElement()} returns.
    * <p>
-   * 
-   * @return Promise that resolves with a {@code frame} or {@code iframe} element handle which corresponds to this frame.
    */
   ElementHandle frameElement();
   default String getAttribute(String selector, String name) {
@@ -959,6 +1005,10 @@ public interface Frame {
     return navigate(url, null);
   }
   /**
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
+   * <p>
+   * last redirect.
+   * <p>
    * {@code frame.goto} will throw an error if:
    * <p>
    * there's an SSL error (e.g. in case of self-signed certificates).
@@ -971,16 +1021,20 @@ public interface Frame {
    * <p>
    * the main resource failed to load.
    * <p>
-   * {@code frame.goto} will not throw an error when any valid HTTP status code is returned by the remote server, including 404 "Not Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling response.status().
+   * {@code frame.goto} will not throw an error when any valid HTTP status code is returned by the remote server, including 404
    * <p>
-   * <strong>NOTE</strong> {@code frame.goto} either throws an error or returns a main resource response. The only exceptions are navigation to {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
+   * "Not Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling
    * <p>
-   * 
+   * response.status().
    * <p>
-   * <strong>NOTE</strong> Headless mode doesn't support navigation to a PDF document. See the upstream issue.
+   * <strong>NOTE</strong> {@code frame.goto} either throws an error or returns a main resource response. The only exceptions are navigation
+   * <p>
+   * to {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
+   * <p>
+   * <strong>NOTE</strong> Headless mode doesn't support navigation to a PDF document. See the upstream
+   * <p>
+   * issue.
    * @param url URL to navigate frame to. The url should include scheme, e.g. {@code https://}.
-   * @param options Navigation parameters which might have the following properties:
-   * @return Promise which resolves to the main resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect.
    */
   Response navigate(String url, NavigateOptions options);
   default void hover(String selector) {
@@ -999,9 +1053,10 @@ public interface Frame {
    * <p>
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
+   * <p>
+   * Passing zero timeout disables this.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
-   * @return Promise that resolves when the element matching {@code selector} is successfully hovered.
    */
   void hover(String selector, HoverOptions options);
   default String innerHTML(String selector) {
@@ -1029,7 +1084,9 @@ public interface Frame {
    * <p>
    * If the name is empty, returns the id attribute instead.
    * <p>
-   * <strong>NOTE</strong> This value is calculated once when the frame is created, and will not update if the attribute is changed later.
+   * <strong>NOTE</strong> This value is calculated once when the frame is created, and will not update if the attribute is changed
+   * <p>
+   * later.
    */
   String name();
   /**
@@ -1037,25 +1094,34 @@ public interface Frame {
    */
   Page page();
   /**
-   * 
-   * @return Parent frame, if any. Detached frames and main frames return {@code null}.
+   * Parent frame, if any. Detached frames and main frames return {@code null}.
    */
   Frame parentFrame();
   default void press(String selector, String key) {
     press(selector, key, null);
   }
   /**
-   * {@code key} can specify the intended keyboardEvent.key value or a single character to generate the text for. A superset of the {@code key} values can be found here. Examples of the keys are:
+   * {@code key} can specify the intended keyboardEvent.key
    * <p>
-   * {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
+   * value or a single character to generate the text for. A superset of the {@code key} values can be found
+   * <p>
+   * here. Examples of the keys are:
+   * <p>
+   * {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
+   * <p>
+   * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
    * <p>
    * Following modification shortcuts are also suported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
    * <p>
    * Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
    * <p>
-   * If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective texts.
+   * If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
    * <p>
-   * Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   * texts.
+   * <p>
+   * Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
+   * <p>
+   * modifier, modifier is pressed and being held while the subsequent key is being pressed.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
@@ -1099,14 +1165,15 @@ public interface Frame {
     return selectOption(selector, values, null);
   }
   /**
-   * Triggers a {@code change} and {@code input} event once all the provided options have been selected.
+   * Returns the array of option values that have been successfully selected.
    * <p>
-   * If there's no {@code <select>} element matching {@code selector}, the method throws an error.
+   * Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
+   * <p>
+   * matching {@code selector}, the method throws an error.
    * <p>
    * 
    * @param selector A selector to query for. See working with selectors for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option is considered matching if all specified properties match.
-   * @return An array of option values that have been successfully selected.
    */
   List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options);
   default void setContent(String html) {
@@ -1115,7 +1182,6 @@ public interface Frame {
   /**
    * 
    * @param html HTML markup to assign to the page.
-   * @param options Parameters which might have the following properties:
    */
   void setContent(String html, SetContentOptions options);
   default void setInputFiles(String selector, Path file) { setInputFiles(selector, file, null); }
@@ -1126,9 +1192,15 @@ public interface Frame {
   default void setInputFiles(String selector, FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(selector, new FileChooser.FilePayload[]{ file }, options); }
   default void setInputFiles(String selector, FileChooser.FilePayload[] files) { setInputFiles(selector, files, null); }
   /**
-   * This method expects {@code selector} to point to an input element.
+   * This method expects {@code selector} to point to an input
    * <p>
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * element.
+   * <p>
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * <p>
+   * are resolved relative to the current working directory. For
+   * <p>
+   * empty array, clears the selected files.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    */
   void setInputFiles(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options);
@@ -1148,11 +1220,12 @@ public interface Frame {
    * <p>
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
+   * <p>
+   * Passing zero timeout disables this.
    * <p>
    * <strong>NOTE</strong> {@code frame.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
-   * @return Promise that resolves when the element matching {@code selector} is successfully tapped.
    */
   void tap(String selector, TapOptions options);
   default String textContent(String selector) {
@@ -1164,17 +1237,18 @@ public interface Frame {
    */
   String textContent(String selector, TextContentOptions options);
   /**
-   * 
-   * @return The page's title.
+   * Returns the page title.
    */
   String title();
   default void type(String selector, String text) {
     type(selector, text, null);
   }
   /**
-   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code frame.type} can be used to send fine-grained keyboard events. To fill values in form fields, use {@code frame.fill}.
+   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code frame.type} can be used to
    * <p>
-   * To press a special key, like {@code Control} or {@code ArrowDown}, use {@code keyboard.press}.
+   * send fine-grained keyboard events. To fill values in form fields, use frame.fill(selector, value[, options]).
+   * <p>
+   * To press a special key, like {@code Control} or {@code ArrowDown}, use keyboard.press(key[, options]).
    * <p>
    * 
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
@@ -1201,9 +1275,10 @@ public interface Frame {
    * <p>
    * Ensure that the element is now unchecked. If not, this method rejects.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
+   * <p>
+   * Passing zero timeout disables this.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
-   * @return Promise that resolves when the element matching {@code selector} is successfully unchecked.
    */
   void uncheck(String selector, UncheckOptions options);
   /**
@@ -1217,6 +1292,8 @@ public interface Frame {
     return waitForFunction(pageFunction, null);
   }
   /**
+   * Returns when the {@code pageFunction} returns a truthy value. It resolves to a JSHandle of the truthy value.
+   * <p>
    * The {@code waitForFunction} can be used to observe viewport size change:
    * <p>
    * To pass an argument from Node.js to the predicate of {@code frame.waitForFunction} function:
@@ -1224,8 +1301,6 @@ public interface Frame {
    * 
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
-   * @param options Optional waiting parameters
-   * @return Promise which resolves when the {@code pageFunction} returns a truthy value. It resolves to a JSHandle of the truthy value.
    */
   Deferred<JSHandle> waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options);
   default Deferred<Void> waitForLoadState(LoadState state) {
@@ -1235,46 +1310,64 @@ public interface Frame {
     return waitForLoadState(null);
   }
   /**
-   * This resolves when the frame reaches a required load state, {@code load} by default. The navigation must have been committed when this method is called. If current document has already reached the required state, resolves immediately.
+   * Returns when the required load state has been reached.
+   * <p>
+   * This resolves when the frame reaches a required load state, {@code load} by default. The navigation must have been committed
+   * <p>
+   * when this method is called. If current document has already reached the required state, resolves immediately.
    * <p>
    * 
-   * @param state Load state to wait for, defaults to {@code load}. If the state has been already reached while loading current document, the method resolves immediately.
+   * @param state Load state to wait for, defaults to {@code load}. If the state has been already reached while loading current document, the method resolves immediately. Optional.
    *  - {@code 'load'} - wait for the {@code load} event to be fired.
    *  - {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.
    *  - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
-   * @return Promise which resolves when the required load state has been reached.
    */
   Deferred<Void> waitForLoadState(LoadState state, WaitForLoadStateOptions options);
   default Deferred<Response> waitForNavigation() {
     return waitForNavigation(null);
   }
   /**
-   * This resolves when the frame navigates to a new URL. It is useful for when you run code
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
    * <p>
-   * which will indirectly cause the frame to navigate. Consider this example:
+   * last redirect. In case of navigation to a different anchor or navigation due to History API usage, the navigation will
    * <p>
-   * <strong>NOTE</strong> Usage of the History API to change the URL is considered a navigation.
-   * @param options Navigation parameters which might have the following properties:
-   * @return Promise which resolves to the main resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect. In case of navigation to a different anchor or navigation due to History API usage, the navigation will resolve with {@code null}.
+   * resolve with {@code null}.
+   * <p>
+   * This resolves when the frame navigates to a new URL. It is useful for when you run code which will indirectly cause the
+   * <p>
+   * frame to navigate. Consider this example:
+   * <p>
+   * <strong>NOTE</strong> Usage of the History API to change the URL is
+   * <p>
+   * considered a navigation.
    */
   Deferred<Response> waitForNavigation(WaitForNavigationOptions options);
   default Deferred<ElementHandle> waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }
   /**
-   * Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
+   * Returns when element specified by selector satisfies {@code state} option. Resolves to {@code null} if waiting for {@code hidden} or
+   * <p>
+   * {@code detached}.
+   * <p>
+   * Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at
+   * <p>
+   * the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the
+   * <p>
+   * selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
    * <p>
    * This method works across navigations:
    * <p>
    * 
    * @param selector A selector to query for. See working with selectors for more details.
-   * @return Promise which resolves when element specified by selector satisfies {@code state} option. Resolves to {@code null} if waiting for {@code hidden} or {@code detached}.
    */
   Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options);
   /**
    * Returns a promise that resolves after the timeout.
    * <p>
-   * Note that {@code frame.waitForTimeout()} should only be used for debugging. Tests using the timer in production are going to be flaky. Use signals such as network events, selectors becoming visible and others instead.
+   * Note that {@code frame.waitForTimeout()} should only be used for debugging. Tests using the timer in production are going to
+   * <p>
+   * be flaky. Use signals such as network events, selectors becoming visible and others instead.
    * @param timeout A timeout to wait for
    */
   Deferred<Void> waitForTimeout(int timeout);

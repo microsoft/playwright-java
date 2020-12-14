@@ -21,17 +21,23 @@ import java.util.*;
 /**
  * Whenever the page sends a request for a network resource the following sequence of events are emitted by Page:
  * <p>
- * {@code 'request'} emitted when the request is issued by the page.
+ * page.on('request') emitted when the request is issued by the page.
  * <p>
- * {@code 'response'} emitted when/if the response status and headers are received for the request.
+ * page.on('response') emitted when/if the response status and headers are received for the request.
  * <p>
- * {@code 'requestfinished'} emitted when the response body is downloaded and the request is complete.
+ * page.on('requestfinished') emitted when the response body is downloaded and the request is complete.
  * <p>
- * If request fails at some point, then instead of {@code 'requestfinished'} event (and possibly instead of 'response' event), the  {@code 'requestfailed'} event is emitted.
+ * If request fails at some point, then instead of {@code 'requestfinished'} event (and possibly instead of 'response' event),
  * <p>
- * <strong>NOTE</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will complete with {@code 'requestfinished'} event.
+ * the  page.on('requestfailed') event is emitted.
  * <p>
- * If request gets a 'redirect' response, the request is successfully finished with the 'requestfinished' event, and a new request is  issued to a redirected url.
+ * <strong>NOTE</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request
+ * <p>
+ * will complete with {@code 'requestfinished'} event.
+ * <p>
+ * If request gets a 'redirect' response, the request is successfully finished with the 'requestfinished' event, and a new
+ * <p>
+ * request is  issued to a redirected url.
  */
 public interface Request {
   class RequestFailure {
@@ -114,24 +120,18 @@ public interface Request {
     }
   }
   /**
-   * The method returns {@code null} unless this request has failed, as reported by
-   * <p>
-   * {@code requestfailed} event.
+   * The method returns {@code null} unless this request has failed, as reported by {@code requestfailed} event.
    * <p>
    * Example of logging of all the failed requests:
    * <p>
-   * 
-   * @return Object describing request failure, if any
    */
   RequestFailure failure();
   /**
-   * 
-   * @return A Frame that initiated this request.
+   * Returns the Frame that initiated this request.
    */
   Frame frame();
   /**
-   * 
-   * @return An object with HTTP headers associated with the request. All header names are lower-case.
+   * An object with HTTP headers associated with the request. All header names are lower-case.
    */
   Map<String, String> headers();
   /**
@@ -139,57 +139,62 @@ public interface Request {
    */
   boolean isNavigationRequest();
   /**
-   * 
-   * @return Request's method (GET, POST, etc.)
+   * Request's method (GET, POST, etc.)
    */
   String method();
   /**
-   * 
-   * @return Request's post body, if any.
+   * Request's post body, if any.
    */
   String postData();
   /**
-   * 
-   * @return Request's post body in a binary form, if any.
+   * Request's post body in a binary form, if any.
    */
   byte[] postDataBuffer();
   /**
-   * When the server responds with a redirect, Playwright creates a new Request object. The two requests are connected by {@code redirectedFrom()} and {@code redirectedTo()} methods. When multiple server redirects has happened, it is possible to construct the whole redirect chain by repeatedly calling {@code redirectedFrom()}.
+   * Request that was redirected by the server to this one, if any.
+   * <p>
+   * When the server responds with a redirect, Playwright creates a new Request object. The two requests are connected by
+   * <p>
+   * {@code redirectedFrom()} and {@code redirectedTo()} methods. When multiple server redirects has happened, it is possible to
+   * <p>
+   * construct the whole redirect chain by repeatedly calling {@code redirectedFrom()}.
    * <p>
    * For example, if the website {@code http://example.com} redirects to {@code https://example.com}:
    * <p>
    * If the website {@code https://google.com} has no redirects:
    * <p>
-   * 
-   * @return Request that was redirected by the server to this one, if any.
    */
   Request redirectedFrom();
   /**
+   * New request issued by the browser if the server responded with redirect.
+   * <p>
    * This method is the opposite of request.redirectedFrom():
    * <p>
-   * 
-   * @return New request issued by the browser if the server responded with redirect.
    */
   Request redirectedTo();
   /**
-   * Contains the request's resource type as it was perceived by the rendering engine.
+   * Contains the request's resource type as it was perceived by the rendering engine. ResourceType will be one of the
    * <p>
-   * ResourceType will be one of the following: {@code document}, {@code stylesheet}, {@code image}, {@code media}, {@code font}, {@code script}, {@code texttrack}, {@code xhr}, {@code fetch}, {@code eventsource}, {@code websocket}, {@code manifest}, {@code other}.
+   * following: {@code document}, {@code stylesheet}, {@code image}, {@code media}, {@code font}, {@code script}, {@code texttrack}, {@code xhr}, {@code fetch}, {@code eventsource},
+   * <p>
+   * {@code websocket}, {@code manifest}, {@code other}.
    */
   String resourceType();
   /**
-   * 
-   * @return A matching Response object, or {@code null} if the response was not received due to error.
+   * Returns the matching Response object, or {@code null} if the response was not received due to error.
    */
   Response response();
   /**
-   * Returns resource timing information for given request. Most of the timing values become available upon the response, {@code responseEnd} becomes available when request finishes. Find more information at Resource Timing API.
+   * Returns resource timing information for given request. Most of the timing values become available upon the response,
+   * <p>
+   * {@code responseEnd} becomes available when request finishes. Find more information at Resource Timing
+   * <p>
+   * API.
    * <p>
    */
   RequestTiming timing();
   /**
-   * 
-   * @return URL of the request.
+   * URL of the request.
    */
   String url();
 }

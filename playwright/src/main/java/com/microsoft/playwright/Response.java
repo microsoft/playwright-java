@@ -23,23 +23,19 @@ import java.util.*;
  */
 public interface Response {
   /**
-   * 
-   * @return Promise which resolves to a buffer with response body.
+   * Returns the buffer with response body.
    */
   byte[] body();
   /**
-   * 
-   * @return Waits for this response to finish, returns failure error if request failed.
+   * Waits for this response to finish, returns failure error if request failed.
    */
   String finished();
   /**
-   * 
-   * @return A Frame that initiated this response.
+   * Returns the Frame that initiated this response.
    */
   Frame frame();
   /**
-   * 
-   * @return An object with HTTP headers associated with the response. All header names are lower-case.
+   * Returns the object with HTTP headers associated with the response. All header names are lower-case.
    */
   Map<String, String> headers();
   /**
@@ -47,8 +43,7 @@ public interface Response {
    */
   boolean ok();
   /**
-   * 
-   * @return A matching Request object.
+   * Returns the matching Request object.
    */
   Request request();
   /**
@@ -60,8 +55,7 @@ public interface Response {
    */
   String statusText();
   /**
-   * 
-   * @return Promise which resolves to a text representation of response body.
+   * Returns the text representation of response body.
    */
   String text();
   /**
