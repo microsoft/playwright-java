@@ -11,7 +11,7 @@
   </parent>
 
   <artifactId>api-generator</artifactId>
-  <name>Playwright Java - API Generator</name>
+  <name>Playwright - API Generator</name>
   <description>Java library to automate Chromium, Firefox and WebKit with a single API.
     Playwright is built to enable cross-browser web automation that is ever-green, capable,
     reliable and fast.
