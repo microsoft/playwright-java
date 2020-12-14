@@ -11,7 +11,9 @@
 
 # Maven output dir
 target/
-
+.project
+.classpath
+.settings
 .DS_Store
 *.swp
 .vscode

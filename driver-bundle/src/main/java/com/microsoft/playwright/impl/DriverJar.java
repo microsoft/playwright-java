@@ -53,7 +53,7 @@ public class DriverJar extends Driver {
   private static String platformDir() {
     String name = System.getProperty("os.name").toLowerCase();
     if (name.contains("windows")) {
-      return "win32_x64";
+      return System.getProperty("os.arch").equals("amd64") ? "win32_x64" : "win32";
     }
     if (name.contains("linux")) {
       return "linux";
@@ -69,7 +69,8 @@ public class DriverJar extends Driver {
     Files.copy(from, path);
     path.toFile().setExecutable(true);
     path.toFile().deleteOnExit();
-//    System.out.println("extracting: " + from.toString() + " to " + path.toString());
+    // System.out.println("extracting: " + from.toString() + " to " +
+    // path.toString());
     return path;
   }
 
