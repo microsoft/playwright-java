@@ -20,11 +20,13 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * ElementHandle represents an in-page DOM element. ElementHandles can be created with the page.$ method.
+ * ElementHandle represents an in-page DOM element. ElementHandles can be created with the page.$(selector) method.
  * <p>
- * ElementHandle prevents DOM element from garbage collection unless the handle is disposed. ElementHandles are auto-disposed when their origin frame gets navigated.
+ * ElementHandle prevents DOM element from garbage collection unless the handle is disposed with jsHandle.dispose().
  * <p>
- * ElementHandle instances can be used as an argument in {@code page.$eval()} and {@code page.evaluate()} methods.
+ * ElementHandles are auto-disposed when their origin frame gets navigated.
+ * <p>
+ * ElementHandle instances can be used as an argument in page.$eval(selector, pageFunction[, arg]) and page.evaluate(pageFunction[, arg]) methods.
  */
 public interface ElementHandle extends JSHandle {
   class BoundingBox {
@@ -553,12 +555,20 @@ public interface ElementHandle extends JSHandle {
     }
   }
   /**
-   * The method finds an element matching the specified selector in the {@code ElementHandle}'s subtree. See Working with selectors for more details. If no elements match the selector, the return value resolves to {@code null}.
+   * The method finds an element matching the specified selector in the {@code ElementHandle}'s subtree. See Working with
+   * <p>
+   * selectors for more details. If no elements match the selector, the return value resolves to
+   * <p>
+   * {@code null}.
    * @param selector A selector to query for. See working with selectors for more details.
    */
   ElementHandle querySelector(String selector);
   /**
-   * The method finds all elements matching the specified selector in the {@code ElementHandle}s subtree. See Working with selectors for more details. If no elements match the selector, the return value resolves to {@code []}.
+   * The method finds all elements matching the specified selector in the {@code ElementHandle}s subtree. See Working with
+   * <p>
+   * selectors for more details. If no elements match the selector, the return value resolves to
+   * <p>
+   * {@code []}.
    * @param selector A selector to query for. See working with selectors for more details.
    */
   List<ElementHandle> querySelectorAll(String selector);
@@ -566,7 +576,13 @@ public interface ElementHandle extends JSHandle {
     return evalOnSelector(selector, pageFunction, null);
   }
   /**
-   * The method finds an element matching the specified selector in the {@code ElementHandle}s subtree and passes it as a first argument to {@code pageFunction}. See Working with selectors for more details. If no elements match the selector, the method throws an error.
+   * Returns the return value of {@code pageFunction}
+   * <p>
+   * The method finds an element matching the specified selector in the {@code ElementHandle}s subtree and passes it as a first
+   * <p>
+   * argument to {@code pageFunction}. See Working with selectors for more details. If no elements match
+   * <p>
+   * the selector, the method throws an error.
    * <p>
    * If {@code pageFunction} returns a Promise, then {@code frame.$eval} would wait for the promise to resolve and return its value.
    * <p>
@@ -576,14 +592,19 @@ public interface ElementHandle extends JSHandle {
    * @param selector A selector to query for. See working with selectors for more details.
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
-   * @return Promise which resolves to the return value of {@code pageFunction}
    */
   Object evalOnSelector(String selector, String pageFunction, Object arg);
   default Object evalOnSelectorAll(String selector, String pageFunction) {
     return evalOnSelectorAll(selector, pageFunction, null);
   }
   /**
-   * The method finds all elements matching the specified selector in the {@code ElementHandle}'s subtree and passes an array of matched elements as a first argument to {@code pageFunction}. See Working with selectors for more details.
+   * Returns the return value of {@code pageFunction}
+   * <p>
+   * The method finds all elements matching the specified selector in the {@code ElementHandle}'s subtree and passes an array of
+   * <p>
+   * matched elements as a first argument to {@code pageFunction}. See Working with selectors for more
+   * <p>
+   * details.
    * <p>
    * If {@code pageFunction} returns a Promise, then {@code frame.$$eval} would wait for the promise to resolve and return its value.
    * <p>
@@ -593,17 +614,26 @@ public interface ElementHandle extends JSHandle {
    * @param selector A selector to query for. See working with selectors for more details.
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
-   * @return Promise which resolves to the return value of {@code pageFunction}
    */
   Object evalOnSelectorAll(String selector, String pageFunction, Object arg);
   /**
-   * This method returns the bounding box of the element, or {@code null} if the element is not visible. The bounding box is calculated relative to the main frame viewport - which is usually the same as the browser window.
+   * This method returns the bounding box of the element, or {@code null} if the element is not visible. The bounding box is
    * <p>
-   * Scrolling affects the returned bonding box, similarly to Element.getBoundingClientRect. That means {@code x} and/or {@code y} may be negative.
+   * calculated relative to the main frame viewport - which is usually the same as the browser window.
    * <p>
-   * Elements from child frames return the bounding box relative to the main frame, unlike the Element.getBoundingClientRect.
+   * Scrolling affects the returned bonding box, similarly to
    * <p>
-   * Assuming the page is static, it is safe to use bounding box coordinates to perform input. For example, the following snippet should click the center of the element.
+   * Element.getBoundingClientRect. That
+   * <p>
+   * means {@code x} and/or {@code y} may be negative.
+   * <p>
+   * Elements from child frames return the bounding box relative to the main frame, unlike the
+   * <p>
+   * Element.getBoundingClientRect.
+   * <p>
+   * Assuming the page is static, it is safe to use bounding box coordinates to perform input. For example, the following
+   * <p>
+   * snippet should click the center of the element.
    * <p>
    */
   BoundingBox boundingBox();
@@ -627,8 +657,9 @@ public interface ElementHandle extends JSHandle {
    * <p>
    * If the element is detached from the DOM at any moment during the action, this method rejects.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
-   * @return Promise that resolves when the element is successfully checked.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
+   * <p>
+   * Passing zero timeout disables this.
    */
   void check(CheckOptions options);
   default void click() {
@@ -647,13 +678,13 @@ public interface ElementHandle extends JSHandle {
    * <p>
    * If the element is detached from the DOM at any moment during the action, this method rejects.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
-   * @return Promise that resolves when the element is successfully clicked.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
+   * <p>
+   * Passing zero timeout disables this.
    */
   void click(ClickOptions options);
   /**
-   * 
-   * @return Resolves to the content frame for element handles referencing iframe nodes, or {@code null} otherwise
+   * Returns the content frame for element handles referencing iframe nodes, or {@code null} otherwise
    */
   Frame contentFrame();
   default void dblclick() {
@@ -672,19 +703,26 @@ public interface ElementHandle extends JSHandle {
    * <p>
    * If the element is detached from the DOM at any moment during the action, this method rejects.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
+   * <p>
+   * Passing zero timeout disables this.
    * <p>
    * <strong>NOTE</strong> {@code elementHandle.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
-   * @return Promise that resolves when the element is successfully double clicked.
    */
   void dblclick(DblclickOptions options);
   default void dispatchEvent(String type) {
     dispatchEvent(type, null);
   }
   /**
-   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click} is dispatched. This is equivalend to calling {@code element.click()}.
+   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
    * <p>
-   * Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
+   * is dispatched. This is equivalend to calling
+   * <p>
+   * element.click().
+   * <p>
+   * Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
+   * <p>
+   * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
    * <p>
    * Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
    * <p>
@@ -706,18 +744,18 @@ public interface ElementHandle extends JSHandle {
    * <p>
    * 
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
-   * @param eventInit event-specific initialization properties.
+   * @param eventInit Optional event-specific initialization properties.
    */
   void dispatchEvent(String type, Object eventInit);
   default void fill(String value) {
     fill(value, null);
   }
   /**
-   * This method waits for actionability checks, focuses the element, fills it and triggers an {@code input} event after filling.
+   * This method waits for actionability checks, focuses the element, fills it and triggers an {@code input}
    * <p>
-   * If the element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
+   * event after filling. If the element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws
    * <p>
-   * Note that you can pass an empty string to clear the input field.
+   * an error. Note that you can pass an empty string to clear the input field.
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
   void fill(String value, FillOptions options);
@@ -746,42 +784,50 @@ public interface ElementHandle extends JSHandle {
    * <p>
    * If the element is detached from the DOM at any moment during the action, this method rejects.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
-   * @return Promise that resolves when the element is successfully hovered.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
+   * <p>
+   * Passing zero timeout disables this.
    */
   void hover(HoverOptions options);
   /**
-   * 
-   * @return Resolves to the {@code element.innerHTML}.
+   * Returns the {@code element.innerHTML}.
    */
   String innerHTML();
   /**
-   * 
-   * @return Resolves to the {@code element.innerText}.
+   * Returns the {@code element.innerText}.
    */
   String innerText();
   /**
-   * 
-   * @return Returns the frame containing the given element.
+   * Returns the frame containing the given element.
    */
   Frame ownerFrame();
   default void press(String key) {
     press(key, null);
   }
   /**
-   * Focuses the element, and then uses {@code keyboard.down} and {@code keyboard.up}.
+   * Focuses the element, and then uses keyboard.down(key) and keyboard.up(key).
    * <p>
-   * {@code key} can specify the intended keyboardEvent.key value or a single character to generate the text for. A superset of the {@code key} values can be found here. Examples of the keys are:
+   * {@code key} can specify the intended keyboardEvent.key
    * <p>
-   * {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
+   * value or a single character to generate the text for. A superset of the {@code key} values can be found
+   * <p>
+   * here. Examples of the keys are:
+   * <p>
+   * {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
+   * <p>
+   * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
    * <p>
    * Following modification shortcuts are also suported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
    * <p>
    * Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
    * <p>
-   * If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective texts.
+   * If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
    * <p>
-   * Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   * texts.
+   * <p>
+   * Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
+   * <p>
+   * modifier, modifier is pressed and being held while the subsequent key is being pressed.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
   void press(String key, PressOptions options);
@@ -789,18 +835,26 @@ public interface ElementHandle extends JSHandle {
     return screenshot(null);
   }
   /**
-   * This method waits for the actionability checks, then scrolls element into view before taking a screenshot. If the element is detached from DOM, the method throws an error.
-   * @param options Screenshot options.
-   * @return Promise which resolves to buffer with the captured screenshot.
+   * Returns the buffer with the captured screenshot.
+   * <p>
+   * This method waits for the actionability checks, then scrolls element into view before taking a
+   * <p>
+   * screenshot. If the element is detached from DOM, the method throws an error.
    */
   byte[] screenshot(ScreenshotOptions options);
   default void scrollIntoViewIfNeeded() {
     scrollIntoViewIfNeeded(null);
   }
   /**
-   * This method waits for actionability checks, then tries to scroll element into view, unless it is completely visible as defined by IntersectionObserver's {@code ratio}.
+   * This method waits for actionability checks, then tries to scroll element into view, unless it is
    * <p>
-   * Throws when {@code elementHandle} does not point to an element connected to a Document or a ShadowRoot.
+   * completely visible as defined by
+   * <p>
+   * IntersectionObserver's {@code ratio}.
+   * <p>
+   * Throws when {@code elementHandle} does not point to an element
+   * <p>
+   * connected to a Document or a ShadowRoot.
    */
   void scrollIntoViewIfNeeded(ScrollIntoViewIfNeededOptions options);
   default List<String> selectOption(String value) {
@@ -842,20 +896,23 @@ public interface ElementHandle extends JSHandle {
     return selectOption(values, null);
   }
   /**
-   * Triggers a {@code change} and {@code input} event once all the provided options have been selected.
+   * Returns the array of option values that have been successfully selected.
    * <p>
-   * If element is not a {@code <select>} element, the method throws an error.
+   * Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
+   * <p>
+   * element, the method throws an error.
    * <p>
    * 
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option is considered matching if all specified properties match.
-   * @return An array of option values that have been successfully selected.
    */
   List<String> selectOption(ElementHandle[] values, SelectOptionOptions options);
   default void selectText() {
     selectText(null);
   }
   /**
-   * This method waits for actionability checks, then focuses the element and selects all its text content.
+   * This method waits for actionability checks, then focuses the element and selects all its text
+   * <p>
+   * content.
    */
   void selectText(SelectTextOptions options);
   default void setInputFiles(Path file) { setInputFiles(file, null); }
@@ -866,9 +923,15 @@ public interface ElementHandle extends JSHandle {
   default void setInputFiles(FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(new FileChooser.FilePayload[]{ file }, options); }
   default void setInputFiles(FileChooser.FilePayload[] files) { setInputFiles(files, null); }
   /**
-   * This method expects {@code elementHandle} to point to an input element.
+   * This method expects {@code elementHandle} to point to an input
    * <p>
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * element.
+   * <p>
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * <p>
+   * are resolved relative to the current working directory. For
+   * <p>
+   * empty array, clears the selected files.
    */
   void setInputFiles(FileChooser.FilePayload[] files, SetInputFilesOptions options);
   default void tap() {
@@ -887,15 +950,15 @@ public interface ElementHandle extends JSHandle {
    * <p>
    * If the element is detached from the DOM at any moment during the action, this method rejects.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
+   * <p>
+   * Passing zero timeout disables this.
    * <p>
    * <strong>NOTE</strong> {@code elementHandle.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
-   * @return Promise that resolves when the element is successfully tapped.
    */
   void tap(TapOptions options);
   /**
-   * 
-   * @return Resolves to the {@code node.textContent}.
+   * Returns the {@code node.textContent}.
    */
   String textContent();
   String toString();
@@ -905,7 +968,7 @@ public interface ElementHandle extends JSHandle {
   /**
    * Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
    * <p>
-   * To press a special key, like {@code Control} or {@code ArrowDown}, use {@code elementHandle.press}.
+   * To press a special key, like {@code Control} or {@code ArrowDown}, use elementHandle.press(key[, options]).
    * <p>
    * 
    * @param text A text to type into a focused element.
@@ -931,15 +994,20 @@ public interface ElementHandle extends JSHandle {
    * <p>
    * If the element is detached from the DOM at any moment during the action, this method rejects.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
-   * @return Promise that resolves when the element is successfully unchecked.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
+   * <p>
+   * Passing zero timeout disables this.
    */
   void uncheck(UncheckOptions options);
   default Deferred<Void> waitForElementState(ElementState state) {
     return waitForElementState(state, null);
   }
   /**
-   * Depending on the {@code state} parameter, this method waits for one of the actionability checks to pass. This method throws when the element is detached while waiting, unless waiting for the {@code "hidden"} state.
+   * Returns the element satisfies the {@code state}.
+   * <p>
+   * Depending on the {@code state} parameter, this method waits for one of the actionability checks to pass.
+   * <p>
+   * This method throws when the element is detached while waiting, unless waiting for the {@code "hidden"} state.
    * <p>
    * {@code "visible"} Wait until the element is visible.
    * <p>
@@ -953,20 +1021,28 @@ public interface ElementHandle extends JSHandle {
    * <p>
    * If the element does not satisfy the condition for the {@code timeout} milliseconds, this method will throw.
    * @param state A state to wait for, see below for more details.
-   * @return Promise that resolves when the element satisfies the {@code state}.
    */
   Deferred<Void> waitForElementState(ElementState state, WaitForElementStateOptions options);
   default Deferred<ElementHandle> waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }
   /**
-   * Wait for the {@code selector} relative to the element handle to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
+   * Returns element specified by selector satisfies {@code state} option. Resolves to {@code null} if waiting for {@code hidden} or
+   * <p>
+   * {@code detached}.
+   * <p>
+   * Wait for the {@code selector} relative to the element handle to satisfy {@code state} option (either appear/disappear from dom, or
+   * <p>
+   * become visible/hidden). If at the moment of calling the method {@code selector} already satisfies the condition, the method
+   * <p>
+   * will return immediately. If the selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will
+   * <p>
+   * throw.
    * <p>
    * 
    * <p>
    * <strong>NOTE</strong> This method does not work across navigations, use page.waitForSelector(selector[, options]) instead.
    * @param selector A selector to query for. See working with selectors for more details.
-   * @return Promise that resolves when element specified by selector satisfies {@code state} option. Resolves to {@code null} if waiting for {@code hidden} or {@code detached}.
    */
   Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options);
 }

@@ -20,8 +20,13 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * A Browser is created when Playwright connects to a browser instance, either through {@code browserType.launch} or {@code browserType.connect}.
+ * A Browser is created when Playwright connects to a browser instance, either through browserType.launch([options]) or
  * <p>
+ * browserType.connect(params).
+ * <p>
+ * browserType.connect(params) and browserType.launch([options]) always return a specific browser instance, based on the browser
+ * <p>
+ * being connected to or launched.
  */
 public interface Browser {
   class VideoSize {
@@ -186,7 +191,7 @@ public interface Browser {
      */
     public String locale;
     /**
-     * A list of permissions to grant to all pages in this context. See browserContext.grantPermissions for more details.
+     * A list of permissions to grant to all pages in this context. See browserContext.grantPermissions(permissions[, options]) for more details.
      */
     public List<String> permissions;
     /**
@@ -202,7 +207,7 @@ public interface Browser {
      */
     public BrowserContext.HTTPCredentials httpCredentials;
     /**
-     * Emulates {@code 'prefers-colors-scheme'} media feature, supported values are {@code 'light'}, {@code 'dark'}, {@code 'no-preference'}. See page.emulateMedia(options) for more details. Defaults to '{@code light}'.
+     * Emulates {@code 'prefers-colors-scheme'} media feature, supported values are {@code 'light'}, {@code 'dark'}, {@code 'no-preference'}. See page.emulateMedia(params) for more details. Defaults to '{@code light}'.
      */
     public ColorScheme colorScheme;
     /**
@@ -210,11 +215,11 @@ public interface Browser {
      */
     public Logger logger;
     /**
-     * Enables HAR recording for all pages into {@code recordHar.path} file. If not specified, the HAR is not recorded. Make sure to await {@code browserContext.close} for the HAR to be saved.
+     * Enables HAR recording for all pages into {@code recordHar.path} file. If not specified, the HAR is not recorded. Make sure to await browserContext.close() for the HAR to be saved.
      */
     public RecordHar recordHar;
     /**
-     * Enables video recording for all pages into {@code recordVideo.dir} directory. If not specified videos are not recorded. Make sure to await {@code browserContext.close} for videos to be saved.
+     * Enables video recording for all pages into {@code recordVideo.dir} directory. If not specified videos are not recorded. Make sure to await browserContext.close() for videos to be saved.
      */
     public RecordVideo recordVideo;
     /**
@@ -453,7 +458,7 @@ public interface Browser {
      */
     public String locale;
     /**
-     * A list of permissions to grant to all pages in this context. See browserContext.grantPermissions for more details.
+     * A list of permissions to grant to all pages in this context. See browserContext.grantPermissions(permissions[, options]) for more details.
      */
     public List<String> permissions;
     /**
@@ -469,7 +474,7 @@ public interface Browser {
      */
     public BrowserContext.HTTPCredentials httpCredentials;
     /**
-     * Emulates {@code 'prefers-colors-scheme'} media feature, supported values are {@code 'light'}, {@code 'dark'}, {@code 'no-preference'}. See page.emulateMedia(options) for more details. Defaults to '{@code light}'.
+     * Emulates {@code 'prefers-colors-scheme'} media feature, supported values are {@code 'light'}, {@code 'dark'}, {@code 'no-preference'}. See page.emulateMedia(params) for more details. Defaults to '{@code light}'.
      */
     public ColorScheme colorScheme;
     /**
@@ -477,11 +482,11 @@ public interface Browser {
      */
     public Logger logger;
     /**
-     * Enables HAR recording for all pages into {@code recordHar.path} file. If not specified, the HAR is not recorded. Make sure to await {@code browserContext.close} for the HAR to be saved.
+     * Enables HAR recording for all pages into {@code recordHar.path} file. If not specified, the HAR is not recorded. Make sure to await browserContext.close() for the HAR to be saved.
      */
     public RecordHar recordHar;
     /**
-     * Enables video recording for all pages into {@code recordVideo.dir} directory. If not specified videos are not recorded. Make sure to await {@code browserContext.close} for videos to be saved.
+     * Enables video recording for all pages into {@code recordVideo.dir} directory. If not specified videos are not recorded. Make sure to await browserContext.close() for videos to be saved.
      */
     public RecordVideo recordVideo;
     /**
@@ -583,17 +588,19 @@ public interface Browser {
     }
   }
   /**
-   * In case this browser is obtained using browserType.launch, closes the browser and all of its pages (if any were opened).
+   * In case this browser is obtained using browserType.launch([options]), closes the browser and all of its pages (if any were
    * <p>
-   * In case this browser is obtained using browserType.connect, clears all created contexts belonging to this browser and disconnects from the browser server.
+   * opened).
+   * <p>
+   * In case this browser is obtained using browserType.connect(params), clears all created contexts belonging to this browser
+   * <p>
+   * and disconnects from the browser server.
    * <p>
    * The Browser object itself is considered to be disposed and cannot be used anymore.
    */
   void close();
   /**
-   * Returns an array of all open browser contexts. In a newly created browser, this will return zero
-   * <p>
-   * browser contexts.
+   * Returns an array of all open browser contexts. In a newly created browser, this will return zero browser contexts.
    * <p>
    */
   List<BrowserContext> contexts();
@@ -615,7 +622,11 @@ public interface Browser {
   /**
    * Creates a new page in a new browser context. Closing this page will close the context as well.
    * <p>
-   * This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and testing frameworks should explicitly create browser.newContext followed by the browserContext.newPage to control their exact life times.
+   * This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and
+   * <p>
+   * testing frameworks should explicitly create browser.newContext([options]) followed by the browserContext.newPage() to
+   * <p>
+   * control their exact life times.
    */
   Page newPage(NewPageOptions options);
   /**

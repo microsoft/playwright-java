@@ -19,11 +19,17 @@ package com.microsoft.playwright;
 import java.util.*;
 
 /**
- * JSHandle represents an in-page JavaScript object. JSHandles can be created with the page.evaluateHandle method.
+ * JSHandle represents an in-page JavaScript object. JSHandles can be created with the page.evaluateHandle(pageFunction[, arg]) method.
  * <p>
- * JSHandle prevents the referenced JavaScript object being garbage collected unless the handle is disposed. JSHandles are auto-disposed when their origin frame gets navigated or the parent context gets destroyed.
+ * JSHandle prevents the referenced JavaScript object being garbage collected unless the handle is exposed with
  * <p>
- * JSHandle instances can be used as an argument in {@code page.$eval()}, {@code page.evaluate()} and {@code page.evaluateHandle()} methods.
+ * jsHandle.dispose(). JSHandles are auto-disposed when their origin frame gets navigated or the parent context gets
+ * <p>
+ * destroyed.
+ * <p>
+ * JSHandle instances can be used as an argument in page.$eval(selector, pageFunction[, arg]), page.evaluate(pageFunction[, arg]) and page.evaluateHandle(pageFunction[, arg])
+ * <p>
+ * methods.
  */
 public interface JSHandle {
   /**
@@ -32,39 +38,46 @@ public interface JSHandle {
   ElementHandle asElement();
   /**
    * The {@code jsHandle.dispose} method stops referencing the element handle.
-   * @return Promise which resolves when the object handle is successfully disposed.
    */
   void dispose();
   default Object evaluate(String pageFunction) {
     return evaluate(pageFunction, null);
   }
   /**
+   * Returns the return value of {@code pageFunction}
+   * <p>
    * This method passes this handle as the first argument to {@code pageFunction}.
    * <p>
-   * If {@code pageFunction} returns a Promise, then {@code handle.evaluate} would wait for the promise to resolve and return its value.
+   * If {@code pageFunction} returns a Promise, then {@code handle.evaluate} would wait for the promise to resolve and return its
+   * <p>
+   * value.
    * <p>
    * Examples:
    * <p>
    * 
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
-   * @return Promise which resolves to the return value of {@code pageFunction}
    */
   Object evaluate(String pageFunction, Object arg);
   default JSHandle evaluateHandle(String pageFunction) {
     return evaluateHandle(pageFunction, null);
   }
   /**
+   * Returns the return value of {@code pageFunction} as in-page object (JSHandle).
+   * <p>
    * This method passes this handle as the first argument to {@code pageFunction}.
    * <p>
-   * The only difference between {@code jsHandle.evaluate} and {@code jsHandle.evaluateHandle} is that {@code jsHandle.evaluateHandle} returns in-page object (JSHandle).
+   * The only difference between {@code jsHandle.evaluate} and {@code jsHandle.evaluateHandle} is that {@code jsHandle.evaluateHandle} returns
    * <p>
-   * If the function passed to the {@code jsHandle.evaluateHandle} returns a Promise, then {@code jsHandle.evaluateHandle} would wait for the promise to resolve and return its value.
+   * in-page object (JSHandle).
    * <p>
-   * See page.evaluateHandle() for more details.
+   * If the function passed to the {@code jsHandle.evaluateHandle} returns a Promise, then {@code jsHandle.evaluateHandle} would wait
+   * <p>
+   * for the promise to resolve and return its value.
+   * <p>
+   * See page.evaluateHandle(pageFunction[, arg]) for more details.
    * @param pageFunction Function to be evaluated
    * @param arg Optional argument to pass to {@code pageFunction}
-   * @return Promise which resolves to the return value of {@code pageFunction} as in-page object (JSHandle)
    */
   JSHandle evaluateHandle(String pageFunction, Object arg);
   /**
@@ -84,7 +97,9 @@ public interface JSHandle {
    * <p>
    * function, it **will not be called**.
    * <p>
-   * <strong>NOTE</strong> The method will return an empty JSON object if the referenced object is not stringifiable. It will throw an error if the object has circular references.
+   * <strong>NOTE</strong> The method will return an empty JSON object if the referenced object is not stringifiable. It will throw an
+   * <p>
+   * error if the object has circular references.
    */
   Object jsonValue();
 }

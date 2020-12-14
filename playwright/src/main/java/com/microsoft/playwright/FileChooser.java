@@ -20,7 +20,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * FileChooser objects are dispatched by the page in the 'filechooser' event.
+ * FileChooser objects are dispatched by the page in the page.on('filechooser') event.
  * <p>
  */
 public interface FileChooser {
@@ -75,7 +75,11 @@ public interface FileChooser {
   default void setFiles(FileChooser.FilePayload file, SetFilesOptions options)  { setFiles(new FileChooser.FilePayload[]{ file }, options); }
   default void setFiles(FileChooser.FilePayload[] files) { setFiles(files, null); }
   /**
-   * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
+   * <p>
+   * they are resolved relative to the current working directory.
+   * <p>
+   * For empty array, clears the selected files.
    */
   void setFiles(FileChooser.FilePayload[] files, SetFilesOptions options);
 }

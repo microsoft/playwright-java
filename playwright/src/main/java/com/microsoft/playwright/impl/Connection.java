@@ -185,6 +185,15 @@ public class Connection {
     JsonObject initializer = params.getAsJsonObject("initializer");
     ChannelOwner result = null;
     switch (type) {
+      case "Android":
+//        result = new Android(parent, type, guid, initializer);
+        break;
+      case "AndroidSocket":
+//        result = new AndroidSocket(parent, type, guid, initializer);
+        break;
+      case "AndroidDevice":
+//        result = new AndroidDevice(parent, type, guid, initializer);
+        break;
       case "BindingCall":
         result = new BindingCall(parent, type, guid, initializer);
         break;

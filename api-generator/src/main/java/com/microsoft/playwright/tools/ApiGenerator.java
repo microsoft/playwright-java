@@ -585,8 +585,8 @@ class Field extends Element {
       output.add(offset + "public byte[] bodyBytes;");
       return;
     }
-    if (asList("Page.emulateMedia.options.media",
-      "Page.emulateMedia.options.colorScheme").contains(jsonPath)) {
+    if (asList("Page.emulateMedia.params.media",
+      "Page.emulateMedia.params.colorScheme").contains(jsonPath)) {
       output.add(offset + access + "Optional<" + type.toJava() + "> " + name + ";");
       return;
     }
@@ -646,8 +646,8 @@ class Field extends Element {
       output.add(offset + "}");
       return;
     }
-    if (asList("Page.emulateMedia.options.media",
-               "Page.emulateMedia.options.colorScheme").contains(jsonPath)) {
+    if (asList("Page.emulateMedia.params.media",
+               "Page.emulateMedia.params.colorScheme").contains(jsonPath)) {
       output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + type.toJava() + " " + name + ") {");
       output.add(offset + "  this." + name + " = Optional.ofNullable(" + name + ");");
       output.add(offset + "  return this;");

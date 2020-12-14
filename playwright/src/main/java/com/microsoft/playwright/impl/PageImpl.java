@@ -259,13 +259,13 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public ElementHandle addScriptTag(AddScriptTagOptions options) {
-    return mainFrame.addScriptTag(convertViaJson(options, Frame.AddScriptTagOptions.class));
+  public ElementHandle addScriptTag(AddScriptTagScript options) {
+    return mainFrame.addScriptTag(convertViaJson(options, Frame.AddScriptTagScript.class));
   }
 
   @Override
-  public ElementHandle addStyleTag(AddStyleTagOptions options) {
-    return mainFrame.addStyleTag(convertViaJson(options, Frame.AddStyleTagOptions.class));
+  public ElementHandle addStyleTag(AddStyleTagStyle options) {
+    return mainFrame.addStyleTag(convertViaJson(options, Frame.AddStyleTagStyle.class));
   }
 
   @Override
@@ -304,9 +304,9 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void emulateMedia(EmulateMediaOptions options) {
+  public void emulateMedia(EmulateMediaParams options) {
     if (options == null) {
-      options = new EmulateMediaOptions();
+      options = new EmulateMediaParams();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("emulateMedia", params);

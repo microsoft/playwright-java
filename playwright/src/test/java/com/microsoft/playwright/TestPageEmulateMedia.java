@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 import static com.microsoft.playwright.ColorScheme.DARK;
 import static com.microsoft.playwright.ColorScheme.LIGHT;
-import static com.microsoft.playwright.Page.EmulateMediaOptions.Media.PRINT;
+import static com.microsoft.playwright.Page.EmulateMediaParams.Media.PRINT;
 import static com.microsoft.playwright.Page.EventType.POPUP;
 import static com.microsoft.playwright.Utils.attachFrame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,13 +32,13 @@ public class TestPageEmulateMedia extends TestBase {
   void shouldEmulateType() {
     assertEquals(true, page.evaluate("() => matchMedia('screen').matches"));
     assertEquals(false, page.evaluate("() => matchMedia('print').matches"));
-    page.emulateMedia(new Page.EmulateMediaOptions().withMedia(PRINT));
+    page.emulateMedia(new Page.EmulateMediaParams().withMedia(PRINT));
     assertEquals(false, page.evaluate("() => matchMedia('screen').matches"));
     assertEquals(true, page.evaluate("() => matchMedia('print').matches"));
-    page.emulateMedia(new Page.EmulateMediaOptions());
+    page.emulateMedia(new Page.EmulateMediaParams());
     assertEquals(false, page.evaluate("() => matchMedia('screen').matches"));
     assertEquals(true, page.evaluate("() => matchMedia('print').matches"));
-    page.emulateMedia(new Page.EmulateMediaOptions().withMedia(null));
+    page.emulateMedia(new Page.EmulateMediaParams().withMedia(null));
     assertEquals(true, page.evaluate("() => matchMedia('screen').matches"));
     assertEquals(false, page.evaluate("() => matchMedia('print').matches"));
   }
@@ -49,10 +49,10 @@ public class TestPageEmulateMedia extends TestBase {
 
   @Test
   void shouldEmulateSchemeWork() {
-    page.emulateMedia(new Page.EmulateMediaOptions().withColorScheme(LIGHT));
+    page.emulateMedia(new Page.EmulateMediaParams().withColorScheme(LIGHT));
     assertEquals(true, page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
     assertEquals(false, page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
-    page.emulateMedia(new Page.EmulateMediaOptions().withColorScheme(DARK));
+    page.emulateMedia(new Page.EmulateMediaParams().withColorScheme(DARK));
     assertEquals(true, page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
     assertEquals(false, page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
   }
@@ -62,11 +62,11 @@ public class TestPageEmulateMedia extends TestBase {
     assertEquals(true, page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
     assertEquals(false, page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
 
-    page.emulateMedia(new Page.EmulateMediaOptions().withColorScheme(DARK));
+    page.emulateMedia(new Page.EmulateMediaParams().withColorScheme(DARK));
     assertEquals(true, page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
     assertEquals(false, page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
 
-    page.emulateMedia(new Page.EmulateMediaOptions().withColorScheme(null));
+    page.emulateMedia(new Page.EmulateMediaParams().withColorScheme(null));
     assertEquals(false, page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
     assertEquals(true, page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
   }
@@ -137,13 +137,13 @@ public class TestPageEmulateMedia extends TestBase {
       return page.evalOnSelector("div", "div => window.getComputedStyle(div).backgroundColor");
     };
 
-    page.emulateMedia(new Page.EmulateMediaOptions().withColorScheme(LIGHT));
+    page.emulateMedia(new Page.EmulateMediaParams().withColorScheme(LIGHT));
     assertEquals("rgb(255, 255, 255)", backgroundColor.get());
 
-    page.emulateMedia(new Page.EmulateMediaOptions().withColorScheme(DARK));
+    page.emulateMedia(new Page.EmulateMediaParams().withColorScheme(DARK));
     assertEquals("rgb(0, 0, 0)", backgroundColor.get());
 
-    page.emulateMedia(new Page.EmulateMediaOptions().withColorScheme(LIGHT));
+    page.emulateMedia(new Page.EmulateMediaParams().withColorScheme(LIGHT));
     assertEquals("rgb(255, 255, 255)", backgroundColor.get());
   }
 }

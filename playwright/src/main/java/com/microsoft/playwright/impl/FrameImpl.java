@@ -120,9 +120,9 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public ElementHandle addScriptTag(AddScriptTagOptions options) {
+  public ElementHandle addScriptTag(AddScriptTagScript options) {
     if (options == null) {
-      options = new AddScriptTagOptions();
+      options = new AddScriptTagScript();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     if (options.path != null) {
@@ -142,9 +142,9 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public ElementHandle addStyleTag(AddStyleTagOptions options) {
+  public ElementHandle addStyleTag(AddStyleTagStyle options) {
     if (options == null) {
-      options = new AddStyleTagOptions();
+      options = new AddStyleTagStyle();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     if (options.path != null) {
