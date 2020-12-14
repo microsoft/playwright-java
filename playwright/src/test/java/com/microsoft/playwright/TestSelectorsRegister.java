@@ -47,12 +47,10 @@ public class TestSelectorsRegister extends TestBase {
     Page page = context.newPage();
     page.setContent("<div><span></span></div><div></div>");
 
-    assertEquals("DIV", ((ElementHandleImpl) page.querySelector("div")).createSelectorForTest("tag"));
     assertEquals("DIV", page.evalOnSelector("tag=DIV", "e => e.nodeName"));
     assertEquals("SPAN", page.evalOnSelector("tag=SPAN", "e => e.nodeName"));
     assertEquals(2, page.evalOnSelectorAll("tag=DIV", "es => es.length"));
 
-    assertEquals("DIV", ((ElementHandleImpl) page.querySelector("div")).createSelectorForTest("tag2"));
     assertEquals("DIV", page.evalOnSelector("tag2=DIV", "e => e.nodeName"));
     assertEquals("SPAN", page.evalOnSelector("tag2=SPAN", "e => e.nodeName"));
     assertEquals(2, page.evalOnSelectorAll("tag2=DIV", "es => es.length"));
@@ -81,7 +79,7 @@ public class TestSelectorsRegister extends TestBase {
       "    return window['__answer'];\n" +
       "  },\n" +
       "  queryAll(root, selector) {\n" +
-      "    return [document.body, document.documentElement, window['__answer']];\n" +
+      "    return window['__answer'] ? [window['__answer'], document.body, document.documentElement] : [];\n" +
       "  }\n" +
       "}";
     playwright.selectors().register("main", createDummySelector);

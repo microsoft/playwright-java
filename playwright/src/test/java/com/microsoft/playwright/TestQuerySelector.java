@@ -79,15 +79,6 @@ public class TestQuerySelector extends TestBase {
   }
 
   @Test
-  void shouldAutoDetectXpathSelectorStartingWith() {
-    page.setContent("<div><section>test</section><span></span></div>");
-    ElementHandle span = page.querySelector("'test' >> ../span");
-    assertEquals("SPAN", span.evaluate("e => e.nodeName"));
-    ElementHandle div = page.querySelector("'test' >> ..");
-    assertEquals("DIV", div.evaluate("e => e.nodeName"));
-  }
-
-  @Test
   void shouldAutoDetectTextSelector() {
     page.setContent("<section>test</section>");
     ElementHandle element = page.querySelector("'test'");
