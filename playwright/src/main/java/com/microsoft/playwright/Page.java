@@ -2128,26 +2128,18 @@ public interface Page {
    * Shortcut for main frame's frame.waitForNavigation([options]).
    */
   Deferred<Response> waitForNavigation(WaitForNavigationOptions options);
-  default Deferred<Request> waitForRequest(String urlOrPredicate) {
-    return waitForRequest(urlOrPredicate, null);
-  }
-  /**
-   * Returns promise that resolves to the matched request.
-   * <p>
-   * 
-   * @param urlOrPredicate Request URL string, regex or predicate receiving Request object.
-   */
-  Deferred<Request> waitForRequest(String urlOrPredicate, WaitForRequestOptions options);
-  default Deferred<Response> waitForResponse(String urlOrPredicate) {
-    return waitForResponse(urlOrPredicate, null);
-  }
-  /**
-   * Returns the matched response.
-   * <p>
-   * 
-   * @param urlOrPredicate Request URL string, regex or predicate receiving Response object.
-   */
-  Deferred<Response> waitForResponse(String urlOrPredicate, WaitForResponseOptions options);
+  default Deferred<Request> waitForRequest(String urlGlob) { return waitForRequest(urlGlob, null); }
+  default Deferred<Request> waitForRequest(Pattern urlPattern) { return waitForRequest(urlPattern, null); }
+  default Deferred<Request> waitForRequest(Predicate<String> urlPredicate) { return waitForRequest(urlPredicate, null); }
+  Deferred<Request> waitForRequest(String urlGlob, WaitForRequestOptions options);
+  Deferred<Request> waitForRequest(Pattern urlPattern, WaitForRequestOptions options);
+  Deferred<Request> waitForRequest(Predicate<String> urlPredicate, WaitForRequestOptions options);
+  default Deferred<Response> waitForResponse(String urlGlob) { return waitForResponse(urlGlob, null); }
+  default Deferred<Response> waitForResponse(Pattern urlPattern) { return waitForResponse(urlPattern, null); }
+  default Deferred<Response> waitForResponse(Predicate<String> urlPredicate) { return waitForResponse(urlPredicate, null); }
+  Deferred<Response> waitForResponse(String urlGlob, WaitForResponseOptions options);
+  Deferred<Response> waitForResponse(Pattern urlPattern, WaitForResponseOptions options);
+  Deferred<Response> waitForResponse(Predicate<String> urlPredicate, WaitForResponseOptions options);
   default Deferred<ElementHandle> waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }

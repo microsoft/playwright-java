@@ -850,34 +850,54 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Deferred<Request> waitForRequest(String urlOrPredicate, WaitForRequestOptions options) {
+  public Deferred<Request> waitForRequest(String urlGlob, WaitForRequestOptions options) {
+    return waitForRequest(new UrlMatcher(urlGlob), options);
+  }
+
+  @Override
+  public Deferred<Request> waitForRequest(Pattern urlPattern, WaitForRequestOptions options) {
+    return waitForRequest(new UrlMatcher(urlPattern), options);
+  }
+
+  @Override
+  public Deferred<Request> waitForRequest(Predicate<String> urlPredicate, WaitForRequestOptions options) {
+    return waitForRequest(new UrlMatcher(urlPredicate), options);
+  }
+
+  private Deferred<Request> waitForRequest(UrlMatcher matcher, WaitForRequestOptions options) {
     if (options == null) {
       options = new WaitForRequestOptions();
     }
     List<Waitable<Request>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, EventType.REQUEST,e -> {
-        if (urlOrPredicate == null) {
-          return true;
-        }
-        return urlOrPredicate.equals(((Request) e.data()).url());
-    }).apply(event -> (Request) event.data()));
+    waitables.add(new WaitableEvent<>(listeners, EventType.REQUEST, e -> matcher.test(((Request) e.data()).url()))
+      .apply(event -> (Request) event.data()));
     waitables.add(createWaitForCloseHelper());
     waitables.add(createWaitableTimeout(options.timeout));
     return toDeferred(new WaitableRace<>(waitables));
   }
 
   @Override
-  public Deferred<Response> waitForResponse(String urlOrPredicate, WaitForResponseOptions options) {
+  public Deferred<Response> waitForResponse(String urlGlob, WaitForResponseOptions options) {
+    return waitForResponse(new UrlMatcher(urlGlob), options);
+  }
+
+  @Override
+  public Deferred<Response> waitForResponse(Pattern urlPattern, WaitForResponseOptions options) {
+    return waitForResponse(new UrlMatcher(urlPattern), options);
+  }
+
+  @Override
+  public Deferred<Response> waitForResponse(Predicate<String> urlPredicate, WaitForResponseOptions options) {
+    return waitForResponse(new UrlMatcher(urlPredicate), options);
+  }
+
+  private Deferred<Response> waitForResponse(UrlMatcher matcher, WaitForResponseOptions options) {
     if (options == null) {
       options = new WaitForResponseOptions();
     }
     List<Waitable<Response>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, EventType.RESPONSE, e -> {
-      if (urlOrPredicate == null) {
-        return true;
-      }
-      return urlOrPredicate.equals(((Response) e.data()).url());
-    }).apply(event -> (Response) event.data()));
+    waitables.add(new WaitableEvent<>(listeners, EventType.RESPONSE, e -> matcher.test(((Response) e.data()).url()))
+      .apply(event -> (Response) event.data()));
     waitables.add(createWaitForCloseHelper());
     waitables.add(createWaitableTimeout(options.timeout));
     return toDeferred(new WaitableRace<>(waitables));

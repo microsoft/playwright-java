@@ -369,6 +369,23 @@ class Method extends Element {
     customSignature.put("BrowserContext.waitForEvent", waitForEvent);
     customSignature.put("WebSocket.waitForEvent", waitForEvent);
 
+    customSignature.put("Page.waitForRequest", new String[] {
+      "default Deferred<Request> waitForRequest(String urlGlob) { return waitForRequest(urlGlob, null); }",
+      "default Deferred<Request> waitForRequest(Pattern urlPattern) { return waitForRequest(urlPattern, null); }",
+      "default Deferred<Request> waitForRequest(Predicate<String> urlPredicate) { return waitForRequest(urlPredicate, null); }",
+      "Deferred<Request> waitForRequest(String urlGlob, WaitForRequestOptions options);",
+      "Deferred<Request> waitForRequest(Pattern urlPattern, WaitForRequestOptions options);",
+      "Deferred<Request> waitForRequest(Predicate<String> urlPredicate, WaitForRequestOptions options);"
+    });
+    customSignature.put("Page.waitForResponse", new String[] {
+      "default Deferred<Response> waitForResponse(String urlGlob) { return waitForResponse(urlGlob, null); }",
+      "default Deferred<Response> waitForResponse(Pattern urlPattern) { return waitForResponse(urlPattern, null); }",
+      "default Deferred<Response> waitForResponse(Predicate<String> urlPredicate) { return waitForResponse(urlPredicate, null); }",
+      "Deferred<Response> waitForResponse(String urlGlob, WaitForResponseOptions options);",
+      "Deferred<Response> waitForResponse(Pattern urlPattern, WaitForResponseOptions options);",
+      "Deferred<Response> waitForResponse(Predicate<String> urlPredicate, WaitForResponseOptions options);"
+    });
+
     String[] selectOption = {
       "default List<String> selectOption(String selector, String value) {",
       "  return selectOption(selector, value, null);",
@@ -428,8 +445,10 @@ class Method extends Element {
   private static Set<String> skipJavadoc = new HashSet<>(asList(
     "BrowserContext.waitForEvent.optionsOrPredicate",
     "Page.waitForEvent.optionsOrPredicate",
+    "WebSocket.waitForEvent.optionsOrPredicate",
     "Page.frame.options",
-    "WebSocket.waitForEvent.optionsOrPredicate"
+    "Page.waitForRequest",
+    "Page.waitForResponse"
     ));
 
   Method(TypeDefinition parent, JsonObject jsonElement) {
@@ -503,6 +522,9 @@ class Method extends Element {
   }
 
   private void writeJavadoc(List<String> output, String offset) {
+    if (skipJavadoc.contains(jsonPath)) {
+      return;
+    }
     List<String> sections = new ArrayList<>();
     sections.add(formattedComment());
     if (!params.isEmpty()) {
