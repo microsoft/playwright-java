@@ -2,36 +2,66 @@
 
 [![maven version](https://img.shields.io/maven-central/v/com.microsoft.playwright/playwright)](https://search.maven.org/search?q=com.microsoft.playwright)
 
-### _The project is in early developement phase, some of the APIs are not implemented yet, others may change._
-
+### _The project is in early development phase, the APIs match those in typescript version of Playwright but are subject to change._
 
 ## Usage
 
-Follow [the instructions](https://github.com/microsoft/playwright-java/blob/master/CONTRIBUTING.md#getting-code) to build the project from source and install driver.
+#### Add Maven dependency
 
+To run Playwright simply add 2 modules to your Maven project:
 
-Simple example:
+```xml
+<dependency>
+  <groupId>com.microsoft.playwright</groupId>
+  <artifactId>playwright</artifactId>
+  <version>0.162.2</version>
+</dependency>
+<dependency>
+  <groupId>com.microsoft.playwright</groupId>
+  <artifactId>driver-bundle</artifactId>
+  <version>0.162.2</version>
+</dependency>
+```
+
+## Examples
+
+#### Page screenshot
+
+This code snippet navigates to whatsmyuseragent.org in Chromium, Firefox and WebKit, and saves 3 screenshots.
 
 ```java
-package com.microsoft.playwright.example;
-
 import com.microsoft.playwright.*;
 
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 
-public class Main {
-  public static void main(String[] args) {
+public class PageScreenshot {
+  public static void main(String[] args) throws Exception {
     Playwright playwright = Playwright.create();
-    Browser browser = playwright.chromium().launch();
-    BrowserContext context = browser.newContext(
-      new Browser.NewContextOptions().withViewport(800, 600));
-    Page page = context.newPage();
-    page.navigate("https://webkit.org");
-    page.click("text=check feature status");
-    page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("s.png")));
-    browser.close();
+    List<BrowserType> browserTypes = Arrays.asList(
+        playwright.chromium(),
+        playwright.webkit(),
+        playwright.firefox()
+    );
+    for (BrowserType browserType : browserTypes) {
+      Browser browser = browserType.launch(
+          new BrowserType.LaunchOptions().withHeadless(false));
+      BrowserContext context = browser.newContext(
+          new Browser.NewContextOptions().withViewport(800, 600));
+      Page page = context.newPage();
+      page.navigate("http://whatsmyuseragent.org/");
+      page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("screenshot-" + browserType.name() + ".png")));
+      browser.close();
+    }
+    playwright.close();
   }
 }
 ```
 
-Original Playwright [documentation](https://playwright.dev/). We will convert it to Javadoc eventually.
+## Notes
+
+Follow [the instructions](https://github.com/microsoft/playwright-java/blob/master/CONTRIBUTING.md#getting-code) to build the project from source and install driver.
+
+Original Playwright [documentation](https://playwright.dev/). We are converting it to javadoc.
+
