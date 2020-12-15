@@ -390,7 +390,7 @@ class Method extends Element {
       "default List<String> selectOption(String selector, String value) {",
       "  return selectOption(selector, value, null);",
       "}",
-      "default List<String> selectOption(String selector, String value, SelectOptionOptions options) {",
+      "default List<String>   selectOption(String selector, String value, SelectOptionOptions options) {",
       "  String[] values = value == null ? null : new String[]{ value };",
       "  return selectOption(selector, values, options);",
       "}",
