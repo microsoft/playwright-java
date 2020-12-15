@@ -16,10 +16,12 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.DeviceDescriptor;
 import com.microsoft.playwright.PlaywrightException;
 
 class DeviceDescriptorImpl implements DeviceDescriptor {
+  PlaywrightImpl playwright;
   private static class ViewportImpl implements Viewport{
     private int width;
     private int height;
@@ -39,7 +41,6 @@ class DeviceDescriptorImpl implements DeviceDescriptor {
   private int deviceScaleFactor;
   private boolean isMobile;
   private boolean hasTouch;
-  // 'chromium' | 'firefox' | 'webkit'
   private String defaultBrowserType;
 
   @Override
@@ -70,9 +71,9 @@ class DeviceDescriptorImpl implements DeviceDescriptor {
   @Override
   public BrowserType defaultBrowserType() {
     switch (defaultBrowserType) {
-      case "chromium": return BrowserType.CHROMIUM;
-      case "firefox": return BrowserType.FIREFOX;
-      case "webkit": return BrowserType.WEBKIT;
+      case "chromium": return playwright.chromium();
+      case "firefox": return playwright.firefox();
+      case "webkit": return playwright.webkit();
       default: throw new PlaywrightException("Unknown type: " + defaultBrowserType);
     }
   }
