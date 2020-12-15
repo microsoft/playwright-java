@@ -11,10 +11,10 @@ git clone https://github.com/microsoft/playwright-java
 cd playwright-java
 ```
 
-2. Run the following script to download playwright-cli binary for your platform into `driver/src/main/resources/driver/` directory. It will also install Playwright and download browser binaries for Chromium, Firefox and WebKit.
+2. Run the following script to download playwright-cli binaries for all platforms into `driver-bundle/src/main/resources/driver/` directory. It will also install Playwright and download browser binaries for Chromium, Firefox and WebKit.
 
 ```bash
-scripts/install_local_driver.sh
+scripts/download_driver_for_all_platforms.sh
 ```
 
 Names of published driver archives can be found at https://github.com/microsoft/playwright-cli/actions
