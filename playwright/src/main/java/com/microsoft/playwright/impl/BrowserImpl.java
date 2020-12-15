@@ -20,6 +20,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -73,6 +76,14 @@ class BrowserImpl extends ChannelOwner implements Browser {
   public BrowserContextImpl newContext(NewContextOptions options) {
     if (options == null) {
       options = new NewContextOptions();
+    }
+    if (options.storageStatePath != null) {
+      try (FileReader reader = new FileReader(options.storageStatePath.toFile())) {
+        options.storageState = gson().fromJson(reader, BrowserContext.StorageState.class);
+        options.storageStatePath = null;
+      } catch (IOException e) {
+        throw new PlaywrightException("Failed to read storage state from file", e);
+      }
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     if (options.extraHTTPHeaders != null) {

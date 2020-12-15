@@ -1540,11 +1540,9 @@ public interface Page {
   Frame frameByUrl(String glob);
   Frame frameByUrl(Pattern pattern);
   /**
-   * Returns frame matching the criteria. Returns {@code null} if no frame matches.
+   * Returns frame matching the specified criteria. Either {@code name} or {@code url} must be specified.
    * <p>
    * 
-   * <p>
-   * Returns frame matching the specified criteria. Either {@code name} or {@code url} must be specified.
    * @param frameSelector Frame name or other frame lookup options.
    */
   Frame frameByUrl(Predicate<String> predicate);

@@ -21,6 +21,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -242,9 +246,20 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public StorageState storageState() {
+  public StorageState storageState(StorageStateOptions options) {
     JsonElement json = sendMessage("storageState");
-    return gson().fromJson(json, StorageState.class);
+    StorageState storageState = gson().fromJson(json, StorageState.class);
+    if (options != null && options.path != null) {
+      try {
+        Files.createDirectories(options.path.getParent());
+        try (FileWriter writer = new FileWriter(options.path.toFile())) {
+          writer.write(json.toString());
+        }
+      } catch (IOException e) {
+        throw new PlaywrightException("Failed to write storage state to file", e);
+      }
+    }
+    return storageState;
   }
 
   @Override

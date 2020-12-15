@@ -227,9 +227,10 @@ public interface Browser {
      */
     public Proxy proxy;
     /**
-     * Populates context with given storage state. This method can be used to initialize context with logged-in information obtained via browserContext.storageState().
+     * Populates context with given storage state. This method can be used to initialize context with logged-in information obtained via browserContext.storageState([options]). Either a path to the file with saved storage, or an object with the following fields:
      */
     public BrowserContext.StorageState storageState;
+    public Path storageStatePath;
 
     public NewContextOptions withAcceptDownloads(Boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
@@ -317,6 +318,12 @@ public interface Browser {
     }
     public NewContextOptions withStorageState(BrowserContext.StorageState storageState) {
       this.storageState = storageState;
+      this.storageStatePath = null;
+      return this;
+    }
+    public NewContextOptions withStorageState(Path storageStatePath) {
+      this.storageState = null;
+      this.storageStatePath = storageStatePath;
       return this;
     }
   }
@@ -494,9 +501,10 @@ public interface Browser {
      */
     public Proxy proxy;
     /**
-     * Populates context with given storage state. This method can be used to initialize context with logged-in information obtained via browserContext.storageState().
+     * Populates context with given storage state. This method can be used to initialize context with logged-in information obtained via browserContext.storageState([options]). Either a path to the file with saved storage, or an object with the following fields:
      */
     public BrowserContext.StorageState storageState;
+    public Path storageStatePath;
 
     public NewPageOptions withAcceptDownloads(Boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
@@ -584,6 +592,12 @@ public interface Browser {
     }
     public NewPageOptions withStorageState(BrowserContext.StorageState storageState) {
       this.storageState = storageState;
+      this.storageStatePath = null;
+      return this;
+    }
+    public NewPageOptions withStorageState(Path storageStatePath) {
+      this.storageState = null;
+      this.storageStatePath = storageStatePath;
       return this;
     }
   }
