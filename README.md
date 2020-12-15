@@ -1,5 +1,7 @@
 # 🎭 [Playwright](https://github.com/microsoft/playwright) for Java
 
+[![maven version](https://img.shields.io/maven-central/v/com.microsoft.playwright/playwright)](https://search.maven.org/search?q=com.microsoft.playwright)
+
 ### _The project is in early developement phase, some of the APIs are not implemented yet, others may change._
 
 
