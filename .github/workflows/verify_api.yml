@@ -1,0 +1,40 @@
+name: Verify API
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'scripts/*'
+      - 'api-generator/*'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'scripts/**'
+      - 'api-generator/**'
+jobs:
+  verify:
+    timeout-minutes: 30
+    strategy:
+      fail-fast: true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: microsoft/playwright-github-action@v1
+      - name: Cache Downloaded Drivers
+        uses: actions/cache@v2
+        with:
+          path: driver-bundle/src/main/resources/driver
+          key: ${{ runner.os }}-drivers-${{ hashFiles('scripts/*') }}
+          restore-keys: ${{ runner.os }}-drivers
+      - name: Download drivers
+        shell: bash
+        run: scripts/download_driver_for_all_platforms.sh
+      - name: Regenerate APIs
+        shell: bash
+        run: scripts/generate_api.sh
+      - name: Verify API is up to date
+        shell: bash
+        run: |
+          if [[ -n $(git status -s) ]]; then
+            echo "ERROR: generated interfaces differ from the current sources."
+            exit 1
+          fi

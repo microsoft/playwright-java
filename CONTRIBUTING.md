@@ -28,7 +28,13 @@ mvn test
 
 ### Generating API
 
-Public Java API is generated from [api.json](https://github.com/microsoft/playwright-java/blob/master/api-generator/src/main/resources/api.json) which in turn is created by `playwright-cli print-api-json`.
+Public Java API is generated from api.json which is produced by `playwright-cli print-api-json`. To regenerate
+Java interfaces for the current driver run the following commands:
+
+```bash
+./scripts/download_driver_for_all_platforms.sh
+./scripts/generate_api.sh
+```
 
 ### Code Style
 
