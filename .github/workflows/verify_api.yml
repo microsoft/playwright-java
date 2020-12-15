@@ -40,6 +40,7 @@ jobs:
         shell: bash
         run: |
           if [[ -n $(git status -s) ]]; then
-            echo "ERROR: generated interfaces differ from the current sources."
+            echo "ERROR: generated interfaces differ from the current sources:"
+            git diff
             exit 1
           fi
