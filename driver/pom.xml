@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>driver</artifactId>
-  <name>Playwright Java - Driver</name>
+  <name>Playwright - Driver</name>
   <description>
     This module provides API for discovery and launching of playwright-cli binary.
   </description>

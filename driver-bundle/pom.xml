@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>driver-bundle</artifactId>
-  <name>Playwright Java - Drivers For All Platforms</name>
+  <name>Playwright - Drivers For All Platforms</name>
   <description>
     This module includes playwright-cli binary and related utilities for all supported platforms.
     It is intended to be used on the systems where Playwright driver is not preinstalled.
