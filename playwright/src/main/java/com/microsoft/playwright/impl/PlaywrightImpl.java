@@ -67,6 +67,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       JsonObject o = item.getAsJsonObject();
       String name = o.get("name").getAsString();
       DeviceDescriptorImpl descriptor = gson.fromJson(o.get("descriptor"), DeviceDescriptorImpl.class);
+      descriptor.playwright = this;
       devices.put(name, descriptor);
     }
   }

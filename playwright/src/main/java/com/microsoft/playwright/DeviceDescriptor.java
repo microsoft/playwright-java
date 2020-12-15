@@ -26,6 +26,5 @@ public interface DeviceDescriptor {
   int deviceScaleFactor();
   boolean isMobile();
   boolean hasTouch();
-  enum BrowserType { CHROMIUM, FIREFOX, WEBKIT}
   BrowserType defaultBrowserType();
 }
