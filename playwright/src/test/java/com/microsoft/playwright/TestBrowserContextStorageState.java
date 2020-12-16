@@ -16,8 +16,14 @@
 
 package com.microsoft.playwright;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 import static com.microsoft.playwright.Utils.assertJsonEquals;
@@ -67,5 +73,58 @@ public class TestBrowserContextStorageState extends TestBase {
     Object localStorage = page.evaluate("window.localStorage");
     assertEquals(mapOf("name1", "value1"), localStorage);
     context.close();
+  }
+
+  @Test
+  void shouldRoundTripThroughTheFile(@TempDir Path tempDir) throws IOException {
+    Page page1 = context.newPage();
+    page1.route("**/*", route -> {
+      route.fulfill(new Route.FulfillResponse().withBody("<html></html>"));
+    });
+    page1.navigate("https://www.example.com");
+    page1.evaluate("() => {\n" +
+      "  localStorage['name1'] = 'value1';\n" +
+      "  document.cookie = 'username=John Doe';\n" +
+      "  return document.cookie;\n" +
+      "}");
+    Path path = tempDir.resolve("storage-state.json");
+    BrowserContext.StorageState state = context.storageState(new BrowserContext.StorageStateOptions().withPath(path));
+    JsonObject expected = new Gson().fromJson(
+      "{\n" +
+      "  \"cookies\":[\n" +
+      "    { \n" +
+      "      \"name\":\"username\",\n" +
+      "      \"value\":\"John Doe\",\n" +
+      "      \"domain\":\"www.example.com\",\n" +
+      "      \"path\":\"/\",\n" +
+      "      \"expires\":-1,\n" +
+      "      \"httpOnly\":false,\n" +
+      "      \"secure\":false,\n" +
+      "      \"sameSite\":\"None\"\n" +
+      "    }],\n" +
+      "  \"origins\":[\n" +
+      "    {\n" +
+      "      \"origin\":\"https://www.example.com\",\n" +
+      "      \"localStorage\":[\n" +
+      "        {\n" +
+      "          \"name\":\"name1\",\n" +
+      "          \"value\":\"value1\"\n" +
+      "        }]\n" +
+      "    }]\n" +
+      "}\n", JsonObject.class);
+    try (FileReader reader = new FileReader(path.toFile())) {
+      assertEquals(expected, new Gson().fromJson(reader, JsonObject.class));
+    }
+    BrowserContext context2 = browser.newContext(new Browser.NewContextOptions().withStorageState(path));
+    Page page2 = context2.newPage();
+    page2.route("**/*", route -> {
+      route.fulfill(new Route.FulfillResponse().withBody("<html></html>"));
+    });
+    page2.navigate("https://www.example.com");
+    Object localStorage = page2.evaluate("window.localStorage");
+    assertEquals(mapOf("name1", "value1"), localStorage);
+    Object cookie = page2.evaluate("document.cookie");
+    assertEquals("username=John Doe", cookie);
+    context2.close();
   }
 }

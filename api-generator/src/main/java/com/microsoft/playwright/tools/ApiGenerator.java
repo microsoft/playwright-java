@@ -608,8 +608,14 @@ class Field extends Element {
       return;
     }
     if (asList("Page.emulateMedia.params.media",
-      "Page.emulateMedia.params.colorScheme").contains(jsonPath)) {
+               "Page.emulateMedia.params.colorScheme").contains(jsonPath)) {
       output.add(offset + access + "Optional<" + type.toJava() + "> " + name + ";");
+      return;
+    }
+    if (asList("Browser.newContext.options.storageState",
+               "Browser.newPage.options.storageState").contains(jsonPath)) {
+      output.add(offset + access + type.toJava() + " " + name + ";");
+      output.add(offset + access + "Path " + name + "Path;");
       return;
     }
     output.add(offset + access + type.toJava() + " " + name + ";");
@@ -672,6 +678,20 @@ class Field extends Element {
                "Page.emulateMedia.params.colorScheme").contains(jsonPath)) {
       output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + type.toJava() + " " + name + ") {");
       output.add(offset + "  this." + name + " = Optional.ofNullable(" + name + ");");
+      output.add(offset + "  return this;");
+      output.add(offset + "}");
+      return;
+    }
+    if (asList("Browser.newContext.options.storageState",
+               "Browser.newPage.options.storageState").contains(jsonPath)) {
+      output.add(offset + "public " + parentClass + " withStorageState(BrowserContext.StorageState storageState) {");
+      output.add(offset + "  this.storageState = storageState;");
+      output.add(offset + "  this.storageStatePath = null;");
+      output.add(offset + "  return this;");
+      output.add(offset + "}");
+      output.add(offset + "public " + parentClass + " withStorageState(Path storageStatePath) {");
+      output.add(offset + "  this.storageState = null;");
+      output.add(offset + "  this.storageStatePath = storageStatePath;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
       return;
@@ -762,7 +782,7 @@ class Interface extends TypeDefinition {
     if ("Download".equals(jsonName)) {
       output.add("import java.io.InputStream;");
     }
-    if (asList("Page", "Frame", "ElementHandle", "FileChooser", "Browser", "BrowserType", "Download", "Route", "Selectors").contains(jsonName)) {
+    if (asList("Page", "Frame", "ElementHandle", "FileChooser", "Browser", "BrowserContext", "BrowserType", "Download", "Route", "Selectors").contains(jsonName)) {
       output.add("import java.nio.file.Path;");
     }
     output.add("import java.util.*;");
@@ -1159,9 +1179,9 @@ public class ApiGenerator {
       List<String> lines = new ArrayList<>();
       new Interface(entry.getValue().getAsJsonObject()).writeTo(lines, "");
       String text = String.join("\n", lines);
-      FileWriter writer = new FileWriter(new File(dir, name + ".java"));
-      writer.write(text);
-      writer.close();
+      try (FileWriter writer = new FileWriter(new File(dir, name + ".java"))) {
+        writer.write(text);
+      }
     }
   }
 

@@ -6,8 +6,10 @@ set +x
 trap "cd $(pwd -P)" EXIT
 cd "$(dirname $0)/.."
 
-echo "Updating api.json"
-./driver-bundle/src/main/resources/driver/linux/playwright-cli print-api-json > ./api-generator/src/main/resources/api.json
+PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/linux/playwright-cli
+echo "Updating api.json from $($PLAYWRIGHT_CLI --version)"
+
+$PLAYWRIGHT_CLI print-api-json > ./api-generator/src/main/resources/api.json
 
 mvn compile -projects api-generator --no-transfer-progress
 

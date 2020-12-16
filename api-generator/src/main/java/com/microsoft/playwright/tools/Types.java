@@ -119,6 +119,7 @@ class Types {
     add("BrowserType.launchPersistentContext.options.downloadsPath", "string", "Path");
     add("BrowserType.launch.options.executablePath", "string", "Path");
     add("BrowserType.launch.options.downloadsPath", "string", "Path");
+    add("BrowserContext.storageState.options.path", "string", "Path");
     add("ChromiumBrowser.startTracing.options.path", "string", "Path");
 
     // Route
@@ -298,8 +299,8 @@ class Types {
 
     add("BrowserContext.setGeolocation.geolocation", "null|Object", "Geolocation", new Empty());
     add("Browser.newContext.options.geolocation", "Object", "Geolocation", new Empty());
-    add("Browser.newContext.options.storageState", "Object", "BrowserContext.StorageState", new Empty());
-    add("Browser.newPage.options.storageState", "Object", "BrowserContext.StorageState", new Empty());
+    add("Browser.newContext.options.storageState", "string|Object", "BrowserContext.StorageState", new Empty());
+    add("Browser.newPage.options.storageState", "string|Object", "BrowserContext.StorageState", new Empty());
     add("Browser.newPage.options.geolocation", "Object", "Geolocation", new Empty());
     add("BrowserType.launchPersistentContext.options.geolocation", "Object", "Geolocation", new Empty());
     add("Download.saveAs.path", "string", "Path", new Empty());

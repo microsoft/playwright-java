@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -240,6 +241,17 @@ public interface BrowserContext {
       return this;
     }
   }
+  class StorageStateOptions {
+    /**
+     * The file path to save the storage state to. If {@code path} is a relative path, then it is resolved relative to current working directory. If no path is provided, storage state is still returned, but won't be saved to the disk.
+     */
+    public Path path;
+
+    public StorageStateOptions withPath(Path path) {
+      this.path = path;
+      return this;
+    }
+  }
   /**
    * Adds cookies into this browser context. All pages within this context will have these cookies installed. Cookies can be
    * <p>
@@ -441,10 +453,13 @@ public interface BrowserContext {
    * @param offline Whether to emulate network being offline for the browser context.
    */
   void setOffline(boolean offline);
+  default StorageState storageState() {
+    return storageState(null);
+  }
   /**
    * Returns storage state for this browser context, contains current cookies and local storage snapshot.
    */
-  StorageState storageState();
+  StorageState storageState(StorageStateOptions options);
   default void unroute(String url) { unroute(url, null); }
   default void unroute(Pattern url) { unroute(url, null); }
   default void unroute(Predicate<String> url) { unroute(url, null); }
