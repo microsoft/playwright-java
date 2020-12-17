@@ -1,14 +1,14 @@
 name: Publish
 on:
   release:
-    types: [ published ]
+    types: [ created ]
 
 jobs:
   build:
     timeout-minutes: 30
     strategy:
       fail-fast: false
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: microsoft/playwright-github-action@v1
