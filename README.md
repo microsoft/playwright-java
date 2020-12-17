@@ -2,6 +2,8 @@
 
 [![maven version](https://img.shields.io/maven-central/v/com.microsoft.playwright/playwright)](https://search.maven.org/search?q=com.microsoft.playwright)  [![Join Slack](https://img.shields.io/badge/join-slack-infomational)](https://join.slack.com/t/playwright/shared_invite/enQtOTEyMTUxMzgxMjIwLThjMDUxZmIyNTRiMTJjNjIyMzdmZDA3MTQxZWUwZTFjZjQwNGYxZGM5MzRmNzZlMWI5ZWUyOTkzMjE5Njg1NDg)
 
+#### [Website](https://playwright.dev/) | [API reference](https://www.javadoc.io/doc/com.microsoft.playwright/playwright/latest/index.html)
+
 Playwright is a Java library to automate [Chromium](https://www.chromium.org/Home), [Firefox](https://www.mozilla.org/en-US/firefox/new/) and [WebKit](https://webkit.org/) with a single API. Playwright is built to enable cross-browser web automation that is **ever-green**, **capable**, **reliable** and **fast**.
 
 |          | Linux | macOS | Windows |
@@ -158,7 +160,7 @@ public class InterceptNetworkRequests {
 
 ## Documentation
 
-We are in the process of converting our documentation from the Node.js form to Javadocs. You can go ahead and use the Node.js [documentation](https://playwright.dev/) since the API is pretty much the same.
+We are in the process of converting our documentation from the Node.js form to [Javadocs](https://www.javadoc.io/doc/com.microsoft.playwright/playwright/latest/index.html). You can go ahead and use the Node.js [documentation](https://playwright.dev/) since the API is pretty much the same.
 
 ## Contributing
 
