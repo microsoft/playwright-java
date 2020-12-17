@@ -1,14 +1,24 @@
-# 🎭 [Playwright](https://github.com/microsoft/playwright) for Java
+# 🎭 [Playwright](https://playwright.dev) for Java
 
 [![maven version](https://img.shields.io/maven-central/v/com.microsoft.playwright/playwright)](https://search.maven.org/search?q=com.microsoft.playwright)  [![Join Slack](https://img.shields.io/badge/join-slack-infomational)](https://join.slack.com/t/playwright/shared_invite/enQtOTEyMTUxMzgxMjIwLThjMDUxZmIyNTRiMTJjNjIyMzdmZDA3MTQxZWUwZTFjZjQwNGYxZGM5MzRmNzZlMWI5ZWUyOTkzMjE5Njg1NDg)
 
-### _The project is in early development phase, the APIs match those in typescript version of Playwright but are subject to change._
+Playwright is a Java library to automate [Chromium](https://www.chromium.org/Home), [Firefox](https://www.mozilla.org/en-US/firefox/new/) and [WebKit](https://webkit.org/) with a single API. Playwright is built to enable cross-browser web automation that is **ever-green**, **capable**, **reliable** and **fast**.
+
+|          | Linux | macOS | Windows |
+|   :---   | :---: | :---: | :---:   |
+| Chromium <!-- GEN:chromium-version -->89.0.4344.0<!-- GEN:stop --> | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| WebKit 14.1 | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Firefox <!-- GEN:firefox-version -->84.0b9<!-- GEN:stop --> | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+
+Headless execution is supported for all the browsers on all platforms. Check out [system requirements](https://playwright.dev/#?path=docs/intro.md&q=system-requirements) for details.
 
 ## Usage
 
 #### Add Maven dependency
 
-To run Playwright simply add 2 modules to your Maven project:
+Playwright is distributed as a set of [Maven](https://maven.apache.org/what-is-maven.html) modules. The easiest way to use it is to add a couple of dependencies to your Maven `pom.xml` file as described below. If you're not familiar with Maven please refer to its [documentation](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html).
+
+To run Playwright simply add two dependencies to your Maven project:
 
 ```xml
 <dependency>
@@ -146,9 +156,16 @@ public class InterceptNetworkRequests {
 }
 ```
 
-## Notes
+## Documentation
 
-Follow [the instructions](https://github.com/microsoft/playwright-java/blob/master/CONTRIBUTING.md#getting-code) to build the project from source and install driver.
+We are in the process of converting our documentation from the Node.js form to Javadocs. You can go ahead and use the Node.js [documentation](https://playwright.dev/) since the API is pretty much the same.
 
-Original Playwright [documentation](https://playwright.dev/). We are converting it to javadoc.
+## Contributing
 
+Follow [the instructions](https://github.com/microsoft/playwright-java/blob/master/CONTRIBUTING.md#getting-code) to build the project from source and install the driver.
+
+## Is Playwright for Java ready?
+
+Yes, Playwright for Java is ready. We are still not at the version v1.0, so breaking API changes could potentially happen. But a) this is unlikely and b) we will only do that if we know it improves your experience with the new library. We'd like to collect your feedback before we freeze the API for v1.0.
+
+> Note: We don't yet support some of the edge-cases of the vendor-specific APIs such as collecting Chromium trace, coverage report, etc.
