@@ -14,12 +14,12 @@ To run Playwright simply add 2 modules to your Maven project:
 <dependency>
   <groupId>com.microsoft.playwright</groupId>
   <artifactId>playwright</artifactId>
-  <version>0.170.0</version>
+  <version>0.170.2</version>
 </dependency>
 <dependency>
   <groupId>com.microsoft.playwright</groupId>
   <artifactId>driver-bundle</artifactId>
-  <version>0.170.0</version>
+  <version>0.170.2</version>
 </dependency>
 ```
 
