@@ -211,7 +211,6 @@ public class TestWebSocket extends TestBase {
     ws.addListener(SOCKETERROR, e -> error[0] = true);
     Deferred<Event<com.microsoft.playwright.WebSocket.EventType>> frameReceivedEvent = ws.waitForEvent(FRAMERECEIVED);
     frameReceivedEvent.get();
-    System.out.println("will close");
     page.evaluate("window.ws.close()");
     assertFalse(error[0]);
   }
