@@ -29,7 +29,6 @@ public class DriverJar extends Driver {
   DriverJar() throws IOException, URISyntaxException, InterruptedException {
     driverTempDir = Files.createTempDirectory("playwright-java-");
     driverTempDir.toFile().deleteOnExit();
-    System.err.println("extracting driver to " + driverTempDir);
     extractDriverToTempDir();
     installBrowsers();
   }
@@ -42,14 +41,13 @@ public class DriverJar extends Driver {
     Process p = pb.start();
     boolean result = p.waitFor(10, TimeUnit.MINUTES);
     if (!result) {
-      System.err.println("Timed out waiting for browsers to install");
+      throw new RuntimeException("Timed out waiting for browsers to install");
     }
   }
 
   private void extractDriverToTempDir() throws URISyntaxException, IOException {
     ClassLoader classloader = Thread.currentThread().getContextClassLoader();
     URI uri = classloader.getResource("driver/" + platformDir()).toURI();
-    System.out.println(uri);
     // Create zip filesystem if loading from jar.
     try (FileSystem fileSystem = "jar".equals(uri.getScheme()) ? FileSystems.newFileSystem(uri, Collections.emptyMap()) : null) {
       Files.list(Paths.get(uri)).forEach(filePath -> {
