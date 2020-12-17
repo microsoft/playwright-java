@@ -52,7 +52,12 @@ cd $PLATFORM
 FILE_NAME=$FILE_PREFIX-$PLATFORM.zip
 echo "Downloading driver for $PLATFORM to $(pwd)"
 
-curl -O  https://playwright.azureedge.net/builds/cli/next/${FILE_NAME}
+URL=https://playwright.azureedge.net/builds/cli
+if [[ $CLI_VERSION == *"next"* ]]; then
+  URL=$URL/next
+fi
+curl -O $URL/$FILE_NAME
+
 unzip ${FILE_NAME} -d .
 rm $FILE_NAME
 ./playwright-cli install
