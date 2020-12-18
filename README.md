@@ -39,6 +39,8 @@ To run Playwright simply add two dependencies to your Maven project:
 
 ## Examples
 
+You can find Maven project with the examples [here](./examples).
+
 #### Page screenshot
 
 This code snippet navigates to whatsmyuseragent.org in Chromium, Firefox and WebKit, and saves 3 screenshots.
