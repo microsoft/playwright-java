@@ -326,6 +326,14 @@ public interface Browser {
       this.storageStatePath = storageStatePath;
       return this;
     }
+    public NewContextOptions withDevice(DeviceDescriptor device) {
+      withViewport(device.viewport().width(), device.viewport().height());
+      withUserAgent(device.userAgent());
+      withDeviceScaleFactor(device.deviceScaleFactor());
+      withIsMobile(device.isMobile());
+      withHasTouch(device.hasTouch());
+      return this;
+    }
   }
   class NewPageOptions {
     public class RecordHar {
@@ -598,6 +606,14 @@ public interface Browser {
     public NewPageOptions withStorageState(Path storageStatePath) {
       this.storageState = null;
       this.storageStatePath = storageStatePath;
+      return this;
+    }
+    public NewPageOptions withDevice(DeviceDescriptor device) {
+      withViewport(device.viewport().width(), device.viewport().height());
+      withUserAgent(device.userAgent());
+      withDeviceScaleFactor(device.deviceScaleFactor());
+      withIsMobile(device.isMobile());
+      withHasTouch(device.hasTouch());
       return this;
     }
   }

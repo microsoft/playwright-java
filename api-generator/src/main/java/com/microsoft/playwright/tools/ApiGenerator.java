@@ -1102,6 +1102,10 @@ class NestedClass extends TypeDefinition {
       }
     } else {
       writeBuilderMethods(output, bodyOffset);
+      if ("Browser.newContext.options".equals(jsonPath) ||
+          "Browser.newPage.options".equals(jsonPath)) {
+        writeDeviceDescriptorBuilder(output, bodyOffset);
+      }
     }
     output.add(offset + "}");
   }
@@ -1133,6 +1137,16 @@ class NestedClass extends TypeDefinition {
     output.add(bodyOffset + "}");
   }
 
+  private void writeDeviceDescriptorBuilder(List<String> output, String bodyOffset) {
+    output.add(bodyOffset + "public " + name + " withDevice(DeviceDescriptor device) {");
+    output.add(bodyOffset + "  withViewport(device.viewport().width(), device.viewport().height());");
+    output.add(bodyOffset + "  withUserAgent(device.userAgent());");
+    output.add(bodyOffset + "  withDeviceScaleFactor(device.deviceScaleFactor());");
+    output.add(bodyOffset + "  withIsMobile(device.isMobile());");
+    output.add(bodyOffset + "  withHasTouch(device.hasTouch());");
+    output.add(bodyOffset + "  return this;");
+    output.add(bodyOffset + "}");
+  }
 }
 
 class Enum extends TypeDefinition {
