@@ -72,7 +72,6 @@
     <dependency>
       <groupId>com.microsoft.playwright</groupId>
       <artifactId>driver-bundle</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.java-websocket</groupId>
