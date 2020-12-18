@@ -1,6 +1,4 @@
-# Examples
-
-This directory contains sample [`pom.xml`](./pom.xml) and source code for the examples from the landing [page](../README.md).
+This directory contains sample [`pom.xml`](./pom.xml) and source code for the Playwright examples.
 
 You can run them in terminal like this:
 
