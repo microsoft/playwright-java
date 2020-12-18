@@ -16,6 +16,8 @@ Headless execution is supported for all the browsers on all platforms. Check out
 
 ## Usage
 
+Playwright supports Java 8 and above.
+
 #### Add Maven dependency
 
 Playwright is distributed as a set of [Maven](https://maven.apache.org/what-is-maven.html) modules. The easiest way to use it is to add a couple of dependencies to your Maven `pom.xml` file as described below. If you're not familiar with Maven please refer to its [documentation](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html).
