@@ -36,7 +36,6 @@
   </scm>
 
   <modules>
-    <module>api-generator</module>
     <module>driver</module>
     <module>driver-bundle</module>
     <module>playwright</module>
