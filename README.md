@@ -22,18 +22,13 @@ Playwright supports Java 8 and above.
 
 Playwright is distributed as a set of [Maven](https://maven.apache.org/what-is-maven.html) modules. The easiest way to use it is to add a couple of dependencies to your Maven `pom.xml` file as described below. If you're not familiar with Maven please refer to its [documentation](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html).
 
-To run Playwright simply add two dependencies to your Maven project:
+To run Playwright simply add following dependency to your Maven project:
 
 ```xml
 <dependency>
   <groupId>com.microsoft.playwright</groupId>
   <artifactId>playwright</artifactId>
-  <version>0.170.2</version>
-</dependency>
-<dependency>
-  <groupId>com.microsoft.playwright</groupId>
-  <artifactId>driver-bundle</artifactId>
-  <version>0.170.2</version>
+  <version>0.170.3</version>
 </dependency>
 ```
 
@@ -87,14 +82,10 @@ public class MobileAndGeolocation {
   public static void main(String[] args) throws Exception {
     Playwright playwright = Playwright.create();
     BrowserType browserType = playwright.chromium();
-    Browser browser = browserType.launch();
+    Browser browser = browserType.launch(new BrowserType.LaunchOptions().withHeadless(false));
     DeviceDescriptor pixel2 = playwright.devices().get("Pixel 2");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-        .withViewport(pixel2.viewport().width(), pixel2.viewport().height())
-        .withUserAgent(pixel2.userAgent())
-        .withDeviceScaleFactor(pixel2.deviceScaleFactor())
-        .withIsMobile(pixel2.isMobile())
-        .withHasTouch(pixel2.hasTouch())
+        .withDevice(pixel2)
         .withLocale("en-US")
         .withGeolocation(new Geolocation(41.889938, 12.492507))
         .withPermissions(asList("geolocation")));
