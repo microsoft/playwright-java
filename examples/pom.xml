@@ -8,6 +8,9 @@
   <artifactId>examples</artifactId>
   <version>0.1-SNAPSHOT</version>
   <name>Playwright Client Examples</name>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>com.microsoft.playwright</groupId>
