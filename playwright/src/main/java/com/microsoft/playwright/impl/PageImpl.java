@@ -55,6 +55,7 @@ public class PageImpl extends ChannelOwner implements Page {
     browserContext = (BrowserContextImpl) parent;
     mainFrame = connection.getExistingObject(initializer.getAsJsonObject("mainFrame").get("guid").getAsString());
     mainFrame.page = this;
+    isClosed = initializer.get("isClosed").getAsBoolean();
     keyboard = new KeyboardImpl(this);
     mouse = new MouseImpl(this);
     touchscreen = new TouchscreenImpl(this);
@@ -212,6 +213,9 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void close(CloseOptions options) {
+    if (isClosed) {
+      return;
+    }
     JsonObject params = options == null ? new JsonObject() : gson().toJsonTree(options).getAsJsonObject();
     try {
       sendMessage("close", params);
