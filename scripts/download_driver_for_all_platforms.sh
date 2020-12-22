@@ -31,10 +31,12 @@ do
   echo "Downloading driver for $PLATFORM to $(pwd)"
 
   URL=https://playwright.azureedge.net/builds/cli
-  if [[ $CLI_VERSION == *"next"* ]]; then
+  if ! [[ $CLI_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     URL=$URL/next
   fi
-  curl -O $URL/$FILE_NAME
+  URL=$URL/$FILE_NAME
+  echo "Using url: $URL"
+  curl -O $URL
   unzip $FILE_NAME -d .
   rm $FILE_NAME
 
