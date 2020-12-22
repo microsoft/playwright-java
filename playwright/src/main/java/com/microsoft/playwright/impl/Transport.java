@@ -37,8 +37,7 @@ public class Transport {
     DataInputStream in = new DataInputStream(new BufferedInputStream(input));
     readerThread = new ReaderThread(in, incoming);
     readerThread.start();
-    DataOutputStream out = new DataOutputStream(output);
-    writerThread = new WriterThread(out, outgoing);
+    writerThread = new WriterThread(output, outgoing);
     writerThread.start();
   }
 
@@ -125,17 +124,17 @@ class ReaderThread extends Thread {
 }
 
 class WriterThread extends Thread {
-  final DataOutputStream out;
+  final OutputStream out;
   private final BlockingQueue<String> queue;
 
-  private static void writeIntLE(DataOutputStream out, int v) throws IOException {
+  private static void writeIntLE(OutputStream out, int v) throws IOException {
     out.write(v >>> 0 & 255);
     out.write(v >>> 8 & 255);
     out.write(v >>> 16 & 255);
     out.write(v >>> 24 & 255);
   }
 
-  WriterThread(DataOutputStream out, BlockingQueue<String> queue) {
+  WriterThread(OutputStream out, BlockingQueue<String> queue) {
     this.out = out;
     this.queue = queue;
   }
@@ -158,8 +157,8 @@ class WriterThread extends Thread {
   }
 
   private void sendMessage(String message) throws IOException {
-    int len = message.length();
-    writeIntLE(out, len);
-    out.writeBytes(message);
+    byte[] bytes = message.getBytes(StandardCharsets.UTF_8);
+    writeIntLE(out, bytes.length);
+    out.write(bytes);
   }
 }
