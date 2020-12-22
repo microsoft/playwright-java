@@ -7,7 +7,7 @@
   <parent>
     <groupId>com.microsoft.playwright</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>0.170.4-SNAPSHOT</version>
+    <version>0.171.0</version>
   </parent>
 
   <artifactId>playwright</artifactId>
