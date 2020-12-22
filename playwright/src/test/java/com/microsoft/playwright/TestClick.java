@@ -512,6 +512,13 @@ public class TestClick extends TestBase {
   }
 
   @Test
+  void shouldWorkWithUnicodeSelectors() {
+    page.setContent("<button onclick='javascript:window.__CLICKED=true;'><label style='pointer-events:none'>Найти</label></button>");
+    page.click("text=Найти");
+    assertEquals(true, page.evaluate("__CLICKED"));
+  }
+
+  @Test
   void shouldClimbUpTo_roleButton_() {
     page.setContent("<div role=button onclick='javascript:window.__CLICKED=true;'><div style='pointer-events:none'><span><div>Click target</div></span></div>");
     page.click("text=Click target");
