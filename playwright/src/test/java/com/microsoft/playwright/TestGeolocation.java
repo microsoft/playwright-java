@@ -146,7 +146,7 @@ public class TestGeolocation extends TestBase {
     Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(POPUP);
     page.evaluate("url => window['_popup'] = window.open(url)", server.PREFIX + "/geolocation.html");
     Page popup = (Page) popupEvent.get().data();
-    popup.waitForLoadState();
+    popup.waitForLoadState().get();
     Object geolocation = popup.evaluate("window['geolocationPromise']");
     assertEquals(mapOf("longitude", 10, "latitude", 10), geolocation);
   }
