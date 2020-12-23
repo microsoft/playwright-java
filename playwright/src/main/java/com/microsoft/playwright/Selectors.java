@@ -20,9 +20,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * Selectors can be used to install custom selector engines. See Working with selectors for more
- * <p>
- * information.
+ * Selectors can be used to install custom selector engines. See Working with selectors for more information.
  */
 public interface Selectors {
   class RegisterOptions {

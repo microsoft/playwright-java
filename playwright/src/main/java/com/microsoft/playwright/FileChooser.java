@@ -42,7 +42,7 @@ public interface FileChooser {
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -75,11 +75,7 @@ public interface FileChooser {
   default void setFiles(FileChooser.FilePayload file, SetFilesOptions options)  { setFiles(new FileChooser.FilePayload[]{ file }, options); }
   default void setFiles(FileChooser.FilePayload[] files) { setFiles(files, null); }
   /**
-   * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
-   * <p>
-   * they are resolved relative to the current working directory.
-   * <p>
-   * For empty array, clears the selected files.
+   * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then they are resolved relative to the the current working directory. For empty array, clears the selected files.
    */
   void setFiles(FileChooser.FilePayload[] files, SetFilesOptions options);
 }

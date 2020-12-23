@@ -21,9 +21,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * Whenever a network route is set up with page.route(url, handler) or browserContext.route(url, handler), the {@code Route} object allows to
- * <p>
- * handle the route.
+ * Whenever a network route is set up with {@code page.route(url, handler)} or {@code browserContext.route(url, handler)}, the {@code Route} object allows to handle the route.
  */
 public interface Route {
   class ContinueOverrides {
@@ -84,7 +82,7 @@ public interface Route {
     public String body;
     public byte[] bodyBytes;
     /**
-     * Optional file path to respond with. The content type will be inferred from file extension. If {@code path} is a relative path, then it is resolved relative to current working directory.
+     * Optional file path to respond with. The content type will be inferred from file extension. If {@code path} is a relative path, then it is resolved relative to the current working directory.
      */
     public Path path;
 

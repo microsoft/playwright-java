@@ -19,13 +19,9 @@ package com.microsoft.playwright;
 import java.util.*;
 
 /**
- * Keyboard provides an api for managing a virtual keyboard. The high level api is keyboard.type(text[, options]), which takes raw
+ * Keyboard provides an api for managing a virtual keyboard. The high level api is {@code keyboard.type(text[, options])}, which takes raw characters and generates proper keydown, keypress/input, and keyup events on your page.
  * <p>
- * characters and generates proper keydown, keypress/input, and keyup events on your page.
- * <p>
- * For finer control, you can use keyboard.down(key), keyboard.up(key), and keyboard.insertText(text) to manually fire
- * <p>
- * events as if they were generated from a real keyboard.
+ * For finer control, you can use {@code keyboard.down(key)}, {@code keyboard.up(key)}, and {@code keyboard.insertText(text)} to manually fire events as if they were generated from a real keyboard.
  * <p>
  * An example to trigger select-all with the keyboard
  * <p>
@@ -36,33 +32,19 @@ public interface Keyboard {
   /**
    * Dispatches a {@code keydown} event.
    * <p>
-   * {@code key} can specify the intended keyboardEvent.key
+   * {@code key} can specify the intended keyboardEvent.key value or a single character to generate the text for. A superset of the {@code key} values can be found here. Examples of the keys are:
    * <p>
-   * value or a single character to generate the text for. A superset of the {@code key} values can be found
-   * <p>
-   * here. Examples of the keys are:
-   * <p>
-   * {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
-   * <p>
-   * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
+   * {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
    * <p>
    * Following modification shortcuts are also suported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
    * <p>
    * Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
    * <p>
-   * If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
+   * If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective texts.
    * <p>
-   * texts.
+   * If {@code key} is a modifier key, {@code Shift}, {@code Meta}, {@code Control}, or {@code Alt}, subsequent key presses will be sent with that modifier active. To release the modifier key, use {@code keyboard.up(key)}.
    * <p>
-   * If {@code key} is a modifier key, {@code Shift}, {@code Meta}, {@code Control}, or {@code Alt}, subsequent key presses will be sent with that modifier
-   * <p>
-   * active. To release the modifier key, use keyboard.up(key).
-   * <p>
-   * After the key is pressed once, subsequent calls to keyboard.down(key) will have
-   * <p>
-   * repeat set to true. To release the key, use
-   * <p>
-   * keyboard.up(key).
+   * After the key is pressed once, subsequent calls to {@code keyboard.down(key)} will have repeat set to true. To release the key, use {@code keyboard.up(key)}.
    * <p>
    * <strong>NOTE</strong> Modifier keys DO influence {@code keyboard.down}. Holding down {@code Shift} will type the text in upper case.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
@@ -81,29 +63,19 @@ public interface Keyboard {
     press(key, 0);
   }
   /**
-   * {@code key} can specify the intended keyboardEvent.key
+   * {@code key} can specify the intended keyboardEvent.key value or a single character to generate the text for. A superset of the {@code key} values can be found here. Examples of the keys are:
    * <p>
-   * value or a single character to generate the text for. A superset of the {@code key} values can be found
-   * <p>
-   * here. Examples of the keys are:
-   * <p>
-   * {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
-   * <p>
-   * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
+   * {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
    * <p>
    * Following modification shortcuts are also suported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
    * <p>
    * Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
    * <p>
-   * If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
+   * If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective texts.
    * <p>
-   * texts.
+   * Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the modifier, modifier is pressed and being held while the subsequent key is being pressed.
    * <p>
-   * Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
-   * <p>
-   * modifier, modifier is pressed and being held while the subsequent key is being pressed.
-   * <p>
-   * Shortcut for keyboard.down(key) and keyboard.up(key).
+   * Shortcut for {@code keyboard.down(key)} and {@code keyboard.up(key)}.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
   void press(String key, int delay);
@@ -113,7 +85,7 @@ public interface Keyboard {
   /**
    * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
    * <p>
-   * To press a special key, like {@code Control} or {@code ArrowDown}, use keyboard.press(key[, options]).
+   * To press a special key, like {@code Control} or {@code ArrowDown}, use {@code keyboard.press(key[, options])}.
    * <p>
    * 
    * <p>

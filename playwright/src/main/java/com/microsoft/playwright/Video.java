@@ -24,9 +24,7 @@ import java.util.*;
  */
 public interface Video {
   /**
-   * Returns the file system path this video will be recorded to. The video is guaranteed to be written to the filesystem
-   * <p>
-   * upon closing the browser context.
+   * Returns the file system path this video will be recorded to. The video is guaranteed to be written to the filesystem upon closing the browser context.
    */
   String path();
 }

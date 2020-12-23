@@ -19,11 +19,7 @@ package com.microsoft.playwright;
 import java.util.*;
 
 /**
- * The Worker class represents a WebWorker. {@code worker}
- * <p>
- * event is emitted on the page object to signal a worker creation. {@code close} event is emitted on the worker object when the
- * <p>
- * worker is gone.
+ * The Worker class represents a WebWorker. {@code worker} event is emitted on the page object to signal a worker creation. {@code close} event is emitted on the worker object when the worker is gone.
  * <p>
  */
 public interface Worker {
@@ -39,15 +35,9 @@ public interface Worker {
   /**
    * Returns the return value of {@code pageFunction}
    * <p>
-   * If the function passed to the {@code worker.evaluate} returns a Promise, then {@code worker.evaluate} would wait for the promise
+   * If the function passed to the {@code worker.evaluate} returns a Promise, then {@code worker.evaluate} would wait for the promise to resolve and return its value.
    * <p>
-   * to resolve and return its value.
-   * <p>
-   * If the function passed to the {@code worker.evaluate} returns a non-Serializable value, then {@code worker.evaluate} resolves to
-   * <p>
-   * {@code undefined}. DevTools Protocol also supports transferring some additional values that are not serializable by {@code JSON}:
-   * <p>
-   * {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}, and bigint literals.
+   * If the function passed to the {@code worker.evaluate} returns a non-Serializable value, then {@code worker.evaluate} returns {@code undefined}. DevTools Protocol also supports transferring some additional values that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}, and bigint literals.
    * @param pageFunction Function to be evaluated in the worker context
    * @param arg Optional argument to pass to {@code pageFunction}
    */
@@ -58,13 +48,9 @@ public interface Worker {
   /**
    * Returns the return value of {@code pageFunction} as in-page object (JSHandle).
    * <p>
-   * The only difference between {@code worker.evaluate} and {@code worker.evaluateHandle} is that {@code worker.evaluateHandle} returns
+   * The only difference between {@code worker.evaluate} and {@code worker.evaluateHandle} is that {@code worker.evaluateHandle} returns in-page object (JSHandle).
    * <p>
-   * in-page object (JSHandle).
-   * <p>
-   * If the function passed to the {@code worker.evaluateHandle} returns a Promise, then {@code worker.evaluateHandle} would wait for
-   * <p>
-   * the promise to resolve and return its value.
+   * If the function passed to the {@code worker.evaluateHandle} returns a Promise, then {@code worker.evaluateHandle} would wait for the promise to resolve and return its value.
    * @param pageFunction Function to be evaluated in the page context
    * @param arg Optional argument to pass to {@code pageFunction}
    */

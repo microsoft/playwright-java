@@ -27,17 +27,11 @@ import java.util.*;
  * <p>
  * page.on('requestfinished') emitted when the response body is downloaded and the request is complete.
  * <p>
- * If request fails at some point, then instead of {@code 'requestfinished'} event (and possibly instead of 'response' event),
+ * If request fails at some point, then instead of {@code 'requestfinished'} event (and possibly instead of 'response' event), the  page.on('requestfailed') event is emitted.
  * <p>
- * the  page.on('requestfailed') event is emitted.
+ * <strong>NOTE</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will complete with {@code 'requestfinished'} event.
  * <p>
- * <strong>NOTE</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request
- * <p>
- * will complete with {@code 'requestfinished'} event.
- * <p>
- * If request gets a 'redirect' response, the request is successfully finished with the 'requestfinished' event, and a new
- * <p>
- * request is  issued to a redirected url.
+ * If request gets a 'redirect' response, the request is successfully finished with the 'requestfinished' event, and a new request is  issued to a redirected url.
  */
 public interface Request {
   class RequestFailure {
@@ -153,11 +147,7 @@ public interface Request {
   /**
    * Request that was redirected by the server to this one, if any.
    * <p>
-   * When the server responds with a redirect, Playwright creates a new Request object. The two requests are connected by
-   * <p>
-   * {@code redirectedFrom()} and {@code redirectedTo()} methods. When multiple server redirects has happened, it is possible to
-   * <p>
-   * construct the whole redirect chain by repeatedly calling {@code redirectedFrom()}.
+   * When the server responds with a redirect, Playwright creates a new Request object. The two requests are connected by {@code redirectedFrom()} and {@code redirectedTo()} methods. When multiple server redirects has happened, it is possible to construct the whole redirect chain by repeatedly calling {@code redirectedFrom()}.
    * <p>
    * For example, if the website {@code http://example.com} redirects to {@code https://example.com}:
    * <p>
@@ -168,16 +158,12 @@ public interface Request {
   /**
    * New request issued by the browser if the server responded with redirect.
    * <p>
-   * This method is the opposite of request.redirectedFrom():
+   * This method is the opposite of {@code request.redirectedFrom()}:
    * <p>
    */
   Request redirectedTo();
   /**
-   * Contains the request's resource type as it was perceived by the rendering engine. ResourceType will be one of the
-   * <p>
-   * following: {@code document}, {@code stylesheet}, {@code image}, {@code media}, {@code font}, {@code script}, {@code texttrack}, {@code xhr}, {@code fetch}, {@code eventsource},
-   * <p>
-   * {@code websocket}, {@code manifest}, {@code other}.
+   * Contains the request's resource type as it was perceived by the rendering engine. ResourceType will be one of the following: {@code document}, {@code stylesheet}, {@code image}, {@code media}, {@code font}, {@code script}, {@code texttrack}, {@code xhr}, {@code fetch}, {@code eventsource}, {@code websocket}, {@code manifest}, {@code other}.
    */
   String resourceType();
   /**
@@ -185,11 +171,7 @@ public interface Request {
    */
   Response response();
   /**
-   * Returns resource timing information for given request. Most of the timing values become available upon the response,
-   * <p>
-   * {@code responseEnd} becomes available when request finishes. Find more information at Resource Timing
-   * <p>
-   * API.
+   * Returns resource timing information for given request. Most of the timing values become available upon the response, {@code responseEnd} becomes available when request finishes. Find more information at Resource Timing API.
    * <p>
    */
   RequestTiming timing();
