@@ -120,46 +120,46 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public ElementHandle addScriptTag(AddScriptTagScript options) {
-    if (options == null) {
-      options = new AddScriptTagScript();
+  public ElementHandle addScriptTag(AddScriptTagParams params) {
+    if (params == null) {
+      params = new AddScriptTagParams();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    if (options.path != null) {
-      params.remove("path");
+    JsonObject jsonParams = gson().toJsonTree(params).getAsJsonObject();
+    if (params.path != null) {
+      jsonParams.remove("path");
       byte[] encoded;
       try {
-        encoded = Files.readAllBytes(options.path);
+        encoded = Files.readAllBytes(params.path);
       } catch (IOException e) {
         throw new PlaywrightException("Failed to read from file", e);
       }
       String content = new String(encoded, StandardCharsets.UTF_8);
-      content += "//# sourceURL=" + options.path.toString().replace("\n", "");
-      params.addProperty("content", content);
+      content += "//# sourceURL=" + params.path.toString().replace("\n", "");
+      jsonParams.addProperty("content", content);
     }
-    JsonElement json = sendMessage("addScriptTag", params);
+    JsonElement json = sendMessage("addScriptTag", jsonParams);
     return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("element").get("guid").getAsString());
   }
 
   @Override
-  public ElementHandle addStyleTag(AddStyleTagStyle options) {
-    if (options == null) {
-      options = new AddStyleTagStyle();
+  public ElementHandle addStyleTag(AddStyleTagParams params) {
+    if (params == null) {
+      params = new AddStyleTagParams();
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    if (options.path != null) {
-      params.remove("path");
+    JsonObject jsonParams = gson().toJsonTree(params).getAsJsonObject();
+    if (params.path != null) {
+      jsonParams.remove("path");
       byte[] encoded;
       try {
-        encoded = Files.readAllBytes(options.path);
+        encoded = Files.readAllBytes(params.path);
       } catch (IOException e) {
         throw new PlaywrightException("Failed to read from file", e);
       }
       String content = new String(encoded, StandardCharsets.UTF_8);
-      content += "/*# sourceURL=" + options.path.toString().replace("\n", "") + "*/";
-      params.addProperty("content", content);
+      content += "/*# sourceURL=" + params.path.toString().replace("\n", "") + "*/";
+      jsonParams.addProperty("content", content);
     }
-    JsonElement json = sendMessage("addStyleTag", params);
+    JsonElement json = sendMessage("addStyleTag", jsonParams);
     return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("element").get("guid").getAsString());
   }
 

@@ -19,17 +19,11 @@ package com.microsoft.playwright;
 import java.util.*;
 
 /**
- * JSHandle represents an in-page JavaScript object. JSHandles can be created with the page.evaluateHandle(pageFunction[, arg]) method.
+ * JSHandle represents an in-page JavaScript object. JSHandles can be created with the {@code page.evaluateHandle(pageFunction[, arg])} method.
  * <p>
- * JSHandle prevents the referenced JavaScript object being garbage collected unless the handle is exposed with
+ * JSHandle prevents the referenced JavaScript object being garbage collected unless the handle is exposed with {@code jsHandle.dispose()}. JSHandles are auto-disposed when their origin frame gets navigated or the parent context gets destroyed.
  * <p>
- * jsHandle.dispose(). JSHandles are auto-disposed when their origin frame gets navigated or the parent context gets
- * <p>
- * destroyed.
- * <p>
- * JSHandle instances can be used as an argument in page.$eval(selector, pageFunction[, arg]), page.evaluate(pageFunction[, arg]) and page.evaluateHandle(pageFunction[, arg])
- * <p>
- * methods.
+ * JSHandle instances can be used as an argument in {@code page.$eval(selector, pageFunction[, arg])}, {@code page.evaluate(pageFunction[, arg])} and {@code page.evaluateHandle(pageFunction[, arg])} methods.
  */
 public interface JSHandle {
   /**
@@ -48,9 +42,7 @@ public interface JSHandle {
    * <p>
    * This method passes this handle as the first argument to {@code pageFunction}.
    * <p>
-   * If {@code pageFunction} returns a Promise, then {@code handle.evaluate} would wait for the promise to resolve and return its
-   * <p>
-   * value.
+   * If {@code pageFunction} returns a Promise, then {@code handle.evaluate} would wait for the promise to resolve and return its value.
    * <p>
    * Examples:
    * <p>
@@ -67,15 +59,11 @@ public interface JSHandle {
    * <p>
    * This method passes this handle as the first argument to {@code pageFunction}.
    * <p>
-   * The only difference between {@code jsHandle.evaluate} and {@code jsHandle.evaluateHandle} is that {@code jsHandle.evaluateHandle} returns
+   * The only difference between {@code jsHandle.evaluate} and {@code jsHandle.evaluateHandle} is that {@code jsHandle.evaluateHandle} returns in-page object (JSHandle).
    * <p>
-   * in-page object (JSHandle).
+   * If the function passed to the {@code jsHandle.evaluateHandle} returns a Promise, then {@code jsHandle.evaluateHandle} would wait for the promise to resolve and return its value.
    * <p>
-   * If the function passed to the {@code jsHandle.evaluateHandle} returns a Promise, then {@code jsHandle.evaluateHandle} would wait
-   * <p>
-   * for the promise to resolve and return its value.
-   * <p>
-   * See page.evaluateHandle(pageFunction[, arg]) for more details.
+   * See {@code page.evaluateHandle(pageFunction[, arg])} for more details.
    * @param pageFunction Function to be evaluated
    * @param arg Optional argument to pass to {@code pageFunction}
    */
@@ -91,15 +79,9 @@ public interface JSHandle {
    */
   JSHandle getProperty(String propertyName);
   /**
-   * Returns a JSON representation of the object. If the object has a
+   * Returns a JSON representation of the object. If the object has a {@code toJSON} function, it **will not be called**.
    * <p>
-   * {@code toJSON}
-   * <p>
-   * function, it **will not be called**.
-   * <p>
-   * <strong>NOTE</strong> The method will return an empty JSON object if the referenced object is not stringifiable. It will throw an
-   * <p>
-   * error if the object has circular references.
+   * <strong>NOTE</strong> The method will return an empty JSON object if the referenced object is not stringifiable. It will throw an error if the object has circular references.
    */
   Object jsonValue();
 }

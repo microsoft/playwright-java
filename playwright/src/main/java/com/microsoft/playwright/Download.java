@@ -23,19 +23,13 @@ import java.util.*;
 /**
  * Download objects are dispatched by page via the page.on('download') event.
  * <p>
- * All the downloaded files belonging to the browser context are deleted when the browser context is closed. All downloaded
- * <p>
- * files are deleted when the browser closes.
+ * All the downloaded files belonging to the browser context are deleted when the browser context is closed. All downloaded files are deleted when the browser closes.
  * <p>
  * Download event is emitted once the download starts. Download path becomes available once download completes:
  * <p>
  * 
  * <p>
- * <strong>NOTE</strong> Browser context **must** be created with the {@code acceptDownloads} set to {@code true} when user needs access to the
- * <p>
- * downloaded content. If {@code acceptDownloads} is not set or set to {@code false}, download events are emitted, but the actual
- * <p>
- * download is not performed and user has no access to the downloaded files.
+ * <strong>NOTE</strong> Browser context **must** be created with the {@code acceptDownloads} set to {@code true} when user needs access to the downloaded content. If {@code acceptDownloads} is not set or set to {@code false}, download events are emitted, but the actual download is not performed and user has no access to the downloaded files.
  */
 public interface Download {
   /**
@@ -60,13 +54,7 @@ public interface Download {
    */
   void saveAs(Path path);
   /**
-   * Returns suggested filename for this download. It is typically computed by the browser from the
-   * <p>
-   * {@code Content-Disposition} response header
-   * <p>
-   * or the {@code download} attribute. See the spec on whatwg. Different
-   * <p>
-   * browsers can use different logic for computing it.
+   * Returns suggested filename for this download. It is typically computed by the browser from the {@code Content-Disposition} response header or the {@code download} attribute. See the spec on whatwg. Different browsers can use different logic for computing it.
    */
   String suggestedFilename();
   /**

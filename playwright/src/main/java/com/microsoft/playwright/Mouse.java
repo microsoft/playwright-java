@@ -126,14 +126,14 @@ public interface Mouse {
     click(x, y, null);
   }
   /**
-   * Shortcut for mouse.move(x, y[, options]), mouse.down([options]), mouse.up([options]).
+   * Shortcut for {@code mouse.move(x, y[, options])}, {@code mouse.down([options])}, {@code mouse.up([options])}.
    */
   void click(int x, int y, ClickOptions options);
   default void dblclick(int x, int y) {
     dblclick(x, y, null);
   }
   /**
-   * Shortcut for mouse.move(x, y[, options]), mouse.down([options]), mouse.up([options]), mouse.down([options]) and mouse.up([options]).
+   * Shortcut for {@code mouse.move(x, y[, options])}, {@code mouse.down([options])}, {@code mouse.up([options])}, {@code mouse.down([options])} and {@code mouse.up([options])}.
    */
   void dblclick(int x, int y, DblclickOptions options);
   default void down() {

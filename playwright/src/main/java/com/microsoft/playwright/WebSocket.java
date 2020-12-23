@@ -69,9 +69,7 @@ public interface WebSocket {
   /**
    * Returns the event data value.
    * <p>
-   * Waits for event to fire and passes its value into the predicate function. Resolves when the predicate returns truthy
-   * <p>
-   * value. Will throw an error if the webSocket is closed before the event is fired.
+   * Waits for event to fire and passes its value into the predicate function. Returns when the predicate returns truthy value. Will throw an error if the webSocket is closed before the event is fired.
    * @param event Event name, same one would pass into {@code webSocket.on(event)}.
    */
   Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options);

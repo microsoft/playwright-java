@@ -98,12 +98,12 @@ class Types {
     add("BrowserType.launchPersistentContext.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme", new Empty());
 
     // File
-    add("Page.addScriptTag.script.path", "string", "Path");
-    add("Page.addStyleTag.style.path", "string", "Path");
+    add("Page.addScriptTag.params.path", "string", "Path");
+    add("Page.addStyleTag.params.path", "string", "Path");
     add("Page.pdf.options.path", "string", "Path");
     add("Page.screenshot.options.path", "string", "Path");
-    add("Frame.addScriptTag.script.path", "string", "Path");
-    add("Frame.addStyleTag.style.path", "string", "Path");
+    add("Frame.addScriptTag.params.path", "string", "Path");
+    add("Frame.addStyleTag.params.path", "string", "Path");
     add("ElementHandle.screenshot.options.path", "string", "Path");
     add("Route.fulfill.response.path", "string", "Path");
     add("Route.fulfill.response.status", "number", "int");

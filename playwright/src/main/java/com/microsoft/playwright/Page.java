@@ -23,17 +23,9 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
- * Page provides methods to interact with a single tab in a Browser, or an extension background
+ * Page provides methods to interact with a single tab in a Browser, or an extension background page in Chromium. One Browser instance might have multiple Page instances.
  * <p>
- * page in Chromium. One Browser instance might have multiple
- * <p>
- * Page instances.
- * <p>
- * The Page class emits various events (described below) which can be handled using any of Node's native
- * <p>
- * {@code EventEmitter} methods, such as {@code on}, {@code once} or
- * <p>
- * {@code removeListener}.
+ * The Page class emits various events (described below) which can be handled using any of Node's native {@code EventEmitter} methods, such as {@code on}, {@code once} or {@code removeListener}.
  * <p>
  * To unsubscribe from events use the {@code removeListener} method:
  * <p>
@@ -115,13 +107,13 @@ public interface Page {
   void addListener(EventType type, Listener<EventType> listener);
   void removeListener(EventType type, Listener<EventType> listener);
   enum LoadState { DOMCONTENTLOADED, LOAD, NETWORKIDLE }
-  class AddScriptTagScript {
+  class AddScriptTagParams {
     /**
      * URL of a script to be added.
      */
     public String url;
     /**
-     * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to current working directory.
+     * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the current working directory.
      */
     public Path path;
     /**
@@ -133,30 +125,30 @@ public interface Page {
      */
     public String type;
 
-    public AddScriptTagScript withUrl(String url) {
+    public AddScriptTagParams withUrl(String url) {
       this.url = url;
       return this;
     }
-    public AddScriptTagScript withPath(Path path) {
+    public AddScriptTagParams withPath(Path path) {
       this.path = path;
       return this;
     }
-    public AddScriptTagScript withContent(String content) {
+    public AddScriptTagParams withContent(String content) {
       this.content = content;
       return this;
     }
-    public AddScriptTagScript withType(String type) {
+    public AddScriptTagParams withType(String type) {
       this.type = type;
       return this;
     }
   }
-  class AddStyleTagStyle {
+  class AddStyleTagParams {
     /**
      * URL of the {@code <link>} tag.
      */
     public String url;
     /**
-     * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to current working directory.
+     * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the current working directory.
      */
     public Path path;
     /**
@@ -164,15 +156,15 @@ public interface Page {
      */
     public String content;
 
-    public AddStyleTagStyle withUrl(String url) {
+    public AddStyleTagParams withUrl(String url) {
       this.url = url;
       return this;
     }
-    public AddStyleTagStyle withPath(Path path) {
+    public AddStyleTagParams withPath(Path path) {
       this.path = path;
       return this;
     }
-    public AddStyleTagStyle withContent(String content) {
+    public AddStyleTagParams withContent(String content) {
       this.content = content;
       return this;
     }
@@ -187,7 +179,7 @@ public interface Page {
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -234,7 +226,7 @@ public interface Page {
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -311,7 +303,7 @@ public interface Page {
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -349,7 +341,7 @@ public interface Page {
   }
   class DispatchEventOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -395,7 +387,7 @@ public interface Page {
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -410,7 +402,7 @@ public interface Page {
   }
   class FocusOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -421,7 +413,7 @@ public interface Page {
   }
   class GetAttributeOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -432,7 +424,7 @@ public interface Page {
   }
   class GoBackOptions {
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultNavigationTimeout(timeout)}, {@code browserContext.setDefaultTimeout(timeout)}, {@code page.setDefaultNavigationTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
     /**
@@ -454,7 +446,7 @@ public interface Page {
   }
   class GoForwardOptions {
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultNavigationTimeout(timeout)}, {@code browserContext.setDefaultTimeout(timeout)}, {@code page.setDefaultNavigationTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
     /**
@@ -476,7 +468,7 @@ public interface Page {
   }
   class NavigateOptions {
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultNavigationTimeout(timeout)}, {@code browserContext.setDefaultTimeout(timeout)}, {@code page.setDefaultNavigationTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
     /**
@@ -487,7 +479,7 @@ public interface Page {
      */
     public Frame.LoadState waitUntil;
     /**
-     * Referer header value. If provided it will take preference over the referer header value set by page.setExtraHTTPHeaders(headers).
+     * Referer header value. If provided it will take preference over the referer header value set by {@code page.setExtraHTTPHeaders(headers)}.
      */
     public String referer;
 
@@ -518,7 +510,7 @@ public interface Page {
      */
     public Boolean force;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -544,7 +536,7 @@ public interface Page {
   }
   class InnerHTMLOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -555,7 +547,7 @@ public interface Page {
   }
   class InnerTextOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -607,7 +599,7 @@ public interface Page {
       }
     }
     /**
-     * The file path to save the PDF to. If {@code path} is a relative path, then it is resolved relative to current working directory. If no path is provided, the PDF won't be saved to the disk.
+     * The file path to save the PDF to. If {@code path} is a relative path, then it is resolved relative to the current working directory. If no path is provided, the PDF won't be saved to the disk.
      */
     public Path path;
     /**
@@ -727,7 +719,7 @@ public interface Page {
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -746,7 +738,7 @@ public interface Page {
   }
   class ReloadOptions {
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultNavigationTimeout(timeout)}, {@code browserContext.setDefaultTimeout(timeout)}, {@code page.setDefaultNavigationTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
     /**
@@ -810,7 +802,7 @@ public interface Page {
       }
     }
     /**
-     * The file path to save the image to. The screenshot type will be inferred from file extension. If {@code path} is a relative path, then it is resolved relative to current working directory. If no path is provided, the image won't be saved to the disk.
+     * The file path to save the image to. The screenshot type will be inferred from file extension. If {@code path} is a relative path, then it is resolved relative to the current working directory. If no path is provided, the image won't be saved to the disk.
      */
     public Path path;
     /**
@@ -834,7 +826,7 @@ public interface Page {
      */
     public Boolean omitBackground;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -873,7 +865,7 @@ public interface Page {
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -888,7 +880,7 @@ public interface Page {
   }
   class SetContentOptions {
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultNavigationTimeout(timeout)}, {@code browserContext.setDefaultTimeout(timeout)}, {@code page.setDefaultNavigationTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
     /**
@@ -914,7 +906,7 @@ public interface Page {
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -964,7 +956,7 @@ public interface Page {
      */
     public Boolean force;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -991,7 +983,7 @@ public interface Page {
   }
   class TextContentOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -1010,7 +1002,7 @@ public interface Page {
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -1037,7 +1029,7 @@ public interface Page {
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -1060,7 +1052,7 @@ public interface Page {
      */
     public Integer pollingInterval;
     /**
-     * maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout).
+     * maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)}.
      */
     public Integer timeout;
 
@@ -1079,7 +1071,7 @@ public interface Page {
   }
   class WaitForLoadStateOptions {
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultNavigationTimeout(timeout)}, {@code browserContext.setDefaultTimeout(timeout)}, {@code page.setDefaultNavigationTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -1090,7 +1082,7 @@ public interface Page {
   }
   class WaitForNavigationOptions {
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultNavigationTimeout(timeout), browserContext.setDefaultTimeout(timeout), page.setDefaultNavigationTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultNavigationTimeout(timeout)}, {@code browserContext.setDefaultTimeout(timeout)}, {@code page.setDefaultNavigationTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
     /**
@@ -1130,7 +1122,7 @@ public interface Page {
   }
   class WaitForRequestOptions {
     /**
-     * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be changed by using the page.setDefaultTimeout(timeout) method.
+     * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be changed by using the {@code page.setDefaultTimeout(timeout)} method.
      */
     public Integer timeout;
 
@@ -1141,7 +1133,7 @@ public interface Page {
   }
   class WaitForResponseOptions {
     /**
-     * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -1161,7 +1153,7 @@ public interface Page {
      */
     public State state;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the browserContext.setDefaultTimeout(timeout) or page.setDefaultTimeout(timeout) methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
@@ -1175,20 +1167,16 @@ public interface Page {
     }
   }
   /**
-   * The method finds an element matching the specified selector within the page. If no elements match the selector, the
+   * The method finds an element matching the specified selector within the page. If no elements match the selector, the return value resolves to {@code null}.
    * <p>
-   * return value resolves to {@code null}.
-   * <p>
-   * Shortcut for main frame's frame.$(selector).
+   * Shortcut for main frame's {@code frame.$(selector)}.
    * @param selector A selector to query for. See working with selectors for more details.
    */
   ElementHandle querySelector(String selector);
   /**
-   * The method finds all elements matching the specified selector within the page. If no elements match the selector, the
+   * The method finds all elements matching the specified selector within the page. If no elements match the selector, the return value resolves to {@code []}.
    * <p>
-   * return value resolves to {@code []}.
-   * <p>
-   * Shortcut for main frame's frame.$$(selector).
+   * Shortcut for main frame's {@code frame.$$(selector)}.
    * @param selector A selector to query for. See working with selectors for more details.
    */
   List<ElementHandle> querySelectorAll(String selector);
@@ -1196,15 +1184,13 @@ public interface Page {
     return evalOnSelector(selector, pageFunction, null);
   }
   /**
-   * The method finds an element matching the specified selector within the page and passes it as a first argument to
+   * The method finds an element matching the specified selector within the page and passes it as a first argument to {@code pageFunction}. If no elements match the selector, the method throws an error. Returns the value of {@code pageFunction}.
    * <p>
-   * {@code pageFunction}. If no elements match the selector, the method throws an error. Returns the value of {@code pageFunction}.
-   * <p>
-   * If {@code pageFunction} returns a Promise, then {@code page.$eval} would wait for the promise to resolve and return its value.
+   * If {@code pageFunction} returns a Promise, then {@code page.$eval(selector, pageFunction[, arg])} would wait for the promise to resolve and return its value.
    * <p>
    * Examples:
    * <p>
-   * Shortcut for main frame's frame.$eval(selector, pageFunction[, arg]).
+   * Shortcut for main frame's {@code frame.$eval(selector, pageFunction[, arg])}.
    * @param selector A selector to query for. See working with selectors for more details.
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
@@ -1214,11 +1200,9 @@ public interface Page {
     return evalOnSelectorAll(selector, pageFunction, null);
   }
   /**
-   * The method finds all elements matching the specified selector within the page and passes an array of matched elements as
+   * The method finds all elements matching the specified selector within the page and passes an array of matched elements as a first argument to {@code pageFunction}. Returns the result of {@code pageFunction} invocation.
    * <p>
-   * a first argument to {@code pageFunction}. Returns the result of {@code pageFunction} invocation.
-   * <p>
-   * If {@code pageFunction} returns a Promise, then {@code page.$$eval} would wait for the promise to resolve and return its value.
+   * If {@code pageFunction} returns a Promise, then {@code page.$$eval(selector, pageFunction[, arg])} would wait for the promise to resolve and return its value.
    * <p>
    * Examples:
    * <p>
@@ -1238,33 +1222,25 @@ public interface Page {
    * <p>
    * Whenever the child frame is attached or navigated. In this case, the script is evaluated in the context of the newly attached frame.
    * <p>
-   * The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend
+   * The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend the JavaScript environment, e.g. to seed {@code Math.random}.
    * <p>
-   * the JavaScript environment, e.g. to seed {@code Math.random}.
-   * <p>
-   * <strong>NOTE</strong> The order of evaluation of multiple scripts installed via browserContext.addInitScript(script[, arg]) and
-   * <p>
-   * page.addInitScript(script[, arg]) is not defined.
+   * <strong>NOTE</strong> The order of evaluation of multiple scripts installed via {@code browserContext.addInitScript(script[, arg])} and {@code page.addInitScript(script[, arg])} is not defined.
    * @param script Script to be evaluated in the page.
    * @param arg Optional argument to pass to {@code script} (only supported when passing a function).
    */
   void addInitScript(String script, Object arg);
   /**
-   * Adds a {@code <script>} tag into the page with the desired url or content. Returns the added tag when the script's onload
+   * Adds a {@code <script>} tag into the page with the desired url or content. Returns the added tag when the script's onload fires or when the script content was injected into frame.
    * <p>
-   * fires or when the script content was injected into frame.
-   * <p>
-   * Shortcut for main frame's frame.addScriptTag(script).
+   * Shortcut for main frame's {@code frame.addScriptTag(params)}.
    */
-  ElementHandle addScriptTag(AddScriptTagScript script);
+  ElementHandle addScriptTag(AddScriptTagParams params);
   /**
-   * Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag with the
+   * Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag with the content. Returns the added tag when the stylesheet's onload fires or when the CSS content was injected into frame.
    * <p>
-   * content. Returns the added tag when the stylesheet's onload fires or when the CSS content was injected into frame.
-   * <p>
-   * Shortcut for main frame's frame.addStyleTag(style).
+   * Shortcut for main frame's {@code frame.addStyleTag(params)}.
    */
-  ElementHandle addStyleTag(AddStyleTagStyle style);
+  ElementHandle addStyleTag(AddStyleTagParams params);
   /**
    * Brings page to front (activates tab).
    */
@@ -1289,11 +1265,9 @@ public interface Page {
    * <p>
    * Ensure that the element is now checked. If not, this method rejects.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
    * <p>
-   * Passing zero timeout disables this.
-   * <p>
-   * Shortcut for main frame's frame.check(selector[, options]).
+   * Shortcut for main frame's {@code frame.check(selector[, options])}.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    */
   void check(String selector, CheckOptions options);
@@ -1313,11 +1287,9 @@ public interface Page {
    * <p>
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
    * <p>
-   * Passing zero timeout disables this.
-   * <p>
-   * Shortcut for main frame's frame.click(selector[, options]).
+   * Shortcut for main frame's {@code frame.click(selector[, options])}.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    */
   void click(String selector, ClickOptions options);
@@ -1325,11 +1297,9 @@ public interface Page {
     close(null);
   }
   /**
-   * If {@code runBeforeUnload} is {@code false} the result will resolve only after the page has been closed. If {@code runBeforeUnload} is
+   * If {@code runBeforeUnload} is {@code false}, does not run any unload handlers and waits for the page to be closed. If {@code runBeforeUnload} is {@code true} the method will run unload handlers, but will **not** wait for the page to close.
    * <p>
-   * {@code true} the method will **not** wait for the page to close. By default, {@code page.close()} **does not** run beforeunload
-   * <p>
-   * handlers.
+   * By default, {@code page.close()} **does not** run {@code beforeunload} handlers.
    * <p>
    * <strong>NOTE</strong> if {@code runBeforeUnload} is passed as true, a {@code beforeunload} dialog might be summoned
    * <p>
@@ -1360,13 +1330,11 @@ public interface Page {
    * <p>
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first click of the {@code dblclick()} triggers a navigation event, this method will reject.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
-   * <p>
-   * Passing zero timeout disables this.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
    * <p>
    * <strong>NOTE</strong> {@code page.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    * <p>
-   * Shortcut for main frame's frame.dblclick(selector[, options]).
+   * Shortcut for main frame's {@code frame.dblclick(selector[, options])}.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    */
   void dblclick(String selector, DblclickOptions options);
@@ -1377,15 +1345,9 @@ public interface Page {
     dispatchEvent(selector, type, null);
   }
   /**
-   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
+   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click} is dispatched. This is equivalend to calling element.click().
    * <p>
-   * is dispatched. This is equivalend to calling
-   * <p>
-   * element.click().
-   * <p>
-   * Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
-   * <p>
-   * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
+   * Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
    * <p>
    * Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
    * <p>
@@ -1422,15 +1384,9 @@ public interface Page {
   /**
    * Returns the value of the {@code pageFunction} invacation.
    * <p>
-   * If the function passed to the {@code page.evaluate} returns a Promise, then {@code page.evaluate} would wait for the promise to
+   * If the function passed to the {@code page.evaluate} returns a Promise, then {@code page.evaluate} would wait for the promise to resolve and return its value.
    * <p>
-   * resolve and return its value.
-   * <p>
-   * If the function passed to the {@code page.evaluate} returns a non-Serializable value, then {@code page.evaluate} resolves to
-   * <p>
-   * {@code undefined}. DevTools Protocol also supports transferring some additional values that are not serializable by {@code JSON}:
-   * <p>
-   * {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}, and bigint literals.
+   * If the function passed to the {@code page.evaluate} returns a non-Serializable value, then {@code page.evaluate} resolves to {@code undefined}. DevTools Protocol also supports transferring some additional values that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}, and bigint literals.
    * <p>
    * Passing argument to {@code pageFunction}:
    * <p>
@@ -1438,7 +1394,7 @@ public interface Page {
    * <p>
    * ElementHandle instances can be passed as an argument to the {@code page.evaluate}:
    * <p>
-   * Shortcut for main frame's frame.evaluate(pageFunction[, arg]).
+   * Shortcut for main frame's {@code frame.evaluate(pageFunction[, arg])}.
    * @param pageFunction Function to be evaluated in the page context
    * @param arg Optional argument to pass to {@code pageFunction}
    */
@@ -1449,13 +1405,9 @@ public interface Page {
   /**
    * Returns the value of the {@code pageFunction} invacation as in-page object (JSHandle).
    * <p>
-   * The only difference between {@code page.evaluate} and {@code page.evaluateHandle} is that {@code page.evaluateHandle} returns in-page
+   * The only difference between {@code page.evaluate} and {@code page.evaluateHandle} is that {@code page.evaluateHandle} returns in-page object (JSHandle).
    * <p>
-   * object (JSHandle).
-   * <p>
-   * If the function passed to the {@code page.evaluateHandle} returns a Promise, then {@code page.evaluateHandle} would wait for the
-   * <p>
-   * promise to resolve and return its value.
+   * If the function passed to the {@code page.evaluateHandle} returns a Promise, then {@code page.evaluateHandle} would wait for the promise to resolve and return its value.
    * <p>
    * A string can also be passed in instead of a function:
    * <p>
@@ -1470,15 +1422,11 @@ public interface Page {
     exposeBinding(name, playwrightBinding, null);
   }
   /**
-   * The method adds a function called {@code name} on the {@code window} object of every frame in this page. When called, the function
-   * <p>
-   * executes {@code playwrightBinding} in Node.js and returns a Promise which resolves to the return value of
-   * <p>
-   * {@code playwrightBinding}. If the {@code playwrightBinding} returns a Promise, it will be awaited.
+   * The method adds a function called {@code name} on the {@code window} object of every frame in this page. When called, the function executes {@code playwrightBinding} and returns a Promise which resolves to the return value of {@code playwrightBinding}. If the {@code playwrightBinding} returns a Promise, it will be awaited.
    * <p>
    * The first argument of the {@code playwrightBinding} function contains information about the caller: {@code { browserContext: BrowserContext, page: Page, frame: Frame }}.
    * <p>
-   * See browserContext.exposeBinding(name, playwrightBinding[, options]) for the context-wide version.
+   * See {@code browserContext.exposeBinding(name, playwrightBinding[, options])} for the context-wide version.
    * <p>
    * <strong>NOTE</strong> Functions installed via {@code page.exposeBinding} survive navigations.
    * <p>
@@ -1488,15 +1436,11 @@ public interface Page {
    */
   void exposeBinding(String name, Binding playwrightBinding, ExposeBindingOptions options);
   /**
-   * The method adds a function called {@code name} on the {@code window} object of every frame in the page. When called, the function
-   * <p>
-   * executes {@code playwrightFunction} in Node.js and returns a Promise which resolves to the return value of
-   * <p>
-   * {@code playwrightFunction}.
+   * The method adds a function called {@code name} on the {@code window} object of every frame in the page. When called, the function executes {@code playwrightFunction} and returns a Promise which resolves to the return value of {@code playwrightFunction}.
    * <p>
    * If the {@code playwrightFunction} returns a Promise, it will be awaited.
    * <p>
-   * See browserContext.exposeFunction(name, playwrightFunction) for context-wide exposed function.
+   * See {@code browserContext.exposeFunction(name, playwrightFunction)} for context-wide exposed function.
    * <p>
    * <strong>NOTE</strong> Functions installed via {@code page.exposeFunction} survive navigations.
    * <p>
@@ -1509,17 +1453,11 @@ public interface Page {
     fill(selector, value, null);
   }
   /**
-   * This method waits for an element matching {@code selector}, waits for actionability checks, focuses the
+   * This method waits for an element matching {@code selector}, waits for actionability checks, focuses the element, fills it and triggers an {@code input} event after filling. If the element matching {@code selector} is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error. Note that you can pass an empty string to clear the input field.
    * <p>
-   * element, fills it and triggers an {@code input} event after filling. If the element matching {@code selector} is not an {@code <input>},
+   * To send fine-grained keyboard events, use {@code page.type(selector, text[, options])}.
    * <p>
-   * {@code <textarea>} or {@code [contenteditable]} element, this method throws an error. Note that you can pass an empty string to
-   * <p>
-   * clear the input field.
-   * <p>
-   * To send fine-grained keyboard events, use page.type(selector, text[, options]).
-   * <p>
-   * Shortcut for main frame's frame.fill(selector, value[, options])
+   * Shortcut for main frame's {@code frame.fill(selector, value[, options])}
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
@@ -1528,11 +1466,9 @@ public interface Page {
     focus(selector, null);
   }
   /**
-   * This method fetches an element with {@code selector} and focuses it. If there's no element matching {@code selector}, the method
+   * This method fetches an element with {@code selector} and focuses it. If there's no element matching {@code selector}, the method waits until a matching element appears in the DOM.
    * <p>
-   * waits until a matching element appears in the DOM.
-   * <p>
-   * Shortcut for main frame's frame.focus(selector[, options]).
+   * Shortcut for main frame's {@code frame.focus(selector[, options])}.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    */
   void focus(String selector, FocusOptions options);
@@ -1563,9 +1499,7 @@ public interface Page {
     return goBack(null);
   }
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * <p>
-   * last redirect. If can not go back, resolves to {@code null}.
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect. If can not go back, returns {@code null}.
    * <p>
    * Navigate to the previous page in history.
    */
@@ -1574,9 +1508,7 @@ public interface Page {
     return goForward(null);
   }
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * <p>
-   * last redirect. If can not go forward, resolves to {@code null}.
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect. If can not go forward, returns {@code null}.
    * <p>
    * Navigate to the next page in history.
    */
@@ -1585,9 +1517,7 @@ public interface Page {
     return navigate(url, null);
   }
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * <p>
-   * last redirect.
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect.
    * <p>
    * {@code page.goto} will throw an error if:
    * <p>
@@ -1601,21 +1531,13 @@ public interface Page {
    * <p>
    * the main resource failed to load.
    * <p>
-   * {@code page.goto} will not throw an error when any valid HTTP status code is returned by the remote server, including 404 "Not
+   * {@code page.goto} will not throw an error when any valid HTTP status code is returned by the remote server, including 404 "Not Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling {@code response.status()}.
    * <p>
-   * Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling
+   * <strong>NOTE</strong> {@code page.goto} either throws an error or returns a main resource response. The only exceptions are navigation to {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
    * <p>
-   * response.status().
+   * <strong>NOTE</strong> Headless mode doesn't support navigation to a PDF document. See the upstream issue.
    * <p>
-   * <strong>NOTE</strong> {@code page.goto} either throws an error or returns a main resource response. The only exceptions are navigation to
-   * <p>
-   * {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
-   * <p>
-   * <strong>NOTE</strong> Headless mode doesn't support navigation to a PDF document. See the upstream
-   * <p>
-   * issue.
-   * <p>
-   * Shortcut for main frame's frame.goto(url[, options])
+   * Shortcut for main frame's {@code frame.goto(url[, options])}
    * @param url URL to navigate page to. The url should include scheme, e.g. {@code https://}.
    */
   Response navigate(String url, NavigateOptions options);
@@ -1635,11 +1557,9 @@ public interface Page {
    * <p>
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
    * <p>
-   * Passing zero timeout disables this.
-   * <p>
-   * Shortcut for main frame's frame.hover(selector[, options]).
+   * Shortcut for main frame's {@code frame.hover(selector[, options])}.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    */
   void hover(String selector, HoverOptions options);
@@ -1668,9 +1588,7 @@ public interface Page {
    */
   Frame mainFrame();
   /**
-   * Returns the opener for popup pages and {@code null} for others. If the opener has been closed already the promise may resolve
-   * <p>
-   * to {@code null}.
+   * Returns the opener for popup pages and {@code null} for others. If the opener has been closed already the returns {@code null}.
    */
   Page opener();
   default byte[] pdf() {
@@ -1681,15 +1599,9 @@ public interface Page {
    * <p>
    * <strong>NOTE</strong> Generating a pdf is currently only supported in Chromium headless.
    * <p>
-   * {@code page.pdf()} generates a pdf of the page with {@code print} css media. To generate a pdf with {@code screen} media, call
+   * {@code page.pdf()} generates a pdf of the page with {@code print} css media. To generate a pdf with {@code screen} media, call {@code page.emulateMedia(params)} before calling {@code page.pdf()}:
    * <p>
-   * page.emulateMedia(params) before calling {@code page.pdf()}:
-   * <p>
-   * <strong>NOTE</strong> By default, {@code page.pdf()} generates a pdf with modified colors for printing. Use the
-   * <p>
-   * {@code -webkit-print-color-adjust} property to
-   * <p>
-   * force rendering of exact colors.
+   * <strong>NOTE</strong> By default, {@code page.pdf()} generates a pdf with modified colors for printing. Use the {@code -webkit-print-color-adjust} property to force rendering of exact colors.
    * <p>
    * 
    * <p>
@@ -1750,29 +1662,19 @@ public interface Page {
     press(selector, key, null);
   }
   /**
-   * Focuses the element, and then uses keyboard.down(key) and keyboard.up(key).
+   * Focuses the element, and then uses {@code keyboard.down(key)} and {@code keyboard.up(key)}.
    * <p>
-   * {@code key} can specify the intended keyboardEvent.key
+   * {@code key} can specify the intended keyboardEvent.key value or a single character to generate the text for. A superset of the {@code key} values can be found here. Examples of the keys are:
    * <p>
-   * value or a single character to generate the text for. A superset of the {@code key} values can be found
-   * <p>
-   * here. Examples of the keys are:
-   * <p>
-   * {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
-   * <p>
-   * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
+   * {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
    * <p>
    * Following modification shortcuts are also suported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
    * <p>
    * Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
    * <p>
-   * If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
+   * If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective texts.
    * <p>
-   * texts.
-   * <p>
-   * Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
-   * <p>
-   * modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   * Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the modifier, modifier is pressed and being held while the subsequent key is being pressed.
    * <p>
    * 
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
@@ -1783,9 +1685,7 @@ public interface Page {
     return reload(null);
   }
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * <p>
-   * last redirect.
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect.
    */
   Response reload(ReloadOptions options);
   void route(String url, Consumer<Route> handler);
@@ -1799,9 +1699,7 @@ public interface Page {
    * <p>
    * or the same snippet using a regex pattern instead:
    * <p>
-   * Page routes take precedence over browser context routes (set up with browserContext.route(url, handler)) when request matches
-   * <p>
-   * both handlers.
+   * Page routes take precedence over browser context routes (set up with {@code browserContext.route(url, handler)}) when request matches both handlers.
    * <p>
    * <strong>NOTE</strong> Enabling routing disables http cache.
    * @param url A glob pattern, regex pattern or predicate receiving URL to match while routing.
@@ -1814,9 +1712,7 @@ public interface Page {
   /**
    * Returns the buffer with the captured screenshot.
    * <p>
-   * <strong>NOTE</strong> Screenshots take at least 1/6 second on Chromium OS X and Chromium Windows. See https://crbug.com/741689 for
-   * <p>
-   * discussion.
+   * <strong>NOTE</strong> Screenshots take at least 1/6 second on Chromium OS X and Chromium Windows. See https://crbug.com/741689 for discussion.
    */
   byte[] screenshot(ScreenshotOptions options);
   default List<String> selectOption(String selector, String value) {
@@ -1860,11 +1756,9 @@ public interface Page {
   /**
    * Returns the array of option values that have been successfully selected.
    * <p>
-   * Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
+   * Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element matching {@code selector}, the method throws an error.
    * <p>
-   * matching {@code selector}, the method throws an error.
-   * <p>
-   * Shortcut for main frame's frame.selectOption(selector, values[, options])
+   * Shortcut for main frame's {@code frame.selectOption(selector, values[, options])}
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option is considered matching if all specified properties match.
    */
@@ -1880,30 +1774,28 @@ public interface Page {
   /**
    * This setting will change the default maximum navigation time for the following methods and related shortcuts:
    * <p>
-   * page.goBack([options])
+   * {@code page.goBack([options])}
    * <p>
-   * page.goForward([options])
+   * {@code page.goForward([options])}
    * <p>
-   * page.goto(url[, options])
+   * {@code page.goto(url[, options])}
    * <p>
-   * page.reload([options])
+   * {@code page.reload([options])}
    * <p>
-   * page.setContent(html[, options])
+   * {@code page.setContent(html[, options])}
    * <p>
-   * page.waitForNavigation([options])
+   * {@code page.waitForNavigation([options])}
    * <p>
    * 
    * <p>
-   * <strong>NOTE</strong> page.setDefaultNavigationTimeout(timeout) takes priority over page.setDefaultTimeout(timeout),
-   * <p>
-   * browserContext.setDefaultTimeout(timeout) and browserContext.setDefaultNavigationTimeout(timeout).
+   * <strong>NOTE</strong> {@code page.setDefaultNavigationTimeout(timeout)} takes priority over {@code page.setDefaultTimeout(timeout)}, {@code browserContext.setDefaultTimeout(timeout)} and {@code browserContext.setDefaultNavigationTimeout(timeout)}.
    * @param timeout Maximum navigation time in milliseconds
    */
   void setDefaultNavigationTimeout(int timeout);
   /**
    * This setting will change the default maximum time for all the methods accepting {@code timeout} option.
    * <p>
-   * <strong>NOTE</strong> page.setDefaultNavigationTimeout(timeout) takes priority over page.setDefaultTimeout(timeout).
+   * <strong>NOTE</strong> {@code page.setDefaultNavigationTimeout(timeout)} takes priority over {@code page.setDefaultTimeout(timeout)}.
    * @param timeout Maximum time in milliseconds
    */
   void setDefaultTimeout(int timeout);
@@ -1922,26 +1814,16 @@ public interface Page {
   default void setInputFiles(String selector, FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(selector, new FileChooser.FilePayload[]{ file }, options); }
   default void setInputFiles(String selector, FileChooser.FilePayload[] files) { setInputFiles(selector, files, null); }
   /**
-   * This method expects {@code selector} to point to an input
+   * This method expects {@code selector} to point to an input element.
    * <p>
-   * element.
-   * <p>
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * <p>
-   * are resolved relative to the current working directory. For
-   * <p>
-   * empty array, clears the selected files.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they are resolved relative to the the current working directory. For empty array, clears the selected files.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    */
   void setInputFiles(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options);
   /**
-   * In the case of multiple pages in a single browser, each page can have its own viewport size. However,
+   * In the case of multiple pages in a single browser, each page can have its own viewport size. However, {@code browser.newContext([options])} allows to set viewport size (and more) for all pages in the context at once.
    * <p>
-   * browser.newContext([options]) allows to set viewport size (and more) for all pages in the context at once.
-   * <p>
-   * {@code page.setViewportSize} will resize the page. A lot of websites don't expect phones to change size, so you should set the
-   * <p>
-   * viewport size before navigating to the page.
+   * {@code page.setViewportSize} will resize the page. A lot of websites don't expect phones to change size, so you should set the viewport size before navigating to the page.
    * <p>
    */
   void setViewportSize(int width, int height);
@@ -1961,13 +1843,11 @@ public interface Page {
    * <p>
    * Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
-   * <p>
-   * Passing zero timeout disables this.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
    * <p>
    * <strong>NOTE</strong> {@code page.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    * <p>
-   * Shortcut for main frame's frame.tap(selector[, options]).
+   * Shortcut for main frame's {@code frame.tap(selector[, options])}.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    */
   void tap(String selector, TapOptions options);
@@ -1980,20 +1860,18 @@ public interface Page {
    */
   String textContent(String selector, TextContentOptions options);
   /**
-   * Returns the page's title. Shortcut for main frame's frame.title().
+   * Returns the page's title. Shortcut for main frame's {@code frame.title()}.
    */
   String title();
   default void type(String selector, String text) {
     type(selector, text, null);
   }
   /**
-   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code page.type} can be used to send
+   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code page.type} can be used to send fine-grained keyboard events. To fill values in form fields, use {@code page.fill(selector, value[, options])}.
    * <p>
-   * fine-grained keyboard events. To fill values in form fields, use page.fill(selector, value[, options]).
+   * To press a special key, like {@code Control} or {@code ArrowDown}, use {@code keyboard.press(key[, options])}.
    * <p>
-   * To press a special key, like {@code Control} or {@code ArrowDown}, use keyboard.press(key[, options]).
-   * <p>
-   * Shortcut for main frame's frame.type(selector, text[, options]).
+   * Shortcut for main frame's {@code frame.type(selector, text[, options])}.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    * @param text A text to type into a focused element.
    */
@@ -2018,11 +1896,9 @@ public interface Page {
    * <p>
    * Ensure that the element is now unchecked. If not, this method rejects.
    * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError.
+   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
    * <p>
-   * Passing zero timeout disables this.
-   * <p>
-   * Shortcut for main frame's frame.uncheck(selector[, options]).
+   * Shortcut for main frame's {@code frame.uncheck(selector[, options])}.
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See working with selectors for more details.
    */
   void uncheck(String selector, UncheckOptions options);
@@ -2032,13 +1908,13 @@ public interface Page {
   void unroute(String url, Consumer<Route> handler);
   void unroute(Pattern url, Consumer<Route> handler);
   /**
-   * Removes a route created with page.route(url, handler). When {@code handler} is not specified, removes all routes for the {@code url}.
+   * Removes a route created with {@code page.route(url, handler)}. When {@code handler} is not specified, removes all routes for the {@code url}.
    * @param url A glob pattern, regex pattern or predicate receiving URL to match while routing.
    * @param handler Optional handler function to route the request.
    */
   void unroute(Predicate<String> url, Consumer<Route> handler);
   /**
-   * Shortcut for main frame's frame.url().
+   * Shortcut for main frame's {@code frame.url()}.
    */
   String url();
   /**
@@ -2057,9 +1933,7 @@ public interface Page {
   /**
    * Returns the event data value.
    * <p>
-   * Waits for event to fire and passes its value into the predicate function. Resolves when the predicate returns truthy
-   * <p>
-   * value. Will throw an error if the page is closed before the event is fired.
+   * Waits for event to fire and passes its value into the predicate function. Returns when the predicate returns truthy value. Will throw an error if the page is closed before the event is fired.
    * @param event Event name, same one would pass into {@code page.on(event)}.
    */
   Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options);
@@ -2074,9 +1948,9 @@ public interface Page {
    * <p>
    * The {@code waitForFunction} can be used to observe viewport size change:
    * <p>
-   * To pass an argument from Node.js to the predicate of {@code page.waitForFunction} function:
+   * To pass an argument to the predicate of {@code page.waitForFunction} function:
    * <p>
-   * Shortcut for main frame's frame.waitForFunction(pageFunction[, arg, options]).
+   * Shortcut for main frame's {@code frame.waitForFunction(pageFunction[, arg, options])}.
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
    */
@@ -2090,13 +1964,11 @@ public interface Page {
   /**
    * Returns when the required load state has been reached.
    * <p>
-   * This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been committed
-   * <p>
-   * when this method is called. If current document has already reached the required state, resolves immediately.
+   * This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been committed when this method is called. If current document has already reached the required state, resolves immediately.
    * <p>
    * 
    * <p>
-   * Shortcut for main frame's frame.waitForLoadState([state, options]).
+   * Shortcut for main frame's {@code frame.waitForLoadState([state, options])}.
    * @param state Load state to wait for, defaults to {@code load}. If the state has been already reached while loading current document, the method resolves immediately. Optional.
    *  - {@code 'load'} - wait for the {@code load} event to be fired.
    *  - {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.
@@ -2107,23 +1979,13 @@ public interface Page {
     return waitForNavigation(null);
   }
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect. In case of navigation to a different anchor or navigation due to History API usage, the navigation will resolve with {@code null}.
    * <p>
-   * last redirect. In case of navigation to a different anchor or navigation due to History API usage, the navigation will
+   * This resolves when the page navigates to a new URL or reloads. It is useful for when you run code which will indirectly cause the page to navigate. e.g. The click target has an {@code onclick} handler that triggers navigation from a {@code setTimeout}. Consider this example:
    * <p>
-   * resolve with {@code null}.
+   * <strong>NOTE</strong> Usage of the History API to change the URL is considered a navigation.
    * <p>
-   * This resolves when the page navigates to a new URL or reloads. It is useful for when you run code which will indirectly
-   * <p>
-   * cause the page to navigate. e.g. The click target has an {@code onclick} handler that triggers navigation from a {@code setTimeout}.
-   * <p>
-   * Consider this example:
-   * <p>
-   * <strong>NOTE</strong> Usage of the History API to change the URL is
-   * <p>
-   * considered a navigation.
-   * <p>
-   * Shortcut for main frame's frame.waitForNavigation([options]).
+   * Shortcut for main frame's {@code frame.waitForNavigation([options])}.
    */
   Deferred<Response> waitForNavigation(WaitForNavigationOptions options);
   default Deferred<Request> waitForRequest(String urlGlob) { return waitForRequest(urlGlob, null); }
@@ -2142,15 +2004,9 @@ public interface Page {
     return waitForSelector(selector, null);
   }
   /**
-   * Returns when element specified by selector satisfies {@code state} option. Resolves to {@code null} if waiting for {@code hidden} or
+   * Returns when element specified by selector satisfies {@code state} option. Returns {@code null} if waiting for {@code hidden} or {@code detached}.
    * <p>
-   * {@code detached}.
-   * <p>
-   * Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at
-   * <p>
-   * the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the
-   * <p>
-   * selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
+   * Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
    * <p>
    * This method works across navigations:
    * <p>
@@ -2159,20 +2015,16 @@ public interface Page {
    */
   Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options);
   /**
-   * Returns a promise that resolves after the timeout.
+   * Waits for the given {@code timeout} in milliseconds.
    * <p>
-   * Note that {@code page.waitForTimeout()} should only be used for debugging. Tests using the timer in production are going to be
+   * Note that {@code page.waitForTimeout()} should only be used for debugging. Tests using the timer in production are going to be flaky. Use signals such as network events, selectors becoming visible and others instead.
    * <p>
-   * flaky. Use signals such as network events, selectors becoming visible and others instead.
-   * <p>
-   * Shortcut for main frame's frame.waitForTimeout(timeout).
+   * Shortcut for main frame's {@code frame.waitForTimeout(timeout)}.
    * @param timeout A timeout to wait for
    */
   Deferred<Void> waitForTimeout(int timeout);
   /**
-   * This method returns all of the dedicated WebWorkers
-   * <p>
-   * associated with the page.
+   * This method returns all of the dedicated WebWorkers associated with the page.
    * <p>
    * <strong>NOTE</strong> This does not contain ServiceWorkers
    */

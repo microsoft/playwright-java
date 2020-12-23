@@ -263,13 +263,13 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public ElementHandle addScriptTag(AddScriptTagScript options) {
-    return mainFrame.addScriptTag(convertViaJson(options, Frame.AddScriptTagScript.class));
+  public ElementHandle addScriptTag(AddScriptTagParams params) {
+    return mainFrame.addScriptTag(convertViaJson(params, Frame.AddScriptTagParams.class));
   }
 
   @Override
-  public ElementHandle addStyleTag(AddStyleTagStyle options) {
-    return mainFrame.addStyleTag(convertViaJson(options, Frame.AddStyleTagStyle.class));
+  public ElementHandle addStyleTag(AddStyleTagParams params) {
+    return mainFrame.addStyleTag(convertViaJson(params, Frame.AddStyleTagParams.class));
   }
 
   @Override
