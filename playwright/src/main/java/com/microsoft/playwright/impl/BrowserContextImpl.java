@@ -277,6 +277,39 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     unroute(new UrlMatcher(url), handler);
   }
 
+  private class WaitableContextClose<R> implements Waitable<R>, Listener<EventType> {
+    private String errorMessage;
+
+    WaitableContextClose() {
+      addListener(EventType.CLOSE, this);
+    }
+
+    @Override
+    public void handle(Event<EventType> event) {
+      if (EventType.CLOSE == event.type()) {
+        errorMessage = "Context closed";
+      } else {
+        return;
+      }
+      dispose();
+    }
+
+    @Override
+    public boolean isDone() {
+      return errorMessage != null;
+    }
+
+    @Override
+    public R get() {
+      throw new PlaywrightException(errorMessage);
+    }
+
+    @Override
+    public void dispose() {
+      removeListener(EventType.CLOSE, this);
+    }
+  }
+
   @Override
   public Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options) {
     if (options == null) {
@@ -284,6 +317,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
     List<Waitable<Event<EventType>>> waitables = new ArrayList<>();
     waitables.add(new WaitableEvent<>(listeners, event, options.predicate));
+    waitables.add(new WaitableContextClose<>());
     waitables.add(timeoutSettings.createWaitable(options.timeout));
     return toDeferred(new WaitableRace<>(waitables));
   }
