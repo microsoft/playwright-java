@@ -56,6 +56,9 @@ public class PageImpl extends ChannelOwner implements Page {
     mainFrame = connection.getExistingObject(initializer.getAsJsonObject("mainFrame").get("guid").getAsString());
     mainFrame.page = this;
     isClosed = initializer.get("isClosed").getAsBoolean();
+    if (initializer.has("viewportSize")) {
+      viewport = gson().fromJson(initializer.get("viewportSize"), Viewport.class);
+    }
     keyboard = new KeyboardImpl(this);
     mouse = new MouseImpl(this);
     touchscreen = new TouchscreenImpl(this);
