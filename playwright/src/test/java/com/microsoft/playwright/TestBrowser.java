@@ -62,8 +62,11 @@ public class TestBrowser extends TestBase {
   void versionShouldWork() {
     if (isChromium()) {
       assertTrue(Pattern.matches("^\\d+\\.\\d+\\.\\d+\\.\\d+$", browser.version()));
-    } else {
+    } else if (isWebKit()) {
       assertTrue(Pattern.matches("^\\d+\\.\\d+", browser.version()));
+    } else if (isFirefox()) {
+      // It can be 85.0b1 in Firefox.
+      assertTrue(Pattern.matches("^\\d+\\.\\d+.*", browser.version()));
     }
   }
 }
