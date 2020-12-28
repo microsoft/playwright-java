@@ -57,6 +57,10 @@ public class TestBase {
     return options;
   }
 
+  static void currentBrowserType(Playwright playwright) {
+
+  }
+
   static void launchBrowser(BrowserType.LaunchOptions launchOptions) {
     playwright = Playwright.create();
 
@@ -133,8 +137,10 @@ public class TestBase {
 
   @AfterEach
   void closeContext() {
-    context.close();
-    context = null;
-    page = null;
+    if (context != null) {
+      context.close();
+      context = null;
+      page = null;
+    }
   }
 }

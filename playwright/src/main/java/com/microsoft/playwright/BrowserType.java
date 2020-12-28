@@ -121,7 +121,7 @@ public interface BrowserType {
     /**
      * Specify environment variables that will be visible to the browser. Defaults to {@code process.env}.
      */
-    public String env;
+    public Map<String, String> env;
     /**
      * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless} option will be set {@code false}.
      */
@@ -183,7 +183,7 @@ public interface BrowserType {
       this.timeout = timeout;
       return this;
     }
-    public LaunchOptions withEnv(String env) {
+    public LaunchOptions withEnv(Map<String, String> env) {
       this.env = env;
       return this;
     }
@@ -360,7 +360,7 @@ public interface BrowserType {
     /**
      * Specify environment variables that will be visible to the browser. Defaults to {@code process.env}.
      */
-    public String env;
+    public Map<String, String> env;
     /**
      * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless} option will be set {@code false}.
      */
@@ -491,7 +491,7 @@ public interface BrowserType {
       this.timeout = timeout;
       return this;
     }
-    public LaunchPersistentContextOptions withEnv(String env) {
+    public LaunchPersistentContextOptions withEnv(Map<String, String> env) {
       this.env = env;
       return this;
     }
