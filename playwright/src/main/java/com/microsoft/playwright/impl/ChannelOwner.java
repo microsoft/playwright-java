@@ -90,11 +90,23 @@ class ChannelOwner {
 
   @SuppressWarnings("unchecked")
   <T> Deferred<T> toDeferred(Waitable waitable) {
-    return () -> {
-      while (!waitable.isDone()) {
-        connection.processOneMessage();
+    return new Deferred<T>() {
+      Exception constructionStackTrace = new Exception();
+      @Override
+      public T get() {
+        constructionStackTrace = null;
+        while (!waitable.isDone()) {
+          connection.processOneMessage();
+        }
+        return (T) waitable.get();
       }
-      return (T) waitable.get();
+
+      @Override
+      protected void finalize() {
+        if (constructionStackTrace != null) {
+          connection.unusedDeferredObjects.add(constructionStackTrace);
+        }
+      }
     };
   }
 
