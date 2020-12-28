@@ -279,12 +279,12 @@ class Types {
     add("Route.fulfill.response.body", "string|Buffer", "String");
     add("BrowserType.launch.options.ignoreDefaultArgs", "boolean|Array<string>", "Boolean");
     add("BrowserType.launch.options.firefoxUserPrefs", "Object<string, string|number|boolean>", "String");
-    add("BrowserType.launch.options.env", "Object<string, string|number|boolean>", "String");
+    add("BrowserType.launch.options.env", "Object<string, string|number|boolean>", "Map<String, String>");
     add("BrowserType.launchPersistentContext.options.ignoreDefaultArgs", "boolean|Array<string>", "String");
-    add("BrowserType.launchPersistentContext.options.env", "Object<string, string|number|boolean>", "String");
+    add("BrowserType.launchPersistentContext.options.env", "Object<string, string|number|boolean>", "Map<String, String>");
     add("BrowserType.launchServer.options.ignoreDefaultArgs", "boolean|Array<string>", "String");
     add("BrowserType.launchServer.options.firefoxUserPrefs", "Object<string, string|number|boolean>", "String");
-    add("BrowserType.launchServer.options.env", "Object<string, string|number|boolean>", "String");
+    add("BrowserType.launchServer.options.env", "Object<string, string|number|boolean>", "Map<String, String>");
     add("Logger.log.message", "string|Error", "String");
 
     add("Browser.newContext.options.geolocation.latitude", "number", "double");

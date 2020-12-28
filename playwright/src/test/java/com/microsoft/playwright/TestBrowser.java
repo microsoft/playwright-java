@@ -25,26 +25,10 @@ import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestBrowser {
-  private static Playwright playwright;
-  private Browser browser;
-  private boolean isChromium;
-
-  @BeforeAll
-  static void beforeAll() {
-    playwright = Playwright.create();
-  }
-
-  @BeforeEach
-  void setUp() {
-    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
-    browser = playwright.chromium().launch(options);
-    isChromium = true;
-  }
-
-  @AfterEach
-  void tearDown() {
-    browser.close();
+public class TestBrowser extends TestBase {
+  @Override
+  void createContextAndPage() {
+    // Do not create anything.
   }
 
   @Test
@@ -74,12 +58,15 @@ public class TestBrowser {
     page.close();
   }
 
-
   @Test
   void versionShouldWork() {
-    if (isChromium)
+    if (isChromium()) {
       assertTrue(Pattern.matches("^\\d+\\.\\d+\\.\\d+\\.\\d+$", browser.version()));
-    else
+    } else if (isWebKit()) {
       assertTrue(Pattern.matches("^\\d+\\.\\d+", browser.version()));
+    } else if (isFirefox()) {
+      // It can be 85.0b1 in Firefox.
+      assertTrue(Pattern.matches("^\\d+\\.\\d+.*", browser.version()));
+    }
   }
 }

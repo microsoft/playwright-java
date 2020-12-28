@@ -86,10 +86,6 @@ class BrowserImpl extends ChannelOwner implements Browser {
       }
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    if (options.extraHTTPHeaders != null) {
-      params.remove("extraHTTPHeaders");
-      params.add("extraHTTPHeaders", Serialization.toProtocol(options.extraHTTPHeaders));
-    }
     JsonElement result = sendMessage("newContext", params);
     BrowserContextImpl context = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("context").get("guid").getAsString());
     contexts.add(context);
