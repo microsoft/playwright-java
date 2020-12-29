@@ -435,8 +435,8 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldThrowANiceErrorAfterANavigation() {
+    Deferred<Response> navigation = page.waitForNavigation();
     try {
-      Deferred<Response> navigation = page.waitForNavigation();
       page.evaluate("() => {\n" +
         "  const promise = new Promise(f => window['__resolve'] = f);\n" +
         "  window.location.reload();\n" +
@@ -446,6 +446,8 @@ public class TestPageEvaluate extends TestBase {
       navigation.get();
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("navigation"));
+      // The code may throw before navigation resolves, make sure .get() is called in that case too.
+      navigation.get();
     }
   }
 

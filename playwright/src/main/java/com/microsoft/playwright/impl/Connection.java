@@ -24,8 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
@@ -57,6 +56,7 @@ public class Connection {
   private final Root root;
   private int lastId = 0;
   private final Map<Integer, WaitableResult<JsonElement>> callbacks = new HashMap<>();
+  final Deque<Exception> unusedDeferredObjects = new ArrayDeque<>();
 
   class Root extends ChannelOwner {
     Root(Connection connection) {
@@ -259,5 +259,12 @@ public class Connection {
     }
 
     return result;
+  }
+
+  void addUnusedDeferredObject(Exception exception) {
+    unusedDeferredObjects.add(exception);
+    if (unusedDeferredObjects.size() > 10) {
+      unusedDeferredObjects.removeLast();
+    }
   }
 }

@@ -57,10 +57,6 @@ public class TestBase {
     return options;
   }
 
-  static void currentBrowserType(Playwright playwright) {
-
-  }
-
   static void launchBrowser(BrowserType.LaunchOptions launchOptions) {
     playwright = Playwright.create();
 
