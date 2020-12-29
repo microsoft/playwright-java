@@ -88,7 +88,7 @@ public class TestWaitForFunction extends TestBase {
     }
 
     int savedCounter = counter[0];
-    page.waitForTimeout(2000); // Give it some time to produce more logs.
+    page.waitForTimeout(2000).get(); // Give it some time to produce more logs.
     assertEquals(savedCounter, counter[0]);
   }
 
@@ -208,7 +208,7 @@ public class TestWaitForFunction extends TestBase {
       "  window['__counter'] = (window['__counter'] || 0) + 1;\n" +
       "  return window['__injected'];\n" +
       "}", null, new Page.WaitForFunctionOptions().withTimeout(0).withPollingInterval(10));
-    page.waitForFunction("() => window['__counter'] > 10");
+    page.waitForFunction("() => window['__counter'] > 10").get();
     page.evaluate("() => window['__injected'] = true");
     watchdog.get();
   }
@@ -241,7 +241,7 @@ public class TestWaitForFunction extends TestBase {
 
   @Test
   void shouldWaitForPredicateWithArguments() {
-    page.waitForFunction("({arg1, arg2}) => arg1 + arg2 === 3", mapOf("arg1", 1, "arg2", 2));
+    page.waitForFunction("({arg1, arg2}) => arg1 + arg2 === 3", mapOf("arg1", 1, "arg2", 2)).get();
   }
 
     @Test

@@ -45,7 +45,7 @@ public class TestElementHandleWaitForElementState extends TestBase {
   void shouldWaitForAlreadyVisible() {
     page.setContent("<div>content</div>");
     ElementHandle div = page.querySelector("div");
-    div.waitForElementState(VISIBLE);
+    div.waitForElementState(VISIBLE).get();
   }
 
   @Test
