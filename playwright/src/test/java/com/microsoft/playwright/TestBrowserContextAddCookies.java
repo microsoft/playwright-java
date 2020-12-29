@@ -349,7 +349,7 @@ public class TestBrowserContextAddCookies extends TestBase {
       "  return promise;\n" +
       "}", server.CROSS_PROCESS_PREFIX + "/grid.html");
     page.frames().get(1).evaluate("document.cookie = 'username=John Doe'");
-    page.waitForTimeout(2000);
+    page.waitForTimeout(2000).get();
     boolean allowsThirdParty = isChromium() || isFirefox();
     List<BrowserContext.Cookie> cookies = context.cookies(server.CROSS_PROCESS_PREFIX + "/grid.html");
     if (allowsThirdParty) {

@@ -185,11 +185,11 @@ public class TestPageExposeFunction extends TestBase {
     page.navigate(server.EMPTY_PAGE);
 
     Deferred<Response> navigation = page.waitForNavigation(new Page.WaitForNavigationOptions().withWaitUntil(LOAD));
-
     page.evaluate("async url => {\n" +
       "  window['logme']({ foo: 42 });\n" +
       "  window.location.href = url;\n" +
       "}", server.PREFIX + "/one-style.html");
+    navigation.get();
   }
 
   @Test
