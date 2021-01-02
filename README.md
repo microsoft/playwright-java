@@ -28,7 +28,7 @@ To run Playwright simply add following dependency to your Maven project:
 <dependency>
   <groupId>com.microsoft.playwright</groupId>
   <artifactId>playwright</artifactId>
-  <version>0.171.0</version>
+  <version>0.172.3</version>
 </dependency>
 ```
 
