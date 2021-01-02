@@ -41,6 +41,7 @@ public class DriverJar extends Driver {
     Process p = pb.start();
     boolean result = p.waitFor(10, TimeUnit.MINUTES);
     if (!result) {
+      p.destroy();
       throw new RuntimeException("Timed out waiting for browsers to install");
     }
   }
