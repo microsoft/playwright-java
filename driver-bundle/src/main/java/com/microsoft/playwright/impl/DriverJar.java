@@ -35,6 +35,9 @@ public class DriverJar extends Driver {
 
   private void installBrowsers() throws IOException, InterruptedException {
     Path driver = driverTempDir.resolve("playwright-cli");
+    if (!Files.exists(driver)) {
+      throw new RuntimeException("Failed to find playwright-cli");
+    }
     ProcessBuilder pb = new ProcessBuilder(driver.toString(), "install");
     pb.redirectError(ProcessBuilder.Redirect.INHERIT);
     pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);

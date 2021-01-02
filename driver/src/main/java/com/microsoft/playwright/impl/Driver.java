@@ -43,7 +43,7 @@ public abstract class Driver {
       try {
         instance = createDriver();
       } catch (Exception exception) {
-        throw new RuntimeException("Failed to find playwright-cli", exception);
+        throw new RuntimeException("Failed to create driver", exception);
       }
     }
     String name = System.getProperty("os.name").toLowerCase().contains("windows") ?
