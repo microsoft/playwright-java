@@ -277,12 +277,12 @@ class Types {
     add("FileChooser.setFiles.files", "string|Array<string>|Object|Array<Object>", "String");
     add("Route.continue.overrides.postData", "string|Buffer", "byte[]");
     add("Route.fulfill.response.body", "string|Buffer", "String");
-    add("BrowserType.launch.options.ignoreDefaultArgs", "boolean|Array<string>", "Boolean");
+    add("BrowserType.launch.options.ignoreDefaultArgs", "boolean|Array<string>", "Custom");
     add("BrowserType.launch.options.firefoxUserPrefs", "Object<string, string|number|boolean>", "String");
     add("BrowserType.launch.options.env", "Object<string, string|number|boolean>", "Map<String, String>");
-    add("BrowserType.launchPersistentContext.options.ignoreDefaultArgs", "boolean|Array<string>", "String");
+    add("BrowserType.launchPersistentContext.options.ignoreDefaultArgs", "boolean|Array<string>", "Custom");
     add("BrowserType.launchPersistentContext.options.env", "Object<string, string|number|boolean>", "Map<String, String>");
-    add("BrowserType.launchServer.options.ignoreDefaultArgs", "boolean|Array<string>", "String");
+    add("BrowserType.launchServer.options.ignoreDefaultArgs", "boolean|Array<string>", "Custom");
     add("BrowserType.launchServer.options.firefoxUserPrefs", "Object<string, string|number|boolean>", "String");
     add("BrowserType.launchServer.options.env", "Object<string, string|number|boolean>", "Map<String, String>");
     add("Logger.log.message", "string|Error", "String");

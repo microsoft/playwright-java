@@ -81,7 +81,8 @@ public interface BrowserType {
     /**
      * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. If an array is given, then filters out the given default arguments. Dangerous option; use with care. Defaults to {@code false}.
      */
-    public Boolean ignoreDefaultArgs;
+    public List<String> ignoreDefaultArgs;
+    public Boolean ignoreAllDefaultArgs;
     /**
      * Network proxy settings.
      */
@@ -143,8 +144,12 @@ public interface BrowserType {
       this.args = args;
       return this;
     }
-    public LaunchOptions withIgnoreDefaultArgs(Boolean ignoreDefaultArgs) {
-      this.ignoreDefaultArgs = ignoreDefaultArgs;
+    public LaunchOptions withIgnoreDefaultArgs(List<String> argumentNames) {
+      this.ignoreDefaultArgs = argumentNames;
+      return this;
+    }
+    public LaunchOptions withIgnoreAllDefaultArgs(boolean ignore) {
+      this.ignoreAllDefaultArgs = ignore;
       return this;
     }
     public Proxy setProxy() {
@@ -328,7 +333,8 @@ public interface BrowserType {
     /**
      * If {@code true}, then do not use any of the default arguments. If an array is given, then filter out the given default arguments. Dangerous option; use with care. Defaults to {@code false}.
      */
-    public String ignoreDefaultArgs;
+    public List<String> ignoreDefaultArgs;
+    public Boolean ignoreAllDefaultArgs;
     /**
      * Network proxy settings.
      */
@@ -459,8 +465,12 @@ public interface BrowserType {
       this.args = args;
       return this;
     }
-    public LaunchPersistentContextOptions withIgnoreDefaultArgs(String ignoreDefaultArgs) {
-      this.ignoreDefaultArgs = ignoreDefaultArgs;
+    public LaunchPersistentContextOptions withIgnoreDefaultArgs(List<String> argumentNames) {
+      this.ignoreDefaultArgs = argumentNames;
+      return this;
+    }
+    public LaunchPersistentContextOptions withIgnoreAllDefaultArgs(boolean ignore) {
+      this.ignoreAllDefaultArgs = ignore;
       return this;
     }
     public Proxy setProxy() {

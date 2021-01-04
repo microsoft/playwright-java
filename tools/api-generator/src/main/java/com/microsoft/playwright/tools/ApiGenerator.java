@@ -618,6 +618,12 @@ class Field extends Element {
       output.add(offset + access + "Path " + name + "Path;");
       return;
     }
+    if (asList("BrowserType.launch.options.ignoreDefaultArgs",
+               "BrowserType.launchPersistentContext.options.ignoreDefaultArgs").contains(jsonPath)) {
+      output.add(offset + access + "List<String> ignoreDefaultArgs;");
+      output.add(offset + access + "Boolean ignoreAllDefaultArgs;");
+      return;
+    }
     output.add(offset + access + type.toJava() + " " + name + ";");
   }
 
@@ -678,6 +684,18 @@ class Field extends Element {
                "Page.emulateMedia.params.colorScheme").contains(jsonPath)) {
       output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + type.toJava() + " " + name + ") {");
       output.add(offset + "  this." + name + " = Optional.ofNullable(" + name + ");");
+      output.add(offset + "  return this;");
+      output.add(offset + "}");
+      return;
+    }
+    if (asList("BrowserType.launch.options.ignoreDefaultArgs",
+               "BrowserType.launchPersistentContext.options.ignoreDefaultArgs").contains(jsonPath)) {
+      output.add(offset + "public " + parentClass + " withIgnoreDefaultArgs(List<String> argumentNames) {");
+      output.add(offset + "  this.ignoreDefaultArgs = argumentNames;");
+      output.add(offset + "  return this;");
+      output.add(offset + "}");
+      output.add(offset + "public " + parentClass + " withIgnoreAllDefaultArgs(boolean ignore) {");
+      output.add(offset + "  this.ignoreAllDefaultArgs = ignore;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
       return;
