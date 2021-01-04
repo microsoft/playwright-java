@@ -199,6 +199,17 @@ public class TestDefaultBrowserContext2 extends TestBase {
     }
   }
 
+  @Test
+  void shouldWorkWithIgnoreDefaultArgs() {
+    // Ignore arguments by name.
+    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().withIgnoreDefaultArgs(asList("foo"));
+    Browser browser = browserType.launch(options);
+    Page page = browser.newPage();
+    browser.close();
+    // Check that there is a way to ignore all arguments.
+    new BrowserType.LaunchOptions().withIgnoreAllDefaultArgs(true);
+  }
+
   void shouldHavePassedURLWhenLaunchingWithIgnoreDefaultArgsTrue() {
   }
 
