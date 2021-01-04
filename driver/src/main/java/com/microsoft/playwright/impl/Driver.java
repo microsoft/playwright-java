@@ -43,12 +43,16 @@ public abstract class Driver {
       try {
         instance = createDriver();
       } catch (Exception exception) {
-        throw new RuntimeException("Failed to find playwright-cli", exception);
+        throw new RuntimeException("Failed to create driver", exception);
       }
     }
-    String name = System.getProperty("os.name").toLowerCase().contains("windows") ?
-      "playwright-cli.exe" : "playwright-cli";
+    String name = instance.cliFileName();
     return instance.driverDir().resolve(name);
+  }
+
+  protected String cliFileName() {
+    return System.getProperty("os.name").toLowerCase().contains("windows") ?
+      "playwright-cli.exe" : "playwright-cli";
   }
 
   private static Driver createDriver() throws Exception {
