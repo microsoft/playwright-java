@@ -274,7 +274,7 @@ public class TestDownload extends TestBase {
     page.click("a");
     Instant start = Instant.now();
     while (event[0] == null) {
-      page.waitForTimeout(100).get();
+      page.waitForTimeout(100);
       assertTrue(Duration.between(start, Instant.now()).getSeconds() < 30, "Timed out");
     }
     Download download = (Download) event[0].data();
@@ -295,7 +295,7 @@ public class TestDownload extends TestBase {
     page.click("a");
     Instant start = Instant.now();
     while (event[0] == null) {
-      page.waitForTimeout(100).get();
+      page.waitForTimeout(100);
       assertTrue(Duration.between(start, Instant.now()).getSeconds() < 1, "Timed out");
     }
     Download download = (Download) event[0].data();

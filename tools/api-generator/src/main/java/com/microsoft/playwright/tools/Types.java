@@ -212,17 +212,17 @@ class Types {
     add("Page.waitForResponse", "Promise<Response>", "Deferred<Response>");
     add("Page.waitForNavigation", "Promise<null|Response>", "Deferred<Response>");
     add("Frame.waitForNavigation", "Promise<null|Response>", "Deferred<Response>");
-    add("Page.waitForSelector", "Promise<null|ElementHandle>", "Deferred<ElementHandle>", new Empty());
-    add("Frame.waitForSelector", "Promise<null|ElementHandle>", "Deferred<ElementHandle>", new Empty());
-    add("ElementHandle.waitForSelector", "Promise<null|ElementHandle>", "Deferred<ElementHandle>", new Empty());
+    add("Page.waitForSelector", "Promise<null|ElementHandle>", "ElementHandle", new Empty());
+    add("Frame.waitForSelector", "Promise<null|ElementHandle>", "ElementHandle", new Empty());
+    add("ElementHandle.waitForSelector", "Promise<null|ElementHandle>", "ElementHandle", new Empty());
 
-    add("Frame.waitForLoadState", "Promise", "Deferred<Void>", new Empty());
-    add("Page.waitForLoadState", "Promise", "Deferred<Void>", new Empty());
-    add("Frame.waitForTimeout", "Promise", "Deferred<Void>", new Empty());
-    add("Page.waitForTimeout", "Promise", "Deferred<Void>", new Empty());
-    add("Frame.waitForFunction", "Promise<JSHandle>", "Deferred<JSHandle>", new Empty());
-    add("Page.waitForFunction", "Promise<JSHandle>", "Deferred<JSHandle>", new Empty());
-    add("ElementHandle.waitForElementState", "Promise", "Deferred<Void>", new Empty());
+    add("Frame.waitForLoadState", "Promise", "void", new Empty());
+    add("Page.waitForLoadState", "Promise", "void", new Empty());
+    add("Frame.waitForTimeout", "Promise", "void", new Empty());
+    add("Page.waitForTimeout", "Promise", "void", new Empty());
+    add("Frame.waitForFunction", "Promise<JSHandle>", "JSHandle", new Empty());
+    add("Page.waitForFunction", "Promise<JSHandle>", "JSHandle", new Empty());
+    add("ElementHandle.waitForElementState", "Promise", "void", new Empty());
 
     // Custom options
     add("Page.pdf.options.margin.top", "string|number", "String");

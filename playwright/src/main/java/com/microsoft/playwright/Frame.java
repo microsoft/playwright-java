@@ -1199,10 +1199,10 @@ public interface Frame {
    * Returns frame's url.
    */
   String url();
-  default Deferred<JSHandle> waitForFunction(String pageFunction, Object arg) {
+  default JSHandle waitForFunction(String pageFunction, Object arg) {
     return waitForFunction(pageFunction, arg, null);
   }
-  default Deferred<JSHandle> waitForFunction(String pageFunction) {
+  default JSHandle waitForFunction(String pageFunction) {
     return waitForFunction(pageFunction, null);
   }
   /**
@@ -1216,12 +1216,12 @@ public interface Frame {
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
    */
-  Deferred<JSHandle> waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options);
-  default Deferred<Void> waitForLoadState(LoadState state) {
-    return waitForLoadState(state, null);
+  JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options);
+  default void waitForLoadState(LoadState state) {
+    waitForLoadState(state, null);
   }
-  default Deferred<Void> waitForLoadState() {
-    return waitForLoadState(null);
+  default void waitForLoadState() {
+    waitForLoadState(null);
   }
   /**
    * Waits for the required load state to be reached.
@@ -1234,7 +1234,7 @@ public interface Frame {
    *  - {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.
    *  - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
    */
-  Deferred<Void> waitForLoadState(LoadState state, WaitForLoadStateOptions options);
+  void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
   default Deferred<Response> waitForNavigation() {
     return waitForNavigation(null);
   }
@@ -1246,7 +1246,7 @@ public interface Frame {
    * <strong>NOTE</strong> Usage of the History API to change the URL is considered a navigation.
    */
   Deferred<Response> waitForNavigation(WaitForNavigationOptions options);
-  default Deferred<ElementHandle> waitForSelector(String selector) {
+  default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }
   /**
@@ -1259,13 +1259,13 @@ public interface Frame {
    * 
    * @param selector A selector to query for. See working with selectors for more details.
    */
-  Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options);
+  ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
   /**
    * Waits for the given {@code timeout} in milliseconds.
    * <p>
    * Note that {@code frame.waitForTimeout()} should only be used for debugging. Tests using the timer in production are going to be flaky. Use signals such as network events, selectors becoming visible and others instead.
    * @param timeout A timeout to wait for
    */
-  Deferred<Void> waitForTimeout(int timeout);
+  void waitForTimeout(int timeout);
 }
 

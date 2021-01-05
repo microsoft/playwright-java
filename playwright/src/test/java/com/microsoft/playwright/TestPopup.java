@@ -41,7 +41,7 @@ public class TestPopup extends TestBase {
     Deferred<Event<BrowserContext.EventType>> popupEvent = context.waitForEvent(BrowserContext.EventType.PAGE);
     page.click("a");
     Page popup = (Page) popupEvent.get().data();
-    popup.waitForLoadState(DOMCONTENTLOADED).get();
+    popup.waitForLoadState(DOMCONTENTLOADED);
     String userAgent = (String) popup.evaluate("() => window['initialUserAgent']");
     Server.Request request = requestPromise.get();
     context.close();
@@ -106,7 +106,7 @@ public class TestPopup extends TestBase {
     Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(POPUP);
     page.evaluate("url => window['_popup'] = window.open(url)", server.PREFIX + "/title.html");
     Page popup = (Page) popupEvent.get().data();
-    popup.waitForLoadState(DOMCONTENTLOADED).get();
+    popup.waitForLoadState(DOMCONTENTLOADED);
     assertEquals("Woof-Woof", popup.title());
     context.close();
   }
@@ -153,7 +153,7 @@ public class TestPopup extends TestBase {
       "}");
     Page popup = (Page) popupEvent.get().data();
     popup.setViewportSize(500, 400);
-    popup.waitForLoadState().get();
+    popup.waitForLoadState();
     Object resized = popup.evaluate("() => ({ width: window.innerWidth, height: window.innerHeight })");
     context.close();
     assertEquals(mapOf("width", 600, "height", 300), size);

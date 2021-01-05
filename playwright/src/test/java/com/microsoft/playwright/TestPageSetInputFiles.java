@@ -91,7 +91,7 @@ public class TestPageSetInputFiles extends TestBase {
     page.click("input");
     Instant start = Instant.now();
     while (chooser[0] == null && Duration.between(start, Instant.now()).toMillis() < 10_000) {
-      page.waitForTimeout(100).get();
+      page.waitForTimeout(100);
     }
     assertNotNull(chooser[0]);
   }

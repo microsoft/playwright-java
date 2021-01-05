@@ -512,7 +512,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public Deferred<JSHandle> waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options) {
+  public JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options) {
     if (options == null) {
       options = new WaitForFunctionOptions();
     }
@@ -520,15 +520,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
     params.addProperty("expression", pageFunction);
     params.addProperty("isFunction", isFunctionBody(pageFunction));
     params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-    Waitable<JSHandle> handle = sendMessageAsync("waitForFunction", params).apply(json -> {
-      JsonObject element = json.getAsJsonObject().getAsJsonObject("handle");
-      return connection.getExistingObject(element.get("guid").getAsString());
-    });
-    return toDeferred(handle);
+    JsonElement json = sendMessage("waitForFunction", params);
+    JsonObject element = json.getAsJsonObject().getAsJsonObject("handle");
+    return connection.getExistingObject(element.get("guid").getAsString());
   }
 
   @Override
-  public Deferred<Void> waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
+  public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
     if (options == null) {
       options = new WaitForLoadStateOptions();
     }
@@ -540,7 +538,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     waitables.add(new WaitForLoadStateHelper(state));
     waitables.add(page.createWaitForCloseHelper());
     waitables.add(page.createWaitableTimeout(options.timeout));
-    return toDeferred(new WaitableRace<>(waitables));
+    toDeferred(new WaitableRace<>(waitables)).get();
   }
 
   private class WaitForLoadStateHelper implements Waitable<Void>, Listener<InternalEventType> {
@@ -668,7 +666,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options) {
+  public ElementHandle waitForSelector(String selector, WaitForSelectorOptions options) {
     if (options == null) {
       options = new WaitForSelectorOptions();
     }
@@ -678,25 +676,23 @@ public class FrameImpl extends ChannelOwner implements Frame {
       params.remove("state");
       params.addProperty("state", toProtocol(options.state));
     }
-    Waitable<ElementHandle> handle = sendMessageAsync("waitForSelector", params).apply(json -> {
-      JsonObject element = json.getAsJsonObject().getAsJsonObject("element");
-      if (element == null) {
-        return null;
-      }
-      return connection.getExistingObject(element.get("guid").getAsString());
-    });
-    return toDeferred(handle);
+    JsonElement json = sendMessage("waitForSelector", params);
+    JsonObject element = json.getAsJsonObject().getAsJsonObject("element");
+    if (element == null) {
+      return null;
+    }
+    return connection.getExistingObject(element.get("guid").getAsString());
   }
 
   @Override
-  public Deferred<Void> waitForTimeout(int timeout) {
-    return toDeferred(new WaitableTimeout<Void>(timeout) {
+  public void waitForTimeout(int timeout) {
+    toDeferred(new WaitableTimeout<Void>(timeout) {
       @Override
       public Void get() {
         // Override to not throw.
         return null;
       }
-    });
+    }).get();
   }
 
   protected void handleEvent(String event, JsonObject params) {

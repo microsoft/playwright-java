@@ -35,26 +35,24 @@ public class TestElementHandleWaitForElementState extends TestBase {
   void shouldWaitForVisible() {
     page.setContent("<div style='display:none'>content</div>");
     ElementHandle div = page.querySelector("div");
-    Deferred<Void> promise = div.waitForElementState(VISIBLE);
     giveItAChanceToResolve(page);
     div.evaluate("div => div.style.display = 'block'");
-    promise.get();
+    div.waitForElementState(VISIBLE);
   }
 
   @Test
   void shouldWaitForAlreadyVisible() {
     page.setContent("<div>content</div>");
     ElementHandle div = page.querySelector("div");
-    div.waitForElementState(VISIBLE).get();
+    div.waitForElementState(VISIBLE);
   }
 
   @Test
   void shouldTimeoutWaitingForVisible() {
     page.setContent("<div style='display:none'>content</div>");
     ElementHandle div = page.querySelector("div");
-    Deferred<Void> result = div.waitForElementState(VISIBLE, new ElementHandle.WaitForElementStateOptions().withTimeout(1000));
     try {
-      result.get();
+      div.waitForElementState(VISIBLE, new ElementHandle.WaitForElementStateOptions().withTimeout(1000));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout 1000ms exceeded"));
@@ -65,10 +63,9 @@ public class TestElementHandleWaitForElementState extends TestBase {
   void shouldThrowWaitingForVisibleWhenDetached() {
     page.setContent("<div style='display:none'>content</div>");
     ElementHandle div = page.querySelector("div");
-    Deferred<Void> promise = div.waitForElementState(VISIBLE);
     div.evaluate("div => div.remove()");
     try {
-      promise.get();
+      div.waitForElementState(VISIBLE);
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
@@ -79,48 +76,43 @@ public class TestElementHandleWaitForElementState extends TestBase {
   void shouldWaitForHidden() {
     page.setContent("<div>content</div>");
     ElementHandle div = page.querySelector("div");
-    Deferred<Void> promise = div.waitForElementState(HIDDEN);
     giveItAChanceToResolve(page);
     div.evaluate("div => div.style.display = 'none'");
-    promise.get();
+    div.waitForElementState(HIDDEN);
   }
 
   @Test
   void shouldWaitForAlreadyHidden() {
     page.setContent("<div></div>");
     ElementHandle div = page.querySelector("div");
-    Deferred<Void> result = div.waitForElementState(HIDDEN);
-    result.get();
+    div.waitForElementState(HIDDEN);
   }
 
   @Test
   void shouldWaitForHiddenWhenDetached() {
     page.setContent("<div>content</div>");
     ElementHandle div = page.querySelector("div");
-    Deferred<Void> promise = div.waitForElementState(HIDDEN);
     giveItAChanceToResolve(page);
     div.evaluate("div => div.remove()");
-    promise.get();
+    div.waitForElementState(HIDDEN);
   }
 
   @Test
   void shouldWaitForEnabledButton() {
     page.setContent("<button disabled><span>Target</span></button>");
     ElementHandle span = page.querySelector("text=Target");
-    Deferred<Void> promise = span.waitForElementState(ENABLED);
     giveItAChanceToResolve(page);
     span.evaluate("span => span.parentElement.disabled = false");
-    promise.get();
+    span.waitForElementState(ENABLED);
   }
 
   @Test
   void shouldThrowWaitingForEnabledWhenDetached() {
     page.setContent("<button disabled>Target</button>");
     ElementHandle button = page.querySelector("button");
-    Deferred<Void> promise = button.waitForElementState(ENABLED);
     button.evaluate("button => button.remove()");
     try {
-      promise.get();
+      button.waitForElementState(ENABLED);
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
@@ -131,10 +123,9 @@ public class TestElementHandleWaitForElementState extends TestBase {
   void shouldWaitForDisabledButton() {
     page.setContent("<button><span>Target</span></button>");
     ElementHandle span = page.querySelector("text=Target");
-    Deferred<Void> promise = span.waitForElementState(DISABLED);
     giveItAChanceToResolve(page);
     span.evaluate("span => span.parentElement.disabled = true");
-    promise.get();
+    span.waitForElementState(DISABLED);
   }
 
   static boolean isFirefoxLinux() {
@@ -149,9 +140,8 @@ public class TestElementHandleWaitForElementState extends TestBase {
       "  button.style.transition = 'margin 10000ms linear 0s';\n" +
       "  button.style.marginLeft = '20000px';\n" +
       "}");
-    Deferred<Void> promise = button.waitForElementState(STABLE);
     giveItAChanceToResolve(page);
     button.evaluate("button => button.style.transition = ''");
-    promise.get();
+    button.waitForElementState(STABLE);
   }
 }

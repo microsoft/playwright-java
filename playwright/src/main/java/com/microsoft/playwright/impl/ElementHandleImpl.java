@@ -361,13 +361,13 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   }
 
   @Override
-  public Deferred<Void> waitForElementState(ElementState state, WaitForElementStateOptions options) {
+  public void waitForElementState(ElementState state, WaitForElementStateOptions options) {
     if (options == null) {
       options = new WaitForElementStateOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("state", toProtocol(state));
-    return toDeferred(sendMessageAsync("waitForElementState", params).apply(json -> null));
+    sendMessage("waitForElementState", params);
   }
 
   private static String toProtocol(ElementState state) {
@@ -378,7 +378,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   }
 
   @Override
-  public Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options) {
+  public ElementHandle waitForSelector(String selector, WaitForSelectorOptions options) {
     if (options == null) {
       options = new WaitForSelectorOptions();
     }
@@ -386,7 +386,12 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     params.remove("state");
     params.addProperty("state", toProtocol(options.state));
     params.addProperty("selector", selector);
-    return toDeferred(sendMessageAsync("waitForElementState", params).apply(json -> null));
+    JsonElement json = sendMessage("waitForSelector", params);
+    JsonObject element = json.getAsJsonObject().getAsJsonObject("element");
+    if (element == null) {
+      return null;
+    }
+    return connection.getExistingObject(element.get("guid").getAsString());
   }
 
   public String createSelectorForTest(String name) {

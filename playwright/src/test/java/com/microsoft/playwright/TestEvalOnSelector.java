@@ -186,10 +186,10 @@ public class TestEvalOnSelector extends TestBase {
   @Test
   void shouldWorkWithSpacesInCssAttributes() {
     page.setContent("<div><input placeholder='Select date'></div>");
-    assertNotNull(page.waitForSelector("[placeholder=\"Select date\"]").get());
-    assertNotNull(page.waitForSelector("[placeholder='Select date']").get());
-    assertNotNull(page.waitForSelector("input[placeholder=\"Select date\"]").get());
-    assertNotNull(page.waitForSelector("input[placeholder='Select date']").get());
+    assertNotNull(page.waitForSelector("[placeholder=\"Select date\"]"));
+    assertNotNull(page.waitForSelector("[placeholder='Select date']"));
+    assertNotNull(page.waitForSelector("input[placeholder=\"Select date\"]"));
+    assertNotNull(page.waitForSelector("input[placeholder='Select date']"));
     assertNotNull(page.querySelector("[placeholder=\"Select date\"]"));
     assertNotNull(page.querySelector("[placeholder='Select date']"));
     assertNotNull(page.querySelector("input[placeholder=\"Select date\"]"));
@@ -224,18 +224,16 @@ public class TestEvalOnSelector extends TestBase {
 
   @Test
   void shouldWorkWithSpacesInCssAttributesWhenMissing() {
-    Deferred<ElementHandle> inputPromise = page.waitForSelector("[placeholder='Select date']");
     assertNull(page.querySelector("[placeholder='Select date']"));
     page.setContent("<div><input placeholder='Select date'></div>");
-    inputPromise.get();
+    page.waitForSelector("[placeholder='Select date']");
   }
 
   @Test
   void shouldWorkWithQuotesInCssAttributesWhenMissing() {
-    Deferred<ElementHandle> inputPromise = page.waitForSelector("[placeholder='Select\\\"date']");
     assertNull(page.querySelector("[placeholder='Select\\\"date']"));
     page.setContent("<div><input placeholder='Select&quot;date'></div>");
-    inputPromise.get();
+    page.waitForSelector("[placeholder='Select\\\"date']");
   }
 
   @Test

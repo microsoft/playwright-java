@@ -745,13 +745,13 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Deferred<JSHandle> waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options) {
+  public JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options) {
     return mainFrame.waitForFunction(pageFunction, arg, convertViaJson(options, Frame.WaitForFunctionOptions.class));
   }
 
   @Override
-  public Deferred<Void> waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
-    return mainFrame.waitForLoadState(convertViaJson(state, Frame.LoadState.class), convertViaJson(options, Frame.WaitForLoadStateOptions.class));
+  public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
+    mainFrame.waitForLoadState(convertViaJson(state, Frame.LoadState.class), convertViaJson(options, Frame.WaitForLoadStateOptions.class));
   }
 
   @Override
@@ -911,13 +911,13 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options) {
+  public ElementHandle waitForSelector(String selector, WaitForSelectorOptions options) {
     return mainFrame.waitForSelector(selector, convertViaJson(options, Frame.WaitForSelectorOptions.class));
   }
 
   @Override
-  public Deferred<Void> waitForTimeout(int timeout) {
-    return mainFrame.waitForTimeout(timeout);
+  public void waitForTimeout(int timeout) {
+    mainFrame.waitForTimeout(timeout);
   }
 
   @Override

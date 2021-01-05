@@ -133,7 +133,7 @@ public class TestPageBasic extends TestBase {
   @Test
   void shouldFireLoadWhenExpected() {
     page.navigate("about:blank");
-    page.waitForLoadState(LOAD).get();
+    page.waitForLoadState(LOAD);
   }
 
   // TODO: not supported in sync api
@@ -162,7 +162,7 @@ public class TestPageBasic extends TestBase {
   @Test
   void shouldFireDomcontentloadedWhenExpected() {
     page.navigate("about:blank");
-    page.waitForLoadState(DOMCONTENTLOADED).get();
+    page.waitForLoadState(DOMCONTENTLOADED);
   }
 
   // TODO: downloads

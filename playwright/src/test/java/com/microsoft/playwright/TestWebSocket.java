@@ -83,7 +83,7 @@ public class TestWebSocket extends TestBase {
     assertEquals(1, condition.length);
     Instant start = Instant.now();
     while (!condition[0]) {
-      page.waitForTimeout(100).get();
+      page.waitForTimeout(100);
       assertTrue(Duration.between(start, Instant.now()).getSeconds() < 30, "Timed out");
     }
   }

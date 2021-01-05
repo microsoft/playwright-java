@@ -1937,10 +1937,10 @@ public interface Page {
    * @param event Event name, same one would pass into {@code page.on(event)}.
    */
   Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options);
-  default Deferred<JSHandle> waitForFunction(String pageFunction, Object arg) {
+  default JSHandle waitForFunction(String pageFunction, Object arg) {
     return waitForFunction(pageFunction, arg, null);
   }
-  default Deferred<JSHandle> waitForFunction(String pageFunction) {
+  default JSHandle waitForFunction(String pageFunction) {
     return waitForFunction(pageFunction, null);
   }
   /**
@@ -1954,12 +1954,12 @@ public interface Page {
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
    */
-  Deferred<JSHandle> waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options);
-  default Deferred<Void> waitForLoadState(LoadState state) {
-    return waitForLoadState(state, null);
+  JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options);
+  default void waitForLoadState(LoadState state) {
+    waitForLoadState(state, null);
   }
-  default Deferred<Void> waitForLoadState() {
-    return waitForLoadState(null);
+  default void waitForLoadState() {
+    waitForLoadState(null);
   }
   /**
    * Returns when the required load state has been reached.
@@ -1974,7 +1974,7 @@ public interface Page {
    *  - {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.
    *  - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
    */
-  Deferred<Void> waitForLoadState(LoadState state, WaitForLoadStateOptions options);
+  void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
   default Deferred<Response> waitForNavigation() {
     return waitForNavigation(null);
   }
@@ -2000,7 +2000,7 @@ public interface Page {
   Deferred<Response> waitForResponse(String urlGlob, WaitForResponseOptions options);
   Deferred<Response> waitForResponse(Pattern urlPattern, WaitForResponseOptions options);
   Deferred<Response> waitForResponse(Predicate<String> urlPredicate, WaitForResponseOptions options);
-  default Deferred<ElementHandle> waitForSelector(String selector) {
+  default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }
   /**
@@ -2013,7 +2013,7 @@ public interface Page {
    * 
    * @param selector A selector to query for. See working with selectors for more details.
    */
-  Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options);
+  ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
   /**
    * Waits for the given {@code timeout} in milliseconds.
    * <p>
@@ -2022,7 +2022,7 @@ public interface Page {
    * Shortcut for main frame's {@code frame.waitForTimeout(timeout)}.
    * @param timeout A timeout to wait for
    */
-  Deferred<Void> waitForTimeout(int timeout);
+  void waitForTimeout(int timeout);
   /**
    * This method returns all of the dedicated WebWorkers associated with the page.
    * <p>

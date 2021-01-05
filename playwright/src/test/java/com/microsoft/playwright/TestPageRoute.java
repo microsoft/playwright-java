@@ -101,8 +101,9 @@ public class TestPageRoute extends TestBase {
     page.setContent("<form action='/rredirect' method='post'>\n" +
       "  <input type='hidden' id='foo' name='foo' value='FOOBAR'>\n" +
       "</form>");
+    Deferred<Response> navigationResponse = page.waitForNavigation();
     page.evalOnSelector("form", "form => form.submit()");
-    page.waitForNavigation().get();
+    navigationResponse.get();
   }
 
   // @see https://github.com/GoogleChrome/puppeteer/issues/3973

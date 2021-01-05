@@ -101,8 +101,7 @@ public class TestHar extends TestBase {
   void shouldHavePages() throws IOException {
     pageWithHar.page.navigate("data:text/html,<title>Hello</title>");
     // For data: load comes before domcontentloaded...
-    Deferred<Void> loadEvent = pageWithHar.page.waitForLoadState(Page.LoadState.DOMCONTENTLOADED);
-    loadEvent.get();
+    pageWithHar.page.waitForLoadState(Page.LoadState.DOMCONTENTLOADED);
     JsonObject log = pageWithHar.log();
 
     assertEquals(1, log.getAsJsonArray("pages").size());
@@ -125,8 +124,7 @@ public class TestHar extends TestBase {
 
     page.navigate("data:text/html,<title>Hello</title>");
     // For data: load comes before domcontentloaded...
-    Deferred<Void> loadEvent = page.waitForLoadState(Page.LoadState.DOMCONTENTLOADED);
-    loadEvent.get();
+    page.waitForLoadState(Page.LoadState.DOMCONTENTLOADED);
     context.close();
     JsonObject log;
     try (Reader reader = new FileReader(harPath.toFile())) {

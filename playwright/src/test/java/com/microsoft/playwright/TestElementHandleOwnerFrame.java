@@ -105,7 +105,7 @@ public class TestElementHandleOwnerFrame extends TestBase {
      "}");
     assertEquals(page.mainFrame(), divHandle.asElement().ownerFrame());
     Page popup = (Page) popupEvent.get().data();
-    popup.waitForLoadState(Page.LoadState.DOMCONTENTLOADED).get();
+    popup.waitForLoadState(Page.LoadState.DOMCONTENTLOADED);
     page.evaluate("() => {\n" +
       "  const div = document.querySelector('div');\n" +
       "  window['__popup'].document.body.appendChild(div);\n" +
