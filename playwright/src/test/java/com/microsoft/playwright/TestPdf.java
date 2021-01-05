@@ -19,6 +19,7 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.condition.EnabledIf;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,9 +32,19 @@ public class TestPdf extends TestBase {
   @Test
   @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
   @DisabledIf(value="com.microsoft.playwright.TestBase#isHeadful", disabledReason="skip")
-  void shouldBeAbleToSaveFile() throws IOException {
-    Path path = File.createTempFile("output", ".pdf").toPath();
+  void shouldBeAbleToSaveFile(@TempDir Path tempDir) throws IOException {
+    Path path = tempDir.resolve("output.pdf");
     page.pdf(new Page.PdfOptions().withPath(path));
+    long size = Files.size(path);
+    assertTrue(size > 0);
+  }
+
+  @Test
+  @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isHeadful", disabledReason="skip")
+  void shouldSupportFractionalScaleValue(@TempDir Path tempDir) throws IOException {
+    Path path = tempDir.resolve("output.pdf");
+    page.pdf(new Page.PdfOptions().withPath(path).withScale(0.5));
     long size = Files.size(path);
     assertTrue(size > 0);
   }

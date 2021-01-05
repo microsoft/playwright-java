@@ -605,7 +605,7 @@ public interface Page {
     /**
      * Scale of the webpage rendering. Defaults to {@code 1}. Scale amount must be between 0.1 and 2.
      */
-    public Integer scale;
+    public Double scale;
     /**
      * Display header and footer. Defaults to {@code false}.
      */
@@ -660,7 +660,7 @@ public interface Page {
       this.path = path;
       return this;
     }
-    public PdfOptions withScale(Integer scale) {
+    public PdfOptions withScale(Double scale) {
       this.scale = scale;
       return this;
     }

@@ -231,6 +231,7 @@ class Types {
     add("Page.pdf.options.margin.left", "string|number", "String");
     add("Page.pdf.options.width", "string|number", "String");
     add("Page.pdf.options.height", "string|number", "String");
+    add("Page.pdf.options.scale", "number", "Double");
 
     add("Page.goto.options", "Object", "NavigateOptions");
     add("Frame.goto.options", "Object", "NavigateOptions");
