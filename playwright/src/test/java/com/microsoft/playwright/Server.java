@@ -114,7 +114,7 @@ public class Server implements HttpHandler {
     }
   }
 
-  Future<Request> waitForRequest(String path) {
+  Future<Request> futureRequest(String path) {
     CompletableFuture<Request> future = requestSubscribers.get(path);
     if (future == null) {
       future = new CompletableFuture<>();

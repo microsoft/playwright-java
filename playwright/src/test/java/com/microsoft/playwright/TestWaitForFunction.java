@@ -35,15 +35,14 @@ public class TestWaitForFunction extends TestBase {
   void shouldTimeout() {
     Instant startTime = Instant.now();
     int timeout = 42;
-    page.waitForTimeout(timeout).get();
+    page.waitForTimeout(timeout);
     assertTrue(Duration.between(startTime, Instant.now()).toMillis() > timeout / 2);
   }
 
   @Test
   void shouldAcceptAString() {
-    Deferred<JSHandle> watchdog = page.waitForFunction("window.__FOO === 1");
     page.evaluate("() => window['__FOO'] = 1");
-    watchdog.get();
+    page.waitForFunction("window.__FOO === 1");
   }
 
   @Test
@@ -53,21 +52,21 @@ public class TestWaitForFunction extends TestBase {
       "  if (!window['__RELOADED'])\n" +
       "    window.location.reload();\n" +
       "  return true;\n" +
-      "}").get();
+      "}");
   }
 
 
   @Test
   void shouldPollOnInterval() {
     int polling = 100;
-    Deferred<JSHandle> timeDelta = page.waitForFunction("() => {\n" +
+    JSHandle timeDelta = page.waitForFunction("() => {\n" +
       "  if (!window[\"__startTime\"]) {\n" +
       "    window[\"__startTime\"] = Date.now();\n" +
       "    return false;\n" +
       "  }\n" +
       "  return Date.now() - window[\"__startTime\"];\n" +
       "}", null, new Page.WaitForFunctionOptions().withPollingInterval(polling));
-    int delta = (int) timeDelta.get().evaluate("h => h");
+    int delta = (int) timeDelta.evaluate("h => h");
     assertTrue(delta >= polling);
   }
 
@@ -76,19 +75,18 @@ public class TestWaitForFunction extends TestBase {
     int[] counter = { 0 };
     page.addListener(CONSOLE, event -> ++counter[0]);
 
-    Deferred<JSHandle> result = page.waitForFunction("() => {\n" +
-      "  window['counter'] = (window['counter'] || 0) + 1;\n" +
-      "  console.log(window['counter']);\n" +
-      "}", null, new Page.WaitForFunctionOptions().withPollingInterval(1).withTimeout(1000));
     try {
-      result.get();
+      JSHandle result = page.waitForFunction("() => {\n" +
+        "  window['counter'] = (window['counter'] || 0) + 1;\n" +
+        "  console.log(window['counter']);\n" +
+        "}", null, new Page.WaitForFunctionOptions().withPollingInterval(1).withTimeout(1000));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout 1000ms exceeded"));
     }
 
     int savedCounter = counter[0];
-    page.waitForTimeout(2000).get(); // Give it some time to produce more logs.
+    page.waitForTimeout(2000); // Give it some time to produce more logs.
     assertEquals(savedCounter, counter[0]);
   }
 
@@ -98,15 +96,14 @@ public class TestWaitForFunction extends TestBase {
 
   @Test
   void shouldPollOnRaf() {
-    Deferred<JSHandle> watchdog = page.waitForFunction("() => window['__FOO'] === 'hit'", null, new Page.WaitForFunctionOptions().withRequestAnimationFrame());
     page.evaluate("() => window['__FOO'] = 'hit'");
-    watchdog.get();
+    page.waitForFunction("() => window['__FOO'] === 'hit'", null, new Page.WaitForFunctionOptions().withRequestAnimationFrame());
   }
 
   @Test
   void shouldFailWithPredicateThrowingOnFirstCall() {
     try {
-      page.waitForFunction("() => { throw new Error('oh my'); }").get();
+      page.waitForFunction("() => { throw new Error('oh my'); }");
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("oh my"));
@@ -121,7 +118,7 @@ public class TestWaitForFunction extends TestBase {
         "  if (window['counter'] === 3)\n" +
         "    throw new Error('Bad counter!');\n" +
         "  return window['counter'] === 5 ? 'result' : false;\n" +
-        "}").get();
+        "}");
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Bad counter!"));
@@ -131,7 +128,7 @@ public class TestWaitForFunction extends TestBase {
   @Test
   void shouldFailWithReferenceErrorOnWrongPage() {
     try {
-      page.waitForFunction("() => globalVar === 123").get();
+      page.waitForFunction("() => globalVar === 123");
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("globalVar"));
@@ -143,9 +140,8 @@ public class TestWaitForFunction extends TestBase {
     server.setCSP("/empty.html", "script-src " + server.PREFIX);
     page.navigate(server.EMPTY_PAGE);
 
-    Deferred<JSHandle> result = page.waitForFunction("() => window['__FOO'] === 'hit'");
     page.evaluate("() => window['__FOO'] = 'hit'");
-    result.get();
+    page.waitForFunction("() => window['__FOO'] === 'hit'");
   }
 
   void shouldThrowOnBadPollingValue() {
@@ -155,7 +151,7 @@ public class TestWaitForFunction extends TestBase {
   @Test
   void shouldThrowNegativePollingInterval() {
     try {
-      page.waitForFunction("() => !!document.body", null, new Page.WaitForFunctionOptions().withPollingInterval(-10)).get();
+      page.waitForFunction("() => !!document.body", null, new Page.WaitForFunctionOptions().withPollingInterval(-10));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Cannot poll with non-positive interval"));
@@ -164,27 +160,26 @@ public class TestWaitForFunction extends TestBase {
 
   @Test
   void shouldReturnTheSuccessValueAsAJSHandle() {
-    assertEquals(5, (page.waitForFunction("5")).get().jsonValue());
+    assertEquals(5, (page.waitForFunction("5")).jsonValue());
   }
 
   @Test
   void shouldReturnTheWindowAsASuccessValue() {
-    assertNotNull(page.waitForFunction("() => window").get());
+    assertNotNull(page.waitForFunction("() => window"));
   }
 
   @Test
   void shouldAcceptElementHandleArguments() {
     page.setContent("<div></div>");
     ElementHandle div = page.querySelector("div");
-    Deferred<JSHandle> waitForFunction = page.waitForFunction("element => !element.parentElement", div);
     page.evaluate("element => element.remove()", div);
-    waitForFunction.get();
+    page.waitForFunction("element => !element.parentElement", div);
   }
 
   @Test
   void shouldRespectTimeout() {
     try {
-      page.waitForFunction("false", null, new Page.WaitForFunctionOptions().withTimeout(10)).get();
+      page.waitForFunction("false", null, new Page.WaitForFunctionOptions().withTimeout(10));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout 10ms exceeded"));
@@ -195,7 +190,7 @@ public class TestWaitForFunction extends TestBase {
   void shouldRespectDefaultTimeout() {
     page.setDefaultTimeout(1);
     try {
-      page.waitForFunction("false").get();
+      page.waitForFunction("false");
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
@@ -204,44 +199,40 @@ public class TestWaitForFunction extends TestBase {
 
   @Test
   void shouldDisableTimeoutWhenItsSetTo0() {
-    Deferred<JSHandle> watchdog = page.waitForFunction("() => {\n" +
+    page.waitForFunction("() => {\n" +
       "  window['__counter'] = (window['__counter'] || 0) + 1;\n" +
-      "  return window['__injected'];\n" +
+      "  return window['__counter'] > 10;\n" +
       "}", null, new Page.WaitForFunctionOptions().withTimeout(0).withPollingInterval(10));
-    page.waitForFunction("() => window['__counter'] > 10").get();
-    page.evaluate("() => window['__injected'] = true");
-    watchdog.get();
   }
 
   @Test
   void shouldSurviveCrossProcessNavigation() {
-    Deferred<JSHandle> waitForFunction = page.waitForFunction("window.__FOO === 1");
     page.navigate(server.EMPTY_PAGE);
     page.reload();
     page.navigate(server.CROSS_PROCESS_PREFIX + "/grid.html");
     page.evaluate("() => window['__FOO'] = 1");
-    assertNotNull(waitForFunction.get());
+    JSHandle result = page.waitForFunction("window.__FOO === 1");
+    assertNotNull(result);
   }
 
   @Test
   void shouldSurviveNavigations() {
-    Deferred<JSHandle> watchdog = page.waitForFunction("() => window['__done']");
     page.navigate(server.EMPTY_PAGE);
     page.navigate(server.PREFIX + "/consolelog.html");
     page.evaluate("() => window['__done'] = true");
-    watchdog.get();
+    page.waitForFunction("() => window['__done']");
   }
 
   @Test
   void shouldWorkWithMultilineBody() {
-    Deferred<JSHandle> result = page.waitForFunction("\n  () => true\n");
-    assertEquals(true, result.get().jsonValue());
+    JSHandle result = page.waitForFunction("\n  () => true\n");
+    assertEquals(true, result.jsonValue());
   }
 
 
   @Test
   void shouldWaitForPredicateWithArguments() {
-    page.waitForFunction("({arg1, arg2}) => arg1 + arg2 === 3", mapOf("arg1", 1, "arg2", 2)).get();
+    page.waitForFunction("({arg1, arg2}) => arg1 + arg2 === 3", mapOf("arg1", 1, "arg2", 2));
   }
 
     @Test
@@ -254,29 +245,20 @@ public class TestWaitForFunction extends TestBase {
           messages.add(msg.text());
         }
       });
-      {
-        Deferred<JSHandle> result = page.waitForFunction("() => {\n" +
-          "  console.log('waitForFunction1');\n" +
-          "  return true;\n" +
-          "}");
-        result.get();
-      }
+      page.waitForFunction("() => {\n" +
+        "  console.log('waitForFunction1');\n" +
+        "  return true;\n" +
+        "}");
       page.reload();
-      {
-        Deferred<JSHandle> result = page.waitForFunction("() => {\n" +
-          "  console.log('waitForFunction2');\n" +
-          "  return true;\n" +
-          "}");
-        result.get();
-      }
+      page.waitForFunction("() => {\n" +
+        "  console.log('waitForFunction2');\n" +
+        "  return true;\n" +
+        "}");
       page.reload();
-      {
-        Deferred<JSHandle> result = page.waitForFunction("() => {\n" +
-          "  console.log('waitForFunction3');\n" +
-          "  return true;\n" +
-          "}");
-        result.get();
-      }
+      page.waitForFunction("() => {\n" +
+        "  console.log('waitForFunction3');\n" +
+        "  return true;\n" +
+        "}");
       assertEquals(asList("waitForFunction1", "waitForFunction2", "waitForFunction3"), messages);
     }
 
@@ -290,11 +272,10 @@ public class TestWaitForFunction extends TestBase {
         messages.add(msg.text());
     });
     try {
-      Deferred<JSHandle> result = page.waitForFunction("() => {\n" +
+      page.waitForFunction("() => {\n" +
         "  console.log('waitForFunction1');\n" +
         "  throw new Error('waitForFunction1');\n" +
         "}");
-      result.get();
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("waitForFunction1"));
@@ -304,7 +285,7 @@ public class TestWaitForFunction extends TestBase {
       page.waitForFunction("() => {\n" +
         "  console.log('waitForFunction2');\n" +
         "  throw new Error('waitForFunction2');\n" +
-        "}").get();
+        "}");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("waitForFunction2"));
     }
@@ -313,7 +294,7 @@ public class TestWaitForFunction extends TestBase {
       page.waitForFunction("() => {\n" +
         "  console.log('waitForFunction3');\n" +
         "  throw new Error('waitForFunction3');\n" +
-        "}").get();
+        "}");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("waitForFunction3"));
     }

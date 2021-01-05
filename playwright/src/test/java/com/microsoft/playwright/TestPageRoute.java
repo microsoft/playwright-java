@@ -101,8 +101,9 @@ public class TestPageRoute extends TestBase {
     page.setContent("<form action='/rredirect' method='post'>\n" +
       "  <input type='hidden' id='foo' name='foo' value='FOOBAR'>\n" +
       "</form>");
+    Deferred<Response> navigationResponse = page.futureNavigation();
     page.evalOnSelector("form", "form => form.submit()");
-    page.waitForNavigation().get();
+    navigationResponse.get();
   }
 
   // @see https://github.com/GoogleChrome/puppeteer/issues/3973
@@ -127,7 +128,7 @@ public class TestPageRoute extends TestBase {
       route.continue_(new Route.ContinueOverrides().withHeaders(headers));
     });
 
-    Future<Server.Request> serverRequest = server.waitForRequest("/title.html");
+    Future<Server.Request> serverRequest = server.futureRequest("/title.html");
     page.evaluate("url => fetch(url, { headers: {foo: 'bar'} })", server.PREFIX + "/title.html");
     assertFalse(serverRequest.get().headers.containsKey("foo"));
   }
@@ -232,7 +233,7 @@ public class TestPageRoute extends TestBase {
   void shouldSendReferer() throws ExecutionException, InterruptedException {
     page.setExtraHTTPHeaders(mapOf("referer", "http://google.com/"));
     page.route("**/*", route -> route.continue_());
-    Future<Server.Request> request = server.waitForRequest("/grid.html");
+    Future<Server.Request> request = server.futureRequest("/grid.html");
     page.navigate(server.PREFIX + "/grid.html");
     assertEquals(asList("http://google.com/"), request.get().headers.get("referer"));
   }
@@ -434,7 +435,7 @@ public class TestPageRoute extends TestBase {
     Route[] route = {null};
     page.route("**/*", r -> route[0] = r);
     // Wait for request interception.
-    Deferred<Event<Page.EventType>> event = page.waitForEvent(REQUEST);
+    Deferred<Event<Page.EventType>> event = page.futureEvent(REQUEST);
     page.evalOnSelector("iframe", "(frame, url) => frame.src = url", server.EMPTY_PAGE);
     event.get();
     // Delete frame to cause request to be canceled.

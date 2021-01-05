@@ -26,7 +26,7 @@ public class TestPageWaitForResponse extends TestBase {
   @Test
   void shouldWork() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Response> response = page.waitForResponse(server.PREFIX + "/digits/2.png");
+    Deferred<Response> response = page.futureResponse(server.PREFIX + "/digits/2.png");
     page.evaluate("() => {\n" +
       "  fetch('/digits/1.png');\n" +
       "  fetch('/digits/2.png');\n" +
@@ -38,7 +38,7 @@ public class TestPageWaitForResponse extends TestBase {
   @Test
   void shouldRespectTimeout() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Response> response = page.waitForResponse(url -> url.equals(server.PREFIX + "/digits/2.png"));
+    Deferred<Response> response = page.futureResponse(url -> url.equals(server.PREFIX + "/digits/2.png"));
     page.evaluate("() => {\n" +
       "  fetch('/digits/1.png');\n" +
       "  fetch('/digits/2.png');\n" +
@@ -50,7 +50,7 @@ public class TestPageWaitForResponse extends TestBase {
   @Test
   void shouldWorkWithPredicate() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Response> response = page.waitForResponse(url -> url.equals(server.PREFIX + "/digits/2.png"));
+    Deferred<Response> response = page.futureResponse(url -> url.equals(server.PREFIX + "/digits/2.png"));
     page.evaluate("() => {\n" +
       "  fetch('/digits/1.png');\n" +
       "  fetch('/digits/2.png');\n" +
@@ -63,7 +63,7 @@ public class TestPageWaitForResponse extends TestBase {
   void shouldRespectDefaultTimeout() {
     page.setDefaultTimeout(1);
     try {
-      page.waitForEvent(RESPONSE, url -> false).get();
+      page.futureEvent(RESPONSE, url -> false).get();
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
@@ -73,8 +73,8 @@ public class TestPageWaitForResponse extends TestBase {
   @Test
   void shouldWorkWithNoTimeout() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Response> response = page.waitForResponse(server.PREFIX + "/digits/2.png",
-      new Page.WaitForResponseOptions().withTimeout(0));
+    Deferred<Response> response = page.futureResponse(server.PREFIX + "/digits/2.png",
+      new Page.FutureResponseOptions().withTimeout(0));
     page.evaluate("() => setTimeout(() => {\n" +
       "  fetch('/digits/1.png');\n" +
       "  fetch('/digits/2.png');\n" +

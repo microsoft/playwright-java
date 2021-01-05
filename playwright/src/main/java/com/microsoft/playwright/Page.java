@@ -69,14 +69,14 @@ public interface Page {
     String stack();
   }
 
-  class WaitForEventOptions {
+  class FutureEventOptions {
     public Integer timeout;
     public Predicate<Event<EventType>> predicate;
-    public WaitForEventOptions withTimeout(int millis) {
+    public FutureEventOptions withTimeout(int millis) {
       timeout = millis;
       return this;
     }
-    public WaitForEventOptions withPredicate(Predicate<Event<EventType>> predicate) {
+    public FutureEventOptions withPredicate(Predicate<Event<EventType>> predicate) {
       this.predicate = predicate;
       return this;
     }
@@ -1080,7 +1080,7 @@ public interface Page {
       return this;
     }
   }
-  class WaitForNavigationOptions {
+  class FutureNavigationOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultNavigationTimeout(timeout)}, {@code browserContext.setDefaultTimeout(timeout)}, {@code page.setDefaultNavigationTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
@@ -1099,45 +1099,45 @@ public interface Page {
      */
     public Frame.LoadState waitUntil;
 
-    public WaitForNavigationOptions withTimeout(Integer timeout) {
+    public FutureNavigationOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
     }
-    public WaitForNavigationOptions withUrl(String glob) {
+    public FutureNavigationOptions withUrl(String glob) {
       this.glob = glob;
       return this;
     }
-    public WaitForNavigationOptions withUrl(Pattern pattern) {
+    public FutureNavigationOptions withUrl(Pattern pattern) {
       this.pattern = pattern;
       return this;
     }
-    public WaitForNavigationOptions withUrl(Predicate<String> predicate) {
+    public FutureNavigationOptions withUrl(Predicate<String> predicate) {
       this.predicate = predicate;
       return this;
     }
-    public WaitForNavigationOptions withWaitUntil(Frame.LoadState waitUntil) {
+    public FutureNavigationOptions withWaitUntil(Frame.LoadState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
   }
-  class WaitForRequestOptions {
+  class FutureRequestOptions {
     /**
      * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be changed by using the {@code page.setDefaultTimeout(timeout)} method.
      */
     public Integer timeout;
 
-    public WaitForRequestOptions withTimeout(Integer timeout) {
+    public FutureRequestOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
     }
   }
-  class WaitForResponseOptions {
+  class FutureResponseOptions {
     /**
      * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
-    public WaitForResponseOptions withTimeout(Integer timeout) {
+    public FutureResponseOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1922,13 +1922,13 @@ public interface Page {
    */
   Video video();
   Viewport viewportSize();
-  default Deferred<Event<EventType>> waitForEvent(EventType event) {
-    return waitForEvent(event, (WaitForEventOptions) null);
+  default Deferred<Event<EventType>> futureEvent(EventType event) {
+    return futureEvent(event, (FutureEventOptions) null);
   }
-  default Deferred<Event<EventType>> waitForEvent(EventType event, Predicate<Event<EventType>> predicate) {
-    WaitForEventOptions options = new WaitForEventOptions();
+  default Deferred<Event<EventType>> futureEvent(EventType event, Predicate<Event<EventType>> predicate) {
+    FutureEventOptions options = new FutureEventOptions();
     options.predicate = predicate;
-    return waitForEvent(event, options);
+    return futureEvent(event, options);
   }
   /**
    * Returns the event data value.
@@ -1936,11 +1936,11 @@ public interface Page {
    * Waits for event to fire and passes its value into the predicate function. Returns when the predicate returns truthy value. Will throw an error if the page is closed before the event is fired.
    * @param event Event name, same one would pass into {@code page.on(event)}.
    */
-  Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options);
-  default Deferred<JSHandle> waitForFunction(String pageFunction, Object arg) {
+  Deferred<Event<EventType>> futureEvent(EventType event, FutureEventOptions options);
+  default JSHandle waitForFunction(String pageFunction, Object arg) {
     return waitForFunction(pageFunction, arg, null);
   }
-  default Deferred<JSHandle> waitForFunction(String pageFunction) {
+  default JSHandle waitForFunction(String pageFunction) {
     return waitForFunction(pageFunction, null);
   }
   /**
@@ -1954,12 +1954,12 @@ public interface Page {
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
    */
-  Deferred<JSHandle> waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options);
-  default Deferred<Void> waitForLoadState(LoadState state) {
-    return waitForLoadState(state, null);
+  JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options);
+  default void waitForLoadState(LoadState state) {
+    waitForLoadState(state, null);
   }
-  default Deferred<Void> waitForLoadState() {
-    return waitForLoadState(null);
+  default void waitForLoadState() {
+    waitForLoadState(null);
   }
   /**
    * Returns when the required load state has been reached.
@@ -1974,9 +1974,9 @@ public interface Page {
    *  - {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.
    *  - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
    */
-  Deferred<Void> waitForLoadState(LoadState state, WaitForLoadStateOptions options);
-  default Deferred<Response> waitForNavigation() {
-    return waitForNavigation(null);
+  void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
+  default Deferred<Response> futureNavigation() {
+    return futureNavigation(null);
   }
   /**
    * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect. In case of navigation to a different anchor or navigation due to History API usage, the navigation will resolve with {@code null}.
@@ -1987,20 +1987,20 @@ public interface Page {
    * <p>
    * Shortcut for main frame's {@code frame.waitForNavigation([options])}.
    */
-  Deferred<Response> waitForNavigation(WaitForNavigationOptions options);
-  default Deferred<Request> waitForRequest(String urlGlob) { return waitForRequest(urlGlob, null); }
-  default Deferred<Request> waitForRequest(Pattern urlPattern) { return waitForRequest(urlPattern, null); }
-  default Deferred<Request> waitForRequest(Predicate<String> urlPredicate) { return waitForRequest(urlPredicate, null); }
-  Deferred<Request> waitForRequest(String urlGlob, WaitForRequestOptions options);
-  Deferred<Request> waitForRequest(Pattern urlPattern, WaitForRequestOptions options);
-  Deferred<Request> waitForRequest(Predicate<String> urlPredicate, WaitForRequestOptions options);
-  default Deferred<Response> waitForResponse(String urlGlob) { return waitForResponse(urlGlob, null); }
-  default Deferred<Response> waitForResponse(Pattern urlPattern) { return waitForResponse(urlPattern, null); }
-  default Deferred<Response> waitForResponse(Predicate<String> urlPredicate) { return waitForResponse(urlPredicate, null); }
-  Deferred<Response> waitForResponse(String urlGlob, WaitForResponseOptions options);
-  Deferred<Response> waitForResponse(Pattern urlPattern, WaitForResponseOptions options);
-  Deferred<Response> waitForResponse(Predicate<String> urlPredicate, WaitForResponseOptions options);
-  default Deferred<ElementHandle> waitForSelector(String selector) {
+  Deferred<Response> futureNavigation(FutureNavigationOptions options);
+  default Deferred<Request> futureRequest(String urlGlob) { return futureRequest(urlGlob, null); }
+  default Deferred<Request> futureRequest(Pattern urlPattern) { return futureRequest(urlPattern, null); }
+  default Deferred<Request> futureRequest(Predicate<String> urlPredicate) { return futureRequest(urlPredicate, null); }
+  Deferred<Request> futureRequest(String urlGlob, FutureRequestOptions options);
+  Deferred<Request> futureRequest(Pattern urlPattern, FutureRequestOptions options);
+  Deferred<Request> futureRequest(Predicate<String> urlPredicate, FutureRequestOptions options);
+  default Deferred<Response> futureResponse(String urlGlob) { return futureResponse(urlGlob, null); }
+  default Deferred<Response> futureResponse(Pattern urlPattern) { return futureResponse(urlPattern, null); }
+  default Deferred<Response> futureResponse(Predicate<String> urlPredicate) { return futureResponse(urlPredicate, null); }
+  Deferred<Response> futureResponse(String urlGlob, FutureResponseOptions options);
+  Deferred<Response> futureResponse(Pattern urlPattern, FutureResponseOptions options);
+  Deferred<Response> futureResponse(Predicate<String> urlPredicate, FutureResponseOptions options);
+  default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }
   /**
@@ -2013,7 +2013,7 @@ public interface Page {
    * 
    * @param selector A selector to query for. See working with selectors for more details.
    */
-  Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options);
+  ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
   /**
    * Waits for the given {@code timeout} in milliseconds.
    * <p>
@@ -2022,7 +2022,7 @@ public interface Page {
    * Shortcut for main frame's {@code frame.waitForTimeout(timeout)}.
    * @param timeout A timeout to wait for
    */
-  Deferred<Void> waitForTimeout(int timeout);
+  void waitForTimeout(int timeout);
   /**
    * This method returns all of the dedicated WebWorkers associated with the page.
    * <p>

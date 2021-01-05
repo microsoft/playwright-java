@@ -723,9 +723,9 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options) {
+  public Deferred<Event<EventType>> futureEvent(EventType event, FutureEventOptions options) {
     if (options == null) {
-      options = new WaitForEventOptions();
+      options = new FutureEventOptions();
     }
     List<Waitable<Event<EventType>>> waitables = new ArrayList<>();
     if (event == EventType.FILECHOOSER) {
@@ -745,18 +745,18 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Deferred<JSHandle> waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options) {
+  public JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options) {
     return mainFrame.waitForFunction(pageFunction, arg, convertViaJson(options, Frame.WaitForFunctionOptions.class));
   }
 
   @Override
-  public Deferred<Void> waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
-    return mainFrame.waitForLoadState(convertViaJson(state, Frame.LoadState.class), convertViaJson(options, Frame.WaitForLoadStateOptions.class));
+  public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
+    mainFrame.waitForLoadState(convertViaJson(state, Frame.LoadState.class), convertViaJson(options, Frame.WaitForLoadStateOptions.class));
   }
 
   @Override
-  public Deferred<Response> waitForNavigation(WaitForNavigationOptions options) {
-    Frame.WaitForNavigationOptions frameOptions = new Frame.WaitForNavigationOptions();
+  public Deferred<Response> futureNavigation(FutureNavigationOptions options) {
+    Frame.FutureNavigationOptions frameOptions = new Frame.FutureNavigationOptions();
     if (options != null) {
       frameOptions.timeout = options.timeout;
       frameOptions.waitUntil = options.waitUntil;
@@ -764,7 +764,7 @@ public class PageImpl extends ChannelOwner implements Page {
       frameOptions.pattern = options.pattern;
       frameOptions.predicate = options.predicate;
     }
-    return mainFrame.waitForNavigation(frameOptions);
+    return mainFrame.futureNavigation(frameOptions);
   }
 
   void frameNavigated(FrameImpl frame) {
@@ -857,23 +857,23 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Deferred<Request> waitForRequest(String urlGlob, WaitForRequestOptions options) {
-    return waitForRequest(new UrlMatcher(urlGlob), options);
+  public Deferred<Request> futureRequest(String urlGlob, FutureRequestOptions options) {
+    return futureRequest(new UrlMatcher(urlGlob), options);
   }
 
   @Override
-  public Deferred<Request> waitForRequest(Pattern urlPattern, WaitForRequestOptions options) {
-    return waitForRequest(new UrlMatcher(urlPattern), options);
+  public Deferred<Request> futureRequest(Pattern urlPattern, FutureRequestOptions options) {
+    return futureRequest(new UrlMatcher(urlPattern), options);
   }
 
   @Override
-  public Deferred<Request> waitForRequest(Predicate<String> urlPredicate, WaitForRequestOptions options) {
-    return waitForRequest(new UrlMatcher(urlPredicate), options);
+  public Deferred<Request> futureRequest(Predicate<String> urlPredicate, FutureRequestOptions options) {
+    return futureRequest(new UrlMatcher(urlPredicate), options);
   }
 
-  private Deferred<Request> waitForRequest(UrlMatcher matcher, WaitForRequestOptions options) {
+  private Deferred<Request> futureRequest(UrlMatcher matcher, FutureRequestOptions options) {
     if (options == null) {
-      options = new WaitForRequestOptions();
+      options = new FutureRequestOptions();
     }
     List<Waitable<Request>> waitables = new ArrayList<>();
     waitables.add(new WaitableEvent<>(listeners, EventType.REQUEST, e -> matcher.test(((Request) e.data()).url()))
@@ -884,23 +884,23 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Deferred<Response> waitForResponse(String urlGlob, WaitForResponseOptions options) {
-    return waitForResponse(new UrlMatcher(urlGlob), options);
+  public Deferred<Response> futureResponse(String urlGlob, FutureResponseOptions options) {
+    return futureResponse(new UrlMatcher(urlGlob), options);
   }
 
   @Override
-  public Deferred<Response> waitForResponse(Pattern urlPattern, WaitForResponseOptions options) {
-    return waitForResponse(new UrlMatcher(urlPattern), options);
+  public Deferred<Response> futureResponse(Pattern urlPattern, FutureResponseOptions options) {
+    return futureResponse(new UrlMatcher(urlPattern), options);
   }
 
   @Override
-  public Deferred<Response> waitForResponse(Predicate<String> urlPredicate, WaitForResponseOptions options) {
-    return waitForResponse(new UrlMatcher(urlPredicate), options);
+  public Deferred<Response> futureResponse(Predicate<String> urlPredicate, FutureResponseOptions options) {
+    return futureResponse(new UrlMatcher(urlPredicate), options);
   }
 
-  private Deferred<Response> waitForResponse(UrlMatcher matcher, WaitForResponseOptions options) {
+  private Deferred<Response> futureResponse(UrlMatcher matcher, FutureResponseOptions options) {
     if (options == null) {
-      options = new WaitForResponseOptions();
+      options = new FutureResponseOptions();
     }
     List<Waitable<Response>> waitables = new ArrayList<>();
     waitables.add(new WaitableEvent<>(listeners, EventType.RESPONSE, e -> matcher.test(((Response) e.data()).url()))
@@ -911,13 +911,13 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options) {
+  public ElementHandle waitForSelector(String selector, WaitForSelectorOptions options) {
     return mainFrame.waitForSelector(selector, convertViaJson(options, Frame.WaitForSelectorOptions.class));
   }
 
   @Override
-  public Deferred<Void> waitForTimeout(int timeout) {
-    return mainFrame.waitForTimeout(timeout);
+  public void waitForTimeout(int timeout) {
+    mainFrame.waitForTimeout(timeout);
   }
 
   @Override

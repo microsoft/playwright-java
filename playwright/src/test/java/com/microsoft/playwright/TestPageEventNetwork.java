@@ -79,7 +79,7 @@ public class TestPageEventNetwork extends TestBase {
 
   @Test
   void PageEventsRequestFinished() {
-    Deferred<Event<Page.EventType>> event = page.waitForEvent(REQUESTFINISHED);
+    Deferred<Event<Page.EventType>> event = page.futureEvent(REQUESTFINISHED);
     Response response = page.navigate(server.EMPTY_PAGE);
     event.get();
     Request request = response.request();

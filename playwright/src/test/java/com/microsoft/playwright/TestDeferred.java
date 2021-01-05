@@ -26,8 +26,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class TestDeferred extends TestBase {
   @Test
   void throwIfGetNotCalled() {
-    page.waitForNavigation();
-    context.waitForEvent(BrowserContext.EventType.PAGE);
+    page.futureNavigation();
+    context.futureEvent(BrowserContext.EventType.PAGE);
     closeContext();
     closeBrowser();
 
@@ -48,8 +48,8 @@ public class TestDeferred extends TestBase {
       p.close();
       fail("did not throw");
     } catch (Exception e) {
-      assertTrue(e.getMessage().contains("com.microsoft.playwright.impl.PageImpl.waitForNavigation"));
-      assertTrue(e.getMessage().contains("com.microsoft.playwright.impl.BrowserContextImpl.waitForEvent"));
+      assertTrue(e.getMessage().contains("com.microsoft.playwright.impl.PageImpl.futureNavigation"));
+      assertTrue(e.getMessage().contains("com.microsoft.playwright.impl.BrowserContextImpl.futureEvent"));
     }
   }
 }

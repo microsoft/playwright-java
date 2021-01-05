@@ -32,7 +32,7 @@ public class TestPageWaitForNavigation extends TestBase {
   @Test
   void shouldWork() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Response> response = page.waitForNavigation();
+    Deferred<Response> response = page.futureNavigation();
     page.evaluate("url => window.location.href = url", server.PREFIX + "/grid.html");
     assertTrue(response.get().ok());
     assertTrue(response.get().url().contains("grid.html"));
@@ -40,13 +40,13 @@ public class TestPageWaitForNavigation extends TestBase {
 
   @Test
   void shouldRespectTimeout() {
-    Deferred<Response> promise = page.waitForNavigation(new Page.WaitForNavigationOptions().withUrl("**/frame.html").withTimeout(5000));
+    Deferred<Response> promise = page.futureNavigation(new Page.FutureNavigationOptions().withUrl("**/frame.html").withTimeout(5000));
     page.navigate(server.EMPTY_PAGE);
     try {
       promise.get();
       fail("did not throw");
     } catch (PlaywrightException e) {
-//      assertTrue(e.getMessage().contains("page.waitForNavigation: Timeout 5000ms exceeded."));
+//      assertTrue(e.getMessage().contains("page.futureNavigation: Timeout 5000ms exceeded."));
       assertTrue(e.getMessage().contains("Timeout 5000ms exceeded"));
 //      assertTrue(e.getMessage().contains("waiting for navigation to '**/frame.html' until 'load'"));
 //      assertTrue(e.getMessage().contains("navigated to '${server.EMPTY_PAGE}'"));
@@ -61,7 +61,7 @@ public class TestPageWaitForNavigation extends TestBase {
   void shouldWorkWithClickingOnAnchorLinks() {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a href='#foobar'>foobar</a>");
-    Deferred<Response> response = page.waitForNavigation();
+    Deferred<Response> response = page.futureNavigation();
     page.click("a");
     assertNull(response.get());
     assertEquals(server.EMPTY_PAGE + "#foobar", page.url());
@@ -70,7 +70,7 @@ public class TestPageWaitForNavigation extends TestBase {
   @Test
   void shouldWorkWithClickingOnLinksWhichDoNotCommitNavigation() throws InterruptedException {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Response> event = page.waitForNavigation();
+    Deferred<Response> event = page.futureNavigation();
     page.setContent("<a href='" + httpsServer.EMPTY_PAGE + "'>foobar</a>");
     try {
       page.click("a");
@@ -91,7 +91,7 @@ public class TestPageWaitForNavigation extends TestBase {
       "<script>\n" +
       "  function pushState() { history.pushState({}, '', 'wow.html') }\n" +
       "</script>");
-    Deferred<Response> response = page.waitForNavigation();
+    Deferred<Response> response = page.futureNavigation();
     page.click("a");
     assertNull(response.get());
     assertEquals(server.PREFIX + "/wow.html", page.url());
@@ -104,7 +104,7 @@ public class TestPageWaitForNavigation extends TestBase {
       "<script>\n" +
       "  function replaceState() { history.replaceState({}, '', '/replaced.html') }\n" +
       "</script>");
-    Deferred<Response> response = page.waitForNavigation();
+    Deferred<Response> response = page.futureNavigation();
     page.click("a");
     assertNull(response.get());
     assertEquals(server.PREFIX + "/replaced.html", page.url());
@@ -123,12 +123,12 @@ public class TestPageWaitForNavigation extends TestBase {
       "</script>");
     assertEquals(server.PREFIX + "/second.html", page.url());
 
-    Deferred<Response> backResponse = page.waitForNavigation();
+    Deferred<Response> backResponse = page.futureNavigation();
     page.click("a#back");
     assertNull(backResponse.get());
     assertEquals(server.PREFIX + "/first.html", page.url());
 
-    Deferred<Response> forwardResponse = page.waitForNavigation();
+    Deferred<Response> forwardResponse = page.futureNavigation();
     page.click("a#forward");
     assertNull(forwardResponse.get());
     assertEquals(server.PREFIX + "/second.html", page.url());
@@ -155,17 +155,17 @@ public class TestPageWaitForNavigation extends TestBase {
   void shouldWorkWithUrlMatch() {
     page.navigate(server.EMPTY_PAGE);
 
-    Deferred<Response> response1 = page.waitForNavigation(new Page.WaitForNavigationOptions().withUrl("**/one-style.html"));
+    Deferred<Response> response1 = page.futureNavigation(new Page.FutureNavigationOptions().withUrl("**/one-style.html"));
     page.navigate(server.PREFIX + "/one-style.html");
     assertNotNull(response1.get());
     assertEquals(server.PREFIX + "/one-style.html", response1.get().url());
 
-    Deferred<Response> response2 = page.waitForNavigation(new Page.WaitForNavigationOptions().withUrl(Pattern.compile("frame.html$")));
+    Deferred<Response> response2 = page.futureNavigation(new Page.FutureNavigationOptions().withUrl(Pattern.compile("frame.html$")));
     page.navigate(server.PREFIX + "/frame.html");
     assertNotNull(response2.get());
     assertEquals(server.PREFIX + "/frame.html", response2.get().url());
 
-    Deferred<Response> response3 = page.waitForNavigation(new Page.WaitForNavigationOptions().withUrl(url -> {
+    Deferred<Response> response3 = page.futureNavigation(new Page.FutureNavigationOptions().withUrl(url -> {
       try {
         return new URL(url).getQuery().contains("foo=bar");
       } catch (MalformedURLException e) {
@@ -180,7 +180,7 @@ public class TestPageWaitForNavigation extends TestBase {
   @Test
   void shouldWorkWithUrlMatchForSameDocumentNavigations() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Response> waitPromise = page.waitForNavigation(new Page.WaitForNavigationOptions().withUrl("**/third.html"));
+    Deferred<Response> waitPromise = page.futureNavigation(new Page.FutureNavigationOptions().withUrl("**/third.html"));
     page.evaluate("() => {\n" +
       "  history.pushState({}, '', '/first.html');\n" +
       "}");
@@ -196,7 +196,7 @@ public class TestPageWaitForNavigation extends TestBase {
   @Test
   void shouldWorkForCrossProcessNavigations() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Response> waitPromise = page.waitForNavigation(new Page.WaitForNavigationOptions().withWaitUntil(Frame.LoadState.DOMCONTENTLOADED));
+    Deferred<Response> waitPromise = page.futureNavigation(new Page.FutureNavigationOptions().withWaitUntil(Frame.LoadState.DOMCONTENTLOADED));
     String url = server.CROSS_PROCESS_PREFIX + "/empty.html";
     page.navigate(url);
     Response response = waitPromise.get();
@@ -209,7 +209,7 @@ public class TestPageWaitForNavigation extends TestBase {
   void shouldWorkOnFrame() {
     page.navigate(server.PREFIX + "/frames/one-frame.html");
     Frame frame = page.frames().get(1);
-    Deferred<Response> response = frame.waitForNavigation();
+    Deferred<Response> response = frame.futureNavigation();
     frame.evaluate("url => window.location.href = url", server.PREFIX + "/grid.html");
     assertTrue(response.get().ok());
     assertTrue(response.get().url().contains("grid.html"));
@@ -223,7 +223,7 @@ public class TestPageWaitForNavigation extends TestBase {
     Frame frame = page.frames().get(1);
     server.setRoute("/empty.html", exchange -> {});
     try {
-      Deferred<Response> response = frame.waitForNavigation();
+      Deferred<Response> response = frame.futureNavigation();
       page.evaluate("() => {\n" +
         "  frames[0].location.href = '/empty.html';\n" +
         "  setTimeout(() => document.querySelector('iframe').remove());\n" +

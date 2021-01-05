@@ -266,6 +266,7 @@ class Method extends Element {
     tsToJavaMethodName.put("$", "querySelector");
     tsToJavaMethodName.put("$$", "querySelectorAll");
     tsToJavaMethodName.put("goto", "navigate");
+    tsToJavaMethodName.put("waitForNavigation", "futureNavigation");
   }
 
   private static Map<String, String[]> customSignature = new HashMap<>();
@@ -355,35 +356,35 @@ class Method extends Element {
     customSignature.put("Frame.setInputFiles", setInputFilesWithSelector);
 
     String[] waitForEvent = {
-      "default Deferred<Event<EventType>> waitForEvent(EventType event) {",
-      "  return waitForEvent(event, (WaitForEventOptions) null);",
+      "default Deferred<Event<EventType>> futureEvent(EventType event) {",
+      "  return futureEvent(event, (FutureEventOptions) null);",
       "}",
-      "default Deferred<Event<EventType>> waitForEvent(EventType event, Predicate<Event<EventType>> predicate) {",
-      "  WaitForEventOptions options = new WaitForEventOptions();",
+      "default Deferred<Event<EventType>> futureEvent(EventType event, Predicate<Event<EventType>> predicate) {",
+      "  FutureEventOptions options = new FutureEventOptions();",
       "  options.predicate = predicate;",
-      "  return waitForEvent(event, options);",
+      "  return futureEvent(event, options);",
       "}",
-      "Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options);",
+      "Deferred<Event<EventType>> futureEvent(EventType event, FutureEventOptions options);",
     };
     customSignature.put("Page.waitForEvent", waitForEvent);
     customSignature.put("BrowserContext.waitForEvent", waitForEvent);
     customSignature.put("WebSocket.waitForEvent", waitForEvent);
 
     customSignature.put("Page.waitForRequest", new String[] {
-      "default Deferred<Request> waitForRequest(String urlGlob) { return waitForRequest(urlGlob, null); }",
-      "default Deferred<Request> waitForRequest(Pattern urlPattern) { return waitForRequest(urlPattern, null); }",
-      "default Deferred<Request> waitForRequest(Predicate<String> urlPredicate) { return waitForRequest(urlPredicate, null); }",
-      "Deferred<Request> waitForRequest(String urlGlob, WaitForRequestOptions options);",
-      "Deferred<Request> waitForRequest(Pattern urlPattern, WaitForRequestOptions options);",
-      "Deferred<Request> waitForRequest(Predicate<String> urlPredicate, WaitForRequestOptions options);"
+      "default Deferred<Request> futureRequest(String urlGlob) { return futureRequest(urlGlob, null); }",
+      "default Deferred<Request> futureRequest(Pattern urlPattern) { return futureRequest(urlPattern, null); }",
+      "default Deferred<Request> futureRequest(Predicate<String> urlPredicate) { return futureRequest(urlPredicate, null); }",
+      "Deferred<Request> futureRequest(String urlGlob, FutureRequestOptions options);",
+      "Deferred<Request> futureRequest(Pattern urlPattern, FutureRequestOptions options);",
+      "Deferred<Request> futureRequest(Predicate<String> urlPredicate, FutureRequestOptions options);"
     });
     customSignature.put("Page.waitForResponse", new String[] {
-      "default Deferred<Response> waitForResponse(String urlGlob) { return waitForResponse(urlGlob, null); }",
-      "default Deferred<Response> waitForResponse(Pattern urlPattern) { return waitForResponse(urlPattern, null); }",
-      "default Deferred<Response> waitForResponse(Predicate<String> urlPredicate) { return waitForResponse(urlPredicate, null); }",
-      "Deferred<Response> waitForResponse(String urlGlob, WaitForResponseOptions options);",
-      "Deferred<Response> waitForResponse(Pattern urlPattern, WaitForResponseOptions options);",
-      "Deferred<Response> waitForResponse(Predicate<String> urlPredicate, WaitForResponseOptions options);"
+      "default Deferred<Response> futureResponse(String urlGlob) { return futureResponse(urlGlob, null); }",
+      "default Deferred<Response> futureResponse(Pattern urlPattern) { return futureResponse(urlPattern, null); }",
+      "default Deferred<Response> futureResponse(Predicate<String> urlPredicate) { return futureResponse(urlPredicate, null); }",
+      "Deferred<Response> futureResponse(String urlGlob, FutureResponseOptions options);",
+      "Deferred<Response> futureResponse(Pattern urlPattern, FutureResponseOptions options);",
+      "Deferred<Response> futureResponse(Predicate<String> urlPredicate, FutureResponseOptions options);"
     });
 
     String[] selectOption = {
@@ -636,15 +637,15 @@ class Field extends Element {
   void writeBuilderMethod(List<String> output, String offset, String parentClass) {
     if (asList("Frame.waitForNavigation.options.url",
                "Page.waitForNavigation.options.url").contains(jsonPath)) {
-      output.add(offset + "public WaitForNavigationOptions withUrl(String glob) {");
+      output.add(offset + "public FutureNavigationOptions withUrl(String glob) {");
       output.add(offset + "  this.glob = glob;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
-      output.add(offset + "public WaitForNavigationOptions withUrl(Pattern pattern) {");
+      output.add(offset + "public FutureNavigationOptions withUrl(Pattern pattern) {");
       output.add(offset + "  this.pattern = pattern;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
-      output.add(offset + "public WaitForNavigationOptions withUrl(Predicate<String> predicate) {");
+      output.add(offset + "public FutureNavigationOptions withUrl(Predicate<String> predicate) {");
       output.add(offset + "  this.predicate = predicate;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
@@ -833,7 +834,7 @@ class Interface extends TypeDefinition {
       m.writeTo(output, offset);
     }
     if ("Worker".equals(jsonName)) {
-      output.add(offset + "Deferred<Event<EventType>> waitForEvent(EventType event);");
+      output.add(offset + "Deferred<Event<EventType>> futureEvent(EventType event);");
     }
     output.add("}");
     output.add("\n");
@@ -1052,15 +1053,15 @@ class Interface extends TypeDefinition {
       }
     }
     if (asList("Page", "BrowserContext", "WebSocket").contains(jsonName)){
-      output.add(offset + "class WaitForEventOptions {");
+      output.add(offset + "class FutureEventOptions {");
       output.add(offset + "  public Integer timeout;");
       output.add(offset + "  public Predicate<Event<EventType>> predicate;");
 
-      output.add(offset + "  public WaitForEventOptions withTimeout(int millis) {");
+      output.add(offset + "  public FutureEventOptions withTimeout(int millis) {");
       output.add(offset + "    timeout = millis;");
       output.add(offset + "    return this;");
       output.add(offset + "  }");
-      output.add(offset + "  public WaitForEventOptions withPredicate(Predicate<Event<EventType>> predicate) {");
+      output.add(offset + "  public FutureEventOptions withPredicate(Predicate<Event<EventType>> predicate) {");
       output.add(offset + "    this.predicate = predicate;");
       output.add(offset + "    return this;");
       output.add(offset + "  }");

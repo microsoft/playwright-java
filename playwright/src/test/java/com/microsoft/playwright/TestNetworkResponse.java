@@ -105,7 +105,7 @@ public class TestNetworkResponse extends TestBase {
       requestFinished[0] |= ((Request) event.data()).url().contains("/get");
     });
     // send request and wait for server response
-    Deferred<Event<Page.EventType>> responseEvent = page.waitForEvent(RESPONSE);
+    Deferred<Event<Page.EventType>> responseEvent = page.futureEvent(RESPONSE);
     page.evaluate("() => fetch('./get', { method: 'GET'})");
     assertNotNull(responseEvent.get());
     responseWritten.acquire();

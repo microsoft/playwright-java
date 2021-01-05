@@ -56,6 +56,6 @@ public interface Worker {
    */
   JSHandle evaluateHandle(String pageFunction, Object arg);
   String url();
-  Deferred<Event<EventType>> waitForEvent(EventType event);
+  Deferred<Event<EventType>> futureEvent(EventType event);
 }
 

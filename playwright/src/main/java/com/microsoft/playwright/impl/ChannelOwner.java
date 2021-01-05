@@ -89,7 +89,7 @@ class ChannelOwner {
   }
 
   @SuppressWarnings("unchecked")
-  <T> Deferred<T> toDeferred(Waitable waitable) {
+  <T> Deferred<T> toDeferred(Waitable<T> waitable) {
     return new Deferred<T>() {
       Exception constructionStackTrace = new Exception();
       @Override

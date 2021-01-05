@@ -921,8 +921,8 @@ public interface ElementHandle extends JSHandle {
    * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a TimeoutError. Passing zero timeout disables this.
    */
   void uncheck(UncheckOptions options);
-  default Deferred<Void> waitForElementState(ElementState state) {
-    return waitForElementState(state, null);
+  default void waitForElementState(ElementState state) {
+    waitForElementState(state, null);
   }
   /**
    * Returns the element satisfies the {@code state}.
@@ -942,8 +942,8 @@ public interface ElementHandle extends JSHandle {
    * If the element does not satisfy the condition for the {@code timeout} milliseconds, this method will throw.
    * @param state A state to wait for, see below for more details.
    */
-  Deferred<Void> waitForElementState(ElementState state, WaitForElementStateOptions options);
-  default Deferred<ElementHandle> waitForSelector(String selector) {
+  void waitForElementState(ElementState state, WaitForElementStateOptions options);
+  default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }
   /**
@@ -956,6 +956,6 @@ public interface ElementHandle extends JSHandle {
    * <strong>NOTE</strong> This method does not work across navigations, use {@code page.waitForSelector(selector[, options])} instead.
    * @param selector A selector to query for. See working with selectors for more details.
    */
-  Deferred<ElementHandle> waitForSelector(String selector, WaitForSelectorOptions options);
+  ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
 }
 
