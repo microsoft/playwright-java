@@ -20,9 +20,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.time.Duration;
 import java.util.*;
 
@@ -56,7 +54,7 @@ public class Connection {
   private final Root root;
   private int lastId = 0;
   private final Map<Integer, WaitableResult<JsonElement>> callbacks = new HashMap<>();
-  final Deque<Exception> unusedDeferredObjects = new ArrayDeque<>();
+  private final Deque<Exception> unusedDeferredObjects = new ArrayDeque<>();
 
   class Root extends ChannelOwner {
     Root(Connection connection) {
@@ -266,5 +264,20 @@ public class Connection {
     if (unusedDeferredObjects.size() > 10) {
       unusedDeferredObjects.removeLast();
     }
+  }
+
+  void checkNoUnusedDeferredObjects() {
+    if (unusedDeferredObjects.isEmpty()) {
+      return;
+    }
+    List<String> chunks = new ArrayList<>();
+    chunks.add("Method get() has not been called on some Deferred<> objects. This indicates a " +
+      "bug in the client code. Here are some stack traces where such objects were constructed");
+    for (Exception e : unusedDeferredObjects) {
+      StringWriter writer = new StringWriter();
+      e.printStackTrace(new PrintWriter(writer));
+      chunks.add(writer.toString());
+    }
+    throw new PlaywrightException(String.join("\n", chunks));
   }
 }

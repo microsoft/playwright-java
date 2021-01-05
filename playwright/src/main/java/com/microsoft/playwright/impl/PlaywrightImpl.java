@@ -108,17 +108,6 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       System.err.println("WARNING: Timed out while waiting for driver process to exit");
     }
 
-    if (connection.unusedDeferredObjects.isEmpty()) {
-      return;
-    }
-    List<String> chunks = new ArrayList<>();
-    chunks.add("Method get() has not been called on some Deferred<> objects. This indicates a " +
-      "bug in the client code. Here are some stack traces where such objects were constructed");
-    for (Exception e : connection.unusedDeferredObjects) {
-      StringWriter writer = new StringWriter();
-      e.printStackTrace(new PrintWriter(writer));
-      chunks.add(writer.toString());
-    }
-    throw new PlaywrightException(String.join("\n", chunks));
+    connection.checkNoUnusedDeferredObjects();
   }
 }
