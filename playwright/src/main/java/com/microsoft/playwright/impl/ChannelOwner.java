@@ -104,7 +104,7 @@ class ChannelOwner {
       @Override
       protected void finalize() {
         if (constructionStackTrace != null) {
-          connection.unusedDeferredObjects.add(constructionStackTrace);
+          connection.addUnusedDeferredObject(constructionStackTrace);
         }
       }
     };
