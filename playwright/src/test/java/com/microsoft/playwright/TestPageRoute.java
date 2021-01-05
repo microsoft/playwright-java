@@ -435,7 +435,7 @@ public class TestPageRoute extends TestBase {
     Route[] route = {null};
     page.route("**/*", r -> route[0] = r);
     // Wait for request interception.
-    Deferred<Event<Page.EventType>> event = page.waitForEvent(REQUEST);
+    Deferred<Event<Page.EventType>> event = page.futureEvent(REQUEST);
     page.evalOnSelector("iframe", "(frame, url) => frame.src = url", server.EMPTY_PAGE);
     event.get();
     // Delete frame to cause request to be canceled.

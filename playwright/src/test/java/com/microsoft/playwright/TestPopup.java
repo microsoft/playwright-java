@@ -38,7 +38,7 @@ public class TestPopup extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a target=_blank rel=noopener href='/popup/popup.html'>link</a>");
     Future<Server.Request> requestPromise = server.waitForRequest("/popup/popup.html");
-    Deferred<Event<BrowserContext.EventType>> popupEvent = context.waitForEvent(BrowserContext.EventType.PAGE);
+    Deferred<Event<BrowserContext.EventType>> popupEvent = context.futureEvent(BrowserContext.EventType.PAGE);
     page.click("a");
     Page popup = (Page) popupEvent.get().data();
     popup.waitForLoadState(DOMCONTENTLOADED);
@@ -60,7 +60,7 @@ public class TestPopup extends TestBase {
       route.continue_();
       intercepted[0] = true;
     });
-    Deferred<Event<BrowserContext.EventType>> popup = context.waitForEvent(BrowserContext.EventType.PAGE);
+    Deferred<Event<BrowserContext.EventType>> popup = context.futureEvent(BrowserContext.EventType.PAGE);
     page.click("a");
     popup.get();
 
@@ -103,7 +103,7 @@ public class TestPopup extends TestBase {
       .withHttpCredentials("user", "pass"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(POPUP);
+    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
     page.evaluate("url => window['_popup'] = window.open(url)", server.PREFIX + "/title.html");
     Page popup = (Page) popupEvent.get().data();
     popup.waitForLoadState(DOMCONTENTLOADED);
@@ -146,7 +146,7 @@ public class TestPopup extends TestBase {
       .withViewport(700, 700));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(POPUP);
+    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
     Object size = page.evaluate("() => {\n" +
       "  const win = window.open(window.location.href, 'Title', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=300,top=0,left=0');\n" +
       "  return { width: win.innerWidth, height: win.innerHeight };\n" +
@@ -170,7 +170,7 @@ public class TestPopup extends TestBase {
       route.continue_();
       intercepted[0] = true;
     });
-    Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(POPUP);
+    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
     page.evaluate("url => window['__popup'] = window.open(url)", server.EMPTY_PAGE);
     popupEvent.get();
     assertTrue(intercepted[0]);
@@ -197,7 +197,7 @@ public class TestPopup extends TestBase {
     context.addInitScript("() => window['injected'] = 123");
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(POPUP);
+    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
     page.evaluate("url => window.open(url)", server.CROSS_PROCESS_PREFIX + "/title.html");
     Page popup = (Page) popupEvent.get().data();
     assertEquals(123, popup.evaluate("injected"));

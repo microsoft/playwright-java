@@ -52,7 +52,7 @@ public class TestPageWaitForRequest extends TestBase {
   @Test
   void shouldRespectTimeout() {
     try {
-      page.waitForEvent(REQUEST, new Page.WaitForEventOptions()
+      page.futureEvent(REQUEST, new Page.FutureEventOptions()
         .withPredicate(url -> false).withTimeout(1)).get();
       fail("did not throw");
     } catch (PlaywrightException e) {
@@ -64,7 +64,7 @@ public class TestPageWaitForRequest extends TestBase {
   void shouldRespectDefaultTimeout() {
     page.setDefaultTimeout(1);
     try {
-      page.waitForEvent(REQUEST, url -> false).get();
+      page.futureEvent(REQUEST, url -> false).get();
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout"), e.getMessage());

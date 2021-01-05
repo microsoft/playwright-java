@@ -120,17 +120,17 @@ public class TestGeolocation extends TestBase {
       "  }, err => {});\n" +
       "}");
     {
-      Deferred<Event<Page.EventType>> deferred = page.waitForEvent(CONSOLE, event -> ((ConsoleMessage) event.data()).text().contains("lat=0 lng=10"));
+      Deferred<Event<Page.EventType>> deferred = page.futureEvent(CONSOLE, event -> ((ConsoleMessage) event.data()).text().contains("lat=0 lng=10"));
       context.setGeolocation(new Geolocation(0, 10));
       deferred.get();
     }
     {
-      Deferred<Event<Page.EventType>> deferred = page.waitForEvent(CONSOLE, event -> ((ConsoleMessage) event.data()).text().contains("lat=20 lng=30"));
+      Deferred<Event<Page.EventType>> deferred = page.futureEvent(CONSOLE, event -> ((ConsoleMessage) event.data()).text().contains("lat=20 lng=30"));
       context.setGeolocation(new Geolocation(20, 30));
       deferred.get();
     }
     {
-      Deferred<Event<Page.EventType>> deferred = page.waitForEvent(CONSOLE, event -> ((ConsoleMessage) event.data()).text().contains("lat=40 lng=50"));
+      Deferred<Event<Page.EventType>> deferred = page.futureEvent(CONSOLE, event -> ((ConsoleMessage) event.data()).text().contains("lat=40 lng=50"));
       context.setGeolocation(new Geolocation(40, 50));
       deferred.get();
     }
@@ -143,7 +143,7 @@ public class TestGeolocation extends TestBase {
   void shouldUseContextOptionsForPopup() {
     context.grantPermissions(asList("geolocation"));
     context.setGeolocation(new Geolocation(10, 10));
-    Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(POPUP);
+    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
     page.evaluate("url => window['_popup'] = window.open(url)", server.PREFIX + "/geolocation.html");
     Page popup = (Page) popupEvent.get().data();
     popup.waitForLoadState();

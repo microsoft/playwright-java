@@ -44,7 +44,7 @@ public class TestBrowserContextBasic extends TestBase {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(POPUP);
+    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
     page.evaluate("url => window.open(url)", server.EMPTY_PAGE);
     Page popup = (Page) popupEvent.get().data();
     assertEquals(context, popup.context());
@@ -153,9 +153,9 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  void closeShouldAbortWaitForEvent() {
+  void closeShouldAbortFutureEvent() {
     BrowserContext context = browser.newContext();
-    Deferred<Event<BrowserContext.EventType>> pageEvent = context.waitForEvent(PAGE);
+    Deferred<Event<BrowserContext.EventType>> pageEvent = context.futureEvent(PAGE);
     context.close();
     try {
       pageEvent.get();

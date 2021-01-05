@@ -63,7 +63,7 @@ public class TestPageWaitForResponse extends TestBase {
   void shouldRespectDefaultTimeout() {
     page.setDefaultTimeout(1);
     try {
-      page.waitForEvent(RESPONSE, url -> false).get();
+      page.futureEvent(RESPONSE, url -> false).get();
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout"), e.getMessage());

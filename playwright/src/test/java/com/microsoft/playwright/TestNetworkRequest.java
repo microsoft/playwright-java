@@ -132,7 +132,7 @@ public class TestNetworkRequest extends TestBase {
         writer.write("done");
       }
     });
-    Deferred<Event<Page.EventType>> responsePromise = page.waitForEvent(RESPONSE);
+    Deferred<Event<Page.EventType>> responsePromise = page.futureEvent(RESPONSE);
     Object text = page.evaluate("async url => {\n" +
       "  const data = await fetch(url);\n" +
       "  return data.text();\n" +

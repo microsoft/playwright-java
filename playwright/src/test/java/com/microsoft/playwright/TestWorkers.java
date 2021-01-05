@@ -29,7 +29,7 @@ public class TestWorkers extends TestBase {
 
   @Test
   void pageWorkers() {
-    Deferred<Event<Page.EventType>> workerEvent = page.waitForEvent(WORKER);
+    Deferred<Event<Page.EventType>> workerEvent = page.futureEvent(WORKER);
     page.navigate(server.PREFIX + "/worker/worker.html");
     workerEvent.get();
     Worker worker = page.workers().get(0);
@@ -41,11 +41,11 @@ public class TestWorkers extends TestBase {
 
   @Test
   void shouldEmitCreatedAndDestroyedEvents() {
-    Deferred<Event<Page.EventType>> workerCreatedPromise = page.waitForEvent(WORKER);
+    Deferred<Event<Page.EventType>> workerCreatedPromise = page.futureEvent(WORKER);
     JSHandle workerObj = page.evaluateHandle("() => new Worker(URL.createObjectURL(new Blob(['1'], {type: 'application/javascript'})))");
     Worker worker = (Worker) workerCreatedPromise.get().data();
     JSHandle workerThisObj = worker.evaluateHandle("() => this");
-    Deferred<Event<Worker.EventType>> workerDestroyedPromise = worker.waitForEvent(Worker.EventType.CLOSE);
+    Deferred<Event<Worker.EventType>> workerDestroyedPromise = worker.futureEvent(Worker.EventType.CLOSE);
     page.evaluate("workerObj => workerObj.terminate()", workerObj);
     assertEquals(worker, workerDestroyedPromise.get().data());
     try {
@@ -57,14 +57,14 @@ public class TestWorkers extends TestBase {
 
   @Test
   void shouldReportConsoleLogs() {
-    Deferred<Event<Page.EventType>> consoleEvent = page.waitForEvent(CONSOLE);
+    Deferred<Event<Page.EventType>> consoleEvent = page.futureEvent(CONSOLE);
     page.evaluate("() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))");
     assertEquals("1", ((ConsoleMessage) consoleEvent.get().data()).text());
   }
 
   @Test
   void shouldHaveJSHandlesForConsoleLogs() {
-    Deferred<Event<Page.EventType>> consoleEvent = page.waitForEvent(CONSOLE);
+    Deferred<Event<Page.EventType>> consoleEvent = page.futureEvent(CONSOLE);
     page.evaluate("() => new Worker(URL.createObjectURL(new Blob(['console.log(1,2,3,this)'], {type: 'application/javascript'})))");
     ConsoleMessage log = (ConsoleMessage) consoleEvent.get().data();
     assertEquals("1 2 3 JSHandle@object", log.text());
@@ -74,7 +74,7 @@ public class TestWorkers extends TestBase {
 
   @Test
   void shouldEvaluate() {
-    Deferred<Event<Page.EventType>> workerCreatedPromise = page.waitForEvent(WORKER);
+    Deferred<Event<Page.EventType>> workerCreatedPromise = page.futureEvent(WORKER);
     page.evaluate("() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))");
     Worker worker = (Worker) workerCreatedPromise.get().data();
     assertEquals(2, worker.evaluate("1+1"));
@@ -82,7 +82,7 @@ public class TestWorkers extends TestBase {
 
   @Test
   void shouldReportErrors() {
-    Deferred<Event<Page.EventType>> errorPromise = page.waitForEvent(PAGEERROR);
+    Deferred<Event<Page.EventType>> errorPromise = page.futureEvent(PAGEERROR);
     page.evaluate("() => new Worker(URL.createObjectURL(new Blob([`\n" +
       "  setTimeout(() => {\n" +
       "    // Do a console.log just to check that we do not confuse it with an error.\n" +
@@ -98,7 +98,7 @@ public class TestWorkers extends TestBase {
   @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="flaky upstream")
   void shouldClearUponNavigation() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Event<Page.EventType>> workerCreatedPromise = page.waitForEvent(WORKER);
+    Deferred<Event<Page.EventType>> workerCreatedPromise = page.futureEvent(WORKER);
     page.evaluate("() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))");
     Worker worker = (Worker) workerCreatedPromise.get().data();
     assertEquals(1, page.workers().size());
@@ -112,7 +112,7 @@ public class TestWorkers extends TestBase {
   @Test
   void shouldClearUponCrossProcessNavigation() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Event<Page.EventType>> workerCreatedPromise = page.waitForEvent(WORKER);
+    Deferred<Event<Page.EventType>> workerCreatedPromise = page.futureEvent(WORKER);
     page.evaluate("() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))");
     Worker worker = (Worker) workerCreatedPromise.get().data();
     assertEquals(1, page.workers().size());
@@ -127,7 +127,7 @@ public class TestWorkers extends TestBase {
   @EnabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fixme")
   void shouldAttributeNetworkActivityForWorkerInsideIframeToTheIframe() {
     page.navigate(server.PREFIX + "/empty.html");
-    Deferred<Event<Page.EventType>> workerEvent = page.waitForEvent(WORKER);
+    Deferred<Event<Page.EventType>> workerEvent = page.futureEvent(WORKER);
     Frame frame = attachFrame(page, "frame1", server.PREFIX + "/worker/worker.html");
     String url = server.PREFIX + "/one-style.css";
     Deferred<Request> request = page.waitForRequest(url);
@@ -141,7 +141,7 @@ public class TestWorkers extends TestBase {
 
   @Test
   void shouldReportNetworkActivity() {
-    Deferred<Event<Page.EventType>> workerEvent = page.waitForEvent(WORKER);
+    Deferred<Event<Page.EventType>> workerEvent = page.futureEvent(WORKER);
     page.navigate(server.PREFIX + "/worker/worker.html");
     Worker worker = (Worker) workerEvent.get().data();
     String url = server.PREFIX + "/one-style.css";
@@ -177,7 +177,7 @@ public class TestWorkers extends TestBase {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().withLocale("ru-RU"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Event<Page.EventType>> workerEvent = page.waitForEvent(WORKER);
+    Deferred<Event<Page.EventType>> workerEvent = page.futureEvent(WORKER);
     page.evaluate("() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))");
     Worker worker = (Worker) workerEvent.get().data();
     assertEquals("10\u00A0000,2", worker.evaluate("() => (10000.20).toLocaleString()"));

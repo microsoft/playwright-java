@@ -66,7 +66,7 @@ public class TestRequestContinue extends TestBase {
     page.route("**/foo", route -> {
       route.continue_(new Route.ContinueOverrides().withUrl(server.PREFIX + "/global-var.html"));
     });
-    Deferred<Event<Page.EventType>> responseEvent = page.waitForEvent(RESPONSE);
+    Deferred<Event<Page.EventType>> responseEvent = page.futureEvent(RESPONSE);
     page.navigate(server.PREFIX + "/foo");
     Response response = (Response) responseEvent.get().data();
     assertEquals(server.PREFIX + "/foo", response.url());

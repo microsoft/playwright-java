@@ -311,9 +311,9 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options) {
+  public Deferred<Event<EventType>> futureEvent(EventType event, FutureEventOptions options) {
     if (options == null) {
-      options = new WaitForEventOptions();
+      options = new FutureEventOptions();
     }
     List<Waitable<Event<EventType>>> waitables = new ArrayList<>();
     waitables.add(new WaitableEvent<>(listeners, event, options.predicate));

@@ -92,7 +92,7 @@ public class TestDialog extends TestBase {
   void shouldBeAbleToCloseContextWithOpenAlert() {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
-//    const alertPromise = page.waitForEvent("dialog");
+//    const alertPromise = page.futureEvent("dialog");
     page.evaluate("() => {\n" +
       "    setTimeout(() => alert('hello'), 0);\n" +
       "}");

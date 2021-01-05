@@ -96,7 +96,7 @@ public class TestElementHandleOwnerFrame extends TestBase {
   @Test
   void shouldWorkForAdoptedElements() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(Page.EventType.POPUP);
+    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(Page.EventType.POPUP);
     page.evaluate("url => window['__popup'] = window.open(url)", server.EMPTY_PAGE);
     JSHandle divHandle = page.evaluateHandle("() => {\n" +
      "  const div = document.createElement('div');\n" +

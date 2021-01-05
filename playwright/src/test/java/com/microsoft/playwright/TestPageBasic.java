@@ -142,7 +142,7 @@ public class TestPageBasic extends TestBase {
 
   @Test
   void shouldProvideAccessToTheOpenerPage() {
-    Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(POPUP);
+    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
     page.evaluate("() => window.open('about:blank')");
     Page popup = (Page) popupEvent.get().data();
     Page opener = popup.opener();
@@ -151,7 +151,7 @@ public class TestPageBasic extends TestBase {
 
   @Test
   void shouldReturnNullIfParentPageHasBeenClosed() {
-    Deferred<Event<Page.EventType>> popupEvent = page.waitForEvent(POPUP);
+    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
     page.evaluate("() => window.open('about:blank')");
     Page popup = (Page) popupEvent.get().data();
     page.close();
@@ -194,10 +194,10 @@ public class TestPageBasic extends TestBase {
 
   @Test
   void pageCloseShouldWorkWithWindowClose() {
-    Deferred<Event<Page.EventType>> newPagePromise = page.waitForEvent(POPUP);
+    Deferred<Event<Page.EventType>> newPagePromise = page.futureEvent(POPUP);
     page.evaluate("() => window['newPage'] = window.open('about:blank')");
     Page newPage = (Page) newPagePromise.get().data();
-    Deferred<Event<Page.EventType>> closedPromise = newPage.waitForEvent(CLOSE);
+    Deferred<Event<Page.EventType>> closedPromise = newPage.futureEvent(CLOSE);
     page.evaluate("() => window['newPage'].close()");
     closedPromise.get();
   }
@@ -205,7 +205,7 @@ public class TestPageBasic extends TestBase {
   @Test
   void pageCloseShouldWorkWithPageClose() {
     Page newPage = context.newPage();
-    Deferred<Event<Page.EventType>> closedPromise = newPage.waitForEvent(CLOSE);
+    Deferred<Event<Page.EventType>> closedPromise = newPage.futureEvent(CLOSE);
     newPage.close();
     closedPromise.get();
   }

@@ -28,14 +28,14 @@ public interface WebSocket {
     String text();
   }
 
-  class WaitForEventOptions {
+  class FutureEventOptions {
     public Integer timeout;
     public Predicate<Event<EventType>> predicate;
-    public WaitForEventOptions withTimeout(int millis) {
+    public FutureEventOptions withTimeout(int millis) {
       timeout = millis;
       return this;
     }
-    public WaitForEventOptions withPredicate(Predicate<Event<EventType>> predicate) {
+    public FutureEventOptions withPredicate(Predicate<Event<EventType>> predicate) {
       this.predicate = predicate;
       return this;
     }
@@ -58,13 +58,13 @@ public interface WebSocket {
    * Contains the URL of the WebSocket.
    */
   String url();
-  default Deferred<Event<EventType>> waitForEvent(EventType event) {
-    return waitForEvent(event, (WaitForEventOptions) null);
+  default Deferred<Event<EventType>> futureEvent(EventType event) {
+    return futureEvent(event, (FutureEventOptions) null);
   }
-  default Deferred<Event<EventType>> waitForEvent(EventType event, Predicate<Event<EventType>> predicate) {
-    WaitForEventOptions options = new WaitForEventOptions();
+  default Deferred<Event<EventType>> futureEvent(EventType event, Predicate<Event<EventType>> predicate) {
+    FutureEventOptions options = new FutureEventOptions();
     options.predicate = predicate;
-    return waitForEvent(event, options);
+    return futureEvent(event, options);
   }
   /**
    * Returns the event data value.
@@ -72,6 +72,6 @@ public interface WebSocket {
    * Waits for event to fire and passes its value into the predicate function. Returns when the predicate returns truthy value. Will throw an error if the webSocket is closed before the event is fired.
    * @param event Event name, same one would pass into {@code webSocket.on(event)}.
    */
-  Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options);
+  Deferred<Event<EventType>> futureEvent(EventType event, FutureEventOptions options);
 }
 

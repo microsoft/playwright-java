@@ -61,7 +61,7 @@ public class TestDownload extends TestBase {
   @Test
   void shouldReportDownloadsWithAcceptDownloadsFalse() {
     page.setContent("<a href='" + server.PREFIX + "/downloadWithFilename'>download</a>");
-    Deferred<Event<Page.EventType>> downloadEvent = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download = (Download) downloadEvent.get().data();
     assertEquals(server.PREFIX + "/downloadWithFilename", download.url());
@@ -78,7 +78,7 @@ public class TestDownload extends TestBase {
   void shouldReportDownloadsWithAcceptDownloadsTrue() throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
-    Deferred<Event<Page.EventType>> downloadEvent = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download = (Download) downloadEvent.get().data();
     Path path = download.path();
@@ -92,7 +92,7 @@ public class TestDownload extends TestBase {
   void shouldSaveToUserSpecifiedPath() throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
-    Deferred<Event<Page.EventType>> downloadEvent = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download = (Download) downloadEvent.get().data();
 
@@ -108,7 +108,7 @@ public class TestDownload extends TestBase {
   void shouldSaveToUserSpecifiedPathWithoutUpdatingOriginalPath() throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
-    Deferred<Event<Page.EventType>> downloadEvent = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download = (Download) downloadEvent.get().data();
 
@@ -133,7 +133,7 @@ public class TestDownload extends TestBase {
   void shouldSaveToTwoDifferentPathsWithMultipleSaveAsCalls() throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
-    Deferred<Event<Page.EventType>> downloadEvent = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download = (Download) downloadEvent.get().data();
     {
@@ -157,7 +157,7 @@ public class TestDownload extends TestBase {
   void shouldSaveToOverwrittenFilepath() throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
-    Deferred<Event<Page.EventType>> downloadEvent = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download = (Download) downloadEvent.get().data();
     Path userFile = Files.createTempFile("download-", ".txt");
@@ -180,7 +180,7 @@ public class TestDownload extends TestBase {
   void shouldCreateSubdirectoriesWhenSavingToNonExistentUserSpecifiedPath() throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
-    Deferred<Event<Page.EventType>> downloadEvent = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download = (Download) downloadEvent.get().data();
 
@@ -201,7 +201,7 @@ public class TestDownload extends TestBase {
   void shouldErrorWhenSavingWithDownloadsDisabled() throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(false));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
-    Deferred<Event<Page.EventType>> downloadEvent = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download = (Download) downloadEvent.get().data();
 
@@ -219,7 +219,7 @@ public class TestDownload extends TestBase {
   void shouldErrorWhenSavingAfterDeletion() throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
-    Deferred<Event<Page.EventType>> downloadEvent = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download = (Download) downloadEvent.get().data();
 
@@ -252,7 +252,7 @@ public class TestDownload extends TestBase {
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a download='file.txt' href='" + server.PREFIX + "/download'>download</a>");
-    Deferred<Event<Page.EventType>> downloadEvent = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download = (Download) downloadEvent.get().data();
 
@@ -320,7 +320,7 @@ public class TestDownload extends TestBase {
     });
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
-    Deferred<Event<Page.EventType>> downloadEvent = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent = page.futureEvent(DOWNLOAD);
     page.click("a", new Page.ClickOptions().withModifiers(ALT));
     Download download = (Download) downloadEvent.get().data();
     Path path = download.path();
@@ -343,7 +343,7 @@ public class TestDownload extends TestBase {
     // - WebKit doesn't close the popup page
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a target=_blank href='" + server.PREFIX + "/download'>download</a>");
-    Deferred<Event<Page.EventType>> downloadEvent = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download = (Download) downloadEvent.get().data();
     Path path = download.path();
@@ -357,7 +357,7 @@ public class TestDownload extends TestBase {
   void shouldDeleteFile() {
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
-    Deferred<Event<Page.EventType>> downloadEvent = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download = (Download) downloadEvent.get().data();
     Path path = download.path();
@@ -371,7 +371,7 @@ public class TestDownload extends TestBase {
   void shouldExposeStream() throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
-    Deferred<Event<Page.EventType>> downloadEvent = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download = (Download) downloadEvent.get().data();
 
@@ -386,11 +386,11 @@ public class TestDownload extends TestBase {
   void shouldDeleteDownloadsOnContextDestruction() {
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
-    Deferred<Event<Page.EventType>> downloadEvent1 = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent1 = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download1 = (Download) downloadEvent1.get().data();
 
-    Deferred<Event<Page.EventType>> downloadEvent2 = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent2 = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download2 = (Download) downloadEvent2.get().data();
 
@@ -408,11 +408,11 @@ public class TestDownload extends TestBase {
     Browser browser = browserType.launch();
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
-    Deferred<Event<Page.EventType>> downloadEvent1 = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent1 = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download1 = (Download) downloadEvent1.get().data();
 
-    Deferred<Event<Page.EventType>> downloadEvent2 = page.waitForEvent(DOWNLOAD);
+    Deferred<Event<Page.EventType>> downloadEvent2 = page.futureEvent(DOWNLOAD);
     page.click("a");
     Download download2 = (Download) downloadEvent2.get().data();
 

@@ -355,15 +355,15 @@ class Method extends Element {
     customSignature.put("Frame.setInputFiles", setInputFilesWithSelector);
 
     String[] waitForEvent = {
-      "default Deferred<Event<EventType>> waitForEvent(EventType event) {",
-      "  return waitForEvent(event, (WaitForEventOptions) null);",
+      "default Deferred<Event<EventType>> futureEvent(EventType event) {",
+      "  return futureEvent(event, (FutureEventOptions) null);",
       "}",
-      "default Deferred<Event<EventType>> waitForEvent(EventType event, Predicate<Event<EventType>> predicate) {",
-      "  WaitForEventOptions options = new WaitForEventOptions();",
+      "default Deferred<Event<EventType>> futureEvent(EventType event, Predicate<Event<EventType>> predicate) {",
+      "  FutureEventOptions options = new FutureEventOptions();",
       "  options.predicate = predicate;",
-      "  return waitForEvent(event, options);",
+      "  return futureEvent(event, options);",
       "}",
-      "Deferred<Event<EventType>> waitForEvent(EventType event, WaitForEventOptions options);",
+      "Deferred<Event<EventType>> futureEvent(EventType event, FutureEventOptions options);",
     };
     customSignature.put("Page.waitForEvent", waitForEvent);
     customSignature.put("BrowserContext.waitForEvent", waitForEvent);
@@ -833,7 +833,7 @@ class Interface extends TypeDefinition {
       m.writeTo(output, offset);
     }
     if ("Worker".equals(jsonName)) {
-      output.add(offset + "Deferred<Event<EventType>> waitForEvent(EventType event);");
+      output.add(offset + "Deferred<Event<EventType>> futureEvent(EventType event);");
     }
     output.add("}");
     output.add("\n");
@@ -1052,15 +1052,15 @@ class Interface extends TypeDefinition {
       }
     }
     if (asList("Page", "BrowserContext", "WebSocket").contains(jsonName)){
-      output.add(offset + "class WaitForEventOptions {");
+      output.add(offset + "class FutureEventOptions {");
       output.add(offset + "  public Integer timeout;");
       output.add(offset + "  public Predicate<Event<EventType>> predicate;");
 
-      output.add(offset + "  public WaitForEventOptions withTimeout(int millis) {");
+      output.add(offset + "  public FutureEventOptions withTimeout(int millis) {");
       output.add(offset + "    timeout = millis;");
       output.add(offset + "    return this;");
       output.add(offset + "  }");
-      output.add(offset + "  public WaitForEventOptions withPredicate(Predicate<Event<EventType>> predicate) {");
+      output.add(offset + "  public FutureEventOptions withPredicate(Predicate<Event<EventType>> predicate) {");
       output.add(offset + "    this.predicate = predicate;");
       output.add(offset + "    return this;");
       output.add(offset + "  }");

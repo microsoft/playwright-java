@@ -27,7 +27,7 @@ public class TestDeferred extends TestBase {
   @Test
   void throwIfGetNotCalled() {
     page.waitForNavigation();
-    context.waitForEvent(BrowserContext.EventType.PAGE);
+    context.futureEvent(BrowserContext.EventType.PAGE);
     closeContext();
     closeBrowser();
 
@@ -49,7 +49,7 @@ public class TestDeferred extends TestBase {
       fail("did not throw");
     } catch (Exception e) {
       assertTrue(e.getMessage().contains("com.microsoft.playwright.impl.PageImpl.waitForNavigation"));
-      assertTrue(e.getMessage().contains("com.microsoft.playwright.impl.BrowserContextImpl.waitForEvent"));
+      assertTrue(e.getMessage().contains("com.microsoft.playwright.impl.BrowserContextImpl.futureEvent"));
     }
   }
 }

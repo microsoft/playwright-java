@@ -69,7 +69,7 @@ class WorkerImpl extends ChannelOwner implements Worker {
   }
 
   @Override
-  public Deferred<Event<EventType>> waitForEvent(EventType event) {
+  public Deferred<Event<EventType>> futureEvent(EventType event) {
     return toDeferred(new WaitableEvent<>(listeners, event));
   }
 
