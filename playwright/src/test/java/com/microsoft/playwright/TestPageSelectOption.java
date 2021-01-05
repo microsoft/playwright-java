@@ -94,7 +94,7 @@ public class TestPageSelectOption extends TestBase {
   void shouldNotThrowWhenSelectCausesNavigation() {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evalOnSelector("select", "select => select.addEventListener('input', () => window.location.href = '/empty.html')");
-    Deferred<Response> response = page.waitForNavigation();
+    Deferred<Response> response = page.futureNavigation();
     page.selectOption("select", "blue");
     response.get();
     assertTrue(page.url().contains("empty.html"));

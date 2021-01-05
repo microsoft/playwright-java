@@ -435,7 +435,7 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldThrowANiceErrorAfterANavigation() {
-    Deferred<Response> navigation = page.waitForNavigation();
+    Deferred<Response> navigation = page.futureNavigation();
     try {
       page.evaluate("() => {\n" +
         "  const promise = new Promise(f => window['__resolve'] = f);\n" +

@@ -1080,7 +1080,7 @@ public interface Page {
       return this;
     }
   }
-  class WaitForNavigationOptions {
+  class FutureNavigationOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultNavigationTimeout(timeout)}, {@code browserContext.setDefaultTimeout(timeout)}, {@code page.setDefaultNavigationTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
@@ -1099,23 +1099,23 @@ public interface Page {
      */
     public Frame.LoadState waitUntil;
 
-    public WaitForNavigationOptions withTimeout(Integer timeout) {
+    public FutureNavigationOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
     }
-    public WaitForNavigationOptions withUrl(String glob) {
+    public FutureNavigationOptions withUrl(String glob) {
       this.glob = glob;
       return this;
     }
-    public WaitForNavigationOptions withUrl(Pattern pattern) {
+    public FutureNavigationOptions withUrl(Pattern pattern) {
       this.pattern = pattern;
       return this;
     }
-    public WaitForNavigationOptions withUrl(Predicate<String> predicate) {
+    public FutureNavigationOptions withUrl(Predicate<String> predicate) {
       this.predicate = predicate;
       return this;
     }
-    public WaitForNavigationOptions withWaitUntil(Frame.LoadState waitUntil) {
+    public FutureNavigationOptions withWaitUntil(Frame.LoadState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -1975,8 +1975,8 @@ public interface Page {
    *  - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
    */
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
-  default Deferred<Response> waitForNavigation() {
-    return waitForNavigation(null);
+  default Deferred<Response> futureNavigation() {
+    return futureNavigation(null);
   }
   /**
    * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect. In case of navigation to a different anchor or navigation due to History API usage, the navigation will resolve with {@code null}.
@@ -1987,7 +1987,7 @@ public interface Page {
    * <p>
    * Shortcut for main frame's {@code frame.waitForNavigation([options])}.
    */
-  Deferred<Response> waitForNavigation(WaitForNavigationOptions options);
+  Deferred<Response> futureNavigation(FutureNavigationOptions options);
   default Deferred<Request> waitForRequest(String urlGlob) { return waitForRequest(urlGlob, null); }
   default Deferred<Request> waitForRequest(Pattern urlPattern) { return waitForRequest(urlPattern, null); }
   default Deferred<Request> waitForRequest(Predicate<String> urlPredicate) { return waitForRequest(urlPredicate, null); }

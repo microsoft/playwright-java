@@ -101,7 +101,7 @@ public class TestPageRoute extends TestBase {
     page.setContent("<form action='/rredirect' method='post'>\n" +
       "  <input type='hidden' id='foo' name='foo' value='FOOBAR'>\n" +
       "</form>");
-    Deferred<Response> navigationResponse = page.waitForNavigation();
+    Deferred<Response> navigationResponse = page.futureNavigation();
     page.evalOnSelector("form", "form => form.submit()");
     navigationResponse.get();
   }

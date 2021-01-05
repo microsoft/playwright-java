@@ -104,7 +104,7 @@ public class TestClick extends TestBase {
     Page page = context.newPage();
     page.navigate(server.PREFIX + "/wrappedlink.html");
 
-    Deferred<Response> navigationPromise = page.waitForNavigation();
+    Deferred<Response> navigationPromise = page.futureNavigation();
     page.click("a");
     navigationPromise.get();
 

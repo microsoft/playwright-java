@@ -755,8 +755,8 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Deferred<Response> waitForNavigation(WaitForNavigationOptions options) {
-    Frame.WaitForNavigationOptions frameOptions = new Frame.WaitForNavigationOptions();
+  public Deferred<Response> futureNavigation(FutureNavigationOptions options) {
+    Frame.FutureNavigationOptions frameOptions = new Frame.FutureNavigationOptions();
     if (options != null) {
       frameOptions.timeout = options.timeout;
       frameOptions.waitUntil = options.waitUntil;
@@ -764,7 +764,7 @@ public class PageImpl extends ChannelOwner implements Page {
       frameOptions.pattern = options.pattern;
       frameOptions.predicate = options.predicate;
     }
-    return mainFrame.waitForNavigation(frameOptions);
+    return mainFrame.futureNavigation(frameOptions);
   }
 
   void frameNavigated(FrameImpl frame) {

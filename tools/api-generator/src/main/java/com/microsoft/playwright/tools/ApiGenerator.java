@@ -266,6 +266,7 @@ class Method extends Element {
     tsToJavaMethodName.put("$", "querySelector");
     tsToJavaMethodName.put("$$", "querySelectorAll");
     tsToJavaMethodName.put("goto", "navigate");
+    tsToJavaMethodName.put("waitForNavigation", "futureNavigation");
   }
 
   private static Map<String, String[]> customSignature = new HashMap<>();
@@ -636,15 +637,15 @@ class Field extends Element {
   void writeBuilderMethod(List<String> output, String offset, String parentClass) {
     if (asList("Frame.waitForNavigation.options.url",
                "Page.waitForNavigation.options.url").contains(jsonPath)) {
-      output.add(offset + "public WaitForNavigationOptions withUrl(String glob) {");
+      output.add(offset + "public FutureNavigationOptions withUrl(String glob) {");
       output.add(offset + "  this.glob = glob;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
-      output.add(offset + "public WaitForNavigationOptions withUrl(Pattern pattern) {");
+      output.add(offset + "public FutureNavigationOptions withUrl(Pattern pattern) {");
       output.add(offset + "  this.pattern = pattern;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
-      output.add(offset + "public WaitForNavigationOptions withUrl(Predicate<String> predicate) {");
+      output.add(offset + "public FutureNavigationOptions withUrl(Predicate<String> predicate) {");
       output.add(offset + "  this.predicate = predicate;");
       output.add(offset + "  return this;");
       output.add(offset + "}");

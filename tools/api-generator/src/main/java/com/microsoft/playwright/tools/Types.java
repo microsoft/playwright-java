@@ -259,7 +259,8 @@ class Types {
     add("BrowserContext.waitForEvent.event", "string", "EventType", new Empty());
     add("BrowserContext.waitForEvent.optionsOrPredicate", "Function|Object", "String");
     add("BrowserContext.waitForEvent", "Promise<Object>", "Deferred<Event<EventType>>", new Empty());
-    add("Page.waitForNavigation.options.url", "string|RegExp|Function", "String");
+    add("Page.waitForNavigation.options.url", "string|RegExp|Function", "Custom");
+    add("Page.waitForNavigation.options", "Object", "FutureNavigationOptions");
     add("Page.frame.options", "string|Object", "FrameOptions", new Empty());
     add("Page.route.url", "string|RegExp|function(URL):boolean", "String");
     add("Page.selectOption.values", "null|string|ElementHandle|Array<string>|Object|Array<ElementHandle>|Array<Object>", "String");
@@ -270,7 +271,8 @@ class Types {
     add("Page.waitForEvent", "Promise<Object>", "Deferred<Event<EventType>>", new Empty());
     add("Page.waitForRequest.urlOrPredicate", "string|RegExp|Function", "String");
     add("Page.waitForResponse.urlOrPredicate", "string|RegExp|function(Response):boolean", "String");
-    add("Frame.waitForNavigation.options.url", "string|RegExp|Function", "String");
+    add("Frame.waitForNavigation.options.url", "string|RegExp|Function", "Custom");
+    add("Frame.waitForNavigation.options", "Object", "FutureNavigationOptions");
     add("Frame.selectOption.values", "null|string|ElementHandle|Array<string>|Object|Array<ElementHandle>|Array<Object>", "String");
     add("Frame.setInputFiles.files", "string|Array<string>|Object|Array<Object>", "String");
     add("ElementHandle.selectOption.values", "null|string|ElementHandle|Array<string>|Object|Array<ElementHandle>|Array<Object>", "String");
