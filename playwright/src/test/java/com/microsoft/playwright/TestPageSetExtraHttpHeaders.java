@@ -29,7 +29,7 @@ public class TestPageSetExtraHttpHeaders extends TestBase {
   @Test
   void shouldWork() throws ExecutionException, InterruptedException {
     page.setExtraHTTPHeaders(mapOf("foo", "bar"));
-    Future<Server.Request> request = server.waitForRequest("/empty.html");
+    Future<Server.Request> request = server.futureRequest("/empty.html");
     page.navigate(server.EMPTY_PAGE);
     assertEquals(asList("bar"), request.get().headers.get("foo"));
     assertNull(request.get().headers.get("baz"));
@@ -39,7 +39,7 @@ public class TestPageSetExtraHttpHeaders extends TestBase {
   void shouldWorkWithRedirects() throws ExecutionException, InterruptedException {
     server.setRedirect("/foo.html", "/empty.html");
     page.setExtraHTTPHeaders(mapOf("foo", "bar"));
-    Future<Server.Request> request = server.waitForRequest("/empty.html");
+    Future<Server.Request> request = server.futureRequest("/empty.html");
     page.navigate(server.PREFIX + "/foo.html");
     assertEquals(asList("bar"), request.get().headers.get("foo"));
   }
@@ -49,7 +49,7 @@ public class TestPageSetExtraHttpHeaders extends TestBase {
     BrowserContext context = browser.newContext();
     context.setExtraHTTPHeaders(mapOf("foo", "bar"));
     Page page = context.newPage();
-    Future<Server.Request> request = server.waitForRequest("/empty.html");
+    Future<Server.Request> request = server.futureRequest("/empty.html");
     page.navigate(server.EMPTY_PAGE);
     context.close();
     assertEquals(asList("bar"), request.get().headers.get("foo"));
@@ -61,7 +61,7 @@ public class TestPageSetExtraHttpHeaders extends TestBase {
       .withExtraHTTPHeaders(mapOf("fOo", "bAr", "baR", "foO")));
     Page page = context.newPage();
     page.setExtraHTTPHeaders(mapOf("Foo", "Bar"));
-    Future<Server.Request> request = server.waitForRequest("/empty.html");
+    Future<Server.Request> request = server.futureRequest("/empty.html");
     page.navigate(server.EMPTY_PAGE);
     context.close();
     assertEquals(asList("Bar"), request.get().headers.get("foo"));

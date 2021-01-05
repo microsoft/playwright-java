@@ -107,7 +107,7 @@ public class TestNetworkRequest extends TestBase {
   @Test
   @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fail")
   void shouldGetTheSameHeadersAsTheServer() throws ExecutionException, InterruptedException {
-    Future<Server.Request> serverRequest = server.waitForRequest("/empty.html");
+    Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
     server.setRoute("/empty.html", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
@@ -124,7 +124,7 @@ public class TestNetworkRequest extends TestBase {
   @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fail")
   void shouldGetTheSameHeadersAsTheServerCORP() throws ExecutionException, InterruptedException {
     page.navigate(server.PREFIX + "/empty.html");
-    Future<Server.Request> serverRequest = server.waitForRequest("/something");
+    Future<Server.Request> serverRequest = server.futureRequest("/something");
     server.setRoute("/something", exchange -> {
       exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
       exchange.sendResponseHeaders(200, 0);

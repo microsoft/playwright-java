@@ -261,6 +261,8 @@ class Types {
     add("BrowserContext.waitForEvent", "Promise<Object>", "Deferred<Event<EventType>>", new Empty());
     add("Page.waitForNavigation.options.url", "string|RegExp|Function", "Custom");
     add("Page.waitForNavigation.options", "Object", "FutureNavigationOptions");
+    add("Page.waitForRequest.options", "Object", "FutureRequestOptions");
+    add("Page.waitForResponse.options", "Object", "FutureResponseOptions");
     add("Page.frame.options", "string|Object", "FrameOptions", new Empty());
     add("Page.route.url", "string|RegExp|function(URL):boolean", "String");
     add("Page.selectOption.values", "null|string|ElementHandle|Array<string>|Object|Array<ElementHandle>|Array<Object>", "String");

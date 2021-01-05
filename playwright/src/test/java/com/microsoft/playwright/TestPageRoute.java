@@ -128,7 +128,7 @@ public class TestPageRoute extends TestBase {
       route.continue_(new Route.ContinueOverrides().withHeaders(headers));
     });
 
-    Future<Server.Request> serverRequest = server.waitForRequest("/title.html");
+    Future<Server.Request> serverRequest = server.futureRequest("/title.html");
     page.evaluate("url => fetch(url, { headers: {foo: 'bar'} })", server.PREFIX + "/title.html");
     assertFalse(serverRequest.get().headers.containsKey("foo"));
   }
@@ -233,7 +233,7 @@ public class TestPageRoute extends TestBase {
   void shouldSendReferer() throws ExecutionException, InterruptedException {
     page.setExtraHTTPHeaders(mapOf("referer", "http://google.com/"));
     page.route("**/*", route -> route.continue_());
-    Future<Server.Request> request = server.waitForRequest("/grid.html");
+    Future<Server.Request> request = server.futureRequest("/grid.html");
     page.navigate(server.PREFIX + "/grid.html");
     assertEquals(asList("http://google.com/"), request.get().headers.get("referer"));
   }

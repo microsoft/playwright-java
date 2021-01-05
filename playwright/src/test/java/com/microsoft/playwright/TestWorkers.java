@@ -130,7 +130,7 @@ public class TestWorkers extends TestBase {
     Deferred<Event<Page.EventType>> workerEvent = page.futureEvent(WORKER);
     Frame frame = attachFrame(page, "frame1", server.PREFIX + "/worker/worker.html");
     String url = server.PREFIX + "/one-style.css";
-    Deferred<Request> request = page.waitForRequest(url);
+    Deferred<Request> request = page.futureRequest(url);
     Worker worker = (Worker) workerEvent.get().data();
 
     worker.evaluate("url => fetch(url).then(response => response.text()).then(console.log)", url);
@@ -145,8 +145,8 @@ public class TestWorkers extends TestBase {
     page.navigate(server.PREFIX + "/worker/worker.html");
     Worker worker = (Worker) workerEvent.get().data();
     String url = server.PREFIX + "/one-style.css";
-    Deferred<Request> requestPromise = page.waitForRequest(url);
-    Deferred<Response> responsePromise = page.waitForResponse(url);
+    Deferred<Request> requestPromise = page.futureRequest(url);
+    Deferred<Response> responsePromise = page.futureResponse(url);
     worker.evaluate("url => fetch(url).then(response => response.text()).then(console.log)", url);
     Request request = requestPromise.get();
     Response response = responsePromise.get();
@@ -160,8 +160,8 @@ public class TestWorkers extends TestBase {
     // Chromium needs waitForDebugger enabled for this one.
     page.navigate(server.EMPTY_PAGE);
     String url = server.PREFIX + "/one-style.css";
-    Deferred<Request> requestPromise = page.waitForRequest(url);
-    Deferred<Response> responsePromise = page.waitForResponse(url);
+    Deferred<Request> requestPromise = page.futureRequest(url);
+    Deferred<Response> responsePromise = page.futureResponse(url);
     page.evaluate("url => new Worker(URL.createObjectURL(new Blob([`\n" +
       "  fetch('${url}').then(response => response.text()).then(console.log);\n" +
       "`], {type: 'application/javascript'})))", url);

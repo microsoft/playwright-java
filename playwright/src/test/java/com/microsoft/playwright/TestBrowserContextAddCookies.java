@@ -64,7 +64,7 @@ public class TestBrowserContextAddCookies extends TestBase {
 
   @Test
   void shouldSendCookieHeader() throws ExecutionException, InterruptedException {
-    Future<Server.Request> request = server.waitForRequest("/empty.html");
+    Future<Server.Request> request = server.futureRequest("/empty.html");
     context.addCookies(asList(
       new BrowserContext.AddCookie().withUrl(server.EMPTY_PAGE).withName("cookie").withValue("value")));
     Page page = context.newPage();
@@ -150,7 +150,7 @@ public class TestBrowserContextAddCookies extends TestBase {
       new BrowserContext.AddCookie().withUrl(server.EMPTY_PAGE).withName("sendcookie").withValue("value")));
     {
       Page page = context.newPage();
-      Future<Server.Request> request = server.waitForRequest("/empty.html");
+      Future<Server.Request> request = server.futureRequest("/empty.html");
       page.navigate(server.EMPTY_PAGE);
       List<String> cookies = request.get().headers.get("cookie");
       assertEquals(asList("sendcookie=value"), cookies);
@@ -158,7 +158,7 @@ public class TestBrowserContextAddCookies extends TestBase {
     {
       BrowserContext context = browser.newContext();
       Page page = context.newPage();
-      Future<Server.Request> request = server.waitForRequest("/empty.html");
+      Future<Server.Request> request = server.futureRequest("/empty.html");
       page.navigate(server.EMPTY_PAGE);
       List<String> cookies = request.get().headers.get("cookie");
       assertNull(cookies);

@@ -1120,24 +1120,24 @@ public interface Page {
       return this;
     }
   }
-  class WaitForRequestOptions {
+  class FutureRequestOptions {
     /**
      * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be changed by using the {@code page.setDefaultTimeout(timeout)} method.
      */
     public Integer timeout;
 
-    public WaitForRequestOptions withTimeout(Integer timeout) {
+    public FutureRequestOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
     }
   }
-  class WaitForResponseOptions {
+  class FutureResponseOptions {
     /**
      * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
      */
     public Integer timeout;
 
-    public WaitForResponseOptions withTimeout(Integer timeout) {
+    public FutureResponseOptions withTimeout(Integer timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1988,18 +1988,18 @@ public interface Page {
    * Shortcut for main frame's {@code frame.waitForNavigation([options])}.
    */
   Deferred<Response> futureNavigation(FutureNavigationOptions options);
-  default Deferred<Request> waitForRequest(String urlGlob) { return waitForRequest(urlGlob, null); }
-  default Deferred<Request> waitForRequest(Pattern urlPattern) { return waitForRequest(urlPattern, null); }
-  default Deferred<Request> waitForRequest(Predicate<String> urlPredicate) { return waitForRequest(urlPredicate, null); }
-  Deferred<Request> waitForRequest(String urlGlob, WaitForRequestOptions options);
-  Deferred<Request> waitForRequest(Pattern urlPattern, WaitForRequestOptions options);
-  Deferred<Request> waitForRequest(Predicate<String> urlPredicate, WaitForRequestOptions options);
-  default Deferred<Response> waitForResponse(String urlGlob) { return waitForResponse(urlGlob, null); }
-  default Deferred<Response> waitForResponse(Pattern urlPattern) { return waitForResponse(urlPattern, null); }
-  default Deferred<Response> waitForResponse(Predicate<String> urlPredicate) { return waitForResponse(urlPredicate, null); }
-  Deferred<Response> waitForResponse(String urlGlob, WaitForResponseOptions options);
-  Deferred<Response> waitForResponse(Pattern urlPattern, WaitForResponseOptions options);
-  Deferred<Response> waitForResponse(Predicate<String> urlPredicate, WaitForResponseOptions options);
+  default Deferred<Request> futureRequest(String urlGlob) { return futureRequest(urlGlob, null); }
+  default Deferred<Request> futureRequest(Pattern urlPattern) { return futureRequest(urlPattern, null); }
+  default Deferred<Request> futureRequest(Predicate<String> urlPredicate) { return futureRequest(urlPredicate, null); }
+  Deferred<Request> futureRequest(String urlGlob, FutureRequestOptions options);
+  Deferred<Request> futureRequest(Pattern urlPattern, FutureRequestOptions options);
+  Deferred<Request> futureRequest(Predicate<String> urlPredicate, FutureRequestOptions options);
+  default Deferred<Response> futureResponse(String urlGlob) { return futureResponse(urlGlob, null); }
+  default Deferred<Response> futureResponse(Pattern urlPattern) { return futureResponse(urlPattern, null); }
+  default Deferred<Response> futureResponse(Predicate<String> urlPredicate) { return futureResponse(urlPredicate, null); }
+  Deferred<Response> futureResponse(String urlGlob, FutureResponseOptions options);
+  Deferred<Response> futureResponse(Pattern urlPattern, FutureResponseOptions options);
+  Deferred<Response> futureResponse(Predicate<String> urlPredicate, FutureResponseOptions options);
   default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }

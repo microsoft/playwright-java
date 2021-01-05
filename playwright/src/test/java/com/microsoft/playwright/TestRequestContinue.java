@@ -44,17 +44,17 @@ public class TestRequestContinue extends TestBase {
       route.continue_(new Route.ContinueOverrides().withHeaders(headers));
     });
     page.navigate(server.EMPTY_PAGE);
-    Future<Server.Request> request = server.waitForRequest("/sleep.zzz");
+    Future<Server.Request> request = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz')");
     assertEquals(Arrays.asList("bar"), request.get().headers.get("foo"));
   }
 
   @Test
   void shouldAmendMethod() throws ExecutionException, InterruptedException {
-    Future<Server.Request> sRequest = server.waitForRequest("/sleep.zzz");
+    Future<Server.Request> sRequest = server.futureRequest("/sleep.zzz");
     page.navigate(server.EMPTY_PAGE);
     page.route("**/*", route -> route.continue_(new Route.ContinueOverrides().withMethod("POST")));
-    Future<Server.Request> request = server.waitForRequest("/sleep.zzz");
+    Future<Server.Request> request = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz')");
     assertEquals("POST", request.get().method);
     assertEquals("POST", sRequest.get().method);
@@ -62,7 +62,7 @@ public class TestRequestContinue extends TestBase {
 
   @Test
   void shouldOverrideRequestUrl() throws ExecutionException, InterruptedException {
-    Future<Server.Request> serverRequest = server.waitForRequest("/global-var.html");
+    Future<Server.Request> serverRequest = server.futureRequest("/global-var.html");
     page.route("**/foo", route -> {
       route.continue_(new Route.ContinueOverrides().withUrl(server.PREFIX + "/global-var.html"));
     });
@@ -92,7 +92,7 @@ public class TestRequestContinue extends TestBase {
 
   @Test
   void shouldOverrideMethodAlongWithUrl() throws ExecutionException, InterruptedException {
-    Future<Server.Request> serverRequest = server.waitForRequest("/empty.html");
+    Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
     page.route("**/foo", route -> {
       route.continue_(new Route.ContinueOverrides().withUrl(server.EMPTY_PAGE).withMethod("POST"));
     });
@@ -102,7 +102,7 @@ public class TestRequestContinue extends TestBase {
 
   @Test
   void shouldAmendMethodOnMainRequest() throws ExecutionException, InterruptedException {
-    Future<Server.Request> request = server.waitForRequest("/empty.html");
+    Future<Server.Request> request = server.futureRequest("/empty.html");
     page.route("**/*", route -> route.continue_(new Route.ContinueOverrides().withMethod("POST")));
     page.navigate(server.EMPTY_PAGE);
     assertEquals("POST", request.get().method);
@@ -114,7 +114,7 @@ public class TestRequestContinue extends TestBase {
     page.route("**/*", route -> {
       route.continue_(new Route.ContinueOverrides().withPostData("doggo"));
     });
-    Future<Server.Request> serverRequest = server.waitForRequest("/sleep.zzz");
+    Future<Server.Request> serverRequest = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz', { method: 'POST', body: 'birdy' })");
     assertEquals("doggo", new String(serverRequest.get().postBody, UTF_8));
   }
@@ -125,7 +125,7 @@ public class TestRequestContinue extends TestBase {
     page.route("**/*", route -> {
       route.continue_(new Route.ContinueOverrides().withPostData("пушкин"));
     });
-    Future<Server.Request> serverRequest = server.waitForRequest("/sleep.zzz");
+    Future<Server.Request> serverRequest = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz', { method: 'POST', body: 'birdy' })");
     assertEquals("POST", serverRequest.get().method);
     assertEquals("пушкин", new String(serverRequest.get().postBody, UTF_8));
@@ -137,7 +137,7 @@ public class TestRequestContinue extends TestBase {
     page.route("**/*", route -> {
       route.continue_(new Route.ContinueOverrides().withPostData("doggo-is-longer-than-birdy"));
     });
-    Future<Server.Request> serverRequest = server.waitForRequest("/sleep.zzz");
+    Future<Server.Request> serverRequest = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz', { method: 'POST', body: 'birdy' })");
     assertEquals("POST", serverRequest.get().method);
     assertEquals("doggo-is-longer-than-birdy", new String(serverRequest.get().postBody, UTF_8));
@@ -153,7 +153,7 @@ public class TestRequestContinue extends TestBase {
     page.route("**/*", route -> {
       route.continue_(new Route.ContinueOverrides().withPostData(arr));
     });
-    Future<Server.Request> serverRequest = server.waitForRequest("/sleep.zzz");
+    Future<Server.Request> serverRequest = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz', { method: 'POST', body: 'birdy' })");
     assertEquals("POST", serverRequest.get().method);
     byte[] buffer = serverRequest.get().postBody;

@@ -37,7 +37,7 @@ public class TestPopup extends TestBase {
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a target=_blank rel=noopener href='/popup/popup.html'>link</a>");
-    Future<Server.Request> requestPromise = server.waitForRequest("/popup/popup.html");
+    Future<Server.Request> requestPromise = server.futureRequest("/popup/popup.html");
     Deferred<Event<BrowserContext.EventType>> popupEvent = context.futureEvent(BrowserContext.EventType.PAGE);
     page.click("a");
     Page popup = (Page) popupEvent.get().data();
@@ -75,7 +75,7 @@ public class TestPopup extends TestBase {
       .withExtraHTTPHeaders(mapOf("foo", "bar")));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
-    Future<Server.Request> requestPromise = server.waitForRequest("/dummy.html");
+    Future<Server.Request> requestPromise = server.futureRequest("/dummy.html");
     page.evaluate("url => window['_popup'] = window.open(url)", server.PREFIX + "/dummy.html");
     Server.Request request = requestPromise.get();
     context.close();

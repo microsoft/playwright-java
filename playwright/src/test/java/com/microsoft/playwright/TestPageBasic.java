@@ -103,8 +103,8 @@ public class TestPageBasic extends TestBase {
   @Test
   void shouldTerminateNetworkWaiters() {
     Page newPage = context.newPage();
-    Deferred<Request> request = newPage.waitForRequest(server.EMPTY_PAGE);
-    Deferred<Response> response = newPage.waitForResponse(server.EMPTY_PAGE);
+    Deferred<Request> request = newPage.futureRequest(server.EMPTY_PAGE);
+    Deferred<Response> response = newPage.futureResponse(server.EMPTY_PAGE);
     newPage.close();
     try {
       request.get();

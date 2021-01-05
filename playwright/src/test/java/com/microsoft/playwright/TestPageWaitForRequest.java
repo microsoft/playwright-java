@@ -28,7 +28,7 @@ public class TestPageWaitForRequest extends TestBase {
   @Test
   void shouldWork() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Request> request = page.waitForRequest(server.PREFIX + "/digits/2.png");
+    Deferred<Request> request = page.futureRequest(server.PREFIX + "/digits/2.png");
     page.evaluate("() => {\n" +
       "  fetch('/digits/1.png');\n" +
       "  fetch('/digits/2.png');\n" +
@@ -40,7 +40,7 @@ public class TestPageWaitForRequest extends TestBase {
   @Test
   void shouldWorkWithPredicate() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Request> request = page.waitForRequest(url -> url.equals(server.PREFIX + "/digits/2.png"));
+    Deferred<Request> request = page.futureRequest(url -> url.equals(server.PREFIX + "/digits/2.png"));
     page.evaluate("() => {\n" +
       "  fetch('/digits/1.png');\n" +
       "  fetch('/digits/2.png');\n" +
@@ -74,8 +74,8 @@ public class TestPageWaitForRequest extends TestBase {
   @Test
   void shouldWorkWithNoTimeout() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Request> request = page.waitForRequest(server.PREFIX + "/digits/2.png",
-      new Page.WaitForRequestOptions().withTimeout(0));
+    Deferred<Request> request = page.futureRequest(server.PREFIX + "/digits/2.png",
+      new Page.FutureRequestOptions().withTimeout(0));
     page.evaluate("() => setTimeout(() => {\n" +
       "  fetch('/digits/1.png');\n" +
       "  fetch('/digits/2.png');\n" +
@@ -87,7 +87,7 @@ public class TestPageWaitForRequest extends TestBase {
   @Test
   void shouldWorkWithUrlMatch() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Request> request = page.waitForRequest(Pattern.compile(".*digits/\\d\\.png"));
+    Deferred<Request> request = page.futureRequest(Pattern.compile(".*digits/\\d\\.png"));
     page.evaluate("() => {\n" +
       "  fetch('/digits/1.png');\n" +
       "}");
