@@ -53,6 +53,9 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public void close() {
+    withLogging("Browser.close", () -> closeImpl());
+  }
+  private void closeImpl() {
     try {
       sendMessage("close");
     } catch (PlaywrightException e) {
@@ -74,6 +77,10 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public BrowserContextImpl newContext(NewContextOptions options) {
+    return withLogging("Browser.newContext", () -> newContextImpl(options));
+  }
+
+  private BrowserContextImpl newContextImpl(NewContextOptions options) {
     if (options == null) {
       options = new NewContextOptions();
     }
@@ -97,6 +104,10 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   @Override
   public Page newPage(NewPageOptions options) {
+    return withLogging("Browser.newPage", () -> newPageImpl(options));
+  }
+
+  private Page newPageImpl(NewPageOptions options) {
     BrowserContextImpl context = newContext(convertViaJson(options, NewContextOptions.class));
     PageImpl page = context.newPage();
     page.ownedContext = context;

@@ -33,6 +33,7 @@ public class RequestImpl extends ChannelOwner implements Request {
   private RequestImpl redirectedTo;
   final Map<String, String> headers = new HashMap<>();
   RequestFailure failure;
+  RequestTiming timing;
 
   RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -107,11 +108,13 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public Response response() {
-    JsonObject result = sendMessage("response").getAsJsonObject();
-    if (!result.has("response")) {
-      return null;
-    }
-    return connection.getExistingObject(result.getAsJsonObject("response").get("guid").getAsString());
+    return withLogging("Request.response", () -> {
+      JsonObject result = sendMessage("response").getAsJsonObject();
+      if (!result.has("response")) {
+        return null;
+      }
+      return connection.getExistingObject(result.getAsJsonObject("response").get("guid").getAsString());
+    });
   }
 
   @Override

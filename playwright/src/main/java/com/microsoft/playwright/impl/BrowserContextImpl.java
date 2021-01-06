@@ -67,6 +67,9 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void close() {
+    withLogging("BrowserContext.close", () -> closeImpl());
+  }
+  private void closeImpl() {
     if (isClosedOrClosing) {
       return;
     }
@@ -82,13 +85,18 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void addCookies(List<AddCookie> cookies) {
-    JsonObject params = new JsonObject();
-    params.add("cookies", gson().toJsonTree(cookies));
-    sendMessage("addCookies", params);
+    withLogging("BrowserContext.addCookies", () -> {
+      JsonObject params = new JsonObject();
+      params.add("cookies", gson().toJsonTree(cookies));
+      sendMessage("addCookies", params);
+    });
   }
 
   @Override
   public void addInitScript(String script, Object arg) {
+    withLogging("BrowserContext.addInitScript", () -> addInitScriptImpl(script, arg));
+  }
+  private void addInitScriptImpl(String script, Object arg) {
     // TODO: serialize arg
     JsonObject params = new JsonObject();
     if (isFunctionBody(script)) {
@@ -105,16 +113,20 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void clearCookies() {
-    sendMessage("clearCookies");
+    withLogging("BrowserContext.clearCookies", () -> sendMessage("clearCookies"));
   }
 
   @Override
   public void clearPermissions() {
-    sendMessage("clearPermissions");
+    withLogging("BrowserContext.clearPermissions", () -> sendMessage("clearPermissions"));
   }
 
   @Override
   public List<Cookie> cookies(List<String> urls) {
+    return withLogging("BrowserContext.cookies", () -> cookiesImpl(urls));
+  }
+
+  private List<Cookie> cookiesImpl(List<String> urls) {
     JsonObject params = new JsonObject();
     if (urls == null) {
       urls = Collections.emptyList();
@@ -127,6 +139,10 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void exposeBinding(String name, Page.Binding playwrightBinding, ExposeBindingOptions options) {
+    withLogging("BrowserContext.exposeBinding", () -> exposeBindingImpl(name, playwrightBinding, options));
+  }
+
+  private void exposeBindingImpl(String name, Page.Binding playwrightBinding, ExposeBindingOptions options) {
     if (bindings.containsKey(name)) {
       throw new PlaywrightException("Function \"" + name + "\" has been already registered");
     }
@@ -147,11 +163,16 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void exposeFunction(String name, Page.Function playwrightFunction) {
-    exposeBinding(name, (Page.Binding.Source source, Object... args) -> playwrightFunction.call(args));
+    withLogging("BrowserContext.exposeFunction",
+      () -> exposeBindingImpl(name, (Page.Binding.Source source, Object... args) -> playwrightFunction.call(args), null));
   }
 
   @Override
   public void grantPermissions(List<String> permissions, GrantPermissionsOptions options) {
+    withLogging("BrowserContext.grantPermissions", () -> grantPermissionsImpl(permissions, options));
+  }
+
+  private void grantPermissionsImpl(List<String> permissions, GrantPermissionsOptions options) {
     if (options == null) {
       options = new GrantPermissionsOptions();
     }
@@ -165,6 +186,10 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public PageImpl newPage() {
+    return withLogging("BrowserContext.newPage", () -> newPageImpl());
+  }
+
+  private PageImpl newPageImpl() {
     if (ownerPage != null) {
       throw new PlaywrightException("Please use browser.newContext()");
     }
@@ -193,75 +218,89 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   private void route(UrlMatcher matcher, Consumer<Route> handler) {
-    routes.add(matcher, handler);
-    if (routes.size() == 1) {
-      JsonObject params = new JsonObject();
-      params.addProperty("enabled", true);
-      sendMessage("setNetworkInterceptionEnabled", params);
-    }
+    withLogging("BrowserContext.route", () -> {
+      routes.add(matcher, handler);
+      if (routes.size() == 1) {
+        JsonObject params = new JsonObject();
+        params.addProperty("enabled", true);
+        sendMessage("setNetworkInterceptionEnabled", params);
+      }
+    });
   }
 
   @Override
   public void setDefaultNavigationTimeout(int timeout) {
-    timeoutSettings.setDefaultNavigationTimeout(timeout);
-    JsonObject params = new JsonObject();
-    params.addProperty("timeout", timeout);
-    sendMessage("setDefaultNavigationTimeoutNoReply", params);
+    withLogging("BrowserContext.setDefaultNavigationTimeout", () -> {
+      timeoutSettings.setDefaultNavigationTimeout(timeout);
+      JsonObject params = new JsonObject();
+      params.addProperty("timeout", timeout);
+      sendMessage("setDefaultNavigationTimeoutNoReply", params);
+    });
   }
 
   @Override
   public void setDefaultTimeout(int timeout) {
-    timeoutSettings.setDefaultTimeout(timeout);
-    JsonObject params = new JsonObject();
-    params.addProperty("timeout", timeout);
-    sendMessage("setDefaultTimeoutNoReply", params);
+    withLogging("BrowserContext.setDefaultTimeout", () -> {
+      timeoutSettings.setDefaultTimeout(timeout);
+      JsonObject params = new JsonObject();
+      params.addProperty("timeout", timeout);
+      sendMessage("setDefaultTimeoutNoReply", params);
+    });
   }
 
   @Override
   public void setExtraHTTPHeaders(Map<String, String> headers) {
-    JsonObject params = new JsonObject();
-    JsonArray jsonHeaders = new JsonArray();
-    for (Map.Entry<String, String> e : headers.entrySet()) {
-      JsonObject header = new JsonObject();
-      header.addProperty("name", e.getKey());
-      header.addProperty("value", e.getValue());
-      jsonHeaders.add(header);
-    }
-    params.add("headers", jsonHeaders);
-    sendMessage("setExtraHTTPHeaders", params);
+    withLogging("BrowserContext.setExtraHTTPHeaders", () -> {
+      JsonObject params = new JsonObject();
+      JsonArray jsonHeaders = new JsonArray();
+      for (Map.Entry<String, String> e : headers.entrySet()) {
+        JsonObject header = new JsonObject();
+        header.addProperty("name", e.getKey());
+        header.addProperty("value", e.getValue());
+        jsonHeaders.add(header);
+      }
+      params.add("headers", jsonHeaders);
+      sendMessage("setExtraHTTPHeaders", params);
+    });
   }
 
   @Override
   public void setGeolocation(Geolocation geolocation) {
-    JsonObject params = new JsonObject();
-    if (geolocation != null) {
-      params.add("geolocation", gson().toJsonTree(geolocation));
-    }
-    sendMessage("setGeolocation", params);
+    withLogging("BrowserContext.setGeolocation", () -> {
+      JsonObject params = new JsonObject();
+      if (geolocation != null) {
+        params.add("geolocation", gson().toJsonTree(geolocation));
+      }
+      sendMessage("setGeolocation", params);
+    });
   }
 
   @Override
   public void setOffline(boolean offline) {
-    JsonObject params = new JsonObject();
-    params.addProperty("offline", offline);
-    sendMessage("setOffline", params);
+    withLogging("BrowserContext.setOffline", () -> {
+      JsonObject params = new JsonObject();
+      params.addProperty("offline", offline);
+      sendMessage("setOffline", params);
+    });
   }
 
   @Override
   public StorageState storageState(StorageStateOptions options) {
-    JsonElement json = sendMessage("storageState");
-    StorageState storageState = gson().fromJson(json, StorageState.class);
-    if (options != null && options.path != null) {
-      try {
-        Files.createDirectories(options.path.getParent());
-        try (FileWriter writer = new FileWriter(options.path.toFile())) {
-          writer.write(json.toString());
+    return withLogging("BrowserContext.storageState", () -> {
+      JsonElement json = sendMessage("storageState");
+      StorageState storageState = gson().fromJson(json, StorageState.class);
+      if (options != null && options.path != null) {
+        try {
+          Files.createDirectories(options.path.getParent());
+          try (FileWriter writer = new FileWriter(options.path.toFile())) {
+            writer.write(json.toString());
+          }
+        } catch (IOException e) {
+          throw new PlaywrightException("Failed to write storage state to file", e);
         }
-      } catch (IOException e) {
-        throw new PlaywrightException("Failed to write storage state to file", e);
       }
-    }
-    return storageState;
+      return storageState;
+    });
   }
 
   @Override
@@ -325,12 +364,14 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   private void unroute(UrlMatcher matcher, Consumer<Route> handler) {
-    routes.remove(matcher, handler);
-    if (routes.size() == 0) {
-      JsonObject params = new JsonObject();
-      params.addProperty("enabled", false);
-      sendMessage("setNetworkInterceptionEnabled", params);
-    }
+    withLogging("BrowserContext.unroute", () -> {
+      routes.remove(matcher, handler);
+      if (routes.size() == 0) {
+        JsonObject params = new JsonObject();
+        params.addProperty("enabled", false);
+        sendMessage("setNetworkInterceptionEnabled", params);
+      }
+    });
   }
 
   @Override

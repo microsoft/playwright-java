@@ -19,7 +19,7 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Keyboard;
 
-class KeyboardImpl implements Keyboard {
+class KeyboardImpl extends LoggingSupport implements Keyboard {
   private final ChannelOwner page;
 
   KeyboardImpl(ChannelOwner page) {
@@ -28,42 +28,52 @@ class KeyboardImpl implements Keyboard {
 
   @Override
   public void down(String key) {
-    JsonObject params = new JsonObject();
-    params.addProperty("key", key);
-    page.sendMessage("keyboardDown", params);
+    withLogging("Keyboard.down", () -> {
+      JsonObject params = new JsonObject();
+      params.addProperty("key", key);
+      page.sendMessage("keyboardDown", params);
+    });
   }
 
   @Override
   public void insertText(String text) {
-    JsonObject params = new JsonObject();
-    params.addProperty("text", text);
-    page.sendMessage("keyboardInsertText", params);
+    withLogging("Keyboard.insertText", () -> {
+      JsonObject params = new JsonObject();
+      params.addProperty("text", text);
+      page.sendMessage("keyboardInsertText", params);
+    });
   }
 
   @Override
   public void press(String key, int delay) {
-    JsonObject params = new JsonObject();
-    params.addProperty("key", key);
-    if (delay != 0) {
-      params.addProperty("delay", delay);
-    }
-    page.sendMessage("keyboardPress", params);
+    withLogging("Keyboard.press", () -> {
+      JsonObject params = new JsonObject();
+      params.addProperty("key", key);
+      if (delay != 0) {
+        params.addProperty("delay", delay);
+      }
+      page.sendMessage("keyboardPress", params);
+    });
   }
 
   @Override
   public void type(String text, int delay) {
-    JsonObject params = new JsonObject();
-    params.addProperty("text", text);
-    if (delay != 0) {
-      params.addProperty("delay", delay);
-    }
-    page.sendMessage("keyboardType", params);
+    withLogging("Keyboard.type", () -> {
+      JsonObject params = new JsonObject();
+      params.addProperty("text", text);
+      if (delay != 0) {
+        params.addProperty("delay", delay);
+      }
+      page.sendMessage("keyboardType", params);
+    });
   }
 
   @Override
   public void up(String key) {
-    JsonObject params = new JsonObject();
-    params.addProperty("key", key);
-    page.sendMessage("keyboardUp", params);
+    withLogging("Keyboard.up", () -> {
+      JsonObject params = new JsonObject();
+      params.addProperty("key", key);
+      page.sendMessage("keyboardUp", params);
+    });
   }
 }

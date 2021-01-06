@@ -44,23 +44,27 @@ class WorkerImpl extends ChannelOwner implements Worker {
 
   @Override
   public Object evaluate(String pageFunction, Object arg) {
-    JsonObject params = new JsonObject();
-    params.addProperty("expression", pageFunction);
-    params.addProperty("isFunction", isFunctionBody(pageFunction));
-    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-    JsonElement json = sendMessage("evaluateExpression", params);
-    SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
-    return deserialize(value);
+    return withLogging("Worker.evaluate", () -> {
+      JsonObject params = new JsonObject();
+      params.addProperty("expression", pageFunction);
+      params.addProperty("isFunction", isFunctionBody(pageFunction));
+      params.add("arg", gson().toJsonTree(serializeArgument(arg)));
+      JsonElement json = sendMessage("evaluateExpression", params);
+      SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
+      return deserialize(value);
+    });
   }
 
   @Override
   public JSHandle evaluateHandle(String pageFunction, Object arg) {
-    JsonObject params = new JsonObject();
-    params.addProperty("expression", pageFunction);
-    params.addProperty("isFunction", isFunctionBody(pageFunction));
-    params.add("arg", gson().toJsonTree(serializeArgument(arg)));
-    JsonElement json = sendMessage("evaluateExpressionHandle", params);
-    return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("handle").get("guid").getAsString());
+    return withLogging("Worker.evaluateHandle", () -> {
+      JsonObject params = new JsonObject();
+      params.addProperty("expression", pageFunction);
+      params.addProperty("isFunction", isFunctionBody(pageFunction));
+      params.add("arg", gson().toJsonTree(serializeArgument(arg)));
+      JsonElement json = sendMessage("evaluateExpressionHandle", params);
+      return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("handle").get("guid").getAsString());
+    });
   }
 
   @Override

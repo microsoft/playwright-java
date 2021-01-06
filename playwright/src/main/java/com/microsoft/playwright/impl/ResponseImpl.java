@@ -45,21 +45,26 @@ public class ResponseImpl extends ChannelOwner implements Response {
       JsonObject item = e.getAsJsonObject();
       request.headers.put(item.get("name").getAsString().toLowerCase(), item.get("value").getAsString());
     }
+    request.timing = Serialization.gson().fromJson(initializer.get("timing"), Request.RequestTiming.class);
   }
 
   @Override
   public byte[] body() {
-    JsonObject json = sendMessage("body").getAsJsonObject();
-    return Base64.getDecoder().decode(json.get("binary").getAsString());
+    return withLogging("Response.body", () -> {
+      JsonObject json = sendMessage("body").getAsJsonObject();
+      return Base64.getDecoder().decode(json.get("binary").getAsString());
+    });
   }
 
   @Override
   public String finished() {
-    JsonObject json = sendMessage("finished").getAsJsonObject();
-    if (json.has("error")) {
-      return json.get("error").getAsString();
-    }
-    return null;
+    return withLogging("Response.finished", () -> {
+      JsonObject json = sendMessage("finished").getAsJsonObject();
+      if (json.has("error")) {
+        return json.get("error").getAsString();
+      }
+      return null;
+    });
   }
 
   @Override

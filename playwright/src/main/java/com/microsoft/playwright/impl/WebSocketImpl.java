@@ -98,6 +98,10 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
 
   @Override
   public Deferred<Event<EventType>> futureEvent(EventType event, FutureEventOptions options) {
+    return withLoggingDeferred("WebSocket.futureEvent", () -> futureEventImpl(event, options));
+  }
+
+  private Deferred<Event<EventType>> futureEventImpl(EventType event, FutureEventOptions options) {
     if (options == null) {
       options = new FutureEventOptions();
     }

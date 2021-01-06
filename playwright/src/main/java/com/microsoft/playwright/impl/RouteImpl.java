@@ -36,13 +36,19 @@ public class RouteImpl extends ChannelOwner implements Route {
 
   @Override
   public void abort(String errorCode) {
-    JsonObject params = new JsonObject();
-    params.addProperty("errorCode", errorCode);
-    sendMessage("abort", params);
+    withLogging("Route.abort", () -> {
+      JsonObject params = new JsonObject();
+      params.addProperty("errorCode", errorCode);
+      sendMessage("abort", params);
+    });
   }
 
   @Override
   public void continue_(ContinueOverrides overrides) {
+    withLogging("Route.continue", () -> continueImpl(overrides));
+  }
+
+  private void continueImpl(ContinueOverrides overrides) {
     if (overrides == null) {
       overrides = new ContinueOverrides();
     }
@@ -65,6 +71,10 @@ public class RouteImpl extends ChannelOwner implements Route {
 
   @Override
   public void fulfill(FulfillResponse response) {
+    withLogging("Route.fulfill", () -> fulfillImpl(response));
+  }
+
+  private void fulfillImpl(FulfillResponse response) {
     if (response == null) {
       response = new FulfillResponse();
     }

@@ -31,6 +31,10 @@ class AccessibilityImpl implements Accessibility {
 
   @Override
   public AccessibilityNode snapshot(SnapshotOptions options) {
+    return page.withLogging("Accessibility.snapshot", () -> snapshot(options));
+  }
+
+  private AccessibilityNode snapshotImpl(SnapshotOptions options) {
     if (options == null) {
       options = new SnapshotOptions();
     }
