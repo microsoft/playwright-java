@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -43,8 +44,9 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   PageImpl ownerPage;
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   final TimeoutSettings timeoutSettings = new TimeoutSettings();
+  Path videosDir;
 
-  protected BrowserContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
+  BrowserContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     if (parent instanceof BrowserImpl) {
       browser = (BrowserImpl) parent;
