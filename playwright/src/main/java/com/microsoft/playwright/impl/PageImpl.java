@@ -49,6 +49,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private boolean isClosed;
   final Set<Worker> workers = new HashSet<>();
   private final TimeoutSettings timeoutSettings;
+  private VideoImpl video;
 
   PageImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -168,6 +169,8 @@ public class PageImpl extends ChannelOwner implements Page {
       if (!handled) {
         route.continue_();
       }
+    } else if ("video".equals(event)) {
+      video().setRelativePath(params.get("relativePath").getAsString());
     } else if ("pageError".equals(event)) {
       SerializedError error = gson().fromJson(params.getAsJsonObject("error"), SerializedError.class);
       listeners.notify(EventType.PAGEERROR, new ErrorImpl(error));
@@ -296,7 +299,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public BrowserContext context() {
+  public BrowserContextImpl context() {
     return browserContext;
   }
 
@@ -705,8 +708,19 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Video video() {
-    return null;
+  public VideoImpl video() {
+    if (video != null) {
+      return video;
+    }
+    if (browserContext.videosDir == null) {
+      return null;
+    }
+    video = new VideoImpl(this);
+    // In case of persistent profile, we already have it.
+    if (initializer.has("videoRelativePath")) {
+      video.setRelativePath(initializer.get("videoRelativePath").getAsString());
+    }
+    return video;
   }
 
   @Override

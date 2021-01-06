@@ -47,14 +47,18 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
 
 
   @Override
-  public BrowserContext launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options) {
+  public BrowserContextImpl launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options) {
     if (options == null) {
       options = new LaunchPersistentContextOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("userDataDir", userDataDir.toString());
     JsonObject json = sendMessage("launchPersistentContext", params).getAsJsonObject();
-    return connection.getExistingObject(json.getAsJsonObject("context").get("guid").getAsString());
+    BrowserContextImpl context = connection.getExistingObject(json.getAsJsonObject("context").get("guid").getAsString());
+    if (options.recordVideo != null) {
+      context.videosDir = options.recordVideo.dir;
+    }
+    return context;
   }
 
   public String name() {

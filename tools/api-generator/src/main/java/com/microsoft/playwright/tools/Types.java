@@ -121,6 +121,7 @@ class Types {
     add("BrowserType.launch.options.downloadsPath", "string", "Path");
     add("BrowserContext.storageState.options.path", "string", "Path");
     add("ChromiumBrowser.startTracing.options.path", "string", "Path");
+    add("Video.path", "Promise<string>", "Path");
 
     // Route
     add("BrowserContext.route.handler", "function(Route, Request)", "Consumer<Route>");
