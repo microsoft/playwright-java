@@ -112,10 +112,6 @@ public interface BrowserType {
      */
     public Boolean handleSIGHUP;
     /**
-     * Logger sink for Playwright logging.
-     */
-    public Logger logger;
-    /**
      * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
      */
     public Integer timeout;
@@ -178,10 +174,6 @@ public interface BrowserType {
     }
     public LaunchOptions withHandleSIGHUP(Boolean handleSIGHUP) {
       this.handleSIGHUP = handleSIGHUP;
-      return this;
-    }
-    public LaunchOptions withLogger(Logger logger) {
-      this.logger = logger;
       return this;
     }
     public LaunchOptions withTimeout(Integer timeout) {
@@ -441,10 +433,6 @@ public interface BrowserType {
      */
     public ColorScheme colorScheme;
     /**
-     * Logger sink for Playwright logging.
-     */
-    public Logger logger;
-    /**
      * Enables HAR recording for all pages into {@code recordHar.path} file. If not specified, the HAR is not recorded. Make sure to await {@code browserContext.close()} for the HAR to be saved.
      */
     public RecordHar recordHar;
@@ -579,10 +567,6 @@ public interface BrowserType {
     }
     public LaunchPersistentContextOptions withColorScheme(ColorScheme colorScheme) {
       this.colorScheme = colorScheme;
-      return this;
-    }
-    public LaunchPersistentContextOptions withLogger(Logger logger) {
-      this.logger = logger;
       return this;
     }
     public RecordHar setRecordHar() {

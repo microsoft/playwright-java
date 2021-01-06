@@ -206,10 +206,6 @@ public interface Browser {
      */
     public ColorScheme colorScheme;
     /**
-     * Logger sink for Playwright logging.
-     */
-    public Logger logger;
-    /**
      * Enables HAR recording for all pages into {@code recordHar.path} file. If not specified, the HAR is not recorded. Make sure to await {@code browserContext.close()} for the HAR to be saved.
      */
     public RecordHar recordHar;
@@ -293,10 +289,6 @@ public interface Browser {
     }
     public NewContextOptions withColorScheme(ColorScheme colorScheme) {
       this.colorScheme = colorScheme;
-      return this;
-    }
-    public NewContextOptions withLogger(Logger logger) {
-      this.logger = logger;
       return this;
     }
     public RecordHar setRecordHar() {
@@ -488,10 +480,6 @@ public interface Browser {
      */
     public ColorScheme colorScheme;
     /**
-     * Logger sink for Playwright logging.
-     */
-    public Logger logger;
-    /**
      * Enables HAR recording for all pages into {@code recordHar.path} file. If not specified, the HAR is not recorded. Make sure to await {@code browserContext.close()} for the HAR to be saved.
      */
     public RecordHar recordHar;
@@ -575,10 +563,6 @@ public interface Browser {
     }
     public NewPageOptions withColorScheme(ColorScheme colorScheme) {
       this.colorScheme = colorScheme;
-      return this;
-    }
-    public NewPageOptions withLogger(Logger logger) {
-      this.logger = logger;
       return this;
     }
     public RecordHar setRecordHar() {
