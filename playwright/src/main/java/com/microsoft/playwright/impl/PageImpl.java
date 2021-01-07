@@ -74,11 +74,10 @@ public class PageImpl extends ChannelOwner implements Page {
     if ("dialog".equals(event)) {
       String guid = params.getAsJsonObject("dialog").get("guid").getAsString();
       DialogImpl dialog = connection.getExistingObject(guid);
+      // If no action taken the dialog will stay open and execution will hang. We
+      // could automatically dismiss the dialog if there are no listeners but we want
+      // the behavior to match upstream one.
       listeners.notify(EventType.DIALOG, dialog);
-      // If no action taken dismiss dialog to not hang.
-      if (!dialog.isHandled()) {
-        dialog.dismiss();
-      }
     } else if ("popup".equals(event)) {
       String guid = params.getAsJsonObject("page").get("guid").getAsString();
       PageImpl popup = connection.getExistingObject(guid);
