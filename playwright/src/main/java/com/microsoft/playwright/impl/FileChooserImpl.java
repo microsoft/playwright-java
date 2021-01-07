@@ -16,23 +16,20 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.FileChooser;
 import com.microsoft.playwright.Page;
 
-import java.io.File;
 import java.nio.file.Path;
 
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 
 class FileChooserImpl implements FileChooser {
   private final PageImpl page;
-  private final ElementHandle element;
+  private final ElementHandleImpl element;
   private final boolean isMultiple;
 
-  FileChooserImpl(PageImpl page, ElementHandle element, boolean isMultiple) {
+  FileChooserImpl(PageImpl page, ElementHandleImpl element, boolean isMultiple) {
     this.page = page;
     this.element = element;
     this.isMultiple = isMultiple;
@@ -60,6 +57,7 @@ class FileChooserImpl implements FileChooser {
 
   @Override
   public void setFiles(FilePayload[] files, SetFilesOptions options) {
-    element.setInputFiles(files, convertViaJson(options, ElementHandle.SetInputFilesOptions.class));
+    page.withLogging("FileChooser.setInputFiles",
+      () -> element.setInputFilesImpl(files, convertViaJson(options, ElementHandle.SetInputFilesOptions.class)));
   }
 }

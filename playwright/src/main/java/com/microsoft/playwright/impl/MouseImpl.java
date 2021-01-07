@@ -33,6 +33,10 @@ class MouseImpl implements Mouse {
 
   @Override
   public void click(int x, int y, ClickOptions options) {
+    page.withLogging("Mouse.click", () -> clickImpl(x, y, options));
+  }
+
+  private void clickImpl(int x, int y, ClickOptions options) {
     if (options == null) {
       options = new ClickOptions();
     }
@@ -48,6 +52,10 @@ class MouseImpl implements Mouse {
 
   @Override
   public void dblclick(int x, int y, DblclickOptions options) {
+    page.withLogging("Mouse.dblclick", () -> dblclickImpl(x, y, options));
+  }
+
+  private void dblclickImpl(int x, int y, DblclickOptions options) {
     ClickOptions clickOptions;
     if (options == null) {
       clickOptions = new ClickOptions();
@@ -60,6 +68,10 @@ class MouseImpl implements Mouse {
 
   @Override
   public void down(DownOptions options) {
+    page.withLogging("Mouse.down", () -> downImpl(options));
+  }
+
+  private void downImpl(DownOptions options) {
     if (options == null) {
       options = new DownOptions();
     }
@@ -69,6 +81,10 @@ class MouseImpl implements Mouse {
 
   @Override
   public void move(int x, int y, MoveOptions options) {
+    page.withLogging("Mouse.move", () -> moveImpl(x, y, options));
+  }
+
+  private void moveImpl(int x, int y, MoveOptions options) {
     if (options == null) {
       options = new MoveOptions();
     }
@@ -80,6 +96,10 @@ class MouseImpl implements Mouse {
 
   @Override
   public void up(UpOptions options) {
+    page.withLogging("Mouse.up", () -> upImpl(options));
+  }
+
+  private void upImpl(UpOptions options) {
     if (options == null) {
       options = new UpOptions();
     }

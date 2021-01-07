@@ -33,6 +33,10 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
 
   @Override
   public BrowserImpl launch(LaunchOptions options) {
+    return withLogging("BrowserType.launch", () -> launchImpl(options));
+  }
+
+  private BrowserImpl launchImpl(LaunchOptions options) {
     if (options == null) {
       options = new LaunchOptions();
     }
@@ -45,9 +49,13 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     return initializer.get("executablePath").getAsString();
   }
 
-
   @Override
   public BrowserContextImpl launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options) {
+    return withLogging("BrowserType.launchPersistentContext",
+      () -> launchPersistentContextImpl(userDataDir, options));
+  }
+
+  private BrowserContextImpl launchPersistentContextImpl(Path userDataDir, LaunchPersistentContextOptions options) {
     if (options == null) {
       options = new LaunchPersistentContextOptions();
     }

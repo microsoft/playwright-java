@@ -72,15 +72,11 @@ public class Connection {
   }
 
   public JsonElement sendMessage(String guid, String method, JsonObject params) {
-    return (JsonElement) root.toDeferred(sendMessageAsync(guid, method, params)).get();
+    return root.toDeferred(sendMessageAsync(guid, method, params)).get();
   }
 
   public WaitableResult<JsonElement> sendMessageAsync(String guid, String method, JsonObject params) {
     return internalSendMessage(guid, method, params);
-  }
-
-  public void sendMessageNoWait(String guid, String method, JsonObject params) {
-    internalSendMessage(guid, method, params);
   }
 
   private WaitableResult<JsonElement> internalSendMessage(String guid, String method, JsonObject params) {

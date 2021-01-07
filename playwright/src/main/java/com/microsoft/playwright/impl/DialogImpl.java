@@ -20,7 +20,7 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.Dialog;
 import com.microsoft.playwright.PlaywrightException;
 
-public class DialogImpl extends ChannelOwner implements Dialog {
+class DialogImpl extends ChannelOwner implements Dialog {
   private boolean handled;
   DialogImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -28,17 +28,21 @@ public class DialogImpl extends ChannelOwner implements Dialog {
 
   @Override
   public void accept(String promptText) {
-    handled = true;
-    JsonObject params = new JsonObject();
-    if (promptText != null)
-      params.addProperty("promptText", promptText);
-    sendMessageNoWait("accept", params);
+    withLogging("Dialog.accept", () -> {
+      handled = true;
+      JsonObject params = new JsonObject();
+      if (promptText != null)
+        params.addProperty("promptText", promptText);
+      sendMessage("accept", params);
+    });
   }
 
   @Override
   public void dismiss() {
-    handled = true;
-    sendMessageNoWait("dismiss");
+    withLogging("Dialog.dismiss", () -> {
+      handled = true;
+      sendMessage("dismiss");
+    });
   }
 
   @Override

@@ -40,38 +40,48 @@ public class DownloadImpl extends ChannelOwner implements Download {
 
   @Override
   public InputStream createReadStream() {
-    JsonObject result = sendMessage("stream").getAsJsonObject();
-    if (!result.has("stream")) {
-      return null;
-    }
-    Stream stream = connection.getExistingObject(result.getAsJsonObject("stream").get("guid").getAsString());
-    return stream.stream();
+    return withLogging("Download.createReadStream", () -> {
+      JsonObject result = sendMessage("stream").getAsJsonObject();
+      if (!result.has("stream")) {
+        return null;
+      }
+      Stream stream = connection.getExistingObject(result.getAsJsonObject("stream").get("guid").getAsString());
+      return stream.stream();
+    });
   }
 
   @Override
   public void delete() {
-    sendMessage("delete");
+    withLogging("Download.delete", () -> {
+      sendMessage("delete");
+    });
   }
 
   @Override
   public String failure() {
-    JsonObject result = sendMessage("failure").getAsJsonObject();
-    if (result.has("error")) {
-      return result.get("error").getAsString();
-    }
-    return null;
+    return withLogging("Download.failure", () -> {
+      JsonObject result = sendMessage("failure").getAsJsonObject();
+      if (result.has("error")) {
+        return result.get("error").getAsString();
+      }
+      return null;
+    });
   }
 
   @Override
   public Path path() {
-    JsonObject json = sendMessage("path").getAsJsonObject();
-    return FileSystems.getDefault().getPath(json.get("value").getAsString());
+    return withLogging("Download.path", () -> {
+      JsonObject json = sendMessage("path").getAsJsonObject();
+      return FileSystems.getDefault().getPath(json.get("value").getAsString());
+    });
   }
 
   @Override
   public void saveAs(Path path) {
-    JsonObject params = new JsonObject();
-    params.addProperty("path", path.toString());
-    sendMessage("saveAs", params);
+    withLogging("Download.saveAs", () -> {
+      JsonObject params = new JsonObject();
+      params.addProperty("path", path.toString());
+      sendMessage("saveAs", params);
+    });
   }
 }

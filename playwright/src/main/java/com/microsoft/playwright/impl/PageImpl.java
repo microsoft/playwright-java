@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
@@ -102,7 +103,7 @@ public class PageImpl extends ChannelOwner implements Page {
       listeners.notify(EventType.DOWNLOAD, download);
     } else if ("fileChooser".equals(event)) {
       String guid = params.getAsJsonObject("element").get("guid").getAsString();
-      ElementHandle elementHandle = connection.getExistingObject(guid);
+      ElementHandleImpl elementHandle = connection.getExistingObject(guid);
       FileChooser fileChooser = new FileChooserImpl(this, elementHandle, params.get("isMultiple").getAsBoolean());
       listeners.notify(EventType.FILECHOOSER, fileChooser);
     } else if ("bindingCall".equals(event)) {
@@ -237,22 +238,22 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public ElementHandle querySelector(String selector) {
-    return mainFrame.querySelector(selector);
+    return withLogging("Page.querySelector", () -> mainFrame.querySelectorImpl(selector));
   }
 
   @Override
   public List<ElementHandle> querySelectorAll(String selector) {
-    return mainFrame.querySelectorAll(selector);
+    return withLogging("Page.querySelectorAll", () -> mainFrame.querySelectorAllImpl(selector));
   }
 
   @Override
   public Object evalOnSelector(String selector, String pageFunction, Object arg) {
-    return mainFrame.evalOnSelector(selector, pageFunction, arg);
+    return withLogging("Page.evalOnSelector", () -> mainFrame.evalOnSelectorImpl(selector, pageFunction, arg));
   }
 
   @Override
   public Object evalOnSelectorAll(String selector, String pageFunction, Object arg) {
-    return mainFrame.evalOnSelectorAll(selector, pageFunction, arg);
+    return withLogging("Page.evalOnSelectorAll", () -> mainFrame.evalOnSelectorAllImpl(selector, pageFunction, arg));
   }
 
   @Override
@@ -262,40 +263,46 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void addInitScript(String script, Object arg) {
-    JsonObject params = new JsonObject();
-    // TODO: support or drop arg
-    params.addProperty("source", script);
-    sendMessage("addInitScript", params);
+    withLogging("Page.addInitScript", () -> {
+      JsonObject params = new JsonObject();
+      // TODO: support or drop arg
+      params.addProperty("source", script);
+      sendMessage("addInitScript", params);
+    });
   }
 
   @Override
   public ElementHandle addScriptTag(AddScriptTagParams params) {
-    return mainFrame.addScriptTag(convertViaJson(params, Frame.AddScriptTagParams.class));
+    return withLogging("Page.addScriptTag",
+      () -> mainFrame.addScriptTagImpl(convertViaJson(params, Frame.AddScriptTagParams.class)));
   }
 
   @Override
   public ElementHandle addStyleTag(AddStyleTagParams params) {
-    return mainFrame.addStyleTag(convertViaJson(params, Frame.AddStyleTagParams.class));
+    return withLogging("Page.addStyleTag",
+      () -> mainFrame.addStyleTagImpl(convertViaJson(params, Frame.AddStyleTagParams.class)));
   }
 
   @Override
   public void bringToFront() {
-    sendMessage("bringToFront");
+    withLogging("Page.bringToFront", () -> sendMessage("bringToFront"));
   }
 
   @Override
   public void check(String selector, CheckOptions options) {
-    mainFrame.check(selector, convertViaJson(options, Frame.CheckOptions.class));
+    withLogging("Page.check",
+      () -> mainFrame.checkImpl(selector, convertViaJson(options, Frame.CheckOptions.class)));
   }
 
   @Override
   public void click(String selector, ClickOptions options) {
-    mainFrame.click(selector, convertViaJson(options, Frame.ClickOptions.class));
+    withLogging("Page.click",
+      () -> mainFrame.clickImpl(selector, convertViaJson(options, Frame.ClickOptions.class)));
   }
 
   @Override
   public String content() {
-    return mainFrame.content();
+    return withLogging("Page.content", () -> mainFrame.contentImpl());
   }
 
   @Override
@@ -305,16 +312,22 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void dblclick(String selector, DblclickOptions options) {
-    mainFrame.dblclick(selector, convertViaJson(options, Frame.DblclickOptions.class));
+    withLogging("Page.dblclick",
+      () -> mainFrame.dblclickImpl(selector, convertViaJson(options, Frame.DblclickOptions.class)));
   }
 
   @Override
   public void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options) {
-    mainFrame.dispatchEvent(selector, type, eventInit, convertViaJson(options, Frame.DispatchEventOptions.class));
+    withLogging("Page.dispatchEvent",
+      () -> mainFrame.dispatchEventImpl(selector, type, eventInit, convertViaJson(options, Frame.DispatchEventOptions.class)));
   }
 
   @Override
   public void emulateMedia(EmulateMediaParams options) {
+    withLogging("Page.emulateMedia", () -> emulateMediaImpl(options));
+  }
+
+  private void emulateMediaImpl(EmulateMediaParams options) {
     if (options == null) {
       options = new EmulateMediaParams();
     }
@@ -324,16 +337,20 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Object evaluate(String expression, Object arg) {
-    return mainFrame.evaluate(expression, arg);
+    return withLogging("Page.evaluate", () -> mainFrame.evaluateImpl(expression, arg));
   }
 
   @Override
   public JSHandle evaluateHandle(String pageFunction, Object arg) {
-    return mainFrame.evaluateHandle(pageFunction, arg);
+    return withLogging("Page.evaluateHandle", () -> mainFrame.evaluateHandleImpl(pageFunction, arg));
   }
 
   @Override
   public void exposeBinding(String name, Binding playwrightBinding, ExposeBindingOptions options) {
+    withLogging("Page.exposeBinding", () -> exposeBindingImpl(name, playwrightBinding, options));
+  }
+
+  private void exposeBindingImpl(String name, Binding playwrightBinding, ExposeBindingOptions options) {
     if (bindings.containsKey(name)) {
       throw new PlaywrightException("Function \"" + name + "\" has been already registered");
     }
@@ -352,17 +369,20 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void exposeFunction(String name, Function playwrightFunction) {
-    exposeBinding(name, (Binding.Source source, Object... args) -> playwrightFunction.call(args));
+    withLogging("Page.exposeFunction",
+      () -> exposeBindingImpl(name, (Binding.Source source, Object... args) -> playwrightFunction.call(args), null));
   }
 
   @Override
   public void fill(String selector, String value, FillOptions options) {
-    mainFrame.fill(selector, value, convertViaJson(options, Frame.FillOptions.class));
+    withLogging("Page.fill",
+      () -> mainFrame.fillImpl(selector, value, convertViaJson(options, Frame.FillOptions.class)));
   }
 
   @Override
   public void focus(String selector, FocusOptions options) {
-    mainFrame.focus(selector, convertViaJson(options, Frame.FocusOptions.class));
+    withLogging("Page.focus",
+      () -> mainFrame.focusImpl(selector, convertViaJson(options, Frame.FocusOptions.class)));
   }
 
   @Override
@@ -406,11 +426,16 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public String getAttribute(String selector, String name, GetAttributeOptions options) {
-    return mainFrame.getAttribute(selector, name, convertViaJson(options, Frame.GetAttributeOptions.class));
+    return withLogging("Page.getAttribute",
+      () -> mainFrame.getAttributeImpl(selector, name, convertViaJson(options, Frame.GetAttributeOptions.class)));
   }
 
   @Override
   public Response goBack(GoBackOptions options) {
+    return withLogging("Page.goBack", () -> goBackImpl(options));
+  }
+
+  Response goBackImpl(GoBackOptions options) {
     if (options == null) {
       options = new GoBackOptions();
     }
@@ -426,6 +451,10 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Response goForward(GoForwardOptions options) {
+    return withLogging("Page.goForward", () -> goForwardImpl(options));
+  }
+
+  Response goForwardImpl(GoForwardOptions options) {
     if (options == null) {
       options = new GoForwardOptions();
     }
@@ -441,22 +470,26 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public ResponseImpl navigate(String url, NavigateOptions options) {
-    return mainFrame.navigate(url, convertViaJson(options, Frame.NavigateOptions.class));
+    return withLogging("Page.navigate", () ->
+      mainFrame.navigateImpl(url, convertViaJson(options, Frame.NavigateOptions.class)));
   }
 
   @Override
   public void hover(String selector, HoverOptions options) {
-    mainFrame.hover(selector, convertViaJson(options, Frame.HoverOptions.class));
+    withLogging("Page.hover", () ->
+      mainFrame.hoverImpl(selector, convertViaJson(options, Frame.HoverOptions.class)));
   }
 
   @Override
   public String innerHTML(String selector, InnerHTMLOptions options) {
-    return mainFrame.innerHTML(selector, convertViaJson(options, Frame.InnerHTMLOptions.class));
+    return withLogging("Page.innerHTML",
+      () -> mainFrame.innerHTMLImpl(selector, convertViaJson(options, Frame.InnerHTMLOptions.class)));
   }
 
   @Override
   public String innerText(String selector, InnerTextOptions options) {
-    return mainFrame.innerText(selector, convertViaJson(options, Frame.InnerTextOptions.class));
+    return withLogging("Page.innerText",
+      () -> mainFrame.innerTextImpl(selector, convertViaJson(options, Frame.InnerTextOptions.class)));
   }
 
   @Override
@@ -481,15 +514,21 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Page opener() {
-    JsonObject result = sendMessage("opener").getAsJsonObject();
-    if (!result.has("page")) {
-      return null;
-    }
-    return connection.getExistingObject(result.getAsJsonObject("page").get("guid").getAsString());
+    return withLogging("Page.opener", () -> {
+      JsonObject result = sendMessage("opener").getAsJsonObject();
+      if (!result.has("page")) {
+        return null;
+      }
+      return connection.getExistingObject(result.getAsJsonObject("page").get("guid").getAsString());
+    });
   }
 
   @Override
   public byte[] pdf(PdfOptions options) {
+    return withLogging("Page.pdf", () -> pdfImpl(options));
+  }
+
+  private byte[] pdfImpl(PdfOptions options) {
     if (!browserContext.browser().isChromium()) {
       throw new PlaywrightException("Page.pdf only supported in headless Chromium");
     }
@@ -508,11 +547,16 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void press(String selector, String key, PressOptions options) {
-    mainFrame.press(selector, key, convertViaJson(options, Frame.PressOptions.class));
+    withLogging("Page.press",
+      () -> mainFrame.pressImpl(selector, key, convertViaJson(options, Frame.PressOptions.class)));
   }
 
   @Override
   public Response reload(ReloadOptions options) {
+    return withLogging("Page.reload", () -> reloadImpl(options));
+  }
+
+  private Response reloadImpl(ReloadOptions options) {
     if (options == null) {
       options = new ReloadOptions();
     }
@@ -542,12 +586,14 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   private void route(UrlMatcher matcher, Consumer<Route> handler) {
-    routes.add(matcher, handler);
-    if (routes.size() == 1) {
-      JsonObject params = new JsonObject();
-      params.addProperty("enabled", true);
-      sendMessage("setNetworkInterceptionEnabled", params);
-    }
+    withLogging("Page.route", () -> {
+      routes.add(matcher, handler);
+      if (routes.size() == 1) {
+        JsonObject params = new JsonObject();
+        params.addProperty("enabled", true);
+        sendMessage("setNetworkInterceptionEnabled", params);
+      }
+    });
   }
 
   private static String toProtocol(ScreenshotOptions.Type type) {
@@ -556,6 +602,10 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public byte[] screenshot(ScreenshotOptions options) {
+    return withLogging("Page.screenshot", () -> screenshotImpl(options));
+  }
+
+  private byte[] screenshotImpl(ScreenshotOptions options) {
     if (options == null) {
       options = new ScreenshotOptions();
     }
@@ -587,80 +637,95 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public List<String> selectOption(String selector, ElementHandle.SelectOption[] values, SelectOptionOptions options) {
-    return mainFrame.selectOption(selector, values, convertViaJson(options, Frame.SelectOptionOptions.class));
+    return withLogging("Page.selectOption",
+      () -> mainFrame.selectOptionImpl(selector, values, convertViaJson(options, Frame.SelectOptionOptions.class)));
   }
 
   @Override
   public List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options) {
-    return mainFrame.selectOption(selector, values, convertViaJson(options, Frame.SelectOptionOptions.class));
+    return withLogging("Page.selectOption",
+      () -> mainFrame.selectOptionImpl(selector, values, convertViaJson(options, Frame.SelectOptionOptions.class)));
   }
 
   @Override
   public void setContent(String html, SetContentOptions options) {
-    mainFrame.setContent(html, convertViaJson(options, Frame.SetContentOptions.class));
+    withLogging("Page.setContent",
+      () -> mainFrame.setContentImpl(html, convertViaJson(options, Frame.SetContentOptions.class)));
   }
 
   @Override
   public void setDefaultNavigationTimeout(int timeout) {
-    timeoutSettings.setDefaultNavigationTimeout(timeout);
-    JsonObject params = new JsonObject();
-    params.addProperty("timeout", timeout);
-    sendMessage("setDefaultNavigationTimeoutNoReply", params);
+    withLogging("Page.setDefaultNavigationTimeout", () -> {
+      timeoutSettings.setDefaultNavigationTimeout(timeout);
+      JsonObject params = new JsonObject();
+      params.addProperty("timeout", timeout);
+      sendMessage("setDefaultNavigationTimeoutNoReply", params);
+    });
   }
 
   @Override
   public void setDefaultTimeout(int timeout) {
-    timeoutSettings.setDefaultTimeout(timeout);
-    JsonObject params = new JsonObject();
-    params.addProperty("timeout", timeout);
-    sendMessage("setDefaultTimeoutNoReply", params);
+    withLogging("Page.setDefaultTimeout", () -> {
+      timeoutSettings.setDefaultTimeout(timeout);
+      JsonObject params = new JsonObject();
+      params.addProperty("timeout", timeout);
+      sendMessage("setDefaultTimeoutNoReply", params);
+    });
   }
 
   @Override
   public void setExtraHTTPHeaders(Map<String, String> headers) {
-    JsonObject params = new JsonObject();
-    JsonArray jsonHeaders = new JsonArray();
-    for (Map.Entry<String, String> e : headers.entrySet()) {
-      JsonObject header = new JsonObject();
-      header.addProperty("name", e.getKey());
-      header.addProperty("value", e.getValue());
-      jsonHeaders.add(header);
-    }
-    params.add("headers", jsonHeaders);
-    sendMessage("setExtraHTTPHeaders", params);
+    withLogging("Page.setExtraHTTPHeaders", () -> {
+      JsonObject params = new JsonObject();
+      JsonArray jsonHeaders = new JsonArray();
+      for (Map.Entry<String, String> e : headers.entrySet()) {
+        JsonObject header = new JsonObject();
+        header.addProperty("name", e.getKey());
+        header.addProperty("value", e.getValue());
+        jsonHeaders.add(header);
+      }
+      params.add("headers", jsonHeaders);
+      sendMessage("setExtraHTTPHeaders", params);
+    });
   }
 
   @Override
   public void setInputFiles(String selector, Path[] files, SetInputFilesOptions options) {
-    mainFrame.setInputFiles(selector, files, convertViaJson(options, Frame.SetInputFilesOptions.class));
+    withLogging("Page.setInputFiles",
+      () -> mainFrame.setInputFilesImpl(selector, files, convertViaJson(options, Frame.SetInputFilesOptions.class)));
   }
 
   @Override
   public void setInputFiles(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options) {
-    mainFrame.setInputFiles(selector, files, convertViaJson(options, Frame.SetInputFilesOptions.class));
+    withLogging("Page.setInputFiles",
+      () -> mainFrame.setInputFilesImpl(selector, files, convertViaJson(options, Frame.SetInputFilesOptions.class)));
   }
 
   @Override
   public void setViewportSize(int width, int height) {
-    viewport = new Viewport(width, height);
-    JsonObject params = new JsonObject();
-    params.add("viewportSize", gson().toJsonTree(viewport));
-    sendMessage("setViewportSize", params);
+    withLogging("Page.setViewportSize", () -> {
+      viewport = new Viewport(width, height);
+      JsonObject params = new JsonObject();
+      params.add("viewportSize", gson().toJsonTree(viewport));
+      sendMessage("setViewportSize", params);
+    });
   }
 
   @Override
   public void tap(String selector, TapOptions options) {
-    mainFrame.tap(selector, convertViaJson(options, Frame.TapOptions.class));
+    withLogging("Page.tap",
+      () -> mainFrame.tapImpl(selector, convertViaJson(options, Frame.TapOptions.class)));
   }
 
   @Override
   public String textContent(String selector, TextContentOptions options) {
-    return mainFrame.textContent(selector, convertViaJson(options, Frame.TextContentOptions.class));
+    return withLogging("Page.textContent",
+      () -> mainFrame.textContentImpl(selector, convertViaJson(options, Frame.TextContentOptions.class)));
   }
 
   @Override
   public String title() {
-    return mainFrame.title();
+    return withLogging("Page.title", () -> mainFrame.titleImpl());
   }
 
   @Override
@@ -670,12 +735,14 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void type(String selector, String text, TypeOptions options) {
-    mainFrame.type(selector, text, convertViaJson(options, Frame.TypeOptions.class));
+    withLogging("Page.type",
+      () -> mainFrame.typeImpl(selector, text, convertViaJson(options, Frame.TypeOptions.class)));
   }
 
   @Override
   public void uncheck(String selector, UncheckOptions options) {
-    mainFrame.uncheck(selector, convertViaJson(options, Frame.UncheckOptions.class));
+    withLogging("Page.uncheck",
+      () -> mainFrame.uncheckImpl(selector, convertViaJson(options, Frame.UncheckOptions.class)));
   }
 
   @Override
@@ -694,12 +761,14 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   private void unroute(UrlMatcher matcher, Consumer<Route> handler) {
-    routes.remove(matcher, handler);
-    if (routes.size() == 0) {
-      JsonObject params = new JsonObject();
-      params.addProperty("enabled", false);
-      sendMessage("setNetworkInterceptionEnabled", params);
-    }
+    withLogging("Page.unroute", () -> {
+      routes.remove(matcher, handler);
+      if (routes.size() == 0) {
+        JsonObject params = new JsonObject();
+        params.addProperty("enabled", false);
+        sendMessage("setNetworkInterceptionEnabled", params);
+      }
+    });
   }
 
   @Override
@@ -738,6 +807,10 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Deferred<Event<EventType>> futureEvent(EventType event, FutureEventOptions options) {
+    return withLogging("Page.futureEvent", () -> futureEventImpl(event, options));
+  }
+
+  private Deferred<Event<EventType>> futureEventImpl(EventType event, FutureEventOptions options) {
     if (options == null) {
       options = new FutureEventOptions();
     }
@@ -760,16 +833,22 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options) {
-    return mainFrame.waitForFunction(pageFunction, arg, convertViaJson(options, Frame.WaitForFunctionOptions.class));
+    return withLogging("Page.waitForFunction",
+      () -> mainFrame.waitForFunctionImpl(pageFunction, arg, convertViaJson(options, Frame.WaitForFunctionOptions.class)));
   }
 
   @Override
   public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
-    mainFrame.waitForLoadState(convertViaJson(state, Frame.LoadState.class), convertViaJson(options, Frame.WaitForLoadStateOptions.class));
+    withLogging("Page.waitForLoadState",
+      () -> mainFrame.waitForLoadStateImpl(convertViaJson(state, Frame.LoadState.class), convertViaJson(options, Frame.WaitForLoadStateOptions.class)));
   }
 
   @Override
   public Deferred<Response> futureNavigation(FutureNavigationOptions options) {
+    return withLoggingDeferred("Page.futureNavigation", () -> futureNavigationImpl(options));
+  }
+
+  Deferred<Response> futureNavigationImpl(FutureNavigationOptions options) {
     Frame.FutureNavigationOptions frameOptions = new Frame.FutureNavigationOptions();
     if (options != null) {
       frameOptions.timeout = options.timeout;
@@ -778,7 +857,7 @@ public class PageImpl extends ChannelOwner implements Page {
       frameOptions.pattern = options.pattern;
       frameOptions.predicate = options.predicate;
     }
-    return mainFrame.futureNavigation(frameOptions);
+    return mainFrame.futureNavigationImpl(frameOptions);
   }
 
   void frameNavigated(FrameImpl frame) {
@@ -886,6 +965,10 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   private Deferred<Request> futureRequest(UrlMatcher matcher, FutureRequestOptions options) {
+    return withLoggingDeferred("Page.futureRequest", () -> futureRequestImpl(matcher, options));
+  }
+
+  private Deferred<Request> futureRequestImpl(UrlMatcher matcher, FutureRequestOptions options) {
     if (options == null) {
       options = new FutureRequestOptions();
     }
@@ -913,6 +996,10 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   private Deferred<Response> futureResponse(UrlMatcher matcher, FutureResponseOptions options) {
+    return withLoggingDeferred("Page.futureResponse", () -> futureResponseImpl(matcher, options));
+  }
+
+  private Deferred<Response> futureResponseImpl(UrlMatcher matcher, FutureResponseOptions options) {
     if (options == null) {
       options = new FutureResponseOptions();
     }
@@ -926,12 +1013,13 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public ElementHandle waitForSelector(String selector, WaitForSelectorOptions options) {
-    return mainFrame.waitForSelector(selector, convertViaJson(options, Frame.WaitForSelectorOptions.class));
+    return withLogging("Page.waitForSelector",
+      () -> mainFrame.waitForSelectorImpl(selector, convertViaJson(options, Frame.WaitForSelectorOptions.class)));
   }
 
   @Override
   public void waitForTimeout(int timeout) {
-    mainFrame.waitForTimeout(timeout);
+    withLogging("Page.waitForTimeout", () -> mainFrame.waitForTimeoutImpl(timeout));
   }
 
   @Override

@@ -28,9 +28,11 @@ class TouchscreenImpl implements Touchscreen {
 
   @Override
   public void tap(int x, int y) {
-    JsonObject params = new JsonObject();
-    params.addProperty("x", x);
-    params.addProperty("y", y);
-    page.sendMessage("touchscreenTap", params);
+    page.withLogging("Touchscreen.tap", () -> {
+      JsonObject params = new JsonObject();
+      params.addProperty("x", x);
+      params.addProperty("y", y);
+      page.sendMessage("touchscreenTap", params);
+    });
   }
 }

@@ -34,6 +34,10 @@ class SelectorsImpl extends ChannelOwner implements Selectors {
 
   @Override
   public void register(String name, String script, RegisterOptions options) {
+    withLogging("Selectors.register", () -> registerImpl(name, script, options));
+  }
+
+  private void registerImpl(String name, String script, RegisterOptions options) {
     if (options == null) {
       options = new RegisterOptions();
     }

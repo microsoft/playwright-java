@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-class ChannelOwner {
+class ChannelOwner extends LoggingSupport {
   final Connection connection;
   private final ChannelOwner parent;
   private final Map<String, ChannelOwner> objects = new HashMap<>();
@@ -78,14 +78,6 @@ class ChannelOwner {
 
   JsonElement sendMessage(String method, JsonObject params) {
     return connection.sendMessage(guid, method, params);
-  }
-
-  void sendMessageNoWait(String method) {
-    sendMessageNoWait(method, new JsonObject());
-  }
-
-  void sendMessageNoWait(String method, JsonObject params) {
-    connection.sendMessageNoWait(guid, method, params);
   }
 
   @SuppressWarnings("unchecked")
