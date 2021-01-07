@@ -996,7 +996,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   private Deferred<Response> futureResponse(UrlMatcher matcher, FutureResponseOptions options) {
-    return withLoggingDeferred("Page.futureResponse", () -> futureResponse(matcher, options));
+    return withLoggingDeferred("Page.futureResponse", () -> futureResponseImpl(matcher, options));
   }
 
   private Deferred<Response> futureResponseImpl(UrlMatcher matcher, FutureResponseOptions options) {
