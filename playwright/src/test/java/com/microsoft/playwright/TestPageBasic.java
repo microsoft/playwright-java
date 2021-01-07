@@ -59,24 +59,19 @@ public class TestPageBasic extends TestBase {
     // We have to interact with a page so that "beforeunload" handlers
     // fire.
     newPage.click("body");
-    boolean[] didShowDialog = {false};
-    newPage.addListener(DIALOG, event -> {
-      didShowDialog[0] = true;
-      Dialog dialog = (Dialog) event.data();
-      assertEquals(Dialog.Type.BEFOREUNLOAD, dialog.type());
-      assertEquals("", dialog.defaultValue());
-      if (isChromium()) {
-        assertEquals("", dialog.message());
-      } else if (isWebKit()) {
-        assertEquals("Leave?", dialog.message());
-      } else {
-        assertEquals("This page is asking you to confirm that you want to leave - data you have entered may not be saved.", dialog.message());
-      }
-      dialog.accept();
-    });
+    Deferred<Event<Page.EventType>> event = newPage.futureEvent(DIALOG);
     newPage.close(new Page.CloseOptions().withRunBeforeUnload(true));
-    // TODO: uncomment once https://github.com/microsoft/playwright/pull/4070 is committed.
-//    assertTrue(didShowDialog[0]);
+    Dialog dialog = (Dialog) event.get().data();
+    assertEquals(Dialog.Type.BEFOREUNLOAD, dialog.type());
+    assertEquals("", dialog.defaultValue());
+    if (isChromium()) {
+      assertEquals("", dialog.message());
+    } else if (isWebKit()) {
+      assertEquals("Leave?", dialog.message());
+    } else {
+      assertEquals("This page is asking you to confirm that you want to leave - data you have entered may not be saved.", dialog.message());
+    }
+    dialog.accept();
   }
 
   @Test

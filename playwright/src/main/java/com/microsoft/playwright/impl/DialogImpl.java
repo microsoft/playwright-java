@@ -21,7 +21,6 @@ import com.microsoft.playwright.Dialog;
 import com.microsoft.playwright.PlaywrightException;
 
 class DialogImpl extends ChannelOwner implements Dialog {
-  private boolean handled;
   DialogImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
@@ -29,20 +28,17 @@ class DialogImpl extends ChannelOwner implements Dialog {
   @Override
   public void accept(String promptText) {
     withLogging("Dialog.accept", () -> {
-      handled = true;
       JsonObject params = new JsonObject();
-      if (promptText != null)
+      if (promptText != null) {
         params.addProperty("promptText", promptText);
+      }
       sendMessage("accept", params);
     });
   }
 
   @Override
   public void dismiss() {
-    withLogging("Dialog.dismiss", () -> {
-      handled = true;
-      sendMessage("dismiss");
-    });
+    withLogging("Dialog.dismiss", () -> sendMessage("dismiss"));
   }
 
   @Override
@@ -64,9 +60,5 @@ class DialogImpl extends ChannelOwner implements Dialog {
       case "prompt": return Type.PROMPT;
       default: throw new PlaywrightException("Unexpected dialog type: " + initializer.get("type").getAsString());
     }
-  }
-
-  boolean isHandled() {
-    return handled;
   }
 }
