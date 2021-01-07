@@ -23,7 +23,7 @@ public interface DeviceDescriptor {
   }
   Viewport viewport();
   String userAgent();
-  int deviceScaleFactor();
+  double deviceScaleFactor();
   boolean isMobile();
   boolean hasTouch();
   BrowserType defaultBrowserType();

@@ -20,7 +20,9 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * FileChooser objects are dispatched by the page in the page.on('filechooser') event.
+ * {@code FileChooser} objects are dispatched by the page in the [{@code event: Page.filechooser}] event.
+ * <p>
+ * 
  * <p>
  */
 public interface FileChooser {
@@ -38,19 +40,22 @@ public interface FileChooser {
 
   class SetFilesOptions {
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by using the {@code browserContext.setDefaultTimeout(timeout)} or {@code page.setDefaultTimeout(timeout)} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
      */
-    public Integer timeout;
+    public Double timeout;
 
     public SetFilesOptions withNoWaitAfter(Boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public SetFilesOptions withTimeout(Integer timeout) {
+    public SetFilesOptions withTimeout(Double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -75,7 +80,9 @@ public interface FileChooser {
   default void setFiles(FileChooser.FilePayload file, SetFilesOptions options)  { setFiles(new FileChooser.FilePayload[]{ file }, options); }
   default void setFiles(FileChooser.FilePayload[] files) { setFiles(files, null); }
   /**
-   * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then they are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
+   * <p>
+   * they are resolved relative to the the current working directory. For empty array, clears the selected files.
    */
   void setFiles(FileChooser.FilePayload[] files, SetFilesOptions options);
 }

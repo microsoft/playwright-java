@@ -19,19 +19,25 @@ package com.microsoft.playwright;
 import java.util.*;
 
 /**
- * Whenever the page sends a request for a network resource the following sequence of events are emitted by Page:
+ * Whenever the page sends a request for a network resource the following sequence of events are emitted by {@code Page}:
  * <p>
- * page.on('request') emitted when the request is issued by the page.
+ * - [{@code event: Page.request}] emitted when the request is issued by the page.
  * <p>
- * page.on('response') emitted when/if the response status and headers are received for the request.
+ * - [{@code event: Page.response}] emitted when/if the response status and headers are received for the request.
  * <p>
- * page.on('requestfinished') emitted when the response body is downloaded and the request is complete.
+ * - [{@code event: Page.requestfinished}] emitted when the response body is downloaded and the request is complete.
  * <p>
- * If request fails at some point, then instead of {@code 'requestfinished'} event (and possibly instead of 'response' event), the  page.on('requestfailed') event is emitted.
+ * If request fails at some point, then instead of {@code 'requestfinished'} event (and possibly instead of 'response' event),
  * <p>
- * <strong>NOTE</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will complete with {@code 'requestfinished'} event.
+ * the  [{@code event: Page.requestfailed}] event is emitted.
  * <p>
- * If request gets a 'redirect' response, the request is successfully finished with the 'requestfinished' event, and a new request is  issued to a redirected url.
+ * > <strong>NOTE</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request
+ * <p>
+ * will complete with {@code 'requestfinished'} event.
+ * <p>
+ * If request gets a 'redirect' response, the request is successfully finished with the 'requestfinished' event, and a new
+ * <p>
+ * request is  issued to a redirected url.
  */
 public interface Request {
   class RequestFailure {
@@ -51,65 +57,73 @@ public interface Request {
     /**
      * Request start time in milliseconds elapsed since January 1, 1970 00:00:00 UTC
      */
-    private int startTime;
+    private double startTime;
     /**
-     * Time immediately before the browser starts the domain name lookup for the resource. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
+     * Time immediately before the browser starts the domain name lookup for the resource. The value is given in milliseconds
+     * relative to {@code startTime}, -1 if not available.
      */
-    private int domainLookupStart;
+    private double domainLookupStart;
     /**
-     * Time immediately after the browser starts the domain name lookup for the resource. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
+     * Time immediately after the browser starts the domain name lookup for the resource. The value is given in milliseconds
+     * relative to {@code startTime}, -1 if not available.
      */
-    private int domainLookupEnd;
+    private double domainLookupEnd;
     /**
-     * Time immediately before the user agent starts establishing the connection to the server to retrieve the resource. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
+     * Time immediately before the user agent starts establishing the connection to the server to retrieve the resource. The
+     * value is given in milliseconds relative to {@code startTime}, -1 if not available.
      */
-    private int connectStart;
+    private double connectStart;
     /**
-     * Time immediately before the browser starts the handshake process to secure the current connection. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
+     * Time immediately before the browser starts the handshake process to secure the current connection. The value is given in
+     * milliseconds relative to {@code startTime}, -1 if not available.
      */
-    private int secureConnectionStart;
+    private double secureConnectionStart;
     /**
-     * Time immediately before the user agent starts establishing the connection to the server to retrieve the resource. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
+     * Time immediately before the user agent starts establishing the connection to the server to retrieve the resource. The
+     * value is given in milliseconds relative to {@code startTime}, -1 if not available.
      */
-    private int connectEnd;
+    private double connectEnd;
     /**
-     * Time immediately before the browser starts requesting the resource from the server, cache, or local resource. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
+     * Time immediately before the browser starts requesting the resource from the server, cache, or local resource. The value
+     * is given in milliseconds relative to {@code startTime}, -1 if not available.
      */
-    private int requestStart;
+    private double requestStart;
     /**
-     * Time immediately after the browser starts requesting the resource from the server, cache, or local resource. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
+     * Time immediately after the browser starts requesting the resource from the server, cache, or local resource. The value
+     * is given in milliseconds relative to {@code startTime}, -1 if not available.
      */
-    private int responseStart;
+    private double responseStart;
     /**
-     * Time immediately after the browser receives the last byte of the resource or immediately before the transport connection is closed, whichever comes first. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
+     * Time immediately after the browser receives the last byte of the resource or immediately before the transport connection
+     * is closed, whichever comes first. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
      */
-    private int responseEnd;
+    private double responseEnd;
 
-    public int startTime() {
+    public double startTime() {
       return this.startTime;
     }
-    public int domainLookupStart() {
+    public double domainLookupStart() {
       return this.domainLookupStart;
     }
-    public int domainLookupEnd() {
+    public double domainLookupEnd() {
       return this.domainLookupEnd;
     }
-    public int connectStart() {
+    public double connectStart() {
       return this.connectStart;
     }
-    public int secureConnectionStart() {
+    public double secureConnectionStart() {
       return this.secureConnectionStart;
     }
-    public int connectEnd() {
+    public double connectEnd() {
       return this.connectEnd;
     }
-    public int requestStart() {
+    public double requestStart() {
       return this.requestStart;
     }
-    public int responseStart() {
+    public double responseStart() {
       return this.responseStart;
     }
-    public int responseEnd() {
+    public double responseEnd() {
       return this.responseEnd;
     }
   }
@@ -118,10 +132,12 @@ public interface Request {
    * <p>
    * Example of logging of all the failed requests:
    * <p>
+   * 
+   * <p>
    */
   RequestFailure failure();
   /**
-   * Returns the Frame that initiated this request.
+   * Returns the {@code Frame} that initiated this request.
    */
   Frame frame();
   /**
@@ -147,31 +163,51 @@ public interface Request {
   /**
    * Request that was redirected by the server to this one, if any.
    * <p>
-   * When the server responds with a redirect, Playwright creates a new Request object. The two requests are connected by {@code redirectedFrom()} and {@code redirectedTo()} methods. When multiple server redirects has happened, it is possible to construct the whole redirect chain by repeatedly calling {@code redirectedFrom()}.
+   * When the server responds with a redirect, Playwright creates a new {@code Request} object. The two requests are connected by
+   * <p>
+   * {@code redirectedFrom()} and {@code redirectedTo()} methods. When multiple server redirects has happened, it is possible to
+   * <p>
+   * construct the whole redirect chain by repeatedly calling {@code redirectedFrom()}.
    * <p>
    * For example, if the website {@code http://example.com} redirects to {@code https://example.com}:
    * <p>
+   * 
+   * <p>
    * If the website {@code https://google.com} has no redirects:
+   * <p>
+   * 
    * <p>
    */
   Request redirectedFrom();
   /**
    * New request issued by the browser if the server responded with redirect.
    * <p>
-   * This method is the opposite of {@code request.redirectedFrom()}:
+   * This method is the opposite of [{@code method: Request.redirectedFrom}]:
+   * <p>
+   * 
    * <p>
    */
   Request redirectedTo();
   /**
-   * Contains the request's resource type as it was perceived by the rendering engine. ResourceType will be one of the following: {@code document}, {@code stylesheet}, {@code image}, {@code media}, {@code font}, {@code script}, {@code texttrack}, {@code xhr}, {@code fetch}, {@code eventsource}, {@code websocket}, {@code manifest}, {@code other}.
+   * Contains the request's resource type as it was perceived by the rendering engine. ResourceType will be one of the
+   * <p>
+   * following: {@code document}, {@code stylesheet}, {@code image}, {@code media}, {@code font}, {@code script}, {@code texttrack}, {@code xhr}, {@code fetch}, {@code eventsource},
+   * <p>
+   * {@code websocket}, {@code manifest}, {@code other}.
    */
   String resourceType();
   /**
-   * Returns the matching Response object, or {@code null} if the response was not received due to error.
+   * Returns the matching {@code Response} object, or {@code null} if the response was not received due to error.
    */
   Response response();
   /**
-   * Returns resource timing information for given request. Most of the timing values become available upon the response, {@code responseEnd} becomes available when request finishes. Find more information at Resource Timing API.
+   * Returns resource timing information for given request. Most of the timing values become available upon the response,
+   * <p>
+   * {@code responseEnd} becomes available when request finishes. Find more information at
+   * <p>
+   * [Resource Timing API](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming).
+   * <p>
+   * 
    * <p>
    */
   RequestTiming timing();

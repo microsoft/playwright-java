@@ -21,7 +21,7 @@ if [[ ($1 == '-h') || ($1 == '--help') ]]; then
 fi
 
 CLI_VERSION=$(head -1 ./CLI_VERSION)
-FILE_PREFIX=playwright-cli-$CLI_VERSION
+FILE_PREFIX=playwright-$CLI_VERSION
 
 cd ../driver-bundle/src/main/resources
 
@@ -44,7 +44,7 @@ do
   cd $PLATFORM
   echo "Downloading driver for $PLATFORM to $(pwd)"
 
-  URL=https://playwright.azureedge.net/builds/cli
+  URL=https://playwright.azureedge.net/builds/driver
   if ! [[ $CLI_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     URL=$URL/next
   fi

@@ -344,7 +344,7 @@ public class TestClick extends TestBase {
   void shouldClickTheButtonWithDeviceScaleFactorSet() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .withViewport(400, 400)
-      .withDeviceScaleFactor(5));
+      .withDeviceScaleFactor(5.0));
     Page page = context.newPage();
     assertEquals(5, page.evaluate("() => window.devicePixelRatio"));
     page.setContent("<div style='width:100px;height:100px'>spacer</div>");

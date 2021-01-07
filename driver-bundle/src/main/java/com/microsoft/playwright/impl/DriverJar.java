@@ -55,9 +55,16 @@ public class DriverJar extends Driver {
     URI uri = classloader.getResource("driver/" + platformDir()).toURI();
     // Create zip filesystem if loading from jar.
     try (FileSystem fileSystem = "jar".equals(uri.getScheme()) ? FileSystems.newFileSystem(uri, Collections.emptyMap()) : null) {
-      Files.list(Paths.get(uri)).forEach(filePath -> {
+      Path srcRoot = Paths.get(uri);
+      Files.walk(srcRoot).forEach(fromPath -> {
+        Path toPath = driverTempDir.resolve(srcRoot.relativize(fromPath));
         try {
-          extractResource(filePath, driverTempDir);
+          if (Files.isDirectory(fromPath)) {
+            Files.createDirectories(toPath);
+          } else {
+            Files.copy(fromPath, toPath);
+          }
+          toPath.toFile().deleteOnExit();
         } catch (IOException e) {
           throw new RuntimeException("Failed to extract driver from " + uri, e);
         }
@@ -77,14 +84,6 @@ public class DriverJar extends Driver {
       return "mac";
     }
     throw new RuntimeException("Unexpected os.name value: " + name);
-  }
-
-  private static Path extractResource(Path from, Path toDir) throws IOException {
-    Path path = toDir.resolve(from.getFileName().toString());
-    Files.copy(from, path);
-    path.toFile().setExecutable(true);
-    path.toFile().deleteOnExit();
-    return path;
   }
 
   @Override

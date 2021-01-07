@@ -20,14 +20,19 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * BrowserType provides methods to launch a specific browser instance or connect to an existing one. The following is a typical example of using Playwright to drive automation:
+ * BrowserType provides methods to launch a specific browser instance or connect to an existing one. The following is a
+ * <p>
+ * typical example of using Playwright to drive automation:
+ * <p>
+ * 
  * <p>
  */
 public interface BrowserType {
   class LaunchOptions {
     public class Proxy {
       /**
-       * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example {@code http://myproxy.com:3128} or {@code socks5://myproxy.com:3128}. Short form {@code myproxy.com:3128} is considered an HTTP proxy.
+       * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example {@code http://myproxy.com:3128} or
+       * {@code socks5://myproxy.com:3128}. Short form {@code myproxy.com:3128} is considered an HTTP proxy.
        */
       public String server;
       /**
@@ -67,38 +72,43 @@ public interface BrowserType {
       }
     }
     /**
-     * Whether to run browser in headless mode. More details for Chromium and Firefox. Defaults to {@code true} unless the {@code devtools} option is {@code true}.
-     */
-    public Boolean headless;
-    /**
-     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium, Firefox or WebKit, use at your own risk.
-     */
-    public Path executablePath;
-    /**
-     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found here.
+     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found
+     * [here](http://peter.sh/experiments/chromium-command-line-switches/).
      */
     public List<String> args;
-    /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. If an array is given, then filters out the given default arguments. Dangerous option; use with care. Defaults to {@code false}.
-     */
-    public List<String> ignoreDefaultArgs;
-    public Boolean ignoreAllDefaultArgs;
-    /**
-     * Network proxy settings.
-     */
-    public Proxy proxy;
-    /**
-     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is deleted when browser is closed.
-     */
-    public Path downloadsPath;
     /**
      * Enable Chromium sandboxing. Defaults to {@code false}.
      */
     public Boolean chromiumSandbox;
     /**
-     * Firefox user preferences. Learn more about the Firefox user preferences at {@code about:config}.
+     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless}
+     * option will be set {@code false}.
      */
-    public String firefoxUserPrefs;
+    public Boolean devtools;
+    /**
+     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
+     * deleted when browser is closed.
+     */
+    public Path downloadsPath;
+    /**
+     * Specify environment variables that will be visible to the browser. Defaults to {@code process.env}.
+     */
+    public Map<String, String> env;
+    /**
+     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is
+     * resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium, Firefox
+     * or WebKit, use at your own risk.
+     */
+    public Path executablePath;
+    /**
+     * Firefox user preferences. Learn more about the Firefox user preferences at
+     * [{@code about:config}](https://support.mozilla.org/en-US/kb/about-config-editor-firefox).
+     */
+    public Map<String, Object> firefoxUserPrefs;
+    /**
+     * Close the browser process on SIGHUP. Defaults to {@code true}.
+     */
+    public Boolean handleSIGHUP;
     /**
      * Close the browser process on Ctrl-C. Defaults to {@code true}.
      */
@@ -108,36 +118,74 @@ public interface BrowserType {
      */
     public Boolean handleSIGTERM;
     /**
-     * Close the browser process on SIGHUP. Defaults to {@code true}.
+     * Whether to run browser in headless mode. More details for
+     * [Chromium](https://developers.google.com/web/updates/2017/04/headless-chrome) and
+     * [Firefox](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode). Defaults to {@code true} unless the
+     * {@code devtools} option is {@code true}.
      */
-    public Boolean handleSIGHUP;
+    public Boolean headless;
     /**
-     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. If an array is
+     * given, then filters out the given default arguments. Dangerous option; use with care. Defaults to {@code false}.
      */
-    public Integer timeout;
+    public List<String> ignoreDefaultArgs;
+    public Boolean ignoreAllDefaultArgs;
     /**
-     * Specify environment variables that will be visible to the browser. Defaults to {@code process.env}.
+     * Network proxy settings.
      */
-    public Map<String, String> env;
-    /**
-     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless} option will be set {@code false}.
-     */
-    public Boolean devtools;
+    public Proxy proxy;
     /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      */
-    public Integer slowMo;
+    public Double slowMo;
+    /**
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
+     * disable timeout.
+     */
+    public Double timeout;
 
-    public LaunchOptions withHeadless(Boolean headless) {
-      this.headless = headless;
+    public LaunchOptions withArgs(List<String> args) {
+      this.args = args;
+      return this;
+    }
+    public LaunchOptions withChromiumSandbox(Boolean chromiumSandbox) {
+      this.chromiumSandbox = chromiumSandbox;
+      return this;
+    }
+    public LaunchOptions withDevtools(Boolean devtools) {
+      this.devtools = devtools;
+      return this;
+    }
+    public LaunchOptions withDownloadsPath(Path downloadsPath) {
+      this.downloadsPath = downloadsPath;
+      return this;
+    }
+    public LaunchOptions withEnv(Map<String, String> env) {
+      this.env = env;
       return this;
     }
     public LaunchOptions withExecutablePath(Path executablePath) {
       this.executablePath = executablePath;
       return this;
     }
-    public LaunchOptions withArgs(List<String> args) {
-      this.args = args;
+    public LaunchOptions withFirefoxUserPrefs(Map<String, Object> firefoxUserPrefs) {
+      this.firefoxUserPrefs = firefoxUserPrefs;
+      return this;
+    }
+    public LaunchOptions withHandleSIGHUP(Boolean handleSIGHUP) {
+      this.handleSIGHUP = handleSIGHUP;
+      return this;
+    }
+    public LaunchOptions withHandleSIGINT(Boolean handleSIGINT) {
+      this.handleSIGINT = handleSIGINT;
+      return this;
+    }
+    public LaunchOptions withHandleSIGTERM(Boolean handleSIGTERM) {
+      this.handleSIGTERM = handleSIGTERM;
+      return this;
+    }
+    public LaunchOptions withHeadless(Boolean headless) {
+      this.headless = headless;
       return this;
     }
     public LaunchOptions withIgnoreDefaultArgs(List<String> argumentNames) {
@@ -152,51 +200,20 @@ public interface BrowserType {
       this.proxy = new Proxy();
       return this.proxy;
     }
-    public LaunchOptions withDownloadsPath(Path downloadsPath) {
-      this.downloadsPath = downloadsPath;
-      return this;
-    }
-    public LaunchOptions withChromiumSandbox(Boolean chromiumSandbox) {
-      this.chromiumSandbox = chromiumSandbox;
-      return this;
-    }
-    public LaunchOptions withFirefoxUserPrefs(String firefoxUserPrefs) {
-      this.firefoxUserPrefs = firefoxUserPrefs;
-      return this;
-    }
-    public LaunchOptions withHandleSIGINT(Boolean handleSIGINT) {
-      this.handleSIGINT = handleSIGINT;
-      return this;
-    }
-    public LaunchOptions withHandleSIGTERM(Boolean handleSIGTERM) {
-      this.handleSIGTERM = handleSIGTERM;
-      return this;
-    }
-    public LaunchOptions withHandleSIGHUP(Boolean handleSIGHUP) {
-      this.handleSIGHUP = handleSIGHUP;
-      return this;
-    }
-    public LaunchOptions withTimeout(Integer timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-    public LaunchOptions withEnv(Map<String, String> env) {
-      this.env = env;
-      return this;
-    }
-    public LaunchOptions withDevtools(Boolean devtools) {
-      this.devtools = devtools;
-      return this;
-    }
-    public LaunchOptions withSlowMo(Integer slowMo) {
+    public LaunchOptions withSlowMo(Double slowMo) {
       this.slowMo = slowMo;
+      return this;
+    }
+    public LaunchOptions withTimeout(Double timeout) {
+      this.timeout = timeout;
       return this;
     }
   }
   class LaunchPersistentContextOptions {
     public class Proxy {
       /**
-       * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example {@code http://myproxy.com:3128} or {@code socks5://myproxy.com:3128}. Short form {@code myproxy.com:3128} is considered an HTTP proxy.
+       * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example {@code http://myproxy.com:3128} or
+       * {@code socks5://myproxy.com:3128}. Short form {@code myproxy.com:3128} is considered an HTTP proxy.
        */
       public String server;
       /**
@@ -291,7 +308,9 @@ public interface BrowserType {
        */
       public Path dir;
       /**
-       * Optional dimensions of the recorded videos. If not specified the size will be equal to {@code viewport}. If {@code viewport} is not configured explicitly the video size defaults to 1280x720. Actual picture of each page will be scaled down if necessary to fit the specified size.
+       * Optional dimensions of the recorded videos. If not specified the size will be equal to {@code viewport}. If {@code viewport} is not
+       * configured explicitly the video size defaults to 1280x720. Actual picture of each page will be scaled down if necessary
+       * to fit the specified size.
        */
       public Size size;
 
@@ -311,34 +330,60 @@ public interface BrowserType {
       }
     }
     /**
-     * Whether to run browser in headless mode. More details for Chromium and Firefox. Defaults to {@code true} unless the {@code devtools} option is {@code true}.
+     * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
      */
-    public Boolean headless;
+    public Boolean acceptDownloads;
     /**
-     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is resolved relative to the current working directory. **BEWARE**: Playwright is only guaranteed to work with the bundled Chromium, Firefox or WebKit, use at your own risk.
-     */
-    public Path executablePath;
-    /**
-     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found here.
+     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found
+     * [here](http://peter.sh/experiments/chromium-command-line-switches/).
      */
     public List<String> args;
     /**
-     * If {@code true}, then do not use any of the default arguments. If an array is given, then filter out the given default arguments. Dangerous option; use with care. Defaults to {@code false}.
+     * Toggles bypassing page's Content-Security-Policy.
      */
-    public List<String> ignoreDefaultArgs;
-    public Boolean ignoreAllDefaultArgs;
-    /**
-     * Network proxy settings.
-     */
-    public Proxy proxy;
-    /**
-     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is deleted when browser is closed.
-     */
-    public Path downloadsPath;
+    public Boolean bypassCSP;
     /**
      * Enable Chromium sandboxing. Defaults to {@code true}.
      */
     public Boolean chromiumSandbox;
+    /**
+     * Emulates {@code 'prefers-colors-scheme'} media feature, supported values are {@code 'light'}, {@code 'dark'}, {@code 'no-preference'}. See
+     * [{@code method: Page.emulateMedia}] for more details. Defaults to '{@code light}'.
+     */
+    public ColorScheme colorScheme;
+    /**
+     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
+     */
+    public Double deviceScaleFactor;
+    /**
+     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless}
+     * option will be set {@code false}.
+     */
+    public Boolean devtools;
+    /**
+     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
+     * deleted when browser is closed.
+     */
+    public Path downloadsPath;
+    /**
+     * Specify environment variables that will be visible to the browser. Defaults to {@code process.env}.
+     */
+    public Map<String, String> env;
+    /**
+     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is
+     * resolved relative to the current working directory. **BEWARE**: Playwright is only guaranteed to work with the bundled
+     * Chromium, Firefox or WebKit, use at your own risk.
+     */
+    public Path executablePath;
+    /**
+     * An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+     */
+    public Map<String, String> extraHTTPHeaders;
+    public Geolocation geolocation;
+    /**
+     * Close the browser process on SIGHUP. Defaults to {@code true}.
+     */
+    public Boolean handleSIGHUP;
     /**
      * Close the browser process on Ctrl-C. Defaults to {@code true}.
      */
@@ -348,129 +393,142 @@ public interface BrowserType {
      */
     public Boolean handleSIGTERM;
     /**
-     * Close the browser process on SIGHUP. Defaults to {@code true}.
+     * Specifies if viewport supports touch events. Defaults to false.
      */
-    public Boolean handleSIGHUP;
+    public Boolean hasTouch;
     /**
-     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
+     * Whether to run browser in headless mode. More details for
+     * [Chromium](https://developers.google.com/web/updates/2017/04/headless-chrome) and
+     * [Firefox](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode). Defaults to {@code true} unless the
+     * {@code devtools} option is {@code true}.
      */
-    public Integer timeout;
+    public Boolean headless;
     /**
-     * Specify environment variables that will be visible to the browser. Defaults to {@code process.env}.
+     * Credentials for [HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication).
      */
-    public Map<String, String> env;
+    public BrowserContext.HTTPCredentials httpCredentials;
     /**
-     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless} option will be set {@code false}.
+     * If {@code true}, then do not use any of the default arguments. If an array is given, then filter out the given default
+     * arguments. Dangerous option; use with care. Defaults to {@code false}.
      */
-    public Boolean devtools;
-    /**
-     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on. Defaults to 0.
-     */
-    public Integer slowMo;
-    /**
-     * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
-     */
-    public Boolean acceptDownloads;
+    public List<String> ignoreDefaultArgs;
+    public Boolean ignoreAllDefaultArgs;
     /**
      * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
      */
     public Boolean ignoreHTTPSErrors;
     /**
-     * Toggles bypassing page's Content-Security-Policy.
-     */
-    public Boolean bypassCSP;
-    /**
-     * Sets a consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
-     */
-    public Page.Viewport viewport;
-    /**
-     * Specific user agent to use in this context.
-     */
-    public String userAgent;
-    /**
-     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
-     */
-    public Integer deviceScaleFactor;
-    /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported
+     * in Firefox.
      */
     public Boolean isMobile;
-    /**
-     * Specifies if viewport supports touch events. Defaults to false.
-     */
-    public Boolean hasTouch;
     /**
      * Whether or not to enable JavaScript in the context. Defaults to {@code true}.
      */
     public Boolean javaScriptEnabled;
     /**
-     * Changes the timezone of the context. See ICU’s {@code metaZones.txt} for a list of supported timezone IDs.
-     */
-    public String timezoneId;
-    public Geolocation geolocation;
-    /**
-     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language} request header value as well as number and date formatting rules.
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language}
+     * request header value as well as number and date formatting rules.
      */
     public String locale;
-    /**
-     * A list of permissions to grant to all pages in this context. See {@code browserContext.grantPermissions(permissions[, options])} for more details.
-     */
-    public List<String> permissions;
-    /**
-     * An object containing additional HTTP headers to be sent with every request. All header values must be strings.
-     */
-    public Map<String, String> extraHTTPHeaders;
     /**
      * Whether to emulate network being offline. Defaults to {@code false}.
      */
     public Boolean offline;
     /**
-     * Credentials for HTTP authentication.
+     * A list of permissions to grant to all pages in this context. See [{@code method: BrowserContext.grantPermissions}] for more
+     * details.
      */
-    public BrowserContext.HTTPCredentials httpCredentials;
+    public List<String> permissions;
     /**
-     * Emulates {@code 'prefers-colors-scheme'} media feature, supported values are {@code 'light'}, {@code 'dark'}, {@code 'no-preference'}. See {@code page.emulateMedia(params)} for more details. Defaults to '{@code light}'.
+     * Network proxy settings.
      */
-    public ColorScheme colorScheme;
+    public Proxy proxy;
     /**
-     * Enables HAR recording for all pages into {@code recordHar.path} file. If not specified, the HAR is not recorded. Make sure to await {@code browserContext.close()} for the HAR to be saved.
+     * Enables [HAR](http://www.softwareishard.com/blog/har-12-spec) recording for all pages into {@code recordHar.path} file. If not
+     * specified, the HAR is not recorded. Make sure to await [{@code method: BrowserContext.close}] for the HAR to be saved.
      */
     public RecordHar recordHar;
     /**
-     * Enables video recording for all pages into {@code recordVideo.dir} directory. If not specified videos are not recorded. Make sure to await {@code browserContext.close()} for videos to be saved.
+     * Enables video recording for all pages into {@code recordVideo.dir} directory. If not specified videos are not recorded. Make
+     * sure to await [{@code method: BrowserContext.close}] for videos to be saved.
      */
     public RecordVideo recordVideo;
+    /**
+     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
+     * Defaults to 0.
+     */
+    public Double slowMo;
+    /**
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
+     * disable timeout.
+     */
+    public Double timeout;
+    /**
+     * Changes the timezone of the context. See
+     * [ICU's metaZones.txt](https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1)
+     * for a list of supported timezone IDs.
+     */
+    public String timezoneId;
+    /**
+     * Specific user agent to use in this context.
+     */
+    public String userAgent;
+    /**
+     * Sets a consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     */
+    public Page.Viewport viewport;
 
-    public LaunchPersistentContextOptions withHeadless(Boolean headless) {
-      this.headless = headless;
-      return this;
-    }
-    public LaunchPersistentContextOptions withExecutablePath(Path executablePath) {
-      this.executablePath = executablePath;
+    public LaunchPersistentContextOptions withAcceptDownloads(Boolean acceptDownloads) {
+      this.acceptDownloads = acceptDownloads;
       return this;
     }
     public LaunchPersistentContextOptions withArgs(List<String> args) {
       this.args = args;
       return this;
     }
-    public LaunchPersistentContextOptions withIgnoreDefaultArgs(List<String> argumentNames) {
-      this.ignoreDefaultArgs = argumentNames;
+    public LaunchPersistentContextOptions withBypassCSP(Boolean bypassCSP) {
+      this.bypassCSP = bypassCSP;
       return this;
     }
-    public LaunchPersistentContextOptions withIgnoreAllDefaultArgs(boolean ignore) {
-      this.ignoreAllDefaultArgs = ignore;
+    public LaunchPersistentContextOptions withChromiumSandbox(Boolean chromiumSandbox) {
+      this.chromiumSandbox = chromiumSandbox;
       return this;
     }
-    public Proxy setProxy() {
-      this.proxy = new Proxy();
-      return this.proxy;
+    public LaunchPersistentContextOptions withColorScheme(ColorScheme colorScheme) {
+      this.colorScheme = colorScheme;
+      return this;
+    }
+    public LaunchPersistentContextOptions withDeviceScaleFactor(Double deviceScaleFactor) {
+      this.deviceScaleFactor = deviceScaleFactor;
+      return this;
+    }
+    public LaunchPersistentContextOptions withDevtools(Boolean devtools) {
+      this.devtools = devtools;
+      return this;
     }
     public LaunchPersistentContextOptions withDownloadsPath(Path downloadsPath) {
       this.downloadsPath = downloadsPath;
       return this;
     }
-    public LaunchPersistentContextOptions withChromiumSandbox(Boolean chromiumSandbox) {
-      this.chromiumSandbox = chromiumSandbox;
+    public LaunchPersistentContextOptions withEnv(Map<String, String> env) {
+      this.env = env;
+      return this;
+    }
+    public LaunchPersistentContextOptions withExecutablePath(Path executablePath) {
+      this.executablePath = executablePath;
+      return this;
+    }
+    public LaunchPersistentContextOptions withExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
+      this.extraHTTPHeaders = extraHTTPHeaders;
+      return this;
+    }
+    public LaunchPersistentContextOptions withGeolocation(Geolocation geolocation) {
+      this.geolocation = geolocation;
+      return this;
+    }
+    public LaunchPersistentContextOptions withHandleSIGHUP(Boolean handleSIGHUP) {
+      this.handleSIGHUP = handleSIGHUP;
       return this;
     }
     public LaunchPersistentContextOptions withHandleSIGINT(Boolean handleSIGINT) {
@@ -481,93 +539,53 @@ public interface BrowserType {
       this.handleSIGTERM = handleSIGTERM;
       return this;
     }
-    public LaunchPersistentContextOptions withHandleSIGHUP(Boolean handleSIGHUP) {
-      this.handleSIGHUP = handleSIGHUP;
-      return this;
-    }
-    public LaunchPersistentContextOptions withTimeout(Integer timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-    public LaunchPersistentContextOptions withEnv(Map<String, String> env) {
-      this.env = env;
-      return this;
-    }
-    public LaunchPersistentContextOptions withDevtools(Boolean devtools) {
-      this.devtools = devtools;
-      return this;
-    }
-    public LaunchPersistentContextOptions withSlowMo(Integer slowMo) {
-      this.slowMo = slowMo;
-      return this;
-    }
-    public LaunchPersistentContextOptions withAcceptDownloads(Boolean acceptDownloads) {
-      this.acceptDownloads = acceptDownloads;
-      return this;
-    }
-    public LaunchPersistentContextOptions withIgnoreHTTPSErrors(Boolean ignoreHTTPSErrors) {
-      this.ignoreHTTPSErrors = ignoreHTTPSErrors;
-      return this;
-    }
-    public LaunchPersistentContextOptions withBypassCSP(Boolean bypassCSP) {
-      this.bypassCSP = bypassCSP;
-      return this;
-    }
-    public LaunchPersistentContextOptions withViewport(int width, int height) {
-      this.viewport = new Page.Viewport(width, height);
-      return this;
-    }
-    public LaunchPersistentContextOptions withUserAgent(String userAgent) {
-      this.userAgent = userAgent;
-      return this;
-    }
-    public LaunchPersistentContextOptions withDeviceScaleFactor(Integer deviceScaleFactor) {
-      this.deviceScaleFactor = deviceScaleFactor;
-      return this;
-    }
-    public LaunchPersistentContextOptions withIsMobile(Boolean isMobile) {
-      this.isMobile = isMobile;
-      return this;
-    }
     public LaunchPersistentContextOptions withHasTouch(Boolean hasTouch) {
       this.hasTouch = hasTouch;
       return this;
     }
-    public LaunchPersistentContextOptions withJavaScriptEnabled(Boolean javaScriptEnabled) {
-      this.javaScriptEnabled = javaScriptEnabled;
-      return this;
-    }
-    public LaunchPersistentContextOptions withTimezoneId(String timezoneId) {
-      this.timezoneId = timezoneId;
-      return this;
-    }
-    public LaunchPersistentContextOptions withGeolocation(Geolocation geolocation) {
-      this.geolocation = geolocation;
-      return this;
-    }
-    public LaunchPersistentContextOptions withLocale(String locale) {
-      this.locale = locale;
-      return this;
-    }
-    public LaunchPersistentContextOptions withPermissions(List<String> permissions) {
-      this.permissions = permissions;
-      return this;
-    }
-    public LaunchPersistentContextOptions withExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
-      this.extraHTTPHeaders = extraHTTPHeaders;
-      return this;
-    }
-    public LaunchPersistentContextOptions withOffline(Boolean offline) {
-      this.offline = offline;
+    public LaunchPersistentContextOptions withHeadless(Boolean headless) {
+      this.headless = headless;
       return this;
     }
     public LaunchPersistentContextOptions withHttpCredentials(String username, String password) {
       this.httpCredentials = new BrowserContext.HTTPCredentials(username, password);
       return this;
     }
-    public LaunchPersistentContextOptions withColorScheme(ColorScheme colorScheme) {
-      this.colorScheme = colorScheme;
+    public LaunchPersistentContextOptions withIgnoreDefaultArgs(List<String> argumentNames) {
+      this.ignoreDefaultArgs = argumentNames;
       return this;
+    }
+    public LaunchPersistentContextOptions withIgnoreAllDefaultArgs(boolean ignore) {
+      this.ignoreAllDefaultArgs = ignore;
+      return this;
+    }
+    public LaunchPersistentContextOptions withIgnoreHTTPSErrors(Boolean ignoreHTTPSErrors) {
+      this.ignoreHTTPSErrors = ignoreHTTPSErrors;
+      return this;
+    }
+    public LaunchPersistentContextOptions withIsMobile(Boolean isMobile) {
+      this.isMobile = isMobile;
+      return this;
+    }
+    public LaunchPersistentContextOptions withJavaScriptEnabled(Boolean javaScriptEnabled) {
+      this.javaScriptEnabled = javaScriptEnabled;
+      return this;
+    }
+    public LaunchPersistentContextOptions withLocale(String locale) {
+      this.locale = locale;
+      return this;
+    }
+    public LaunchPersistentContextOptions withOffline(Boolean offline) {
+      this.offline = offline;
+      return this;
+    }
+    public LaunchPersistentContextOptions withPermissions(List<String> permissions) {
+      this.permissions = permissions;
+      return this;
+    }
+    public Proxy setProxy() {
+      this.proxy = new Proxy();
+      return this.proxy;
     }
     public RecordHar setRecordHar() {
       this.recordHar = new RecordHar();
@@ -576,6 +594,26 @@ public interface BrowserType {
     public RecordVideo setRecordVideo() {
       this.recordVideo = new RecordVideo();
       return this.recordVideo;
+    }
+    public LaunchPersistentContextOptions withSlowMo(Double slowMo) {
+      this.slowMo = slowMo;
+      return this;
+    }
+    public LaunchPersistentContextOptions withTimeout(Double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+    public LaunchPersistentContextOptions withTimezoneId(String timezoneId) {
+      this.timezoneId = timezoneId;
+      return this;
+    }
+    public LaunchPersistentContextOptions withUserAgent(String userAgent) {
+      this.userAgent = userAgent;
+      return this;
+    }
+    public LaunchPersistentContextOptions withViewport(int width, int height) {
+      this.viewport = new Page.Viewport(width, height);
+      return this;
     }
   }
   /**
@@ -592,13 +630,33 @@ public interface BrowserType {
    * <p>
    * 
    * <p>
-   * **Chromium-only** Playwright can also be used to control the Chrome browser, but it works best with the version of Chromium it is bundled with. There is no guarantee it will work with any other version. Use {@code executablePath} option with extreme caution.
+   * > **Chromium-only** Playwright can also be used to control the Chrome browser, but it works best with the version of
    * <p>
-   * If Google Chrome (rather than Chromium) is preferred, a Chrome Canary or Dev Channel build is suggested.
+   * Chromium it is bundled with. There is no guarantee it will work with any other version. Use {@code executablePath} option with
    * <p>
-   * In {@code browserType.launch([options])} above, any mention of Chromium also applies to Chrome.
+   * extreme caution.
    * <p>
-   * See {@code this article} for a description of the differences between Chromium and Chrome. {@code This article} describes some differences for Linux users.
+   * >
+   * <p>
+   * > If Google Chrome (rather than Chromium) is preferred, a
+   * <p>
+   * [Chrome Canary](https://www.google.com/chrome/browser/canary.html) or
+   * <p>
+   * [Dev Channel](https://www.chromium.org/getting-involved/dev-channel) build is suggested.
+   * <p>
+   * >
+   * <p>
+   * > In [{@code method: BrowserType.launch}] above, any mention of Chromium also applies to Chrome.
+   * <p>
+   * >
+   * <p>
+   * > See [{@code this article}](https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/) for
+   * <p>
+   * a description of the differences between Chromium and Chrome.
+   * <p>
+   * [{@code This article}](https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md)
+   * <p>
+   * describes some differences for Linux users.
    */
   Browser launch(LaunchOptions options);
   default BrowserContext launchPersistentContext(Path userDataDir) {
@@ -607,8 +665,12 @@ public interface BrowserType {
   /**
    * Returns the persistent browser context instance.
    * <p>
-   * Launches browser that uses persistent storage located at {@code userDataDir} and returns the only context. Closing this context will automatically close the browser.
-   * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for Chromium and Firefox.
+   * Launches browser that uses persistent storage located at {@code userDataDir} and returns the only context. Closing this
+   * <p>
+   * context will automatically close the browser.
+   * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for
+   * [Chromium](https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md) and
+   * [Firefox](https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile).
    */
   BrowserContext launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options);
   /**

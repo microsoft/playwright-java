@@ -19,7 +19,7 @@ package com.microsoft.playwright;
 import java.util.*;
 
 /**
- * Response class represents responses which are received by page.
+ * {@code Response} class represents responses which are received by page.
  */
 public interface Response {
   /**
@@ -31,7 +31,7 @@ public interface Response {
    */
   String finished();
   /**
-   * Returns the Frame that initiated this response.
+   * Returns the {@code Frame} that initiated this response.
    */
   Frame frame();
   /**
@@ -43,7 +43,7 @@ public interface Response {
    */
   boolean ok();
   /**
-   * Returns the matching Request object.
+   * Returns the matching {@code Request} object.
    */
   Request request();
   /**
