@@ -62,7 +62,8 @@ public class DriverJar extends Driver {
     try (FileSystem fileSystem = "jar".equals(uri.getScheme()) ? FileSystems.newFileSystem(uri, Collections.emptyMap()) : null) {
       Path srcRoot = Paths.get(uri);
       Files.walk(srcRoot).forEach(fromPath -> {
-        Path toPath = driverTempDir.resolve(srcRoot.relativize(fromPath));
+        Path relative = srcRoot.relativize(fromPath);
+        Path toPath = driverTempDir.resolve(relative.toString());
         try {
           if (Files.isDirectory(fromPath)) {
             Files.createDirectories(toPath);
