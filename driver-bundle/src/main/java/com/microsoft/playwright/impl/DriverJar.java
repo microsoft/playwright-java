@@ -72,6 +72,7 @@ public class DriverJar extends Driver {
             if (isExecutable(toPath)) {
               toPath.toFile().setExecutable(true, true);
             }
+            System.out.println("Extracting " + fromPath + " to " + toPath);
           }
           toPath.toFile().deleteOnExit();
         } catch (IOException e) {
