@@ -17,22 +17,54 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.impl.PlaywrightImpl;
+import java.util.*;
 
-import java.util.Map;
+/**
+ * Playwright module provides a method to launch a browser instance. The following is a typical example of using Playwright
+ * <p>
+ * to drive automation:
+ * <p>
+ * 
+ * <p>
+ * By default, the {@code playwright} NPM package automatically downloads browser executables during installation. The
+ * <p>
+ * {@code playwright-core} NPM package can be used to skip automatic downloads.
+ */
+public interface Playwright {
+  /**
+   * This object can be used to launch or connect to Chromium, returning instances of {@code ChromiumBrowser}.
+   */
+  BrowserType chromium();
+  /**
+   * Returns a list of devices to be used with [{@code method: Browser.newContext}] or [{@code method: Browser.newPage}]. Actual list of
+   * <p>
+   * devices can be found in
+   * <p>
+   * [src/server/deviceDescriptors.ts](https://github.com/Microsoft/playwright/blob/master/src/server/deviceDescriptors.ts).
+   * <p>
+   * 
+   * <p>
+   */
+  Map<String, DeviceDescriptor> devices();
+  /**
+   * This object can be used to launch or connect to Firefox, returning instances of {@code FirefoxBrowser}.
+   */
+  BrowserType firefox();
+  /**
+   * Selectors can be used to install custom selector engines. See
+   * <p>
+   * [Working with selectors](./selectors.md#working-with-selectors) for more information.
+   */
+  Selectors selectors();
+  /**
+   * This object can be used to launch or connect to WebKit, returning instances of {@code WebKitBrowser}.
+   */
+  BrowserType webkit();
 
-public interface Playwright extends AutoCloseable {
   static Playwright create() {
     return PlaywrightImpl.create();
   }
 
-  BrowserType chromium();
-  BrowserType firefox();
-  BrowserType webkit();
-
-  Map<String, DeviceDescriptor> devices();
-
-  Selectors selectors();
-
-  @Override
   void close() throws Exception;
 }
+

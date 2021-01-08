@@ -52,7 +52,7 @@ public abstract class Driver {
 
   protected String cliFileName() {
     return System.getProperty("os.name").toLowerCase().contains("windows") ?
-      "playwright-cli.exe" : "playwright-cli";
+      "playwright.cmd" : "playwright.sh";
   }
 
   private static Driver createDriver() throws Exception {

@@ -38,7 +38,7 @@ class DeviceDescriptorImpl implements DeviceDescriptor {
   }
   private ViewportImpl viewport;
   private String userAgent;
-  private int deviceScaleFactor;
+  private double deviceScaleFactor;
   private boolean isMobile;
   private boolean hasTouch;
   private String defaultBrowserType;
@@ -54,7 +54,7 @@ class DeviceDescriptorImpl implements DeviceDescriptor {
   }
 
   @Override
-  public int deviceScaleFactor() {
+  public double deviceScaleFactor() {
     return deviceScaleFactor;
   }
 

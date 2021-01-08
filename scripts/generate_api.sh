@@ -6,7 +6,7 @@ set +x
 trap "cd $(pwd -P)" EXIT
 cd "$(dirname $0)/.."
 
-PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/linux/playwright-cli
+PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/linux/playwright.sh
 echo "Updating api.json from $($PLAYWRIGHT_CLI --version)"
 
 $PLAYWRIGHT_CLI print-api-json > ./tools/api-generator/src/main/resources/api.json

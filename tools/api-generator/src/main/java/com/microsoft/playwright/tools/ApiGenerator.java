@@ -17,6 +17,7 @@
 package com.microsoft.playwright.tools;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -107,35 +108,101 @@ class TypeRef extends Element {
     createCustomType();
   }
 
+  enum GeneratedType { ENUM, CLASS, OTHER };
+  private static GeneratedType generatedTypeFor(JsonObject jsonType) {
+    switch (jsonType.get("name").getAsString()) {
+      case "union": {
+        for (JsonElement item : jsonType.getAsJsonArray("union")) {
+          String valueName = item.getAsJsonObject().get("name").getAsString();
+          if ("null".equals(valueName)) {
+            continue;
+          }
+          if (valueName.startsWith("\"")) {
+            continue;
+          }
+          if (valueName.equals("Object")) {
+            return GeneratedType.CLASS;
+          }
+          // If a value is not null and not a string it is a class name.
+          return GeneratedType.OTHER;
+        }
+        return GeneratedType.ENUM;
+      }
+      case "Object": {
+        return GeneratedType.CLASS;
+      }
+      case "Array":
+      case "Promise": {
+        for (JsonElement item : jsonType.getAsJsonArray("templates")) {
+          return generatedTypeFor(item.getAsJsonObject());
+        }
+        return GeneratedType.OTHER;
+      }
+      default:
+        return GeneratedType.OTHER;
+    }
+  }
+
+  private static String typeExpression(JsonObject jsonType) {
+    String typeName = jsonType.get("name").getAsString();
+    if ("union".equals(typeName)) {
+      List<String> values = new ArrayList<>();
+      for (JsonElement item : jsonType.getAsJsonArray("union")) {
+        values.add(typeExpression(item.getAsJsonObject()));
+      }
+      values.sort(String::compareTo);
+      return String.join("|", values);
+    }
+    if ("function".equals(typeName)) {
+      if (!jsonType.has("args")) {
+        return typeName;
+      }
+      List<String> args = new ArrayList<>();
+      for (JsonElement item : jsonType.getAsJsonArray("args")) {
+        args.add(typeExpression(item.getAsJsonObject()));
+      }
+      String returnType = "";
+      if (jsonType.has("returnType") && jsonType.get("returnType").isJsonObject()) {
+        returnType = ":" + typeExpression(jsonType.getAsJsonObject("returnType"));
+      }
+      return typeName + "(" + String.join(", ", args) + ")" + returnType;
+    }
+    List<String> templateArgs = new ArrayList<>();
+    if (jsonType.has("templates")) {
+      for (JsonElement item : jsonType.getAsJsonArray("templates")) {
+        templateArgs.add(typeExpression(item.getAsJsonObject()));
+      }
+    }
+    if (templateArgs.isEmpty()) {
+      return typeName;
+    }
+    return typeName + "<" + String.join(", ", templateArgs) + ">";
+  }
+
   void createCustomType() {
-    boolean isEnum = jsonName.contains("|\"");
-    boolean isClass = jsonName.replace("null|", "").equals("Object")
-      || jsonName.equals("Promise<Array<Object>>");
+    GeneratedType generatedType = generatedTypeFor(jsonElement.getAsJsonObject());
     // Use path to the corresponding method, param of field as the key.
     String parentPath = parent.jsonPath;
-    if (jsonName.equals("Array<Object>") && "BrowserContext.addCookies.cookies".equals(jsonPath)) {
-      isClass = true;
-    }
-    if (jsonName.equals("Promise<Object>") && "BrowserContext.storageState".equals(jsonPath)) {
-      isClass = true;
-    }
     Types.Mapping mapping = TypeDefinition.types.findForPath(parentPath);
     if (mapping == null) {
-      if (isEnum) {
+      if (generatedType == GeneratedType.ENUM) {
         throw new RuntimeException("Cannot create enum, type mapping is missing for: " + parentPath);
       }
-      if (!isClass) {
+      if (generatedType != GeneratedType.CLASS) {
         return;
       }
 
       if (parent instanceof Field) {
         customType = toTitle(parent.jsonName);
       } else {
+//        String typeExpression = typeExpression(jsonElement.getAsJsonObject());
+//        System.out.println("add(\"" + parentPath + "\", \"" + typeExpression + "\", \"" + typeExpression + "\");" );
         customType = toTitle(parent.parent.jsonName) + toTitle(parent.jsonName);
       }
     } else {
-      if (!mapping.from.equals(jsonName)) {
-        throw new RuntimeException("Unexpected source type for: " + parentPath +". Expected: " + mapping.from + "; found: " + jsonName);
+      String typeExpression = typeExpression(jsonElement.getAsJsonObject());
+      if (!mapping.from.equals(typeExpression)) {
+        throw new RuntimeException("Unexpected source type for: " + parentPath +". Expected: " + mapping.from + "; found: " + typeExpression);
       }
       customType = mapping.to;
       if (mapping.customMapping != null) {
@@ -143,9 +210,9 @@ class TypeRef extends Element {
         return;
       }
     }
-    if (isEnum) {
-      typeScope().createEnum(customType, jsonName);
-    } else if (isClass) {
+    if (generatedType == GeneratedType.ENUM) {
+      typeScope().createEnum(customType, jsonElement.getAsJsonObject());
+    } else if (generatedType == GeneratedType.CLASS) {
       typeScope().createNestedClass(customType, this, jsonElement.getAsJsonObject());
       isNestedClass = true;
     }
@@ -160,8 +227,11 @@ class TypeRef extends Element {
     }
     // Convert optional fields to boxed types.
     if (!parent.jsonElement.getAsJsonObject().get("required").getAsBoolean()) {
-      if (jsonName.equals("number")) {
+      if (jsonName.equals("int")) {
         return "Integer";
+      }
+      if (jsonName.equals("float")) {
+        return "Double";
       }
       if (jsonName.equals("boolean")) {
         return "Boolean";
@@ -170,26 +240,51 @@ class TypeRef extends Element {
     if (jsonName.replace("null|", "").contains("|")) {
       throw new RuntimeException("Missing mapping for type union: " + jsonPath + ": " + jsonName);
     }
-    return convertBuiltinType(stripPromise(jsonName));
+//    System.out.println(jsonPath + " : " + jsonName);
+//    if (jsonName.equals("Promise")) {
+//      System.out.println(jsonElement);
+//    }
+    return convertBuiltinType(jsonElement.getAsJsonObject());
   }
 
-  private static String stripPromise(String type) {
-    if ("Promise".equals(type)) {
+  private static String convertBuiltinType(JsonObject jsonType) {
+    String name = jsonType.get("name").getAsString();
+    if ("int".equals(name)) {
+      return "int";
+    }
+    if ("float".equals(name)) {
+      return "double";
+    }
+    if ("string".equals(name)) {
+      return "String";
+    }
+    if ("void".equals(name)) {
       return "void";
     }
-    // Java API is sync just strip Promise<>
-    if (type.startsWith("Promise<")) {
-      return type.substring("Promise<".length(), type.length() - 1);
+    if ("Array".equals(name)) {
+      return "List<" + convertTemplateParams(jsonType) + ">";
     }
-    return type;
+    if ("Map".equals(name)) {
+      return "Map<" + convertTemplateParams(jsonType) + ">";
+    }
+    if ("Promise".equals(name)) {
+      return convertTemplateParams(jsonType);
+    }
+    if ("function".equals(name)) {
+      throw new RuntimeException("Missing mapping for " + jsonType);
+    }
+    return name;
   }
 
-  private static String convertBuiltinType(String type) {
-    return type.replace("Array<", "List<")
-      .replace("Object<", "Map<")
-      .replace("string", "String")
-      .replace("number", "int")
-      .replace("null|", "");
+  private static String convertTemplateParams(JsonObject jsonType) {
+    if (!jsonType.has("templates")) {
+      return "";
+    }
+    List<String> params = new ArrayList<>();
+    for (JsonElement item : jsonType.getAsJsonArray("templates")) {
+      params.add(convertBuiltinType(item.getAsJsonObject()));
+    }
+    return String.join(", ", params);
   }
 }
 
@@ -212,8 +307,8 @@ abstract class TypeDefinition extends Element {
     return this;
   }
 
-  void createEnum(String name, String values) {
-    addEnum(new Enum(this, name, values));
+  void createEnum(String name, JsonObject jsonObject) {
+    addEnum(new Enum(this, name, jsonObject));
   }
 
   void addEnum(Enum newEnum) {
@@ -458,9 +553,9 @@ class Method extends Element {
       returnType = null;
     } else {
       returnType = new TypeRef(this, jsonElement.get("type"));
-      if (jsonElement.get("args") != null) {
-        for (Map.Entry<String, JsonElement> arg : jsonElement.get("args").getAsJsonObject().entrySet()) {
-          params.add(new Param(this, arg.getValue().getAsJsonObject()));
+      if (jsonElement.has("args")) {
+        for (JsonElement arg : jsonElement.getAsJsonArray("args")) {
+          params.add(new Param(this, arg.getAsJsonObject()));
         }
       }
     }
@@ -781,20 +876,31 @@ class Interface extends TypeDefinition {
 
   Interface(JsonObject jsonElement) {
     super(null, jsonElement);
-    for (Map.Entry<String, JsonElement> m : jsonElement.get("methods").getAsJsonObject().entrySet()) {
-      methods.add(new Method(this, m.getValue().getAsJsonObject()));
-    }
-    for (Map.Entry<String, JsonElement> m : jsonElement.get("properties").getAsJsonObject().entrySet()) {
-      // All properties are converted to methods in Java.
-      methods.add(new Method(this, m.getValue().getAsJsonObject()));
-    }
-    for (Map.Entry<String, JsonElement> m : jsonElement.get("events").getAsJsonObject().entrySet()) {
-      events.add(new Event(this, m.getValue().getAsJsonObject()));
+    for (JsonElement item : jsonElement.getAsJsonArray("members")) {
+      JsonObject memberJson = item.getAsJsonObject();
+      switch (memberJson.get("kind").getAsString()) {
+        case "method":
+        // All properties are converted to methods in Java.
+        case "property":
+          if ("Playwright".equals(jsonName) && "errors".equals(memberJson.get("name").getAsString())) {
+            continue;
+          }
+          methods.add(new Method(this, memberJson));
+          break;
+        case "event":
+          events.add(new Event(this, memberJson));
+          break;
+        default:
+          throw new RuntimeException("Unexpected member kind: " + memberJson.toString());
+      }
     }
   }
 
   void writeTo(List<String> output, String offset) {
     output.add(header);
+    if ("Playwright".equals(jsonName)) {
+      output.add("import com.microsoft.playwright.impl.PlaywrightImpl;");
+    }
     if (jsonName.equals("Route")) {
       output.add("import java.nio.charset.StandardCharsets;");
     }
@@ -835,6 +941,14 @@ class Interface extends TypeDefinition {
     }
     if ("Worker".equals(jsonName)) {
       output.add(offset + "Deferred<Event<EventType>> futureEvent(EventType event);");
+    }
+    if ("Playwright".equals(jsonName)) {
+      output.add("");
+      output.add(offset + "static Playwright create() {");
+      output.add(offset + "  return PlaywrightImpl.create();");
+      output.add(offset + "}");
+      output.add("");
+      output.add(offset + "void close() throws Exception;");
     }
     output.add("}");
     output.add("\n");
@@ -1089,17 +1203,37 @@ class NestedClass extends TypeDefinition {
     deprecatedOptions.add("BrowserType.launch.options.logger");
   }
 
+
   NestedClass(Element parent, String name, JsonObject jsonElement) {
     super(parent, true, jsonElement);
     this.name = name;
 
-    if (jsonElement.has("properties")) {
-      JsonObject properties = jsonElement.get("properties").getAsJsonObject();
-      for (Map.Entry<String, JsonElement> m : properties.entrySet()) {
-        if (deprecatedOptions.contains(jsonPath + "." + m.getKey())) {
+    JsonObject jsonType = jsonElement;
+    if ("union".equals(jsonName)) {
+      for (JsonElement item : jsonType.getAsJsonArray("union")) {
+        if (!"null".equals(item.getAsJsonObject().get("name").getAsString())) {
+          jsonType = item.getAsJsonObject();
+          break;
+        }
+      }
+    }
+
+    while (jsonType.has("templates")) {
+      JsonArray params = jsonType.getAsJsonArray("templates");
+      if (params.size() != 1) {
+        throw new RuntimeException("Unexpected number of parameters: " + jsonElement);
+      }
+      jsonType = params.get(0).getAsJsonObject();
+    }
+
+    if (jsonType.has("properties")) {
+      for (JsonElement item : jsonType.getAsJsonArray("properties")) {
+        JsonObject propertyJson = item.getAsJsonObject();
+        String propertyName = propertyJson.get("name").getAsString();
+        if (deprecatedOptions.contains(jsonPath + "." + propertyName)) {
           continue;
         }
-        fields.add(new Field(this, m.getKey(), m.getValue().getAsJsonObject()));
+        fields.add(new Field(this, propertyName, propertyJson));
       }
     }
   }
@@ -1176,14 +1310,17 @@ class Enum extends TypeDefinition {
   final String name;
   final List<String> enumValues;
 
-  Enum(TypeDefinition parent, String name, String values) {
-    super(parent, null);
+  Enum(TypeDefinition parent, String name, JsonObject jsonObject) {
+    super(parent, jsonObject);
     this.name = name;
-    String[] split = values.split("\\|");
-    enumValues = Arrays.stream(split)
-      .filter(s -> !"null".equals(s))
-      .map(s -> s.substring(1, s.length() - 1).replace("-", "_").toUpperCase())
-      .collect(Collectors.toList());
+    enumValues = new ArrayList<>();
+    for (JsonElement item : jsonObject.getAsJsonArray("union")) {
+      String value = item.getAsJsonObject().get("name").getAsString();
+      if ("null".equals(value)) {
+        continue;
+      }
+      enumValues.add(value.substring(1, value.length() - 1).replace("-", "_").toUpperCase());
+    }
   }
 
   void writeTo(List<String> output, String offset) {
@@ -1205,17 +1342,17 @@ public class ApiGenerator {
   ));
 
   ApiGenerator(Reader reader) throws IOException {
-    JsonObject api = new Gson().fromJson(reader, JsonObject.class);
+    JsonArray api = new Gson().fromJson(reader, JsonArray.class);
     File cwd = FileSystems.getDefault().getPath(".").toFile();
     File dir = new File(cwd, "playwright/src/main/java/com/microsoft/playwright");
     System.out.println("Writing files to: " + dir.getCanonicalPath());
-    for (Map.Entry<String, JsonElement> entry: api.entrySet()) {
-      String name = entry.getKey();
+    for (JsonElement entry: api) {
+      String name = entry.getAsJsonObject().get("name").getAsString();
       if (skipList.contains(name)) {
         continue;
       }
       List<String> lines = new ArrayList<>();
-      new Interface(entry.getValue().getAsJsonObject()).writeTo(lines, "");
+      new Interface(entry.getAsJsonObject()).writeTo(lines, "");
       String text = String.join("\n", lines);
       try (FileWriter writer = new FileWriter(new File(dir, name + ".java"))) {
         writer.write(text);

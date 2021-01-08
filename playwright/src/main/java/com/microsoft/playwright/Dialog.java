@@ -19,7 +19,10 @@ package com.microsoft.playwright;
 import java.util.*;
 
 /**
- * Dialog objects are dispatched by page via the page.on('dialog') event.
+ * {@code Dialog} objects are dispatched by page via the [{@code event: Page.dialog}] event.
+ * <p>
+ * 
+ * <p>
  */
 public interface Dialog {
   enum Type { ALERT, BEFOREUNLOAD, CONFIRM, PROMPT }

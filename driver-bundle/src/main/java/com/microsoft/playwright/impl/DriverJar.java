@@ -37,7 +37,7 @@ public class DriverJar extends Driver {
     String cliFileName = super.cliFileName();
     Path driver = driverTempDir.resolve(cliFileName);
     if (!Files.exists(driver)) {
-      throw new RuntimeException("Failed to find playwright-cli");
+      throw new RuntimeException("Failed to find " + cliFileName + " at " + driver);
     }
     ProcessBuilder pb = new ProcessBuilder(driver.toString(), "install");
     pb.redirectError(ProcessBuilder.Redirect.INHERIT);
@@ -50,14 +50,30 @@ public class DriverJar extends Driver {
     }
   }
 
+  private static boolean isExecutable(Path filePath) {
+    String name = filePath.getFileName().toString();
+    return name.endsWith(".sh") || name.endsWith(".exe") || !name.contains(".");
+  }
+
   private void extractDriverToTempDir() throws URISyntaxException, IOException {
     ClassLoader classloader = Thread.currentThread().getContextClassLoader();
     URI uri = classloader.getResource("driver/" + platformDir()).toURI();
     // Create zip filesystem if loading from jar.
     try (FileSystem fileSystem = "jar".equals(uri.getScheme()) ? FileSystems.newFileSystem(uri, Collections.emptyMap()) : null) {
-      Files.list(Paths.get(uri)).forEach(filePath -> {
+      Path srcRoot = Paths.get(uri);
+      Files.walk(srcRoot).forEach(fromPath -> {
+        Path relative = srcRoot.relativize(fromPath);
+        Path toPath = driverTempDir.resolve(relative.toString());
         try {
-          extractResource(filePath, driverTempDir);
+          if (Files.isDirectory(fromPath)) {
+            Files.createDirectories(toPath);
+          } else {
+            Files.copy(fromPath, toPath);
+            if (isExecutable(toPath)) {
+              toPath.toFile().setExecutable(true, true);
+            }
+          }
+          toPath.toFile().deleteOnExit();
         } catch (IOException e) {
           throw new RuntimeException("Failed to extract driver from " + uri, e);
         }
@@ -77,14 +93,6 @@ public class DriverJar extends Driver {
       return "mac";
     }
     throw new RuntimeException("Unexpected os.name value: " + name);
-  }
-
-  private static Path extractResource(Path from, Path toDir) throws IOException {
-    Path path = toDir.resolve(from.getFileName().toString());
-    Files.copy(from, path);
-    path.toFile().setExecutable(true);
-    path.toFile().deleteOnExit();
-    return path;
   }
 
   @Override

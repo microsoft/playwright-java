@@ -117,7 +117,7 @@ public class TestBrowserContextBasic extends TestBase {
 
   @Test
   void shouldRespectDeviceScaleFactor() {
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withDeviceScaleFactor(3));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withDeviceScaleFactor(3.0));
     Page page = context.newPage();
     assertEquals(3, page.evaluate("window.devicePixelRatio"));
     context.close();
@@ -128,7 +128,7 @@ public class TestBrowserContextBasic extends TestBase {
   @Disabled("TODO: supported null viewport option")
   void shouldNotAllowDeviceScaleFactorWithNullViewport() {
     try {
-      browser.newContext(new Browser.NewContextOptions().withDeviceScaleFactor(1));
+      browser.newContext(new Browser.NewContextOptions().withDeviceScaleFactor(1.0));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("\"deviceScaleFactor\" option is not supported with null \"viewport\""));

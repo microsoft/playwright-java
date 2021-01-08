@@ -20,12 +20,16 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * Selectors can be used to install custom selector engines. See Working with selectors for more information.
+ * Selectors can be used to install custom selector engines. See
+ * <p>
+ * [Working with selectors](./selectors.md#working-with-selectors) for more information.
  */
 public interface Selectors {
   class RegisterOptions {
     /**
-     * Whether to run this selector engine in isolated JavaScript environment. This environment has access to the same DOM, but not any JavaScript objects from the frame's scripts. Defaults to {@code false}. Note that running as a content script is not guaranteed when this engine is used together with other registered engines.
+     * Whether to run this selector engine in isolated JavaScript environment. This environment has access to the same DOM, but
+     * not any JavaScript objects from the frame's scripts. Defaults to {@code false}. Note that running as a content script is not
+     * guaranteed when this engine is used together with other registered engines.
      */
     public Boolean contentScript;
 
@@ -41,7 +45,10 @@ public interface Selectors {
    * An example of registering selector engine that queries elements based on a tag name:
    * <p>
    * 
-   * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May only contain {@code [a-zA-Z0-9_]} characters.
+   * <p>
+   * 
+   * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May only
+   * contain {@code [a-zA-Z0-9_]} characters.
    * @param script Script that evaluates to a selector engine instance.
    */
   void register(String name, Path path, RegisterOptions options);
