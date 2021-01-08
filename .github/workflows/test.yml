@@ -26,12 +26,12 @@ jobs:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
-    - name: Cache Downloaded Drivers
-      uses: actions/cache@v2
-      with:
-        path: driver-bundle/src/main/resources/driver
-        key: ${{ runner.os }}-drivers-${{ hashFiles('scripts/*') }}
-        restore-keys: ${{ runner.os }}-drivers
+#    - name: Cache Downloaded Drivers
+#      uses: actions/cache@v2
+#      with:
+#        path: driver-bundle/src/main/resources/driver
+#        key: ${{ runner.os }}-drivers-${{ hashFiles('scripts/*') }}
+#        restore-keys: ${{ runner.os }}-drivers
     - name: Download drivers
       shell: bash
       run: scripts/download_driver_for_all_platforms.sh
