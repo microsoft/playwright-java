@@ -37,7 +37,7 @@ public class DriverJar extends Driver {
     String cliFileName = super.cliFileName();
     Path driver = driverTempDir.resolve(cliFileName);
     if (!Files.exists(driver)) {
-      throw new RuntimeException("Failed to find playwright-cli");
+      throw new RuntimeException("Failed to find " + cliFileName + " at " + driver);
     }
     ProcessBuilder pb = new ProcessBuilder(driver.toString(), "install");
     pb.redirectError(ProcessBuilder.Redirect.INHERIT);
