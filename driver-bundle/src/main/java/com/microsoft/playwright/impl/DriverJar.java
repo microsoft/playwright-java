@@ -50,6 +50,11 @@ public class DriverJar extends Driver {
     }
   }
 
+  private static boolean isExecutable(Path filePath) {
+    String name = filePath.getFileName().toString();
+    return name.endsWith(".sh") || name.endsWith(".exe") || !name.contains(".");
+  }
+
   private void extractDriverToTempDir() throws URISyntaxException, IOException {
     ClassLoader classloader = Thread.currentThread().getContextClassLoader();
     URI uri = classloader.getResource("driver/" + platformDir()).toURI();
@@ -63,6 +68,9 @@ public class DriverJar extends Driver {
             Files.createDirectories(toPath);
           } else {
             Files.copy(fromPath, toPath);
+            if (isExecutable(toPath)) {
+              toPath.toFile().setExecutable(true, true);
+            }
           }
           toPath.toFile().deleteOnExit();
         } catch (IOException e) {
