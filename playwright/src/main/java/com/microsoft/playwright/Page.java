@@ -86,9 +86,9 @@ public interface Page {
   }
 
   class FutureEventOptions {
-    public Integer timeout;
+    public Double timeout;
     public Predicate<Event<EventType>> predicate;
-    public FutureEventOptions withTimeout(int millis) {
+    public FutureEventOptions withTimeout(double millis) {
       timeout = millis;
       return this;
     }
@@ -205,15 +205,15 @@ public interface Page {
      */
     public Double timeout;
 
-    public CheckOptions withForce(Boolean force) {
+    public CheckOptions withForce(boolean force) {
       this.force = force;
       return this;
     }
-    public CheckOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public CheckOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public CheckOptions withTimeout(Double timeout) {
+    public CheckOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -261,15 +261,15 @@ public interface Page {
       this.button = button;
       return this;
     }
-    public ClickOptions withClickCount(Integer clickCount) {
+    public ClickOptions withClickCount(int clickCount) {
       this.clickCount = clickCount;
       return this;
     }
-    public ClickOptions withDelay(Double delay) {
+    public ClickOptions withDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public ClickOptions withForce(Boolean force) {
+    public ClickOptions withForce(boolean force) {
       this.force = force;
       return this;
     }
@@ -277,7 +277,7 @@ public interface Page {
       this.modifiers = new HashSet<>(Arrays.asList(modifiers));
       return this;
     }
-    public ClickOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public ClickOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -288,7 +288,7 @@ public interface Page {
     public ClickOptions withPosition(int x, int y) {
       return withPosition(new Position(x, y));
     }
-    public ClickOptions withTimeout(Double timeout) {
+    public ClickOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -300,7 +300,7 @@ public interface Page {
      */
     public Boolean runBeforeUnload;
 
-    public CloseOptions withRunBeforeUnload(Boolean runBeforeUnload) {
+    public CloseOptions withRunBeforeUnload(boolean runBeforeUnload) {
       this.runBeforeUnload = runBeforeUnload;
       return this;
     }
@@ -344,11 +344,11 @@ public interface Page {
       this.button = button;
       return this;
     }
-    public DblclickOptions withDelay(Double delay) {
+    public DblclickOptions withDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public DblclickOptions withForce(Boolean force) {
+    public DblclickOptions withForce(boolean force) {
       this.force = force;
       return this;
     }
@@ -356,7 +356,7 @@ public interface Page {
       this.modifiers = new HashSet<>(Arrays.asList(modifiers));
       return this;
     }
-    public DblclickOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public DblclickOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -367,7 +367,7 @@ public interface Page {
     public DblclickOptions withPosition(int x, int y) {
       return withPosition(new Position(x, y));
     }
-    public DblclickOptions withTimeout(Double timeout) {
+    public DblclickOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -379,7 +379,7 @@ public interface Page {
      */
     public Double timeout;
 
-    public DispatchEventOptions withTimeout(Double timeout) {
+    public DispatchEventOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -414,7 +414,7 @@ public interface Page {
      */
     public Boolean handle;
 
-    public ExposeBindingOptions withHandle(Boolean handle) {
+    public ExposeBindingOptions withHandle(boolean handle) {
       this.handle = handle;
       return this;
     }
@@ -432,11 +432,11 @@ public interface Page {
      */
     public Double timeout;
 
-    public FillOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public FillOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public FillOptions withTimeout(Double timeout) {
+    public FillOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -448,7 +448,7 @@ public interface Page {
      */
     public Double timeout;
 
-    public FocusOptions withTimeout(Double timeout) {
+    public FocusOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -460,7 +460,7 @@ public interface Page {
      */
     public Double timeout;
 
-    public GetAttributeOptions withTimeout(Double timeout) {
+    public GetAttributeOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -481,7 +481,7 @@ public interface Page {
      */
     public Frame.LoadState waitUntil;
 
-    public GoBackOptions withTimeout(Double timeout) {
+    public GoBackOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -506,7 +506,7 @@ public interface Page {
      */
     public Frame.LoadState waitUntil;
 
-    public GoForwardOptions withTimeout(Double timeout) {
+    public GoForwardOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -527,7 +527,7 @@ public interface Page {
      * [{@code method: BrowserContext.setDefaultTimeout}], [{@code method: Page.setDefaultNavigationTimeout}] or
      * [{@code method: Page.setDefaultTimeout}] methods.
      */
-    public Integer timeout;
+    public Double timeout;
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
      * - {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.
@@ -540,7 +540,7 @@ public interface Page {
       this.referer = referer;
       return this;
     }
-    public NavigateOptions withTimeout(Integer timeout) {
+    public NavigateOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -570,7 +570,7 @@ public interface Page {
      */
     public Double timeout;
 
-    public HoverOptions withForce(Boolean force) {
+    public HoverOptions withForce(boolean force) {
       this.force = force;
       return this;
     }
@@ -585,7 +585,7 @@ public interface Page {
     public HoverOptions withPosition(int x, int y) {
       return withPosition(new Position(x, y));
     }
-    public HoverOptions withTimeout(Double timeout) {
+    public HoverOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -597,7 +597,7 @@ public interface Page {
      */
     public Double timeout;
 
-    public InnerHTMLOptions withTimeout(Double timeout) {
+    public InnerHTMLOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -609,7 +609,7 @@ public interface Page {
      */
     public Double timeout;
 
-    public InnerTextOptions withTimeout(Double timeout) {
+    public InnerTextOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -717,7 +717,7 @@ public interface Page {
      */
     public String width;
 
-    public PdfOptions withDisplayHeaderFooter(Boolean displayHeaderFooter) {
+    public PdfOptions withDisplayHeaderFooter(boolean displayHeaderFooter) {
       this.displayHeaderFooter = displayHeaderFooter;
       return this;
     }
@@ -737,7 +737,7 @@ public interface Page {
       this.height = height;
       return this;
     }
-    public PdfOptions withLandscape(Boolean landscape) {
+    public PdfOptions withLandscape(boolean landscape) {
       this.landscape = landscape;
       return this;
     }
@@ -753,15 +753,15 @@ public interface Page {
       this.path = path;
       return this;
     }
-    public PdfOptions withPreferCSSPageSize(Boolean preferCSSPageSize) {
+    public PdfOptions withPreferCSSPageSize(boolean preferCSSPageSize) {
       this.preferCSSPageSize = preferCSSPageSize;
       return this;
     }
-    public PdfOptions withPrintBackground(Boolean printBackground) {
+    public PdfOptions withPrintBackground(boolean printBackground) {
       this.printBackground = printBackground;
       return this;
     }
-    public PdfOptions withScale(Double scale) {
+    public PdfOptions withScale(double scale) {
       this.scale = scale;
       return this;
     }
@@ -787,15 +787,15 @@ public interface Page {
      */
     public Double timeout;
 
-    public PressOptions withDelay(Double delay) {
+    public PressOptions withDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public PressOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public PressOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public PressOptions withTimeout(Double timeout) {
+    public PressOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -816,7 +816,7 @@ public interface Page {
      */
     public Frame.LoadState waitUntil;
 
-    public ReloadOptions withTimeout(Double timeout) {
+    public ReloadOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -906,11 +906,11 @@ public interface Page {
       this.clip = new Clip();
       return this.clip;
     }
-    public ScreenshotOptions withFullPage(Boolean fullPage) {
+    public ScreenshotOptions withFullPage(boolean fullPage) {
       this.fullPage = fullPage;
       return this;
     }
-    public ScreenshotOptions withOmitBackground(Boolean omitBackground) {
+    public ScreenshotOptions withOmitBackground(boolean omitBackground) {
       this.omitBackground = omitBackground;
       return this;
     }
@@ -918,11 +918,11 @@ public interface Page {
       this.path = path;
       return this;
     }
-    public ScreenshotOptions withQuality(Integer quality) {
+    public ScreenshotOptions withQuality(int quality) {
       this.quality = quality;
       return this;
     }
-    public ScreenshotOptions withTimeout(Double timeout) {
+    public ScreenshotOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -944,11 +944,11 @@ public interface Page {
      */
     public Double timeout;
 
-    public SelectOptionOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public SelectOptionOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public SelectOptionOptions withTimeout(Double timeout) {
+    public SelectOptionOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -969,7 +969,7 @@ public interface Page {
      */
     public Frame.LoadState waitUntil;
 
-    public SetContentOptions withTimeout(Double timeout) {
+    public SetContentOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -991,11 +991,11 @@ public interface Page {
      */
     public Double timeout;
 
-    public SetInputFilesOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public SetInputFilesOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public SetInputFilesOptions withTimeout(Double timeout) {
+    public SetInputFilesOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1046,7 +1046,7 @@ public interface Page {
      */
     public Double timeout;
 
-    public TapOptions withForce(Boolean force) {
+    public TapOptions withForce(boolean force) {
       this.force = force;
       return this;
     }
@@ -1054,7 +1054,7 @@ public interface Page {
       this.modifiers = new HashSet<>(Arrays.asList(modifiers));
       return this;
     }
-    public TapOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public TapOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -1062,7 +1062,7 @@ public interface Page {
       this.position = new Position();
       return this.position;
     }
-    public TapOptions withTimeout(Double timeout) {
+    public TapOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1074,7 +1074,7 @@ public interface Page {
      */
     public Double timeout;
 
-    public TextContentOptions withTimeout(Double timeout) {
+    public TextContentOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1096,15 +1096,15 @@ public interface Page {
      */
     public Double timeout;
 
-    public TypeOptions withDelay(Double delay) {
+    public TypeOptions withDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public TypeOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public TypeOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public TypeOptions withTimeout(Double timeout) {
+    public TypeOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1126,15 +1126,15 @@ public interface Page {
      */
     public Double timeout;
 
-    public UncheckOptions withForce(Boolean force) {
+    public UncheckOptions withForce(boolean force) {
       this.force = force;
       return this;
     }
-    public UncheckOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public UncheckOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public UncheckOptions withTimeout(Double timeout) {
+    public UncheckOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1149,7 +1149,7 @@ public interface Page {
      * maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the [{@code method: BrowserContext.setDefaultTimeout}].
      */
-    public Integer timeout;
+    public Double timeout;
 
     public WaitForFunctionOptions withRequestAnimationFrame() {
       this.pollingInterval = null;
@@ -1159,7 +1159,7 @@ public interface Page {
       this.pollingInterval = millis;
       return this;
     }
-    public WaitForFunctionOptions withTimeout(Integer timeout) {
+    public WaitForFunctionOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1171,9 +1171,9 @@ public interface Page {
      * [{@code method: BrowserContext.setDefaultTimeout}], [{@code method: Page.setDefaultNavigationTimeout}] or
      * [{@code method: Page.setDefaultTimeout}] methods.
      */
-    public Integer timeout;
+    public Double timeout;
 
-    public WaitForLoadStateOptions withTimeout(Integer timeout) {
+    public WaitForLoadStateOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1185,7 +1185,7 @@ public interface Page {
      * [{@code method: BrowserContext.setDefaultTimeout}], [{@code method: Page.setDefaultNavigationTimeout}] or
      * [{@code method: Page.setDefaultTimeout}] methods.
      */
-    public Integer timeout;
+    public Double timeout;
     /**
      * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
      */
@@ -1200,7 +1200,7 @@ public interface Page {
      */
     public Frame.LoadState waitUntil;
 
-    public FutureNavigationOptions withTimeout(Integer timeout) {
+    public FutureNavigationOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1226,9 +1226,9 @@ public interface Page {
      * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be
      * changed by using the [{@code method: Page.setDefaultTimeout}] method.
      */
-    public Integer timeout;
+    public Double timeout;
 
-    public FutureRequestOptions withTimeout(Integer timeout) {
+    public FutureRequestOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1238,9 +1238,9 @@ public interface Page {
      * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be
      * changed by using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
      */
-    public Integer timeout;
+    public Double timeout;
 
-    public FutureResponseOptions withTimeout(Integer timeout) {
+    public FutureResponseOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1267,7 +1267,7 @@ public interface Page {
       this.state = state;
       return this;
     }
-    public WaitForSelectorOptions withTimeout(Double timeout) {
+    public WaitForSelectorOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2068,14 +2068,14 @@ public interface Page {
    * [{@code method: BrowserContext.setDefaultTimeout}] and [{@code method: BrowserContext.setDefaultNavigationTimeout}].
    * @param timeout Maximum navigation time in milliseconds
    */
-  void setDefaultNavigationTimeout(int timeout);
+  void setDefaultNavigationTimeout(double timeout);
   /**
    * This setting will change the default maximum time for all the methods accepting {@code timeout} option.
    * <p>
    * > <strong>NOTE</strong> [{@code method: Page.setDefaultNavigationTimeout}] takes priority over [{@code method: Page.setDefaultTimeout}].
    * @param timeout Maximum time in milliseconds
    */
-  void setDefaultTimeout(int timeout);
+  void setDefaultTimeout(double timeout);
   /**
    * The extra HTTP headers will be sent with every request the page initiates.
    * <p>
@@ -2364,7 +2364,7 @@ public interface Page {
    * Shortcut for main frame's [{@code method: Frame.waitForTimeout}].
    * @param timeout A timeout to wait for
    */
-  void waitForTimeout(int timeout);
+  void waitForTimeout(double timeout);
   /**
    * This method returns all of the dedicated [WebWorkers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)
    * <p>

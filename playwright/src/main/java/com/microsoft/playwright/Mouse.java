@@ -47,11 +47,11 @@ public interface Mouse {
       this.button = button;
       return this;
     }
-    public ClickOptions withClickCount(Integer clickCount) {
+    public ClickOptions withClickCount(int clickCount) {
       this.clickCount = clickCount;
       return this;
     }
-    public ClickOptions withDelay(Double delay) {
+    public ClickOptions withDelay(double delay) {
       this.delay = delay;
       return this;
     }
@@ -70,7 +70,7 @@ public interface Mouse {
       this.button = button;
       return this;
     }
-    public DblclickOptions withDelay(Double delay) {
+    public DblclickOptions withDelay(double delay) {
       this.delay = delay;
       return this;
     }
@@ -89,7 +89,7 @@ public interface Mouse {
       this.button = button;
       return this;
     }
-    public DownOptions withClickCount(Integer clickCount) {
+    public DownOptions withClickCount(int clickCount) {
       this.clickCount = clickCount;
       return this;
     }
@@ -100,7 +100,7 @@ public interface Mouse {
      */
     public Integer steps;
 
-    public MoveOptions withSteps(Integer steps) {
+    public MoveOptions withSteps(int steps) {
       this.steps = steps;
       return this;
     }
@@ -119,19 +119,19 @@ public interface Mouse {
       this.button = button;
       return this;
     }
-    public UpOptions withClickCount(Integer clickCount) {
+    public UpOptions withClickCount(int clickCount) {
       this.clickCount = clickCount;
       return this;
     }
   }
-  default void click(int x, int y) {
+  default void click(double x, double y) {
     click(x, y, null);
   }
   /**
    * Shortcut for [{@code method: Mouse.move}], [{@code method: Mouse.down}], [{@code method: Mouse.up}].
    */
-  void click(int x, int y, ClickOptions options);
-  default void dblclick(int x, int y) {
+  void click(double x, double y, ClickOptions options);
+  default void dblclick(double x, double y) {
     dblclick(x, y, null);
   }
   /**
@@ -139,7 +139,7 @@ public interface Mouse {
    * <p>
    * [{@code method: Mouse.up}].
    */
-  void dblclick(int x, int y, DblclickOptions options);
+  void dblclick(double x, double y, DblclickOptions options);
   default void down() {
     down(null);
   }
@@ -147,13 +147,13 @@ public interface Mouse {
    * Dispatches a {@code mousedown} event.
    */
   void down(DownOptions options);
-  default void move(int x, int y) {
+  default void move(double x, double y) {
     move(x, y, null);
   }
   /**
    * Dispatches a {@code mousemove} event.
    */
-  void move(int x, int y, MoveOptions options);
+  void move(double x, double y, MoveOptions options);
   default void up() {
     up(null);
   }

@@ -229,7 +229,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void setDefaultNavigationTimeout(int timeout) {
+  public void setDefaultNavigationTimeout(double timeout) {
     withLogging("BrowserContext.setDefaultNavigationTimeout", () -> {
       timeoutSettings.setDefaultNavigationTimeout(timeout);
       JsonObject params = new JsonObject();
@@ -239,7 +239,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void setDefaultTimeout(int timeout) {
+  public void setDefaultTimeout(double timeout) {
     withLogging("BrowserContext.setDefaultTimeout", () -> {
       timeoutSettings.setDefaultTimeout(timeout);
       JsonObject params = new JsonObject();

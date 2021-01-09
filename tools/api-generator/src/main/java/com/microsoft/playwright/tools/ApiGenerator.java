@@ -24,7 +24,6 @@ import com.google.gson.JsonObject;
 import java.io.*;
 import java.nio.file.FileSystems;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
@@ -843,7 +842,15 @@ class Field extends Element {
       output.add(offset + "  this." + name + " = new HashSet<>(Arrays.asList(modifiers));");
       output.add(offset + "  return this;");
     } else {
-      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + type.toJava() + " " + name + ") {");
+      String paramType = type.toJava();
+      if ("Boolean".equals(paramType)) {
+        paramType = "boolean";
+      } else if ("Integer".equals(paramType)) {
+        paramType = "int";
+      } else if ("Double".equals(paramType)) {
+        paramType = "double";
+      }
+      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + paramType + " " + name + ") {");
       output.add(offset + "  this." + name + " = " + name + ";");
       output.add(offset + "  return this;");
     }
@@ -1168,10 +1175,10 @@ class Interface extends TypeDefinition {
     }
     if (asList("Page", "BrowserContext", "WebSocket").contains(jsonName)){
       output.add(offset + "class FutureEventOptions {");
-      output.add(offset + "  public Integer timeout;");
+      output.add(offset + "  public Double timeout;");
       output.add(offset + "  public Predicate<Event<EventType>> predicate;");
 
-      output.add(offset + "  public FutureEventOptions withTimeout(int millis) {");
+      output.add(offset + "  public FutureEventOptions withTimeout(double millis) {");
       output.add(offset + "    timeout = millis;");
       output.add(offset + "    return this;");
       output.add(offset + "  }");

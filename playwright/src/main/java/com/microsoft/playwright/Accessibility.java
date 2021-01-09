@@ -50,7 +50,7 @@ public interface Accessibility {
      */
     public ElementHandle root;
 
-    public SnapshotOptions withInterestingOnly(Boolean interestingOnly) {
+    public SnapshotOptions withInterestingOnly(boolean interestingOnly) {
       this.interestingOnly = interestingOnly;
       return this;
     }

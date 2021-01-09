@@ -20,8 +20,8 @@ class TimeoutSettings {
   private static final int DEFAULT_TIMEOUT_MS = 30_000;
 
   private final TimeoutSettings parent;
-  private Integer defaultTimeout ;
-  private Integer defaultNavigationTimeout;
+  private Double defaultTimeout ;
+  private Double defaultNavigationTimeout;
 
   TimeoutSettings() {
     this(null);
@@ -30,15 +30,15 @@ class TimeoutSettings {
     this.parent = parent;
   }
 
-  void setDefaultTimeout(int timeout) {
+  void setDefaultTimeout(double timeout) {
     defaultTimeout = timeout;
   }
 
-  void setDefaultNavigationTimeout(int timeout) {
+  void setDefaultNavigationTimeout(double timeout) {
     defaultNavigationTimeout = timeout;
   }
 
-  int timeout(Integer timeout) {
+  double timeout(Double timeout) {
     if (timeout != null) {
       return timeout;
     }
@@ -51,7 +51,7 @@ class TimeoutSettings {
     return DEFAULT_TIMEOUT_MS;
   }
 
-  int navigationTimeout(Integer timeout) {
+  double navigationTimeout(Double timeout) {
     if (timeout != null) {
       return timeout;
     }
@@ -67,7 +67,7 @@ class TimeoutSettings {
     return DEFAULT_TIMEOUT_MS;
   }
 
-  <T> Waitable<T> createWaitable(Integer timeout) {
+  <T> Waitable<T> createWaitable(Double timeout) {
     if (timeout != null && timeout == 0) {
       return new WaitableNever<>();
     }

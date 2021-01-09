@@ -148,11 +148,11 @@ public interface BrowserType {
       this.args = args;
       return this;
     }
-    public LaunchOptions withChromiumSandbox(Boolean chromiumSandbox) {
+    public LaunchOptions withChromiumSandbox(boolean chromiumSandbox) {
       this.chromiumSandbox = chromiumSandbox;
       return this;
     }
-    public LaunchOptions withDevtools(Boolean devtools) {
+    public LaunchOptions withDevtools(boolean devtools) {
       this.devtools = devtools;
       return this;
     }
@@ -172,19 +172,19 @@ public interface BrowserType {
       this.firefoxUserPrefs = firefoxUserPrefs;
       return this;
     }
-    public LaunchOptions withHandleSIGHUP(Boolean handleSIGHUP) {
+    public LaunchOptions withHandleSIGHUP(boolean handleSIGHUP) {
       this.handleSIGHUP = handleSIGHUP;
       return this;
     }
-    public LaunchOptions withHandleSIGINT(Boolean handleSIGINT) {
+    public LaunchOptions withHandleSIGINT(boolean handleSIGINT) {
       this.handleSIGINT = handleSIGINT;
       return this;
     }
-    public LaunchOptions withHandleSIGTERM(Boolean handleSIGTERM) {
+    public LaunchOptions withHandleSIGTERM(boolean handleSIGTERM) {
       this.handleSIGTERM = handleSIGTERM;
       return this;
     }
-    public LaunchOptions withHeadless(Boolean headless) {
+    public LaunchOptions withHeadless(boolean headless) {
       this.headless = headless;
       return this;
     }
@@ -200,11 +200,11 @@ public interface BrowserType {
       this.proxy = new Proxy();
       return this.proxy;
     }
-    public LaunchOptions withSlowMo(Double slowMo) {
+    public LaunchOptions withSlowMo(double slowMo) {
       this.slowMo = slowMo;
       return this;
     }
-    public LaunchOptions withTimeout(Double timeout) {
+    public LaunchOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -268,7 +268,7 @@ public interface BrowserType {
         return LaunchPersistentContextOptions.this;
       }
 
-      public RecordHar withOmitContent(Boolean omitContent) {
+      public RecordHar withOmitContent(boolean omitContent) {
         this.omitContent = omitContent;
         return this;
       }
@@ -479,7 +479,7 @@ public interface BrowserType {
      */
     public Page.Viewport viewport;
 
-    public LaunchPersistentContextOptions withAcceptDownloads(Boolean acceptDownloads) {
+    public LaunchPersistentContextOptions withAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
       return this;
     }
@@ -487,11 +487,11 @@ public interface BrowserType {
       this.args = args;
       return this;
     }
-    public LaunchPersistentContextOptions withBypassCSP(Boolean bypassCSP) {
+    public LaunchPersistentContextOptions withBypassCSP(boolean bypassCSP) {
       this.bypassCSP = bypassCSP;
       return this;
     }
-    public LaunchPersistentContextOptions withChromiumSandbox(Boolean chromiumSandbox) {
+    public LaunchPersistentContextOptions withChromiumSandbox(boolean chromiumSandbox) {
       this.chromiumSandbox = chromiumSandbox;
       return this;
     }
@@ -499,11 +499,11 @@ public interface BrowserType {
       this.colorScheme = colorScheme;
       return this;
     }
-    public LaunchPersistentContextOptions withDeviceScaleFactor(Double deviceScaleFactor) {
+    public LaunchPersistentContextOptions withDeviceScaleFactor(double deviceScaleFactor) {
       this.deviceScaleFactor = deviceScaleFactor;
       return this;
     }
-    public LaunchPersistentContextOptions withDevtools(Boolean devtools) {
+    public LaunchPersistentContextOptions withDevtools(boolean devtools) {
       this.devtools = devtools;
       return this;
     }
@@ -527,23 +527,23 @@ public interface BrowserType {
       this.geolocation = geolocation;
       return this;
     }
-    public LaunchPersistentContextOptions withHandleSIGHUP(Boolean handleSIGHUP) {
+    public LaunchPersistentContextOptions withHandleSIGHUP(boolean handleSIGHUP) {
       this.handleSIGHUP = handleSIGHUP;
       return this;
     }
-    public LaunchPersistentContextOptions withHandleSIGINT(Boolean handleSIGINT) {
+    public LaunchPersistentContextOptions withHandleSIGINT(boolean handleSIGINT) {
       this.handleSIGINT = handleSIGINT;
       return this;
     }
-    public LaunchPersistentContextOptions withHandleSIGTERM(Boolean handleSIGTERM) {
+    public LaunchPersistentContextOptions withHandleSIGTERM(boolean handleSIGTERM) {
       this.handleSIGTERM = handleSIGTERM;
       return this;
     }
-    public LaunchPersistentContextOptions withHasTouch(Boolean hasTouch) {
+    public LaunchPersistentContextOptions withHasTouch(boolean hasTouch) {
       this.hasTouch = hasTouch;
       return this;
     }
-    public LaunchPersistentContextOptions withHeadless(Boolean headless) {
+    public LaunchPersistentContextOptions withHeadless(boolean headless) {
       this.headless = headless;
       return this;
     }
@@ -559,15 +559,15 @@ public interface BrowserType {
       this.ignoreAllDefaultArgs = ignore;
       return this;
     }
-    public LaunchPersistentContextOptions withIgnoreHTTPSErrors(Boolean ignoreHTTPSErrors) {
+    public LaunchPersistentContextOptions withIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;
       return this;
     }
-    public LaunchPersistentContextOptions withIsMobile(Boolean isMobile) {
+    public LaunchPersistentContextOptions withIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
       return this;
     }
-    public LaunchPersistentContextOptions withJavaScriptEnabled(Boolean javaScriptEnabled) {
+    public LaunchPersistentContextOptions withJavaScriptEnabled(boolean javaScriptEnabled) {
       this.javaScriptEnabled = javaScriptEnabled;
       return this;
     }
@@ -575,7 +575,7 @@ public interface BrowserType {
       this.locale = locale;
       return this;
     }
-    public LaunchPersistentContextOptions withOffline(Boolean offline) {
+    public LaunchPersistentContextOptions withOffline(boolean offline) {
       this.offline = offline;
       return this;
     }
@@ -595,11 +595,11 @@ public interface BrowserType {
       this.recordVideo = new RecordVideo();
       return this.recordVideo;
     }
-    public LaunchPersistentContextOptions withSlowMo(Double slowMo) {
+    public LaunchPersistentContextOptions withSlowMo(double slowMo) {
       this.slowMo = slowMo;
       return this;
     }
-    public LaunchPersistentContextOptions withTimeout(Double timeout) {
+    public LaunchPersistentContextOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }

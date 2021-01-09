@@ -118,7 +118,7 @@ public interface Browser {
         return NewContextOptions.this;
       }
 
-      public RecordHar withOmitContent(Boolean omitContent) {
+      public RecordHar withOmitContent(boolean omitContent) {
         this.omitContent = omitContent;
         return this;
       }
@@ -249,11 +249,11 @@ public interface Browser {
      */
     public Page.Viewport viewport;
 
-    public NewContextOptions withAcceptDownloads(Boolean acceptDownloads) {
+    public NewContextOptions withAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
       return this;
     }
-    public NewContextOptions withBypassCSP(Boolean bypassCSP) {
+    public NewContextOptions withBypassCSP(boolean bypassCSP) {
       this.bypassCSP = bypassCSP;
       return this;
     }
@@ -261,7 +261,7 @@ public interface Browser {
       this.colorScheme = colorScheme;
       return this;
     }
-    public NewContextOptions withDeviceScaleFactor(Double deviceScaleFactor) {
+    public NewContextOptions withDeviceScaleFactor(double deviceScaleFactor) {
       this.deviceScaleFactor = deviceScaleFactor;
       return this;
     }
@@ -273,7 +273,7 @@ public interface Browser {
       this.geolocation = geolocation;
       return this;
     }
-    public NewContextOptions withHasTouch(Boolean hasTouch) {
+    public NewContextOptions withHasTouch(boolean hasTouch) {
       this.hasTouch = hasTouch;
       return this;
     }
@@ -281,15 +281,15 @@ public interface Browser {
       this.httpCredentials = new BrowserContext.HTTPCredentials(username, password);
       return this;
     }
-    public NewContextOptions withIgnoreHTTPSErrors(Boolean ignoreHTTPSErrors) {
+    public NewContextOptions withIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;
       return this;
     }
-    public NewContextOptions withIsMobile(Boolean isMobile) {
+    public NewContextOptions withIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
       return this;
     }
-    public NewContextOptions withJavaScriptEnabled(Boolean javaScriptEnabled) {
+    public NewContextOptions withJavaScriptEnabled(boolean javaScriptEnabled) {
       this.javaScriptEnabled = javaScriptEnabled;
       return this;
     }
@@ -297,7 +297,7 @@ public interface Browser {
       this.locale = locale;
       return this;
     }
-    public NewContextOptions withOffline(Boolean offline) {
+    public NewContextOptions withOffline(boolean offline) {
       this.offline = offline;
       return this;
     }
@@ -407,7 +407,7 @@ public interface Browser {
         return NewPageOptions.this;
       }
 
-      public RecordHar withOmitContent(Boolean omitContent) {
+      public RecordHar withOmitContent(boolean omitContent) {
         this.omitContent = omitContent;
         return this;
       }
@@ -538,11 +538,11 @@ public interface Browser {
      */
     public Page.Viewport viewport;
 
-    public NewPageOptions withAcceptDownloads(Boolean acceptDownloads) {
+    public NewPageOptions withAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
       return this;
     }
-    public NewPageOptions withBypassCSP(Boolean bypassCSP) {
+    public NewPageOptions withBypassCSP(boolean bypassCSP) {
       this.bypassCSP = bypassCSP;
       return this;
     }
@@ -550,7 +550,7 @@ public interface Browser {
       this.colorScheme = colorScheme;
       return this;
     }
-    public NewPageOptions withDeviceScaleFactor(Double deviceScaleFactor) {
+    public NewPageOptions withDeviceScaleFactor(double deviceScaleFactor) {
       this.deviceScaleFactor = deviceScaleFactor;
       return this;
     }
@@ -562,7 +562,7 @@ public interface Browser {
       this.geolocation = geolocation;
       return this;
     }
-    public NewPageOptions withHasTouch(Boolean hasTouch) {
+    public NewPageOptions withHasTouch(boolean hasTouch) {
       this.hasTouch = hasTouch;
       return this;
     }
@@ -570,15 +570,15 @@ public interface Browser {
       this.httpCredentials = new BrowserContext.HTTPCredentials(username, password);
       return this;
     }
-    public NewPageOptions withIgnoreHTTPSErrors(Boolean ignoreHTTPSErrors) {
+    public NewPageOptions withIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;
       return this;
     }
-    public NewPageOptions withIsMobile(Boolean isMobile) {
+    public NewPageOptions withIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
       return this;
     }
-    public NewPageOptions withJavaScriptEnabled(Boolean javaScriptEnabled) {
+    public NewPageOptions withJavaScriptEnabled(boolean javaScriptEnabled) {
       this.javaScriptEnabled = javaScriptEnabled;
       return this;
     }
@@ -586,7 +586,7 @@ public interface Browser {
       this.locale = locale;
       return this;
     }
-    public NewPageOptions withOffline(Boolean offline) {
+    public NewPageOptions withOffline(boolean offline) {
       this.offline = offline;
       return this;
     }
