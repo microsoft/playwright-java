@@ -653,7 +653,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void setDefaultNavigationTimeout(int timeout) {
+  public void setDefaultNavigationTimeout(double timeout) {
     withLogging("Page.setDefaultNavigationTimeout", () -> {
       timeoutSettings.setDefaultNavigationTimeout(timeout);
       JsonObject params = new JsonObject();
@@ -663,7 +663,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void setDefaultTimeout(int timeout) {
+  public void setDefaultTimeout(double timeout) {
     withLogging("Page.setDefaultTimeout", () -> {
       timeoutSettings.setDefaultTimeout(timeout);
       JsonObject params = new JsonObject();
@@ -796,11 +796,11 @@ public class PageImpl extends ChannelOwner implements Page {
     return viewport;
   }
 
-  <T> Waitable<T> createWaitableNavigationTimeout(Integer timeout) {
+  <T> Waitable<T> createWaitableNavigationTimeout(Double timeout) {
     return new WaitableTimeout<>(timeoutSettings.navigationTimeout(timeout));
   }
 
-  <T> Waitable<T> createWaitableTimeout(Integer timeout) {
+  <T> Waitable<T> createWaitableTimeout(Double timeout) {
     return timeoutSettings.createWaitable(timeout);
   }
 
@@ -1017,7 +1017,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void waitForTimeout(int timeout) {
+  public void waitForTimeout(double timeout) {
     withLogging("Page.waitForTimeout", () -> mainFrame.waitForTimeoutImpl(timeout));
   }
 

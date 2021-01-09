@@ -20,9 +20,9 @@ import com.microsoft.playwright.PlaywrightException;
 
 class WaitableTimeout<T> implements Waitable<T> {
   private final long deadline;
-  private final int timeout;
+  private final double timeout;
 
-  WaitableTimeout(int millis) {
+  WaitableTimeout(double millis) {
     timeout = millis;
     deadline = System.nanoTime() + (long) millis * 1_000_000;
   }
@@ -34,7 +34,11 @@ class WaitableTimeout<T> implements Waitable<T> {
 
   @Override
   public T get() {
-    throw new PlaywrightException("Timeout " + timeout + "ms exceeded");
+    String timeoutStr = Double.toString(timeout);
+    if (timeoutStr.endsWith(".0")) {
+      timeoutStr = timeoutStr.substring(0, timeoutStr.length() - 2);
+    }
+    throw new PlaywrightException("Timeout " + timeoutStr + "ms exceeded");
   }
 
   @Override

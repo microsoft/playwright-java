@@ -29,9 +29,9 @@ public interface WebSocket {
   }
 
   class FutureEventOptions {
-    public Integer timeout;
+    public Double timeout;
     public Predicate<Event<EventType>> predicate;
-    public FutureEventOptions withTimeout(int millis) {
+    public FutureEventOptions withTimeout(double millis) {
       timeout = millis;
       return this;
     }

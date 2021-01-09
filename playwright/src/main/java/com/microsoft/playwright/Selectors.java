@@ -33,7 +33,7 @@ public interface Selectors {
      */
     public Boolean contentScript;
 
-    public RegisterOptions withContentScript(Boolean contentScript) {
+    public RegisterOptions withContentScript(boolean contentScript) {
       this.contentScript = contentScript;
       return this;
     }

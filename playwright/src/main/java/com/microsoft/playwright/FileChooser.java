@@ -51,11 +51,11 @@ public interface FileChooser {
      */
     public Double timeout;
 
-    public SetFilesOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public SetFilesOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public SetFilesOptions withTimeout(Double timeout) {
+    public SetFilesOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }

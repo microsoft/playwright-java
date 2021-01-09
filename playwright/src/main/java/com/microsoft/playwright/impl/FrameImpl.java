@@ -829,11 +829,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public void waitForTimeout(int timeout) {
+  public void waitForTimeout(double timeout) {
     withLogging("Frame.waitForTimeout", () -> waitForTimeoutImpl(timeout));
   }
 
-  void waitForTimeoutImpl(int timeout) {
+  void waitForTimeoutImpl(double timeout) {
     toDeferred(new WaitableTimeout<Void>(timeout) {
       @Override
       public Void get() {

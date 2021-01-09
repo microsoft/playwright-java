@@ -27,6 +27,6 @@ public interface Touchscreen {
   /**
    * Dispatches a {@code touchstart} and {@code touchend} event with a single touch at the position ({@code x},{@code y}).
    */
-  void tap(int x, int y);
+  void tap(double x, double y);
 }
 

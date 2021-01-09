@@ -77,15 +77,15 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public CheckOptions withForce(Boolean force) {
+    public CheckOptions withForce(boolean force) {
       this.force = force;
       return this;
     }
-    public CheckOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public CheckOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public CheckOptions withTimeout(Double timeout) {
+    public CheckOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -133,15 +133,15 @@ public interface ElementHandle extends JSHandle {
       this.button = button;
       return this;
     }
-    public ClickOptions withClickCount(Integer clickCount) {
+    public ClickOptions withClickCount(int clickCount) {
       this.clickCount = clickCount;
       return this;
     }
-    public ClickOptions withDelay(Double delay) {
+    public ClickOptions withDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public ClickOptions withForce(Boolean force) {
+    public ClickOptions withForce(boolean force) {
       this.force = force;
       return this;
     }
@@ -149,7 +149,7 @@ public interface ElementHandle extends JSHandle {
       this.modifiers = new HashSet<>(Arrays.asList(modifiers));
       return this;
     }
-    public ClickOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public ClickOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -160,7 +160,7 @@ public interface ElementHandle extends JSHandle {
     public ClickOptions withPosition(int x, int y) {
       return withPosition(new Position(x, y));
     }
-    public ClickOptions withTimeout(Double timeout) {
+    public ClickOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -204,11 +204,11 @@ public interface ElementHandle extends JSHandle {
       this.button = button;
       return this;
     }
-    public DblclickOptions withDelay(Double delay) {
+    public DblclickOptions withDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public DblclickOptions withForce(Boolean force) {
+    public DblclickOptions withForce(boolean force) {
       this.force = force;
       return this;
     }
@@ -216,7 +216,7 @@ public interface ElementHandle extends JSHandle {
       this.modifiers = new HashSet<>(Arrays.asList(modifiers));
       return this;
     }
-    public DblclickOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public DblclickOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -227,7 +227,7 @@ public interface ElementHandle extends JSHandle {
     public DblclickOptions withPosition(int x, int y) {
       return withPosition(new Position(x, y));
     }
-    public DblclickOptions withTimeout(Double timeout) {
+    public DblclickOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -245,11 +245,11 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public FillOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public FillOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public FillOptions withTimeout(Double timeout) {
+    public FillOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -275,7 +275,7 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public HoverOptions withForce(Boolean force) {
+    public HoverOptions withForce(boolean force) {
       this.force = force;
       return this;
     }
@@ -290,7 +290,7 @@ public interface ElementHandle extends JSHandle {
     public HoverOptions withPosition(int x, int y) {
       return withPosition(new Position(x, y));
     }
-    public HoverOptions withTimeout(Double timeout) {
+    public HoverOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -312,15 +312,15 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public PressOptions withDelay(Double delay) {
+    public PressOptions withDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public PressOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public PressOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public PressOptions withTimeout(Double timeout) {
+    public PressOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -352,7 +352,7 @@ public interface ElementHandle extends JSHandle {
      */
     public Type type;
 
-    public ScreenshotOptions withOmitBackground(Boolean omitBackground) {
+    public ScreenshotOptions withOmitBackground(boolean omitBackground) {
       this.omitBackground = omitBackground;
       return this;
     }
@@ -360,11 +360,11 @@ public interface ElementHandle extends JSHandle {
       this.path = path;
       return this;
     }
-    public ScreenshotOptions withQuality(Integer quality) {
+    public ScreenshotOptions withQuality(int quality) {
       this.quality = quality;
       return this;
     }
-    public ScreenshotOptions withTimeout(Double timeout) {
+    public ScreenshotOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -380,7 +380,7 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public ScrollIntoViewIfNeededOptions withTimeout(Double timeout) {
+    public ScrollIntoViewIfNeededOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -398,11 +398,11 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public SelectOptionOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public SelectOptionOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public SelectOptionOptions withTimeout(Double timeout) {
+    public SelectOptionOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -414,7 +414,7 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public SelectTextOptions withTimeout(Double timeout) {
+    public SelectTextOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -432,11 +432,11 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public SetInputFilesOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public SetInputFilesOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public SetInputFilesOptions withTimeout(Double timeout) {
+    public SetInputFilesOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -487,7 +487,7 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public TapOptions withForce(Boolean force) {
+    public TapOptions withForce(boolean force) {
       this.force = force;
       return this;
     }
@@ -495,7 +495,7 @@ public interface ElementHandle extends JSHandle {
       this.modifiers = new HashSet<>(Arrays.asList(modifiers));
       return this;
     }
-    public TapOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public TapOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
@@ -503,7 +503,7 @@ public interface ElementHandle extends JSHandle {
       this.position = new Position();
       return this.position;
     }
-    public TapOptions withTimeout(Double timeout) {
+    public TapOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -525,15 +525,15 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public TypeOptions withDelay(Double delay) {
+    public TypeOptions withDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public TypeOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public TypeOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public TypeOptions withTimeout(Double timeout) {
+    public TypeOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -555,15 +555,15 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public UncheckOptions withForce(Boolean force) {
+    public UncheckOptions withForce(boolean force) {
       this.force = force;
       return this;
     }
-    public UncheckOptions withNoWaitAfter(Boolean noWaitAfter) {
+    public UncheckOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public UncheckOptions withTimeout(Double timeout) {
+    public UncheckOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -573,9 +573,9 @@ public interface ElementHandle extends JSHandle {
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
      */
-    public Integer timeout;
+    public Double timeout;
 
-    public WaitForElementStateOptions withTimeout(Integer timeout) {
+    public WaitForElementStateOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -602,7 +602,7 @@ public interface ElementHandle extends JSHandle {
       this.state = state;
       return this;
     }
-    public WaitForSelectorOptions withTimeout(Double timeout) {
+    public WaitForSelectorOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }

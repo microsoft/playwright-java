@@ -32,11 +32,11 @@ class MouseImpl implements Mouse {
   }
 
   @Override
-  public void click(int x, int y, ClickOptions options) {
+  public void click(double x, double y, ClickOptions options) {
     page.withLogging("Mouse.click", () -> clickImpl(x, y, options));
   }
 
-  private void clickImpl(int x, int y, ClickOptions options) {
+  private void clickImpl(double x, double y, ClickOptions options) {
     if (options == null) {
       options = new ClickOptions();
     }
@@ -51,11 +51,11 @@ class MouseImpl implements Mouse {
   }
 
   @Override
-  public void dblclick(int x, int y, DblclickOptions options) {
+  public void dblclick(double x, double y, DblclickOptions options) {
     page.withLogging("Mouse.dblclick", () -> dblclickImpl(x, y, options));
   }
 
-  private void dblclickImpl(int x, int y, DblclickOptions options) {
+  private void dblclickImpl(double x, double y, DblclickOptions options) {
     ClickOptions clickOptions;
     if (options == null) {
       clickOptions = new ClickOptions();
@@ -80,11 +80,11 @@ class MouseImpl implements Mouse {
   }
 
   @Override
-  public void move(int x, int y, MoveOptions options) {
+  public void move(double x, double y, MoveOptions options) {
     page.withLogging("Mouse.move", () -> moveImpl(x, y, options));
   }
 
-  private void moveImpl(int x, int y, MoveOptions options) {
+  private void moveImpl(double x, double y, MoveOptions options) {
     if (options == null) {
       options = new MoveOptions();
     }

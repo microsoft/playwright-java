@@ -371,32 +371,6 @@ class Types {
     add("BrowserContext.setExtraHTTPHeaders.headers", "Object<string, string>", "Map<String, String>", new Empty());
     add("Route.continue.overrides.headers", "Object<string, string>", "Map<String, String>", new Empty());
     add("Route.fulfill.response.headers", "Object<string, string>", "Map<String, String>", new Empty());
-
-    add("BrowserContext.setDefaultTimeout.timeout", "float", "int", new Empty());
-    add("BrowserContext.setDefaultNavigationTimeout.timeout", "float", "int", new Empty());
-    add("Page.waitForRequest.options.timeout", "float", "Integer", new Empty());
-    add("Page.waitForResponse.options.timeout", "float", "Integer", new Empty());
-    add("Page.waitForTimeout.timeout", "float", "int", new Empty());
-    add("Frame.waitForTimeout.timeout", "float", "int", new Empty());
-    add("Page.goto.options.timeout", "float", "Integer", new Empty());
-    add("Frame.goto.options.timeout", "float", "Integer", new Empty());
-    add("Page.setDefaultTimeout.timeout", "float", "int", new Empty());
-    add("Page.setDefaultNavigationTimeout.timeout", "float", "int", new Empty());
-    add("Frame.waitForLoadState.options.timeout", "float", "Integer", new Empty());
-    add("Page.waitForLoadState.options.timeout", "float", "Integer", new Empty());
-    add("Frame.waitForNavigation.options.timeout", "float", "Integer", new Empty());
-    add("Page.waitForNavigation.options.timeout", "float", "Integer", new Empty());
-    add("ElementHandle.waitForElementState.options.timeout", "float", "Integer", new Empty());
-    add("Page.waitForFunction.options.timeout", "float", "Integer", new Empty());
-    add("Mouse.click.x", "float", "int", new Empty());
-    add("Mouse.click.y", "float", "int", new Empty());
-    add("Mouse.dblclick.x", "float", "int", new Empty());
-    add("Mouse.dblclick.y", "float", "int", new Empty());
-    add("Mouse.move.x", "float", "int", new Empty());
-    add("Mouse.move.y", "float", "int", new Empty());
-    add("Touchscreen.tap.x", "float", "int", new Empty());
-    add("Touchscreen.tap.y", "float", "int", new Empty());
-
     add("Playwright.devices", "Object", "Map<String, DeviceDescriptor>", new Empty());
 
     // JSON type

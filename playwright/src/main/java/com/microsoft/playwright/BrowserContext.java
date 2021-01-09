@@ -100,9 +100,9 @@ public interface BrowserContext {
   }
 
   class FutureEventOptions {
-    public Integer timeout;
+    public Double timeout;
     public Predicate<Event<EventType>> predicate;
-    public FutureEventOptions withTimeout(int millis) {
+    public FutureEventOptions withTimeout(double millis) {
       timeout = millis;
       return this;
     }
@@ -181,11 +181,11 @@ public interface BrowserContext {
       this.expires = expires;
       return this;
     }
-    public AddCookie withHttpOnly(Boolean httpOnly) {
+    public AddCookie withHttpOnly(boolean httpOnly) {
       this.httpOnly = httpOnly;
       return this;
     }
-    public AddCookie withSecure(Boolean secure) {
+    public AddCookie withSecure(boolean secure) {
       this.secure = secure;
       return this;
     }
@@ -239,7 +239,7 @@ public interface BrowserContext {
      */
     public Boolean handle;
 
-    public ExposeBindingOptions withHandle(Boolean handle) {
+    public ExposeBindingOptions withHandle(boolean handle) {
       this.handle = handle;
       return this;
     }
@@ -453,7 +453,7 @@ public interface BrowserContext {
    * [{@code method: BrowserContext.setDefaultNavigationTimeout}].
    * @param timeout Maximum navigation time in milliseconds
    */
-  void setDefaultNavigationTimeout(int timeout);
+  void setDefaultNavigationTimeout(double timeout);
   /**
    * This setting will change the default maximum time for all the methods accepting {@code timeout} option.
    * <p>
@@ -462,7 +462,7 @@ public interface BrowserContext {
    * [{@code method: BrowserContext.setDefaultNavigationTimeout}] take priority over [{@code method: BrowserContext.setDefaultTimeout}].
    * @param timeout Maximum time in milliseconds
    */
-  void setDefaultTimeout(int timeout);
+  void setDefaultTimeout(double timeout);
   /**
    * The extra HTTP headers will be sent with every request initiated by any page in the context. These headers are merged
    * <p>
