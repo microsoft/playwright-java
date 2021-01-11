@@ -20,11 +20,12 @@ import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.Page.EventType.FRAMENAVIGATED;
-import static com.microsoft.playwright.Utils.expectedSSLError;
-import static com.microsoft.playwright.Utils.getOS;
+import static com.microsoft.playwright.Utils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPageWaitForNavigation extends TestBase {
@@ -67,6 +68,10 @@ public class TestPageWaitForNavigation extends TestBase {
     assertEquals(server.EMPTY_PAGE + "#foobar", page.url());
   }
 
+  private boolean checkSSLErrorMessage(String exceptionMessage, List<String> possibleErrorMessages) {
+    return possibleErrorMessages.stream().anyMatch(exceptionMessage::contains);
+  }
+
   @Test
   void shouldWorkWithClickingOnLinksWhichDoNotCommitNavigation() throws InterruptedException {
     page.navigate(server.EMPTY_PAGE);
@@ -78,9 +83,8 @@ public class TestPageWaitForNavigation extends TestBase {
       fail("did not throw");
     } catch (PlaywrightException e) {
       // TODO: figure out why it is inconsistent on Linux WebKit.
-      assertTrue(e.getMessage().contains(expectedSSLError(browserType.name())) ||
-          (isWebKit() && getOS() == Utils.OS.LINUX && "Server required TLS certificate".equals(e.getMessage())),
-        "Unexpected exception: '" + e.getMessage() + "'");
+      List<String> possibleErrorMessages = expectedSSLError(browserType.name());
+      assertTrue(checkSSLErrorMessage(e.getMessage(), possibleErrorMessages), "Unexpected exception: '" + e.getMessage() + "' check message(s): " + String.join(",", possibleErrorMessages));
     }
   }
 

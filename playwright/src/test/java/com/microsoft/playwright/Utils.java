@@ -23,7 +23,10 @@ import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -78,27 +81,27 @@ class Utils {
     return OS.UNKNOWN;
   }
 
-  static String expectedSSLError(String browserName) {
+  static List<String> expectedSSLError(String browserName) {
     switch (browserName) {
       case "chromium":
         switch (getOS()) {
           case MAC:
-            return "net::ERR_CERT_INVALID";
+            return Arrays.asList("net::ERR_CERT_INVALID");
           default:
-            return "net::ERR_CERT_AUTHORITY_INVALID";
+            return Arrays.asList("net::ERR_CERT_AUTHORITY_INVALID");
         }
       case "webkit": {
         switch (getOS()) {
           case MAC:
-            return "The certificate for this server is invalid";
+            return Arrays.asList("The certificate for this server is invalid");
           case WINDOWS:
-            return "SSL peer certificate or SSH remote key was not OK";
+            return Arrays.asList("SSL peer certificate or SSH remote key was not OK", "SSL connect error");
           default:
-            return "Unacceptable TLS certificate";
+            return Arrays.asList("Unacceptable TLS certificate", "Server required TLS certificate");
         }
       }
       default:
-        return "SSL_ERROR_UNKNOWN";
+        return Arrays.asList("SSL_ERROR_UNKNOWN");
     }
   }
 }
