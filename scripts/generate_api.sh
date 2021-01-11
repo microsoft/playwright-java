@@ -15,10 +15,10 @@ Linux)
   PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/linux/playwright.sh
   ;;
 MINGW32*)
-  PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/win32/playwright.sh
+  PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/win32/playwright.cmd
   ;;
 MINGW64*)
-  PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/win32_x64/playwright.sh
+  PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/win32_x64/playwright.cmd
   ;;
 *)
   echo "Unknown platform '$(uname)'"
