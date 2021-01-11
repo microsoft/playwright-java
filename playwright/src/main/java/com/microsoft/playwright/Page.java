@@ -24,27 +24,16 @@ import java.util.regex.Pattern;
 
 /**
  * - extends: [EventEmitter](https://nodejs.org/api/events.html#events_class_eventemitter)
- * <p>
- * Page provides methods to interact with a single tab in a {@code Browser}, or an
- * <p>
+ *
+ * <p> Page provides methods to interact with a single tab in a {@code Browser}, or an
  * [extension background page](https://developer.chrome.com/extensions/background_pages) in Chromium. One [Browser]
- * <p>
  * instance might have multiple [Page] instances.
- * <p>
- * 
- * <p>
- * The Page class emits various events (described below) which can be handled using any of Node's native
- * <p>
+ *
+ * <p> The Page class emits various events (described below) which can be handled using any of Node's native
  * [{@code EventEmitter}](https://nodejs.org/api/events.html#events_class_eventemitter) methods, such as {@code on}, {@code once} or
- * <p>
  * {@code removeListener}.
- * <p>
- * 
- * <p>
- * To unsubscribe from events use the {@code removeListener} method:
- * <p>
- * 
- * <p>
+ *
+ * <p> To unsubscribe from events use the {@code removeListener} method:
  */
 public interface Page {
   class Viewport {
@@ -1274,19 +1263,19 @@ public interface Page {
   }
   /**
    * The method finds an element matching the specified selector within the page. If no elements match the selector, the
-   * <p>
    * return value resolves to {@code null}.
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.$}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.$}].
+   *
    * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
    */
   ElementHandle querySelector(String selector);
   /**
    * The method finds all elements matching the specified selector within the page. If no elements match the selector, the
-   * <p>
    * return value resolves to {@code []}.
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.$$}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.$$}].
+   *
    * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
    */
   List<ElementHandle> querySelectorAll(String selector);
@@ -1295,18 +1284,13 @@ public interface Page {
   }
   /**
    * The method finds an element matching the specified selector within the page and passes it as a first argument to
-   * <p>
    * {@code pageFunction}. If no elements match the selector, the method throws an error. Returns the value of {@code pageFunction}.
-   * <p>
-   * If {@code pageFunction} returns a [Promise], then [{@code method: Page.$eval}] would wait for the promise to resolve and return its
-   * <p>
+   *
+   * <p> If {@code pageFunction} returns a [Promise], then [{@code method: Page.$eval}] would wait for the promise to resolve and return its
    * value.
-   * <p>
-   * Examples:
-   * <p>
-   * 
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.$eval}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.$eval}].
+   *
    * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
@@ -1317,18 +1301,12 @@ public interface Page {
   }
   /**
    * The method finds all elements matching the specified selector within the page and passes an array of matched elements as
-   * <p>
    * a first argument to {@code pageFunction}. Returns the result of {@code pageFunction} invocation.
-   * <p>
-   * If {@code pageFunction} returns a [Promise], then [{@code method: Page.$$eval}] would wait for the promise to resolve and return its
-   * <p>
+   *
+   * <p> If {@code pageFunction} returns a [Promise], then [{@code method: Page.$$eval}] would wait for the promise to resolve and return its
    * value.
-   * <p>
-   * Examples:
-   * <p>
-   * 
-   * <p>
-   * 
+   *
+   *
    * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
@@ -1340,40 +1318,32 @@ public interface Page {
   }
   /**
    * Adds a script which would be evaluated in one of the following scenarios:
-   * <p>
    * - Whenever the page is navigated.
-   * <p>
    * - Whenever the child frame is attached or navigated. In this case, the script is evaluated in the context of the newly
-   * <p>
    *   attached frame.
-   * <p>
-   * The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend
-   * <p>
+   *
+   * <p> The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend
    * the JavaScript environment, e.g. to seed {@code Math.random}.
-   * <p>
-   * 
-   * <p>
-   * > <strong>NOTE</strong> The order of evaluation of multiple scripts installed via [{@code method: BrowserContext.addInitScript}] and
-   * <p>
+   *
+   * <p> > <strong>NOTE</strong> The order of evaluation of multiple scripts installed via [{@code method: BrowserContext.addInitScript}] and
    * [{@code method: Page.addInitScript}] is not defined.
+   *
    * @param script Script to be evaluated in the page.
    * @param arg Optional argument to pass to {@code script} (only supported when passing a function).
    */
   void addInitScript(String script, Object arg);
   /**
    * Adds a {@code <script>} tag into the page with the desired url or content. Returns the added tag when the script's onload
-   * <p>
    * fires or when the script content was injected into frame.
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.addScriptTag}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.addScriptTag}].
    */
   ElementHandle addScriptTag(AddScriptTagParams params);
   /**
    * Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag with the
-   * <p>
    * content. Returns the added tag when the stylesheet's onload fires or when the CSS content was injected into frame.
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.addStyleTag}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.addStyleTag}].
    */
   ElementHandle addStyleTag(AddStyleTagParams params);
   /**
@@ -1385,30 +1355,21 @@ public interface Page {
   }
   /**
    * This method checks an element matching {@code selector} by performing the following steps:
-   * <p>
    * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * <p>
    * 1. Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
-   * <p>
    *    checked, this method returns immediately.
-   * <p>
    * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   * <p>
    *    element is detached during the checks, the whole action is retried.
-   * <p>
    * 1. Scroll the element into view if needed.
-   * <p>
    * 1. Use [{@code property: Page.mouse}] to click in the center of the element.
-   * <p>
    * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * <p>
    * 1. Ensure that the element is now checked. If not, this method rejects.
-   * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * <p>
+   *
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.check}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.check}].
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    */
@@ -1418,24 +1379,18 @@ public interface Page {
   }
   /**
    * This method clicks an element matching {@code selector} by performing the following steps:
-   * <p>
    * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * <p>
    * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   * <p>
    *    element is detached during the checks, the whole action is retried.
-   * <p>
    * 1. Scroll the element into view if needed.
-   * <p>
    * 1. Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.
-   * <p>
    * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * <p>
+   *
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.click}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.click}].
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    */
@@ -1445,13 +1400,11 @@ public interface Page {
   }
   /**
    * If {@code runBeforeUnload} is {@code false}, does not run any unload handlers and waits for the page to be closed. If
-   * <p>
    * {@code runBeforeUnload} is {@code true} the method will run unload handlers, but will **not** wait for the page to close.
-   * <p>
-   * By default, {@code page.close()} **does not** run {@code beforeunload} handlers.
-   * <p>
-   * > <strong>NOTE</strong> if {@code runBeforeUnload} is passed as true, a {@code beforeunload} dialog might be summoned
-   * <p>
+   *
+   * <p> By default, {@code page.close()} **does not** run {@code beforeunload} handlers.
+   *
+   * <p> > <strong>NOTE</strong> if {@code runBeforeUnload} is passed as true, a {@code beforeunload} dialog might be summoned
    * > and should be handled manually via [{@code event: Page.dialog}] event.
    */
   void close(CloseOptions options);
@@ -1468,28 +1421,21 @@ public interface Page {
   }
   /**
    * This method double clicks an element matching {@code selector} by performing the following steps:
-   * <p>
    * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * <p>
    * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   * <p>
    *    element is detached during the checks, the whole action is retried.
-   * <p>
    * 1. Scroll the element into view if needed.
-   * <p>
    * 1. Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.
-   * <p>
    * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
-   * <p>
    *    first click of the {@code dblclick()} triggers a navigation event, this method will reject.
-   * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * <p>
+   *
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
-   * <p>
-   * > <strong>NOTE</strong> {@code page.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.dblclick}].
+   *
+   * <p> > <strong>NOTE</strong> {@code page.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.dblclick}].
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    */
@@ -1502,80 +1448,52 @@ public interface Page {
   }
   /**
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
-   * <p>
    * is dispatched. This is equivalend to calling
-   * <p>
    * [element.click()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click).
-   * <p>
-   * 
-   * <p>
-   * Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
-   * <p>
+   *
+   * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
    * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
-   * <p>
-   * Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
-   * <p>
+   *
+   * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
    * - [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)
-   * <p>
    * - [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)
-   * <p>
    * - [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)
-   * <p>
    * - [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)
-   * <p>
    * - [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)
-   * <p>
    * - [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)
-   * <p>
    * - [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)
-   * <p>
-   * You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
-   * <p>
-   * 
-   * <p>
-   * 
+   *
+   * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
+   *
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    * @param eventInit Optional event-specific initialization properties.
    */
   void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options);
-  /**
-   * 
-   * <p>
-   * 
-   * <p>
-   */
   void emulateMedia(EmulateMediaParams params);
   default Object evaluate(String pageFunction) {
     return evaluate(pageFunction, null);
   }
   /**
    * Returns the value of the {@code pageFunction} invocation.
-   * <p>
-   * If the function passed to the {@code page.evaluate} returns a [Promise], then {@code page.evaluate} would wait for the promise to
-   * <p>
+   *
+   * <p> If the function passed to the {@code page.evaluate} returns a [Promise], then {@code page.evaluate} would wait for the promise to
    * resolve and return its value.
-   * <p>
-   * If the function passed to the {@code page.evaluate} returns a non-[Serializable] value, then {@code page.evaluate} resolves to
-   * <p>
+   *
+   * <p> If the function passed to the {@code page.evaluate} returns a non-[Serializable] value, then {@code page.evaluate} resolves to
    * {@code undefined}. DevTools Protocol also supports transferring some additional values that are not serializable by {@code JSON}:
-   * <p>
    * {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}, and bigint literals.
-   * <p>
-   * Passing argument to {@code pageFunction}:
-   * <p>
-   * 
-   * <p>
-   * A string can also be passed in instead of a function:
-   * <p>
-   * 
-   * <p>
-   * {@code ElementHandle} instances can be passed as an argument to the {@code page.evaluate}:
-   * <p>
-   * 
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.evaluate}].
+   *
+   * <p> Passing argument to {@code pageFunction}:
+   *
+   * <p> A string can also be passed in instead of a function:
+   *
+   * <p> {@code ElementHandle} instances can be passed as an argument to the {@code page.evaluate}:
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.evaluate}].
+   *
    * @param pageFunction Function to be evaluated in the page context
    * @param arg Optional argument to pass to {@code pageFunction}
    */
@@ -1585,24 +1503,18 @@ public interface Page {
   }
   /**
    * Returns the value of the {@code pageFunction} invocation as in-page object (JSHandle).
-   * <p>
-   * The only difference between {@code page.evaluate} and {@code page.evaluateHandle} is that {@code page.evaluateHandle} returns in-page
-   * <p>
+   *
+   * <p> The only difference between {@code page.evaluate} and {@code page.evaluateHandle} is that {@code page.evaluateHandle} returns in-page
    * object (JSHandle).
-   * <p>
-   * If the function passed to the {@code page.evaluateHandle} returns a [Promise], then {@code page.evaluateHandle} would wait for the
-   * <p>
+   *
+   * <p> If the function passed to the {@code page.evaluateHandle} returns a [Promise], then {@code page.evaluateHandle} would wait for the
    * promise to resolve and return its value.
-   * <p>
-   * A string can also be passed in instead of a function:
-   * <p>
-   * 
-   * <p>
-   * {@code JSHandle} instances can be passed as an argument to the {@code page.evaluateHandle}:
-   * <p>
-   * 
-   * <p>
-   * 
+   *
+   * <p> A string can also be passed in instead of a function:
+   *
+   * <p> {@code JSHandle} instances can be passed as an argument to the {@code page.evaluateHandle}:
+   *
+   *
    * @param pageFunction Function to be evaluated in the page context
    * @param arg Optional argument to pass to {@code pageFunction}
    */
@@ -1612,44 +1524,32 @@ public interface Page {
   }
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in this page. When called, the function
-   * <p>
    * executes {@code callback} and returns a [Promise] which resolves to the return value of {@code callback}. If the {@code callback} returns
-   * <p>
    * a [Promise], it will be awaited.
-   * <p>
-   * The first argument of the {@code callback} function contains information about the caller: `{ browserContext: BrowserContext,
-   * <p>
+   *
+   * <p> The first argument of the {@code callback} function contains information about the caller: `{ browserContext: BrowserContext,
    * page: Page, frame: Frame }`.
-   * <p>
-   * See [{@code method: BrowserContext.exposeBinding}] for the context-wide version.
-   * <p>
-   * > <strong>NOTE</strong> Functions installed via {@code page.exposeBinding} survive navigations.
-   * <p>
-   * 
-   * <p>
-   * 
-   * <p>
-   * 
+   *
+   * <p> See [{@code method: BrowserContext.exposeBinding}] for the context-wide version.
+   *
+   * <p> > <strong>NOTE</strong> Functions installed via {@code page.exposeBinding} survive navigations.
+   *
+   *
    * @param name Name of the function on the window object.
    * @param callback Callback function that will be called in the Playwright's context.
    */
   void exposeBinding(String name, Binding callback, ExposeBindingOptions options);
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in the page. When called, the function
-   * <p>
    * executes {@code callback} and returns a [Promise] which resolves to the return value of {@code callback}.
-   * <p>
-   * If the {@code callback} returns a [Promise], it will be awaited.
-   * <p>
-   * See [{@code method: BrowserContext.exposeFunction}] for context-wide exposed function.
-   * <p>
-   * > <strong>NOTE</strong> Functions installed via {@code page.exposeFunction} survive navigations.
-   * <p>
-   * 
-   * <p>
-   * 
-   * <p>
-   * 
+   *
+   * <p> If the {@code callback} returns a [Promise], it will be awaited.
+   *
+   * <p> See [{@code method: BrowserContext.exposeFunction}] for context-wide exposed function.
+   *
+   * <p> > <strong>NOTE</strong> Functions installed via {@code page.exposeFunction} survive navigations.
+   *
+   *
    * @param name Name of the function on the window object
    * @param callback Callback function which will be called in Playwright's context.
    */
@@ -1659,16 +1559,14 @@ public interface Page {
   }
   /**
    * This method waits for an element matching {@code selector}, waits for [actionability](./actionability.md) checks, focuses the
-   * <p>
    * element, fills it and triggers an {@code input} event after filling. If the element matching {@code selector} is not an {@code <input>},
-   * <p>
    * {@code <textarea>} or {@code [contenteditable]} element, this method throws an error. Note that you can pass an empty string to
-   * <p>
    * clear the input field.
-   * <p>
-   * To send fine-grained keyboard events, use [{@code method: Page.type}].
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.fill}]
+   *
+   * <p> To send fine-grained keyboard events, use [{@code method: Page.type}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.fill}]
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
@@ -1679,10 +1577,10 @@ public interface Page {
   }
   /**
    * This method fetches an element with {@code selector} and focuses it. If there's no element matching {@code selector}, the method
-   * <p>
    * waits until a matching element appears in the DOM.
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.focus}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.focus}].
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    */
@@ -1692,12 +1590,8 @@ public interface Page {
   Frame frameByUrl(Pattern pattern);
   /**
    * Returns frame matching the specified criteria. Either {@code name} or {@code url} must be specified.
-   * <p>
-   * 
-   * <p>
-   * 
-   * <p>
-   * 
+   *
+   *
    * @param frameSelector Frame name or other frame lookup options.
    */
   Frame frameByUrl(Predicate<String> predicate);
@@ -1710,6 +1604,7 @@ public interface Page {
   }
   /**
    * Returns element attribute value.
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    * @param name Attribute name to get the value for.
@@ -1720,10 +1615,9 @@ public interface Page {
   }
   /**
    * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * <p>
    * last redirect. If can not go back, returns {@code null}.
-   * <p>
-   * Navigate to the previous page in history.
+   *
+   * <p> Navigate to the previous page in history.
    */
   Response goBack(GoBackOptions options);
   default Response goForward() {
@@ -1731,10 +1625,9 @@ public interface Page {
   }
   /**
    * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * <p>
    * last redirect. If can not go forward, returns {@code null}.
-   * <p>
-   * Navigate to the next page in history.
+   *
+   * <p> Navigate to the next page in history.
    */
   Response goForward(GoForwardOptions options);
   default Response navigate(String url) {
@@ -1742,36 +1635,26 @@ public interface Page {
   }
   /**
    * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * <p>
    * last redirect.
-   * <p>
-   * {@code page.goto} will throw an error if:
-   * <p>
+   *
+   * <p> {@code page.goto} will throw an error if:
    * - there's an SSL error (e.g. in case of self-signed certificates).
-   * <p>
    * - target URL is invalid.
-   * <p>
    * - the {@code timeout} is exceeded during navigation.
-   * <p>
    * - the remote server does not respond or is unreachable.
-   * <p>
    * - the main resource failed to load.
-   * <p>
-   * {@code page.goto} will not throw an error when any valid HTTP status code is returned by the remote server, including 404 "Not
-   * <p>
+   *
+   * <p> {@code page.goto} will not throw an error when any valid HTTP status code is returned by the remote server, including 404 "Not
    * Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling
-   * <p>
    * [{@code method: Response.status}].
-   * <p>
-   * > <strong>NOTE</strong> {@code page.goto} either throws an error or returns a main resource response. The only exceptions are navigation to
-   * <p>
+   *
+   * <p> > <strong>NOTE</strong> {@code page.goto} either throws an error or returns a main resource response. The only exceptions are navigation to
    * {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
-   * <p>
    * > <strong>NOTE</strong> Headless mode doesn't support navigation to a PDF document. See the
-   * <p>
    * [upstream issue](https://bugs.chromium.org/p/chromium/issues/detail?id=761295).
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.goto}]
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.goto}]
+   *
    * @param url URL to navigate page to. The url should include scheme, e.g. {@code https://}.
    */
   Response navigate(String url, NavigateOptions options);
@@ -1780,24 +1663,18 @@ public interface Page {
   }
   /**
    * This method hovers over an element matching {@code selector} by performing the following steps:
-   * <p>
    * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * <p>
    * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   * <p>
    *    element is detached during the checks, the whole action is retried.
-   * <p>
    * 1. Scroll the element into view if needed.
-   * <p>
    * 1. Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.
-   * <p>
    * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * <p>
+   *
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.hover}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.hover}].
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    */
@@ -1807,6 +1684,7 @@ public interface Page {
   }
   /**
    * Returns {@code element.innerHTML}.
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    */
@@ -1816,6 +1694,7 @@ public interface Page {
   }
   /**
    * Returns {@code element.innerText}.
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    */
@@ -1839,69 +1718,44 @@ public interface Page {
   }
   /**
    * Returns the PDF buffer.
-   * <p>
-   * > <strong>NOTE</strong> Generating a pdf is currently only supported in Chromium headless.
-   * <p>
-   * {@code page.pdf()} generates a pdf of the page with {@code print} css media. To generate a pdf with {@code screen} media, call
-   * <p>
+   *
+   * <p> > <strong>NOTE</strong> Generating a pdf is currently only supported in Chromium headless.
+   *
+   * <p> {@code page.pdf()} generates a pdf of the page with {@code print} css media. To generate a pdf with {@code screen} media, call
    * [{@code method: Page.emulateMedia}] before calling {@code page.pdf()}:
-   * <p>
-   * > <strong>NOTE</strong> By default, {@code page.pdf()} generates a pdf with modified colors for printing. Use the
-   * <p>
+   *
+   * <p> > <strong>NOTE</strong> By default, {@code page.pdf()} generates a pdf with modified colors for printing. Use the
    * [{@code -webkit-print-color-adjust}](https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-print-color-adjust) property to
-   * <p>
    * force rendering of exact colors.
-   * <p>
-   * 
-   * <p>
-   * The {@code width}, {@code height}, and {@code margin} options accept values labeled with units. Unlabeled values are treated as pixels.
-   * <p>
-   * A few examples:
-   * <p>
+   *
+   * <p> The {@code width}, {@code height}, and {@code margin} options accept values labeled with units. Unlabeled values are treated as pixels.
+   *
+   * <p> A few examples:
    * - {@code page.pdf({width: 100})} - prints with width set to 100 pixels
-   * <p>
    * - {@code page.pdf({width: '100px'})} - prints with width set to 100 pixels
-   * <p>
    * - {@code page.pdf({width: '10cm'})} - prints with width set to 10 centimeters.
-   * <p>
-   * All possible units are:
-   * <p>
+   *
+   * <p> All possible units are:
    * - {@code px} - pixel
-   * <p>
    * - {@code in} - inch
-   * <p>
    * - {@code cm} - centimeter
-   * <p>
    * - {@code mm} - millimeter
-   * <p>
-   * The {@code format} options are:
-   * <p>
+   *
+   * <p> The {@code format} options are:
    * - {@code Letter}: 8.5in x 11in
-   * <p>
    * - {@code Legal}: 8.5in x 14in
-   * <p>
    * - {@code Tabloid}: 11in x 17in
-   * <p>
    * - {@code Ledger}: 17in x 11in
-   * <p>
    * - {@code A0}: 33.1in x 46.8in
-   * <p>
    * - {@code A1}: 23.4in x 33.1in
-   * <p>
    * - {@code A2}: 16.54in x 23.4in
-   * <p>
    * - {@code A3}: 11.7in x 16.54in
-   * <p>
    * - {@code A4}: 8.27in x 11.7in
-   * <p>
    * - {@code A5}: 5.83in x 8.27in
-   * <p>
    * - {@code A6}: 4.13in x 5.83in
-   * <p>
-   * > <strong>NOTE</strong> {@code headerTemplate} and {@code footerTemplate} markup have the following limitations:
-   * <p>
+   *
+   * <p> > <strong>NOTE</strong> {@code headerTemplate} and {@code footerTemplate} markup have the following limitations:
    * > 1. Script tags inside templates are not evaluated.
-   * <p>
    * > 2. Page styles are not visible inside templates.
    */
   byte[] pdf(PdfOptions options);
@@ -1910,32 +1764,25 @@ public interface Page {
   }
   /**
    * Focuses the element, and then uses [{@code method: Keyboard.down}] and [{@code method: Keyboard.up}].
-   * <p>
-   * {@code key} can specify the intended [keyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
-   * <p>
+   *
+   * <p> {@code key} can specify the intended [keyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
    * value or a single character to generate the text for. A superset of the {@code key} values can be found
-   * <p>
    * [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values). Examples of the keys are:
-   * <p>
-   * {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
-   * <p>
+   *
+   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
    * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
-   * <p>
-   * Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
-   * <p>
-   * Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
-   * <p>
-   * If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
-   * <p>
+   *
+   * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
+   *
+   * <p> Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
+   *
+   * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
    * texts.
-   * <p>
-   * Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
-   * <p>
+   *
+   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
-   * <p>
-   * 
-   * <p>
-   * 
+   *
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
@@ -1946,7 +1793,6 @@ public interface Page {
   }
   /**
    * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * <p>
    * last redirect.
    */
   Response reload(ReloadOptions options);
@@ -1954,22 +1800,18 @@ public interface Page {
   void route(Pattern url, Consumer<Route> handler);
   /**
    * Routing provides the capability to modify network requests that are made by a page.
-   * <p>
-   * Once routing is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
-   * <p>
-   * > <strong>NOTE</strong> The handler will only be called for the first url if the response is a redirect.
-   * <p>
-   * 
-   * <p>
-   * or the same snippet using a regex pattern instead:
-   * <p>
-   * 
-   * <p>
-   * Page routes take precedence over browser context routes (set up with [{@code method: BrowserContext.route}]) when request
-   * <p>
+   *
+   * <p> Once routing is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   *
+   * <p> > <strong>NOTE</strong> The handler will only be called for the first url if the response is a redirect.
+   *
+   * <p> or the same snippet using a regex pattern instead:
+   *
+   * <p> Page routes take precedence over browser context routes (set up with [{@code method: BrowserContext.route}]) when request
    * matches both handlers.
-   * <p>
-   * > <strong>NOTE</strong> Enabling routing disables http cache.
+   *
+   * <p> > <strong>NOTE</strong> Enabling routing disables http cache.
+   *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
    * @param handler handler function to route the request.
    */
@@ -1979,9 +1821,8 @@ public interface Page {
   }
   /**
    * Returns the buffer with the captured screenshot.
-   * <p>
-   * > <strong>NOTE</strong> Screenshots take at least 1/6 second on Chromium OS X and Chromium Windows. See https://crbug.com/741689 for
-   * <p>
+   *
+   * <p> > <strong>NOTE</strong> Screenshots take at least 1/6 second on Chromium OS X and Chromium Windows. See https://crbug.com/741689 for
    * discussion.
    */
   byte[] screenshot(ScreenshotOptions options);
@@ -2025,14 +1866,12 @@ public interface Page {
   }
   /**
    * Returns the array of option values that have been successfully selected.
-   * <p>
-   * Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * <p>
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
    * matching {@code selector}, the method throws an error.
-   * <p>
-   * 
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.selectOption}]
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.selectOption}]
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
@@ -2044,42 +1883,39 @@ public interface Page {
     setContent(html, null);
   }
   /**
-   * 
+   *
+   *
    * @param html HTML markup to assign to the page.
    */
   void setContent(String html, SetContentOptions options);
   /**
    * This setting will change the default maximum navigation time for the following methods and related shortcuts:
-   * <p>
    * - [{@code method: Page.goBack}]
-   * <p>
    * - [{@code method: Page.goForward}]
-   * <p>
    * - [{@code method: Page.goto}]
-   * <p>
    * - [{@code method: Page.reload}]
-   * <p>
    * - [{@code method: Page.setContent}]
-   * <p>
    * - [{@code method: Page.waitForNavigation}]
-   * <p>
-   * > <strong>NOTE</strong> [{@code method: Page.setDefaultNavigationTimeout}] takes priority over [{@code method: Page.setDefaultTimeout}],
-   * <p>
+   *
+   * <p> > <strong>NOTE</strong> [{@code method: Page.setDefaultNavigationTimeout}] takes priority over [{@code method: Page.setDefaultTimeout}],
    * [{@code method: BrowserContext.setDefaultTimeout}] and [{@code method: BrowserContext.setDefaultNavigationTimeout}].
+   *
    * @param timeout Maximum navigation time in milliseconds
    */
   void setDefaultNavigationTimeout(double timeout);
   /**
    * This setting will change the default maximum time for all the methods accepting {@code timeout} option.
-   * <p>
-   * > <strong>NOTE</strong> [{@code method: Page.setDefaultNavigationTimeout}] takes priority over [{@code method: Page.setDefaultTimeout}].
+   *
+   * <p> > <strong>NOTE</strong> [{@code method: Page.setDefaultNavigationTimeout}] takes priority over [{@code method: Page.setDefaultTimeout}].
+   *
    * @param timeout Maximum time in milliseconds
    */
   void setDefaultTimeout(double timeout);
   /**
    * The extra HTTP headers will be sent with every request the page initiates.
-   * <p>
-   * > <strong>NOTE</strong> page.setExtraHTTPHeaders does not guarantee the order of headers in the outgoing requests.
+   *
+   * <p> > <strong>NOTE</strong> page.setExtraHTTPHeaders does not guarantee the order of headers in the outgoing requests.
+   *
    * @param headers An object containing additional HTTP headers to be sent with every request. All header values must be strings.
    */
   void setExtraHTTPHeaders(Map<String, String> headers);
@@ -2092,27 +1928,21 @@ public interface Page {
   default void setInputFiles(String selector, FileChooser.FilePayload[] files) { setInputFiles(selector, files, null); }
   /**
    * This method expects {@code selector} to point to an
-   * <p>
    * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
-   * <p>
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * <p>
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    */
   void setInputFiles(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options);
   /**
    * In the case of multiple pages in a single browser, each page can have its own viewport size. However,
-   * <p>
    * [{@code method: Browser.newContext}] allows to set viewport size (and more) for all pages in the context at once.
-   * <p>
-   * {@code page.setViewportSize} will resize the page. A lot of websites don't expect phones to change size, so you should set the
-   * <p>
+   *
+   * <p> {@code page.setViewportSize} will resize the page. A lot of websites don't expect phones to change size, so you should set the
    * viewport size before navigating to the page.
-   * <p>
-   * 
-   * <p>
    */
   void setViewportSize(int width, int height);
   default void tap(String selector) {
@@ -2120,26 +1950,20 @@ public interface Page {
   }
   /**
    * This method taps an element matching {@code selector} by performing the following steps:
-   * <p>
    * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * <p>
    * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   * <p>
    *    element is detached during the checks, the whole action is retried.
-   * <p>
    * 1. Scroll the element into view if needed.
-   * <p>
    * 1. Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.
-   * <p>
    * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * <p>
+   *
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
-   * <p>
-   * > <strong>NOTE</strong> {@code page.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.tap}].
+   *
+   * <p> > <strong>NOTE</strong> {@code page.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.tap}].
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    */
@@ -2149,6 +1973,7 @@ public interface Page {
   }
   /**
    * Returns {@code element.textContent}.
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    */
@@ -2163,14 +1988,12 @@ public interface Page {
   }
   /**
    * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code page.type} can be used to send
-   * <p>
    * fine-grained keyboard events. To fill values in form fields, use [{@code method: Page.fill}].
-   * <p>
-   * To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: Keyboard.press}].
-   * <p>
-   * 
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.type}].
+   *
+   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: Keyboard.press}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.type}].
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    * @param text A text to type into a focused element.
@@ -2181,30 +2004,21 @@ public interface Page {
   }
   /**
    * This method unchecks an element matching {@code selector} by performing the following steps:
-   * <p>
    * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * <p>
    * 1. Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
-   * <p>
    *    unchecked, this method returns immediately.
-   * <p>
    * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   * <p>
    *    element is detached during the checks, the whole action is retried.
-   * <p>
    * 1. Scroll the element into view if needed.
-   * <p>
    * 1. Use [{@code property: Page.mouse}] to click in the center of the element.
-   * <p>
    * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * <p>
    * 1. Ensure that the element is now unchecked. If not, this method rejects.
-   * <p>
-   * When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * <p>
+   *
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.uncheck}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.uncheck}].
+   *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    */
@@ -2216,6 +2030,7 @@ public interface Page {
   void unroute(Pattern url, Consumer<Route> handler);
   /**
    * Removes a route created with [{@code method: Page.route}]. When {@code handler} is not specified, removes all routes for the {@code url}.
+   *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
    * @param handler Optional handler function to route the request.
    */
@@ -2239,10 +2054,10 @@ public interface Page {
   }
   /**
    * Returns the event data value.
-   * <p>
-   * Waits for event to fire and passes its value into the predicate function. Returns when the predicate returns truthy
-   * <p>
+   *
+   * <p> Waits for event to fire and passes its value into the predicate function. Returns when the predicate returns truthy
    * value. Will throw an error if the page is closed before the event is fired.
+   *
    * @param event Event name, same one would pass into {@code page.on(event)}.
    */
   Deferred<Event<EventType>> futureEvent(EventType event, FutureEventOptions options);
@@ -2254,16 +2069,13 @@ public interface Page {
   }
   /**
    * Returns when the {@code pageFunction} returns a truthy value. It resolves to a JSHandle of the truthy value.
-   * <p>
-   * The {@code waitForFunction} can be used to observe viewport size change:
-   * <p>
-   * 
-   * <p>
-   * To pass an argument to the predicate of {@code page.waitForFunction} function:
-   * <p>
-   * 
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.waitForFunction}].
+   *
+   * <p> The {@code waitForFunction} can be used to observe viewport size change:
+   *
+   * <p> To pass an argument to the predicate of {@code page.waitForFunction} function:
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.waitForFunction}].
+   *
    * @param pageFunction Function to be evaluated in browser context
    * @param arg Optional argument to pass to {@code pageFunction}
    */
@@ -2276,16 +2088,12 @@ public interface Page {
   }
   /**
    * Returns when the required load state has been reached.
-   * <p>
-   * This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been committed
-   * <p>
+   *
+   * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been committed
    * when this method is called. If current document has already reached the required state, resolves immediately.
-   * <p>
-   * 
-   * <p>
-   * 
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.waitForLoadState}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.waitForLoadState}].
+   *
    * @param state Optional load state to wait for, defaults to {@code load}. If the state has been already reached while loading current
    * document, the method resolves immediately. Can be one of:
    * - {@code 'load'} - wait for the {@code load} event to be fired.
@@ -2298,24 +2106,17 @@ public interface Page {
   }
   /**
    * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * <p>
    * last redirect. In case of navigation to a different anchor or navigation due to History API usage, the navigation will
-   * <p>
    * resolve with {@code null}.
-   * <p>
-   * This resolves when the page navigates to a new URL or reloads. It is useful for when you run code which will indirectly
-   * <p>
+   *
+   * <p> This resolves when the page navigates to a new URL or reloads. It is useful for when you run code which will indirectly
    * cause the page to navigate. e.g. The click target has an {@code onclick} handler that triggers navigation from a {@code setTimeout}.
-   * <p>
    * Consider this example:
-   * <p>
-   * 
-   * <p>
-   * <strong>NOTE</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is
-   * <p>
+   *
+   * <p> <strong>NOTE</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is
    * considered a navigation.
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.waitForNavigation}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.waitForNavigation}].
    */
   Deferred<Response> futureNavigation(FutureNavigationOptions options);
   default Deferred<Request> futureRequest(String urlGlob) { return futureRequest(urlGlob, null); }
@@ -2335,42 +2136,34 @@ public interface Page {
   }
   /**
    * Returns when element specified by selector satisfies {@code state} option. Returns {@code null} if waiting for {@code hidden} or
-   * <p>
    * {@code detached}.
-   * <p>
-   * Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at
-   * <p>
+   *
+   * <p> Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at
    * the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the
-   * <p>
    * selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
-   * <p>
-   * This method works across navigations:
-   * <p>
-   * 
-   * <p>
-   * 
+   *
+   * <p> This method works across navigations:
+   *
+   *
    * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
    */
   ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
   /**
    * Waits for the given {@code timeout} in milliseconds.
-   * <p>
-   * Note that {@code page.waitForTimeout()} should only be used for debugging. Tests using the timer in production are going to be
-   * <p>
+   *
+   * <p> Note that {@code page.waitForTimeout()} should only be used for debugging. Tests using the timer in production are going to be
    * flaky. Use signals such as network events, selectors becoming visible and others instead.
-   * <p>
-   * 
-   * <p>
-   * Shortcut for main frame's [{@code method: Frame.waitForTimeout}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.waitForTimeout}].
+   *
    * @param timeout A timeout to wait for
    */
   void waitForTimeout(double timeout);
   /**
    * This method returns all of the dedicated [WebWorkers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)
-   * <p>
    * associated with the page.
-   * <p>
-   * > <strong>NOTE</strong> This does not contain ServiceWorkers
+   *
+   * <p> > <strong>NOTE</strong> This does not contain ServiceWorkers
    */
   List<Worker> workers();
 }

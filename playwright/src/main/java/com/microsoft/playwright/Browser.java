@@ -21,17 +21,12 @@ import java.util.*;
 
 /**
  * - extends: [EventEmitter](https://nodejs.org/api/events.html#events_class_eventemitter)
- * <p>
- * A Browser is created when Playwright connects to a browser instance, either through [{@code method: BrowserType.launch}] or
- * <p>
+ *
+ * <p> A Browser is created when Playwright connects to a browser instance, either through [{@code method: BrowserType.launch}] or
  * [{@code method: BrowserType.connect}].
- * <p>
- * 
- * <p>
- * See {@code ChromiumBrowser}, [FirefoxBrowser] and [WebKitBrowser] for browser-specific features. Note that
- * <p>
+ *
+ * <p> See {@code ChromiumBrowser}, [FirefoxBrowser] and [WebKitBrowser] for browser-specific features. Note that
  * [{@code method: BrowserType.connect}] and [{@code method: BrowserType.launch}] always return a specific browser instance, based on
- * <p>
  * the browser being connected to or launched.
  */
 public interface Browser {
@@ -639,21 +634,16 @@ public interface Browser {
   }
   /**
    * In case this browser is obtained using [{@code method: BrowserType.launch}], closes the browser and all of its pages (if any
-   * <p>
    * were opened).
-   * <p>
-   * In case this browser is obtained using [{@code method: BrowserType.connect}], clears all created contexts belonging to this
-   * <p>
+   *
+   * <p> In case this browser is obtained using [{@code method: BrowserType.connect}], clears all created contexts belonging to this
    * browser and disconnects from the browser server.
-   * <p>
-   * The {@code Browser} object itself is considered to be disposed and cannot be used anymore.
+   *
+   * <p> The {@code Browser} object itself is considered to be disposed and cannot be used anymore.
    */
   void close();
   /**
    * Returns an array of all open browser contexts. In a newly created browser, this will return zero browser contexts.
-   * <p>
-   * 
-   * <p>
    */
   List<BrowserContext> contexts();
   /**
@@ -665,9 +655,6 @@ public interface Browser {
   }
   /**
    * Creates a new browser context. It won't share cookies/cache with other browser contexts.
-   * <p>
-   * 
-   * <p>
    */
   BrowserContext newContext(NewContextOptions options);
   default Page newPage() {
@@ -675,11 +662,9 @@ public interface Browser {
   }
   /**
    * Creates a new page in a new browser context. Closing this page will close the context as well.
-   * <p>
-   * This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and
-   * <p>
+   *
+   * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and
    * testing frameworks should explicitly create [{@code method: Browser.newContext}] followed by the
-   * <p>
    * [{@code method: BrowserContext.newPage}] to control their exact life times.
    */
   Page newPage(NewPageOptions options);

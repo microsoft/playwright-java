@@ -20,9 +20,6 @@ import java.util.*;
 
 /**
  * {@code Dialog} objects are dispatched by page via the [{@code event: Page.dialog}] event.
- * <p>
- * 
- * <p>
  */
 public interface Dialog {
   enum Type { ALERT, BEFOREUNLOAD, CONFIRM, PROMPT }
@@ -32,6 +29,7 @@ public interface Dialog {
   }
   /**
    * Returns when the dialog has been accepted.
+   *
    * @param promptText A text to enter in prompt. Does not cause any effects if the dialog's {@code type} is not prompt. Optional.
    */
   void accept(String promptText);

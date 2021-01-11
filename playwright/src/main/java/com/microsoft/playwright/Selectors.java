@@ -21,7 +21,6 @@ import java.util.*;
 
 /**
  * Selectors can be used to install custom selector engines. See
- * <p>
  * [Working with selectors](./selectors.md#working-with-selectors) for more information.
  */
 public interface Selectors {
@@ -43,10 +42,8 @@ public interface Selectors {
   default void register(String name, Path path) { register(name, path, null); }
   /**
    * An example of registering selector engine that queries elements based on a tag name:
-   * <p>
-   * 
-   * <p>
-   * 
+   *
+   *
    * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May only
    * contain {@code [a-zA-Z0-9_]} characters.
    * @param script Script that evaluates to a selector engine instance.

@@ -68,7 +68,7 @@ abstract class Element {
     output.add(offset + "/**");
     String[] lines = text.split("\\n");
     for (String line : lines) {
-      output.add(offset + " * " + line
+      output.add((offset + " *" + (line.isEmpty() ? "" : " ") + line)
         .replace("*/", "*\\/")
         .replace("**NOTE**", "<strong>NOTE</strong>")
         .replaceAll("`([^`]+)`", "{@code $1}"));
@@ -79,12 +79,14 @@ abstract class Element {
   String formattedComment() {
     return comment()
       // Remove any code snippets between ``` and ```.
-      .replaceAll("```((?<!`)`(?!`)|[^`])+```", "")
+      .replaceAll("\\n```((?<!`)`(?!`)|[^`])+```\\n", "")
       .replaceAll("\\nAn example of[^\\n]+\\n", "")
       .replaceAll("\\nThis example [^\\n]+\\n", "")
+      .replaceAll("\\nExamples:\\n", "")
       .replaceAll("\\nSee ChromiumBrowser[^\\n]+", "\n")
-      .replaceAll("\\n\\n", "\n")
-      .replaceAll("\\n", "\n<p>\n");
+      // > **NOTE** ... => **NOTE** ...
+      .replaceAll("^>", "")
+      .replaceAll("\\n\\n", "\n\n<p> ");
   }
 
   String comment() {
@@ -622,6 +624,7 @@ class Method extends Element {
     }
     List<String> sections = new ArrayList<>();
     sections.add(formattedComment());
+    boolean hasBlankLine = false;
     if (!params.isEmpty()) {
       for (Param p : params) {
         String comment = p.comment();
@@ -631,10 +634,18 @@ class Method extends Element {
         if (skipJavadoc.contains(p.jsonPath)) {
           continue;
         }
+        if (!hasBlankLine) {
+          sections.add("");
+          hasBlankLine = true;
+        }
         sections.add("@param " + p.name() + " " + comment);
       }
     }
     if (jsonElement.getAsJsonObject().has("returnComment")) {
+      if (!hasBlankLine) {
+        sections.add("");
+        hasBlankLine = true;
+      }
       String returnComment = jsonElement.getAsJsonObject().get("returnComment").getAsString();
       sections.add("@return " + returnComment);
     }
