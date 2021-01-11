@@ -22,7 +22,6 @@ import java.util.*;
 
 /**
  * Whenever a network route is set up with [{@code method: Page.route}] or [{@code method: BrowserContext.route}], the {@code Route} object
- * <p>
  * allows to handle the route.
  */
 public interface Route {
@@ -119,6 +118,7 @@ public interface Route {
   }
   /**
    * Aborts the route's request.
+   *
    * @param errorCode Optional error code. Defaults to {@code failed}, could be one of the following:
    * - {@code 'aborted'} - An operation was aborted (due to user action)
    * - {@code 'accessdenied'} - Permission to access a resource, other than the network, was denied
@@ -143,21 +143,15 @@ public interface Route {
   }
   /**
    * Continues route's request with optional overrides.
-   * <p>
-   * 
-   * <p>
-   * 
+   *
+   *
    * @param overrides Optional request overrides, can override following properties:
    */
   void continue_(ContinueOverrides overrides);
   /**
    * Fulfills route's request with given response.
-   * <p>
-   * 
-   * <p>
-   * 
-   * <p>
-   * 
+   *
+   *
    * @param response Response that will fulfill this route's request.
    */
   void fulfill(FulfillResponse response);

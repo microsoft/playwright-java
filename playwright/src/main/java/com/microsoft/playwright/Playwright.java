@@ -21,13 +21,9 @@ import java.util.*;
 
 /**
  * Playwright module provides a method to launch a browser instance. The following is a typical example of using Playwright
- * <p>
  * to drive automation:
- * <p>
- * 
- * <p>
- * By default, the {@code playwright} NPM package automatically downloads browser executables during installation. The
- * <p>
+ *
+ * <p> By default, the {@code playwright} NPM package automatically downloads browser executables during installation. The
  * {@code playwright-core} NPM package can be used to skip automatic downloads.
  */
 public interface Playwright {
@@ -37,13 +33,8 @@ public interface Playwright {
   BrowserType chromium();
   /**
    * Returns a list of devices to be used with [{@code method: Browser.newContext}] or [{@code method: Browser.newPage}]. Actual list of
-   * <p>
    * devices can be found in
-   * <p>
    * [src/server/deviceDescriptors.ts](https://github.com/Microsoft/playwright/blob/master/src/server/deviceDescriptors.ts).
-   * <p>
-   * 
-   * <p>
    */
   Map<String, DeviceDescriptor> devices();
   /**
@@ -52,7 +43,6 @@ public interface Playwright {
   BrowserType firefox();
   /**
    * Selectors can be used to install custom selector engines. See
-   * <p>
    * [Working with selectors](./selectors.md#working-with-selectors) for more information.
    */
   Selectors selectors();

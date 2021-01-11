@@ -20,23 +20,17 @@ import java.util.*;
 
 /**
  * Whenever the page sends a request for a network resource the following sequence of events are emitted by {@code Page}:
- * <p>
  * - [{@code event: Page.request}] emitted when the request is issued by the page.
- * <p>
  * - [{@code event: Page.response}] emitted when/if the response status and headers are received for the request.
- * <p>
  * - [{@code event: Page.requestfinished}] emitted when the response body is downloaded and the request is complete.
- * <p>
- * If request fails at some point, then instead of {@code 'requestfinished'} event (and possibly instead of 'response' event),
- * <p>
+ *
+ * <p> If request fails at some point, then instead of {@code 'requestfinished'} event (and possibly instead of 'response' event),
  * the  [{@code event: Page.requestfailed}] event is emitted.
- * <p>
- * > <strong>NOTE</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request
- * <p>
+ *
+ * <p> > <strong>NOTE</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request
  * will complete with {@code 'requestfinished'} event.
- * <p>
- * If request gets a 'redirect' response, the request is successfully finished with the 'requestfinished' event, and a new
- * <p>
+ *
+ * <p> If request gets a 'redirect' response, the request is successfully finished with the 'requestfinished' event, and a new
  * request is  issued to a redirected url.
  */
 public interface Request {
@@ -129,11 +123,8 @@ public interface Request {
   }
   /**
    * The method returns {@code null} unless this request has failed, as reported by {@code requestfailed} event.
-   * <p>
-   * Example of logging of all the failed requests:
-   * <p>
-   * 
-   * <p>
+   *
+   * <p> Example of logging of all the failed requests:
    */
   RequestFailure failure();
   /**
@@ -162,37 +153,25 @@ public interface Request {
   byte[] postDataBuffer();
   /**
    * Request that was redirected by the server to this one, if any.
-   * <p>
-   * When the server responds with a redirect, Playwright creates a new {@code Request} object. The two requests are connected by
-   * <p>
+   *
+   * <p> When the server responds with a redirect, Playwright creates a new {@code Request} object. The two requests are connected by
    * {@code redirectedFrom()} and {@code redirectedTo()} methods. When multiple server redirects has happened, it is possible to
-   * <p>
    * construct the whole redirect chain by repeatedly calling {@code redirectedFrom()}.
-   * <p>
-   * For example, if the website {@code http://example.com} redirects to {@code https://example.com}:
-   * <p>
-   * 
-   * <p>
-   * If the website {@code https://google.com} has no redirects:
-   * <p>
-   * 
-   * <p>
+   *
+   * <p> For example, if the website {@code http://example.com} redirects to {@code https://example.com}:
+   *
+   * <p> If the website {@code https://google.com} has no redirects:
    */
   Request redirectedFrom();
   /**
    * New request issued by the browser if the server responded with redirect.
-   * <p>
-   * This method is the opposite of [{@code method: Request.redirectedFrom}]:
-   * <p>
-   * 
-   * <p>
+   *
+   * <p> This method is the opposite of [{@code method: Request.redirectedFrom}]:
    */
   Request redirectedTo();
   /**
    * Contains the request's resource type as it was perceived by the rendering engine. ResourceType will be one of the
-   * <p>
    * following: {@code document}, {@code stylesheet}, {@code image}, {@code media}, {@code font}, {@code script}, {@code texttrack}, {@code xhr}, {@code fetch}, {@code eventsource},
-   * <p>
    * {@code websocket}, {@code manifest}, {@code other}.
    */
   String resourceType();
@@ -202,13 +181,8 @@ public interface Request {
   Response response();
   /**
    * Returns resource timing information for given request. Most of the timing values become available upon the response,
-   * <p>
    * {@code responseEnd} becomes available when request finishes. Find more information at
-   * <p>
    * [Resource Timing API](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming).
-   * <p>
-   * 
-   * <p>
    */
   RequestTiming timing();
   /**

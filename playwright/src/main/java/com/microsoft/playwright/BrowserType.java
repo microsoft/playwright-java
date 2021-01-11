@@ -21,11 +21,7 @@ import java.util.*;
 
 /**
  * BrowserType provides methods to launch a specific browser instance or connect to an existing one. The following is a
- * <p>
  * typical example of using Playwright to drive automation:
- * <p>
- * 
- * <p>
  */
 public interface BrowserType {
   class LaunchOptions {
@@ -625,37 +621,22 @@ public interface BrowserType {
   }
   /**
    * Returns the browser instance.
-   * <p>
-   * You can use {@code ignoreDefaultArgs} to filter out {@code --mute-audio} from default arguments:
-   * <p>
-   * 
-   * <p>
-   * > **Chromium-only** Playwright can also be used to control the Chrome browser, but it works best with the version of
-   * <p>
+   *
+   * <p> You can use {@code ignoreDefaultArgs} to filter out {@code --mute-audio} from default arguments:
+   *
+   * <p> > **Chromium-only** Playwright can also be used to control the Chrome browser, but it works best with the version of
    * Chromium it is bundled with. There is no guarantee it will work with any other version. Use {@code executablePath} option with
-   * <p>
    * extreme caution.
-   * <p>
    * >
-   * <p>
    * > If Google Chrome (rather than Chromium) is preferred, a
-   * <p>
    * [Chrome Canary](https://www.google.com/chrome/browser/canary.html) or
-   * <p>
    * [Dev Channel](https://www.chromium.org/getting-involved/dev-channel) build is suggested.
-   * <p>
    * >
-   * <p>
    * > In [{@code method: BrowserType.launch}] above, any mention of Chromium also applies to Chrome.
-   * <p>
    * >
-   * <p>
    * > See [{@code this article}](https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/) for
-   * <p>
    * a description of the differences between Chromium and Chrome.
-   * <p>
    * [{@code This article}](https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md)
-   * <p>
    * describes some differences for Linux users.
    */
   Browser launch(LaunchOptions options);
@@ -664,10 +645,10 @@ public interface BrowserType {
   }
   /**
    * Returns the persistent browser context instance.
-   * <p>
-   * Launches browser that uses persistent storage located at {@code userDataDir} and returns the only context. Closing this
-   * <p>
+   *
+   * <p> Launches browser that uses persistent storage located at {@code userDataDir} and returns the only context. Closing this
    * context will automatically close the browser.
+   *
    * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for
    * [Chromium](https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md) and
    * [Firefox](https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile).

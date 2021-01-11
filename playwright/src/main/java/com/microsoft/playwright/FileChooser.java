@@ -21,9 +21,6 @@ import java.util.*;
 
 /**
  * {@code FileChooser} objects are dispatched by the page in the [{@code event: Page.filechooser}] event.
- * <p>
- * 
- * <p>
  */
 public interface FileChooser {
   class FilePayload {
@@ -81,7 +78,6 @@ public interface FileChooser {
   default void setFiles(FileChooser.FilePayload[] files) { setFiles(files, null); }
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
-   * <p>
    * they are resolved relative to the the current working directory. For empty array, clears the selected files.
    */
   void setFiles(FileChooser.FilePayload[] files, SetFilesOptions options);

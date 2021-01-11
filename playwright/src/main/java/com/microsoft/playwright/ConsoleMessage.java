@@ -51,9 +51,7 @@ public interface ConsoleMessage {
   String text();
   /**
    * One of the following values: {@code 'log'}, {@code 'debug'}, {@code 'info'}, {@code 'error'}, {@code 'warning'}, {@code 'dir'}, {@code 'dirxml'}, {@code 'table'},
-   * <p>
    * {@code 'trace'}, {@code 'clear'}, {@code 'startGroup'}, {@code 'startGroupCollapsed'}, {@code 'endGroup'}, {@code 'assert'}, {@code 'profile'}, {@code 'profileEnd'},
-   * <p>
    * {@code 'count'}, {@code 'timeEnd'}.
    */
   String type();
