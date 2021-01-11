@@ -6,13 +6,23 @@ set +x
 trap 'cd $(pwd -P)' EXIT
 cd "$(dirname "$0")/.."
 
-DRIVER_PATH=./driver-bundle/src/main/resources/driver
+PLAYWRIGHT_CLI="unknown"
 case $(uname) in
 Darwin)
-  PLAYWRIGHT_CLI=$DRIVER_PATH/mac/playwright.sh
+  PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/mac/playwright.sh
   ;;
-Linux|MINGW32*|MINGW64*)
-  PLAYWRIGHT_CLI=$DRIVER_PATH/linux/playwright.sh
+Linux)
+  PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/linux/playwright.sh
+  ;;
+MINGW32*)
+  PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/win32/playwright.sh
+  ;;
+MINGW64*)
+  PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/win32_x64/playwright.sh
+  ;;
+*)
+  echo "Unknown platform '$(uname)'"
+  exit 1;
   ;;
 esac
 
