@@ -18,14 +18,24 @@ package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.Deferred;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.function.Supplier;
 
 class LoggingSupport {
-  private static boolean isEnabled;
-  {
+  private static final boolean isEnabled;
+  static {
     String debug = System.getenv("DEBUG");
     isEnabled = (debug != null) && debug.contains("pw:api");
   }
+
+  private static final SimpleDateFormat timestampFormat;
+  static {
+    timestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    timestampFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+  }
+
 
   void withLogging(String apiName, Runnable code) {
     withLogging(apiName, () -> {
@@ -70,6 +80,8 @@ class LoggingSupport {
   }
 
   private void logApi(String message) {
-    System.err.println(message);
+    // This matches log format produced by the server.
+    String timestamp = timestampFormat.format(new Date());
+    System.err.println(timestamp + " pw:api " + message);
   }
 }
