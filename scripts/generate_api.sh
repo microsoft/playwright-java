@@ -34,3 +34,4 @@ mvn compile -f ./tools/api-generator --no-transfer-progress
 
 echo "Regenerating Java interfaces"
 mvn exec:java --f ./tools/api-generator -D exec.mainClass=com.microsoft.playwright.tools.ApiGenerator
+mvn exec:java --f ./tools/api-generator -D exec.mainClass=com.microsoft.playwright.tools.DeviceEnumGenerator
