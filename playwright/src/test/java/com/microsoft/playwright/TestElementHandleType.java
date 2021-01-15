@@ -24,10 +24,10 @@ public class TestElementHandleType extends TestBase {
   void shouldResetSelectionWhenNotFocus() {
     page.setContent("<input type='text' value='hello' /><div tabIndex=2>text</div>");
     page.evalOnSelector("input", "input => {\n" +
-                                                    "    input.selectionStart = 2;\n" +
-                                                    "    input.selectionEnd = 4;\n" +
-                                                    "    document.querySelector('div').focus();\n" +
-                                                    "  }");
+      "    input.selectionStart = 2;\n" +
+      "    input.selectionEnd = 4;\n" +
+      "    document.querySelector('div').focus();\n" +
+      "  }");
     page.type("input", "world");
     assertEquals("worldhello", page.evalOnSelector("input", "input => input.value"));
   }
@@ -36,10 +36,10 @@ public class TestElementHandleType extends TestBase {
   void shouldNotModifySelectionWhenFocus() {
     page.setContent("<input type='text' value='hello' />");
     page.evalOnSelector("input", "input => {\n" +
-                                              "    input.focus();\n" +
-                                              "    input.selectionStart = 2;\n" +
-                                              "    input.selectionEnd = 4;\n" +
-                                              "  }");
+      "    input.focus();\n" +
+      "    input.selectionStart = 2;\n" +
+      "    input.selectionEnd = 4;\n" +
+      "  }");
     page.type("input", "world");
     assertEquals("heworldo", page.evalOnSelector("input", "input => input.value"));
   }
