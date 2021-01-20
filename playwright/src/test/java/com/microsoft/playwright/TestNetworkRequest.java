@@ -132,13 +132,13 @@ public class TestNetworkRequest extends TestBase {
         writer.write("done");
       }
     });
-    Deferred<Event<Page.EventType>> responsePromise = page.futureEvent(RESPONSE);
-    Object text = page.evaluate("async url => {\n" +
-      "  const data = await fetch(url);\n" +
-      "  return data.text();\n" +
-      "}", server.CROSS_PROCESS_PREFIX + "/something");
-    assertEquals("done", text);
-    Response response = (Response) responsePromise.get().data();
+    Response response = page.waitForResponse(() -> {
+        Object text = page.evaluate("async url => {\n" +
+          "  const data = await fetch(url);\n" +
+          "  return data.text();\n" +
+          "}", server.CROSS_PROCESS_PREFIX + "/something");
+        assertEquals("done", text);
+      });
     Map<String, String> expectedHeaders = serverRequest.get().headers.entrySet().stream().collect(
       Collectors.toMap(e -> e.getKey().toLowerCase(), e -> e.getValue().get(0)));
     assertEquals(expectedHeaders, response.request().headers());

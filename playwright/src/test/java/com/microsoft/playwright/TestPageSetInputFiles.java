@@ -67,9 +67,7 @@ public class TestPageSetInputFiles extends TestBase {
   @Test
   void shouldEmitEventOnce() {
     page.setContent("<input type=file>");
-    Deferred<Event<Page.EventType>> event = page.futureEvent(Page.EventType.FILECHOOSER);
-    page.click("input");
-    FileChooser chooser = (FileChooser) event.get().data();
+    FileChooser chooser = page.waitForFileChooser(() -> page.click("input"));
     assertNotNull(chooser);
   }
 
@@ -99,20 +97,20 @@ public class TestPageSetInputFiles extends TestBase {
   @Test
   void shouldWorkWhenFileInputIsAttachedToDOM() {
     page.setContent("<input type=file>");
-    Deferred<Event<Page.EventType>> chooser = page.futureEvent(Page.EventType.FILECHOOSER);
-    page.click("input");
-    assertNotNull(chooser.get());
+    FileChooser chooser = page.waitForFileChooser(() -> page.click("input"));
+    assertNotNull(chooser);
   }
 
   @Test
   void shouldWorkWhenFileInputIsNotAttachedToDOM() {
-    Deferred<Event<Page.EventType>> chooser = page.futureEvent(Page.EventType.FILECHOOSER);
-    page.evaluate("() => {\n" +
-      "  const el = document.createElement('input');\n" +
-      "  el.type = 'file';\n" +
-      "  el.click();\n" +
-      "}");
-    assertNotNull(chooser.get());
+    FileChooser chooser = page.waitForFileChooser(() -> {
+      page.evaluate("() => {\n" +
+        "  const el = document.createElement('input');\n" +
+        "  el.type = 'file';\n" +
+        "  el.click();\n" +
+        "}");
+    });
+    assertNotNull(chooser);
   }
 
   @Test
@@ -128,8 +126,7 @@ public class TestPageSetInputFiles extends TestBase {
   @Test
   void shouldRespectTimeout() {
     try {
-      Deferred<Event<Page.EventType>> event = page.futureEvent(Page.EventType.FILECHOOSER, new Page.FutureEventOptions().withTimeout(1));
-      event.get();
+      page.waitForFileChooser(() -> {}, new Page.WaitForFileChooserOptions().withTimeout(1));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
@@ -140,8 +137,7 @@ public class TestPageSetInputFiles extends TestBase {
   void shouldRespectDefaultTimeoutWhenThereIsNoCustomTimeout() {
     page.setDefaultTimeout(1);
     try {
-      Deferred<Event<Page.EventType>> event = page.futureEvent(Page.EventType.FILECHOOSER);
-      event.get();
+      page.waitForFileChooser(() -> {});
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
@@ -151,10 +147,8 @@ public class TestPageSetInputFiles extends TestBase {
   @Test
   void shouldPrioritizeExactTimeoutOverDefaultTimeout() {
     page.setDefaultTimeout(0);
-    Deferred<Event<Page.EventType>> event = page.futureEvent(Page.EventType.FILECHOOSER,
-      new Page.FutureEventOptions().withTimeout(1));
     try {
-      event.get();
+      page.waitForFileChooser(() -> {}, new Page.WaitForFileChooserOptions().withTimeout(1));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
@@ -163,31 +157,32 @@ public class TestPageSetInputFiles extends TestBase {
 
   @Test
   void shouldWorkWithNoTimeout() {
-    Deferred<Event<Page.EventType>> event = page.futureEvent(Page.EventType.FILECHOOSER,
-      new Page.FutureEventOptions().withTimeout(0));
-    page.evaluate("() => setTimeout(() => {\n" +
-      "  const el = document.createElement('input');\n" +
-      "  el.type = 'file';\n" +
-      "  el.click();\n" +
-      "}, 50)");
-    assertNotNull(event.get().data());
+    FileChooser fileChooser = page.waitForFileChooser(() -> {
+      page.evaluate("() => setTimeout(() => {\n" +
+        "  const el = document.createElement('input');\n" +
+        "  el.type = 'file';\n" +
+        "  el.click();\n" +
+        "}, 50)");
+    }, new Page.WaitForFileChooserOptions().withTimeout(0));
+    assertNotNull(fileChooser);
   }
 
   @Test
   void shouldReturnTheSameFileChooserWhenThereAreManyWatchdogsSimultaneously() {
     page.setContent("<input type=file>");
-    Deferred<Event<Page.EventType>> fileChooser1 = page.futureEvent(Page.EventType.FILECHOOSER);
-    Deferred<Event<Page.EventType>> fileChooser2 = page.futureEvent(Page.EventType.FILECHOOSER);
-    page.evalOnSelector("input", "input => input.click()");
-    assertEquals(fileChooser1.get().data(), fileChooser2.get().data());
+    FileChooser[] fileChooser = {null};
+    FileChooser fileChooser1 = page.waitForFileChooser(() -> {
+      fileChooser[0] = page.waitForFileChooser(() -> {
+        page.evalOnSelector("input", "input => input.click()");
+      });
+    });
+    assertEquals(fileChooser[0], fileChooser1);
   }
 
   @Test
   void shouldAcceptSingleFile() {
     page.setContent("<input type=file oninput='javascript:console.timeStamp()'>");
-    Deferred<Event<Page.EventType>> event = page.futureEvent(Page.EventType.FILECHOOSER);
-    page.click("input");
-    FileChooser fileChooser = (FileChooser) event.get().data();
+    FileChooser fileChooser = page.waitForFileChooser(() -> page.click("input"));
     assertEquals(page, fileChooser.page());
     assertNotNull(fileChooser.element());
     fileChooser.setFiles(FILE_TO_UPLOAD);
@@ -255,9 +250,7 @@ public class TestPageSetInputFiles extends TestBase {
   @Test
   void shouldNotAcceptMultipleFilesForSingleFileInput() {
     page.setContent("<input type=file>");
-    Deferred<Event<Page.EventType>> event = page.futureEvent(Page.EventType.FILECHOOSER);
-    page.click("input");
-    FileChooser fileChooser = (FileChooser) event.get().data();
+    FileChooser fileChooser = page.waitForFileChooser(() -> page.click("input"));
     try {
       fileChooser.setFiles(new Path[]{FILE_TO_UPLOAD, Paths.get("src/test/resources/pptr.png")});
       fail("did not throw");
@@ -281,27 +274,21 @@ public class TestPageSetInputFiles extends TestBase {
   @Test
   void shouldWorkForSingleFilePick() {
     page.setContent("<input type=file>");
-    Deferred<Event<Page.EventType>> event = page.futureEvent(Page.EventType.FILECHOOSER);
-    page.click("input");
-    FileChooser fileChooser = (FileChooser) event.get().data();
+    FileChooser fileChooser = page.waitForFileChooser(() -> page.click("input"));
     assertFalse(fileChooser.isMultiple());
   }
 
   @Test
   void shouldWorkForMultiple() {
     page.setContent("<input multiple type=file>");
-    Deferred<Event<Page.EventType>> event = page.futureEvent(Page.EventType.FILECHOOSER);
-    page.click("input");
-    FileChooser fileChooser = (FileChooser) event.get().data();
+    FileChooser fileChooser = page.waitForFileChooser(() -> page.click("input"));
     assertTrue(fileChooser.isMultiple());
   }
 
   @Test
   void shouldWorkForWebkitdirectory() {
     page.setContent("<input multiple webkitdirectory type=file>");
-    Deferred<Event<Page.EventType>> event = page.futureEvent(Page.EventType.FILECHOOSER);
-    page.click("input");
-    FileChooser fileChooser = (FileChooser) event.get().data();
+    FileChooser fileChooser = page.waitForFileChooser(() -> page.click("input"));
     assertTrue(fileChooser.isMultiple());
   }
 }

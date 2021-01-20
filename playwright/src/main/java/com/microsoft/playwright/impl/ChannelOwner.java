@@ -18,7 +18,6 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.Deferred;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,26 +79,16 @@ class ChannelOwner extends LoggingSupport {
     return connection.sendMessage(guid, method, params);
   }
 
-  @SuppressWarnings("unchecked")
-  <T> Deferred<T> toDeferred(Waitable<T> waitable) {
-    return new Deferred<T>() {
-      Exception constructionStackTrace = new Exception();
-      @Override
-      public T get() {
-        constructionStackTrace = null;
-        while (!waitable.isDone()) {
-          connection.processOneMessage();
-        }
-        return (T) waitable.get();
+  <T> T runUntil(Runnable code, Waitable<T> waitable) {
+    try {
+      code.run();
+      while (!waitable.isDone()) {
+        connection.processOneMessage();
       }
-
-      @Override
-      protected void finalize() {
-        if (constructionStackTrace != null) {
-          connection.addUnusedDeferredObject(constructionStackTrace);
-        }
-      }
-    };
+      return waitable.get();
+    } finally {
+      waitable.dispose();
+    }
   }
 
   void handleEvent(String event, JsonObject parameters) {

@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -28,19 +29,6 @@ public interface WebSocket {
     String text();
   }
 
-  class FutureEventOptions {
-    public Double timeout;
-    public Predicate<Event<EventType>> predicate;
-    public FutureEventOptions withTimeout(double millis) {
-      timeout = millis;
-      return this;
-    }
-    public FutureEventOptions withPredicate(Predicate<Event<EventType>> predicate) {
-      this.predicate = predicate;
-      return this;
-    }
-  }
-
   enum EventType {
     CLOSE,
     FRAMERECEIVED,
@@ -50,6 +38,50 @@ public interface WebSocket {
 
   void addListener(EventType type, Listener<EventType> listener);
   void removeListener(EventType type, Listener<EventType> listener);
+
+  void onClose(Runnable handler);
+  void offClose(Runnable handler);
+
+  void onFrameReceived(Consumer<FrameData> handler);
+  void offFrameReceived(Consumer<FrameData> handler);
+
+  void onFrameSent(Consumer<FrameData> handler);
+  void offFrameSent(Consumer<FrameData> handler);
+
+  void onSocketError(Consumer<String> handler);
+  void offSocketError(Consumer<String> handler);
+
+
+  class WaitForFrameReceivedOptions {
+    public Double timeout;
+    public WaitForFrameReceivedOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  FrameData waitForFrameReceived(Runnable code, WaitForFrameReceivedOptions options);
+  default FrameData waitForFrameReceived(Runnable code) { return waitForFrameReceived(code, null); }
+
+  class WaitForFrameSentOptions {
+    public Double timeout;
+    public WaitForFrameSentOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  FrameData waitForFrameSent(Runnable code, WaitForFrameSentOptions options);
+  default FrameData waitForFrameSent(Runnable code) { return waitForFrameSent(code, null); }
+
+  class WaitForSocketErrorOptions {
+    public Double timeout;
+    public WaitForSocketErrorOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  String waitForSocketError(Runnable code, WaitForSocketErrorOptions options);
+  default String waitForSocketError(Runnable code) { return waitForSocketError(code, null); }
+
   /**
    * Indicates that the web socket has been closed.
    */
@@ -58,22 +90,5 @@ public interface WebSocket {
    * Contains the URL of the WebSocket.
    */
   String url();
-  default Deferred<Event<EventType>> futureEvent(EventType event) {
-    return futureEvent(event, (FutureEventOptions) null);
-  }
-  default Deferred<Event<EventType>> futureEvent(EventType event, Predicate<Event<EventType>> predicate) {
-    FutureEventOptions options = new FutureEventOptions();
-    options.predicate = predicate;
-    return futureEvent(event, options);
-  }
-  /**
-   * Returns the event data value.
-   *
-   * <p> Waits for event to fire and passes its value into the predicate function. Returns when the predicate returns truthy
-   * value. Will throw an error if the webSocket is closed before the event is fired.
-   *
-   * @param event Event name, same one would pass into {@code webSocket.on(event)}.
-   */
-  Deferred<Event<EventType>> futureEvent(EventType event, FutureEventOptions options);
 }
 

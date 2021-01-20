@@ -16,14 +16,11 @@
 
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.Deferred;
 import com.microsoft.playwright.Event;
 import com.microsoft.playwright.Listener;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
 
 class ListenerCollection <EventType> {
   private final HashMap<EventType, List<Listener<EventType>>> listeners = new HashMap<>();
@@ -49,6 +46,71 @@ class ListenerCollection <EventType> {
     for (Listener<EventType> listener: new ArrayList<>(list)) {
       listener.handle(event);
     }
+  }
+
+  private static class RunnableWrapper<EventType> implements Listener<EventType> {
+    final Runnable callback;
+
+    private RunnableWrapper(Runnable callback) {
+      this.callback = callback;
+    }
+
+    @Override
+    public void handle(Event<EventType> event) {
+      callback.run();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      RunnableWrapper<?> that = (RunnableWrapper<?>) o;
+      return Objects.equals(callback, that.callback);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(callback);
+    }
+  }
+
+  private static class ConsumerWrapper<EventType> implements Listener<EventType> {
+    final Consumer<?> callback;
+
+    private ConsumerWrapper(Consumer<?> callback) {
+      this.callback = callback;
+    }
+
+    @Override
+    public void handle(Event<EventType> event) {
+      ((Consumer<Object>) callback).accept(event.data());
+    }
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+      RunnableWrapper<?> that = (RunnableWrapper<?>) o;
+      return Objects.equals(callback, that.callback);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(callback);
+    }
+  }
+
+  void add(EventType type, Runnable listener) {
+    add(type, new RunnableWrapper<>(listener));
+  }
+  void remove(EventType type, Runnable listener) {
+    remove(type, new RunnableWrapper<>(listener));
+  }
+
+  void add(EventType type, Consumer listener) {
+    add(type, new ConsumerWrapper<>(listener));
+  }
+  void remove(EventType type, Consumer listener) {
+    remove(type, new ConsumerWrapper<>(listener));
   }
 
   void add(EventType type, Listener<EventType> listener) {

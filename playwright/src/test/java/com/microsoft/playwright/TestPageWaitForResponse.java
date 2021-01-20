@@ -26,44 +26,47 @@ public class TestPageWaitForResponse extends TestBase {
   @Test
   void shouldWork() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Response> response = page.futureResponse(server.PREFIX + "/digits/2.png");
-    page.evaluate("() => {\n" +
-      "  fetch('/digits/1.png');\n" +
-      "  fetch('/digits/2.png');\n" +
-      "  fetch('/digits/3.png');\n" +
-      "}");
-    assertEquals(server.PREFIX + "/digits/2.png", response.get().url());
+    Response response = page.waitForResponse(() -> {
+      page.evaluate("() => {\n" +
+        "  fetch('/digits/1.png');\n" +
+        "  fetch('/digits/2.png');\n" +
+        "  fetch('/digits/3.png');\n" +
+        "}");
+    }, server.PREFIX + "/digits/2.png");
+    assertEquals(server.PREFIX + "/digits/2.png", response.url());
   }
 
   @Test
   void shouldRespectTimeout() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Response> response = page.futureResponse(url -> url.equals(server.PREFIX + "/digits/2.png"));
-    page.evaluate("() => {\n" +
-      "  fetch('/digits/1.png');\n" +
-      "  fetch('/digits/2.png');\n" +
-      "  fetch('/digits/3.png');\n" +
-      "}");
-    assertEquals(server.PREFIX + "/digits/2.png", response.get().url());
+    Response response = page.waitForResponse(() -> {
+      page.evaluate("() => {\n" +
+        "  fetch('/digits/1.png');\n" +
+        "  fetch('/digits/2.png');\n" +
+        "  fetch('/digits/3.png');\n" +
+        "}");
+    }, url -> url.equals(server.PREFIX + "/digits/2.png"));
+    assertEquals(server.PREFIX + "/digits/2.png", response.url());
   }
 
   @Test
   void shouldWorkWithPredicate() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Response> response = page.futureResponse(url -> url.equals(server.PREFIX + "/digits/2.png"));
-    page.evaluate("() => {\n" +
-      "  fetch('/digits/1.png');\n" +
-      "  fetch('/digits/2.png');\n" +
-      "  fetch('/digits/3.png');\n" +
-      "}");
-    assertEquals(server.PREFIX + "/digits/2.png", response.get().url());
+    Response response = page.waitForResponse(() -> {
+      page.evaluate("() => {\n" +
+        "  fetch('/digits/1.png');\n" +
+        "  fetch('/digits/2.png');\n" +
+        "  fetch('/digits/3.png');\n" +
+        "}");
+    }, url -> url.equals(server.PREFIX + "/digits/2.png"));
+    assertEquals(server.PREFIX + "/digits/2.png", response.url());
   }
 
   @Test
   void shouldRespectDefaultTimeout() {
     page.setDefaultTimeout(1);
     try {
-      page.futureEvent(RESPONSE, url -> false).get();
+      page.waitForResponse(() -> {}, url -> false);
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
@@ -73,13 +76,16 @@ public class TestPageWaitForResponse extends TestBase {
   @Test
   void shouldWorkWithNoTimeout() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Response> response = page.futureResponse(server.PREFIX + "/digits/2.png",
-      new Page.FutureResponseOptions().withTimeout(0));
-    page.evaluate("() => setTimeout(() => {\n" +
-      "  fetch('/digits/1.png');\n" +
-      "  fetch('/digits/2.png');\n" +
-      "  fetch('/digits/3.png');\n" +
-      "}, 50)");
-    assertEquals(server.PREFIX + "/digits/2.png", response.get().url());
+    Response response = page.waitForResponse(() -> {
+        page.evaluate("() => setTimeout(() => {\n" +
+          "  fetch('/digits/1.png');\n" +
+          "  fetch('/digits/2.png');\n" +
+          "  fetch('/digits/3.png');\n" +
+          "}, 50)");
+
+      },
+      server.PREFIX + "/digits/2.png",
+      new Page.WaitForResponseOptions().withTimeout(0));
+    assertEquals(server.PREFIX + "/digits/2.png", response.url());
   }
 }

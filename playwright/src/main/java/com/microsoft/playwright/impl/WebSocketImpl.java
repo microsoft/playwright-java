@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.function.Consumer;
 
 class WebSocketImpl extends ChannelOwner implements WebSocket {
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
@@ -43,6 +44,70 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
   @Override
   public void removeListener(EventType type, Listener<EventType> listener) {
     listeners.remove(type, listener);
+  }
+
+  @Override
+  public void onClose(Runnable handler) {
+    listeners.add(EventType.CLOSE, handler);
+  }
+
+  @Override
+  public void offClose(Runnable handler) {
+    listeners.remove(EventType.CLOSE, handler);
+  }
+
+  @Override
+  public void onFrameReceived(Consumer<FrameData> handler) {
+    listeners.add(EventType.FRAMERECEIVED, handler);
+  }
+
+  @Override
+  public void offFrameReceived(Consumer<FrameData> handler) {
+    listeners.remove(EventType.FRAMERECEIVED, handler);
+  }
+
+  @Override
+  public void onFrameSent(Consumer<FrameData> handler) {
+    listeners.add(EventType.FRAMESENT, handler);
+  }
+
+  @Override
+  public void offFrameSent(Consumer<FrameData> handler) {
+    listeners.remove(EventType.FRAMESENT, handler);
+  }
+
+  @Override
+  public void onSocketError(Consumer<String> handler) {
+    listeners.add(EventType.SOCKETERROR, handler);
+  }
+
+  @Override
+  public void offSocketError(Consumer<String> handler) {
+    listeners.remove(EventType.SOCKETERROR, handler);
+  }
+
+  @Override
+  public FrameData waitForFrameReceived(Runnable code, WaitForFrameReceivedOptions options) {
+    if (options == null) {
+      options = new WaitForFrameReceivedOptions();
+    }
+    return waitForEventWithTimeout(EventType.FRAMERECEIVED, code, options.timeout);
+  }
+
+  @Override
+  public FrameData waitForFrameSent(Runnable code, WaitForFrameSentOptions options) {
+    if (options == null) {
+      options = new WaitForFrameSentOptions();
+    }
+    return waitForEventWithTimeout(EventType.FRAMESENT, code, options.timeout);
+  }
+
+  @Override
+  public String waitForSocketError(Runnable code, WaitForSocketErrorOptions options) {
+    if (options == null) {
+      options = new WaitForSocketErrorOptions();
+    }
+    return waitForEventWithTimeout(EventType.SOCKETERROR, code, options.timeout);
   }
 
   @Override
@@ -96,21 +161,14 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
     }
   }
 
-  @Override
-  public Deferred<Event<EventType>> futureEvent(EventType event, FutureEventOptions options) {
-    return withLoggingDeferred("WebSocket.futureEvent", () -> futureEventImpl(event, options));
-  }
-
-  private Deferred<Event<EventType>> futureEventImpl(EventType event, FutureEventOptions options) {
-    if (options == null) {
-      options = new FutureEventOptions();
-    }
-    List<Waitable<Event<EventType>>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, event, options.predicate));
+  private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Double timeout) {
+    List<Waitable<T>> waitables = new ArrayList<>();
+    waitables.add(new WaitableEvent<>(listeners, eventType)
+      .apply(event -> (T) event.data()));
     waitables.add(new WaitableWebSocketError<>());
     waitables.add(page.createWaitForCloseHelper());
-    waitables.add(page.createWaitableTimeout(options.timeout));
-    return toDeferred(new WaitableRace<>(waitables));
+    waitables.add(page.createWaitableTimeout(timeout));
+    return runUntil(code, new WaitableRace<>(waitables));
   }
 
   private static class FrameDataImpl implements FrameData {

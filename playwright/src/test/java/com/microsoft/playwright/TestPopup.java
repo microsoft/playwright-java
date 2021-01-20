@@ -38,9 +38,7 @@ public class TestPopup extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a target=_blank rel=noopener href='/popup/popup.html'>link</a>");
     Future<Server.Request> requestPromise = server.futureRequest("/popup/popup.html");
-    Deferred<Event<BrowserContext.EventType>> popupEvent = context.futureEvent(BrowserContext.EventType.PAGE);
-    page.click("a");
-    Page popup = (Page) popupEvent.get().data();
+    Page popup = context.waitForPage(() -> page.click("a"));
     popup.waitForLoadState(DOMCONTENTLOADED);
     String userAgent = (String) popup.evaluate("() => window['initialUserAgent']");
     Server.Request request = requestPromise.get();
@@ -60,9 +58,7 @@ public class TestPopup extends TestBase {
       route.continue_();
       intercepted[0] = true;
     });
-    Deferred<Event<BrowserContext.EventType>> popup = context.futureEvent(BrowserContext.EventType.PAGE);
-    page.click("a");
-    popup.get();
+    context.waitForPage(() -> page.click("a"));
 
     context.close();
     assertTrue(intercepted[0]);
@@ -103,9 +99,8 @@ public class TestPopup extends TestBase {
       .withHttpCredentials("user", "pass"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
-    page.evaluate("url => window['_popup'] = window.open(url)", server.PREFIX + "/title.html");
-    Page popup = (Page) popupEvent.get().data();
+    Page popup = page.waitForPopup(() -> page.evaluate(
+      "url => window['_popup'] = window.open(url)", server.PREFIX + "/title.html"));
     popup.waitForLoadState(DOMCONTENTLOADED);
     assertEquals("Woof-Woof", popup.title());
     context.close();
@@ -146,17 +141,18 @@ public class TestPopup extends TestBase {
       .withViewport(700, 700));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
-    Object size = page.evaluate("() => {\n" +
-      "  const win = window.open(window.location.href, 'Title', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=300,top=0,left=0');\n" +
-      "  return { width: win.innerWidth, height: win.innerHeight };\n" +
-      "}");
-    Page popup = (Page) popupEvent.get().data();
+    Object[] size = {null};
+    Page popup = page.waitForPopup(() -> {
+      size[0] = page.evaluate("() => {\n" +
+        "  const win = window.open(window.location.href, 'Title', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=300,top=0,left=0');\n" +
+        "  return { width: win.innerWidth, height: win.innerHeight };\n" +
+        "}");
+    });
     popup.setViewportSize(500, 400);
     popup.waitForLoadState();
     Object resized = popup.evaluate("() => ({ width: window.innerWidth, height: window.innerHeight })");
     context.close();
-    assertEquals(mapOf("width", 600, "height", 300), size);
+    assertEquals(mapOf("width", 600, "height", 300), size[0]);
     assertEquals(mapOf("width", 500, "height", 400), resized);
   }
 
@@ -170,9 +166,9 @@ public class TestPopup extends TestBase {
       route.continue_();
       intercepted[0] = true;
     });
-    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
-    page.evaluate("url => window['__popup'] = window.open(url)", server.EMPTY_PAGE);
-    popupEvent.get();
+    page.waitForPopup(() -> {
+      page.evaluate("url => window['__popup'] = window.open(url)", server.EMPTY_PAGE);
+    });
     assertTrue(intercepted[0]);
     context.close();
   }
@@ -197,9 +193,9 @@ public class TestPopup extends TestBase {
     context.addInitScript("() => window['injected'] = 123");
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
-    page.evaluate("url => window.open(url)", server.CROSS_PROCESS_PREFIX + "/title.html");
-    Page popup = (Page) popupEvent.get().data();
+    Page popup = page.waitForPopup(() -> {
+      page.evaluate("url => window.open(url)", server.CROSS_PROCESS_PREFIX + "/title.html");
+    });
     assertEquals(123, popup.evaluate("injected"));
 
     popup.reload();

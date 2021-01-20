@@ -101,9 +101,7 @@ public class TestPageRoute extends TestBase {
     page.setContent("<form action='/rredirect' method='post'>\n" +
       "  <input type='hidden' id='foo' name='foo' value='FOOBAR'>\n" +
       "</form>");
-    Deferred<Response> navigationResponse = page.futureNavigation();
-    page.evalOnSelector("form", "form => form.submit()");
-    navigationResponse.get();
+    page.waitForNavigation(() -> page.evalOnSelector("form", "form => form.submit()"));
   }
 
   // @see https://github.com/GoogleChrome/puppeteer/issues/3973
@@ -435,9 +433,8 @@ public class TestPageRoute extends TestBase {
     Route[] route = {null};
     page.route("**/*", r -> route[0] = r);
     // Wait for request interception.
-    Deferred<Event<Page.EventType>> event = page.futureEvent(REQUEST);
-    page.evalOnSelector("iframe", "(frame, url) => frame.src = url", server.EMPTY_PAGE);
-    event.get();
+    page.waitForRequest(() ->
+      page.evalOnSelector("iframe", "(frame, url) => frame.src = url", server.EMPTY_PAGE));
     // Delete frame to cause request to be canceled.
     page.evalOnSelector("iframe", "frame => frame.remove()");
     try {

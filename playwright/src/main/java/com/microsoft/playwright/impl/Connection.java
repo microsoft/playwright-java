@@ -54,7 +54,6 @@ public class Connection {
   private final Root root;
   private int lastId = 0;
   private final Map<Integer, WaitableResult<JsonElement>> callbacks = new HashMap<>();
-  private final Deque<Exception> unusedDeferredObjects = new ArrayDeque<>();
 
   class Root extends ChannelOwner {
     Root(Connection connection) {
@@ -72,7 +71,7 @@ public class Connection {
   }
 
   public JsonElement sendMessage(String guid, String method, JsonObject params) {
-    return root.toDeferred(sendMessageAsync(guid, method, params)).get();
+    return root.runUntil(() -> {}, sendMessageAsync(guid, method, params));
   }
 
   public WaitableResult<JsonElement> sendMessageAsync(String guid, String method, JsonObject params) {
@@ -253,27 +252,5 @@ public class Connection {
     }
 
     return result;
-  }
-
-  void addUnusedDeferredObject(Exception exception) {
-    unusedDeferredObjects.add(exception);
-    if (unusedDeferredObjects.size() > 10) {
-      unusedDeferredObjects.removeLast();
-    }
-  }
-
-  void checkNoUnusedDeferredObjects() {
-    if (unusedDeferredObjects.isEmpty()) {
-      return;
-    }
-    List<String> chunks = new ArrayList<>();
-    chunks.add("Method get() has not been called on some Deferred<> objects. This indicates a " +
-      "bug in the client code. Here are some stack traces where such objects were constructed");
-    for (Exception e : unusedDeferredObjects) {
-      StringWriter writer = new StringWriter();
-      e.printStackTrace(new PrintWriter(writer));
-      chunks.add(writer.toString());
-    }
-    throw new PlaywrightException(String.join("\n", chunks));
   }
 }

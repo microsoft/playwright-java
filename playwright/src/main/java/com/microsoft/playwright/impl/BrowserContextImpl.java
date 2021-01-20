@@ -66,6 +66,43 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
+  public void onClose(Runnable handler) {
+    listeners.add(EventType.CLOSE, handler);
+  }
+
+  @Override
+  public void offClose(Runnable handler) {
+    listeners.remove(EventType.CLOSE, handler);
+  }
+
+  @Override
+  public void onPage(Consumer<Page> handler) {
+    listeners.add(EventType.PAGE, handler);
+  }
+
+  @Override
+  public void offPage(Consumer<Page> handler) {
+    listeners.remove(EventType.PAGE, handler);
+  }
+
+  private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Double timeout) {
+    List<Waitable<T>> waitables = new ArrayList<>();
+    waitables.add(new WaitableEvent<>(listeners, eventType)
+      .apply(event -> (T) event.data()));
+    waitables.add(new WaitableContextClose<>());
+    waitables.add(timeoutSettings.createWaitable(timeout));
+    return runUntil(code, new WaitableRace<>(waitables));
+  }
+
+  @Override
+  public Page waitForPage(Runnable code, WaitForPageOptions options) {
+    if (options == null) {
+      options = new WaitForPageOptions();
+    }
+    return waitForEventWithTimeout(EventType.PAGE, code, options.timeout);
+  }
+
+  @Override
   public void close() {
     withLogging("BrowserContext.close", () -> closeImpl());
   }
@@ -349,18 +386,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     public void dispose() {
       removeListener(EventType.CLOSE, this);
     }
-  }
-
-  @Override
-  public Deferred<Event<EventType>> futureEvent(EventType event, FutureEventOptions options) {
-    if (options == null) {
-      options = new FutureEventOptions();
-    }
-    List<Waitable<Event<EventType>>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, event, options.predicate));
-    waitables.add(new WaitableContextClose<>());
-    waitables.add(timeoutSettings.createWaitable(options.timeout));
-    return toDeferred(new WaitableRace<>(waitables));
   }
 
   private void unroute(UrlMatcher matcher, Consumer<Route> handler) {

@@ -201,33 +201,28 @@ public class TestWebSocket extends TestBase {
 
   @Test
   void shouldNotHaveStrayErrorEvents() {
-    Deferred<Event<Page.EventType>> wsEvent = page.futureEvent(WEBSOCKET);
-    page.evaluate("port => {\n" +
-      "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
-      "}", webSocketServer.getPort());
-
-    com.microsoft.playwright.WebSocket ws = (com.microsoft.playwright.WebSocket) wsEvent.get().data();
+    com.microsoft.playwright.WebSocket ws = page.waitForWebSocket(() -> {
+        page.evaluate("port => {\n" +
+          "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
+          "}", webSocketServer.getPort());
+      });
     boolean[] error = {false};
     ws.addListener(SOCKETERROR, e -> error[0] = true);
-    Deferred<Event<com.microsoft.playwright.WebSocket.EventType>> frameReceivedEvent = ws.futureEvent(FRAMERECEIVED);
-    frameReceivedEvent.get();
+    ws.waitForFrameReceived(() -> {});
     page.evaluate("window.ws.close()");
     assertFalse(error[0]);
   }
 
   @Test
   void shouldRejectFutureEventOnSocketClose() {
-    Deferred<Event<Page.EventType>> wsEvent = page.futureEvent(WEBSOCKET);
-    page.evaluate("port => {\n" +
-      "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
-      "}", webSocketServer.getPort());
-
-    com.microsoft.playwright.WebSocket ws = (com.microsoft.playwright.WebSocket) wsEvent.get().data();
-    ws.futureEvent(FRAMERECEIVED).get();
-    Deferred<Event<com.microsoft.playwright.WebSocket.EventType>> frameSentEvent = ws.futureEvent(FRAMESENT);
-    page.evaluate("window.ws.close()");
+    com.microsoft.playwright.WebSocket ws = page.waitForWebSocket(() -> {
+      page.evaluate("port => {\n" +
+        "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
+        "}", webSocketServer.getPort());
+    });
+    ws.waitForFrameReceived(() -> {});
     try {
-      frameSentEvent.get();
+      ws.waitForFrameSent(() -> page.evaluate("window.ws.close()"));
       fail("did not throw");
     } catch (PlaywrightException exception) {
       assertTrue(exception.getMessage().contains("Socket closed"));
@@ -236,17 +231,14 @@ public class TestWebSocket extends TestBase {
 
   @Test
   void shouldRejectFutureEventOnPageClose() {
-    Deferred<Event<Page.EventType>> wsEvent = page.futureEvent(WEBSOCKET);
-    page.evaluate("port => {\n" +
-      "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
-      "}", webSocketServer.getPort());
-
-    com.microsoft.playwright.WebSocket ws = (com.microsoft.playwright.WebSocket) wsEvent.get().data();
-    ws.futureEvent(FRAMERECEIVED).get();
-    Deferred<Event<com.microsoft.playwright.WebSocket.EventType>> frameSentEvent = ws.futureEvent(FRAMESENT);
-    page.close();
+    com.microsoft.playwright.WebSocket ws = page.waitForWebSocket(() -> {
+      page.evaluate("port => {\n" +
+        "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
+        "}", webSocketServer.getPort());
+    });
+    ws.waitForFrameReceived(() -> {});
     try {
-      frameSentEvent.get();
+      ws.waitForFrameSent(() -> page.close());
       fail("did not throw");
     } catch (PlaywrightException exception) {
       assertTrue(exception.getMessage().contains("Page closed"));

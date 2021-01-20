@@ -74,19 +74,6 @@ public interface Page {
     String stack();
   }
 
-  class FutureEventOptions {
-    public Double timeout;
-    public Predicate<Event<EventType>> predicate;
-    public FutureEventOptions withTimeout(double millis) {
-      timeout = millis;
-      return this;
-    }
-    public FutureEventOptions withPredicate(Predicate<Event<EventType>> predicate) {
-      this.predicate = predicate;
-      return this;
-    }
-  }
-
   enum EventType {
     CLOSE,
     CONSOLE,
@@ -111,6 +98,195 @@ public interface Page {
 
   void addListener(EventType type, Listener<EventType> listener);
   void removeListener(EventType type, Listener<EventType> listener);
+
+  void onClose(Runnable handler);
+  void offClose(Runnable handler);
+
+  void onConsole(Consumer<ConsoleMessage> handler);
+  void offConsole(Consumer<ConsoleMessage> handler);
+
+  void onCrash(Runnable handler);
+  void offCrash(Runnable handler);
+
+  void onDialog(Consumer<Dialog> handler);
+  void offDialog(Consumer<Dialog> handler);
+
+  void onDomContentLoaded(Runnable handler);
+  void offDomContentLoaded(Runnable handler);
+
+  void onDownload(Consumer<Download> handler);
+  void offDownload(Consumer<Download> handler);
+
+  void onFileChooser(Consumer<FileChooser> handler);
+  void offFileChooser(Consumer<FileChooser> handler);
+
+  void onFrameAttached(Consumer<Frame> handler);
+  void offFrameAttached(Consumer<Frame> handler);
+
+  void onFrameDetached(Consumer<Frame> handler);
+  void offFrameDetached(Consumer<Frame> handler);
+
+  void onFrameNavigated(Consumer<Frame> handler);
+  void offFrameNavigated(Consumer<Frame> handler);
+
+  void onLoad(Runnable handler);
+  void offLoad(Runnable handler);
+
+  void onPageError(Consumer<Error> handler);
+  void offPageError(Consumer<Error> handler);
+
+  void onPopup(Consumer<Page> handler);
+  void offPopup(Consumer<Page> handler);
+
+  void onRequest(Consumer<Request> handler);
+  void offRequest(Consumer<Request> handler);
+
+  void onRequestFailed(Consumer<Request> handler);
+  void offRequestFailed(Consumer<Request> handler);
+
+  void onRequestFinished(Consumer<Request> handler);
+  void offRequestFinished(Consumer<Request> handler);
+
+  void onResponse(Consumer<Response> handler);
+  void offResponse(Consumer<Response> handler);
+
+  void onWebSocket(Consumer<WebSocket> handler);
+  void offWebSocket(Consumer<WebSocket> handler);
+
+  void onWorker(Consumer<Worker> handler);
+  void offWorker(Consumer<Worker> handler);
+
+
+  class WaitForCloseOptions {
+    public Double timeout;
+    public WaitForCloseOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  Page waitForClose(Runnable code, WaitForCloseOptions options);
+  default Page waitForClose(Runnable code) { return waitForClose(code, null); }
+
+  class WaitForConsoleOptions {
+    public Double timeout;
+    public WaitForConsoleOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  ConsoleMessage waitForConsole(Runnable code, WaitForConsoleOptions options);
+  default ConsoleMessage waitForConsole(Runnable code) { return waitForConsole(code, null); }
+
+  class WaitForDownloadOptions {
+    public Double timeout;
+    public WaitForDownloadOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  Download waitForDownload(Runnable code, WaitForDownloadOptions options);
+  default Download waitForDownload(Runnable code) { return waitForDownload(code, null); }
+
+  class WaitForFileChooserOptions {
+    public Double timeout;
+    public WaitForFileChooserOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  FileChooser waitForFileChooser(Runnable code, WaitForFileChooserOptions options);
+  default FileChooser waitForFileChooser(Runnable code) { return waitForFileChooser(code, null); }
+
+  class WaitForFrameAttachedOptions {
+    public Double timeout;
+    public WaitForFrameAttachedOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  Frame waitForFrameAttached(Runnable code, WaitForFrameAttachedOptions options);
+  default Frame waitForFrameAttached(Runnable code) { return waitForFrameAttached(code, null); }
+
+  class WaitForFrameDetachedOptions {
+    public Double timeout;
+    public WaitForFrameDetachedOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  Frame waitForFrameDetached(Runnable code, WaitForFrameDetachedOptions options);
+  default Frame waitForFrameDetached(Runnable code) { return waitForFrameDetached(code, null); }
+
+  class WaitForFrameNavigatedOptions {
+    public Double timeout;
+    public WaitForFrameNavigatedOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  Frame waitForFrameNavigated(Runnable code, WaitForFrameNavigatedOptions options);
+  default Frame waitForFrameNavigated(Runnable code) { return waitForFrameNavigated(code, null); }
+
+  class WaitForPageErrorOptions {
+    public Double timeout;
+    public WaitForPageErrorOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  Error waitForPageError(Runnable code, WaitForPageErrorOptions options);
+  default Error waitForPageError(Runnable code) { return waitForPageError(code, null); }
+
+  class WaitForPopupOptions {
+    public Double timeout;
+    public WaitForPopupOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  Page waitForPopup(Runnable code, WaitForPopupOptions options);
+  default Page waitForPopup(Runnable code) { return waitForPopup(code, null); }
+
+  class WaitForRequestFailedOptions {
+    public Double timeout;
+    public WaitForRequestFailedOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  Request waitForRequestFailed(Runnable code, WaitForRequestFailedOptions options);
+  default Request waitForRequestFailed(Runnable code) { return waitForRequestFailed(code, null); }
+
+  class WaitForRequestFinishedOptions {
+    public Double timeout;
+    public WaitForRequestFinishedOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  Request waitForRequestFinished(Runnable code, WaitForRequestFinishedOptions options);
+  default Request waitForRequestFinished(Runnable code) { return waitForRequestFinished(code, null); }
+
+  class WaitForWebSocketOptions {
+    public Double timeout;
+    public WaitForWebSocketOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  WebSocket waitForWebSocket(Runnable code, WaitForWebSocketOptions options);
+  default WebSocket waitForWebSocket(Runnable code) { return waitForWebSocket(code, null); }
+
+  class WaitForWorkerOptions {
+    public Double timeout;
+    public WaitForWorkerOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  Worker waitForWorker(Runnable code, WaitForWorkerOptions options);
+  default Worker waitForWorker(Runnable code) { return waitForWorker(code, null); }
+
   enum LoadState { LOAD, DOMCONTENTLOADED, NETWORKIDLE }
   class AddScriptTagParams {
     /**
@@ -1167,7 +1343,7 @@ public interface Page {
       return this;
     }
   }
-  class FutureNavigationOptions {
+  class WaitForNavigationOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
      * changed by using the [{@code method: BrowserContext.setDefaultNavigationTimeout}],
@@ -1189,47 +1365,47 @@ public interface Page {
      */
     public Frame.LoadState waitUntil;
 
-    public FutureNavigationOptions withTimeout(double timeout) {
+    public WaitForNavigationOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
-    public FutureNavigationOptions withUrl(String glob) {
+    public WaitForNavigationOptions withUrl(String glob) {
       this.glob = glob;
       return this;
     }
-    public FutureNavigationOptions withUrl(Pattern pattern) {
+    public WaitForNavigationOptions withUrl(Pattern pattern) {
       this.pattern = pattern;
       return this;
     }
-    public FutureNavigationOptions withUrl(Predicate<String> predicate) {
+    public WaitForNavigationOptions withUrl(Predicate<String> predicate) {
       this.predicate = predicate;
       return this;
     }
-    public FutureNavigationOptions withWaitUntil(Frame.LoadState waitUntil) {
+    public WaitForNavigationOptions withWaitUntil(Frame.LoadState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
   }
-  class FutureRequestOptions {
+  class WaitForRequestOptions {
     /**
      * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be
      * changed by using the [{@code method: Page.setDefaultTimeout}] method.
      */
     public Double timeout;
 
-    public FutureRequestOptions withTimeout(double timeout) {
+    public WaitForRequestOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
   }
-  class FutureResponseOptions {
+  class WaitForResponseOptions {
     /**
      * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be
      * changed by using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
      */
     public Double timeout;
 
-    public FutureResponseOptions withTimeout(double timeout) {
+    public WaitForResponseOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2044,23 +2220,6 @@ public interface Page {
    */
   Video video();
   Viewport viewportSize();
-  default Deferred<Event<EventType>> futureEvent(EventType event) {
-    return futureEvent(event, (FutureEventOptions) null);
-  }
-  default Deferred<Event<EventType>> futureEvent(EventType event, Predicate<Event<EventType>> predicate) {
-    FutureEventOptions options = new FutureEventOptions();
-    options.predicate = predicate;
-    return futureEvent(event, options);
-  }
-  /**
-   * Returns the event data value.
-   *
-   * <p> Waits for event to fire and passes its value into the predicate function. Returns when the predicate returns truthy
-   * value. Will throw an error if the page is closed before the event is fired.
-   *
-   * @param event Event name, same one would pass into {@code page.on(event)}.
-   */
-  Deferred<Event<EventType>> futureEvent(EventType event, FutureEventOptions options);
   default JSHandle waitForFunction(String pageFunction, Object arg) {
     return waitForFunction(pageFunction, arg, null);
   }
@@ -2101,9 +2260,7 @@ public interface Page {
    * - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
    */
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
-  default Deferred<Response> futureNavigation() {
-    return futureNavigation(null);
-  }
+  default Response waitForNavigation(Runnable code) { return waitForNavigation(code, null); }
   /**
    * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
    * last redirect. In case of navigation to a different anchor or navigation due to History API usage, the navigation will
@@ -2118,19 +2275,21 @@ public interface Page {
    *
    * <p> Shortcut for main frame's [{@code method: Frame.waitForNavigation}].
    */
-  Deferred<Response> futureNavigation(FutureNavigationOptions options);
-  default Deferred<Request> futureRequest(String urlGlob) { return futureRequest(urlGlob, null); }
-  default Deferred<Request> futureRequest(Pattern urlPattern) { return futureRequest(urlPattern, null); }
-  default Deferred<Request> futureRequest(Predicate<String> urlPredicate) { return futureRequest(urlPredicate, null); }
-  Deferred<Request> futureRequest(String urlGlob, FutureRequestOptions options);
-  Deferred<Request> futureRequest(Pattern urlPattern, FutureRequestOptions options);
-  Deferred<Request> futureRequest(Predicate<String> urlPredicate, FutureRequestOptions options);
-  default Deferred<Response> futureResponse(String urlGlob) { return futureResponse(urlGlob, null); }
-  default Deferred<Response> futureResponse(Pattern urlPattern) { return futureResponse(urlPattern, null); }
-  default Deferred<Response> futureResponse(Predicate<String> urlPredicate) { return futureResponse(urlPredicate, null); }
-  Deferred<Response> futureResponse(String urlGlob, FutureResponseOptions options);
-  Deferred<Response> futureResponse(Pattern urlPattern, FutureResponseOptions options);
-  Deferred<Response> futureResponse(Predicate<String> urlPredicate, FutureResponseOptions options);
+  Response waitForNavigation(Runnable code, WaitForNavigationOptions options);
+  Request waitForRequest(Runnable code);
+  default Request waitForRequest(Runnable code, String urlGlob) { return waitForRequest(code, urlGlob, null); }
+  default Request waitForRequest(Runnable code, Pattern urlPattern) { return waitForRequest(code, urlPattern, null); }
+  default Request waitForRequest(Runnable code, Predicate<String> urlPredicate) { return waitForRequest(code, urlPredicate, null); }
+  Request waitForRequest(Runnable code, String urlGlob, WaitForRequestOptions options);
+  Request waitForRequest(Runnable code, Pattern urlPattern, WaitForRequestOptions options);
+  Request waitForRequest(Runnable code, Predicate<String> urlPredicate, WaitForRequestOptions options);
+  Response waitForResponse(Runnable code);
+  default Response waitForResponse(Runnable code, String urlGlob) { return waitForResponse(code, urlGlob, null); }
+  default Response waitForResponse(Runnable code, Pattern urlPattern) { return waitForResponse(code, urlPattern, null); }
+  default Response waitForResponse(Runnable code, Predicate<String> urlPredicate) { return waitForResponse(code, urlPredicate, null); }
+  Response waitForResponse(Runnable code, String urlGlob, WaitForResponseOptions options);
+  Response waitForResponse(Runnable code, Pattern urlPattern, WaitForResponseOptions options);
+  Response waitForResponse(Runnable code, Predicate<String> urlPredicate, WaitForResponseOptions options);
   default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }

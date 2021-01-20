@@ -120,19 +120,26 @@ public class TestGeolocation extends TestBase {
       "  }, err => {});\n" +
       "}");
     {
-      Deferred<Event<Page.EventType>> deferred = page.futureEvent(CONSOLE, event -> ((ConsoleMessage) event.data()).text().contains("lat=0 lng=10"));
-      context.setGeolocation(new Geolocation(0, 10));
-      deferred.get();
+      ConsoleMessage message = page.waitForConsole(() -> context.setGeolocation(new Geolocation(0, 10)));
+      // Location change events come several times so we loop until expected one is received.
+      while (!message.text().contains("lat=0 lng=10")) {
+        message = page.waitForConsole(() -> {});
+      }
+      assertTrue(message.text().contains("lat=0 lng=10"), message.text());
     }
     {
-      Deferred<Event<Page.EventType>> deferred = page.futureEvent(CONSOLE, event -> ((ConsoleMessage) event.data()).text().contains("lat=20 lng=30"));
-      context.setGeolocation(new Geolocation(20, 30));
-      deferred.get();
+      ConsoleMessage message = page.waitForConsole(() -> context.setGeolocation(new Geolocation(20, 30)));
+      while (!message.text().contains("lat=20 lng=30")) {
+        message = page.waitForConsole(() -> {});
+      }
+      assertTrue(message.text().contains("lat=20 lng=30"), message.text());
     }
     {
-      Deferred<Event<Page.EventType>> deferred = page.futureEvent(CONSOLE, event -> ((ConsoleMessage) event.data()).text().contains("lat=40 lng=50"));
-      context.setGeolocation(new Geolocation(40, 50));
-      deferred.get();
+      ConsoleMessage message = page.waitForConsole(() -> context.setGeolocation(new Geolocation(40, 50)));
+      while (!message.text().contains("lat=40 lng=50")) {
+        message = page.waitForConsole(() -> {});
+      }
+      assertTrue(message.text().contains("lat=40 lng=50"), message.text());
     }
     assertTrue(messages.contains("lat=0 lng=10"));
     assertTrue(messages.contains("lat=20 lng=30"));
@@ -143,9 +150,8 @@ public class TestGeolocation extends TestBase {
   void shouldUseContextOptionsForPopup() {
     context.grantPermissions(asList("geolocation"));
     context.setGeolocation(new Geolocation(10, 10));
-    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
-    page.evaluate("url => window['_popup'] = window.open(url)", server.PREFIX + "/geolocation.html");
-    Page popup = (Page) popupEvent.get().data();
+    Page popup = page.waitForPopup(() -> page.evaluate(
+      "url => window['_popup'] = window.open(url)", server.PREFIX + "/geolocation.html"));
     popup.waitForLoadState();
     Object geolocation = popup.evaluate("window['geolocationPromise']");
     assertEquals(mapOf("longitude", 10, "latitude", 10), geolocation);

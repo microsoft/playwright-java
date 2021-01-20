@@ -107,7 +107,5 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
     if (!didClose) {
       System.err.println("WARNING: Timed out while waiting for driver process to exit");
     }
-
-    connection.checkNoUnusedDeferredObjects();
   }
 }
