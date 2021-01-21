@@ -77,7 +77,13 @@ public class TestPageSelectOption extends TestBase {
   @Test
   void shouldNotSelectSingleOptionWhenSomeAttributesDoNotMatch() {
     page.navigate(server.PREFIX + "/input/select.html");
-    page.selectOption("select", new ElementHandle.SelectOption().withValue("green").withLabel("Brown"));
+    page.evalOnSelector("select", "s => s.value = undefined");
+    try {
+      page.selectOption("select", new ElementHandle.SelectOption()
+        .withValue("green").withLabel("Brown"), new Page.SelectOptionOptions().withTimeout(300));
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Timeout"));
+    }
     assertEquals("", page.evaluate("() => document.querySelector('select').value"));
   }
 
@@ -141,7 +147,7 @@ public class TestPageSelectOption extends TestBase {
   @Test
   void shouldReturnOnNoMatchedValues() {
     page.navigate(server.PREFIX + "/input/select.html");
-    List<String> result = page.selectOption("select", new String[]{"42", "abc"});
+    List<String> result = page.selectOption("select", new String[]{});
     assertEquals(emptyList(), result);
   }
 
