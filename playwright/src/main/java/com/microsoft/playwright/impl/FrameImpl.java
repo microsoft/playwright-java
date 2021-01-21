@@ -29,6 +29,7 @@ import java.util.*;
 
 import static com.microsoft.playwright.Frame.LoadState.*;
 import static com.microsoft.playwright.impl.Serialization.*;
+import static com.microsoft.playwright.impl.Utils.convertViaJson;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 public class FrameImpl extends ChannelOwner implements Frame {
@@ -134,54 +135,54 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public ElementHandle addScriptTag(AddScriptTagParams params){
-    return withLogging("Frame.addScriptTag", () -> addScriptTagImpl(params));
+  public ElementHandle addScriptTag(AddScriptTagOptions options){
+    return withLogging("Frame.addScriptTag", () -> addScriptTagImpl(options));
   }
 
-  ElementHandle addScriptTagImpl(AddScriptTagParams params) {
-    if (params == null) {
-      params = new AddScriptTagParams();
+  ElementHandle addScriptTagImpl(AddScriptTagOptions options) {
+    if (options == null) {
+      options = new AddScriptTagOptions();
     }
-    JsonObject jsonParams = gson().toJsonTree(params).getAsJsonObject();
-    if (params.path != null) {
-      jsonParams.remove("path");
+    JsonObject jsonOptions = gson().toJsonTree(options).getAsJsonObject();
+    if (options.path != null) {
+      jsonOptions.remove("path");
       byte[] encoded;
       try {
-        encoded = Files.readAllBytes(params.path);
+        encoded = Files.readAllBytes(options.path);
       } catch (IOException e) {
         throw new PlaywrightException("Failed to read from file", e);
       }
       String content = new String(encoded, StandardCharsets.UTF_8);
-      content += "//# sourceURL=" + params.path.toString().replace("\n", "");
-      jsonParams.addProperty("content", content);
+      content += "//# sourceURL=" + options.path.toString().replace("\n", "");
+      jsonOptions.addProperty("content", content);
     }
-    JsonElement json = sendMessage("addScriptTag", jsonParams);
+    JsonElement json = sendMessage("addScriptTag", jsonOptions);
     return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("element").get("guid").getAsString());
   }
 
   @Override
-  public ElementHandle addStyleTag(AddStyleTagParams params){
-    return withLogging("Frame.addStyleTag", () -> addStyleTagImpl(params));
+  public ElementHandle addStyleTag(AddStyleTagOptions options){
+    return withLogging("Frame.addStyleTag", () -> addStyleTagImpl(options));
   }
 
-  ElementHandle addStyleTagImpl(AddStyleTagParams params) {
-    if (params == null) {
-      params = new AddStyleTagParams();
+  ElementHandle addStyleTagImpl(AddStyleTagOptions options) {
+    if (options == null) {
+      options = new AddStyleTagOptions();
     }
-    JsonObject jsonParams = gson().toJsonTree(params).getAsJsonObject();
-    if (params.path != null) {
-      jsonParams.remove("path");
+    JsonObject jsonOptions = gson().toJsonTree(options).getAsJsonObject();
+    if (options.path != null) {
+      jsonOptions.remove("path");
       byte[] encoded;
       try {
-        encoded = Files.readAllBytes(params.path);
+        encoded = Files.readAllBytes(options.path);
       } catch (IOException e) {
         throw new PlaywrightException("Failed to read from file", e);
       }
       String content = new String(encoded, StandardCharsets.UTF_8);
-      content += "/*# sourceURL=" + params.path.toString().replace("\n", "") + "*/";
-      jsonParams.addProperty("content", content);
+      content += "/*# sourceURL=" + options.path.toString().replace("\n", "") + "*/";
+      jsonOptions.addProperty("content", content);
     }
-    JsonElement json = sendMessage("addStyleTag", jsonParams);
+    JsonElement json = sendMessage("addStyleTag", jsonOptions);
     return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("element").get("guid").getAsString());
   }
 
@@ -437,8 +438,98 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
+  public boolean isChecked(String selector, IsCheckedOptions options) {
+    return withLogging("Page.isChecked", () -> isCheckedImpl(selector, options));
+  }
+
+  boolean isCheckedImpl(String selector, IsCheckedOptions options) {
+    if (options == null) {
+      options = new IsCheckedOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    JsonObject json = sendMessage("isChecked", params).getAsJsonObject();
+    return json.get("value").getAsBoolean();
+  }
+
+  @Override
   public boolean isDetached() {
     return isDetached;
+  }
+
+  @Override
+  public boolean isDisabled(String selector, IsDisabledOptions options) {
+    return withLogging("Page.isDisabled", () -> isDisabledImpl(selector, options));
+  }
+
+  boolean isDisabledImpl(String selector, IsDisabledOptions options) {
+    if (options == null) {
+      options = new IsDisabledOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    JsonObject json = sendMessage("isDisabled", params).getAsJsonObject();
+    return json.get("value").getAsBoolean();
+  }
+
+  @Override
+  public boolean isEditable(String selector, IsEditableOptions options) {
+    return withLogging("Page.isEditable", () -> isEditableImpl(selector, options));
+  }
+
+  boolean isEditableImpl(String selector, IsEditableOptions options) {
+    if (options == null) {
+      options = new IsEditableOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    JsonObject json = sendMessage("isEditable", params).getAsJsonObject();
+    return json.get("value").getAsBoolean();
+  }
+
+  @Override
+  public boolean isEnabled(String selector, IsEnabledOptions options) {
+    return withLogging("Page.isEnabled", () -> isEnabledImpl(selector, options));
+  }
+
+  boolean isEnabledImpl(String selector, IsEnabledOptions options) {
+    if (options == null) {
+      options = new IsEnabledOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    JsonObject json = sendMessage("isEnabled", params).getAsJsonObject();
+    return json.get("value").getAsBoolean();
+  }
+
+  @Override
+  public boolean isHidden(String selector, IsHiddenOptions options) {
+    return withLogging("Page.isHidden", () -> isHiddenImpl(selector, options));
+  }
+
+  boolean isHiddenImpl(String selector, IsHiddenOptions options) {
+    if (options == null) {
+      options = new IsHiddenOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    JsonObject json = sendMessage("isHidden", params).getAsJsonObject();
+    return json.get("value").getAsBoolean();
+  }
+
+  @Override
+  public boolean isVisible(String selector, IsVisibleOptions options) {
+    return withLogging("Page.isVisible", () -> isVisibleImpl(selector, options));
+  }
+
+  boolean isVisibleImpl(String selector, IsVisibleOptions options) {
+    if (options == null) {
+      options = new IsVisibleOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    JsonObject json = sendMessage("isVisible", params).getAsJsonObject();
+    return json.get("value").getAsBoolean();
   }
 
   @Override

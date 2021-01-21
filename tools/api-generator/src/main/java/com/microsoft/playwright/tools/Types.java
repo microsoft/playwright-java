@@ -48,7 +48,7 @@ class Types {
     // State enums
     add("Page.waitForLoadState.state", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState");
     add("Frame.waitForLoadState.state", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState");
-    add("ElementHandle.waitForElementState.state", "\"disabled\"|\"enabled\"|\"hidden\"|\"stable\"|\"visible\"", "ElementState");
+    add("ElementHandle.waitForElementState.state", "\"disabled\"|\"editable\"|\"enabled\"|\"hidden\"|\"stable\"|\"visible\"", "ElementState");
     add("Logger.isEnabled.severity", "\"error\"|\"info\"|\"verbose\"|\"warning\"", "Severity");
     add("Logger.log.severity", "\"error\"|\"info\"|\"verbose\"|\"warning\"", "Severity");
 
@@ -98,15 +98,15 @@ class Types {
     add("BrowserType.launchPersistentContext.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme", new Empty());
 
     // File
-    add("Page.addScriptTag.params.path", "path", "Path");
-    add("Page.addStyleTag.params.path", "path", "Path");
+    add("Page.addScriptTag.options.path", "path", "Path");
+    add("Page.addStyleTag.options.path", "path", "Path");
     add("Page.pdf.options.path", "path", "Path");
     add("Page.screenshot.options.path", "path", "Path");
-    add("Frame.addScriptTag.params.path", "path", "Path");
-    add("Frame.addStyleTag.params.path", "path", "Path");
+    add("Frame.addScriptTag.options.path", "path", "Path");
+    add("Frame.addStyleTag.options.path", "path", "Path");
     add("ElementHandle.screenshot.options.path", "path", "Path");
-    add("Route.fulfill.response.path", "path", "Path");
-    add("Route.fulfill.response.status", "int", "int");
+    add("Route.fulfill.options.path", "path", "Path");
+    add("Route.fulfill.options.status", "int", "int");
     add("Browser.newContext.options.recordHar.path", "path", "Path");
     add("Browser.newContext.options.recordVideo.dir", "path", "Path");
     add("Browser.newPage.options.recordHar.path", "path", "Path");
@@ -121,7 +121,7 @@ class Types {
     add("BrowserType.launch.options.downloadsPath", "path", "Path");
     add("BrowserContext.storageState.options.path", "path", "Path");
     add("ChromiumBrowser.startTracing.options.path", "path", "Path");
-    add("Video.path", "Promise<string>", "Path");
+    add("Video.path", "path", "Path");
 
     // Route
     add("BrowserContext.route.handler", "function(Route, Request)", "Consumer<Route>");
@@ -204,26 +204,26 @@ class Types {
     // Return structures
     add("Dialog.type", "string", "Type", new Empty());
     add("ConsoleMessage.location", "Object", "Location");
-    add("ElementHandle.boundingBox", "Promise<Object|null>", "BoundingBox", new Empty());
-    add("Accessibility.snapshot", "Promise<Object|null>", "AccessibilityNode", new Empty());
+    add("ElementHandle.boundingBox", "Object|null", "BoundingBox", new Empty());
+    add("Accessibility.snapshot", "Object|null", "AccessibilityNode", new Empty());
     add("WebSocket.framereceived", "Object", "FrameData", new Empty());
     add("WebSocket.framesent", "Object", "FrameData", new Empty());
 
-    add("Page.waitForRequest", "Promise<Request>", "Deferred<Request>");
-    add("Page.waitForResponse", "Promise<Response>", "Deferred<Response>");
-    add("Page.waitForNavigation", "Promise<Response|null>", "Deferred<Response>");
-    add("Frame.waitForNavigation", "Promise<Response|null>", "Deferred<Response>");
-    add("Page.waitForSelector", "Promise<ElementHandle|null>", "ElementHandle", new Empty());
-    add("Frame.waitForSelector", "Promise<ElementHandle|null>", "ElementHandle", new Empty());
-    add("ElementHandle.waitForSelector", "Promise<ElementHandle|null>", "ElementHandle", new Empty());
+    add("Page.waitForRequest", "Request", "Deferred<Request>");
+    add("Page.waitForResponse", "Response", "Deferred<Response>");
+    add("Page.waitForNavigation", "Response|null", "Deferred<Response>");
+    add("Frame.waitForNavigation", "Response|null", "Deferred<Response>");
+    add("Page.waitForSelector", "ElementHandle|null", "ElementHandle", new Empty());
+    add("Frame.waitForSelector", "ElementHandle|null", "ElementHandle", new Empty());
+    add("ElementHandle.waitForSelector", "ElementHandle|null", "ElementHandle", new Empty());
 
-    add("Frame.waitForLoadState", "Promise<void>", "void", new Empty());
-    add("Page.waitForLoadState", "Promise<void>", "void", new Empty());
-    add("Frame.waitForTimeout", "Promise<void>", "void", new Empty());
-    add("Page.waitForTimeout", "Promise<void>", "void", new Empty());
-    add("Frame.waitForFunction", "Promise<JSHandle>", "JSHandle", new Empty());
-    add("Page.waitForFunction", "Promise<JSHandle>", "JSHandle", new Empty());
-    add("ElementHandle.waitForElementState", "Promise<void>", "void", new Empty());
+    add("Frame.waitForLoadState", "void", "void", new Empty());
+    add("Page.waitForLoadState", "void", "void", new Empty());
+    add("Frame.waitForTimeout", "void", "void", new Empty());
+    add("Page.waitForTimeout", "void", "void", new Empty());
+    add("Frame.waitForFunction", "JSHandle", "JSHandle", new Empty());
+    add("Page.waitForFunction", "JSHandle", "JSHandle", new Empty());
+    add("ElementHandle.waitForElementState", "void", "void", new Empty());
 
     // Custom options
     add("Page.pdf.options.margin.top", "float|string", "String");
@@ -248,7 +248,7 @@ class Types {
     add("ElementHandle.hover.options.position", "Object", "Position", new Empty());
 
     // The method has custom signatures
-    add("BrowserContext.cookies", "Promise<Array<Object>>", "Cookie");
+    add("BrowserContext.cookies", "Array<Object>", "Cookie");
     add("BrowserContext.cookies.sameSite", "\"Lax\"|\"None\"|\"Strict\"", "SameSite", new Empty());
     add("BrowserContext.cookies.expires", "float", "long");
     add("BrowserContext.addCookies.cookies", "Array<Object>", "AddCookie");
@@ -256,7 +256,7 @@ class Types {
     add("BrowserContext.addCookies.cookies.expires", "float", "Long", new Empty());
     add("BrowserContext.route.url", "RegExp|function(URL):boolean|string", "String");
     add("BrowserContext.unroute.url", "RegExp|function(URL):boolean|string", "String");
-    add("BrowserContext.storageState", "Promise<Object>", "StorageState", new Empty());
+    add("BrowserContext.storageState", "Object", "StorageState", new Empty());
     add("BrowserContext.waitForEvent.event", "string", "EventType", new Empty());
     add("BrowserContext.waitForEvent.optionsOrPredicate", "Function|Object", "String");
     add("BrowserContext.waitForEvent", "Promise<any>", "Deferred<Event<EventType>>", new Empty());
@@ -264,7 +264,7 @@ class Types {
     add("Page.waitForNavigation.options", "Object", "WaitForNavigationOptions");
     add("Page.waitForRequest.options", "Object", "WaitForRequestOptions");
     add("Page.waitForResponse.options", "Object", "WaitForResponseOptions");
-    add("Page.frame.options", "string|Object", "FrameOptions", new Empty());
+    add("Page.frame.options", "Object", "FrameOptions", new Empty());
     add("Page.route.url", "RegExp|function(URL):boolean|string", "String");
     add("Page.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");
     add("Page.setInputFiles.files", "Array<Object>|Array<path>|Object|path", "String");
@@ -281,8 +281,8 @@ class Types {
     add("ElementHandle.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");
     add("ElementHandle.setInputFiles.files", "Array<Object>|Array<path>|Object|path", "String");
     add("FileChooser.setFiles.files", "Array<Object>|Array<path>|Object|path", "String");
-    add("Route.continue.overrides.postData", "Buffer|string", "byte[]", new Empty());
-    add("Route.fulfill.response.body", "Buffer|string", "String");
+    add("Route.continue.options.postData", "Buffer|string", "byte[]", new Empty());
+    add("Route.fulfill.options.body", "Buffer|string", "String");
     add("BrowserType.launch.options.ignoreDefaultArgs", "Array<string>|boolean", "Custom");
     add("BrowserType.launch.options.firefoxUserPrefs", "Object<string, boolean|float|string>", "Map<String, Object>", new Empty());
     add("BrowserType.launch.options.env", "Object<string, boolean|float|string>", "Map<String, String>", new Empty());
@@ -310,8 +310,8 @@ class Types {
     add("Browser.newPage.options.geolocation", "Object", "Geolocation", new Empty());
     add("BrowserType.launchPersistentContext.options.geolocation", "Object", "Geolocation", new Empty());
     add("Download.saveAs.path", "path", "Path", new Empty());
-    add("Download.path", "Promise<null|string>", "Path", new Empty());
-    add("Download.createReadStream", "Promise<Readable|null>", "InputStream", new Empty());
+    add("Download.path", "null|path", "Path", new Empty());
+    add("Download.createReadStream", "Readable|null", "InputStream", new Empty());
 
     // Single field options
     add("Keyboard.type.options", "Object", "int", new Empty());
@@ -320,46 +320,46 @@ class Types {
     // node.js types
     add("BrowserServer.process", "ChildProcess", "Object");
 
-    add("Page.pdf", "Promise<Buffer>", "byte[]", new Empty());
-    add("Page.screenshot", "Promise<Buffer>", "byte[]", new Empty());
-    add("ElementHandle.screenshot", "Promise<Buffer>", "byte[]", new Empty());
+    add("Page.pdf", "Buffer", "byte[]", new Empty());
+    add("Page.screenshot", "Buffer", "byte[]", new Empty());
+    add("ElementHandle.screenshot", "Buffer", "byte[]", new Empty());
     add("Request.postDataBuffer", "Buffer|null", "byte[]", new Empty());
-    add("Response.body", "Promise<Buffer>", "byte[]", new Empty());
-    add("Response.finished", "Promise<Error|null>", "String");
-    add("ChromiumBrowser.stopTracing", "Promise<Buffer>", "byte[]", new Empty());
+    add("Response.body", "Buffer", "byte[]", new Empty());
+    add("Response.finished", "Error|null", "String");
+    add("ChromiumBrowser.stopTracing", "Buffer", "byte[]", new Empty());
     add("WebSocket.framereceived.payload", "Buffer|string", "byte[]", new Empty());
     add("WebSocket.framesent.payload", "Buffer|string", "byte[]", new Empty());
 
     add("BrowserContext.browser", "Browser|null", "Browser");
     add("BrowserContext.cookies.urls", "Array<string>|string", "Custom", new Empty());
-    add("Page.$", "Promise<ElementHandle|null>", "ElementHandle");
+    add("Page.$", "ElementHandle|null", "ElementHandle");
     add("Page.frame", "Frame|null", "Frame");
     add("Page.frame.frameSelector", "Object|string", "Custom", new Empty());
-    add("Page.getAttribute", "Promise<null|string>", "String", new Empty());
-    add("Page.goBack", "Promise<Response|null>", "Response", new Empty());
-    add("Page.goForward", "Promise<Response|null>", "Response", new Empty());
-    add("Page.goto", "Promise<Response|null>", "Response", new Empty());
-    add("Page.opener", "Promise<Page|null>", "Page", new Empty());
-    add("Page.reload", "Promise<Response|null>", "Response", new Empty());
-    add("Page.textContent", "Promise<null|string>", "String", new Empty());
+    add("Page.getAttribute", "null|string", "String", new Empty());
+    add("Page.goBack", "Response|null", "Response", new Empty());
+    add("Page.goForward", "Response|null", "Response", new Empty());
+    add("Page.goto", "Response|null", "Response", new Empty());
+    add("Page.opener", "Page|null", "Page", new Empty());
+    add("Page.reload", "Response|null", "Response", new Empty());
+    add("Page.textContent", "null|string", "String", new Empty());
     add("Page.video", "Video|null", "Video", new Empty());
-    add("Frame.$", "Promise<ElementHandle|null>", "ElementHandle", new Empty());
-    add("Frame.getAttribute", "Promise<null|string>", "String", new Empty());
-    add("Frame.goto", "Promise<Response|null>", "Response", new Empty());
+    add("Frame.$", "ElementHandle|null", "ElementHandle", new Empty());
+    add("Frame.getAttribute", "null|string", "String", new Empty());
+    add("Frame.goto", "Response|null", "Response", new Empty());
     add("Frame.parentFrame", "Frame|null", "Frame", new Empty());
-    add("Frame.textContent", "Promise<null|string>", "String", new Empty());
-    add("ElementHandle.$", "Promise<ElementHandle|null>", "ElementHandle", new Empty());
-    add("ElementHandle.contentFrame", "Promise<Frame|null>", "Frame", new Empty());
-    add("ElementHandle.getAttribute", "Promise<null|string>", "String", new Empty());
-    add("ElementHandle.ownerFrame", "Promise<Frame|null>", "Frame", new Empty());
-    add("ElementHandle.textContent", "Promise<null|string>", "String", new Empty());
+    add("Frame.textContent", "null|string", "String", new Empty());
+    add("ElementHandle.$", "ElementHandle|null", "ElementHandle", new Empty());
+    add("ElementHandle.contentFrame", "Frame|null", "Frame", new Empty());
+    add("ElementHandle.getAttribute", "null|string", "String", new Empty());
+    add("ElementHandle.ownerFrame", "Frame|null", "Frame", new Empty());
+    add("ElementHandle.textContent", "null|string", "String", new Empty());
     add("JSHandle.asElement", "ElementHandle|null", "ElementHandle", new Empty());
-    add("Download.failure", "Promise<null|string>", "String", new Empty());
+    add("Download.failure", "null|string", "String", new Empty());
 //    add("Request.failure", "Object|null", "Object", new Empty());
     add("Request.postData", "null|string", "String", new Empty());
     add("Request.redirectedFrom", "Request|null", "Request", new Empty());
     add("Request.redirectedTo", "Request|null", "Request", new Empty());
-    add("Request.response", "Promise<Response|null>", "Response", new Empty());
+    add("Request.response", "Response|null", "Response", new Empty());
 
     // TODO: fix upstream types!
     add("Request.headers", "Object<string, string>", "Map<String, String>", new Empty());
@@ -369,27 +369,27 @@ class Types {
     add("BrowserType.launchPersistentContext.options.extraHTTPHeaders", "Object<string, string>", "Map<String, String>", new Empty());
     add("Page.setExtraHTTPHeaders.headers", "Object<string, string>", "Map<String, String>", new Empty());
     add("BrowserContext.setExtraHTTPHeaders.headers", "Object<string, string>", "Map<String, String>", new Empty());
-    add("Route.continue.overrides.headers", "Object<string, string>", "Map<String, String>", new Empty());
-    add("Route.fulfill.response.headers", "Object<string, string>", "Map<String, String>", new Empty());
+    add("Route.continue.options.headers", "Object<string, string>", "Map<String, String>", new Empty());
+    add("Route.fulfill.options.headers", "Object<string, string>", "Map<String, String>", new Empty());
     add("Playwright.devices", "Object", "Map<String, DeviceDescriptor>", new Empty());
 
     // JSON type
     add("BrowserContext.addInitScript.arg", "Serializable", "Object");
-    add("Page.$eval", "Promise<Serializable>", "Object");
-    add("Page.$$eval", "Promise<Serializable>", "Object");
+    add("Page.$eval", "Serializable", "Object");
+    add("Page.$$eval", "Serializable", "Object");
     add("Page.addInitScript.arg", "Serializable", "Object");
-    add("Page.evaluate", "Promise<Serializable>", "Object");
-    add("Frame.$eval", "Promise<Serializable>", "Object");
-    add("Frame.$$eval", "Promise<Serializable>", "Object");
-    add("Frame.evaluate", "Promise<Serializable>", "Object");
-    add("ElementHandle.$eval", "Promise<Serializable>", "Object");
-    add("ElementHandle.$$eval", "Promise<Serializable>", "Object");
-    add("ElementHandle.evaluate", "Promise<Serializable>", "Object");
-    add("ElementHandle.jsonValue", "Promise<Serializable>", "Object");
-    add("JSHandle.evaluate", "Promise<Serializable>", "Object");
-    add("JSHandle.jsonValue", "Promise<Serializable>", "Object");
-    add("Response.json", "Promise<Serializable>", "Object");
-    add("Worker.evaluate", "Promise<Serializable>", "Object");
+    add("Page.evaluate", "Serializable", "Object");
+    add("Frame.$eval", "Serializable", "Object");
+    add("Frame.$$eval", "Serializable", "Object");
+    add("Frame.evaluate", "Serializable", "Object");
+    add("ElementHandle.$eval", "Serializable", "Object");
+    add("ElementHandle.$$eval", "Serializable", "Object");
+    add("ElementHandle.evaluate", "Serializable", "Object");
+    add("ElementHandle.jsonValue", "Serializable", "Object");
+    add("JSHandle.evaluate", "Serializable", "Object");
+    add("JSHandle.jsonValue", "Serializable", "Object");
+    add("Response.json", "Serializable", "Object");
+    add("Worker.evaluate", "Serializable", "Object");
 
     add("CDPSession.send.params", "Object", "Object", new Empty());
   }

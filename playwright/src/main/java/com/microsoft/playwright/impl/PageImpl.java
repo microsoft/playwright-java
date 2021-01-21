@@ -594,15 +594,15 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public ElementHandle addScriptTag(AddScriptTagParams params) {
+  public ElementHandle addScriptTag(AddScriptTagOptions options) {
     return withLogging("Page.addScriptTag",
-      () -> mainFrame.addScriptTagImpl(convertViaJson(params, Frame.AddScriptTagParams.class)));
+      () -> mainFrame.addScriptTagImpl(convertViaJson(options, Frame.AddScriptTagOptions.class)));
   }
 
   @Override
-  public ElementHandle addStyleTag(AddStyleTagParams params) {
+  public ElementHandle addStyleTag(AddStyleTagOptions options) {
     return withLogging("Page.addStyleTag",
-      () -> mainFrame.addStyleTagImpl(convertViaJson(params, Frame.AddStyleTagParams.class)));
+      () -> mainFrame.addStyleTagImpl(convertViaJson(options, Frame.AddStyleTagOptions.class)));
   }
 
   @Override
@@ -815,8 +815,44 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public boolean isChecked(String selector, IsCheckedOptions options) {
+    return withLogging("Page.isChecked",
+      () -> mainFrame.isCheckedImpl(selector, convertViaJson(options, Frame.IsCheckedOptions.class)));
+  }
+
+  @Override
   public boolean isClosed() {
     return isClosed;
+  }
+
+  @Override
+  public boolean isDisabled(String selector, IsDisabledOptions options) {
+    return withLogging("Page.isDisabled",
+      () -> mainFrame.isDisabledImpl(selector, convertViaJson(options, Frame.IsDisabledOptions.class)));
+  }
+
+  @Override
+  public boolean isEditable(String selector, IsEditableOptions options) {
+    return withLogging("Page.isEditable",
+      () -> mainFrame.isEditableImpl(selector, convertViaJson(options, Frame.IsEditableOptions.class)));
+  }
+
+  @Override
+  public boolean isEnabled(String selector, IsEnabledOptions options) {
+    return withLogging("Page.isEnabled",
+      () -> mainFrame.isEnabledImpl(selector, convertViaJson(options, Frame.IsEnabledOptions.class)));
+  }
+
+  @Override
+  public boolean isHidden(String selector, IsHiddenOptions options) {
+    return withLogging("Page.isHidden",
+      () -> mainFrame.isHiddenImpl(selector, convertViaJson(options, Frame.IsHiddenOptions.class)));
+  }
+
+  @Override
+  public boolean isVisible(String selector, IsVisibleOptions options) {
+    return withLogging("Page.isVisible",
+      () -> mainFrame.isVisibleImpl(selector, convertViaJson(options, Frame.IsVisibleOptions.class)));
   }
 
   @Override

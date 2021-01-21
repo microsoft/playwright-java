@@ -56,7 +56,7 @@ public interface ElementHandle extends JSHandle {
     }
   }
 
-  enum ElementState { VISIBLE, HIDDEN, STABLE, ENABLED, DISABLED }
+  enum ElementState { VISIBLE, HIDDEN, STABLE, ENABLED, DISABLED, EDITABLE }
   class CheckOptions {
     /**
      * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
@@ -726,7 +726,7 @@ public interface ElementHandle extends JSHandle {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
    *
-   * <p> > <strong>NOTE</strong> {@code elementHandle.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
+   * <p> <strong>NOTE:</strong> {@code elementHandle.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    */
   void dblclick(DblclickOptions options);
   default void dispatchEvent(String type) {
@@ -802,6 +802,30 @@ public interface ElementHandle extends JSHandle {
    */
   String innerText();
   /**
+   * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
+   */
+  boolean isChecked();
+  /**
+   * Returns whether the element is disabled, the opposite of [enabled](./actionability.md#enabled).
+   */
+  boolean isDisabled();
+  /**
+   * Returns whether the element is [editable](./actionability.md#editable).
+   */
+  boolean isEditable();
+  /**
+   * Returns whether the element is [enabled](./actionability.md#enabled).
+   */
+  boolean isEnabled();
+  /**
+   * Returns whether the element is hidden, the opposite of [visible](./actionability.md#visible).
+   */
+  boolean isHidden();
+  /**
+   * Returns whether the element is [visible](./actionability.md#visible).
+   */
+  boolean isVisible();
+  /**
    * Returns the frame containing the given element.
    */
   Frame ownerFrame();
@@ -847,7 +871,7 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method waits for [actionability](./actionability.md) checks, then tries to scroll element into view, unless it is
    * completely visible as defined by
-   * [IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)'s ``{@code ratio}``.
+   * [IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)'s {@code ratio}.
    *
    * <p> Throws when {@code elementHandle} does not point to an element
    * [connected](https://developer.mozilla.org/en-US/docs/Web/API/Node/isConnected) to a Document or a ShadowRoot.
@@ -897,6 +921,8 @@ public interface ElementHandle extends JSHandle {
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
    * element, the method throws an error.
    *
+   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   *
    *
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
@@ -941,7 +967,7 @@ public interface ElementHandle extends JSHandle {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
    *
-   * <p> > <strong>NOTE</strong> {@code elementHandle.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
+   * <p> <strong>NOTE:</strong> {@code elementHandle.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    */
   void tap(TapOptions options);
   /**
@@ -994,6 +1020,7 @@ public interface ElementHandle extends JSHandle {
    *   [stable](./actionability.md#stable).
    * - {@code "enabled"} Wait until the element is [enabled](./actionability.md#enabled).
    * - {@code "disabled"} Wait until the element is [not enabled](./actionability.md#enabled).
+   * - {@code "editable"} Wait until the element is [editable](./actionability.md#editable).
    *
    * <p> If the element does not satisfy the condition for the {@code timeout} milliseconds, this method will throw.
    *
@@ -1012,7 +1039,7 @@ public interface ElementHandle extends JSHandle {
    * will return immediately. If the selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will
    * throw.
    *
-   * <p> > <strong>NOTE</strong> This method does not work across navigations, use [{@code method: Page.waitForSelector}] instead.
+   * <p> <strong>NOTE:</strong> This method does not work across navigations, use [{@code method: Page.waitForSelector}] instead.
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
    */

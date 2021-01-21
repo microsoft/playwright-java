@@ -94,11 +94,11 @@ public class TestBrowserContextRoute extends TestBase {
   void shouldYieldToPageRoute() {
     BrowserContext context = browser.newContext();
     context.route("**/empty.html", route -> {
-      route.fulfill(new Route.FulfillResponse().withStatus(200).withBody("context"));
+      route.fulfill(new Route.FulfillOptions().withStatus(200).withBody("context"));
     });
     Page page = context.newPage();
     page.route("**/empty.html", route -> {
-      route.fulfill(new Route.FulfillResponse().withStatus(200).withBody("page"));
+      route.fulfill(new Route.FulfillOptions().withStatus(200).withBody("page"));
     });
     Response response = page.navigate(server.EMPTY_PAGE);
     assertTrue(response.ok());
@@ -110,11 +110,11 @@ public class TestBrowserContextRoute extends TestBase {
   void shouldFallBackToContextRoute() {
     BrowserContext context = browser.newContext();
     context.route("**/empty.html", route -> {
-      route.fulfill(new Route.FulfillResponse().withStatus(200).withBody("context"));
+      route.fulfill(new Route.FulfillOptions().withStatus(200).withBody("context"));
     });
     Page page = context.newPage();
     page.route("**/non-empty.html", route -> {
-      route.fulfill(new Route.FulfillResponse().withStatus(200).withBody("page"));
+      route.fulfill(new Route.FulfillOptions().withStatus(200).withBody("page"));
     });
     Response response = page.navigate(server.EMPTY_PAGE);
     assertTrue(response.ok());

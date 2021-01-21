@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
- * - extends: [EventEmitter](https://nodejs.org/api/events.html#events_class_eventemitter)
+ * - extends: [EventEmitter]
  *
  * <p> BrowserContexts provide a way to operate multiple independent browser sessions.
  *
@@ -113,13 +113,7 @@ public interface BrowserContext {
   default Page waitForPage(Runnable code) { return waitForPage(code, null); }
 
   class AddCookie {
-    /**
-     * **required**
-     */
     public String name;
-    /**
-     * **required**
-     */
     public String value;
     /**
      * either url or domain / path are required. Optional.
@@ -250,9 +244,8 @@ public interface BrowserContext {
   }
   class StorageStateOptions {
     /**
-     * The file path to save the storage state to. If {@code path} is a relative path, then it is resolved relative to
-     * [current working directory](https://nodejs.org/api/process.html#process_process_cwd). If no path is provided, storage
-     * state is still returned, but won't be saved to the disk.
+     * The file path to save the storage state to. If {@code path} is a relative path, then it is resolved relative to current
+     * working directory. If no path is provided, storage state is still returned, but won't be saved to the disk.
      */
     public Path path;
 
@@ -278,7 +271,7 @@ public interface BrowserContext {
    * <p> The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend
    * the JavaScript environment, e.g. to seed {@code Math.random}.
    *
-   * <p> > <strong>NOTE</strong> The order of evaluation of multiple scripts installed via [{@code method: BrowserContext.addInitScript}] and
+   * <p> <strong>NOTE:</strong> The order of evaluation of multiple scripts installed via [{@code method: BrowserContext.addInitScript}] and
    * [{@code method: Page.addInitScript}] is not defined.
    *
    * @param script Script to be evaluated in all pages in the browser context.
@@ -300,7 +293,7 @@ public interface BrowserContext {
   /**
    * Closes the browser context. All the pages that belong to the browser context will be closed.
    *
-   * <p> > <strong>NOTE</strong> the default browser context cannot be closed.
+   * <p> <strong>NOTE:</strong> The default browser context cannot be closed.
    */
   void close();
   default List<Cookie> cookies() { return cookies((List<String>) null); }
@@ -389,7 +382,7 @@ public interface BrowserContext {
    * <p> Page routes (set up with [{@code method: Page.route}]) take precedence over browser context routes when request matches both
    * handlers.
    *
-   * <p> > <strong>NOTE</strong> Enabling routing disables http cache.
+   * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
    * @param handler handler function to route the request.
@@ -404,7 +397,7 @@ public interface BrowserContext {
    * - [{@code method: Page.setContent}]
    * - [{@code method: Page.waitForNavigation}]
    *
-   * <p> > <strong>NOTE</strong> [{@code method: Page.setDefaultNavigationTimeout}] and [{@code method: Page.setDefaultTimeout}] take priority over
+   * <p> <strong>NOTE:</strong> [{@code method: Page.setDefaultNavigationTimeout}] and [{@code method: Page.setDefaultTimeout}] take priority over
    * [{@code method: BrowserContext.setDefaultNavigationTimeout}].
    *
    * @param timeout Maximum navigation time in milliseconds
@@ -413,7 +406,7 @@ public interface BrowserContext {
   /**
    * This setting will change the default maximum time for all the methods accepting {@code timeout} option.
    *
-   * <p> > <strong>NOTE</strong> [{@code method: Page.setDefaultNavigationTimeout}], [{@code method: Page.setDefaultTimeout}] and
+   * <p> <strong>NOTE:</strong> [{@code method: Page.setDefaultNavigationTimeout}], [{@code method: Page.setDefaultTimeout}] and
    * [{@code method: BrowserContext.setDefaultNavigationTimeout}] take priority over [{@code method: BrowserContext.setDefaultTimeout}].
    *
    * @param timeout Maximum time in milliseconds
@@ -424,7 +417,7 @@ public interface BrowserContext {
    * with page-specific extra HTTP headers set with [{@code method: Page.setExtraHTTPHeaders}]. If page overrides a particular
    * header, page-specific header value will be used instead of the browser context header value.
    *
-   * <p> > <strong>NOTE</strong> {@code browserContext.setExtraHTTPHeaders} does not guarantee the order of headers in the outgoing requests.
+   * <p> <strong>NOTE:</strong> [{@code method: BrowserContext.setExtraHTTPHeaders}] does not guarantee the order of headers in the outgoing requests.
    *
    * @param headers An object containing additional HTTP headers to be sent with every request. All header values must be strings.
    */
@@ -432,8 +425,8 @@ public interface BrowserContext {
   /**
    * Sets the context's geolocation. Passing {@code null} or {@code undefined} emulates position unavailable.
    *
-   * <p> > <strong>NOTE</strong> Consider using [{@code method: BrowserContext.grantPermissions}] to grant permissions for the browser context pages
-   * to read its geolocation.
+   * <p> <strong>NOTE:</strong> Consider using [{@code method: BrowserContext.grantPermissions}] to grant permissions for the browser context pages to
+   * read its geolocation.
    */
   void setGeolocation(Geolocation geolocation);
   /**

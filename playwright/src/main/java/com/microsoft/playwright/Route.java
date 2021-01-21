@@ -25,11 +25,11 @@ import java.util.*;
  * allows to handle the route.
  */
 public interface Route {
-  class ContinueOverrides {
+  class ContinueOptions {
     /**
-     * If set changes the request URL. New URL must have same protocol as original one.
+     * If set changes the request HTTP headers. Header values will be converted to a string.
      */
-    public String url;
+    public Map<String, String> headers;
     /**
      * If set changes the request method (e.g. GET or POST)
      */
@@ -39,77 +39,77 @@ public interface Route {
      */
     public byte[] postData;
     /**
-     * If set changes the request HTTP headers. Header values will be converted to a string.
+     * If set changes the request URL. New URL must have same protocol as original one.
      */
-    public Map<String, String> headers;
+    public String url;
 
-    public ContinueOverrides withUrl(String url) {
-      this.url = url;
-      return this;
-    }
-    public ContinueOverrides withMethod(String method) {
-      this.method = method;
-      return this;
-    }
-    public ContinueOverrides withPostData(String postData) {
-      this.postData = postData.getBytes(StandardCharsets.UTF_8);
-      return this;
-    }
-    public ContinueOverrides withPostData(byte[] postData) {
-      this.postData = postData;
-      return this;
-    }
-    public ContinueOverrides withHeaders(Map<String, String> headers) {
+    public ContinueOptions withHeaders(Map<String, String> headers) {
       this.headers = headers;
       return this;
     }
+    public ContinueOptions withMethod(String method) {
+      this.method = method;
+      return this;
+    }
+    public ContinueOptions withPostData(String postData) {
+      this.postData = postData.getBytes(StandardCharsets.UTF_8);
+      return this;
+    }
+    public ContinueOptions withPostData(byte[] postData) {
+      this.postData = postData;
+      return this;
+    }
+    public ContinueOptions withUrl(String url) {
+      this.url = url;
+      return this;
+    }
   }
-  class FulfillResponse {
+  class FulfillOptions {
     /**
-     * Response status code, defaults to {@code 200}.
+     * Response body.
      */
-    public int status;
-    /**
-     * Optional response headers. Header values will be converted to a string.
-     */
-    public Map<String, String> headers;
+    public String body;
+    public byte[] bodyBytes;
     /**
      * If set, equals to setting {@code Content-Type} response header.
      */
     public String contentType;
     /**
-     * Optional response body.
+     * Response headers. Header values will be converted to a string.
      */
-    public String body;
-    public byte[] bodyBytes;
+    public Map<String, String> headers;
     /**
-     * Optional file path to respond with. The content type will be inferred from file extension. If {@code path} is a relative path,
-     * then it is resolved relative to the current working directory.
+     * File path to respond with. The content type will be inferred from file extension. If {@code path} is a relative path, then it
+     * is resolved relative to the current working directory.
      */
     public Path path;
+    /**
+     * Response status code, defaults to {@code 200}.
+     */
+    public int status;
 
-    public FulfillResponse withStatus(int status) {
-      this.status = status;
-      return this;
-    }
-    public FulfillResponse withHeaders(Map<String, String> headers) {
-      this.headers = headers;
-      return this;
-    }
-    public FulfillResponse withContentType(String contentType) {
-      this.contentType = contentType;
-      return this;
-    }
-    public FulfillResponse withBody(byte[] body) {
+    public FulfillOptions withBody(byte[] body) {
       this.bodyBytes = body;
       return this;
     }
-    public FulfillResponse withBody(String body) {
+    public FulfillOptions withBody(String body) {
       this.body = body;
       return this;
     }
-    public FulfillResponse withPath(Path path) {
+    public FulfillOptions withContentType(String contentType) {
+      this.contentType = contentType;
+      return this;
+    }
+    public FulfillOptions withHeaders(Map<String, String> headers) {
+      this.headers = headers;
+      return this;
+    }
+    public FulfillOptions withPath(Path path) {
       this.path = path;
+      return this;
+    }
+    public FulfillOptions withStatus(int status) {
+      this.status = status;
       return this;
     }
   }
@@ -143,18 +143,15 @@ public interface Route {
   }
   /**
    * Continues route's request with optional overrides.
-   *
-   *
-   * @param overrides Optional request overrides, can override following properties:
    */
-  void continue_(ContinueOverrides overrides);
+  void continue_(ContinueOptions options);
+  default void fulfill() {
+    fulfill(null);
+  }
   /**
    * Fulfills route's request with given response.
-   *
-   *
-   * @param response Response that will fulfill this route's request.
    */
-  void fulfill(FulfillResponse response);
+  void fulfill(FulfillOptions options);
   /**
    * A request to be routed.
    */

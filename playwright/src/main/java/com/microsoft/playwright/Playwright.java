@@ -22,9 +22,6 @@ import java.util.*;
 /**
  * Playwright module provides a method to launch a browser instance. The following is a typical example of using Playwright
  * to drive automation:
- *
- * <p> By default, the {@code playwright} NPM package automatically downloads browser executables during installation. The
- * {@code playwright-core} NPM package can be used to skip automatic downloads.
  */
 public interface Playwright {
   /**
@@ -32,9 +29,7 @@ public interface Playwright {
    */
   BrowserType chromium();
   /**
-   * Returns a list of devices to be used with [{@code method: Browser.newContext}] or [{@code method: Browser.newPage}]. Actual list of
-   * devices can be found in
-   * [src/server/deviceDescriptors.ts](https://github.com/Microsoft/playwright/blob/master/src/server/deviceDescriptors.ts).
+   * Returns a dictionary of devices to be used with [{@code method: Browser.newContext}] or [{@code method: Browser.newPage}].
    */
   Map<String, DeviceDescriptor> devices();
   /**

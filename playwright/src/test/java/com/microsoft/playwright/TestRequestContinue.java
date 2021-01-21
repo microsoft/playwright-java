@@ -40,7 +40,7 @@ public class TestRequestContinue extends TestBase {
     page.route("**/*", route -> {
       Map<String, String> headers = new HashMap<>(route.request().headers());
       headers.put("FOO", "bar");
-      route.continue_(new Route.ContinueOverrides().withHeaders(headers));
+      route.continue_(new Route.ContinueOptions().withHeaders(headers));
     });
     page.navigate(server.EMPTY_PAGE);
     Future<Server.Request> request = server.futureRequest("/sleep.zzz");
@@ -52,7 +52,7 @@ public class TestRequestContinue extends TestBase {
   void shouldAmendMethod() throws ExecutionException, InterruptedException {
     Future<Server.Request> sRequest = server.futureRequest("/sleep.zzz");
     page.navigate(server.EMPTY_PAGE);
-    page.route("**/*", route -> route.continue_(new Route.ContinueOverrides().withMethod("POST")));
+    page.route("**/*", route -> route.continue_(new Route.ContinueOptions().withMethod("POST")));
     Future<Server.Request> request = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz')");
     assertEquals("POST", request.get().method);
@@ -63,7 +63,7 @@ public class TestRequestContinue extends TestBase {
   void shouldOverrideRequestUrl() throws ExecutionException, InterruptedException {
     Future<Server.Request> serverRequest = server.futureRequest("/global-var.html");
     page.route("**/foo", route -> {
-      route.continue_(new Route.ContinueOverrides().withUrl(server.PREFIX + "/global-var.html"));
+      route.continue_(new Route.ContinueOptions().withUrl(server.PREFIX + "/global-var.html"));
     });
     Response response = page.navigate(server.PREFIX + "/foo");
     assertEquals(server.PREFIX + "/foo", response.url());
@@ -76,7 +76,7 @@ public class TestRequestContinue extends TestBase {
     PlaywrightException[] error = {null};
     page.route("**/*", route -> {
       try {
-        route.continue_(new Route.ContinueOverrides().withUrl("file:///tmp/foo"));
+        route.continue_(new Route.ContinueOptions().withUrl("file:///tmp/foo"));
       } catch (PlaywrightException e) {
         error[0] = e;
         route.continue_();
@@ -91,7 +91,7 @@ public class TestRequestContinue extends TestBase {
   void shouldOverrideMethodAlongWithUrl() throws ExecutionException, InterruptedException {
     Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
     page.route("**/foo", route -> {
-      route.continue_(new Route.ContinueOverrides().withUrl(server.EMPTY_PAGE).withMethod("POST"));
+      route.continue_(new Route.ContinueOptions().withUrl(server.EMPTY_PAGE).withMethod("POST"));
     });
     page.navigate(server.PREFIX + "/foo");
     assertEquals("POST", serverRequest.get().method);
@@ -100,7 +100,7 @@ public class TestRequestContinue extends TestBase {
   @Test
   void shouldAmendMethodOnMainRequest() throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/empty.html");
-    page.route("**/*", route -> route.continue_(new Route.ContinueOverrides().withMethod("POST")));
+    page.route("**/*", route -> route.continue_(new Route.ContinueOptions().withMethod("POST")));
     page.navigate(server.EMPTY_PAGE);
     assertEquals("POST", request.get().method);
   }
@@ -109,7 +109,7 @@ public class TestRequestContinue extends TestBase {
   void shouldAmendPostData() throws ExecutionException, InterruptedException {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/*", route -> {
-      route.continue_(new Route.ContinueOverrides().withPostData("doggo"));
+      route.continue_(new Route.ContinueOptions().withPostData("doggo"));
     });
     Future<Server.Request> serverRequest = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz', { method: 'POST', body: 'birdy' })");
@@ -120,7 +120,7 @@ public class TestRequestContinue extends TestBase {
   void shouldAmendUtf8PostData() throws ExecutionException, InterruptedException {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/*", route -> {
-      route.continue_(new Route.ContinueOverrides().withPostData("пушкин"));
+      route.continue_(new Route.ContinueOptions().withPostData("пушкин"));
     });
     Future<Server.Request> serverRequest = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz', { method: 'POST', body: 'birdy' })");
@@ -132,7 +132,7 @@ public class TestRequestContinue extends TestBase {
   void shouldAmendLongerPostData() throws ExecutionException, InterruptedException {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/*", route -> {
-      route.continue_(new Route.ContinueOverrides().withPostData("doggo-is-longer-than-birdy"));
+      route.continue_(new Route.ContinueOptions().withPostData("doggo-is-longer-than-birdy"));
     });
     Future<Server.Request> serverRequest = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz', { method: 'POST', body: 'birdy' })");
@@ -148,7 +148,7 @@ public class TestRequestContinue extends TestBase {
       arr[i] = (byte) i;
     }
     page.route("**/*", route -> {
-      route.continue_(new Route.ContinueOverrides().withPostData(arr));
+      route.continue_(new Route.ContinueOptions().withPostData(arr));
     });
     Future<Server.Request> serverRequest = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz', { method: 'POST', body: 'birdy' })");

@@ -30,7 +30,7 @@ public class TestRequestFulfill extends TestBase {
   @Test
   void shouldWork() {
     page.route("**/*", route -> {
-      route.fulfill(new Route.FulfillResponse()
+      route.fulfill(new Route.FulfillOptions()
         .withStatus(201)
         .withContentType("text/html")
         .withHeaders(mapOf("foo", "bar"))
@@ -45,7 +45,7 @@ public class TestRequestFulfill extends TestBase {
   @Test
   void shouldWorkWithStatusCode422() {
     page.route("**/*", route -> {
-      route.fulfill(new Route.FulfillResponse()
+      route.fulfill(new Route.FulfillOptions()
         .withStatus(422)
         .withBody("Yo, page!"));
     });
@@ -70,7 +70,7 @@ public class TestRequestFulfill extends TestBase {
         e.printStackTrace();
         throw new RuntimeException(e);
       }
-      route.fulfill(new Route.FulfillResponse()
+      route.fulfill(new Route.FulfillOptions()
         .withContentType("image/png")
         .withBody(imageBuffer));
     });
@@ -89,7 +89,7 @@ public class TestRequestFulfill extends TestBase {
   void shouldAllowMockingSvgWithCharset() {
     // Firefox headful produces a different image.
     page.route("**/*", route -> {
-      route.fulfill(new Route.FulfillResponse()
+      route.fulfill(new Route.FulfillOptions()
         .withContentType("image/svg+xml ; charset=utf-8")
         .withBody("<svg width=\"50\" height=\"50\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"10\" y=\"10\" width=\"30\" height=\"30\" stroke=\"black\" fill=\"transparent\" stroke-width=\"5\"/></svg>"));
     });
