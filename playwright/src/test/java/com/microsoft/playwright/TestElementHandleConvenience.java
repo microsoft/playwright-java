@@ -22,6 +22,164 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestElementHandleConvenience extends TestBase {
   @Test
+  void shouldHaveANicePreview() {
+    page.navigate(server.PREFIX + "/dom.html");
+    ElementHandle outer = page.querySelector("#outer");
+    ElementHandle inner = page.querySelector("#inner");
+    ElementHandle check = page.querySelector("#check");
+    JSHandle text = inner.evaluateHandle("e => e.firstChild");
+    page.evaluate("() => 1");  // Give them a chance to calculate the preview.
+    assertEquals("JSHandle@<div id=\"outer\" name=\"value\">…</div>", outer.toString());
+    assertEquals("JSHandle@<div id=\"inner\">Text,↵more text</div>", inner.toString());
+    assertEquals("JSHandle@#text=Text,↵more text", text.toString());
+    assertEquals("JSHandle@<input checked id=\"check\" foo=\"bar\"\" type=\"checkbox\"/>", check.toString());
+  }
+
+  @Test
+  void getAttributeShouldWork() {
+    page.navigate(server.PREFIX + "/dom.html");
+    ElementHandle handle = page.querySelector("#outer");
+    assertEquals("value", handle.getAttribute("name"));
+    assertNull(handle.getAttribute("foo"));
+    assertEquals("value", page.getAttribute("#outer", "name"));
+    assertNull(page.getAttribute("#outer", "foo"));
+  }
+
+  @Test
+  void innerHTMLShouldWork() {
+    page.navigate(server.PREFIX + "/dom.html");
+    ElementHandle handle = page.querySelector("#outer");
+    assertEquals("<div id=\"inner\">Text,\nmore text</div>", handle.innerHTML());
+    assertEquals("<div id=\"inner\">Text,\nmore text</div>", page.innerHTML("#outer"));
+  }
+
+  @Test
+  void innerTextShouldWork() {
+    page.navigate(server.PREFIX + "/dom.html");
+    ElementHandle handle = page.querySelector("#inner");
+    assertEquals("Text, more text", handle.innerText());
+    assertEquals("Text, more text", page.innerText("#inner"));
+  }
+
+  @Test
+  void innerTextShouldThrow() {
+    page.setContent("<svg>text</svg>");
+    try {
+      page.innerText("svg");
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Not an HTMLElement"));
+    }
+    ElementHandle handle = page.querySelector("svg");
+    try {
+      handle.innerText();
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Not an HTMLElement"));
+    }
+  }
+
+  @Test
+  void textContentShouldWork() {
+    page.navigate(server.PREFIX + "/dom.html");
+    ElementHandle handle = page.querySelector("#inner");
+    assertEquals("Text,\nmore text", handle.textContent());
+    assertEquals("Text,\nmore text", page.textContent("#inner"));
+  }
+
+  @Test
+  void textContentShouldBeAtomic() {
+    String createDummySelector = "{\n" +
+      "  query(root, selector) {\n" +
+      "    const result = root.querySelector(selector);\n" +
+      "    if (result)\n" +
+      "      Promise.resolve().then(() => result.textContent = 'modified');\n" +
+      "    return result;\n" +
+      "  },\n" +
+      "  queryAll(root, selector) {\n" +
+      "    const result = Array.from(root.querySelectorAll(selector));\n" +
+      "    for (const e of result)\n" +
+      "      Promise.resolve().then(() => e.textContent = 'modified');\n" +
+      "    return result;\n" +
+      "  }\n" +
+      "}\n";
+    playwright.selectors().register("textContent", createDummySelector);
+    page.setContent("<div>Hello</div>");
+    String tc = page.textContent("textContent=div");
+    assertEquals("Hello", tc);
+    assertEquals("modified", page.evaluate("() => document.querySelector('div').textContent"));
+  }
+
+  @Test
+  void innerTextShouldBeAtomic() {
+    String createDummySelector = "{\n" +
+      "  query(root, selector) {\n" +
+      "    const result = root.querySelector(selector);\n" +
+      "    if (result)\n" +
+      "      Promise.resolve().then(() => result.textContent = 'modified');\n" +
+      "    return result;\n" +
+      "  },\n" +
+      "  queryAll(root, selector) {\n" +
+      "    const result = Array.from(root.querySelectorAll(selector));\n" +
+      "    for (const e of result)\n" +
+      "      Promise.resolve().then(() => e.textContent = 'modified');\n" +
+      "    return result;\n" +
+      "  }\n" +
+      "}\n";
+    playwright.selectors().register("innerText", createDummySelector);
+    page.setContent("<div>Hello</div>");
+    String tc = page.innerText("innerText=div");
+    assertEquals("Hello", tc);
+    assertEquals("modified", page.evaluate("() => document.querySelector('div').innerText"));
+  }
+
+  @Test
+  void innerHTMLShouldBeAtomic() {
+    String createDummySelector = "{\n" +
+      "  query(root, selector) {\n" +
+      "    const result = root.querySelector(selector);\n" +
+      "    if (result)\n" +
+      "      Promise.resolve().then(() => result.textContent = 'modified');\n" +
+      "    return result;\n" +
+      "  },\n" +
+      "  queryAll(root, selector) {\n" +
+      "    const result = Array.from(root.querySelectorAll(selector));\n" +
+      "    for (const e of result)\n" +
+      "      Promise.resolve().then(() => e.textContent = 'modified');\n" +
+      "    return result;\n" +
+      "  }\n" +
+      "}\n";
+    playwright.selectors().register("innerHTML", createDummySelector);
+    page.setContent("<div>Hello<span>world</span></div>");
+    String tc = page.innerHTML("innerHTML=div");
+    assertEquals("Hello<span>world</span>", tc);
+    assertEquals("modified", page.evaluate("() => document.querySelector('div').innerHTML"));
+  }
+
+  @Test
+  void getAttributeShouldBeAtomic() {
+    String createDummySelector = "{\n" +
+      "  query(root, selector) {\n" +
+      "    const result = root.querySelector(selector);\n" +
+      "    if (result)\n" +
+      "      Promise.resolve().then(() => result.setAttribute('foo', 'modified'));\n" +
+      "    return result;\n" +
+      "  },\n" +
+      "  queryAll(root, selector) {\n" +
+      "    const result = Array.from(root.querySelectorAll(selector));\n" +
+      "    for (const e of result)\n" +
+      "      Promise.resolve().then(() => e.setAttribute('foo', 'modified'));\n" +
+      "    return result;\n" +
+      "  }\n" +
+      "}\n";
+    playwright.selectors().register("getAttribute", createDummySelector);
+    page.setContent("<div foo=hello></div>");
+    String tc = page.getAttribute("getAttribute=div", "foo");
+    assertEquals("hello", tc);
+    assertEquals("modified", page.evaluate("() => document.querySelector('div').getAttribute('foo')"));
+  }
+
+  @Test
   void isVisibleAndIsHiddenShouldWork() {
     page.setContent("<div>Hi</div><span></span>");
     ElementHandle div = page.querySelector("div");
