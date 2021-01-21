@@ -28,8 +28,11 @@ import static com.microsoft.playwright.impl.Serialization.*;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 public class JSHandleImpl extends ChannelOwner implements JSHandle {
+  private String preview;
+
   public JSHandleImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    this.preview = initializer.get("preview").getAsString();
   }
 
   @Override
@@ -100,5 +103,18 @@ public class JSHandleImpl extends ChannelOwner implements JSHandle {
       SerializedValue value = gson().fromJson(json.get("value"), SerializedValue.class);
       return deserialize(value);
     });
+  }
+
+  @Override
+  void handleEvent(String event, JsonObject parameters) {
+    if ("previewUpdated".equals(event)) {
+      preview = parameters.get("preview").getAsString();
+    }
+    super.handleEvent(event, parameters);
+  }
+
+  @Override
+  public String toString() {
+    return preview;
   }
 }
