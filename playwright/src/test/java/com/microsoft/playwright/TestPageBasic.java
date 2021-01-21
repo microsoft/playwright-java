@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.microsoft.playwright.Page.EventType.*;
 import static com.microsoft.playwright.Page.LoadState.DOMCONTENTLOADED;
 import static com.microsoft.playwright.Page.LoadState.LOAD;
 import static org.junit.jupiter.api.Assertions.*;
@@ -91,7 +90,7 @@ public class TestPageBasic extends TestBase {
     // fire.
     newPage.click("body");
     boolean[] didShowDialog = {false};
-    newPage.addListener(DIALOG, event -> didShowDialog[0] = true);
+    newPage.onDialog(dialog -> didShowDialog[0] = true);
     newPage.close();
     assertFalse(didShowDialog[0]);
   }
@@ -265,7 +264,7 @@ public class TestPageBasic extends TestBase {
   void pagePressShouldWorkForEnter() {
     page.setContent("<input onkeypress='console.log(\"press\")'></input>");
     List<ConsoleMessage> messages = new ArrayList<>();
-    page.addListener(CONSOLE, event ->  messages.add((ConsoleMessage) event.data()));
+    page.onConsole(message ->  messages.add(message));
     page.press("input", "Enter");
     assertEquals("press", messages.get(0).text());
   }

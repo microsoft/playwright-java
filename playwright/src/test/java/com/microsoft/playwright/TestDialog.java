@@ -18,11 +18,9 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
-import org.junit.jupiter.api.condition.EnabledIf;
 
 import static com.microsoft.playwright.Dialog.Type.ALERT;
 import static com.microsoft.playwright.Dialog.Type.PROMPT;
-import static com.microsoft.playwright.Page.EventType.DIALOG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -30,8 +28,7 @@ public class TestDialog extends TestBase {
 
   @Test
   void shouldFire() {
-    page.addListener(DIALOG, event -> {
-      Dialog dialog = (Dialog) event.data();
+    page.onDialog(dialog -> {
       assertEquals(ALERT, dialog.type());
       assertEquals( "", dialog.defaultValue());
       assertEquals( "yo", dialog.message());
@@ -42,8 +39,7 @@ public class TestDialog extends TestBase {
 
   @Test
   void shouldAllowAcceptingPrompts() {
-    page.addListener(DIALOG, event -> {
-      Dialog dialog = (Dialog) event.data();
+    page.onDialog(dialog -> {
       assertEquals(PROMPT, dialog.type());
       assertEquals("yes.", dialog.defaultValue());
       assertEquals("question?", dialog.message());
@@ -55,8 +51,7 @@ public class TestDialog extends TestBase {
 
   @Test
   void shouldDismissThePrompt() {
-    page.addListener(DIALOG, event -> {
-      Dialog dialog = (Dialog) event.data();
+    page.onDialog(dialog -> {
       dialog.dismiss();
     });
     Object result = page.evaluate("() => prompt('question?')");
@@ -65,8 +60,7 @@ public class TestDialog extends TestBase {
 
   @Test
   void shouldAcceptTheConfirmPrompt() {
-    page.addListener(DIALOG, event -> {
-      Dialog dialog = (Dialog) event.data();
+    page.onDialog(dialog -> {
       dialog.accept();
     });
     Object result = page.evaluate("() => confirm('boolean?')");
@@ -75,8 +69,7 @@ public class TestDialog extends TestBase {
 
   @Test
   void shouldDismissTheConfirmPrompt() {
-    page.addListener(DIALOG, event -> {
-      Dialog dialog = (Dialog) event.data();
+    page.onDialog(dialog -> {
       dialog.dismiss();
     });
     Object result = page.evaluate("() => confirm('boolean?')");

@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.microsoft.playwright.Page.EventType.*;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,7 +28,7 @@ public class TestPageEventNetwork extends TestBase {
   @Test
   void PageEventsRequest() {
     List<Request> requests = new ArrayList<>();
-    page.addListener(REQUEST, event -> requests.add((Request) event.data()));
+    page.onRequest(request -> requests.add(request));
     page.navigate(server.EMPTY_PAGE);
     assertEquals(1, requests.size());
     assertEquals(server.EMPTY_PAGE, requests.get(0).url());
@@ -43,7 +42,7 @@ public class TestPageEventNetwork extends TestBase {
   @Test
   void PageEventsResponse() {
     List<Response> responses = new ArrayList<>();
-    page.addListener(RESPONSE, event -> responses.add((Response) event.data()));
+    page.onResponse(response -> responses.add(response));
     page.navigate(server.EMPTY_PAGE);
     assertEquals(1, responses.size());
     assertEquals(server.EMPTY_PAGE, responses.get(0).url());
@@ -56,7 +55,7 @@ public class TestPageEventNetwork extends TestBase {
   void PageEventsRequestFailed() {
     server.setRoute("/one-style.css", exchange -> exchange.getResponseBody().close());
     List<Request> failedRequests = new ArrayList<>();
-    page.addListener(REQUESTFAILED, event -> failedRequests.add((Request) event.data()));
+    page.onRequestFailed(request -> failedRequests.add(request));
     page.navigate(server.PREFIX + "/one-style.html");
     assertEquals(1, failedRequests.size());
     assertTrue(failedRequests.get(0).url().contains("one-style.css"));
@@ -96,8 +95,8 @@ public class TestPageEventNetwork extends TestBase {
   @Test
   void shouldFireEventsInProperOrder() {
     List<String> events = new ArrayList<>();
-    page.addListener(REQUEST, event -> events.add("request"));
-    page.addListener(RESPONSE, event -> events.add("response"));
+    page.onRequest(request -> events.add("request"));
+    page.onResponse(response -> events.add("response"));
     Response response = page.navigate(server.EMPTY_PAGE);
     assertNull(response.finished());
     events.add("requestfinished");
@@ -107,20 +106,16 @@ public class TestPageEventNetwork extends TestBase {
   @Test
   void shouldSupportRedirects() {
     List<String> events = new ArrayList<>();
-    page.addListener(REQUEST, event -> {
-      Request request = (Request) event.data();
+    page.onRequest(request -> {
       events.add(request.method() + " " + request.url());
     });
-    page.addListener(RESPONSE,event -> {
-      Response response = (Response) event.data();
+    page.onResponse(response -> {
       events.add(response.status() + " " + response.url());
     });
-    page.addListener(REQUESTFINISHED, event -> {
-      Request request = (Request) event.data();
+    page.onRequestFinished(request -> {
       events.add("DONE " + request.url());
     });
-    page.addListener(REQUESTFAILED, event -> {
-      Request request = (Request) event.data();
+    page.onRequestFailed(request -> {
       events.add("FAIL " + request.url());
     });
     server.setRedirect("/foo.html", "/empty.html");

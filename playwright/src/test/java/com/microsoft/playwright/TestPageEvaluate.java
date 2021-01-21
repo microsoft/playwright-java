@@ -18,11 +18,9 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
-import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.util.Map;
 
-import static com.microsoft.playwright.Page.EventType.FRAMENAVIGATED;
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
@@ -174,8 +172,7 @@ public class TestPageEvaluate extends TestBase {
   @Test
   void shouldWorkRightAfterFramenavigated() {
     Object[] frameEvaluation = {null};
-    page.addListener(FRAMENAVIGATED, event -> {
-      Frame frame = (Frame) event.data();
+    page.onFrameNavigated(frame -> {
       frameEvaluation[0] = frame.evaluate("() => 6 * 7");
     });
     page.navigate(server.EMPTY_PAGE);
@@ -186,8 +183,7 @@ public class TestPageEvaluate extends TestBase {
   void shouldWorkRightAfterACrossOriginNavigation() {
     page.navigate(server.EMPTY_PAGE);
     Object[] frameEvaluation = {null};
-    page.addListener(FRAMENAVIGATED, event -> {
-      Frame frame = (Frame) event.data();
+    page.onFrameNavigated(frame -> {
       frameEvaluation[0] = frame.evaluate("() => 6 * 7");
     });
     page.navigate(server.CROSS_PROCESS_PREFIX + "/empty.html");

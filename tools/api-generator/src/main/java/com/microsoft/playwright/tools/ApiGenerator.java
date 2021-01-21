@@ -1075,16 +1075,6 @@ class Interface extends TypeDefinition {
     if (events.isEmpty()) {
       return;
     }
-    output.add(offset + "enum EventType {");
-    for (int i = 0; i < events.size(); i++) {
-      String comma = i == events.size() ? "" : ",";
-      output.add(offset + "  " + events.get(i).jsonName.toUpperCase() + comma);
-    }
-    output.add(offset + "}");
-    output.add("");
-    output.add(offset + "void addListener(EventType type, Listener<EventType> listener);");
-    output.add(offset + "void removeListener(EventType type, Listener<EventType> listener);");
-
     for (Event e : events) {
       output.add("");
       e.writeListenerMethods(output, offset);

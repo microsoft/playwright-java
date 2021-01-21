@@ -19,7 +19,8 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.Utils.mapOf;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TestDispatchEvent extends TestBase {
 

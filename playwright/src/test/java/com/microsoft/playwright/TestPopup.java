@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import static com.microsoft.playwright.Page.EventType.POPUP;
 import static com.microsoft.playwright.Page.LoadState.DOMCONTENTLOADED;
 import static com.microsoft.playwright.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.*;

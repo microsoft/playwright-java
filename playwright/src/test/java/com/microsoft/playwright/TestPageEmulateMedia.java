@@ -23,7 +23,6 @@ import java.util.function.Supplier;
 import static com.microsoft.playwright.ColorScheme.DARK;
 import static com.microsoft.playwright.ColorScheme.LIGHT;
 import static com.microsoft.playwright.Page.EmulateMediaParams.Media.PRINT;
-import static com.microsoft.playwright.Page.EventType.POPUP;
 import static com.microsoft.playwright.Utils.attachFrame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

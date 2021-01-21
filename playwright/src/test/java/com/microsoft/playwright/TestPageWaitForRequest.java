@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.Page.EventType.REQUEST;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPageWaitForRequest extends TestBase {

@@ -20,12 +20,10 @@ import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.Page.EventType.FRAMENAVIGATED;
-import static com.microsoft.playwright.Utils.*;
+import static com.microsoft.playwright.Utils.expectedSSLError;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPageWaitForNavigation extends TestBase {
@@ -135,10 +133,9 @@ public class TestPageWaitForNavigation extends TestBase {
   void shouldWorkWhenSubframeIssuesWindowStop() {
     server.setRoute("/frames/style.css", exchange -> {});
     boolean[] frameWindowStopCalled = {false};
-    page.addListener(Page.EventType.FRAMEATTACHED, event -> {
-      Frame frame = (Frame) event.data();
-      page.addListener(FRAMENAVIGATED, event1 -> {
-        if (frame.equals(event1.data())) {
+    page.onFrameAttached(frame -> {
+      page.onFrameNavigated(frame1 -> {
+        if (frame.equals(frame1)) {
           frame.evaluate("window.stop()");
           frameWindowStopCalled[0] = true;
         }

@@ -18,15 +18,12 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import com.microsoft.playwright.*;
 
 import java.nio.file.Path;
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
@@ -67,6 +64,28 @@ public class PageImpl extends ChannelOwner implements Page {
   final Set<Worker> workers = new HashSet<>();
   private final TimeoutSettings timeoutSettings;
   private VideoImpl video;
+
+  enum EventType {
+    CLOSE,
+    CONSOLE,
+    CRASH,
+    DIALOG,
+    DOMCONTENTLOADED,
+    DOWNLOAD,
+    FILECHOOSER,
+    FRAMEATTACHED,
+    FRAMEDETACHED,
+    FRAMENAVIGATED,
+    LOAD,
+    PAGEERROR,
+    POPUP,
+    REQUEST,
+    REQUESTFAILED,
+    REQUESTFINISHED,
+    RESPONSE,
+    WEBSOCKET,
+    WORKER,
+  }
 
   PageImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -215,16 +234,6 @@ public class PageImpl extends ChannelOwner implements Page {
     JsonObject params = new JsonObject();
     params.addProperty("intercepted", enabled);
     sendMessage("setFileChooserInterceptedNoReply", params);
-  }
-
-  @Override
-  public void addListener(EventType type, Listener<EventType> listener) {
-    listeners.add(type, listener);
-  }
-
-  @Override
-  public void removeListener(EventType type, Listener<EventType> listener) {
-    listeners.remove(type, listener);
   }
 
   @Override
@@ -1207,7 +1216,7 @@ public class PageImpl extends ChannelOwner implements Page {
     WaitablePageClose() {
       subscribedEvents = Arrays.asList(EventType.CLOSE, EventType.CRASH);
       for (EventType e : subscribedEvents) {
-        addListener(e, this);
+        listeners.add(e, this);
       }
     }
 
@@ -1236,7 +1245,7 @@ public class PageImpl extends ChannelOwner implements Page {
     @Override
     public void dispose() {
       for (EventType e : subscribedEvents) {
-        removeListener(e, this);
+        listeners.remove(e, this);
       }
     }
   }

@@ -32,18 +32,12 @@ class WorkerImpl extends ChannelOwner implements Worker {
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   PageImpl page;
 
+  enum EventType {
+    CLOSE,
+  }
+
   WorkerImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
-  }
-
-  @Override
-  public void addListener(EventType type, Listener<EventType> listener) {
-    listeners.add(type, listener);
-  }
-
-  @Override
-  public void removeListener(EventType type, Listener<EventType> listener) {
-    listeners.remove(type, listener);
   }
 
   @Override

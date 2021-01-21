@@ -23,7 +23,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.microsoft.playwright.Page.EventType.CONSOLE;
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -73,7 +72,7 @@ public class TestWaitForFunction extends TestBase {
   @Test
   void shouldAvoidSideEffectsAfterTimeout() {
     int[] counter = { 0 };
-    page.addListener(CONSOLE, event -> ++counter[0]);
+    page.onConsole(message -> ++counter[0]);
 
     try {
       JSHandle result = page.waitForFunction("() => {\n" +
@@ -239,8 +238,7 @@ public class TestWaitForFunction extends TestBase {
     void shouldNotBeCalledAfterFinishingSuccessfully() {
       page.navigate(server.EMPTY_PAGE);
       List<String> messages = new ArrayList<>();
-      page.addListener(CONSOLE, event -> {
-        ConsoleMessage msg = (ConsoleMessage) event.data();
+      page.onConsole(msg -> {
         if (msg.text().startsWith("waitForFunction")) {
           messages.add(msg.text());
         }
@@ -266,10 +264,10 @@ public class TestWaitForFunction extends TestBase {
   void shouldNotBeCalledAfterFinishingUnsuccessfully() {
     page.navigate(server.EMPTY_PAGE);
     List<String> messages = new ArrayList<>();
-    page.addListener(CONSOLE, event -> {
-      ConsoleMessage msg = (ConsoleMessage) event.data();
-      if (msg.text().startsWith("waitForFunction"))
+    page.onConsole(msg -> {
+      if (msg.text().startsWith("waitForFunction")) {
         messages.add(msg.text());
+      }
     });
     try {
       page.waitForFunction("() => {\n" +

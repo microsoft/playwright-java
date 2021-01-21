@@ -18,8 +18,6 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
-import static com.microsoft.playwright.Page.EventType.REQUEST;
-import static com.microsoft.playwright.Page.EventType.RESPONSE;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPageWaitForResponse extends TestBase {

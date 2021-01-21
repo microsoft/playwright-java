@@ -17,8 +17,6 @@
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.Event;
-import com.microsoft.playwright.Listener;
-import com.microsoft.playwright.Page;
 
 import java.util.function.Predicate;
 

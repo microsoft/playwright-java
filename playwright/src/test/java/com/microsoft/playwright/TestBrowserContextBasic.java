@@ -22,8 +22,6 @@ import org.junit.jupiter.api.Test;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-import static com.microsoft.playwright.BrowserContext.EventType.PAGE;
-import static com.microsoft.playwright.Page.EventType.POPUP;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBrowserContextBasic extends TestBase {
@@ -181,7 +179,7 @@ public class TestBrowserContextBasic extends TestBase {
       }
     });
     Page[] popup = {null};
-    context.addListener(PAGE, event -> popup[0] = (Page) event.data());
+    context.onPage(page1 -> popup[0] = page1);
     page.navigate(server.EMPTY_PAGE);
     page.click("'Click me'");
     context.close();

@@ -17,11 +17,7 @@
 package com.microsoft.playwright;
 
 import org.java_websocket.WebSocket;
-import org.java_websocket.drafts.Draft;
-import org.java_websocket.exceptions.InvalidDataException;
-import org.java_websocket.framing.Framedata;
 import org.java_websocket.handshake.ClientHandshake;
-import org.java_websocket.handshake.ServerHandshakeBuilder;
 import org.java_websocket.server.WebSocketServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -29,14 +25,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.channels.SelectionKey;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.microsoft.playwright.Page.EventType.WEBSOCKET;
-import static com.microsoft.playwright.WebSocket.EventType.*;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -105,11 +98,10 @@ public class TestWebSocket extends TestBase {
     boolean[] socketClosed = {false};
     List<String> log = new ArrayList<>();
     com.microsoft.playwright.WebSocket[] webSocket = {null};
-    page.addListener(WEBSOCKET, event -> {
-      com.microsoft.playwright.WebSocket ws = (com.microsoft.playwright.WebSocket) event.data();
+    page.onWebSocket(ws -> {
       log.add("open<" + ws.url() + ">");
       webSocket[0] = ws;
-      ws.addListener(com.microsoft.playwright.WebSocket.EventType.CLOSE, closeEvent -> {
+      ws.onClose(() -> {
         log.add("close");
         socketClosed[0] = true;
       });
@@ -127,12 +119,11 @@ public class TestWebSocket extends TestBase {
   void shouldEmitFrameEvents() {
     boolean[] socketClosed = {false};
     List<String> log = new ArrayList<>();
-    page.addListener(WEBSOCKET, event -> {
-      com.microsoft.playwright.WebSocket ws = (com.microsoft.playwright.WebSocket) event.data();
+    page.onWebSocket(ws -> {
       log.add("open");
-      ws.addListener(FRAMESENT, e -> log.add("sent<" + ((com.microsoft.playwright.WebSocket.FrameData) e.data()).text() + ">"));
-      ws.addListener(FRAMERECEIVED, e -> log.add("received<" + ((com.microsoft.playwright.WebSocket.FrameData) e.data()).text()  + ">"));
-      ws.addListener(CLOSE, e -> { log.add("close"); socketClosed[0] = true; });
+      ws.onFrameSent(frameData -> log.add("sent<" + frameData.text() + ">"));
+      ws.onFrameReceived(frameData -> log.add("received<" + frameData.text()  + ">"));
+      ws.onClose(() -> { log.add("close"); socketClosed[0] = true; });
     });
     page.evaluate("port => {\n" +
       "    const ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
@@ -154,10 +145,9 @@ public class TestWebSocket extends TestBase {
   void shouldEmitBinaryFrameEvents() {
     boolean[] socketClosed = {false};
     List<com.microsoft.playwright.WebSocket.FrameData> sent = new ArrayList<>();
-    page.addListener(WEBSOCKET, event -> {
-      com.microsoft.playwright.WebSocket ws = (com.microsoft.playwright.WebSocket) event.data();
-      ws.addListener(CLOSE, e -> { socketClosed[0] = true; });
-      ws.addListener(FRAMESENT, e -> sent.add((com.microsoft.playwright.WebSocket.FrameData) e.data()));
+    page.onWebSocket(ws -> {
+      ws.onClose(() -> { socketClosed[0] = true; });
+      ws.onFrameSent(frameData -> sent.add(frameData));
     });
     page.evaluate("port => {\n" +
       "  const ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
@@ -181,10 +171,9 @@ public class TestWebSocket extends TestBase {
   void shouldEmitError() {
     boolean[] socketError = {false};
     String[] error = {null};
-    page.addListener(WEBSOCKET, event -> {
-      com.microsoft.playwright.WebSocket ws = (com.microsoft.playwright.WebSocket) event.data();
-      ws.addListener(SOCKETERROR, e -> {
-        error[0] = (String) e.data();
+    page.onWebSocket(ws -> {
+      ws.onSocketError(e -> {
+        error[0] = e;
         socketError[0] = true;
       });
     });
@@ -207,7 +196,7 @@ public class TestWebSocket extends TestBase {
           "}", webSocketServer.getPort());
       });
     boolean[] error = {false};
-    ws.addListener(SOCKETERROR, e -> error[0] = true);
+    ws.onSocketError(e -> error[0] = true);
     ws.waitForFrameReceived(() -> {});
     page.evaluate("window.ws.close()");
     assertFalse(error[0]);

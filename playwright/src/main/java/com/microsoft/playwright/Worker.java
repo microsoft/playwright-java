@@ -25,12 +25,6 @@ import java.util.function.Consumer;
  * worker is gone.
  */
 public interface Worker {
-  enum EventType {
-    CLOSE,
-  }
-
-  void addListener(EventType type, Listener<EventType> listener);
-  void removeListener(EventType type, Listener<EventType> listener);
 
   void onClose(Consumer<Worker> handler);
   void offClose(Consumer<Worker> handler);
