@@ -624,17 +624,17 @@ public interface BrowserType {
    *
    * <p> You can use {@code ignoreDefaultArgs} to filter out {@code --mute-audio} from default arguments:
    *
-   * <p> > **Chromium-only** Playwright can also be used to control the Chrome browser, but it works best with the version of
+   * <p> **Chromium-only** Playwright can also be used to control the Chrome browser, but it works best with the version of
    * Chromium it is bundled with. There is no guarantee it will work with any other version. Use {@code executablePath} option with
    * extreme caution.
    * >
-   * > If Google Chrome (rather than Chromium) is preferred, a
+   * If Google Chrome (rather than Chromium) is preferred, a
    * [Chrome Canary](https://www.google.com/chrome/browser/canary.html) or
    * [Dev Channel](https://www.chromium.org/getting-involved/dev-channel) build is suggested.
    * >
-   * > In [{@code method: BrowserType.launch}] above, any mention of Chromium also applies to Chrome.
+   * In [{@code method: BrowserType.launch}] above, any mention of Chromium also applies to Chrome.
    * >
-   * > See [{@code this article}](https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/) for
+   * See [{@code this article}](https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/) for
    * a description of the differences between Chromium and Chrome.
    * [{@code This article}](https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md)
    * describes some differences for Linux users.

@@ -111,7 +111,7 @@ public class TestPageRoute extends TestBase {
     page.route("**/*", route -> {
       Map<String, String> headers = new HashMap<>(route.request().headers());
       headers.put("foo", "bar");
-      route.continue_(new Route.ContinueOverrides().withHeaders(headers));
+      route.continue_(new Route.ContinueOptions().withHeaders(headers));
     });
     page.navigate(server.PREFIX + "/rrredirect");
   }
@@ -123,7 +123,7 @@ public class TestPageRoute extends TestBase {
     page.route("**/*", route -> {
       Map<String, String> headers = new HashMap<>(route.request().headers());
       headers.remove("foo");
-      route.continue_(new Route.ContinueOverrides().withHeaders(headers));
+      route.continue_(new Route.ContinueOptions().withHeaders(headers));
     });
 
     Future<Server.Request> serverRequest = server.futureRequest("/title.html");
@@ -471,7 +471,7 @@ public class TestPageRoute extends TestBase {
         route.continue_();
         return;
       }
-      route.fulfill(new Route.FulfillResponse()
+      route.fulfill(new Route.FulfillOptions()
         .withStatus(301)
         .withHeaders(mapOf("location", "/empty.html")));
     });
@@ -490,7 +490,7 @@ public class TestPageRoute extends TestBase {
       if (route.request().url().endsWith("allow")) {
         headers.put("access-control-allow-origin", "*");
       }
-      route.fulfill(new Route.FulfillResponse()
+      route.fulfill(new Route.FulfillOptions()
         .withStatus(200)
         .withContentType("application/json")
         .withHeaders(headers)
@@ -524,7 +524,7 @@ public class TestPageRoute extends TestBase {
   void shouldSupportCorsWithPOST() {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars", route -> {
-      route.fulfill(new Route.FulfillResponse()
+      route.fulfill(new Route.FulfillOptions()
         .withStatus(200)
         .withContentType("application/json")
         .withHeaders(mapOf("Access-Control-Allow-Origin", "*"))
@@ -546,7 +546,7 @@ public class TestPageRoute extends TestBase {
   void shouldSupportCorsWithCredentials() {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars", route -> {
-      route.fulfill(new Route.FulfillResponse()
+      route.fulfill(new Route.FulfillOptions()
         .withStatus(200)
         .withContentType("application/json")
         .withHeaders(mapOf("Access-Control-Allow-Origin", server.PREFIX,
@@ -570,7 +570,7 @@ public class TestPageRoute extends TestBase {
   void shouldRejectCorsWithDisallowedCredentials() {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars", route -> {
-      route.fulfill(new Route.FulfillResponse()
+      route.fulfill(new Route.FulfillOptions()
         .withStatus(200)
         .withContentType("application/json")
         // Should fail without this line below!
@@ -598,7 +598,7 @@ public class TestPageRoute extends TestBase {
   void shouldSupportCorsForDifferentMethods() {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars", route -> {
-      route.fulfill(new Route.FulfillResponse()
+      route.fulfill(new Route.FulfillOptions()
         .withStatus(200)
         .withContentType("application/json")
         .withHeaders(mapOf("Access-Control-Allow-Origin", "*"))

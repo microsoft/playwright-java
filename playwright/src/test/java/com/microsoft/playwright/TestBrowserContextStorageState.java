@@ -35,7 +35,7 @@ public class TestBrowserContextStorageState extends TestBase {
   @Test
   void shouldCaptureLocalStorage() {
     page.route("**/*", route -> {
-      route.fulfill(new Route.FulfillResponse().withBody("<html></html>"));
+      route.fulfill(new Route.FulfillOptions().withBody("<html></html>"));
     });
     page.navigate("https://www.example.com");
     page.evaluate("localStorage['name1'] = 'value1';");
@@ -67,7 +67,7 @@ public class TestBrowserContextStorageState extends TestBase {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().withStorageState(storageState));
     Page page = context.newPage();
     page.route("**/*", route -> {
-      route.fulfill(new Route.FulfillResponse().withBody("<html></html>"));
+      route.fulfill(new Route.FulfillOptions().withBody("<html></html>"));
     });
     page.navigate("https://www.example.com");
     Object localStorage = page.evaluate("window.localStorage");
@@ -79,7 +79,7 @@ public class TestBrowserContextStorageState extends TestBase {
   void shouldRoundTripThroughTheFile(@TempDir Path tempDir) throws IOException {
     Page page1 = context.newPage();
     page1.route("**/*", route -> {
-      route.fulfill(new Route.FulfillResponse().withBody("<html></html>"));
+      route.fulfill(new Route.FulfillOptions().withBody("<html></html>"));
     });
     page1.navigate("https://www.example.com");
     page1.evaluate("() => {\n" +
@@ -118,7 +118,7 @@ public class TestBrowserContextStorageState extends TestBase {
     BrowserContext context2 = browser.newContext(new Browser.NewContextOptions().withStorageState(path));
     Page page2 = context2.newPage();
     page2.route("**/*", route -> {
-      route.fulfill(new Route.FulfillResponse().withBody("<html></html>"));
+      route.fulfill(new Route.FulfillOptions().withBody("<html></html>"));
     });
     page2.navigate("https://www.example.com");
     Object localStorage = page2.evaluate("window.localStorage");

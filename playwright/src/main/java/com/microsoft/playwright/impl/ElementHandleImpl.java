@@ -252,6 +252,54 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   }
 
   @Override
+  public boolean isChecked() {
+    return withLogging("ElementHandle.isChecked", () -> {
+      JsonObject json = sendMessage("isChecked").getAsJsonObject();
+      return json.get("value").getAsBoolean();
+    });
+  }
+
+  @Override
+  public boolean isDisabled() {
+    return withLogging("ElementHandle.isDisabled", () -> {
+      JsonObject json = sendMessage("isDisabled").getAsJsonObject();
+      return json.get("value").getAsBoolean();
+    });
+  }
+
+  @Override
+  public boolean isEditable() {
+    return withLogging("ElementHandle.isEditable", () -> {
+      JsonObject json = sendMessage("isEditable").getAsJsonObject();
+      return json.get("value").getAsBoolean();
+    });
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return withLogging("ElementHandle.isEnabled", () -> {
+      JsonObject json = sendMessage("isEnabled").getAsJsonObject();
+      return json.get("value").getAsBoolean();
+    });
+  }
+
+  @Override
+  public boolean isHidden() {
+    return withLogging("ElementHandle.isHidden", () -> {
+      JsonObject json = sendMessage("isHidden").getAsJsonObject();
+      return json.get("value").getAsBoolean();
+    });
+  }
+
+  @Override
+  public boolean isVisible() {
+    return withLogging("ElementHandle.isVisible", () -> {
+      JsonObject json = sendMessage("isVisible").getAsJsonObject();
+      return json.get("value").getAsBoolean();
+    });
+  }
+
+  @Override
   public Frame ownerFrame() {
     return withLogging("ElementHandle.ownerFrame", () -> {
       JsonObject json = sendMessage("ownerFrame").getAsJsonObject();

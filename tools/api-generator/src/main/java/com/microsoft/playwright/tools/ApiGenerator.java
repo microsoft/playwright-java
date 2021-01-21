@@ -70,7 +70,7 @@ abstract class Element {
     for (String line : lines) {
       output.add((offset + " *" + (line.isEmpty() ? "" : " ") + line)
         .replace("*/", "*\\/")
-        .replace("**NOTE**", "<strong>NOTE</strong>")
+        .replace("NOTE: ", "<strong>NOTE:</strong> ")
         .replaceAll("`([^`]+)`", "{@code $1}"));
     }
     output.add(offset + " */");
@@ -85,7 +85,7 @@ abstract class Element {
       .replaceAll("\\nExamples:\\n", "")
       .replaceAll("\\nSee ChromiumBrowser[^\\n]+", "\n")
       // > **NOTE** ... => **NOTE** ...
-      .replaceAll("^>", "")
+      .replaceAll("\\n> ", "\n")
       .replaceAll("\\n\\n", "\n\n<p> ");
   }
 
@@ -261,6 +261,9 @@ class TypeRef extends Element {
     }
     if ("void".equals(name)) {
       return "void";
+    }
+    if ("path".equals(name)) {
+      return "Path";
     }
     if ("Array".equals(name)) {
       return "List<" + convertTemplateParams(jsonType) + ">";
@@ -810,7 +813,7 @@ class Field extends Element {
       output.add(offset + "public Integer pollingInterval;");
       return;
     }
-    if ("Route.fulfill.response.body".equals(jsonPath)) {
+    if ("Route.fulfill.options.body".equals(jsonPath)) {
       output.add(offset + "public String body;");
       output.add(offset + "public byte[] bodyBytes;");
       return;
@@ -922,14 +925,14 @@ class Field extends Element {
       output.add(offset + "}");
       return;
     }
-    if ("Route.continue.overrides.postData".equals(jsonPath)) {
-      output.add(offset + "public ContinueOverrides withPostData(String postData) {");
+    if ("Route.continue.options.postData".equals(jsonPath)) {
+      output.add(offset + "public " + parentClass + " withPostData(String postData) {");
       output.add(offset + "  this.postData = postData.getBytes(StandardCharsets.UTF_8);");
       output.add(offset + "  return this;");
       output.add(offset + "}");
     }
-    if ("Route.fulfill.response.body".equals(jsonPath)) {
-      output.add(offset + "public FulfillResponse withBody(byte[] body) {");
+    if ("Route.fulfill.options.body".equals(jsonPath)) {
+      output.add(offset + "public " + parentClass + " withBody(byte[] body) {");
       output.add(offset + "  this.bodyBytes = body;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
@@ -1322,7 +1325,7 @@ class NestedClass extends TypeDefinition {
     while (jsonType.has("templates")) {
       JsonArray params = jsonType.getAsJsonArray("templates");
       if (params.size() != 1) {
-        throw new RuntimeException("Unexpected number of parameters: " + jsonElement);
+        throw new RuntimeException("Unexpected number of parameters for " + jsonPath + ": " + jsonElement);
       }
       jsonType = params.get(0).getAsJsonObject();
     }
@@ -1447,6 +1450,7 @@ public class ApiGenerator {
     File cwd = FileSystems.getDefault().getPath(".").toFile();
     File dir = new File(cwd, "playwright/src/main/java/com/microsoft/playwright");
     System.out.println("Writing files to: " + dir.getCanonicalPath());
+    filterOtherLangs(api);
     for (JsonElement entry: api) {
       String name = entry.getAsJsonObject().get("name").getAsString();
       if (skipList.contains(name)) {
@@ -1459,6 +1463,57 @@ public class ApiGenerator {
         writer.write(text);
       }
     }
+  }
+
+  private static void filterOtherLangs(JsonElement json) {
+    if (json.isJsonArray()) {
+      List<JsonElement> toRemove = new ArrayList<>();
+      JsonArray array = json.getAsJsonArray();
+      for (JsonElement item : array) {
+        if (isSupported(item)) {
+          filterOtherLangs(item);
+        } else {
+          toRemove.add(item);
+        }
+      }
+      for (JsonElement e : toRemove) {
+        array.remove(e);
+      }
+    } else if (json.isJsonObject()) {
+      List<String> toRemove = new ArrayList<>();
+      JsonObject object = json.getAsJsonObject();
+      for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
+        if (isSupported(entry.getValue())) {
+          filterOtherLangs(entry.getValue());
+        } else {
+          toRemove.add(entry.getKey());
+        }
+      }
+      for (String key : toRemove) {
+        object.remove(key);
+      }
+    }
+  }
+
+  static boolean isSupported(JsonElement json) {
+    if (!json.isJsonObject()) {
+      return true;
+    }
+    JsonObject jsonObject = json.getAsJsonObject();
+    if (!jsonObject.has("langs")) {
+      return true;
+    }
+    JsonObject langs = jsonObject.getAsJsonObject("langs");
+    if (!langs.has("only")) {
+      return true;
+    }
+    JsonArray only = langs.getAsJsonArray("only");
+    for (JsonElement lang : only) {
+      if (!"js".equals(lang.getAsString())) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public static void main(String[] args) throws IOException {

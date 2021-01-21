@@ -28,9 +28,9 @@ import java.util.*;
  *
  * <p> Download event is emitted once the download starts. Download path becomes available once download completes:
  *
- * <p> > <strong>NOTE</strong> Browser context **must** be created with the {@code acceptDownloads} set to {@code true} when user needs access to the
- * downloaded content. If {@code acceptDownloads} is not set or set to {@code false}, download events are emitted, but the actual
- * download is not performed and user has no access to the downloaded files.
+ * <p> <strong>NOTE:</strong> Browser context **must** be created with the {@code acceptDownloads} set to {@code true} when user needs access to the
+ * downloaded content. If {@code acceptDownloads} is not set, download events are emitted, but the actual download is not
+ * performed and user has no access to the downloaded files.
  */
 public interface Download {
   /**

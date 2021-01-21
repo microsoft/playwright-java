@@ -26,12 +26,12 @@ import java.util.*;
  * <p> Accessibility is a very platform-specific thing. On different platforms, there are different screen readers that might
  * have wildly different output.
  *
- * <p> Blink - Chromium's rendering engine - has a concept of "accessibility tree", which is then translated into different
- * platform-specific APIs. Accessibility namespace gives users access to the Blink Accessibility Tree.
+ * <p> Rendering engines of Chromium, Firefox and Webkit have a concept of "accessibility tree", which is then translated into
+ * different platform-specific APIs. Accessibility namespace gives access to this Accessibility Tree.
  *
- * <p> Most of the accessibility tree gets filtered out when converting from Blink AX Tree to Platform-specific AX-Tree or by
- * assistive technologies themselves. By default, Playwright tries to approximate this filtering, exposing only the
- * "interesting" nodes of the tree.
+ * <p> Most of the accessibility tree gets filtered out when converting from internal browser AX Tree to Platform-specific
+ * AX-Tree or by assistive technologies themselves. By default, Playwright tries to approximate this filtering, exposing
+ * only the "interesting" nodes of the tree.
  */
 public interface Accessibility {
   class SnapshotOptions {
@@ -60,7 +60,7 @@ public interface Accessibility {
    * Captures the current state of the accessibility tree. The returned object represents the root accessible node of the
    * page.
    *
-   * <p> > <strong>NOTE</strong> The Chromium accessibility tree contains nodes that go unused on most platforms and by most screen readers.
+   * <p> <strong>NOTE:</strong> The Chromium accessibility tree contains nodes that go unused on most platforms and by most screen readers.
    * Playwright will discard them as well for an easier to process tree, unless {@code interestingOnly} is set to {@code false}.
    */
   AccessibilityNode snapshot(SnapshotOptions options);

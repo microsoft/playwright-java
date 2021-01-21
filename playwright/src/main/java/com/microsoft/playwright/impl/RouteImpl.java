@@ -44,74 +44,74 @@ public class RouteImpl extends ChannelOwner implements Route {
   }
 
   @Override
-  public void continue_(ContinueOverrides overrides) {
-    withLogging("Route.continue", () -> continueImpl(overrides));
+  public void continue_(ContinueOptions options) {
+    withLogging("Route.continue", () -> continueImpl(options));
   }
 
-  private void continueImpl(ContinueOverrides overrides) {
-    if (overrides == null) {
-      overrides = new ContinueOverrides();
+  private void continueImpl(ContinueOptions options) {
+    if (options == null) {
+      options = new ContinueOptions();
     }
     JsonObject params = new JsonObject();
-    if (overrides.url != null) {
-      params.addProperty("url", overrides.url);
+    if (options.url != null) {
+      params.addProperty("url", options.url);
     }
-    if (overrides.method != null) {
-      params.addProperty("method", overrides.method);
+    if (options.method != null) {
+      params.addProperty("method", options.method);
     }
-    if (overrides.headers != null) {
-      params.add("headers", Serialization.toProtocol(overrides.headers));
+    if (options.headers != null) {
+      params.add("headers", Serialization.toProtocol(options.headers));
     }
-    if (overrides.postData != null) {
-      String base64 = Base64.getEncoder().encodeToString(overrides.postData);
+    if (options.postData != null) {
+      String base64 = Base64.getEncoder().encodeToString(options.postData);
       params.addProperty("postData", base64);
     }
     sendMessage("continue", params);
   }
 
   @Override
-  public void fulfill(FulfillResponse response) {
-    withLogging("Route.fulfill", () -> fulfillImpl(response));
+  public void fulfill(FulfillOptions options) {
+    withLogging("Route.fulfill", () -> fulfillImpl(options));
   }
 
-  private void fulfillImpl(FulfillResponse response) {
-    if (response == null) {
-      response = new FulfillResponse();
+  private void fulfillImpl(FulfillOptions options) {
+    if (options == null) {
+      options = new FulfillOptions();
     }
 
-    int status = response.status == 0 ? 200 : response.status;
+    int status = options.status == 0 ? 200 : options.status;
     String body = "";
     boolean isBase64 = false;
     int length = 0;
-    if (response.path != null) {
+    if (options.path != null) {
       try {
-         byte[] buffer = Files.readAllBytes(response.path);
+         byte[] buffer = Files.readAllBytes(options.path);
          body = Base64.getEncoder().encodeToString(buffer);
          isBase64 = true;
          length = buffer.length;
       } catch (IOException e) {
-        throw new PlaywrightException("Failed to read from file: " + response.path, e);
+        throw new PlaywrightException("Failed to read from file: " + options.path, e);
       }
-    } else if (response.body != null) {
-      body = response.body;
+    } else if (options.body != null) {
+      body = options.body;
       isBase64 = false;
       length = body.getBytes().length;
-    } else if (response.bodyBytes != null) {
-      body = Base64.getEncoder().encodeToString(response.bodyBytes);
+    } else if (options.bodyBytes != null) {
+      body = Base64.getEncoder().encodeToString(options.bodyBytes);
       isBase64 = true;
-      length = response.bodyBytes.length;
+      length = options.bodyBytes.length;
     }
 
     Map<String, String> headers = new LinkedHashMap<>();
-    if (response.headers != null) {
-      for (Map.Entry<String, String> h : response.headers.entrySet()) {
+    if (options.headers != null) {
+      for (Map.Entry<String, String> h : options.headers.entrySet()) {
         headers.put(h.getKey().toLowerCase(), h.getValue());
       }
     }
-    if (response.contentType != null) {
-      headers.put("content-type", response.contentType);
-    } else if (response.path != null) {
-      headers.put("content-type", Utils.mimeType(response.path));
+    if (options.contentType != null) {
+      headers.put("content-type", options.contentType);
+    } else if (options.path != null) {
+      headers.put("content-type", Utils.mimeType(options.path));
     }
     if (length != 0 && !headers.containsKey("content-length")) {
       headers.put("content-length", Integer.toString(length));

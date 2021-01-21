@@ -20,14 +20,9 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * - extends: [EventEmitter](https://nodejs.org/api/events.html#events_class_eventemitter)
+ * - extends: [EventEmitter]
  *
- * <p> A Browser is created when Playwright connects to a browser instance, either through [{@code method: BrowserType.launch}] or
- * [{@code method: BrowserType.connect}].
- *
- * <p> See {@code ChromiumBrowser}, [FirefoxBrowser] and [WebKitBrowser] for browser-specific features. Note that
- * [{@code method: BrowserType.connect}] and [{@code method: BrowserType.launch}] always return a specific browser instance, based on
- * the browser being connected to or launched.
+ * <p> A Browser is created via [{@code method: BrowserType.launch}]. An example of using a {@code Browser} to create a [Page]:
  */
 public interface Browser {
   class VideoSize {
@@ -635,8 +630,8 @@ public interface Browser {
    * In case this browser is obtained using [{@code method: BrowserType.launch}], closes the browser and all of its pages (if any
    * were opened).
    *
-   * <p> In case this browser is obtained using [{@code method: BrowserType.connect}], clears all created contexts belonging to this
-   * browser and disconnects from the browser server.
+   * <p> In case this browser is connected to, clears all created contexts belonging to this browser and disconnects from the
+   * browser server.
    *
    * <p> The {@code Browser} object itself is considered to be disposed and cannot be used anymore.
    */

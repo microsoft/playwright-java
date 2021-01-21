@@ -34,68 +34,68 @@ import java.util.regex.Pattern;
  */
 public interface Frame {
   enum LoadState { LOAD, DOMCONTENTLOADED, NETWORKIDLE }
-  class AddScriptTagParams {
+  class AddScriptTagOptions {
     /**
-     * URL of a script to be added. Optional.
-     */
-    public String url;
-    /**
-     * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the
-     * current working directory. Optional.
-     */
-    public Path path;
-    /**
-     * Raw JavaScript content to be injected into frame. Optional.
+     * Raw JavaScript content to be injected into frame.
      */
     public String content;
     /**
+     * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the
+     * current working directory.
+     */
+    public Path path;
+    /**
      * Script type. Use 'module' in order to load a Javascript ES6 module. See
-     * [script](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script) for more details. Optional.
+     * [script](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script) for more details.
      */
     public String type;
+    /**
+     * URL of a script to be added.
+     */
+    public String url;
 
-    public AddScriptTagParams withUrl(String url) {
-      this.url = url;
-      return this;
-    }
-    public AddScriptTagParams withPath(Path path) {
-      this.path = path;
-      return this;
-    }
-    public AddScriptTagParams withContent(String content) {
+    public AddScriptTagOptions withContent(String content) {
       this.content = content;
       return this;
     }
-    public AddScriptTagParams withType(String type) {
+    public AddScriptTagOptions withPath(Path path) {
+      this.path = path;
+      return this;
+    }
+    public AddScriptTagOptions withType(String type) {
       this.type = type;
       return this;
     }
-  }
-  class AddStyleTagParams {
-    /**
-     * URL of the {@code <link>} tag. Optional.
-     */
-    public String url;
-    /**
-     * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the
-     * current working directory. Optional.
-     */
-    public Path path;
-    /**
-     * Raw CSS content to be injected into frame. Optional.
-     */
-    public String content;
-
-    public AddStyleTagParams withUrl(String url) {
+    public AddScriptTagOptions withUrl(String url) {
       this.url = url;
       return this;
     }
-    public AddStyleTagParams withPath(Path path) {
+  }
+  class AddStyleTagOptions {
+    /**
+     * Raw CSS content to be injected into frame.
+     */
+    public String content;
+    /**
+     * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the
+     * current working directory.
+     */
+    public Path path;
+    /**
+     * URL of the {@code <link>} tag.
+     */
+    public String url;
+
+    public AddStyleTagOptions withContent(String content) {
+      this.content = content;
+      return this;
+    }
+    public AddStyleTagOptions withPath(Path path) {
       this.path = path;
       return this;
     }
-    public AddStyleTagParams withContent(String content) {
-      this.content = content;
+    public AddStyleTagOptions withUrl(String url) {
+      this.url = url;
       return this;
     }
   }
@@ -424,6 +424,78 @@ public interface Frame {
     public Double timeout;
 
     public InnerTextOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsCheckedOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     */
+    public Double timeout;
+
+    public IsCheckedOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsDisabledOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     */
+    public Double timeout;
+
+    public IsDisabledOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsEditableOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     */
+    public Double timeout;
+
+    public IsEditableOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsEnabledOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     */
+    public Double timeout;
+
+    public IsEnabledOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsHiddenOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     */
+    public Double timeout;
+
+    public IsHiddenOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsVisibleOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     */
+    public Double timeout;
+
+    public IsVisibleOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -831,19 +903,25 @@ public interface Frame {
    * @param arg Optional argument to pass to {@code pageFunction}
    */
   Object evalOnSelectorAll(String selector, String pageFunction, Object arg);
+  default ElementHandle addScriptTag() {
+    return addScriptTag(null);
+  }
   /**
    * Returns the added tag when the script's onload fires or when the script content was injected into frame.
    *
    * <p> Adds a {@code <script>} tag into the page with the desired url or content.
    */
-  ElementHandle addScriptTag(AddScriptTagParams params);
+  ElementHandle addScriptTag(AddScriptTagOptions options);
+  default ElementHandle addStyleTag() {
+    return addStyleTag(null);
+  }
   /**
    * Returns the added tag when the stylesheet's onload fires or when the CSS content was injected into frame.
    *
    * <p> Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag with the
    * content.
    */
-  ElementHandle addStyleTag(AddStyleTagParams params);
+  ElementHandle addStyleTag(AddStyleTagOptions options);
   default void check(String selector) {
     check(selector, null);
   }
@@ -906,7 +984,7 @@ public interface Frame {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
    *
-   * <p> > <strong>NOTE</strong> {@code frame.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
+   * <p> <strong>NOTE:</strong> {@code frame.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
@@ -950,16 +1028,16 @@ public interface Frame {
   /**
    * Returns the return value of {@code pageFunction}
    *
-   * <p> If the function passed to the {@code frame.evaluate} returns a [Promise], then {@code frame.evaluate} would wait for the promise to
-   * resolve and return its value.
+   * <p> If the function passed to the [{@code method: Frame.evaluate}] returns a [Promise], then [{@code method: Frame.evaluate}] would wait
+   * for the promise to resolve and return its value.
    *
-   * <p> If the function passed to the {@code frame.evaluate} returns a non-[Serializable] value, then {@code frame.evaluate} returns
-   * {@code undefined}. DevTools Protocol also supports transferring some additional values that are not serializable by {@code JSON}:
-   * {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}, and bigint literals.
+   * <p> If the function passed to the [{@code method: Frame.evaluate}] returns a non-[Serializable] value,
+   * then[ method: {@code Frame.evaluate}] returns {@code undefined}. DevTools Protocol also supports transferring some additional values
+   * that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}, and bigint literals.
    *
    * <p> A string can also be passed in instead of a function.
    *
-   * <p> {@code ElementHandle} instances can be passed as an argument to the {@code frame.evaluate}:
+   * <p> {@code ElementHandle} instances can be passed as an argument to the [{@code method: Frame.evaluate}]:
    *
    *
    * @param pageFunction Function to be evaluated in browser context
@@ -972,15 +1050,15 @@ public interface Frame {
   /**
    * Returns the return value of {@code pageFunction} as in-page object (JSHandle).
    *
-   * <p> The only difference between {@code frame.evaluate} and {@code frame.evaluateHandle} is that {@code frame.evaluateHandle} returns in-page
-   * object (JSHandle).
+   * <p> The only difference between [{@code method: Frame.evaluate}] and [{@code method: Frame.evaluateHandle}] is
+   * that[ method: Fframe.evaluateHandle`] returns in-page object (JSHandle).
    *
-   * <p> If the function, passed to the {@code frame.evaluateHandle}, returns a [Promise], then {@code frame.evaluateHandle} would wait for
-   * the promise to resolve and return its value.
+   * <p> If the function, passed to the [{@code method: Frame.evaluateHandle}], returns a [Promise],
+   * then[ method: Fframe.evaluateHandle`] would wait for the promise to resolve and return its value.
    *
    * <p> A string can also be passed in instead of a function.
    *
-   * <p> {@code JSHandle} instances can be passed as an argument to the {@code frame.evaluateHandle}:
+   * <p> {@code JSHandle} instances can be passed as an argument to the [{@code method: Frame.evaluateHandle}]:
    *
    *
    * @param pageFunction Function to be evaluated in the page context
@@ -1052,9 +1130,9 @@ public interface Frame {
    * "Not Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling
    * [{@code method: Response.status}].
    *
-   * <p> > <strong>NOTE</strong> {@code frame.goto} either throws an error or returns a main resource response. The only exceptions are navigation
-   * to {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
-   * > <strong>NOTE</strong> Headless mode doesn't support navigation to a PDF document. See the
+   * <p> <strong>NOTE:</strong> {@code frame.goto} either throws an error or returns a main resource response. The only exceptions are navigation to
+   * {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
+   * <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the
    * [upstream issue](https://bugs.chromium.org/p/chromium/issues/detail?id=761295).
    *
    * @param url URL to navigate frame to. The url should include scheme, e.g. {@code https://}.
@@ -1099,17 +1177,76 @@ public interface Frame {
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
    */
   String innerText(String selector, InnerTextOptions options);
+  default boolean isChecked(String selector) {
+    return isChecked(selector, null);
+  }
+  /**
+   * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   */
+  boolean isChecked(String selector, IsCheckedOptions options);
   /**
    * Returns {@code true} if the frame has been detached, or {@code false} otherwise.
    */
   boolean isDetached();
+  default boolean isDisabled(String selector) {
+    return isDisabled(selector, null);
+  }
+  /**
+   * Returns whether the element is disabled, the opposite of [enabled](./actionability.md#enabled).
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   */
+  boolean isDisabled(String selector, IsDisabledOptions options);
+  default boolean isEditable(String selector) {
+    return isEditable(selector, null);
+  }
+  /**
+   * Returns whether the element is [editable](./actionability.md#editable).
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   */
+  boolean isEditable(String selector, IsEditableOptions options);
+  default boolean isEnabled(String selector) {
+    return isEnabled(selector, null);
+  }
+  /**
+   * Returns whether the element is [enabled](./actionability.md#enabled).
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   */
+  boolean isEnabled(String selector, IsEnabledOptions options);
+  default boolean isHidden(String selector) {
+    return isHidden(selector, null);
+  }
+  /**
+   * Returns whether the element is hidden, the opposite of [visible](./actionability.md#visible).
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   */
+  boolean isHidden(String selector, IsHiddenOptions options);
+  default boolean isVisible(String selector) {
+    return isVisible(selector, null);
+  }
+  /**
+   * Returns whether the element is [visible](./actionability.md#visible).
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   */
+  boolean isVisible(String selector, IsVisibleOptions options);
   /**
    * Returns frame's name attribute as specified in the tag.
    *
    * <p> If the name is empty, returns the id attribute instead.
    *
-   * <p> > <strong>NOTE</strong> This value is calculated once when the frame is created, and will not update if the attribute is changed
-   * later.
+   * <p> <strong>NOTE:</strong> This value is calculated once when the frame is created, and will not update if the attribute is changed later.
    */
   String name();
   /**
@@ -1190,6 +1327,8 @@ public interface Frame {
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
    * matching {@code selector}, the method throws an error.
    *
+   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   *
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
@@ -1239,7 +1378,7 @@ public interface Frame {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
    *
-   * <p> > <strong>NOTE</strong> {@code frame.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
+   * <p> <strong>NOTE:</strong> {@code frame.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
@@ -1332,7 +1471,7 @@ public interface Frame {
    *
    *
    * @param state Optional load state to wait for, defaults to {@code load}. If the state has been already reached while loading current
-   * document, the method returns immediately. Can be one of:
+   * document, the method resolves immediately. Can be one of:
    * - {@code 'load'} - wait for the {@code load} event to be fired.
    * - {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.
    * - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
@@ -1340,14 +1479,14 @@ public interface Frame {
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
   default Response waitForNavigation(Runnable code) { return waitForNavigation(code, null); }
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * last redirect. In case of navigation to a different anchor or navigation due to History API usage, the navigation will
-   * resolve with {@code null}.
+   * Waits for the frame navigation and returns the main resource response. In case of multiple redirects, the navigation
+   * will resolve with the response of the last redirect. In case of navigation to a different anchor or navigation due to
+   * History API usage, the navigation will resolve with {@code null}.
    *
    * <p> This method waits for the frame to navigate to a new URL. It is useful for when you run code which will indirectly cause
    * the frame to navigate. Consider this example:
    *
-   * <p> <strong>NOTE</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is
+   * <p> <strong>NOTE:</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is
    * considered a navigation.
    */
   Response waitForNavigation(Runnable code, WaitForNavigationOptions options);
