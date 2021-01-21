@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.impl.ElementHandleImpl;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;

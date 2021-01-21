@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.condition.EnabledIf;
 
-import static com.microsoft.playwright.Page.EventType.*;
 import static com.microsoft.playwright.Utils.attachFrame;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -110,7 +109,7 @@ public class TestWorkers extends TestBase {
       "() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))"));
     assertEquals(1, page.workers().size());
     boolean[] destroyed = {false};
-    worker.addListener(Worker.EventType.CLOSE, event -> destroyed[0] = true);
+    worker.onClose(worker1 -> destroyed[0] = true);
     page.navigate(server.CROSS_PROCESS_PREFIX + "/empty.html");
     assertTrue(destroyed[0]);
     assertEquals(0, page.workers().size());

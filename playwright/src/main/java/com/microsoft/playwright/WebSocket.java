@@ -29,15 +29,6 @@ public interface WebSocket {
     String text();
   }
 
-  enum EventType {
-    CLOSE,
-    FRAMERECEIVED,
-    FRAMESENT,
-    SOCKETERROR,
-  }
-
-  void addListener(EventType type, Listener<EventType> listener);
-  void removeListener(EventType type, Listener<EventType> listener);
 
   void onClose(Runnable handler);
   void offClose(Runnable handler);

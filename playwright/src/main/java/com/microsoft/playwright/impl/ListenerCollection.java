@@ -17,7 +17,6 @@
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.Event;
-import com.microsoft.playwright.Listener;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -89,7 +88,7 @@ class ListenerCollection <EventType> {
     public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
-      RunnableWrapper<?> that = (RunnableWrapper<?>) o;
+      ConsumerWrapper<?> that = (ConsumerWrapper<?>) o;
       return Objects.equals(callback, that.callback);
     }
 

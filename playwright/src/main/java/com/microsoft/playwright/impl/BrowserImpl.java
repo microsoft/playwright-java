@@ -37,18 +37,12 @@ class BrowserImpl extends ChannelOwner implements Browser {
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   private boolean isConnected = true;
 
+  enum EventType {
+    DISCONNECTED,
+  }
+
   BrowserImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
-  }
-
-  @Override
-  public void addListener(EventType type, Listener<EventType> listener) {
-    listeners.add(type, listener);
-  }
-
-  @Override
-  public void removeListener(EventType type, Listener<EventType> listener) {
-    listeners.remove(type, listener);
   }
 
   @Override

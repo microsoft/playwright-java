@@ -2,9 +2,6 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestElementHandleSelectText extends TestBase {

@@ -21,7 +21,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,6 +45,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   final TimeoutSettings timeoutSettings = new TimeoutSettings();
   Path videosDir;
 
+  enum EventType {
+    CLOSE,
+    PAGE,
+  }
+
   BrowserContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     if (parent instanceof BrowserImpl) {
@@ -53,16 +57,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     } else {
       browser = null;
     }
-  }
-
-  @Override
-  public void addListener(EventType type, Listener<EventType> listener) {
-    listeners.add(type, listener);
-  }
-
-  @Override
-  public void removeListener(EventType type, Listener<EventType> listener) {
-    listeners.remove(type, listener);
   }
 
   @Override
@@ -359,7 +353,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     private String errorMessage;
 
     WaitableContextClose() {
-      addListener(EventType.CLOSE, this);
+      listeners.add(EventType.CLOSE, this);
     }
 
     @Override
@@ -384,7 +378,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
     @Override
     public void dispose() {
-      removeListener(EventType.CLOSE, this);
+      listeners.remove(EventType.CLOSE, this);
     }
   }
 

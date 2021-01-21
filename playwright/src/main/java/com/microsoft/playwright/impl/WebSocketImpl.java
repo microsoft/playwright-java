@@ -31,19 +31,16 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
   private final PageImpl page;
   private boolean isClosed;
 
-  public WebSocketImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
+  enum EventType {
+    CLOSE,
+    FRAMERECEIVED,
+    FRAMESENT,
+    SOCKETERROR,
+  }
+
+  WebSocketImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     page = (PageImpl) parent;
-  }
-
-  @Override
-  public void addListener(EventType type, Listener<EventType> listener) {
-    listeners.add(type, listener);
-  }
-
-  @Override
-  public void removeListener(EventType type, Listener<EventType> listener) {
-    listeners.remove(type, listener);
   }
 
   @Override
@@ -127,7 +124,7 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
     WaitableWebSocketError() {
       subscribedEvents = Arrays.asList(EventType.CLOSE, EventType.SOCKETERROR);
       for (EventType e : subscribedEvents) {
-        addListener(e, this);
+        listeners.add(e, this);
       }
     }
 
@@ -156,7 +153,7 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
     @Override
     public void dispose() {
       for (EventType e : subscribedEvents) {
-        removeListener(e, this);
+        listeners.remove(e, this);
       }
     }
   }

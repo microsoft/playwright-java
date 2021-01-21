@@ -21,8 +21,6 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.microsoft.playwright.Page.EventType.CONSOLE;
-import static com.microsoft.playwright.Page.EventType.POPUP;
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -111,7 +109,7 @@ public class TestGeolocation extends TestBase {
     context.grantPermissions(asList("geolocation"));
     page.navigate(server.EMPTY_PAGE);
     List<String> messages = new ArrayList<>();
-    page.addListener(CONSOLE, event -> messages.add(((ConsoleMessage) event.data()).text()));
+    page.onConsole(message -> messages.add(message.text()));
     context.setGeolocation(new Geolocation());
     page.evaluate("() => {\n" +
       "  navigator.geolocation.watchPosition(pos => {\n" +

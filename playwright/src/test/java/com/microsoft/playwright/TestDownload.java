@@ -21,8 +21,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.condition.EnabledIf;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,7 +32,6 @@ import java.time.Duration;
 import java.time.Instant;
 
 import static com.microsoft.playwright.Keyboard.Modifier.ALT;
-import static com.microsoft.playwright.Page.EventType.DOWNLOAD;
 import static com.microsoft.playwright.Utils.copy;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
@@ -249,16 +250,15 @@ public class TestDownload extends TestBase {
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     @SuppressWarnings("unchecked")
-    Event<Page.EventType>[] event = new Event[]{null};
-    page.addListener(DOWNLOAD, e -> event[0] = e);
+    Download[] download = {null};
+    page.onDownload(d -> download[0] = d);
     page.click("a");
     Instant start = Instant.now();
-    while (event[0] == null) {
+    while (download[0] == null) {
       page.waitForTimeout(100);
       assertTrue(Duration.between(start, Instant.now()).getSeconds() < 30, "Timed out");
     }
-    Download download = (Download) event[0].data();
-    Path path = download.path();
+    Path path = download[0].path();
     assertTrue(Files.exists(path));
     byte[] bytes = readAllBytes(path);
     assertEquals("Hello world", new String(bytes, UTF_8));
@@ -269,17 +269,16 @@ public class TestDownload extends TestBase {
   void shouldReportDownloadPathWithinPageOnDownloadHandlerForBlobs() throws IOException {
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     @SuppressWarnings("unchecked")
-    Event<Page.EventType>[] event = new Event[]{null};
-    page.addListener(DOWNLOAD, e -> event[0] = e);
+    Download[] download = {null};
+    page.onDownload(d -> download[0] = d);
     page.navigate(server.PREFIX + "/download-blob.html");
     page.click("a");
     Instant start = Instant.now();
-    while (event[0] == null) {
+    while (download[0] == null) {
       page.waitForTimeout(100);
       assertTrue(Duration.between(start, Instant.now()).getSeconds() < 1, "Timed out");
     }
-    Download download = (Download) event[0].data();
-    Path path = download.path();
+    Path path = download[0].path();
     assertTrue(Files.exists(path));
     byte[] bytes = readAllBytes(path);
     assertEquals("Hello world", new String(bytes, UTF_8));

@@ -24,12 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
-import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.Page.EventType.REQUESTFINISHED;
-import static com.microsoft.playwright.Page.EventType.RESPONSE;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestNetworkResponse extends TestBase {
@@ -102,8 +98,8 @@ public class TestNetworkResponse extends TestBase {
     });
     // Setup page to trap response.
     boolean[] requestFinished = {false};
-    page.addListener(REQUESTFINISHED, event -> {
-      requestFinished[0] |= ((Request) event.data()).url().contains("/get");
+    page.onRequestFinished(request -> {
+      requestFinished[0] |= request.url().contains("/get");
     });
     // send request and wait for server response
     Response pageResponse = page.waitForResponse(() -> page.evaluate("() => fetch('./get', { method: 'GET'})"));

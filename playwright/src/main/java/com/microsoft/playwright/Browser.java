@@ -48,12 +48,6 @@ public interface Browser {
     }
   }
 
-  enum EventType {
-    DISCONNECTED,
-  }
-
-  void addListener(EventType type, Listener<EventType> listener);
-  void removeListener(EventType type, Listener<EventType> listener);
 
   void onDisconnected(Runnable handler);
   void offDisconnected(Runnable handler);

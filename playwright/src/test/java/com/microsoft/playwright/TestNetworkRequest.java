@@ -28,8 +28,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-import static com.microsoft.playwright.Page.EventType.REQUEST;
-import static com.microsoft.playwright.Page.EventType.RESPONSE;
 import static com.microsoft.playwright.Utils.attachFrame;
 import static com.microsoft.playwright.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,7 +36,7 @@ public class TestNetworkRequest extends TestBase {
   @Test
   void shouldWorkForMainFrameNavigationRequest() {
     List<Request> requests = new ArrayList<>();
-    page.addListener(REQUEST, event -> requests.add((Request) event.data()));
+    page.onRequest(request -> requests.add(request));
     page.navigate(server.EMPTY_PAGE);
     assertEquals(1, requests.size());
     assertEquals(page.mainFrame(), requests.get(0).frame());
@@ -48,7 +46,7 @@ public class TestNetworkRequest extends TestBase {
   void shouldWorkForSubframeNavigationRequest() {
     page.navigate(server.EMPTY_PAGE);
     List<Request> requests = new ArrayList<>();
-    page.addListener(REQUEST, event -> requests.add((Request) event.data()));
+    page.onRequest(request -> requests.add(request));
     attachFrame(page, "frame1", server.EMPTY_PAGE);
     assertEquals(1, requests.size());
     assertEquals(page.frames().get(1), requests.get(0).frame());
@@ -58,7 +56,7 @@ public class TestNetworkRequest extends TestBase {
   void shouldWorkForFetchRequests() {
     page.navigate(server.EMPTY_PAGE);
     List<Request> requests = new ArrayList<>();
-    page.addListener(REQUEST, event -> requests.add((Request) event.data()));
+    page.onRequest(request -> requests.add(request));
     page.evaluate("() => fetch('/digits/1.png')");
     assertEquals(1, requests.size());
     assertEquals(page.mainFrame(), requests.get(0).frame());
@@ -68,7 +66,7 @@ public class TestNetworkRequest extends TestBase {
   void shouldWorkForARedirect() {
     server.setRedirect("/foo.html", "/empty.html");
     List<Request> requests = new ArrayList<>();
-    page.addListener(REQUEST, event -> requests.add((Request) event.data()));
+    page.onRequest(request -> requests.add(request));
     page.navigate(server.PREFIX + "/foo.html");
 
     assertEquals(2, requests.size());
@@ -152,7 +150,7 @@ public class TestNetworkRequest extends TestBase {
       exchange.getResponseBody().close();
     });
     Request[] request = {null};
-    page.addListener(REQUEST, event -> request[0] = (Request) event.data());
+    page.onRequest(r -> request[0] = r);
     page.evaluate("() => fetch('./post', { method: 'POST', body: JSON.stringify({foo: 'bar'})})");
     assertNotNull(request[0]);
     assertEquals("{\"foo\":\"bar\"}", request[0].postData());
@@ -166,7 +164,7 @@ public class TestNetworkRequest extends TestBase {
       exchange.getResponseBody().close();
     });
     Request[] request = {null};
-    page.addListener(REQUEST, event -> request[0] = (Request) event.data());
+    page.onRequest(r -> request[0] = r);
     page.evaluate("async () => {\n" +
       "  await fetch('./post', { method: 'POST', body: new Uint8Array(Array.from(Array(256).keys())) });\n" +
       "}");
@@ -186,7 +184,7 @@ public class TestNetworkRequest extends TestBase {
       exchange.getResponseBody().close();
     });
     Request[] request = {null};
-    page.addListener(REQUEST, event -> request[0] = (Request) event.data());
+    page.onRequest(r -> request[0] = r);
     page.route("/post", route -> route.continue_());
     page.evaluate("async () => {\n" +
       "  await fetch('./post', { method: 'POST', body: new Uint8Array(Array.from(Array(256).keys())) });\n" +
@@ -228,7 +226,7 @@ public class TestNetworkRequest extends TestBase {
     // 2. Subscribe to page request events.
     page.navigate(server.EMPTY_PAGE);
     List<Request> requests = new ArrayList<>();
-    page.addListener(REQUEST, event -> requests.add((Request) event.data()));
+    page.onRequest(request -> requests.add(request));
     // 3. Connect to EventSource in browser and return first message.
     Object result = page.evaluate("() => {\n" +
       "  const eventSource = new EventSource('/sse');\n" +
@@ -243,8 +241,7 @@ public class TestNetworkRequest extends TestBase {
   @Test
   void shouldReturnNavigationBit() {
     Map<String, Request> requests = new HashMap<>();
-    page.addListener(REQUEST, event -> {
-      Request request = (Request) event.data();
+    page.onRequest(request -> {
       String name = request.url();
       int lastSlash = name.lastIndexOf('/');
       if (lastSlash != -1) {
@@ -264,7 +261,7 @@ public class TestNetworkRequest extends TestBase {
   @Test
   void shouldReturnNavigationBitWhenNavigatingToImage() {
     List<Request> requests = new ArrayList<>();
-    page.addListener(REQUEST, event -> requests.add((Request) event.data()));
+    page.onRequest(request -> requests.add(request));
     page.navigate(server.PREFIX + "/pptr.png");
     assertTrue(requests.get(0).isNavigationRequest());
   }

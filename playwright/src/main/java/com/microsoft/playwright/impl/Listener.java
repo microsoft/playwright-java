@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright;
+package com.microsoft.playwright.impl;
+
+import com.microsoft.playwright.Event;
 
 public interface Listener<EventType> {
   void handle(Event<EventType> event);

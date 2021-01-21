@@ -74,30 +74,6 @@ public interface Page {
     String stack();
   }
 
-  enum EventType {
-    CLOSE,
-    CONSOLE,
-    CRASH,
-    DIALOG,
-    DOMCONTENTLOADED,
-    DOWNLOAD,
-    FILECHOOSER,
-    FRAMEATTACHED,
-    FRAMEDETACHED,
-    FRAMENAVIGATED,
-    LOAD,
-    PAGEERROR,
-    POPUP,
-    REQUEST,
-    REQUESTFAILED,
-    REQUESTFINISHED,
-    RESPONSE,
-    WEBSOCKET,
-    WORKER,
-  }
-
-  void addListener(EventType type, Listener<EventType> listener);
-  void removeListener(EventType type, Listener<EventType> listener);
 
   void onClose(Runnable handler);
   void offClose(Runnable handler);

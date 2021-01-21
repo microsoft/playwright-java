@@ -18,18 +18,18 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
-import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.io.OutputStreamWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.Page.EventType.REQUEST;
-import static com.microsoft.playwright.Page.EventType.REQUESTFAILED;
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -198,8 +198,7 @@ public class TestPageRoute extends TestBase {
   void shouldBeAbortable() {
     page.route(Pattern.compile(".*\\.css$"), route -> route.abort());
     boolean[] failed = {false};
-    page.addListener(REQUESTFAILED, event -> {
-      Request request = (Request) event.data();
+    page.onRequestFailed(request -> {
       if (request.url().contains(".css"))
         failed[0] = true;
     });
@@ -212,19 +211,19 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldBeAbortableWithCustomErrorCodes() {
     page.route("**/*", route -> route.abort("internetdisconnected"));
-    Request[] failedRequest = {null};
-    page.addListener(REQUESTFAILED, event -> failedRequest[0] = (Request) event.data());
-    try {
-      page.navigate(server.EMPTY_PAGE);
-    } catch (PlaywrightException e) {
-    }
-    assertNotNull(failedRequest[0]);
+    Request failedRequest = page.waitForRequestFailed(() -> {
+      try {
+        page.navigate(server.EMPTY_PAGE);
+      } catch (PlaywrightException e) {
+      }
+    });
+    assertNotNull(failedRequest);
     if (isWebKit())
-      assertEquals("Request intercepted", failedRequest[0].failure().errorText());
+      assertEquals("Request intercepted", failedRequest.failure().errorText());
     else if (isFirefox())
-      assertEquals("NS_ERROR_OFFLINE", failedRequest[0].failure().errorText());
+      assertEquals("NS_ERROR_OFFLINE", failedRequest.failure().errorText());
     else
-      assertEquals("net::ERR_INTERNET_DISCONNECTED", failedRequest[0].failure().errorText());
+      assertEquals("net::ERR_INTERNET_DISCONNECTED", failedRequest.failure().errorText());
   }
 
   @Test

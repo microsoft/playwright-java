@@ -18,7 +18,6 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -26,6 +25,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -79,11 +79,11 @@ public class TestPageSetInputFiles extends TestBase {
   void shouldEmitEventAddListenerRemoveListener() {
     page.setContent("<input type=file>");
     FileChooser[] chooser = { null };
-    page.addListener(Page.EventType.FILECHOOSER, new Listener<Page.EventType>() {
+    page.onFileChooser(new Consumer<FileChooser>() {
       @Override
-      public void handle(Event<Page.EventType> event) {
-        chooser[0] = (FileChooser) event.data();
-        page.removeListener(Page.EventType.FILECHOOSER, this);
+      public void accept(FileChooser fileChooser) {
+        chooser[0] = fileChooser;
+        page.offFileChooser(this);
       }
     });
     page.click("input");
@@ -198,8 +198,7 @@ public class TestPageSetInputFiles extends TestBase {
   @Test
   void shouldBeAbleToReadSelectedFile() {
     page.setContent("<input type=file>");
-    page.addListener(Page.EventType.FILECHOOSER, event -> {
-      FileChooser fileChooser = (FileChooser) event.data();
+    page.onFileChooser(fileChooser -> {
       fileChooser.setFiles(FILE_TO_UPLOAD);
     });
     Object content = page.evalOnSelector("input", "async picker => {\n" +
@@ -216,12 +215,11 @@ public class TestPageSetInputFiles extends TestBase {
   @Test
   void shouldBeAbleToResetSelectedFilesWithEmptyFileList() {
     page.setContent("<input type=file>");
-    page.addListener(Page.EventType.FILECHOOSER, new Listener<Page.EventType>() {
+    page.onFileChooser(new Consumer<FileChooser>() {
       @Override
-      public void handle(Event<Page.EventType> event) {
-        FileChooser fileChooser = (FileChooser) event.data();
+      public void accept(FileChooser fileChooser) {
         fileChooser.setFiles(FILE_TO_UPLOAD);
-        page.removeListener(Page.EventType.FILECHOOSER, this);
+        page.offFileChooser(this);
       }
     });
     Object fileLength1 = page.evalOnSelector("input", "async picker => {\n" +
@@ -231,12 +229,11 @@ public class TestPageSetInputFiles extends TestBase {
       "}");
     assertEquals(1, fileLength1);
 
-    page.addListener(Page.EventType.FILECHOOSER, new Listener<Page.EventType>() {
+    page.onFileChooser(new Consumer<FileChooser>() {
       @Override
-      public void handle(Event<Page.EventType> event) {
-        FileChooser fileChooser = (FileChooser) event.data();
+      public void accept(FileChooser fileChooser) {
         fileChooser.setFiles(new Path[0]);
-        page.removeListener(Page.EventType.FILECHOOSER, this);
+        page.offFileChooser(this);
       }
     });
     Object fileLength2 = page.evalOnSelector("input", "async picker => {\n" +

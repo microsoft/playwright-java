@@ -94,13 +94,6 @@ public interface BrowserContext {
     }
   }
 
-  enum EventType {
-    CLOSE,
-    PAGE,
-  }
-
-  void addListener(EventType type, Listener<EventType> listener);
-  void removeListener(EventType type, Listener<EventType> listener);
 
   void onClose(Runnable handler);
   void offClose(Runnable handler);
