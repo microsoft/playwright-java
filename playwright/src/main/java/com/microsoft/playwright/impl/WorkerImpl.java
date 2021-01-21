@@ -21,6 +21,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 import static com.microsoft.playwright.impl.Serialization.*;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
@@ -40,6 +44,33 @@ class WorkerImpl extends ChannelOwner implements Worker {
   @Override
   public void removeListener(EventType type, Listener<EventType> listener) {
     listeners.remove(type, listener);
+  }
+
+  @Override
+  public void onClose(Consumer<Worker> handler) {
+    listeners.add(EventType.CLOSE, handler);
+  }
+
+  @Override
+  public void offClose(Consumer<Worker> handler) {
+    listeners.remove(EventType.CLOSE, handler);
+  }
+
+  private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Double timeout) {
+    List<Waitable<T>> waitables = new ArrayList<>();
+    waitables.add(new WaitableEvent<>(listeners, eventType)
+      .apply(event -> (T) event.data()));
+    waitables.add(page.createWaitForCloseHelper());
+    waitables.add(page.createWaitableTimeout(timeout));
+    return runUntil(code, new WaitableRace<>(waitables));
+  }
+
+  @Override
+  public Worker waitForClose(Runnable code, WaitForCloseOptions options) {
+    if (options == null) {
+      options = new WaitForCloseOptions();
+    }
+    return waitForEventWithTimeout(EventType.CLOSE, code, options.timeout);
   }
 
   @Override
@@ -70,11 +101,6 @@ class WorkerImpl extends ChannelOwner implements Worker {
   @Override
   public String url() {
     return initializer.get("url").getAsString();
-  }
-
-  @Override
-  public Deferred<Event<EventType>> futureEvent(EventType event) {
-    return toDeferred(new WaitableEvent<>(listeners, event));
   }
 
   @Override

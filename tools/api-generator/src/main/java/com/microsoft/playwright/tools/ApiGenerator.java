@@ -341,11 +341,107 @@ abstract class TypeDefinition extends Element {
 }
 
 class Event extends Element {
+  private static Map<String, String> eventNames = new HashMap<>();
+  static {
+    eventNames.put("Browser.disconnected", "Disconnected");
+
+    eventNames.put("BrowserContext.close", "Close");
+    eventNames.put("BrowserContext.page", "Page");
+
+    eventNames.put("Page.close", "Close");
+    eventNames.put("Page.console", "Console");
+    eventNames.put("Page.crash", "Crash");
+    eventNames.put("Page.dialog", "Dialog");
+    eventNames.put("Page.domcontentloaded", "DomContentLoaded");
+    eventNames.put("Page.download", "Download");
+    eventNames.put("Page.filechooser", "FileChooser");
+    eventNames.put("Page.frameattached", "FrameAttached");
+    eventNames.put("Page.framedetached", "FrameDetached");
+    eventNames.put("Page.framenavigated", "FrameNavigated");
+    eventNames.put("Page.load", "Load");
+    eventNames.put("Page.pageerror", "PageError");
+    eventNames.put("Page.popup", "Popup");
+    eventNames.put("Page.request", "Request");
+    eventNames.put("Page.requestfailed", "RequestFailed");
+    eventNames.put("Page.requestfinished", "RequestFinished");
+    eventNames.put("Page.response", "Response");
+    eventNames.put("Page.websocket", "WebSocket");
+    eventNames.put("Page.worker", "Worker");
+
+    eventNames.put("WebSocket.close", "Close");
+    eventNames.put("WebSocket.framereceived", "FrameReceived");
+    eventNames.put("WebSocket.framesent", "FrameSent");
+    eventNames.put("WebSocket.socketerror", "SocketError");
+
+    eventNames.put("Worker.close", "Close");
+  }
+
+  private static Set<String> waitForEvents = new HashSet<>();
+  static {
+    waitForEvents.add("BrowserContext.page");
+
+    waitForEvents.add("Page.close");
+    waitForEvents.add("Page.console");
+    waitForEvents.add("Page.download");
+    waitForEvents.add("Page.filechooser");
+    waitForEvents.add("Page.frameattached");
+    waitForEvents.add("Page.framedetached");
+    waitForEvents.add("Page.framenavigated");
+    waitForEvents.add("Page.pageerror");
+    waitForEvents.add("Page.popup");
+    waitForEvents.add("Page.request");
+    waitForEvents.add("Page.requestfailed");
+    waitForEvents.add("Page.requestfinished");
+    waitForEvents.add("Page.response");
+    waitForEvents.add("Page.websocket");
+    waitForEvents.add("Page.worker");
+
+    waitForEvents.add("WebSocket.framereceived");
+    waitForEvents.add("WebSocket.framesent");
+    waitForEvents.add("WebSocket.socketerror");
+
+    waitForEvents.add("Worker.close");
+  }
+
   private final TypeRef type;
 
   Event(Element parent, JsonObject jsonElement) {
     super(parent, jsonElement);
     type = new TypeRef(this, jsonElement.get("type"));
+  }
+
+  void writeListenerMethods(List<String> output, String offset) {
+    if (!eventNames.containsKey(jsonPath)) {
+      throw new RuntimeException("Unknown event: " + jsonPath);
+    }
+    String name = eventNames.get(jsonPath);
+    String listenerType = "void".equals(type.toJava()) ? "Runnable" : "Consumer<" + type.toJava() + ">";
+    output.add(offset + "void on" + name + "(" + listenerType + " handler);");
+    output.add(offset + "void off" + name + "(" + listenerType + " handler);");
+  }
+
+  void writeWaitForEventIfNeeded(List<String> output, String offset) {
+    if (!waitForEvents.contains(jsonPath)) {
+      return;
+    }
+    String name = eventNames.get(jsonPath);
+    String methodName = "waitFor" + name;
+    // Skip events for which there is waitFor* method in the upstream API, that method will generate the code.
+    if (Method.waitForMethods.contains(parent.jsonPath + "." + methodName)) {
+      return;
+    }
+    output.add("");
+    String optionsClass = toTitle(methodName) + "Options";
+    output.add(offset + "class " + optionsClass + " {");
+    output.add(offset + "  public Double timeout;");
+    output.add(offset + "  public " + optionsClass + " withTimeout(double timeout) {");
+    output.add(offset + "    this.timeout = timeout;");
+    output.add(offset + "    return this;");
+    output.add(offset + "  }");
+    output.add(offset + "}");
+    String paramType = jsonPath.equals("Page.close") ? "Page" : type.toJava();
+    output.add(offset + paramType + " " + methodName + "(Runnable code, " + optionsClass + " options);");
+    output.add(offset + "default " + paramType + " " + methodName + "(Runnable code) { return " + methodName + "(code, null); }");
   }
 }
 
@@ -362,7 +458,14 @@ class Method extends Element {
     tsToJavaMethodName.put("$", "querySelector");
     tsToJavaMethodName.put("$$", "querySelectorAll");
     tsToJavaMethodName.put("goto", "navigate");
-    tsToJavaMethodName.put("waitForNavigation", "futureNavigation");
+  }
+
+  static Set<String> waitForMethods = new HashSet<>();
+  static {
+    waitForMethods.add("Page.waitForNavigation");
+    waitForMethods.add("Page.waitForRequest");
+    waitForMethods.add("Page.waitForResponse");
+    waitForMethods.add("Frame.waitForNavigation");
   }
 
   private static Map<String, String[]> customSignature = new HashMap<>();
@@ -451,37 +554,36 @@ class Method extends Element {
     customSignature.put("Page.setInputFiles", setInputFilesWithSelector);
     customSignature.put("Frame.setInputFiles", setInputFilesWithSelector);
 
-    String[] waitForEvent = {
-      "default Deferred<Event<EventType>> futureEvent(EventType event) {",
-      "  return futureEvent(event, (FutureEventOptions) null);",
-      "}",
-      "default Deferred<Event<EventType>> futureEvent(EventType event, Predicate<Event<EventType>> predicate) {",
-      "  FutureEventOptions options = new FutureEventOptions();",
-      "  options.predicate = predicate;",
-      "  return futureEvent(event, options);",
-      "}",
-      "Deferred<Event<EventType>> futureEvent(EventType event, FutureEventOptions options);",
-    };
-    customSignature.put("Page.waitForEvent", waitForEvent);
-    customSignature.put("BrowserContext.waitForEvent", waitForEvent);
-    customSignature.put("WebSocket.waitForEvent", waitForEvent);
+    // We only have typed onPage/onDownload/... event listeners in Java.
+    customSignature.put("Page.waitForEvent", new String[] {});
+    customSignature.put("BrowserContext.waitForEvent", new String[] {});
+    customSignature.put("WebSocket.waitForEvent", new String[] {});
 
     customSignature.put("Page.waitForRequest", new String[] {
-      "default Deferred<Request> futureRequest(String urlGlob) { return futureRequest(urlGlob, null); }",
-      "default Deferred<Request> futureRequest(Pattern urlPattern) { return futureRequest(urlPattern, null); }",
-      "default Deferred<Request> futureRequest(Predicate<String> urlPredicate) { return futureRequest(urlPredicate, null); }",
-      "Deferred<Request> futureRequest(String urlGlob, FutureRequestOptions options);",
-      "Deferred<Request> futureRequest(Pattern urlPattern, FutureRequestOptions options);",
-      "Deferred<Request> futureRequest(Predicate<String> urlPredicate, FutureRequestOptions options);"
+      "Request waitForRequest(Runnable code);",
+      "default Request waitForRequest(Runnable code, String urlGlob) { return waitForRequest(code, urlGlob, null); }",
+      "default Request waitForRequest(Runnable code, Pattern urlPattern) { return waitForRequest(code, urlPattern, null); }",
+      "default Request waitForRequest(Runnable code, Predicate<String> urlPredicate) { return waitForRequest(code, urlPredicate, null); }",
+      "Request waitForRequest(Runnable code, String urlGlob, WaitForRequestOptions options);",
+      "Request waitForRequest(Runnable code, Pattern urlPattern, WaitForRequestOptions options);",
+      "Request waitForRequest(Runnable code, Predicate<String> urlPredicate, WaitForRequestOptions options);"
     });
     customSignature.put("Page.waitForResponse", new String[] {
-      "default Deferred<Response> futureResponse(String urlGlob) { return futureResponse(urlGlob, null); }",
-      "default Deferred<Response> futureResponse(Pattern urlPattern) { return futureResponse(urlPattern, null); }",
-      "default Deferred<Response> futureResponse(Predicate<String> urlPredicate) { return futureResponse(urlPredicate, null); }",
-      "Deferred<Response> futureResponse(String urlGlob, FutureResponseOptions options);",
-      "Deferred<Response> futureResponse(Pattern urlPattern, FutureResponseOptions options);",
-      "Deferred<Response> futureResponse(Predicate<String> urlPredicate, FutureResponseOptions options);"
+      "Response waitForResponse(Runnable code);",
+      "default Response waitForResponse(Runnable code, String urlGlob) { return waitForResponse(code, urlGlob, null); }",
+      "default Response waitForResponse(Runnable code, Pattern urlPattern) { return waitForResponse(code, urlPattern, null); }",
+      "default Response waitForResponse(Runnable code, Predicate<String> urlPredicate) { return waitForResponse(code, urlPredicate, null); }",
+      "Response waitForResponse(Runnable code, String urlGlob, WaitForResponseOptions options);",
+      "Response waitForResponse(Runnable code, Pattern urlPattern, WaitForResponseOptions options);",
+      "Response waitForResponse(Runnable code, Predicate<String> urlPredicate, WaitForResponseOptions options);"
     });
+
+    String[] waitForNavigation = {
+      "default Response waitForNavigation(Runnable code) { return waitForNavigation(code, null); }",
+      "Response waitForNavigation(Runnable code, WaitForNavigationOptions options);"
+    };
+    customSignature.put("Frame.waitForNavigation", waitForNavigation);
+    customSignature.put("Page.waitForNavigation", waitForNavigation);
 
     String[] selectOption = {
       "default List<String> selectOption(String selector, String value) {",
@@ -742,15 +844,15 @@ class Field extends Element {
   void writeBuilderMethod(List<String> output, String offset, String parentClass) {
     if (asList("Frame.waitForNavigation.options.url",
                "Page.waitForNavigation.options.url").contains(jsonPath)) {
-      output.add(offset + "public FutureNavigationOptions withUrl(String glob) {");
+      output.add(offset + "public WaitForNavigationOptions withUrl(String glob) {");
       output.add(offset + "  this.glob = glob;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
-      output.add(offset + "public FutureNavigationOptions withUrl(Pattern pattern) {");
+      output.add(offset + "public WaitForNavigationOptions withUrl(Pattern pattern) {");
       output.add(offset + "  this.pattern = pattern;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
-      output.add(offset + "public FutureNavigationOptions withUrl(Predicate<String> predicate) {");
+      output.add(offset + "public WaitForNavigationOptions withUrl(Predicate<String> predicate) {");
       output.add(offset + "  this.predicate = predicate;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
@@ -929,7 +1031,7 @@ class Interface extends TypeDefinition {
       output.add("import java.nio.file.Path;");
     }
     output.add("import java.util.*;");
-    if (asList("Page", "BrowserContext").contains(jsonName)) {
+    if (asList("Page", "BrowserContext", "WebSocket", "Worker").contains(jsonName)) {
       output.add("import java.util.function.Consumer;");
     }
     if (asList("Page", "Frame", "BrowserContext", "WebSocket").contains(jsonName)) {
@@ -957,9 +1059,6 @@ class Interface extends TypeDefinition {
     for (Method m : methods) {
       m.writeTo(output, offset);
     }
-    if ("Worker".equals(jsonName)) {
-      output.add(offset + "Deferred<Event<EventType>> futureEvent(EventType event);");
-    }
     if ("Playwright".equals(jsonName)) {
       output.add("");
       output.add(offset + "static Playwright create() {");
@@ -985,6 +1084,16 @@ class Interface extends TypeDefinition {
     output.add("");
     output.add(offset + "void addListener(EventType type, Listener<EventType> listener);");
     output.add(offset + "void removeListener(EventType type, Listener<EventType> listener);");
+
+    for (Event e : events) {
+      output.add("");
+      e.writeListenerMethods(output, offset);
+    }
+    output.add("");
+    for (Event e : events) {
+      e.writeWaitForEventIfNeeded(output, offset);
+    }
+    output.add("");
   }
 
   private void writeSharedTypes(List<String> output, String offset) {
@@ -1183,22 +1292,6 @@ class Interface extends TypeDefinition {
         output.add("");
         break;
       }
-    }
-    if (asList("Page", "BrowserContext", "WebSocket").contains(jsonName)){
-      output.add(offset + "class FutureEventOptions {");
-      output.add(offset + "  public Double timeout;");
-      output.add(offset + "  public Predicate<Event<EventType>> predicate;");
-
-      output.add(offset + "  public FutureEventOptions withTimeout(double millis) {");
-      output.add(offset + "    timeout = millis;");
-      output.add(offset + "    return this;");
-      output.add(offset + "  }");
-      output.add(offset + "  public FutureEventOptions withPredicate(Predicate<Event<EventType>> predicate) {");
-      output.add(offset + "    this.predicate = predicate;");
-      output.add(offset + "    return this;");
-      output.add(offset + "  }");
-      output.add(offset + "}");
-      output.add("");
     }
   }
 }

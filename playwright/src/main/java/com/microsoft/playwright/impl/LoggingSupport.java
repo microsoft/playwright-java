@@ -16,8 +16,6 @@
 
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.Deferred;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -58,25 +56,6 @@ class LoggingSupport {
         logApi("<= " + apiName + (success ? " succeeded" : " failed"));
       }
     }
-  }
-
-  <T> Deferred<T> withLoggingDeferred(String apiName, Supplier<Deferred<T>> code) {
-    if (isEnabled) {
-      logApi("=> " + apiName + " started");
-    }
-    Deferred<T> deferred = code.get();
-    return () -> {
-      boolean success = false;
-      try {
-        T result = deferred.get();
-        success = true;
-        return result;
-      } finally {
-        if (isEnabled) {
-          logApi("<= " + apiName + (success ? " succeeded" : " failed"));
-        }
-      }
-    };
   }
 
   private void logApi(String message) {

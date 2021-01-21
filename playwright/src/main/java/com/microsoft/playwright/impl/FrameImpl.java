@@ -16,13 +16,11 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -674,7 +672,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     waitables.add(new WaitForLoadStateHelper(state));
     waitables.add(page.createWaitForCloseHelper());
     waitables.add(page.createWaitableTimeout(options.timeout));
-    toDeferred(new WaitableRace<>(waitables)).get();
+    runUntil(() -> {}, new WaitableRace<>(waitables));
   }
 
   private class WaitForLoadStateHelper implements Waitable<Void>, Listener<InternalEventType> {
@@ -712,7 +710,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
   }
 
-  private class FutureNavigationHelper implements Waitable<Response>, Listener<InternalEventType> {
+  private class WaitForNavigationHelper implements Waitable<Response>, Listener<InternalEventType> {
     private final UrlMatcher matcher;
     private final LoadState expectedLoadState;
     private WaitForLoadStateHelper loadStateHelper;
@@ -720,7 +718,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     private RequestImpl request;
     private RuntimeException exception;
 
-    FutureNavigationHelper(UrlMatcher matcher, LoadState expectedLoadState) {
+    WaitForNavigationHelper(UrlMatcher matcher, LoadState expectedLoadState) {
       this.matcher = matcher;
       this.expectedLoadState = expectedLoadState;
       internalListeners.add(InternalEventType.NAVIGATED, this);
@@ -780,13 +778,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public Deferred<Response> futureNavigation(FutureNavigationOptions options) {
-    return withLoggingDeferred("Frame.futureNavigation", () -> futureNavigationImpl(options));
+  public Response waitForNavigation(Runnable code, WaitForNavigationOptions options) {
+    return withLogging("Frame.waitForNavigation", () -> waitForNavigationImpl(code, options));
   }
 
-  Deferred<Response> futureNavigationImpl(FutureNavigationOptions options) {
+  Response waitForNavigationImpl(Runnable code, WaitForNavigationOptions options) {
     if (options == null) {
-      options = new FutureNavigationOptions();
+      options = new WaitForNavigationOptions();
     }
     if (options.waitUntil == null) {
       options.waitUntil = LOAD;
@@ -794,11 +792,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
     List<Waitable<Response>> waitables = new ArrayList<>();
     UrlMatcher matcher = UrlMatcher.forOneOf(options.glob, options.pattern, options.predicate);
-    waitables.add(new FutureNavigationHelper(matcher, options.waitUntil));
+    waitables.add(new WaitForNavigationHelper(matcher, options.waitUntil));
     waitables.add(page.createWaitForCloseHelper());
     waitables.add(page.createWaitableFrameDetach(this));
     waitables.add(page.createWaitableNavigationTimeout(options.timeout));
-    return toDeferred(new WaitableRace<>(waitables));
+    return runUntil(code, new WaitableRace<>(waitables));
   }
 
   private static String toProtocol(WaitForSelectorOptions.State state) {
@@ -834,13 +832,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   void waitForTimeoutImpl(double timeout) {
-    toDeferred(new WaitableTimeout<Void>(timeout) {
+    runUntil(() -> {}, new WaitableTimeout<Void>(timeout) {
       @Override
       public Void get() {
         // Override to not throw.
         return null;
       }
-    }).get();
+    });
   }
 
   protected void handleEvent(String event, JsonObject params) {

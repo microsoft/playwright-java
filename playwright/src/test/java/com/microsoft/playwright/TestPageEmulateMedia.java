@@ -86,9 +86,8 @@ public class TestPageEmulateMedia extends TestBase {
       BrowserContext context = browser.newContext(new Browser.NewContextOptions().withColorScheme(DARK));
       Page page = context.newPage();
       page.navigate(server.EMPTY_PAGE);
-      Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
-      page.evaluate("url => { window.open(url); }", server.EMPTY_PAGE);
-      Page popup = (Page) popupEvent.get().data();
+      Page popup = page.waitForPopup(() ->
+        page.evaluate("url => { window.open(url); }", server.EMPTY_PAGE));
       assertEquals(false, popup.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
       assertEquals(true, popup.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
       context.close();
@@ -96,9 +95,8 @@ public class TestPageEmulateMedia extends TestBase {
     {
       Page page = browser.newPage(new Browser.NewPageOptions().withColorScheme(LIGHT));
       page.navigate(server.EMPTY_PAGE);
-      Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
-      page.evaluate("url => { window.open(url); }", server.EMPTY_PAGE);
-      Page popup = (Page) popupEvent.get().data();
+      Page popup = page.waitForPopup(() ->
+        page.evaluate("url => { window.open(url); }", server.EMPTY_PAGE));
       assertEquals(true, popup.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
       assertEquals(false, popup.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
       page.close();

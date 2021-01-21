@@ -31,8 +31,8 @@ public class TestElementHandleQuerySelector extends TestBase {
   @Test
   void shouldWorkForAdoptedElements() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(Page.EventType.POPUP);
-    page.evaluate("url => window['__popup'] = window.open(url)", server.EMPTY_PAGE);
+    Page popup = page.waitForPopup(() -> page.evaluate(
+      "url => window['__popup'] = window.open(url)", server.EMPTY_PAGE));
     // Test JSHandle
     JSHandle divHandle = page.evaluateHandle("() => {\n" +
       "    const div = document.createElement('div');\n" +
@@ -45,7 +45,6 @@ public class TestElementHandleQuerySelector extends TestBase {
     assertNotNull(divHandle.asElement().querySelector("span"));
     assertEquals("hello", divHandle.asElement().querySelector("span").evaluate( "e => e.textContent"));
     // Test Popup
-    Page popup = (Page) popupEvent.get().data();
     popup.waitForLoadState(Page.LoadState.DOMCONTENTLOADED);
     page.evaluate("() => {\n" +
       "    const div = document.querySelector('div');\n" +

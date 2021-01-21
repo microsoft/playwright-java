@@ -22,17 +22,14 @@ import org.junit.jupiter.api.condition.EnabledIf;
 
 import static com.microsoft.playwright.Page.EventType.*;
 import static com.microsoft.playwright.Utils.attachFrame;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestWorkers extends TestBase {
 
   @Test
   void pageWorkers() {
-    Deferred<Event<Page.EventType>> workerEvent = page.futureEvent(WORKER);
-    page.navigate(server.PREFIX + "/worker/worker.html");
-    workerEvent.get();
-    Worker worker = page.workers().get(0);
+    Worker worker = page.waitForWorker(() ->
+      page.navigate(server.PREFIX + "/worker/worker.html"));
     assertTrue(worker.url().contains("worker.js"));
     assertEquals("worker function result", worker.evaluate("() => self['workerFunction']()"));
     page.navigate(server.EMPTY_PAGE);
@@ -41,13 +38,15 @@ public class TestWorkers extends TestBase {
 
   @Test
   void shouldEmitCreatedAndDestroyedEvents() {
-    Deferred<Event<Page.EventType>> workerCreatedPromise = page.futureEvent(WORKER);
-    JSHandle workerObj = page.evaluateHandle("() => new Worker(URL.createObjectURL(new Blob(['1'], {type: 'application/javascript'})))");
-    Worker worker = (Worker) workerCreatedPromise.get().data();
+    JSHandle[] workerObj = {null};
+    Worker worker = page.waitForWorker(() -> {
+      workerObj[0] = page.evaluateHandle(
+        "() => new Worker(URL.createObjectURL(new Blob(['1'], {type: 'application/javascript'})))");
+    });
     JSHandle workerThisObj = worker.evaluateHandle("() => this");
-    Deferred<Event<Worker.EventType>> workerDestroyedPromise = worker.futureEvent(Worker.EventType.CLOSE);
-    page.evaluate("workerObj => workerObj.terminate()", workerObj);
-    assertEquals(worker, workerDestroyedPromise.get().data());
+    Worker closedWorker = worker.waitForClose(() ->
+      page.evaluate("workerObj => workerObj.terminate()", workerObj[0]));
+    assertEquals(worker, closedWorker);
     try {
       workerThisObj.getProperty("self");
     } catch (PlaywrightException e) {
@@ -57,16 +56,15 @@ public class TestWorkers extends TestBase {
 
   @Test
   void shouldReportConsoleLogs() {
-    Deferred<Event<Page.EventType>> consoleEvent = page.futureEvent(CONSOLE);
-    page.evaluate("() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))");
-    assertEquals("1", ((ConsoleMessage) consoleEvent.get().data()).text());
+    ConsoleMessage message = page.waitForConsole(() -> page.evaluate(
+      "() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))"));
+    assertEquals("1", message.text());
   }
 
   @Test
   void shouldHaveJSHandlesForConsoleLogs() {
-    Deferred<Event<Page.EventType>> consoleEvent = page.futureEvent(CONSOLE);
-    page.evaluate("() => new Worker(URL.createObjectURL(new Blob(['console.log(1,2,3,this)'], {type: 'application/javascript'})))");
-    ConsoleMessage log = (ConsoleMessage) consoleEvent.get().data();
+    ConsoleMessage log = page.waitForConsole(() -> page.evaluate(
+      "() => new Worker(URL.createObjectURL(new Blob(['console.log(1,2,3,this)'], {type: 'application/javascript'})))"));
     assertEquals("1 2 3 JSHandle@object", log.text());
     assertEquals(4, log.args().size());
     assertEquals("null", (log.args().get(3).getProperty("origin")).jsonValue());
@@ -74,23 +72,22 @@ public class TestWorkers extends TestBase {
 
   @Test
   void shouldEvaluate() {
-    Deferred<Event<Page.EventType>> workerCreatedPromise = page.futureEvent(WORKER);
-    page.evaluate("() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))");
-    Worker worker = (Worker) workerCreatedPromise.get().data();
+    Worker worker = page.waitForWorker(() -> page.evaluate(
+      "() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))"));
     assertEquals(2, worker.evaluate("1+1"));
   }
 
   @Test
   void shouldReportErrors() {
-    Deferred<Event<Page.EventType>> errorPromise = page.futureEvent(PAGEERROR);
-    page.evaluate("() => new Worker(URL.createObjectURL(new Blob([`\n" +
-      "  setTimeout(() => {\n" +
-      "    // Do a console.log just to check that we do not confuse it with an error.\n" +
-      "    console.log('hey');\n" +
-      "    throw new Error('this is my error');\n" +
-      "  })\n" +
-      "`], {type: 'application/javascript'})))");
-    Page.Error errorLog = (Page.Error) errorPromise.get().data();
+    Page.Error errorLog = page.waitForPageError(() -> {
+      page.evaluate("() => new Worker(URL.createObjectURL(new Blob([`\n" +
+        "  setTimeout(() => {\n" +
+        "    // Do a console.log just to check that we do not confuse it with an error.\n" +
+        "    console.log('hey');\n" +
+        "    throw new Error('this is my error');\n" +
+        "  })\n" +
+        "`], {type: 'application/javascript'})))");
+    });
     assertTrue(errorLog.message().contains("this is my error"));
   }
 
@@ -98,23 +95,19 @@ public class TestWorkers extends TestBase {
   @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="flaky upstream")
   void shouldClearUponNavigation() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Event<Page.EventType>> workerCreatedPromise = page.futureEvent(WORKER);
-    page.evaluate("() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))");
-    Worker worker = (Worker) workerCreatedPromise.get().data();
+    Worker worker = page.waitForWorker(() -> page.evaluate(
+      "() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))"));
     assertEquals(1, page.workers().size());
-    boolean[] destroyed = {false};
-    worker.addListener(Worker.EventType.CLOSE, event -> destroyed[0] = true);
-    page.navigate(server.PREFIX + "/one-style.html");
-    assertTrue(destroyed[0]);
+    Worker destroyed = worker.waitForClose(() -> page.navigate(server.PREFIX + "/one-style.html"));
+    assertEquals(worker, destroyed);
     assertEquals(0, page.workers().size());
   }
 
   @Test
   void shouldClearUponCrossProcessNavigation() {
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Event<Page.EventType>> workerCreatedPromise = page.futureEvent(WORKER);
-    page.evaluate("() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))");
-    Worker worker = (Worker) workerCreatedPromise.get().data();
+    Worker worker = page.waitForWorker(() -> page.evaluate(
+      "() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))"));
     assertEquals(1, page.workers().size());
     boolean[] destroyed = {false};
     worker.addListener(Worker.EventType.CLOSE, event -> destroyed[0] = true);
@@ -127,31 +120,31 @@ public class TestWorkers extends TestBase {
   @EnabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fixme")
   void shouldAttributeNetworkActivityForWorkerInsideIframeToTheIframe() {
     page.navigate(server.PREFIX + "/empty.html");
-    Deferred<Event<Page.EventType>> workerEvent = page.futureEvent(WORKER);
-    Frame frame = attachFrame(page, "frame1", server.PREFIX + "/worker/worker.html");
+    Frame[] frame = {null};
+    Worker worker = page.waitForWorker(() -> {
+      frame[0] = attachFrame(page, "frame1", server.PREFIX + "/worker/worker.html");
+    });
+    assertNotNull(frame[0]);
     String url = server.PREFIX + "/one-style.css";
-    Deferred<Request> request = page.futureRequest(url);
-    Worker worker = (Worker) workerEvent.get().data();
-
-    worker.evaluate("url => fetch(url).then(response => response.text()).then(console.log)", url);
-
-    assertEquals(url, request.get().url());
-    assertEquals(frame, request.get().frame());
+    Request request = page.waitForRequest(() -> {
+      worker.evaluate("url => fetch(url).then(response => response.text()).then(console.log)", url);
+    }, url);
+    assertEquals(url, request.url());
+    assertEquals(frame[0], request.frame());
   }
 
   @Test
   void shouldReportNetworkActivity() {
-    Deferred<Event<Page.EventType>> workerEvent = page.futureEvent(WORKER);
-    page.navigate(server.PREFIX + "/worker/worker.html");
-    Worker worker = (Worker) workerEvent.get().data();
+    Worker worker = page.waitForWorker(() -> page.navigate(server.PREFIX + "/worker/worker.html"));
     String url = server.PREFIX + "/one-style.css";
-    Deferred<Request> requestPromise = page.futureRequest(url);
-    Deferred<Response> responsePromise = page.futureResponse(url);
-    worker.evaluate("url => fetch(url).then(response => response.text()).then(console.log)", url);
-    Request request = requestPromise.get();
-    Response response = responsePromise.get();
-    assertEquals(url, request.url());
-    assertEquals(request, response.request());
+    Request[] request = {null};
+    Response response = page.waitForResponse(() -> {
+      request[0] = page.waitForRequest(() -> {
+        worker.evaluate("url => fetch(url).then(response => response.text()).then(console.log)", url);
+      }, url);
+      assertEquals(url, request[0].url());
+    }, url);
+    assertEquals(request[0], response.request());
     assertTrue(response.ok());
   }
 
@@ -160,15 +153,16 @@ public class TestWorkers extends TestBase {
     // Chromium needs waitForDebugger enabled for this one.
     page.navigate(server.EMPTY_PAGE);
     String url = server.PREFIX + "/one-style.css";
-    Deferred<Request> requestPromise = page.futureRequest(url);
-    Deferred<Response> responsePromise = page.futureResponse(url);
-    page.evaluate("url => new Worker(URL.createObjectURL(new Blob([`\n" +
-      "  fetch('${url}').then(response => response.text()).then(console.log);\n" +
-      "`], {type: 'application/javascript'})))", url);
-    Request request = requestPromise.get();
-    Response response = responsePromise.get();
-    assertEquals(url, request.url());
-    assertEquals(request, response.request());
+    Request[] request = {null};
+    Response response = page.waitForResponse(() -> {
+      request[0] = page.waitForRequest(() -> {
+        page.evaluate("url => new Worker(URL.createObjectURL(new Blob([`\n" +
+          "  fetch('${url}').then(response => response.text()).then(console.log);\n" +
+          "`], {type: 'application/javascript'})))", url);
+      }, url);
+      assertEquals(url, request[0].url());
+    }, url);
+    assertEquals(request[0], response.request());
     assertTrue(response.ok());
   }
 
@@ -177,9 +171,8 @@ public class TestWorkers extends TestBase {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().withLocale("ru-RU"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Event<Page.EventType>> workerEvent = page.futureEvent(WORKER);
-    page.evaluate("() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))");
-    Worker worker = (Worker) workerEvent.get().data();
+    Worker worker = page.waitForWorker(() -> page.evaluate(
+      "() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))"));
     assertEquals("10\u00A0000,2", worker.evaluate("() => (10000.20).toLocaleString()"));
     context.close();
   }

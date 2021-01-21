@@ -44,9 +44,8 @@ public class TestBrowserContextBasic extends TestBase {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
-    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
-    page.evaluate("url => window.open(url)", server.EMPTY_PAGE);
-    Page popup = (Page) popupEvent.get().data();
+    Page popup = page.waitForPopup(() ->
+      page.evaluate("url => window.open(url)", server.EMPTY_PAGE));
     assertEquals(context, popup.context());
     context.close();
   }
@@ -155,10 +154,8 @@ public class TestBrowserContextBasic extends TestBase {
   @Test
   void closeShouldAbortFutureEvent() {
     BrowserContext context = browser.newContext();
-    Deferred<Event<BrowserContext.EventType>> pageEvent = context.futureEvent(PAGE);
-    context.close();
     try {
-      pageEvent.get();
+      context.waitForPage(() -> context.close());
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Context closed"));

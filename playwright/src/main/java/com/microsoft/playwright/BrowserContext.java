@@ -94,19 +94,6 @@ public interface BrowserContext {
     }
   }
 
-  class FutureEventOptions {
-    public Double timeout;
-    public Predicate<Event<EventType>> predicate;
-    public FutureEventOptions withTimeout(double millis) {
-      timeout = millis;
-      return this;
-    }
-    public FutureEventOptions withPredicate(Predicate<Event<EventType>> predicate) {
-      this.predicate = predicate;
-      return this;
-    }
-  }
-
   enum EventType {
     CLOSE,
     PAGE,
@@ -114,6 +101,24 @@ public interface BrowserContext {
 
   void addListener(EventType type, Listener<EventType> listener);
   void removeListener(EventType type, Listener<EventType> listener);
+
+  void onClose(Runnable handler);
+  void offClose(Runnable handler);
+
+  void onPage(Consumer<Page> handler);
+  void offPage(Consumer<Page> handler);
+
+
+  class WaitForPageOptions {
+    public Double timeout;
+    public WaitForPageOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  Page waitForPage(Runnable code, WaitForPageOptions options);
+  default Page waitForPage(Runnable code) { return waitForPage(code, null); }
+
   class AddCookie {
     /**
      * **required**
@@ -465,21 +470,5 @@ public interface BrowserContext {
    * @param handler Optional handler function used to register a routing with [{@code method: BrowserContext.route}].
    */
   void unroute(Predicate<String> url, Consumer<Route> handler);
-  default Deferred<Event<EventType>> futureEvent(EventType event) {
-    return futureEvent(event, (FutureEventOptions) null);
-  }
-  default Deferred<Event<EventType>> futureEvent(EventType event, Predicate<Event<EventType>> predicate) {
-    FutureEventOptions options = new FutureEventOptions();
-    options.predicate = predicate;
-    return futureEvent(event, options);
-  }
-  /**
-   * Waits for event to fire and passes its value into the predicate function. Returns when the predicate returns truthy
-   * value. Will throw an error if the context closes before the event is fired. Returns the event data value.
-   *
-   *
-   * @param event Event name, same one would pass into {@code browserContext.on(event)}.
-   */
-  Deferred<Event<EventType>> futureEvent(EventType event, FutureEventOptions options);
 }
 

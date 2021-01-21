@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * The Worker class represents a [WebWorker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API). {@code worker}
@@ -30,6 +31,21 @@ public interface Worker {
 
   void addListener(EventType type, Listener<EventType> listener);
   void removeListener(EventType type, Listener<EventType> listener);
+
+  void onClose(Consumer<Worker> handler);
+  void offClose(Consumer<Worker> handler);
+
+
+  class WaitForCloseOptions {
+    public Double timeout;
+    public WaitForCloseOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  Worker waitForClose(Runnable code, WaitForCloseOptions options);
+  default Worker waitForClose(Runnable code) { return waitForClose(code, null); }
+
   default Object evaluate(String pageFunction) {
     return evaluate(pageFunction, null);
   }
@@ -64,6 +80,5 @@ public interface Worker {
    */
   JSHandle evaluateHandle(String pageFunction, Object arg);
   String url();
-  Deferred<Event<EventType>> futureEvent(EventType event);
 }
 

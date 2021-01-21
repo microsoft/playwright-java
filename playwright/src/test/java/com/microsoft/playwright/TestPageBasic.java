@@ -59,19 +59,28 @@ public class TestPageBasic extends TestBase {
     // We have to interact with a page so that "beforeunload" handlers
     // fire.
     newPage.click("body");
-    Deferred<Event<Page.EventType>> event = newPage.futureEvent(DIALOG);
+    boolean[] didShowDialog = {false};
+    newPage.onDialog(dialog -> {
+      didShowDialog[0] = true;
+      assertEquals(Dialog.Type.BEFOREUNLOAD, dialog.type());
+      assertEquals("", dialog.defaultValue());
+      if (isChromium()) {
+        assertEquals("", dialog.message());
+      } else if (isWebKit()) {
+        assertEquals("Leave?", dialog.message());
+      } else {
+        assertEquals("This page is asking you to confirm that you want to leave - data you have entered may not be saved.", dialog.message());
+      }
+      dialog.accept();
+    });
     newPage.close(new Page.CloseOptions().withRunBeforeUnload(true));
-    Dialog dialog = (Dialog) event.get().data();
-    assertEquals(Dialog.Type.BEFOREUNLOAD, dialog.type());
-    assertEquals("", dialog.defaultValue());
-    if (isChromium()) {
-      assertEquals("", dialog.message());
-    } else if (isWebKit()) {
-      assertEquals("Leave?", dialog.message());
-    } else {
-      assertEquals("This page is asking you to confirm that you want to leave - data you have entered may not be saved.", dialog.message());
+    for (int i = 0; i < 300; i++) {
+      if (didShowDialog[0]) {
+        break;
+      }
+      page.waitForTimeout(100);
     }
-    dialog.accept();
+    assertTrue(didShowDialog[0]);
   }
 
   @Test
@@ -98,19 +107,17 @@ public class TestPageBasic extends TestBase {
   @Test
   void shouldTerminateNetworkWaiters() {
     Page newPage = context.newPage();
-    Deferred<Request> request = newPage.futureRequest(server.EMPTY_PAGE);
-    Deferred<Response> response = newPage.futureResponse(server.EMPTY_PAGE);
-    newPage.close();
     try {
-      request.get();
-      fail("get() should throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Page closed"));
-      assertFalse(e.getMessage().contains("Timeout"));
-    }
-    try {
-      response.get();
-      fail("get() should throw");
+      newPage.waitForResponse(() -> {
+        try {
+          newPage.waitForRequest(() -> newPage.close(), server.EMPTY_PAGE);
+          fail("waitForRequest() should throw");
+        } catch (PlaywrightException e) {
+          assertTrue(e.getMessage().contains("Page closed"));
+          assertFalse(e.getMessage().contains("Timeout"));
+        }
+      });
+      fail("waitForResponse() should throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Page closed"));
       assertFalse(e.getMessage().contains("Timeout"));
@@ -137,18 +144,14 @@ public class TestPageBasic extends TestBase {
 
   @Test
   void shouldProvideAccessToTheOpenerPage() {
-    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
-    page.evaluate("() => window.open('about:blank')");
-    Page popup = (Page) popupEvent.get().data();
+    Page popup = page.waitForPopup(() -> page.evaluate("() => window.open('about:blank')"));
     Page opener = popup.opener();
     assertEquals(page, opener);
   }
 
   @Test
   void shouldReturnNullIfParentPageHasBeenClosed() {
-    Deferred<Event<Page.EventType>> popupEvent = page.futureEvent(POPUP);
-    page.evaluate("() => window.open('about:blank')");
-    Page popup = (Page) popupEvent.get().data();
+    Page popup = page.waitForPopup(() -> page.evaluate("() => window.open('about:blank')"));
     page.close();
     Page opener = popup.opener();
     assertEquals(null, opener);
@@ -189,20 +192,15 @@ public class TestPageBasic extends TestBase {
 
   @Test
   void pageCloseShouldWorkWithWindowClose() {
-    Deferred<Event<Page.EventType>> newPagePromise = page.futureEvent(POPUP);
-    page.evaluate("() => window['newPage'] = window.open('about:blank')");
-    Page newPage = (Page) newPagePromise.get().data();
-    Deferred<Event<Page.EventType>> closedPromise = newPage.futureEvent(CLOSE);
-    page.evaluate("() => window['newPage'].close()");
-    closedPromise.get();
+    Page newPage = page.waitForPopup(() -> page.evaluate(
+      "() => window['newPage'] = window.open('about:blank')"));
+    newPage.waitForClose(() -> page.evaluate("() => window['newPage'].close()"));
   }
 
   @Test
   void pageCloseShouldWorkWithPageClose() {
     Page newPage = context.newPage();
-    Deferred<Event<Page.EventType>> closedPromise = newPage.futureEvent(CLOSE);
-    newPage.close();
-    closedPromise.get();
+    newPage.waitForClose(() -> newPage.close());
   }
 
   @Test

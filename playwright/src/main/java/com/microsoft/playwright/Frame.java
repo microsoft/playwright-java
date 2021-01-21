@@ -705,7 +705,7 @@ public interface Frame {
       return this;
     }
   }
-  class FutureNavigationOptions {
+  class WaitForNavigationOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
      * changed by using the [{@code method: BrowserContext.setDefaultNavigationTimeout}],
@@ -727,23 +727,23 @@ public interface Frame {
      */
     public LoadState waitUntil;
 
-    public FutureNavigationOptions withTimeout(double timeout) {
+    public WaitForNavigationOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
-    public FutureNavigationOptions withUrl(String glob) {
+    public WaitForNavigationOptions withUrl(String glob) {
       this.glob = glob;
       return this;
     }
-    public FutureNavigationOptions withUrl(Pattern pattern) {
+    public WaitForNavigationOptions withUrl(Pattern pattern) {
       this.pattern = pattern;
       return this;
     }
-    public FutureNavigationOptions withUrl(Predicate<String> predicate) {
+    public WaitForNavigationOptions withUrl(Predicate<String> predicate) {
       this.predicate = predicate;
       return this;
     }
-    public FutureNavigationOptions withWaitUntil(LoadState waitUntil) {
+    public WaitForNavigationOptions withWaitUntil(LoadState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -1338,9 +1338,7 @@ public interface Frame {
    * - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
    */
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
-  default Deferred<Response> futureNavigation() {
-    return futureNavigation(null);
-  }
+  default Response waitForNavigation(Runnable code) { return waitForNavigation(code, null); }
   /**
    * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
    * last redirect. In case of navigation to a different anchor or navigation due to History API usage, the navigation will
@@ -1352,7 +1350,7 @@ public interface Frame {
    * <p> <strong>NOTE</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is
    * considered a navigation.
    */
-  Deferred<Response> futureNavigation(FutureNavigationOptions options);
+  Response waitForNavigation(Runnable code, WaitForNavigationOptions options);
   default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }

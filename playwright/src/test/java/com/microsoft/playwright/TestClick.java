@@ -23,6 +23,7 @@ import org.junit.jupiter.api.condition.EnabledIf;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.microsoft.playwright.Keyboard.Modifier.SHIFT;
 import static com.microsoft.playwright.Mouse.Button.RIGHT;
@@ -104,9 +105,7 @@ public class TestClick extends TestBase {
     Page page = context.newPage();
     page.navigate(server.PREFIX + "/wrappedlink.html");
 
-    Deferred<Response> navigationPromise = page.futureNavigation();
-    page.click("a");
-    navigationPromise.get();
+    page.waitForNavigation(() -> page.click("a"));
 
     assertEquals(server.PREFIX + "/wrappedlink.html#clicked", page.url());
     context.close();

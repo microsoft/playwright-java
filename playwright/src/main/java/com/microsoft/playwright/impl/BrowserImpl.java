@@ -52,6 +52,16 @@ class BrowserImpl extends ChannelOwner implements Browser {
   }
 
   @Override
+  public void onDisconnected(Runnable handler) {
+    listeners.add(EventType.DISCONNECTED, handler);
+  }
+
+  @Override
+  public void offDisconnected(Runnable handler) {
+    listeners.remove(EventType.DISCONNECTED, handler);
+  }
+
+  @Override
   public void close() {
     withLogging("Browser.close", () -> closeImpl());
   }

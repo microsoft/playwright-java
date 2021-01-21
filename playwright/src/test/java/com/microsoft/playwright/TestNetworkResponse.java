@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
+import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.Page.EventType.REQUESTFINISHED;
 import static com.microsoft.playwright.Page.EventType.RESPONSE;
@@ -105,11 +106,9 @@ public class TestNetworkResponse extends TestBase {
       requestFinished[0] |= ((Request) event.data()).url().contains("/get");
     });
     // send request and wait for server response
-    Deferred<Event<Page.EventType>> responseEvent = page.futureEvent(RESPONSE);
-    page.evaluate("() => fetch('./get', { method: 'GET'})");
-    assertNotNull(responseEvent.get());
+    Response pageResponse = page.waitForResponse(() -> page.evaluate("() => fetch('./get', { method: 'GET'})"));
+    assertNotNull(pageResponse);
     responseWritten.acquire();
-    Response pageResponse = (Response) responseEvent.get().data();
     assertEquals(200, pageResponse.status());
     assertEquals(false, requestFinished[0]);
     responseRead.release();
