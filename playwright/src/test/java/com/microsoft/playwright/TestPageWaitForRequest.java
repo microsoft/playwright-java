@@ -46,7 +46,7 @@ public class TestPageWaitForRequest extends TestBase {
         "  fetch('/digits/2.png');\n" +
         "  fetch('/digits/3.png');\n" +
         "}");
-    }, url -> url.equals(server.PREFIX + "/digits/2.png"));
+    }, r -> r.url().equals(server.PREFIX + "/digits/2.png"));
     assertEquals(server.PREFIX + "/digits/2.png", request.url());
   }
 
@@ -64,7 +64,7 @@ public class TestPageWaitForRequest extends TestBase {
   void shouldRespectDefaultTimeout() {
     page.setDefaultTimeout(1);
     try {
-      page.waitForRequest(() -> {}, url -> false);
+      page.waitForRequest(() -> {}, request -> false);
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
