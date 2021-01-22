@@ -1180,11 +1180,6 @@ public class PageImpl extends ChannelOwner implements Page {
     return withLogging("Page.waitForNavigation", () -> waitForNavigationImpl(code, options));
   }
 
-  @Override
-  public Request waitForRequest(Runnable code) {
-    return waitForRequest(code, UrlMatcher.any(), null);
-  }
-
   Response waitForNavigationImpl(Runnable code, WaitForNavigationOptions options) {
     Frame.WaitForNavigationOptions frameOptions = new Frame.WaitForNavigationOptions();
     if (options != null) {
@@ -1288,34 +1283,30 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Request waitForRequest(Runnable code, String urlGlob, WaitForRequestOptions options) {
-    return waitForRequest(code, new UrlMatcher(urlGlob), options);
+    return waitForRequest(code, toRequestPredicate(new UrlMatcher(urlGlob)), options);
   }
 
   @Override
   public Request waitForRequest(Runnable code, Pattern urlPattern, WaitForRequestOptions options) {
-    return waitForRequest(code, new UrlMatcher(urlPattern), options);
+    return waitForRequest(code, toRequestPredicate(new UrlMatcher(urlPattern)), options);
   }
 
   @Override
-  public Request waitForRequest(Runnable code, Predicate<String> urlPredicate, WaitForRequestOptions options) {
-    return waitForRequest(code, new UrlMatcher(urlPredicate), options);
+  public Request waitForRequest(Runnable code, Predicate<Request> predicate, WaitForRequestOptions options) {
+    return withLogging("Page.waitForRequest", () -> waitForRequestImpl(code, predicate, options));
   }
 
-  @Override
-  public Response waitForResponse(Runnable code) {
-    return waitForResponse(code, UrlMatcher.any(), null);
+  private static Predicate<Request> toRequestPredicate(UrlMatcher matcher) {
+    return request -> matcher.test(request.url());
   }
 
-  private Request waitForRequest(Runnable code, UrlMatcher matcher, WaitForRequestOptions options) {
-    return withLogging("Page.waitForRequest", () -> waitForRequestImpl(code, matcher, options));
-  }
-
-  private Request waitForRequestImpl(Runnable code, UrlMatcher matcher, WaitForRequestOptions options) {
+  private Request waitForRequestImpl(Runnable code, Predicate<Request> predicate, WaitForRequestOptions options) {
     if (options == null) {
       options = new WaitForRequestOptions();
     }
     List<Waitable<Request>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, EventType.REQUEST, e -> matcher.test(((Request) e.data()).url()))
+    waitables.add(new WaitableEvent<>(listeners, EventType.REQUEST,
+      e -> predicate == null || predicate.test(((Request) e.data())))
       .apply(event -> (Request) event.data()));
     waitables.add(createWaitForCloseHelper());
     waitables.add(createWaitableTimeout(options.timeout));
@@ -1324,29 +1315,30 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Response waitForResponse(Runnable code, String urlGlob, WaitForResponseOptions options) {
-    return waitForResponse(code, new UrlMatcher(urlGlob), options);
+    return waitForResponse(code, toResponsePredicate(new UrlMatcher(urlGlob)), options);
   }
 
   @Override
   public Response waitForResponse(Runnable code, Pattern urlPattern, WaitForResponseOptions options) {
-    return waitForResponse(code, new UrlMatcher(urlPattern), options);
+    return waitForResponse(code, toResponsePredicate(new UrlMatcher(urlPattern)), options);
   }
 
   @Override
-  public Response waitForResponse(Runnable code, Predicate<String> urlPredicate, WaitForResponseOptions options) {
-    return waitForResponse(code, new UrlMatcher(urlPredicate), options);
+  public Response waitForResponse(Runnable code, Predicate<Response> predicate, WaitForResponseOptions options) {
+    return withLogging("Page.waitForResponse", () -> waitForResponseImpl(code, predicate, options));
   }
 
-  private Response waitForResponse(Runnable code, UrlMatcher matcher, WaitForResponseOptions options) {
-    return withLogging("Page.waitForResponse", () -> waitForonseImpl(code, matcher, options));
+  private static Predicate<Response> toResponsePredicate(UrlMatcher matcher) {
+    return response -> matcher.test(response.url());
   }
 
-  private Response waitForonseImpl(Runnable code, UrlMatcher matcher, WaitForResponseOptions options) {
+  private Response waitForResponseImpl(Runnable code, Predicate<Response> predicate, WaitForResponseOptions options) {
     if (options == null) {
       options = new WaitForResponseOptions();
     }
     List<Waitable<Response>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, EventType.RESPONSE, e -> matcher.test(((Response) e.data()).url()))
+    waitables.add(new WaitableEvent<>(listeners, EventType.RESPONSE,
+      e -> predicate == null || predicate.test(((Response) e.data())))
       .apply(event -> (Response) event.data()));
     waitables.add(createWaitForCloseHelper());
     waitables.add(createWaitableTimeout(options.timeout));
