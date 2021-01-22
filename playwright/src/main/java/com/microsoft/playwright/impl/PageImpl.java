@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
+import static java.util.Arrays.asList;
 
 
 public class PageImpl extends ChannelOwner implements Page {
@@ -43,7 +44,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
   private final ListenerCollection<EventType> listeners = new ListenerCollection<EventType>() {
     @Override
-    void add(EventType eventType, Listener<EventType> listener) {
+    void add(EventType eventType, Consumer<?> listener) {
       if (eventType == EventType.FILECHOOSER) {
         willAddFileChooserListener();
       }
@@ -51,7 +52,7 @@ public class PageImpl extends ChannelOwner implements Page {
     }
 
     @Override
-    void remove(EventType eventType, Listener<EventType> listener) {
+    void remove(EventType eventType, Consumer<?> listener) {
       super.remove(eventType, listener);
       if (eventType == EventType.FILECHOOSER) {
         didRemoveFileChooserListener();
@@ -444,8 +445,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Double timeout) {
     List<Waitable<T>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, eventType)
-      .apply(event -> (T) event.data()));
+    waitables.add(new WaitableEvent<>(listeners, eventType));
     waitables.add(createWaitForCloseHelper());
     waitables.add(createWaitableTimeout(timeout));
     return runUntil(code, new WaitableRace<>(waitables));
@@ -1219,13 +1219,13 @@ public class PageImpl extends ChannelOwner implements Page {
     }
   }
 
-  private class WaitableFrameDetach extends WaitableEvent<EventType> {
+  private class WaitableFrameDetach extends WaitableEvent<EventType, Frame> {
     WaitableFrameDetach(Frame frameArg) {
-      super(PageImpl.this.listeners, EventType.FRAMEDETACHED, event -> frameArg.equals(event.data()));
+      super(PageImpl.this.listeners, EventType.FRAMEDETACHED, detachedFrame -> frameArg.equals(detachedFrame));
     }
 
     @Override
-    public Event<EventType> get() {
+    public Frame get() {
       throw new PlaywrightException("Navigating frame was detached");
     }
   }
@@ -1237,47 +1237,28 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   <T> Waitable<T> createWaitForCloseHelper() {
-    return new WaitablePageClose<T>();
+    return new WaitableRace<T>(asList(new WaitablePageClose(), new WaitablePageCrash()));
   }
 
-  private class WaitablePageClose<R> implements Waitable<R>, Listener<EventType> {
-    private final List<EventType> subscribedEvents;
-    private String errorMessage;
-
+  private class WaitablePageClose<T> extends WaitableEvent<EventType, T> {
     WaitablePageClose() {
-      subscribedEvents = Arrays.asList(EventType.CLOSE, EventType.CRASH);
-      for (EventType e : subscribedEvents) {
-        listeners.add(e, this);
-      }
+      super(PageImpl.this.listeners, EventType.CLOSE);
     }
 
     @Override
-    public void handle(Event<EventType> event) {
-      if (EventType.CLOSE == event.type()) {
-        errorMessage = "Page closed";
-      } else if (EventType.CRASH == event.type()) {
-        errorMessage = "Page crashed";
-      } else {
-        return;
-      }
-      dispose();
+    public T get() {
+      throw new PlaywrightException("Page closed");
+    }
+  }
+
+  private class WaitablePageCrash<T> extends WaitableEvent<EventType, T> {
+    WaitablePageCrash() {
+      super(PageImpl.this.listeners, EventType.CRASH);
     }
 
     @Override
-    public boolean isDone() {
-      return errorMessage != null;
-    }
-
-    @Override
-    public R get() {
-      throw new PlaywrightException(errorMessage);
-    }
-
-    @Override
-    public void dispose() {
-      for (EventType e : subscribedEvents) {
-        listeners.remove(e, this);
-      }
+    public T get() {
+      throw new PlaywrightException("Page crashed");
     }
   }
 
@@ -1306,8 +1287,7 @@ public class PageImpl extends ChannelOwner implements Page {
     }
     List<Waitable<Request>> waitables = new ArrayList<>();
     waitables.add(new WaitableEvent<>(listeners, EventType.REQUEST,
-      e -> predicate == null || predicate.test(((Request) e.data())))
-      .apply(event -> (Request) event.data()));
+      request -> predicate == null || predicate.test(request)));
     waitables.add(createWaitForCloseHelper());
     waitables.add(createWaitableTimeout(options.timeout));
     return runUntil(code, new WaitableRace<>(waitables));
@@ -1338,8 +1318,7 @@ public class PageImpl extends ChannelOwner implements Page {
     }
     List<Waitable<Response>> waitables = new ArrayList<>();
     waitables.add(new WaitableEvent<>(listeners, EventType.RESPONSE,
-      e -> predicate == null || predicate.test(((Response) e.data())))
-      .apply(event -> (Response) event.data()));
+      response -> predicate == null || predicate.test(response)));
     waitables.add(createWaitForCloseHelper());
     waitables.add(createWaitableTimeout(options.timeout));
     return runUntil(code, new WaitableRace<>(waitables));

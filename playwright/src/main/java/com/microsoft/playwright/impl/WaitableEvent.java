@@ -18,19 +18,20 @@ package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.Event;
 
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-class WaitableEvent<EventType> implements Waitable<Event<EventType>>, Listener<EventType> {
+class WaitableEvent<EventType, T> implements Waitable<T>, Consumer<T> {
   final ListenerCollection<EventType> listeners;
   private final EventType type;
-  private final Predicate<Event<EventType>> predicate;
-  private Event<EventType> event;
+  private final Predicate<T> predicate;
+  private T eventArg;
 
   WaitableEvent(ListenerCollection<EventType> listeners, EventType type) {
     this(listeners, type, null);
   }
 
-  WaitableEvent(ListenerCollection<EventType> listeners, EventType type, Predicate<Event<EventType>> predicate) {
+  WaitableEvent(ListenerCollection<EventType> listeners, EventType type, Predicate<T> predicate) {
     this.listeners = listeners;
     this.type = type;
     this.predicate = predicate;
@@ -38,19 +39,18 @@ class WaitableEvent<EventType> implements Waitable<Event<EventType>>, Listener<E
   }
 
   @Override
-  public void handle(Event<EventType> event) {
-    assert type.equals(event.type());
-    if (predicate != null && !predicate.test(event)) {
+  public void accept(T eventArg) {
+    if (predicate != null && !predicate.test(eventArg)) {
       return;
     }
 
-    this.event = event;
+    this.eventArg = eventArg;
     dispose();
   }
 
   @Override
   public boolean isDone() {
-    return event != null;
+    return eventArg != null;
   }
 
   @Override
@@ -59,7 +59,7 @@ class WaitableEvent<EventType> implements Waitable<Event<EventType>>, Listener<E
   }
 
   @Override
-  public Event<EventType> get() {
-    return event;
+  public T get() {
+    return eventArg;
   }
 }
