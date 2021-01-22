@@ -2391,20 +2391,20 @@ public interface Page {
    * <p> Shortcut for main frame's [{@code method: Frame.waitForNavigation}].
    */
   Response waitForNavigation(Runnable code, WaitForNavigationOptions options);
-  Request waitForRequest(Runnable code);
+  default Request waitForRequest(Runnable code) { return waitForRequest(code, (Predicate<Request>) null, null); }
   default Request waitForRequest(Runnable code, String urlGlob) { return waitForRequest(code, urlGlob, null); }
   default Request waitForRequest(Runnable code, Pattern urlPattern) { return waitForRequest(code, urlPattern, null); }
-  default Request waitForRequest(Runnable code, Predicate<String> urlPredicate) { return waitForRequest(code, urlPredicate, null); }
+  default Request waitForRequest(Runnable code, Predicate<Request> predicate) { return waitForRequest(code, predicate, null); }
   Request waitForRequest(Runnable code, String urlGlob, WaitForRequestOptions options);
   Request waitForRequest(Runnable code, Pattern urlPattern, WaitForRequestOptions options);
-  Request waitForRequest(Runnable code, Predicate<String> urlPredicate, WaitForRequestOptions options);
-  Response waitForResponse(Runnable code);
+  Request waitForRequest(Runnable code, Predicate<Request> predicate, WaitForRequestOptions options);
+  default Response waitForResponse(Runnable code) { return waitForResponse(code, (Predicate<Response>) null, null); }
   default Response waitForResponse(Runnable code, String urlGlob) { return waitForResponse(code, urlGlob, null); }
   default Response waitForResponse(Runnable code, Pattern urlPattern) { return waitForResponse(code, urlPattern, null); }
-  default Response waitForResponse(Runnable code, Predicate<String> urlPredicate) { return waitForResponse(code, urlPredicate, null); }
+  default Response waitForResponse(Runnable code, Predicate<Response> predicate) { return waitForResponse(code, predicate, null); }
   Response waitForResponse(Runnable code, String urlGlob, WaitForResponseOptions options);
   Response waitForResponse(Runnable code, Pattern urlPattern, WaitForResponseOptions options);
-  Response waitForResponse(Runnable code, Predicate<String> urlPredicate, WaitForResponseOptions options);
+  Response waitForResponse(Runnable code, Predicate<Response> predicate, WaitForResponseOptions options);
   default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }

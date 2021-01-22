@@ -583,22 +583,22 @@ class Method extends Element {
     customSignature.put("WebSocket.waitForEvent", new String[] {});
 
     customSignature.put("Page.waitForRequest", new String[] {
-      "Request waitForRequest(Runnable code);",
+      "default Request waitForRequest(Runnable code) { return waitForRequest(code, (Predicate<Request>) null, null); }",
       "default Request waitForRequest(Runnable code, String urlGlob) { return waitForRequest(code, urlGlob, null); }",
       "default Request waitForRequest(Runnable code, Pattern urlPattern) { return waitForRequest(code, urlPattern, null); }",
-      "default Request waitForRequest(Runnable code, Predicate<String> urlPredicate) { return waitForRequest(code, urlPredicate, null); }",
+      "default Request waitForRequest(Runnable code, Predicate<Request> predicate) { return waitForRequest(code, predicate, null); }",
       "Request waitForRequest(Runnable code, String urlGlob, WaitForRequestOptions options);",
       "Request waitForRequest(Runnable code, Pattern urlPattern, WaitForRequestOptions options);",
-      "Request waitForRequest(Runnable code, Predicate<String> urlPredicate, WaitForRequestOptions options);"
+      "Request waitForRequest(Runnable code, Predicate<Request> predicate, WaitForRequestOptions options);"
     });
     customSignature.put("Page.waitForResponse", new String[] {
-      "Response waitForResponse(Runnable code);",
+      "default Response waitForResponse(Runnable code) { return waitForResponse(code, (Predicate<Response>) null, null); }",
       "default Response waitForResponse(Runnable code, String urlGlob) { return waitForResponse(code, urlGlob, null); }",
       "default Response waitForResponse(Runnable code, Pattern urlPattern) { return waitForResponse(code, urlPattern, null); }",
-      "default Response waitForResponse(Runnable code, Predicate<String> urlPredicate) { return waitForResponse(code, urlPredicate, null); }",
+      "default Response waitForResponse(Runnable code, Predicate<Response> predicate) { return waitForResponse(code, predicate, null); }",
       "Response waitForResponse(Runnable code, String urlGlob, WaitForResponseOptions options);",
       "Response waitForResponse(Runnable code, Pattern urlPattern, WaitForResponseOptions options);",
-      "Response waitForResponse(Runnable code, Predicate<String> urlPredicate, WaitForResponseOptions options);"
+      "Response waitForResponse(Runnable code, Predicate<Response> predicate, WaitForResponseOptions options);"
     });
 
     String[] waitForNavigation = {
@@ -665,10 +665,6 @@ class Method extends Element {
   }
 
   private static Set<String> skipJavadoc = new HashSet<>(asList(
-    "BrowserContext.waitForEvent.optionsOrPredicate",
-    "Page.waitForEvent.optionsOrPredicate",
-    "WebSocket.waitForEvent.optionsOrPredicate",
-    "Page.frame.options",
     "Page.waitForRequest",
     "Page.waitForResponse"
     ));
