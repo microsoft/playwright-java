@@ -79,7 +79,7 @@ public class RouteImpl extends ChannelOwner implements Route {
       options = new FulfillOptions();
     }
 
-    int status = options.status == 0 ? 200 : options.status;
+    int status = options.status == null ? 200 : options.status;
     String body = "";
     boolean isBase64 = false;
     int length = 0;

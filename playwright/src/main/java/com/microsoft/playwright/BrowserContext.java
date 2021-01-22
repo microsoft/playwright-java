@@ -130,7 +130,7 @@ public interface BrowserContext {
     /**
      * Unix time in seconds. Optional.
      */
-    public Long expires;
+    public Double expires;
     /**
      * Optional.
      */
@@ -164,7 +164,7 @@ public interface BrowserContext {
       this.path = path;
       return this;
     }
-    public AddCookie withExpires(Long expires) {
+    public AddCookie withExpires(double expires) {
       this.expires = expires;
       return this;
     }
@@ -189,7 +189,7 @@ public interface BrowserContext {
     /**
      * Unix time in seconds.
      */
-    private long expires;
+    private double expires;
     private boolean httpOnly;
     private boolean secure;
     private SameSite sameSite;
@@ -206,7 +206,7 @@ public interface BrowserContext {
     public String path() {
       return this.path;
     }
-    public long expires() {
+    public double expires() {
       return this.expires;
     }
     public boolean httpOnly() {

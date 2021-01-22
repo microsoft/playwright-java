@@ -238,14 +238,25 @@ class TypeRef extends Element {
         return "Boolean";
       }
     }
-    if (jsonName.replace("null|", "").contains("|")) {
-      throw new RuntimeException("Missing mapping for type union: " + jsonPath + ": " + jsonName);
+    return convertBuiltinType(stripNullable());
+  }
+
+  private JsonObject stripNullable() {
+    JsonObject jsonType = jsonElement.getAsJsonObject();
+    if (!"union".equals(jsonType.get("name").getAsString())) {
+      return jsonType;
     }
-//    System.out.println(jsonPath + " : " + jsonName);
-//    if (jsonName.equals("Promise")) {
-//      System.out.println(jsonElement);
-//    }
-    return convertBuiltinType(jsonElement.getAsJsonObject());
+    JsonArray values = jsonType.getAsJsonArray("union");
+    if (values.size() != 2) {
+      throw new RuntimeException("Unexpected union without custom mapping " + jsonPath + ": " + jsonType);
+    }
+    for (JsonElement item : values) {
+      JsonObject o = item.getAsJsonObject();
+      if (!"null".equals(o.get("name").getAsString())) {
+        return o;
+      }
+    }
+    throw new RuntimeException("Unexpected union " + jsonPath + ": " + jsonType);
   }
 
   private static String convertBuiltinType(JsonObject jsonType) {
@@ -264,6 +275,15 @@ class TypeRef extends Element {
     }
     if ("path".equals(name)) {
       return "Path";
+    }
+    if ("EvaluationArgument".equals(name)) {
+      return "Object";
+    }
+    if ("Serializable".equals(name)) {
+      return "Object";
+    }
+    if ("Buffer".equals(name)) {
+      return "byte[]";
     }
     if ("Array".equals(name)) {
       return "List<" + convertTemplateParams(jsonType) + ">";

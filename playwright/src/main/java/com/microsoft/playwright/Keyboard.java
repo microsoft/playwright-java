@@ -30,6 +30,28 @@ import java.util.*;
 public interface Keyboard {
   enum Modifier { ALT, CONTROL, META, SHIFT }
 
+  class PressOptions {
+    /**
+     * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
+     */
+    public Double delay;
+
+    public PressOptions withDelay(double delay) {
+      this.delay = delay;
+      return this;
+    }
+  }
+  class TypeOptions {
+    /**
+     * Time to wait between key presses in milliseconds. Defaults to 0.
+     */
+    public Double delay;
+
+    public TypeOptions withDelay(double delay) {
+      this.delay = delay;
+      return this;
+    }
+  }
   /**
    * Dispatches a {@code keydown} event.
    *
@@ -68,7 +90,7 @@ public interface Keyboard {
    */
   void insertText(String text);
   default void press(String key) {
-    press(key, 0);
+    press(key, null);
   }
   /**
    * {@code key} can specify the intended [keyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
@@ -92,9 +114,9 @@ public interface Keyboard {
    *
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
-  void press(String key, int delay);
+  void press(String key, PressOptions delay);
   default void type(String text) {
-    type(text, 0);
+    type(text, null);
   }
   /**
    * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
@@ -105,7 +127,7 @@ public interface Keyboard {
    *
    * @param text A text to type into a focused element.
    */
-  void type(String text, int delay);
+  void type(String text, TypeOptions delay);
   /**
    * Dispatches a {@code keyup} event.
    *

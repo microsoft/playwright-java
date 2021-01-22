@@ -86,7 +86,7 @@ public interface Route {
     /**
      * Response status code, defaults to {@code 200}.
      */
-    public int status;
+    public Integer status;
 
     public FulfillOptions withBody(byte[] body) {
       this.bodyBytes = body;
