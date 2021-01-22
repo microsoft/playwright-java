@@ -155,9 +155,9 @@ public class PageImpl extends ChannelOwner implements Page {
         }
       }
     } else if ("load".equals(event)) {
-      listeners.notify(EventType.LOAD, null);
+      listeners.notify(EventType.LOAD, this);
     } else if ("domcontentloaded".equals(event)) {
-      listeners.notify(EventType.DOMCONTENTLOADED, null);
+      listeners.notify(EventType.DOMCONTENTLOADED, this);
     } else if ("request".equals(event)) {
       String guid = params.getAsJsonObject("request").get("guid").getAsString();
       Request request = connection.getExistingObject(guid);
@@ -210,11 +210,11 @@ public class PageImpl extends ChannelOwner implements Page {
       SerializedError error = gson().fromJson(params.getAsJsonObject("error"), SerializedError.class);
       listeners.notify(EventType.PAGEERROR, new ErrorImpl(error));
     } else if ("crash".equals(event)) {
-      listeners.notify(EventType.CRASH, null);
+      listeners.notify(EventType.CRASH, this);
     } else if ("close".equals(event)) {
       isClosed = true;
       browserContext.pages.remove(this);
-      listeners.notify(EventType.CLOSE, null);
+      listeners.notify(EventType.CLOSE, this);
     }
   }
 
@@ -237,12 +237,12 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void onClose(Runnable handler) {
+  public void onClose(Consumer<Page> handler) {
     listeners.add(EventType.CLOSE, handler);
   }
 
   @Override
-  public void offClose(Runnable handler) {
+  public void offClose(Consumer<Page> handler) {
     listeners.remove(EventType.CLOSE, handler);
   }
 
@@ -257,12 +257,12 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void onCrash(Runnable handler) {
+  public void onCrash(Consumer<Page> handler) {
     listeners.add(EventType.CRASH, handler);
   }
 
   @Override
-  public void offCrash(Runnable handler) {
+  public void offCrash(Consumer<Page> handler) {
     listeners.remove(EventType.CRASH, handler);
   }
 
@@ -277,12 +277,12 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void onDomContentLoaded(Runnable handler) {
+  public void onDOMContentLoaded(Consumer<Page> handler) {
     listeners.add(EventType.DOMCONTENTLOADED, handler);
   }
 
   @Override
-  public void offDomContentLoaded(Runnable handler) {
+  public void offDOMContentLoaded(Consumer<Page> handler) {
     listeners.remove(EventType.DOMCONTENTLOADED, handler);
   }
 
@@ -337,12 +337,12 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void onLoad(Runnable handler) {
+  public void onLoad(Consumer<Page> handler) {
     listeners.add(EventType.LOAD, handler);
   }
 
   @Override
-  public void offLoad(Runnable handler) {
+  public void offLoad(Consumer<Page> handler) {
     listeners.remove(EventType.LOAD, handler);
   }
 

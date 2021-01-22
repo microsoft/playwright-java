@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
@@ -46,12 +47,12 @@ class BrowserImpl extends ChannelOwner implements Browser {
   }
 
   @Override
-  public void onDisconnected(Runnable handler) {
+  public void onDisconnected(Consumer<Browser> handler) {
     listeners.add(EventType.DISCONNECTED, handler);
   }
 
   @Override
-  public void offDisconnected(Runnable handler) {
+  public void offDisconnected(Consumer<Browser> handler) {
     listeners.remove(EventType.DISCONNECTED, handler);
   }
 
@@ -136,7 +137,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
   void handleEvent(String event, JsonObject parameters) {
     if ("close".equals(event)) {
       isConnected = false;
-      listeners.notify(EventType.DISCONNECTED, null);
+      listeners.notify(EventType.DISCONNECTED, this);
     }
   }
 }

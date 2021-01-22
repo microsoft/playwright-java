@@ -75,20 +75,20 @@ public interface Page {
   }
 
 
-  void onClose(Runnable handler);
-  void offClose(Runnable handler);
+  void onClose(Consumer<Page> handler);
+  void offClose(Consumer<Page> handler);
 
   void onConsole(Consumer<ConsoleMessage> handler);
   void offConsole(Consumer<ConsoleMessage> handler);
 
-  void onCrash(Runnable handler);
-  void offCrash(Runnable handler);
+  void onCrash(Consumer<Page> handler);
+  void offCrash(Consumer<Page> handler);
 
   void onDialog(Consumer<Dialog> handler);
   void offDialog(Consumer<Dialog> handler);
 
-  void onDomContentLoaded(Runnable handler);
-  void offDomContentLoaded(Runnable handler);
+  void onDOMContentLoaded(Consumer<Page> handler);
+  void offDOMContentLoaded(Consumer<Page> handler);
 
   void onDownload(Consumer<Download> handler);
   void offDownload(Consumer<Download> handler);
@@ -105,8 +105,8 @@ public interface Page {
   void onFrameNavigated(Consumer<Frame> handler);
   void offFrameNavigated(Consumer<Frame> handler);
 
-  void onLoad(Runnable handler);
-  void offLoad(Runnable handler);
+  void onLoad(Consumer<Page> handler);
+  void offLoad(Consumer<Page> handler);
 
   void onPageError(Consumer<Error> handler);
   void offPageError(Consumer<Error> handler);

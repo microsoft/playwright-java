@@ -18,6 +18,7 @@ package com.microsoft.playwright;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * - extends: [EventEmitter]
@@ -44,8 +45,8 @@ public interface Browser {
   }
 
 
-  void onDisconnected(Runnable handler);
-  void offDisconnected(Runnable handler);
+  void onDisconnected(Consumer<Browser> handler);
+  void offDisconnected(Consumer<Browser> handler);
 
 
   class NewContextOptions {
