@@ -69,7 +69,7 @@ class Types {
     add("Page.reload.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "Frame.LoadState", new Empty());
     add("Page.screenshot.options.type", "\"jpeg\"|\"png\"", "Type");
     add("Page.setContent.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "Frame.LoadState", new Empty());
-    add("Page.waitForFunction.options.polling", "\"raf\"|float", "double", new PollingOption());
+    add("Page.waitForFunction.options.polling", "\"raf\"|float", "double", new Empty());
     add("Page.waitForNavigation.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "Frame.LoadState", new Empty());
     add("Page.waitForSelector.options.state", "\"attached\"|\"detached\"|\"hidden\"|\"visible\"", "State");
     add("Frame.click.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
@@ -80,7 +80,7 @@ class Types {
     add("Frame.goto.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
     add("Frame.hover.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("Frame.setContent.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
-    add("Frame.waitForFunction.options.polling", "\"raf\"|float", "double", new PollingOption());
+    add("Frame.waitForFunction.options.polling", "\"raf\"|float", "double", new Empty());
     add("Frame.waitForNavigation.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
     add("Frame.waitForSelector.options.state", "\"attached\"|\"detached\"|\"hidden\"|\"visible\"", "State");
     add("ElementHandle.click.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
@@ -96,32 +96,6 @@ class Types {
     add("Mouse.down.options.button", "\"left\"|\"middle\"|\"right\"", "Button", new Empty());
     add("Mouse.up.options.button", "\"left\"|\"middle\"|\"right\"", "Button", new Empty());
     add("BrowserType.launchPersistentContext.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme", new Empty());
-
-    // File
-    add("Page.addScriptTag.options.path", "path", "Path");
-    add("Page.addStyleTag.options.path", "path", "Path");
-    add("Page.pdf.options.path", "path", "Path");
-    add("Page.screenshot.options.path", "path", "Path");
-    add("Frame.addScriptTag.options.path", "path", "Path");
-    add("Frame.addStyleTag.options.path", "path", "Path");
-    add("ElementHandle.screenshot.options.path", "path", "Path");
-    add("Route.fulfill.options.path", "path", "Path");
-    add("Route.fulfill.options.status", "int", "int");
-    add("Browser.newContext.options.recordHar.path", "path", "Path");
-    add("Browser.newContext.options.recordVideo.dir", "path", "Path");
-    add("Browser.newPage.options.recordHar.path", "path", "Path");
-    add("Browser.newPage.options.recordVideo.dir", "path", "Path");
-    add("BrowserType.launchPersistentContext.options.recordHar.path", "path", "Path");
-    add("BrowserType.launchPersistentContext.options.recordVideo.dir", "path", "Path");
-    add("BrowserType.launchPersistentContext.userDataDir", "path", "Path");
-    add("BrowserType.launchPersistentContext.options.executablePath", "path", "Path");
-    add("BrowserType.launchServer.options.executablePath", "path", "Path");
-    add("BrowserType.launchPersistentContext.options.downloadsPath", "path", "Path");
-    add("BrowserType.launch.options.executablePath", "path", "Path");
-    add("BrowserType.launch.options.downloadsPath", "path", "Path");
-    add("BrowserContext.storageState.options.path", "path", "Path");
-    add("ChromiumBrowser.startTracing.options.path", "path", "Path");
-    add("Video.path", "path", "Path");
 
     // Route
     add("BrowserContext.route.handler", "function(Route, Request)", "Consumer<Route>");
@@ -146,30 +120,6 @@ class Types {
     add("Browser.newPage.options.httpCredentials", "Object", "BrowserContext.HTTPCredentials", new Empty());
     add("BrowserType.launchPersistentContext.options.httpCredentials", "Object", "BrowserContext.HTTPCredentials", new Empty());
     add("BrowserContext.setHTTPCredentials.httpCredentials", "Object|null", "do nothing", new Empty());
-
-    // EvaluationArgument
-    add("Page.$eval.arg", "EvaluationArgument", "Object");
-    add("Page.$$eval.arg", "EvaluationArgument", "Object");
-    add("Page.dispatchEvent.eventInit", "EvaluationArgument", "Object");
-    add("Page.evaluate.arg", "EvaluationArgument", "Object");
-    add("Page.evaluateHandle.arg", "EvaluationArgument", "Object");
-    add("Page.waitForFunction.arg", "EvaluationArgument", "Object");
-    add("Frame.$eval.arg", "EvaluationArgument", "Object");
-    add("Frame.$$eval.arg", "EvaluationArgument", "Object");
-    add("Frame.dispatchEvent.eventInit", "EvaluationArgument", "Object");
-    add("Frame.evaluate.arg", "EvaluationArgument", "Object");
-    add("Frame.evaluateHandle.arg", "EvaluationArgument", "Object");
-    add("Frame.waitForFunction.arg", "EvaluationArgument", "Object");
-    add("ElementHandle.$eval.arg", "EvaluationArgument", "Object");
-    add("ElementHandle.$$eval.arg", "EvaluationArgument", "Object");
-    add("ElementHandle.dispatchEvent.eventInit", "EvaluationArgument", "Object");
-    add("ElementHandle.evaluate.arg", "EvaluationArgument", "Object");
-    add("ElementHandle.evaluateHandle.arg", "EvaluationArgument", "Object");
-    add("JSHandle.evaluate.arg", "EvaluationArgument", "Object");
-    add("JSHandle.evaluateHandle.arg", "EvaluationArgument", "Object");
-    add("Worker.evaluate.arg", "EvaluationArgument", "Object");
-    add("Worker.evaluateHandle.arg", "EvaluationArgument", "Object");
-
 
     // js functions are always passed as text in java.
     add("Page.$eval.pageFunction", "function(Element)", "String");
@@ -209,22 +159,6 @@ class Types {
     add("WebSocket.framereceived", "Object", "FrameData", new Empty());
     add("WebSocket.framesent", "Object", "FrameData", new Empty());
 
-    add("Page.waitForRequest", "Request", "Deferred<Request>");
-    add("Page.waitForResponse", "Response", "Deferred<Response>");
-    add("Page.waitForNavigation", "Response|null", "Deferred<Response>");
-    add("Frame.waitForNavigation", "Response|null", "Deferred<Response>");
-    add("Page.waitForSelector", "ElementHandle|null", "ElementHandle", new Empty());
-    add("Frame.waitForSelector", "ElementHandle|null", "ElementHandle", new Empty());
-    add("ElementHandle.waitForSelector", "ElementHandle|null", "ElementHandle", new Empty());
-
-    add("Frame.waitForLoadState", "void", "void", new Empty());
-    add("Page.waitForLoadState", "void", "void", new Empty());
-    add("Frame.waitForTimeout", "void", "void", new Empty());
-    add("Page.waitForTimeout", "void", "void", new Empty());
-    add("Frame.waitForFunction", "JSHandle", "JSHandle", new Empty());
-    add("Page.waitForFunction", "JSHandle", "JSHandle", new Empty());
-    add("ElementHandle.waitForElementState", "void", "void", new Empty());
-
     // Custom options
     add("Page.pdf.options.margin.top", "float|string", "String");
     add("Page.pdf.options.margin.right", "float|string", "String");
@@ -250,16 +184,11 @@ class Types {
     // The method has custom signatures
     add("BrowserContext.cookies", "Array<Object>", "Cookie");
     add("BrowserContext.cookies.sameSite", "\"Lax\"|\"None\"|\"Strict\"", "SameSite", new Empty());
-    add("BrowserContext.cookies.expires", "float", "long");
     add("BrowserContext.addCookies.cookies", "Array<Object>", "AddCookie");
     add("BrowserContext.addCookies.cookies.sameSite", "\"Lax\"|\"None\"|\"Strict\"", "SameSite", new Empty());
-    add("BrowserContext.addCookies.cookies.expires", "float", "Long", new Empty());
     add("BrowserContext.route.url", "RegExp|function(URL):boolean|string", "String");
     add("BrowserContext.unroute.url", "RegExp|function(URL):boolean|string", "String");
     add("BrowserContext.storageState", "Object", "StorageState", new Empty());
-    add("BrowserContext.waitForEvent.event", "string", "EventType", new Empty());
-    add("BrowserContext.waitForEvent.optionsOrPredicate", "Function|Object", "String");
-    add("BrowserContext.waitForEvent", "Promise<any>", "Deferred<Event<EventType>>", new Empty());
     add("Page.waitForNavigation.options.url", "RegExp|function(URL):boolean|string", "Custom");
     add("Page.waitForNavigation.options", "Object", "WaitForNavigationOptions");
     add("Page.waitForRequest.options", "Object", "WaitForRequestOptions");
@@ -269,9 +198,6 @@ class Types {
     add("Page.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");
     add("Page.setInputFiles.files", "Array<Object>|Array<path>|Object|path", "String");
     add("Page.unroute.url", "RegExp|function(URL):boolean|string", "String");
-    add("Page.waitForEvent.event", "string", "EventType", new Empty());
-    add("Page.waitForEvent.optionsOrPredicate", "Function|Object", "WaitForEventOptions");
-    add("Page.waitForEvent", "Promise<any>", "Deferred<Event<EventType>>", new Empty());
     add("Page.waitForRequest.urlOrPredicate", "RegExp|function(Request):boolean|string", "String");
     add("Page.waitForResponse.urlOrPredicate", "RegExp|function(Response):boolean|string", "String");
     add("Frame.waitForNavigation.options.url", "RegExp|function(URL):boolean|string", "Custom");
@@ -293,73 +219,18 @@ class Types {
     add("BrowserType.launchServer.options.env", "Object<string, boolean|float|string>", "Map<String, String>", new Empty());
     add("Logger.log.message", "string|Error", "String");
 
-    add("Browser.newContext.options.geolocation.latitude", "number", "double");
-    add("Browser.newContext.options.geolocation.longitude", "number", "double");
-    add("Browser.newContext.options.geolocation.accuracy", "number", "double");
-    add("Browser.newPage.options.geolocation.latitude", "number", "double");
-    add("Browser.newPage.options.geolocation.longitude", "number", "double");
-    add("Browser.newPage.options.geolocation.accuracy", "number", "double");
-    add("BrowserType.launchPersistentContext.options.geolocation.latitude", "number", "double");
-    add("BrowserType.launchPersistentContext.options.geolocation.longitude", "number", "double");
-    add("BrowserType.launchPersistentContext.options.geolocation.accuracy", "number", "double");
-
     add("BrowserContext.setGeolocation.geolocation", "Object|null", "Geolocation", new Empty());
     add("Browser.newContext.options.geolocation", "Object", "Geolocation", new Empty());
     add("Browser.newContext.options.storageState", "Object|path", "BrowserContext.StorageState", new Empty());
     add("Browser.newPage.options.storageState", "Object|path", "BrowserContext.StorageState", new Empty());
     add("Browser.newPage.options.geolocation", "Object", "Geolocation", new Empty());
     add("BrowserType.launchPersistentContext.options.geolocation", "Object", "Geolocation", new Empty());
-    add("Download.saveAs.path", "path", "Path", new Empty());
-    add("Download.path", "null|path", "Path", new Empty());
     add("Download.createReadStream", "Readable|null", "InputStream", new Empty());
-
-    // Single field options
-    add("Keyboard.type.options", "Object", "int", new Empty());
-    add("Keyboard.press.options", "Object", "int", new Empty());
 
     // node.js types
     add("BrowserServer.process", "ChildProcess", "Object");
 
-    add("Page.pdf", "Buffer", "byte[]", new Empty());
-    add("Page.screenshot", "Buffer", "byte[]", new Empty());
-    add("ElementHandle.screenshot", "Buffer", "byte[]", new Empty());
-    add("Request.postDataBuffer", "Buffer|null", "byte[]", new Empty());
-    add("Response.body", "Buffer", "byte[]", new Empty());
     add("Response.finished", "Error|null", "String");
-    add("ChromiumBrowser.stopTracing", "Buffer", "byte[]", new Empty());
-    add("WebSocket.framereceived.payload", "Buffer|string", "byte[]", new Empty());
-    add("WebSocket.framesent.payload", "Buffer|string", "byte[]", new Empty());
-
-    add("BrowserContext.browser", "Browser|null", "Browser");
-    add("BrowserContext.cookies.urls", "Array<string>|string", "Custom", new Empty());
-    add("Page.$", "ElementHandle|null", "ElementHandle");
-    add("Page.frame", "Frame|null", "Frame");
-    add("Page.frame.frameSelector", "Object|string", "Custom", new Empty());
-    add("Page.getAttribute", "null|string", "String", new Empty());
-    add("Page.goBack", "Response|null", "Response", new Empty());
-    add("Page.goForward", "Response|null", "Response", new Empty());
-    add("Page.goto", "Response|null", "Response", new Empty());
-    add("Page.opener", "Page|null", "Page", new Empty());
-    add("Page.reload", "Response|null", "Response", new Empty());
-    add("Page.textContent", "null|string", "String", new Empty());
-    add("Page.video", "Video|null", "Video", new Empty());
-    add("Frame.$", "ElementHandle|null", "ElementHandle", new Empty());
-    add("Frame.getAttribute", "null|string", "String", new Empty());
-    add("Frame.goto", "Response|null", "Response", new Empty());
-    add("Frame.parentFrame", "Frame|null", "Frame", new Empty());
-    add("Frame.textContent", "null|string", "String", new Empty());
-    add("ElementHandle.$", "ElementHandle|null", "ElementHandle", new Empty());
-    add("ElementHandle.contentFrame", "Frame|null", "Frame", new Empty());
-    add("ElementHandle.getAttribute", "null|string", "String", new Empty());
-    add("ElementHandle.ownerFrame", "Frame|null", "Frame", new Empty());
-    add("ElementHandle.textContent", "null|string", "String", new Empty());
-    add("JSHandle.asElement", "ElementHandle|null", "ElementHandle", new Empty());
-    add("Download.failure", "null|string", "String", new Empty());
-//    add("Request.failure", "Object|null", "Object", new Empty());
-    add("Request.postData", "null|string", "String", new Empty());
-    add("Request.redirectedFrom", "Request|null", "Request", new Empty());
-    add("Request.redirectedTo", "Request|null", "Request", new Empty());
-    add("Request.response", "Response|null", "Response", new Empty());
 
     // TODO: fix upstream types!
     add("Request.headers", "Object<string, string>", "Map<String, String>", new Empty());
@@ -372,26 +243,6 @@ class Types {
     add("Route.continue.options.headers", "Object<string, string>", "Map<String, String>", new Empty());
     add("Route.fulfill.options.headers", "Object<string, string>", "Map<String, String>", new Empty());
     add("Playwright.devices", "Object", "Map<String, DeviceDescriptor>", new Empty());
-
-    // JSON type
-    add("BrowserContext.addInitScript.arg", "Serializable", "Object");
-    add("Page.$eval", "Serializable", "Object");
-    add("Page.$$eval", "Serializable", "Object");
-    add("Page.addInitScript.arg", "Serializable", "Object");
-    add("Page.evaluate", "Serializable", "Object");
-    add("Frame.$eval", "Serializable", "Object");
-    add("Frame.$$eval", "Serializable", "Object");
-    add("Frame.evaluate", "Serializable", "Object");
-    add("ElementHandle.$eval", "Serializable", "Object");
-    add("ElementHandle.$$eval", "Serializable", "Object");
-    add("ElementHandle.evaluate", "Serializable", "Object");
-    add("ElementHandle.jsonValue", "Serializable", "Object");
-    add("JSHandle.evaluate", "Serializable", "Object");
-    add("JSHandle.jsonValue", "Serializable", "Object");
-    add("Response.json", "Serializable", "Object");
-    add("Worker.evaluate", "Serializable", "Object");
-
-    add("CDPSession.send.params", "Object", "Object", new Empty());
   }
 
   Mapping findForPath(String jsonPath) {
@@ -407,12 +258,6 @@ class Types {
 
   private void add(String jsonPath, String fromType, String toType, CustomMapping factory) {
     jsonPathToMapping.put(jsonPath, new Mapping(fromType, toType, factory));
-  }
-
-  private static class PollingOption implements CustomMapping {
-    @Override
-    public void defineTypesIn(TypeDefinition scope) {
-    }
   }
 
   private static class Empty implements CustomMapping {

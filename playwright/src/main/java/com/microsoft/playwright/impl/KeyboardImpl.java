@@ -19,6 +19,8 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Keyboard;
 
+import static com.microsoft.playwright.impl.Serialization.gson;
+
 class KeyboardImpl extends LoggingSupport implements Keyboard {
   private final ChannelOwner page;
 
@@ -45,27 +47,31 @@ class KeyboardImpl extends LoggingSupport implements Keyboard {
   }
 
   @Override
-  public void press(String key, int delay) {
-    withLogging("Keyboard.press", () -> {
-      JsonObject params = new JsonObject();
-      params.addProperty("key", key);
-      if (delay != 0) {
-        params.addProperty("delay", delay);
-      }
-      page.sendMessage("keyboardPress", params);
-    });
+  public void press(String key, PressOptions options) {
+    withLogging("Keyboard.press", () -> pressImpl(key, options));
   }
 
-  @Override
-  public void type(String text, int delay) {
-    withLogging("Keyboard.type", () -> {
-      JsonObject params = new JsonObject();
-      params.addProperty("text", text);
-      if (delay != 0) {
-        params.addProperty("delay", delay);
-      }
-      page.sendMessage("keyboardType", params);
-    });
+  private void pressImpl(String key, PressOptions options) {
+    if (options == null) {
+      options = new PressOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("key", key);
+    page.sendMessage("keyboardPress", params);
+  }
+
+    @Override
+  public void type(String text, TypeOptions options) {
+    withLogging("Keyboard.type", () -> typeImpl(text, options));
+  }
+
+  private void typeImpl(String text, TypeOptions options) {
+    if (options == null) {
+      options = new TypeOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("text", text);
+    page.sendMessage("keyboardType", params);
   }
 
   @Override
