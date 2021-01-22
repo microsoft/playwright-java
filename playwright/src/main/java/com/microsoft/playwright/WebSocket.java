@@ -30,8 +30,8 @@ public interface WebSocket {
   }
 
 
-  void onClose(Runnable handler);
-  void offClose(Runnable handler);
+  void onClose(Consumer<WebSocket> handler);
+  void offClose(Consumer<WebSocket> handler);
 
   void onFrameReceived(Consumer<FrameData> handler);
   void offFrameReceived(Consumer<FrameData> handler);

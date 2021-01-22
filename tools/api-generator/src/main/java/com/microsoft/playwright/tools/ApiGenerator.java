@@ -375,7 +375,7 @@ class Event extends Element {
     eventNames.put("Page.console", "Console");
     eventNames.put("Page.crash", "Crash");
     eventNames.put("Page.dialog", "Dialog");
-    eventNames.put("Page.domcontentloaded", "DomContentLoaded");
+    eventNames.put("Page.domcontentloaded", "DOMContentLoaded");
     eventNames.put("Page.download", "Download");
     eventNames.put("Page.filechooser", "FileChooser");
     eventNames.put("Page.frameattached", "FrameAttached");
@@ -438,7 +438,12 @@ class Event extends Element {
       throw new RuntimeException("Unknown event: " + jsonPath);
     }
     String name = eventNames.get(jsonPath);
-    String listenerType = "void".equals(type.toJava()) ? "Runnable" : "Consumer<" + type.toJava() + ">";
+    String paramType = type.toJava();
+    // TODO: remove once fixed upstream
+    if (paramType.equals("void")) {
+      paramType = parent.jsonName;
+    }
+    String listenerType = "Consumer<" + paramType + ">";
     output.add(offset + "void on" + name + "(" + listenerType + " handler);");
     output.add(offset + "void off" + name + "(" + listenerType + " handler);");
   }
@@ -1050,7 +1055,7 @@ class Interface extends TypeDefinition {
       output.add("import java.nio.file.Path;");
     }
     output.add("import java.util.*;");
-    if (asList("Page", "BrowserContext", "WebSocket", "Worker").contains(jsonName)) {
+    if (asList("Page", "Browser", "BrowserContext", "WebSocket", "Worker").contains(jsonName)) {
       output.add("import java.util.function.Consumer;");
     }
     if (asList("Page", "Frame", "BrowserContext", "WebSocket").contains(jsonName)) {

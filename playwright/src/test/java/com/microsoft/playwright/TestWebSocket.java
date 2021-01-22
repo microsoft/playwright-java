@@ -101,7 +101,7 @@ public class TestWebSocket extends TestBase {
     page.onWebSocket(ws -> {
       log.add("open<" + ws.url() + ">");
       webSocket[0] = ws;
-      ws.onClose(() -> {
+      ws.onClose(ws1 -> {
         log.add("close");
         socketClosed[0] = true;
       });
@@ -123,7 +123,7 @@ public class TestWebSocket extends TestBase {
       log.add("open");
       ws.onFrameSent(frameData -> log.add("sent<" + frameData.text() + ">"));
       ws.onFrameReceived(frameData -> log.add("received<" + frameData.text()  + ">"));
-      ws.onClose(() -> { log.add("close"); socketClosed[0] = true; });
+      ws.onClose(ws1 -> { log.add("close"); socketClosed[0] = true; });
     });
     page.evaluate("port => {\n" +
       "    const ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
@@ -146,7 +146,7 @@ public class TestWebSocket extends TestBase {
     boolean[] socketClosed = {false};
     List<com.microsoft.playwright.WebSocket.FrameData> sent = new ArrayList<>();
     page.onWebSocket(ws -> {
-      ws.onClose(() -> { socketClosed[0] = true; });
+      ws.onClose(ws1 -> socketClosed[0] = true);
       ws.onFrameSent(frameData -> sent.add(frameData));
     });
     page.evaluate("port => {\n" +

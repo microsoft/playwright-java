@@ -223,7 +223,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
   void shouldFireCloseEventForAPersistentContext() {
     launchPersistent();
     boolean[] closed = {false};
-    persistentContext.onClose(() -> closed[0] = true);
+    persistentContext.onClose(context -> closed[0] = true);
     closePersistentContext();
     assertTrue(closed[0]);
   }

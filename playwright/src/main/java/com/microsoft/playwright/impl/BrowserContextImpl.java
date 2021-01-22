@@ -60,12 +60,12 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void onClose(Runnable handler) {
+  public void onClose(Consumer<BrowserContext> handler) {
     listeners.add(EventType.CLOSE, handler);
   }
 
   @Override
-  public void offClose(Runnable handler) {
+  public void offClose(Consumer<BrowserContext> handler) {
     listeners.remove(EventType.CLOSE, handler);
   }
 
@@ -416,7 +416,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       if (browser != null) {
         browser.contexts.remove(this);
       }
-      listeners.notify(EventType.CLOSE, null);
+      listeners.notify(EventType.CLOSE, this);
     }
   }
 }

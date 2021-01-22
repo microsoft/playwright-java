@@ -47,32 +47,6 @@ class ListenerCollection <EventType> {
     }
   }
 
-  private static class RunnableWrapper<EventType> implements Listener<EventType> {
-    final Runnable callback;
-
-    private RunnableWrapper(Runnable callback) {
-      this.callback = callback;
-    }
-
-    @Override
-    public void handle(Event<EventType> event) {
-      callback.run();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
-      RunnableWrapper<?> that = (RunnableWrapper<?>) o;
-      return Objects.equals(callback, that.callback);
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(callback);
-    }
-  }
-
   private static class ConsumerWrapper<EventType> implements Listener<EventType> {
     final Consumer<?> callback;
 
@@ -96,13 +70,6 @@ class ListenerCollection <EventType> {
     public int hashCode() {
       return Objects.hash(callback);
     }
-  }
-
-  void add(EventType type, Runnable listener) {
-    add(type, new RunnableWrapper<>(listener));
-  }
-  void remove(EventType type, Runnable listener) {
-    remove(type, new RunnableWrapper<>(listener));
   }
 
   void add(EventType type, Consumer listener) {

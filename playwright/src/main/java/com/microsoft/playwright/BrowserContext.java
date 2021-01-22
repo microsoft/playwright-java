@@ -95,8 +95,8 @@ public interface BrowserContext {
   }
 
 
-  void onClose(Runnable handler);
-  void offClose(Runnable handler);
+  void onClose(Consumer<BrowserContext> handler);
+  void offClose(Consumer<BrowserContext> handler);
 
   void onPage(Consumer<Page> handler);
   void offPage(Consumer<Page> handler);

@@ -44,12 +44,12 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
   }
 
   @Override
-  public void onClose(Runnable handler) {
+  public void onClose(Consumer<WebSocket> handler) {
     listeners.add(EventType.CLOSE, handler);
   }
 
   @Override
-  public void offClose(Runnable handler) {
+  public void offClose(Consumer<WebSocket> handler) {
     listeners.remove(EventType.CLOSE, handler);
   }
 
@@ -212,7 +212,7 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
       }
       case "close": {
         isClosed = true;
-        listeners.notify(EventType.CLOSE, null);
+        listeners.notify(EventType.CLOSE, this);
         break;
       }
       default: {
