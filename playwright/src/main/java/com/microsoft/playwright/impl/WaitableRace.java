@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright.impl;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 class WaitableRace<T> implements Waitable<T> {

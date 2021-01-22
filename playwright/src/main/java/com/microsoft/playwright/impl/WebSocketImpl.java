@@ -117,51 +117,32 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
     return initializer.get("url").getAsString();
   }
 
-  private class WaitableWebSocketError<R> implements Waitable<R>, Listener<EventType> {
-    private final List<EventType> subscribedEvents;
-    private String errorMessage;
+  private class WaitableWebSocketClose<T> extends WaitableEvent<EventType, T> {
+    WaitableWebSocketClose() {
+      super(WebSocketImpl.this.listeners, EventType.CLOSE);
+    }
 
+    @Override
+    public T get() {
+      throw new PlaywrightException("Socket closed");
+    }
+  }
+
+  private class WaitableWebSocketError<T> extends WaitableEvent<EventType, T> {
     WaitableWebSocketError() {
-      subscribedEvents = Arrays.asList(EventType.CLOSE, EventType.SOCKETERROR);
-      for (EventType e : subscribedEvents) {
-        listeners.add(e, this);
-      }
+      super(WebSocketImpl.this.listeners, EventType.SOCKETERROR);
     }
 
     @Override
-    public void handle(Event<EventType> event) {
-      if (EventType.SOCKETERROR == event.type()) {
-        errorMessage = "Socket error";
-      } else if (EventType.CLOSE == event.type()) {
-        errorMessage = "Socket closed";
-      } else {
-        return;
-      }
-      dispose();
-    }
-
-    @Override
-    public boolean isDone() {
-      return errorMessage != null;
-    }
-
-    @Override
-    public R get() {
-      throw new PlaywrightException(errorMessage);
-    }
-
-    @Override
-    public void dispose() {
-      for (EventType e : subscribedEvents) {
-        listeners.remove(e, this);
-      }
+    public T get() {
+      throw new PlaywrightException("Socket error");
     }
   }
 
   private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Double timeout) {
     List<Waitable<T>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, eventType)
-      .apply(event -> (T) event.data()));
+    waitables.add(new WaitableEvent<>(listeners, eventType));
+    waitables.add(new WaitableWebSocketClose<>());
     waitables.add(new WaitableWebSocketError<>());
     waitables.add(page.createWaitForCloseHelper());
     waitables.add(page.createWaitableTimeout(timeout));

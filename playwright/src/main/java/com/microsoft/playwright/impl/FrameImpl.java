@@ -26,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static com.microsoft.playwright.Frame.LoadState.*;
 import static com.microsoft.playwright.impl.Serialization.*;
@@ -766,7 +767,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     runUntil(() -> {}, new WaitableRace<>(waitables));
   }
 
-  private class WaitForLoadStateHelper implements Waitable<Void>, Listener<InternalEventType> {
+  private class WaitForLoadStateHelper implements Waitable<Void>, Consumer<LoadState> {
     private final LoadState expectedState;
     private boolean isDone;
 
@@ -779,9 +780,8 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
 
     @Override
-    public void handle(Event<InternalEventType> event) {
-      assert event.type() == InternalEventType.LOADSTATE;
-      if (expectedState.equals(event.data())) {
+    public void accept(LoadState state) {
+      if (expectedState.equals(state)) {
         isDone = true;
         dispose();
       }
@@ -801,7 +801,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
   }
 
-  private class WaitForNavigationHelper implements Waitable<Response>, Listener<InternalEventType> {
+  private class WaitForNavigationHelper implements Waitable<Response>, Consumer<JsonObject> {
     private final UrlMatcher matcher;
     private final LoadState expectedLoadState;
     private WaitForLoadStateHelper loadStateHelper;
@@ -816,9 +816,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
 
     @Override
-    public void handle(Event<InternalEventType> event) {
-      assert InternalEventType.NAVIGATED == event.type();
-      JsonObject params = (JsonObject) event.data();
+    public void accept(JsonObject params) {
       if (!matcher.test(params.get("url").getAsString())) {
         return;
       }

@@ -52,8 +52,7 @@ class WorkerImpl extends ChannelOwner implements Worker {
 
   private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Double timeout) {
     List<Waitable<T>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, eventType)
-      .apply(event -> (T) event.data()));
+    waitables.add(new WaitableEvent<>(listeners, eventType));
     waitables.add(page.createWaitForCloseHelper());
     waitables.add(page.createWaitableTimeout(timeout));
     return runUntil(code, new WaitableRace<>(waitables));

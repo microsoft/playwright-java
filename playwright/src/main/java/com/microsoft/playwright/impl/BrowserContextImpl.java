@@ -81,8 +81,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Double timeout) {
     List<Waitable<T>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, eventType)
-      .apply(event -> (T) event.data()));
+    waitables.add(new WaitableEvent<>(listeners, eventType));
     waitables.add(new WaitableContextClose<>());
     waitables.add(timeoutSettings.createWaitable(timeout));
     return runUntil(code, new WaitableRace<>(waitables));
@@ -349,36 +348,14 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     unroute(new UrlMatcher(url), handler);
   }
 
-  private class WaitableContextClose<R> implements Waitable<R>, Listener<EventType> {
-    private String errorMessage;
-
+  private class WaitableContextClose<R> extends WaitableEvent<EventType, R> {
     WaitableContextClose() {
-      listeners.add(EventType.CLOSE, this);
-    }
-
-    @Override
-    public void handle(Event<EventType> event) {
-      if (EventType.CLOSE == event.type()) {
-        errorMessage = "Context closed";
-      } else {
-        return;
-      }
-      dispose();
-    }
-
-    @Override
-    public boolean isDone() {
-      return errorMessage != null;
+      super(BrowserContextImpl.this.listeners, EventType.CLOSE);
     }
 
     @Override
     public R get() {
-      throw new PlaywrightException(errorMessage);
-    }
-
-    @Override
-    public void dispose() {
-      listeners.remove(EventType.CLOSE, this);
+      throw new PlaywrightException("Context closed");
     }
   }
 

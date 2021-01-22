@@ -16,71 +16,28 @@
 
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.Event;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.function.Consumer;
 
 class ListenerCollection <EventType> {
-  private final HashMap<EventType, List<Listener<EventType>>> listeners = new HashMap<>();
+  private final HashMap<EventType, List<Consumer<?>>> listeners = new HashMap<>();
 
-  void notify(EventType eventType, Object param) {
-    List<Listener<EventType>> list = listeners.get(eventType);
+  <T> void notify(EventType eventType, T param) {
+    List<Consumer<?>> list = listeners.get(eventType);
     if (list == null) {
       return;
     }
 
-    Event<EventType> event = new Event<EventType>() {
-      @Override
-      public EventType type() {
-        return eventType;
-      }
-
-      @Override
-      public Object data() {
-        return param;
-      }
-    };
-
-    for (Listener<EventType> listener: new ArrayList<>(list)) {
-      listener.handle(event);
+    for (Consumer<?> listener: new ArrayList<>(list)) {
+      ((Consumer<T>) listener).accept(param);
     }
   }
 
-  private static class ConsumerWrapper<EventType> implements Listener<EventType> {
-    final Consumer<?> callback;
-
-    private ConsumerWrapper(Consumer<?> callback) {
-      this.callback = callback;
-    }
-
-    @Override
-    public void handle(Event<EventType> event) {
-      ((Consumer<Object>) callback).accept(event.data());
-    }
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
-      ConsumerWrapper<?> that = (ConsumerWrapper<?>) o;
-      return Objects.equals(callback, that.callback);
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(callback);
-    }
-  }
-
-  void add(EventType type, Consumer listener) {
-    add(type, new ConsumerWrapper<>(listener));
-  }
-  void remove(EventType type, Consumer listener) {
-    remove(type, new ConsumerWrapper<>(listener));
-  }
-
-  void add(EventType type, Listener<EventType> listener) {
-    List<Listener<EventType>> list = listeners.get(type);
+  void add(EventType type, Consumer<?> listener) {
+    List<Consumer<?>> list = listeners.get(type);
     if (list == null) {
       list = new ArrayList<>();
       listeners.put(type, list);
@@ -88,8 +45,8 @@ class ListenerCollection <EventType> {
     list.add(listener);
   }
 
-  void remove(EventType type, Listener<EventType>  listener) {
-    List<Listener<EventType>> list = listeners.get(type);
+  void remove(EventType type, Consumer<?>  listener) {
+    List<Consumer<?>> list = listeners.get(type);
     if (list == null) {
       return;
     }
