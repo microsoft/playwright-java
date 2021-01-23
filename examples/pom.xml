@@ -15,7 +15,7 @@
     <dependency>
       <groupId>com.microsoft.playwright</groupId>
       <artifactId>playwright</artifactId>
-      <version>0.180.0-SNAPSHOT</version>
+      <version>0.190.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
   <build>
