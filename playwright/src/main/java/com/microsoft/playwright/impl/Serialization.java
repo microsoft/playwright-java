@@ -47,6 +47,7 @@ class Serialization {
         .registerTypeAdapter(ElementHandle.WaitForSelectorOptions.State.class, new ToLowerCaseSerializer<ElementHandle.WaitForSelectorOptions.State>())
         .registerTypeAdapter(Frame.WaitForSelectorOptions.State.class, new ToLowerCaseSerializer<Frame.WaitForSelectorOptions.State>())
         .registerTypeAdapter(Page.WaitForSelectorOptions.State.class, new ToLowerCaseSerializer<Page.WaitForSelectorOptions.State>())
+        .registerTypeAdapter((new TypeToken<Set<Keyboard.Modifier>>(){}).getType(), new KeyboardModifiersSerializer())
         .registerTypeAdapter(Optional.class, new OptionalSerializer())
         .registerTypeHierarchyAdapter(JSHandleImpl.class, new HandleSerializer())
         .registerTypeHierarchyAdapter(Map.class, new StringMapSerializer())
@@ -188,21 +189,24 @@ class Serialization {
     throw new PlaywrightException("Unexpected result: " + gson().toJson(value));
   }
 
-  static JsonArray toProtocol(Set<Keyboard.Modifier> modifiers) {
-    JsonArray result = new JsonArray();
-    if (modifiers.contains(Keyboard.Modifier.ALT)) {
-      result.add("Alt");
+  private static class KeyboardModifiersSerializer implements JsonSerializer<Set<Keyboard.Modifier>> {
+    @Override
+    public JsonArray serialize(Set<Keyboard.Modifier> modifiers, Type typeOfSrc, JsonSerializationContext context) {
+      JsonArray result = new JsonArray();
+      if (modifiers.contains(Keyboard.Modifier.ALT)) {
+        result.add("Alt");
+      }
+      if (modifiers.contains(Keyboard.Modifier.CONTROL)) {
+        result.add("Control");
+      }
+      if (modifiers.contains(Keyboard.Modifier.META)) {
+        result.add("Meta");
+      }
+      if (modifiers.contains(Keyboard.Modifier.SHIFT)) {
+        result.add("Shift");
+      }
+      return result;
     }
-    if (modifiers.contains(Keyboard.Modifier.CONTROL)) {
-      result.add("Control");
-    }
-    if (modifiers.contains(Keyboard.Modifier.META)) {
-      result.add("Meta");
-    }
-    if (modifiers.contains(Keyboard.Modifier.SHIFT)) {
-      result.add("Shift");
-    }
-    return result;
   }
 
   static JsonArray toJsonArray(FileChooser.FilePayload[] files) {

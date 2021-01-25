@@ -217,12 +217,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
-
-    params.remove("modifiers");
-    if (options.modifiers != null) {
-      params.add("modifiers", Serialization.toProtocol(options.modifiers));
-    }
-
     sendMessage("click", params);
   }
 
@@ -246,12 +240,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
-
-    params.remove("modifiers");
-    if (options.modifiers != null) {
-      params.add("modifiers", Serialization.toProtocol(options.modifiers));
-    }
-
     sendMessage("dblclick", params);
   }
 
@@ -635,10 +623,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
       options = new TapOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("modifiers");
-    if (options.modifiers != null) {
-      params.add("modifiers", Serialization.toProtocol(options.modifiers));
-    }
     params.addProperty("selector", selector);
     sendMessage("tap", params);
   }

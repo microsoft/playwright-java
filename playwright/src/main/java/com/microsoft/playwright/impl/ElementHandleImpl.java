@@ -135,12 +135,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
       options = new ClickOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-
-    params.remove("modifiers");
-    if (options.modifiers != null) {
-      params.add("modifiers", Serialization.toProtocol(options.modifiers));
-    }
-
     sendMessage("click", params);
   }
 
@@ -167,12 +161,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
       options = new DblclickOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-
-    params.remove("modifiers");
-    if (options.modifiers != null) {
-      params.add("modifiers", Serialization.toProtocol(options.modifiers));
-    }
-
     sendMessage("dblclick", params);
   }
 
@@ -219,10 +207,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   public void hover(HoverOptions options) {
     withLogging("ElementHandle.hover", () -> {
       JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-      params.remove("modifiers");
-      if (options.modifiers != null) {
-        params.add("modifiers", Serialization.toProtocol(options.modifiers));
-      }
       sendMessage("hover", params);
     });
   }
@@ -434,10 +418,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
       options = new TapOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    if (options.modifiers != null) {
-      params.remove("modifiers");
-      params.add("modifiers", Serialization.toProtocol(options.modifiers));
-    }
     sendMessage("tap", params);
   }
 
