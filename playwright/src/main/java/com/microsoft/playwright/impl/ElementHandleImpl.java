@@ -135,10 +135,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
       options = new ClickOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("button");
-    if (options.button != null) {
-      params.addProperty("button", Serialization.toProtocol(options.button));
-    }
 
     params.remove("modifiers");
     if (options.modifiers != null) {
@@ -171,10 +167,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
       options = new DblclickOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("button");
-    if (options.button != null) {
-      params.addProperty("button", Serialization.toProtocol(options.button));
-    }
 
     params.remove("modifiers");
     if (options.modifiers != null) {
@@ -323,10 +315,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     sendMessage("press", params);
   }
 
-  private static String toProtocol(ScreenshotOptions.Type type) {
-    return type.toString().toLowerCase();
-  }
-
   @Override
   public byte[] screenshot(ScreenshotOptions options) {
     return withLogging("ElementHandle.screenshot", () -> screenshotImpl(options));
@@ -350,8 +338,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
       }
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("type");
-    params.addProperty("type", toProtocol(options.type));
     params.remove("path");
     JsonObject json = sendMessage("screenshot", params).getAsJsonObject();
 
@@ -503,15 +489,15 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (options == null) {
       options = new WaitForElementStateOptions();
     }
+    if (state == null) {
+      throw new IllegalArgumentException("State cannot be null");
+    }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("state", toProtocol(state));
     sendMessage("waitForElementState", params);
   }
 
   private static String toProtocol(ElementState state) {
-    if (state == null) {
-      throw new IllegalArgumentException("State cannot by null");
-    }
     return state.toString().toLowerCase();
   }
 
@@ -525,8 +511,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
       options = new WaitForSelectorOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("state");
-    params.addProperty("state", toProtocol(options.state));
     params.addProperty("selector", selector);
     JsonElement json = sendMessage("waitForSelector", params);
     JsonObject element = json.getAsJsonObject().getAsJsonObject("element");
@@ -534,12 +518,5 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
       return null;
     }
     return connection.getExistingObject(element.get("guid").getAsString());
-  }
-
-  private static String toProtocol(WaitForSelectorOptions.State state) {
-    if (state == null) {
-      state = WaitForSelectorOptions.State.VISIBLE;
-    }
-    return state.toString().toLowerCase();
   }
 }

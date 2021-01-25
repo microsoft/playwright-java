@@ -43,10 +43,6 @@ class MouseImpl implements Mouse {
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("x", x);
     params.addProperty("y", y);
-    if (options.button != null) {
-      params.remove("button");
-      params.addProperty("button", toProtocol(options.button));
-    }
     page.sendMessage("mouseClick", params);
   }
 

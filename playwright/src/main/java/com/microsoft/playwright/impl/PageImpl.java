@@ -762,8 +762,6 @@ public class PageImpl extends ChannelOwner implements Page {
       options = new GoBackOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("waitUntil");
-    params.addProperty("waitUntil", FrameImpl.toProtocol(options.waitUntil));
     JsonObject json = sendMessage("goBack", params).getAsJsonObject();
     if (json.has("response")) {
       return connection.getExistingObject(json.getAsJsonObject("response").get("guid").getAsString());
@@ -781,8 +779,6 @@ public class PageImpl extends ChannelOwner implements Page {
       options = new GoForwardOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("waitUntil");
-    params.addProperty("waitUntil", FrameImpl.toProtocol(options.waitUntil));
     JsonObject json = sendMessage("goForward", params).getAsJsonObject();
     if (json.has("response")) {
       return connection.getExistingObject(json.getAsJsonObject("response").get("guid").getAsString());
@@ -919,8 +915,6 @@ public class PageImpl extends ChannelOwner implements Page {
       options = new ReloadOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("waitUntil");
-    params.addProperty("waitUntil", FrameImpl.toProtocol(options.waitUntil));
     JsonObject json = sendMessage("reload", params).getAsJsonObject();
     if (json.has("response")) {
       return connection.getExistingObject(json.getAsJsonObject("response").get("guid").getAsString());
@@ -954,10 +948,6 @@ public class PageImpl extends ChannelOwner implements Page {
     });
   }
 
-  private static String toProtocol(ScreenshotOptions.Type type) {
-    return type.toString().toLowerCase();
-  }
-
   @Override
   public byte[] screenshot(ScreenshotOptions options) {
     return withLogging("Page.screenshot", () -> screenshotImpl(options));
@@ -981,8 +971,6 @@ public class PageImpl extends ChannelOwner implements Page {
       }
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.remove("type");
-    params.addProperty("type", toProtocol(options.type));
     params.remove("path");
     JsonObject json = sendMessage("screenshot", params).getAsJsonObject();
 

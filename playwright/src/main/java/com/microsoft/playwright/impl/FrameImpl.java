@@ -218,11 +218,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
 
-    params.remove("button");
-    if (options.button != null) {
-      params.addProperty("button", Serialization.toProtocol(options.button));
-    }
-
     params.remove("modifiers");
     if (options.modifiers != null) {
       params.add("modifiers", Serialization.toProtocol(options.modifiers));
@@ -251,11 +246,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
-
-    params.remove("button");
-    if (options.button != null) {
-      params.addProperty("button", Serialization.toProtocol(options.button));
-    }
 
     params.remove("modifiers");
     if (options.modifiers != null) {
@@ -382,10 +372,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("url", url);
-    if (options.waitUntil != null) {
-      params.remove("waitUntil");
-      params.addProperty("waitUntil", toProtocol(options.waitUntil));
-    }
     JsonElement result = sendMessage("goto", params);
     JsonObject jsonResponse = result.getAsJsonObject().getAsJsonObject("response");
     if (jsonResponse == null) {
@@ -602,18 +588,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return parseStringList(json.getAsJsonArray("values"));
   }
 
-  static String toProtocol(LoadState waitUntil) {
-    if (waitUntil == null) {
-      waitUntil = LoadState.LOAD;
-    }
-    switch (waitUntil) {
-      case DOMCONTENTLOADED: return "domcontentloaded";
-      case LOAD: return "load";
-      case NETWORKIDLE: return "networkidle";
-      default: throw new PlaywrightException("Unexpected value: " + waitUntil);
-    }
-  }
-
   @Override
   public void setContent(String html, SetContentOptions options) {
     withLogging("Frame.setContent", () -> setContentImpl(html, options));
@@ -625,8 +599,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("html", html);
-    params.remove("waitUntil");
-    params.addProperty("waitUntil", toProtocol(options.waitUntil));
     sendMessage("setContent", params);
   }
 
@@ -888,10 +860,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return runUntil(code, new WaitableRace<>(waitables));
   }
 
-  private static String toProtocol(WaitForSelectorOptions.State state) {
-    return state.toString().toLowerCase();
-  }
-
   @Override
   public ElementHandle waitForSelector(String selector, WaitForSelectorOptions options) {
     return withLogging("Frame.waitForSelector", () -> waitForSelectorImpl(selector, options));
@@ -903,10 +871,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
-    if (options.state != null) {
-      params.remove("state");
-      params.addProperty("state", toProtocol(options.state));
-    }
     JsonElement json = sendMessage("waitForSelector", params);
     JsonObject element = json.getAsJsonObject().getAsJsonObject("element");
     if (element == null) {
