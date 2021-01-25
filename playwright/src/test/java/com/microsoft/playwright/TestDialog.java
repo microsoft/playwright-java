@@ -19,17 +19,17 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
-import static com.microsoft.playwright.Dialog.Type.ALERT;
-import static com.microsoft.playwright.Dialog.Type.PROMPT;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import java.time.Duration;
+import java.time.Instant;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestDialog extends TestBase {
 
   @Test
   void shouldFire() {
     page.onDialog(dialog -> {
-      assertEquals(ALERT, dialog.type());
+      assertEquals("alert", dialog.type());
       assertEquals( "", dialog.defaultValue());
       assertEquals( "yo", dialog.message());
       dialog.accept();
@@ -40,7 +40,7 @@ public class TestDialog extends TestBase {
   @Test
   void shouldAllowAcceptingPrompts() {
     page.onDialog(dialog -> {
-      assertEquals(PROMPT, dialog.type());
+      assertEquals("prompt", dialog.type());
       assertEquals("yes.", dialog.defaultValue());
       assertEquals("question?", dialog.message());
       dialog.accept("answer!");
@@ -85,11 +85,16 @@ public class TestDialog extends TestBase {
   void shouldBeAbleToCloseContextWithOpenAlert() {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
-//    const alertPromise = page.futureEvent("dialog");
+    boolean[] didShowDialog = {false};
+    page.onDialog(dialog -> didShowDialog[0] = true);
     page.evaluate("() => {\n" +
       "    setTimeout(() => alert('hello'), 0);\n" +
       "}");
-//    alertPromise;
+    Instant start = Instant.now();
+    while (!didShowDialog[0]) {
+      page.waitForTimeout(100);
+      assertTrue(Duration.between(start, Instant.now()).getSeconds() < 30, "Timed out");
+    }
     context.close();
   }
 }

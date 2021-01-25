@@ -1112,11 +1112,6 @@ class Interface extends TypeDefinition {
 
   private void writeSharedTypes(List<String> output, String offset) {
     switch (jsonName) {
-      case "Dialog": {
-        output.add(offset + "enum Type { ALERT, BEFOREUNLOAD, CONFIRM, PROMPT }");
-        output.add("");
-        break;
-      }
       case "Mouse": {
         output.add(offset + "enum Button { LEFT, MIDDLE, RIGHT }");
         output.add("");

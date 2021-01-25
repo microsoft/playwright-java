@@ -22,8 +22,6 @@ import java.util.*;
  * {@code Dialog} objects are dispatched by page via the [{@code event: Page.dialog}] event.
  */
 public interface Dialog {
-  enum Type { ALERT, BEFOREUNLOAD, CONFIRM, PROMPT }
-
   default void accept() {
     accept(null);
   }
@@ -48,6 +46,6 @@ public interface Dialog {
   /**
    * Returns dialog's type, can be one of {@code alert}, {@code beforeunload}, {@code confirm} or {@code prompt}.
    */
-  Type type();
+  String type();
 }
 

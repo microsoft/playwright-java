@@ -152,7 +152,6 @@ class Types {
     add("WebSocket.waitForEvent.optionsOrPredicate", "Function|Object", "String");
 
     // Return structures
-    add("Dialog.type", "string", "Type", new Empty());
     add("ConsoleMessage.location", "Object", "Location");
     add("ElementHandle.boundingBox", "Object|null", "BoundingBox", new Empty());
     add("Accessibility.snapshot", "Object|null", "AccessibilityNode", new Empty());

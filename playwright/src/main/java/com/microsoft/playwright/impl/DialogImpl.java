@@ -52,13 +52,7 @@ class DialogImpl extends ChannelOwner implements Dialog {
   }
 
   @Override
-  public Type type() {
-    switch (initializer.get("type").getAsString()) {
-      case "alert": return Type.ALERT;
-      case "beforeunload": return Type.BEFOREUNLOAD;
-      case "confirm": return Type.CONFIRM;
-      case "prompt": return Type.PROMPT;
-      default: throw new PlaywrightException("Unexpected dialog type: " + initializer.get("type").getAsString());
-    }
+  public String type() {
+    return initializer.get("type").getAsString();
   }
 }
