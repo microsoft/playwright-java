@@ -16,8 +16,6 @@
 
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.Event;
-
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
