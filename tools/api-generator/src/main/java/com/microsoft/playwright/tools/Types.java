@@ -46,7 +46,7 @@ class Types {
 
   Types() {
     // State enums
-    add("Page.waitForLoadState.state", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState");
+    add("Page.waitForLoadState.state", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "Frame.LoadState", new Empty());
     add("Frame.waitForLoadState.state", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState");
     add("ElementHandle.waitForElementState.state", "\"disabled\"|\"editable\"|\"enabled\"|\"hidden\"|\"stable\"|\"visible\"", "ElementState");
     add("Logger.isEnabled.severity", "\"error\"|\"info\"|\"verbose\"|\"warning\"", "Severity");

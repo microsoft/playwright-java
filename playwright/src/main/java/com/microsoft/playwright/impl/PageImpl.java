@@ -1158,9 +1158,9 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
+  public void waitForLoadState(Frame.LoadState state, WaitForLoadStateOptions options) {
     withLogging("Page.waitForLoadState",
-      () -> mainFrame.waitForLoadStateImpl(convertViaJson(state, Frame.LoadState.class), convertViaJson(options, Frame.WaitForLoadStateOptions.class)));
+      () -> mainFrame.waitForLoadStateImpl(state, convertViaJson(options, Frame.WaitForLoadStateOptions.class)));
   }
 
   @Override

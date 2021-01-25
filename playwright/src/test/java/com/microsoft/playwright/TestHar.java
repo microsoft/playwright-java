@@ -29,6 +29,7 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static com.microsoft.playwright.Frame.LoadState.DOMCONTENTLOADED;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestHar extends TestBase {
@@ -99,7 +100,7 @@ public class TestHar extends TestBase {
   void shouldHavePages() throws IOException {
     pageWithHar.page.navigate("data:text/html,<title>Hello</title>");
     // For data: load comes before domcontentloaded...
-    pageWithHar.page.waitForLoadState(Page.LoadState.DOMCONTENTLOADED);
+    pageWithHar.page.waitForLoadState(DOMCONTENTLOADED);
     JsonObject log = pageWithHar.log();
 
     assertEquals(1, log.getAsJsonArray("pages").size());
@@ -122,7 +123,7 @@ public class TestHar extends TestBase {
 
     page.navigate("data:text/html,<title>Hello</title>");
     // For data: load comes before domcontentloaded...
-    page.waitForLoadState(Page.LoadState.DOMCONTENTLOADED);
+    page.waitForLoadState(DOMCONTENTLOADED);
     context.close();
     JsonObject log;
     try (Reader reader = new FileReader(harPath.toFile())) {
