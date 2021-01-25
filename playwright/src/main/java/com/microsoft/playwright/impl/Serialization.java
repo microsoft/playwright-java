@@ -39,6 +39,15 @@ class Serialization {
         .registerTypeAdapter(BrowserContext.SameSite.class, new SameSiteAdapter().nullSafe())
         .registerTypeAdapter(ColorScheme.class, new ColorSchemeAdapter().nullSafe())
         .registerTypeAdapter(Page.EmulateMediaParams.Media.class, new MediaSerializer())
+        .registerTypeAdapter(ElementHandle.ScreenshotOptions.Type.class, new ToLowerCaseSerializer<ElementHandle.ScreenshotOptions.Type>())
+        .registerTypeAdapter(Page.ScreenshotOptions.Type.class, new ToLowerCaseSerializer<Page.ScreenshotOptions.Type>())
+        .registerTypeAdapter(Mouse.Button.class, new ToLowerCaseSerializer<Mouse.Button>())
+        .registerTypeAdapter(Frame.LoadState.class, new ToLowerCaseSerializer<Frame.LoadState>())
+        .registerTypeAdapter(Page.LoadState.class, new ToLowerCaseSerializer<Page.LoadState>())
+        .registerTypeAdapter(ElementHandle.WaitForSelectorOptions.State.class, new ToLowerCaseSerializer<ElementHandle.WaitForSelectorOptions.State>())
+        .registerTypeAdapter(Frame.WaitForSelectorOptions.State.class, new ToLowerCaseSerializer<Frame.WaitForSelectorOptions.State>())
+        .registerTypeAdapter(Page.WaitForSelectorOptions.State.class, new ToLowerCaseSerializer<Page.WaitForSelectorOptions.State>())
+        .registerTypeAdapter((new TypeToken<Set<Keyboard.Modifier>>(){}).getType(), new KeyboardModifiersSerializer())
         .registerTypeAdapter(Optional.class, new OptionalSerializer())
         .registerTypeHierarchyAdapter(JSHandleImpl.class, new HandleSerializer())
         .registerTypeHierarchyAdapter(Map.class, new StringMapSerializer())
@@ -180,34 +189,24 @@ class Serialization {
     throw new PlaywrightException("Unexpected result: " + gson().toJson(value));
   }
 
-  static String toProtocol(Mouse.Button button) {
-    switch (button) {
-      case LEFT:
-        return "left";
-      case RIGHT:
-        return "right";
-      case MIDDLE:
-        return "middle";
-      default:
-        throw new PlaywrightException("Unexpected value: " + button);
+  private static class KeyboardModifiersSerializer implements JsonSerializer<Set<Keyboard.Modifier>> {
+    @Override
+    public JsonArray serialize(Set<Keyboard.Modifier> modifiers, Type typeOfSrc, JsonSerializationContext context) {
+      JsonArray result = new JsonArray();
+      if (modifiers.contains(Keyboard.Modifier.ALT)) {
+        result.add("Alt");
+      }
+      if (modifiers.contains(Keyboard.Modifier.CONTROL)) {
+        result.add("Control");
+      }
+      if (modifiers.contains(Keyboard.Modifier.META)) {
+        result.add("Meta");
+      }
+      if (modifiers.contains(Keyboard.Modifier.SHIFT)) {
+        result.add("Shift");
+      }
+      return result;
     }
-  }
-
-  static JsonArray toProtocol(Set<Keyboard.Modifier> modifiers) {
-    JsonArray result = new JsonArray();
-    if (modifiers.contains(Keyboard.Modifier.ALT)) {
-      result.add("Alt");
-    }
-    if (modifiers.contains(Keyboard.Modifier.CONTROL)) {
-      result.add("Control");
-    }
-    if (modifiers.contains(Keyboard.Modifier.META)) {
-      result.add("Meta");
-    }
-    if (modifiers.contains(Keyboard.Modifier.SHIFT)) {
-      result.add("Shift");
-    }
-    return result;
   }
 
   static JsonArray toJsonArray(FileChooser.FilePayload[] files) {
@@ -297,6 +296,13 @@ class Serialization {
     @Override
     public JsonElement serialize(Path src, Type typeOfSrc, JsonSerializationContext context) {
       return new JsonPrimitive(src.toString());
+    }
+  }
+
+  private static class ToLowerCaseSerializer<E extends Enum<E>> implements JsonSerializer<E> {
+    @Override
+    public JsonElement serialize(E src, Type typeOfSrc, JsonSerializationContext context) {
+      return new JsonPrimitive(src.toString().toLowerCase());
     }
   }
 
