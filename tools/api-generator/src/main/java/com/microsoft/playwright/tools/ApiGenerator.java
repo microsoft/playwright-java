@@ -26,6 +26,7 @@ import java.nio.file.FileSystems;
 import java.util.*;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.reverse;
 
 abstract class Element {
   final String jsonName;
@@ -476,17 +477,6 @@ class Event extends Element {
 class Method extends Element {
   final TypeRef returnType;
   final List<Param> params = new ArrayList<>();
-  private final String name;
-
-  private static Map<String, String> tsToJavaMethodName = new HashMap<>();
-  static {
-    tsToJavaMethodName.put("continue", "continue_");
-    tsToJavaMethodName.put("$eval", "evalOnSelector");
-    tsToJavaMethodName.put("$$eval", "evalOnSelectorAll");
-    tsToJavaMethodName.put("$", "querySelector");
-    tsToJavaMethodName.put("$$", "querySelectorAll");
-    tsToJavaMethodName.put("goto", "navigate");
-  }
 
   static Set<String> waitForMethods = new HashSet<>();
   static {
@@ -686,7 +676,6 @@ class Method extends Element {
         }
       }
     }
-    name = tsToJavaMethodName.containsKey(jsonName) ? tsToJavaMethodName.get(jsonName) : jsonName;
   }
 
   private String toJava() {
@@ -697,7 +686,7 @@ class Method extends Element {
       paramList.append(p.toJava());
     }
 
-    return returnType.toJava() + " " + name + "(" + paramList + ");";
+    return returnType.toJava() + " " + jsonName + "(" + paramList + ");";
   }
 
   void writeTo(List<String> output, String offset) {
@@ -739,8 +728,8 @@ class Method extends Element {
     }
     argList.append("int".equals(params.get(paramCount).type.toJava()) ? "0" : "null");
     String returns = returnType.toJava().equals("void") ? "" : "return ";
-    output.add(offset + "default " + returnType.toJava() + " " + name + "(" + paramList + ") {");
-    output.add(offset + "  " + returns + name + "(" + argList + ");");
+    output.add(offset + "default " + returnType.toJava() + " " + jsonName + "(" + paramList + ") {");
+    output.add(offset + "  " + returns + jsonName + "(" + argList + ");");
     output.add(offset + "}");
   }
 
@@ -946,7 +935,7 @@ class Field extends Element {
       output.add(offset + "}");
       return;
     }
-    if ("Route.continue.options.postData".equals(jsonPath)) {
+    if ("Route.continue_.options.postData".equals(jsonPath)) {
       output.add(offset + "public " + parentClass + " withPostData(String postData) {");
       output.add(offset + "  this.postData = postData.getBytes(StandardCharsets.UTF_8);");
       output.add(offset + "  return this;");
@@ -1088,8 +1077,6 @@ class Interface extends TypeDefinition {
       output.add(offset + "static Playwright create() {");
       output.add(offset + "  return PlaywrightImpl.create();");
       output.add(offset + "}");
-      output.add("");
-      output.add(offset + "void close();");
     }
     output.add("}");
     output.add("\n");
@@ -1483,17 +1470,34 @@ public class ApiGenerator {
 
   private static void filterOtherLangs(JsonElement json) {
     if (json.isJsonArray()) {
-      List<JsonElement> toRemove = new ArrayList<>();
+      List<Integer> toRemove = new ArrayList<>();
       JsonArray array = json.getAsJsonArray();
-      for (JsonElement item : array) {
+      for (int i = 0; i < array.size(); i++) {
+        JsonElement item = array.get(i);
         if (isSupported(item)) {
           filterOtherLangs(item);
+          String alias = alias(item);
+          if (alias == null) {
+            continue;
+          }
+          int aliasIndex = indexOfAlias(array, alias);
+          if (aliasIndex == -1) {
+            // Rename in place.
+            item.getAsJsonObject().addProperty("name", alias);
+          } else {
+            array.set(i, array.get(aliasIndex));
+            if (aliasIndex < i) {
+              throw new RuntimeException("Alias should go after original param, aliasIndex = " + aliasIndex + ", i = " + i);
+            }
+            toRemove.add(aliasIndex);
+          }
         } else {
-          toRemove.add(item);
+          toRemove.add(i);
         }
       }
-      for (JsonElement e : toRemove) {
-        array.remove(e);
+      reverse(toRemove);
+      for (int index : toRemove) {
+        array.remove(index);
       }
     } else if (json.isJsonObject()) {
       List<String> toRemove = new ArrayList<>();
@@ -1511,7 +1515,39 @@ public class ApiGenerator {
     }
   }
 
-  static boolean isSupported(JsonElement json) {
+  private static int indexOfAlias(JsonArray array, String alias) {
+    for (int i = 0; i < array.size(); i++) {
+      JsonElement item = array.get(i);
+      if (!isSupported(item)) {
+        continue;
+      }
+      if (alias.equals(item.getAsJsonObject().get("name").getAsString())) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  private static String alias(JsonElement json) {
+    if (!json.isJsonObject()) {
+      return null;
+    }
+    JsonObject jsonObject = json.getAsJsonObject();
+    if (!jsonObject.has("langs")) {
+      return null;
+    }
+    JsonObject langs = jsonObject.getAsJsonObject("langs");
+    if (!langs.has("aliases")) {
+      return null;
+    }
+    JsonElement javaAlias = langs.getAsJsonObject("aliases").get("java");
+    if (javaAlias == null) {
+      return null;
+    }
+    return javaAlias.getAsString();
+  }
+
+  private static boolean isSupported(JsonElement json) {
     if (!json.isJsonObject()) {
       return true;
     }
@@ -1525,11 +1561,11 @@ public class ApiGenerator {
     }
     JsonArray only = langs.getAsJsonArray("only");
     for (JsonElement lang : only) {
-      if (!"js".equals(lang.getAsString())) {
-        return false;
+      if ("java".equals(lang.getAsString())) {
+        return true;
       }
     }
-    return true;
+    return false;
   }
 
   public static void main(String[] args) throws IOException {

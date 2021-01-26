@@ -121,10 +121,10 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void addInitScript(String script, Object arg) {
-    withLogging("BrowserContext.addInitScript", () -> addInitScriptImpl(script, arg));
+  public void addInitScript(String script) {
+    withLogging("BrowserContext.addInitScript", () -> addInitScriptImpl(script));
   }
-  private void addInitScriptImpl(String script, Object arg) {
+  private void addInitScriptImpl(String script) {
     // TODO: serialize arg
     JsonObject params = new JsonObject();
     if (isFunctionBody(script)) {
