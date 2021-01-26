@@ -263,7 +263,6 @@ public interface Page {
   Worker waitForWorker(Runnable code, WaitForWorkerOptions options);
   default Worker waitForWorker(Runnable code) { return waitForWorker(code, null); }
 
-  enum LoadState { LOAD, DOMCONTENTLOADED, NETWORKIDLE }
   class AddScriptTagOptions {
     /**
      * Raw JavaScript content to be injected into frame.
@@ -2354,7 +2353,7 @@ public interface Page {
    * @param arg Optional argument to pass to {@code pageFunction}
    */
   JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options);
-  default void waitForLoadState(LoadState state) {
+  default void waitForLoadState(Frame.LoadState state) {
     waitForLoadState(state, null);
   }
   default void waitForLoadState() {
@@ -2374,7 +2373,7 @@ public interface Page {
    * - {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.
    * - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
    */
-  void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
+  void waitForLoadState(Frame.LoadState state, WaitForLoadStateOptions options);
   default Response waitForNavigation(Runnable code) { return waitForNavigation(code, null); }
   /**
    * Waits for the main frame navigation and returns the main resource response. In case of multiple redirects, the

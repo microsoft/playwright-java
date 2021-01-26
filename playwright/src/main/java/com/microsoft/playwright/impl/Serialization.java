@@ -43,7 +43,6 @@ class Serialization {
         .registerTypeAdapter(Page.ScreenshotOptions.Type.class, new ToLowerCaseSerializer<Page.ScreenshotOptions.Type>())
         .registerTypeAdapter(Mouse.Button.class, new ToLowerCaseSerializer<Mouse.Button>())
         .registerTypeAdapter(Frame.LoadState.class, new ToLowerCaseSerializer<Frame.LoadState>())
-        .registerTypeAdapter(Page.LoadState.class, new ToLowerCaseSerializer<Page.LoadState>())
         .registerTypeAdapter(ElementHandle.WaitForSelectorOptions.State.class, new ToLowerCaseSerializer<ElementHandle.WaitForSelectorOptions.State>())
         .registerTypeAdapter(Frame.WaitForSelectorOptions.State.class, new ToLowerCaseSerializer<Frame.WaitForSelectorOptions.State>())
         .registerTypeAdapter(Page.WaitForSelectorOptions.State.class, new ToLowerCaseSerializer<Page.WaitForSelectorOptions.State>())

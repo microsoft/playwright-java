@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.microsoft.playwright.Page.LoadState.DOMCONTENTLOADED;
-import static com.microsoft.playwright.Page.LoadState.LOAD;
+import static com.microsoft.playwright.Frame.LoadState.DOMCONTENTLOADED;
+import static com.microsoft.playwright.Frame.LoadState.LOAD;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPageBasic extends TestBase {

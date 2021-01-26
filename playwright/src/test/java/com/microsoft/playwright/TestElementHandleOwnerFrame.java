@@ -18,6 +18,7 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
+import static com.microsoft.playwright.Frame.LoadState.DOMCONTENTLOADED;
 import static com.microsoft.playwright.Utils.attachFrame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -104,7 +105,7 @@ public class TestElementHandleOwnerFrame extends TestBase {
      "  return div;\n" +
      "}");
     assertEquals(page.mainFrame(), divHandle.asElement().ownerFrame());
-    popup.waitForLoadState(Page.LoadState.DOMCONTENTLOADED);
+    popup.waitForLoadState(DOMCONTENTLOADED);
     page.evaluate("() => {\n" +
       "  const div = document.querySelector('div');\n" +
       "  window['__popup'].document.body.appendChild(div);\n" +

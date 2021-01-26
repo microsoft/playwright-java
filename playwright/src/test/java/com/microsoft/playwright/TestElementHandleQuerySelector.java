@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.microsoft.playwright.Frame.LoadState.DOMCONTENTLOADED;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestElementHandleQuerySelector extends TestBase {
@@ -45,7 +46,7 @@ public class TestElementHandleQuerySelector extends TestBase {
     assertNotNull(divHandle.asElement().querySelector("span"));
     assertEquals("hello", divHandle.asElement().querySelector("span").evaluate( "e => e.textContent"));
     // Test Popup
-    popup.waitForLoadState(Page.LoadState.DOMCONTENTLOADED);
+    popup.waitForLoadState(DOMCONTENTLOADED);
     page.evaluate("() => {\n" +
       "    const div = document.querySelector('div');\n" +
       "    window['__popup'].document.body.appendChild(div);\n" +
