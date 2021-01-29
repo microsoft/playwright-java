@@ -25,7 +25,7 @@ import java.util.function.Consumer;
  *
  * <p> A Browser is created via [{@code method: BrowserType.launch}]. An example of using a {@code Browser} to create a [Page]:
  */
-public interface Browser {
+public interface Browser extends AutoCloseable {
   class VideoSize {
     private final int width;
     private final int height;

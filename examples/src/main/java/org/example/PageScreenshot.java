@@ -24,21 +24,20 @@ import java.util.List;
 
 public class PageScreenshot {
   public static void main(String[] args) throws Exception {
-    Playwright playwright = Playwright.create();
-    List<BrowserType> browserTypes = Arrays.asList(
-        playwright.chromium(),
-        playwright.webkit(),
-        playwright.firefox()
-    );
-    for (BrowserType browserType : browserTypes) {
-      Browser browser = browserType.launch();
-      BrowserContext context = browser.newContext(
-          new Browser.NewContextOptions().withViewport(800, 600));
-      Page page = context.newPage();
-      page.navigate("http://whatsmyuseragent.org/");
-      page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("screenshot-" + browserType.name() + ".png")));
-      browser.close();
+    try (Playwright playwright = Playwright.create()) {
+      List<BrowserType> browserTypes = Arrays.asList(
+          playwright.chromium(),
+          playwright.webkit(),
+          playwright.firefox()
+      );
+      for (BrowserType browserType : browserTypes) {
+        try (Browser browser = browserType.launch();
+             BrowserContext context = browser.newContext(new Browser.NewContextOptions().withViewport(800, 600));
+             Page page = context.newPage()) {
+          page.navigate("http://whatsmyuseragent.org/");
+          page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("screenshot-" + browserType.name() + ".png")));
+        }
+      }
     }
-    playwright.close();
   }
 }

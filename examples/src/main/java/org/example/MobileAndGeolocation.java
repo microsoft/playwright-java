@@ -24,20 +24,17 @@ import static java.util.Arrays.asList;
 
 public class MobileAndGeolocation {
   public static void main(String[] args) throws Exception {
-    Playwright playwright = Playwright.create();
-    BrowserType browserType = playwright.chromium();
-    Browser browser = browserType.launch(new BrowserType.LaunchOptions().withHeadless(false));
-    DeviceDescriptor pixel2 = playwright.devices().get("Pixel 2");
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-        .withDevice(pixel2)
-        .withLocale("en-US")
-        .withGeolocation(new Geolocation(41.889938, 12.492507))
-        .withPermissions(asList("geolocation")));
-    Page page = context.newPage();
-    page.navigate("https://www.openstreetmap.org/");
-    page.click("a[data-original-title=\"Show My Location\"]");
-    page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("colosseum-pixel2.png")));
-    browser.close();
-    playwright.close();
+    try (Playwright playwright = Playwright.create();
+         Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().withHeadless(false));
+         BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+          .withDevice(playwright.devices().get("Pixel 2"))
+          .withLocale("en-US")
+          .withGeolocation(new Geolocation(41.889938, 12.492507))
+          .withPermissions(asList("geolocation")));
+         Page page = context.newPage()) {
+      page.navigate("https://www.openstreetmap.org/");
+      page.click("a[data-original-title=\"Show My Location\"]");
+      page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("colosseum-pixel2.png")));
+    }
   }
 }

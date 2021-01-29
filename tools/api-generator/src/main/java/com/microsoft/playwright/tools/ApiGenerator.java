@@ -24,6 +24,7 @@ import com.google.gson.JsonObject;
 import java.io.*;
 import java.nio.file.FileSystems;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
@@ -1017,6 +1018,7 @@ class Interface extends TypeDefinition {
     "package com.microsoft.playwright;\n";
 
   private static Set<String> allowedBaseInterfaces = new HashSet<>(asList("Browser", "JSHandle", "BrowserContext"));
+  private static Set<String> autoCloseableInterfaces = new HashSet<>(asList("Playwright", "Browser", "BrowserContext", "Page"));
 
   Interface(JsonObject jsonElement) {
     super(null, jsonElement);
@@ -1066,13 +1068,17 @@ class Interface extends TypeDefinition {
     }
     output.add("");
 
-    String implementsClause = "";
+    List<String> superInterfaces = new ArrayList<>();
     if (jsonElement.getAsJsonObject().has("extends")) {
       String base = jsonElement.getAsJsonObject().get("extends").getAsString();
       if (allowedBaseInterfaces.contains(base)) {
-        implementsClause = " extends " + base;
+        superInterfaces.add(base);
       }
     }
+    if (autoCloseableInterfaces.contains(jsonName)) {
+      superInterfaces.add("AutoCloseable");
+    }
+    String implementsClause = superInterfaces.isEmpty() ? "" : " extends " + superInterfaces.stream().collect(Collectors.joining(", "));
 
     writeJavadoc(output, offset, formattedComment());
     output.add("public interface " + jsonName + implementsClause + " {");
@@ -1089,6 +1095,7 @@ class Interface extends TypeDefinition {
       output.add(offset + "  return PlaywrightImpl.create();");
       output.add(offset + "}");
       output.add("");
+      output.add(offset + "@Override");
       output.add(offset + "void close();");
     }
     output.add("}");
