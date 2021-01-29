@@ -21,9 +21,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
@@ -320,14 +318,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       JsonElement json = sendMessage("storageState");
       StorageState storageState = gson().fromJson(json, StorageState.class);
       if (options != null && options.path != null) {
-        try {
-          Files.createDirectories(options.path.getParent());
-          try (FileWriter writer = new FileWriter(options.path.toFile())) {
-            writer.write(json.toString());
-          }
-        } catch (IOException e) {
-          throw new PlaywrightException("Failed to write storage state to file", e);
-        }
+        Utils.writeToFile(json.toString().getBytes(StandardCharsets.UTF_8), options.path);
       }
       return storageState;
     });
