@@ -139,7 +139,7 @@ class Utils {
         }
       }
     }
-    try (DataOutputStream out = new DataOutputStream(new FileOutputStream(path.toFile()));) {
+    try (FileOutputStream out = new FileOutputStream(path.toFile())) {
       out.write(buffer);
     } catch (IOException e) {
       throw new PlaywrightException("Failed to write to file", e);
