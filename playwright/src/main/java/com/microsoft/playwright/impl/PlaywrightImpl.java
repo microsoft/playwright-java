@@ -100,12 +100,19 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   }
 
   @Override
-  public void close() throws Exception {
-    connection.close();
-    // playwright-cli will exit when its stdin is closed, we wait for that.
-    boolean didClose = driverProcess.waitFor(30, TimeUnit.SECONDS);
-    if (!didClose) {
-      System.err.println("WARNING: Timed out while waiting for driver process to exit");
+  public void close() {
+    try {
+      connection.close();
+      // playwright-cli will exit when its stdin is closed, we wait for that.
+      boolean didClose = driverProcess.waitFor(30, TimeUnit.SECONDS);
+      if (!didClose) {
+        System.err.println("WARNING: Timed out while waiting for driver process to exit");
+      }
+    } catch (IOException e) {
+      throw new PlaywrightException("Failed to terminate", e);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new PlaywrightException("Operation interrupted", e);
     }
   }
 }
