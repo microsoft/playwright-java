@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 import static java.util.Arrays.asList;
 
 public class MobileAndGeolocation {
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     try (Playwright playwright = Playwright.create();
          Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().withHeadless(false));
          BrowserContext context = browser.newContext(new Browser.NewContextOptions()

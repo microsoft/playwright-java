@@ -64,7 +64,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PageScreenshot {
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     try (Playwright playwright = Playwright.create()) {
       List<BrowserType> browserTypes = Arrays.asList(
         playwright.chromium(),
@@ -94,7 +94,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class MobileAndGeolocation {
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     try (Playwright playwright = Playwright.create();
          Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().withHeadless(false));
          BrowserContext context = browser.newContext(new Browser.NewContextOptions()
@@ -119,7 +119,7 @@ This code snippet navigates to example.com in Firefox, and executes a script in 
 import com.microsoft.playwright.*;
 
 public class EvaluateInBrowserContext {
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     try (Playwright playwright = Playwright.create();
          Browser browser = playwright.firefox().launch(new BrowserType.LaunchOptions().withHeadless(false));
          BrowserContext context = browser.newContext();
@@ -146,7 +146,7 @@ This code snippet sets up request routing for a WebKit page to log all network r
 import com.microsoft.playwright.*;
 
 public class InterceptNetworkRequests {
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     try (Playwright playwright = Playwright.create();
          Browser browser = playwright.webkit().launch();
          BrowserContext context = browser.newContext();

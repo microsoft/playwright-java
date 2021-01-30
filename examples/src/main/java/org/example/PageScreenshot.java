@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PageScreenshot {
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     try (Playwright playwright = Playwright.create()) {
       List<BrowserType> browserTypes = Arrays.asList(
           playwright.chromium(),
