@@ -50,6 +50,6 @@ public interface Playwright {
     return PlaywrightImpl.create();
   }
 
-  void close() throws Exception;
+  void close();
 }
 
