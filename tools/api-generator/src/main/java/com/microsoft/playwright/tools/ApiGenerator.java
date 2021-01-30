@@ -1089,7 +1089,7 @@ class Interface extends TypeDefinition {
       output.add(offset + "  return PlaywrightImpl.create();");
       output.add(offset + "}");
       output.add("");
-      output.add(offset + "void close() throws Exception;");
+      output.add(offset + "void close();");
     }
     output.add("}");
     output.add("\n");
