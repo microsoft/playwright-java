@@ -489,13 +489,6 @@ class Method extends Element {
   private static Map<String, String[]> customSignature = new HashMap<>();
   static {
     customSignature.put("Page.setViewportSize", new String[]{"void setViewportSize(int width, int height);"});
-    // The method is deprecated in ts, just remove it in Java.
-    customSignature.put("BrowserContext.setHTTPCredentials", new String[0]);
-    // No connect for now.
-    customSignature.put("BrowserType.connect", new String[0]);
-    customSignature.put("BrowserType.launchServer", new String[0]);
-    // We don't expose Chromium-specific APIs at the moment.
-    customSignature.put("Page.coverage", new String[0]);
     customSignature.put("BrowserContext.route", new String[]{
       "void route(String url, Consumer<Route> handler);",
       "void route(Pattern url, Consumer<Route> handler);",
@@ -571,11 +564,6 @@ class Method extends Element {
     };
     customSignature.put("Page.setInputFiles", setInputFilesWithSelector);
     customSignature.put("Frame.setInputFiles", setInputFilesWithSelector);
-
-    // We only have typed onPage/onDownload/... event listeners in Java.
-    customSignature.put("Page.waitForEvent", new String[] {});
-    customSignature.put("BrowserContext.waitForEvent", new String[] {});
-    customSignature.put("WebSocket.waitForEvent", new String[] {});
 
     customSignature.put("Page.waitForRequest", new String[] {
       "default Request waitForRequest(Runnable code) { return waitForRequest(code, (Predicate<Request>) null, null); }",
