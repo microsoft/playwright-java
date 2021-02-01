@@ -530,19 +530,19 @@ public interface Page {
      * Emulates {@code 'prefers-colors-scheme'} media feature, supported values are {@code 'light'}, {@code 'dark'}, {@code 'no-preference'}. Passing
      * {@code null} disables color scheme emulation.
      */
-    public ColorScheme colorScheme;
+    public Optional<ColorScheme> colorScheme;
     /**
      * Changes the CSS media type of the page. The only allowed values are {@code 'screen'}, {@code 'print'} and {@code null}. Passing {@code null}
      * disables CSS media emulation.
      */
-    public Media media;
+    public Optional<Media> media;
 
     public EmulateMediaOptions withColorScheme(ColorScheme colorScheme) {
-      this.colorScheme = colorScheme;
+      this.colorScheme = Optional.ofNullable(colorScheme);
       return this;
     }
     public EmulateMediaOptions withMedia(Media media) {
-      this.media = media;
+      this.media = Optional.ofNullable(media);
       return this;
     }
   }
