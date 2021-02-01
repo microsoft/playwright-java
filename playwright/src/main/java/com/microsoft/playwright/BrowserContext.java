@@ -259,9 +259,6 @@ public interface BrowserContext extends AutoCloseable {
    * obtained via [{@code method: BrowserContext.cookies}].
    */
   void addCookies(List<AddCookie> cookies);
-  default void addInitScript(String script) {
-    addInitScript(script, null);
-  }
   /**
    * Adds a script which would be evaluated in one of the following scenarios:
    * - Whenever a page is created in the browser context or is navigated.
@@ -275,9 +272,8 @@ public interface BrowserContext extends AutoCloseable {
    * [{@code method: Page.addInitScript}] is not defined.
    *
    * @param script Script to be evaluated in all pages in the browser context.
-   * @param arg Optional argument to pass to {@code script} (only supported when passing a function).
    */
-  void addInitScript(String script, Object arg);
+  void addInitScript(String script);
   /**
    * Returns the browser instance of the context. If it was launched as a persistent context null gets returned.
    */

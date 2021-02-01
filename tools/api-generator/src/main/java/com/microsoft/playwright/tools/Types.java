@@ -60,11 +60,11 @@ class Types {
     add("Page.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
     add("Page.dblclick.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("Page.tap.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
-    add("Page.emulateMedia.params.media", "\"print\"|\"screen\"|null", "Media");
-    add("Page.emulateMedia.params.colorScheme", "\"dark\"|\"light\"|\"no-preference\"|null", "ColorScheme", new Empty());
+    add("Page.emulateMedia.options.media", "\"print\"|\"screen\"|null", "Media");
+    add("Page.emulateMedia.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"|null", "ColorScheme", new Empty());
     add("Page.goBack.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "Frame.LoadState", new Empty());
     add("Page.goForward.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "Frame.LoadState", new Empty());
-    add("Page.goto.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "Frame.LoadState", new Empty());
+    add("Page.navigate.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "Frame.LoadState", new Empty());
     add("Page.hover.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("Page.reload.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "Frame.LoadState", new Empty());
     add("Page.screenshot.options.type", "\"jpeg\"|\"png\"", "Type");
@@ -77,7 +77,7 @@ class Types {
     add("Frame.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
     add("Frame.dblclick.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("Frame.tap.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
-    add("Frame.goto.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
+    add("Frame.navigate.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
     add("Frame.hover.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<Keyboard.Modifier>", new Empty());
     add("Frame.setContent.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
     add("Frame.waitForFunction.options.polling", "\"raf\"|float", "double", new Empty());
@@ -167,9 +167,6 @@ class Types {
     add("Page.pdf.options.height", "float|string", "String");
     add("Page.pdf.options.scale", "float", "Double");
 
-    add("Page.goto.options", "Object", "NavigateOptions");
-    add("Frame.goto.options", "Object", "NavigateOptions");
-
     add("Page.click.options.position", "Object", "Position", new Empty());
     add("Page.dblclick.options.position", "Object", "Position", new Empty());
     add("Page.hover.options.position", "Object", "Position", new Empty());
@@ -206,11 +203,11 @@ class Types {
     add("ElementHandle.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");
     add("ElementHandle.setInputFiles.files", "Array<Object>|Array<path>|Object|path", "String");
     add("FileChooser.setFiles.files", "Array<Object>|Array<path>|Object|path", "String");
-    add("Route.continue.options.postData", "Buffer|string", "byte[]", new Empty());
+    add("Route.continue_.options.postData", "Buffer|string", "byte[]", new Empty());
     add("Route.fulfill.options.body", "Buffer|string", "String");
     add("BrowserType.launch.options.ignoreDefaultArgs", "Array<string>|boolean", "Custom");
     add("BrowserType.launch.options.firefoxUserPrefs", "Object<string, boolean|float|string>", "Map<String, Object>", new Empty());
-    add("BrowserType.launch.options.env", "Object<string, boolean|float|string>", "Map<String, String>", new Empty());
+    add("BrowserType.launch.options.env", "Object<string, string>", "Map<String, String>", new Empty());
     add("BrowserType.launchPersistentContext.options.ignoreDefaultArgs", "Array<string>|boolean", "Custom");
     add("BrowserType.launchPersistentContext.options.env", "Object<string, boolean|float|string>", "Map<String, String>", new Empty());
     add("BrowserType.launchServer.options.ignoreDefaultArgs", "Array<string>|boolean", "Custom");
@@ -231,6 +228,8 @@ class Types {
 
     add("Response.finished", "Error|null", "String");
 
+    add("Route.continue_.options", "Object", "ContinueOptions");
+
     // TODO: fix upstream types!
     add("Request.headers", "Object<string, string>", "Map<String, String>", new Empty());
     add("Response.headers", "Object<string, string>", "Map<String, String>", new Empty());
@@ -239,7 +238,7 @@ class Types {
     add("BrowserType.launchPersistentContext.options.extraHTTPHeaders", "Object<string, string>", "Map<String, String>", new Empty());
     add("Page.setExtraHTTPHeaders.headers", "Object<string, string>", "Map<String, String>", new Empty());
     add("BrowserContext.setExtraHTTPHeaders.headers", "Object<string, string>", "Map<String, String>", new Empty());
-    add("Route.continue.options.headers", "Object<string, string>", "Map<String, String>", new Empty());
+    add("Route.continue_.options.headers", "Object<string, string>", "Map<String, String>", new Empty());
     add("Route.fulfill.options.headers", "Object<string, string>", "Map<String, String>", new Empty());
     add("Playwright.devices", "Object", "Map<String, DeviceDescriptor>", new Empty());
   }

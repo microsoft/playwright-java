@@ -740,8 +740,8 @@ public interface Frame {
   }
   class WaitForFunctionOptions {
     /**
-     * If {@code polling} is {@code 'raf'}, then {@code pageFunction} is constantly executed in {@code requestAnimationFrame} callback. If {@code polling} is
-     * a number, then it is treated as an interval in milliseconds at which the function would be executed. Defaults to {@code raf}.
+     * If {@code polling} is {@code 'raf'}, then {@code expression} is constantly executed in {@code requestAnimationFrame} callback. If {@code polling} is a
+     * number, then it is treated as an interval in milliseconds at which the function would be executed. Defaults to {@code raf}.
      */
     public Integer pollingInterval;
     /**
@@ -847,62 +847,6 @@ public interface Frame {
       return this;
     }
   }
-  /**
-   * Returns the ElementHandle pointing to the frame element.
-   *
-   * <p> The method finds an element matching the specified selector within the frame. See
-   * [Working with selectors](./selectors.md#working-with-selectors) for more details. If no elements match the selector,
-   * returns {@code null}.
-   *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
-   */
-  ElementHandle querySelector(String selector);
-  /**
-   * Returns the ElementHandles pointing to the frame elements.
-   *
-   * <p> The method finds all elements matching the specified selector within the frame. See
-   * [Working with selectors](./selectors.md#working-with-selectors) for more details. If no elements match the selector,
-   * returns empty array.
-   *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
-   */
-  List<ElementHandle> querySelectorAll(String selector);
-  default Object evalOnSelector(String selector, String pageFunction) {
-    return evalOnSelector(selector, pageFunction, null);
-  }
-  /**
-   * Returns the return value of {@code pageFunction}
-   *
-   * <p> The method finds an element matching the specified selector within the frame and passes it as a first argument to
-   * {@code pageFunction}. See [Working with selectors](./selectors.md#working-with-selectors) for more details. If no elements
-   * match the selector, the method throws an error.
-   *
-   * <p> If {@code pageFunction} returns a [Promise], then {@code frame.$eval} would wait for the promise to resolve and return its value.
-   *
-   *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
-   * @param pageFunction Function to be evaluated in browser context
-   * @param arg Optional argument to pass to {@code pageFunction}
-   */
-  Object evalOnSelector(String selector, String pageFunction, Object arg);
-  default Object evalOnSelectorAll(String selector, String pageFunction) {
-    return evalOnSelectorAll(selector, pageFunction, null);
-  }
-  /**
-   * Returns the return value of {@code pageFunction}
-   *
-   * <p> The method finds all elements matching the specified selector within the frame and passes an array of matched elements
-   * as a first argument to {@code pageFunction}. See [Working with selectors](./selectors.md#working-with-selectors) for more
-   * details.
-   *
-   * <p> If {@code pageFunction} returns a [Promise], then {@code frame.$$eval} would wait for the promise to resolve and return its value.
-   *
-   *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
-   * @param pageFunction Function to be evaluated in browser context
-   * @param arg Optional argument to pass to {@code pageFunction}
-   */
-  Object evalOnSelectorAll(String selector, String pageFunction, Object arg);
   default ElementHandle addScriptTag() {
     return addScriptTag(null);
   }
@@ -941,7 +885,7 @@ public interface Frame {
    * Passing zero timeout disables this.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   void check(String selector, CheckOptions options);
   List<Frame> childFrames();
@@ -961,7 +905,7 @@ public interface Frame {
    * Passing zero timeout disables this.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   void click(String selector, ClickOptions options);
   /**
@@ -987,7 +931,7 @@ public interface Frame {
    * <p> <strong>NOTE:</strong> {@code frame.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   void dblclick(String selector, DblclickOptions options);
   default void dispatchEvent(String selector, String type, Object eventInit) {
@@ -1017,67 +961,109 @@ public interface Frame {
    *
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    * @param eventInit Optional event-specific initialization properties.
    */
   void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options);
-  default Object evaluate(String pageFunction) {
-    return evaluate(pageFunction, null);
+  default Object evalOnSelector(String selector, String expression) {
+    return evalOnSelector(selector, expression, null);
   }
   /**
-   * Returns the return value of {@code pageFunction}
+   * Returns the return value of {@code expression}.
+   *
+   * <p> The method finds an element matching the specified selector within the frame and passes it as a first argument to
+   * {@code expression}. See [Working with selectors](./selectors.md) for more details. If no elements match the selector, the
+   * method throws an error.
+   *
+   * <p> If {@code expression} returns a [Promise], then [{@code method: Frame.evalOnSelector}] would wait for the promise to resolve and
+   * return its value.
+   *
+   *
+   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   * @param arg Optional argument to pass to {@code expression}
+   */
+  Object evalOnSelector(String selector, String expression, Object arg);
+  default Object evalOnSelectorAll(String selector, String expression) {
+    return evalOnSelectorAll(selector, expression, null);
+  }
+  /**
+   * Returns the return value of {@code expression}.
+   *
+   * <p> The method finds all elements matching the specified selector within the frame and passes an array of matched elements
+   * as a first argument to {@code expression}. See [Working with selectors](./selectors.md) for more details.
+   *
+   * <p> If {@code expression} returns a [Promise], then [{@code method: Frame.evalOnSelectorAll}] would wait for the promise to resolve and
+   * return its value.
+   *
+   *
+   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   * @param arg Optional argument to pass to {@code expression}
+   */
+  Object evalOnSelectorAll(String selector, String expression, Object arg);
+  default Object evaluate(String expression) {
+    return evaluate(expression, null);
+  }
+  /**
+   * Returns the return value of {@code expression}.
    *
    * <p> If the function passed to the [{@code method: Frame.evaluate}] returns a [Promise], then [{@code method: Frame.evaluate}] would wait
    * for the promise to resolve and return its value.
    *
-   * <p> If the function passed to the [{@code method: Frame.evaluate}] returns a non-[Serializable] value,
-   * then[ method: {@code Frame.evaluate}] returns {@code undefined}. DevTools Protocol also supports transferring some additional values
-   * that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}, and bigint literals.
+   * <p> If the function passed to the [{@code method: Frame.evaluate}] returns a non-[Serializable] value, then
+   * [{@code method: Frame.evaluate}] returns {@code undefined}. Playwright also supports transferring some additional values that are
+   * not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    *
    * <p> A string can also be passed in instead of a function.
    *
    * <p> {@code ElementHandle} instances can be passed as an argument to the [{@code method: Frame.evaluate}]:
    *
    *
-   * @param pageFunction Function to be evaluated in browser context
-   * @param arg Optional argument to pass to {@code pageFunction}
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   * @param arg Optional argument to pass to {@code expression}
    */
-  Object evaluate(String pageFunction, Object arg);
-  default JSHandle evaluateHandle(String pageFunction) {
-    return evaluateHandle(pageFunction, null);
+  Object evaluate(String expression, Object arg);
+  default JSHandle evaluateHandle(String expression) {
+    return evaluateHandle(expression, null);
   }
   /**
-   * Returns the return value of {@code pageFunction} as in-page object (JSHandle).
+   * Returns the return value of {@code expression} as a {@code JSHandle}.
    *
-   * <p> The only difference between [{@code method: Frame.evaluate}] and [{@code method: Frame.evaluateHandle}] is
-   * that[ method: Fframe.evaluateHandle`] returns in-page object (JSHandle).
+   * <p> The only difference between [{@code method: Frame.evaluate}] and [{@code method: Frame.evaluateHandle}] is that
+   * [method: Frame.evaluateHandle{@code ] returns }JSHandle`.
    *
-   * <p> If the function, passed to the [{@code method: Frame.evaluateHandle}], returns a [Promise],
-   * then[ method: Fframe.evaluateHandle`] would wait for the promise to resolve and return its value.
+   * <p> If the function, passed to the [{@code method: Frame.evaluateHandle}], returns a [Promise], then
+   * [{@code method: Frame.evaluateHandle}] would wait for the promise to resolve and return its value.
    *
    * <p> A string can also be passed in instead of a function.
    *
    * <p> {@code JSHandle} instances can be passed as an argument to the [{@code method: Frame.evaluateHandle}]:
    *
    *
-   * @param pageFunction Function to be evaluated in the page context
-   * @param arg Optional argument to pass to {@code pageFunction}
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   * @param arg Optional argument to pass to {@code expression}
    */
-  JSHandle evaluateHandle(String pageFunction, Object arg);
+  JSHandle evaluateHandle(String expression, Object arg);
   default void fill(String selector, String value) {
     fill(selector, value, null);
   }
   /**
    * This method waits for an element matching {@code selector}, waits for [actionability](./actionability.md) checks, focuses the
-   * element, fills it and triggers an {@code input} event after filling. If the element matching {@code selector} is not an {@code <input>},
-   * {@code <textarea>} or {@code [contenteditable]} element, this method throws an error. Note that you can pass an empty string to
-   * clear the input field.
+   * element, fills it and triggers an {@code input} event after filling. If the element is inside the {@code <label>} element that has
+   * associated [control](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control), that control will be
+   * filled instead. If the element to be filled is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this
+   * method throws an error. Note that you can pass an empty string to clear the input field.
    *
    * <p> To send fine-grained keyboard events, use [{@code method: Frame.type}].
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
   void fill(String selector, String value, FillOptions options);
@@ -1089,7 +1075,7 @@ public interface Frame {
    * waits until a matching element appears in the DOM.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   void focus(String selector, FocusOptions options);
   /**
@@ -1108,7 +1094,7 @@ public interface Frame {
    * Returns element attribute value.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    * @param name Attribute name to get the value for.
    */
   String getAttribute(String selector, String name, GetAttributeOptions options);
@@ -1154,7 +1140,7 @@ public interface Frame {
    * Passing zero timeout disables this.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   void hover(String selector, HoverOptions options);
   default String innerHTML(String selector) {
@@ -1164,7 +1150,7 @@ public interface Frame {
    * Returns {@code element.innerHTML}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   String innerHTML(String selector, InnerHTMLOptions options);
   default String innerText(String selector) {
@@ -1174,7 +1160,7 @@ public interface Frame {
    * Returns {@code element.innerText}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   String innerText(String selector, InnerTextOptions options);
   default boolean isChecked(String selector) {
@@ -1184,7 +1170,7 @@ public interface Frame {
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   boolean isChecked(String selector, IsCheckedOptions options);
   /**
@@ -1198,7 +1184,7 @@ public interface Frame {
    * Returns whether the element is disabled, the opposite of [enabled](./actionability.md#enabled).
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   boolean isDisabled(String selector, IsDisabledOptions options);
   default boolean isEditable(String selector) {
@@ -1208,7 +1194,7 @@ public interface Frame {
    * Returns whether the element is [editable](./actionability.md#editable).
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   boolean isEditable(String selector, IsEditableOptions options);
   default boolean isEnabled(String selector) {
@@ -1218,7 +1204,7 @@ public interface Frame {
    * Returns whether the element is [enabled](./actionability.md#enabled).
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   boolean isEnabled(String selector, IsEnabledOptions options);
   default boolean isHidden(String selector) {
@@ -1228,7 +1214,7 @@ public interface Frame {
    * Returns whether the element is hidden, the opposite of [visible](./actionability.md#visible).
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   boolean isHidden(String selector, IsHiddenOptions options);
   default boolean isVisible(String selector) {
@@ -1238,7 +1224,7 @@ public interface Frame {
    * Returns whether the element is [visible](./actionability.md#visible).
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   boolean isVisible(String selector, IsVisibleOptions options);
   /**
@@ -1279,10 +1265,28 @@ public interface Frame {
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
   void press(String selector, String key, PressOptions options);
+  /**
+   * Returns the ElementHandle pointing to the frame element.
+   *
+   * <p> The method finds an element matching the specified selector within the frame. See
+   * [Working with selectors](./selectors.md) for more details. If no elements match the selector, returns {@code null}.
+   *
+   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   */
+  ElementHandle querySelector(String selector);
+  /**
+   * Returns the ElementHandles pointing to the frame elements.
+   *
+   * <p> The method finds all elements matching the specified selector within the frame. See
+   * [Working with selectors](./selectors.md) for more details. If no elements match the selector, returns empty array.
+   *
+   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   */
+  List<ElementHandle> querySelectorAll(String selector);
   default List<String> selectOption(String selector, String value) {
     return selectOption(selector, value, null);
   }
@@ -1330,7 +1334,7 @@ public interface Frame {
    * <p> Will wait until all specified options are present in the {@code <select>} element.
    *
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
    * is considered matching if all specified properties match.
@@ -1360,7 +1364,7 @@ public interface Frame {
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   void setInputFiles(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options);
   default void tap(String selector) {
@@ -1381,7 +1385,7 @@ public interface Frame {
    * <p> <strong>NOTE:</strong> {@code frame.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   void tap(String selector, TapOptions options);
   default String textContent(String selector) {
@@ -1391,7 +1395,7 @@ public interface Frame {
    * Returns {@code element.textContent}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   String textContent(String selector, TextContentOptions options);
   /**
@@ -1409,7 +1413,7 @@ public interface Frame {
    *
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    * @param text A text to type into a focused element.
    */
   void type(String selector, String text, TypeOptions options);
@@ -1432,31 +1436,32 @@ public interface Frame {
    * Passing zero timeout disables this.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * [working with selectors](./selectors.md) for more details.
    */
   void uncheck(String selector, UncheckOptions options);
   /**
    * Returns frame's url.
    */
   String url();
-  default JSHandle waitForFunction(String pageFunction, Object arg) {
-    return waitForFunction(pageFunction, arg, null);
+  default JSHandle waitForFunction(String expression, Object arg) {
+    return waitForFunction(expression, arg, null);
   }
-  default JSHandle waitForFunction(String pageFunction) {
-    return waitForFunction(pageFunction, null);
+  default JSHandle waitForFunction(String expression) {
+    return waitForFunction(expression, null);
   }
   /**
-   * Returns when the {@code pageFunction} returns a truthy value, returns that value.
+   * Returns when the {@code expression} returns a truthy value, returns that value.
    *
-   * <p> The {@code waitForFunction} can be used to observe viewport size change:
+   * <p> The [{@code method: Frame.waitForFunction}] can be used to observe viewport size change:
    *
    * <p> To pass an argument to the predicate of {@code frame.waitForFunction} function:
    *
    *
-   * @param pageFunction Function to be evaluated in browser context
-   * @param arg Optional argument to pass to {@code pageFunction}
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   * @param arg Optional argument to pass to {@code expression}
    */
-  JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options);
+  JSHandle waitForFunction(String expression, Object arg, WaitForFunctionOptions options);
   default void waitForLoadState(LoadState state) {
     waitForLoadState(state, null);
   }
@@ -1504,7 +1509,7 @@ public interface Frame {
    * <p> This method works across navigations:
    *
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    */
   ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
   /**

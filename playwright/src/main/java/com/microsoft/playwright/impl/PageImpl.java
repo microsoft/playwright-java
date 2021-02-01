@@ -584,10 +584,9 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void addInitScript(String script, Object arg) {
+  public void addInitScript(String script) {
     withLogging("Page.addInitScript", () -> {
       JsonObject params = new JsonObject();
-      // TODO: support or drop arg
       params.addProperty("source", script);
       sendMessage("addInitScript", params);
     });
@@ -645,13 +644,13 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void emulateMedia(EmulateMediaParams options) {
+  public void emulateMedia(EmulateMediaOptions options) {
     withLogging("Page.emulateMedia", () -> emulateMediaImpl(options));
   }
 
-  private void emulateMediaImpl(EmulateMediaParams options) {
+  private void emulateMediaImpl(EmulateMediaOptions options) {
     if (options == null) {
-      options = new EmulateMediaParams();
+      options = new EmulateMediaOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("emulateMedia", params);

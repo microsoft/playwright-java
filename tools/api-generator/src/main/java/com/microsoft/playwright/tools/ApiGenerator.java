@@ -27,6 +27,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.reverse;
 
 abstract class Element {
   final String jsonName;
@@ -477,17 +478,6 @@ class Event extends Element {
 class Method extends Element {
   final TypeRef returnType;
   final List<Param> params = new ArrayList<>();
-  private final String name;
-
-  private static Map<String, String> tsToJavaMethodName = new HashMap<>();
-  static {
-    tsToJavaMethodName.put("continue", "continue_");
-    tsToJavaMethodName.put("$eval", "evalOnSelector");
-    tsToJavaMethodName.put("$$eval", "evalOnSelectorAll");
-    tsToJavaMethodName.put("$", "querySelector");
-    tsToJavaMethodName.put("$$", "querySelectorAll");
-    tsToJavaMethodName.put("goto", "navigate");
-  }
 
   static Set<String> waitForMethods = new HashSet<>();
   static {
@@ -500,13 +490,6 @@ class Method extends Element {
   private static Map<String, String[]> customSignature = new HashMap<>();
   static {
     customSignature.put("Page.setViewportSize", new String[]{"void setViewportSize(int width, int height);"});
-    // The method is deprecated in ts, just remove it in Java.
-    customSignature.put("BrowserContext.setHTTPCredentials", new String[0]);
-    // No connect for now.
-    customSignature.put("BrowserType.connect", new String[0]);
-    customSignature.put("BrowserType.launchServer", new String[0]);
-    // We don't expose Chromium-specific APIs at the moment.
-    customSignature.put("Page.coverage", new String[0]);
     customSignature.put("BrowserContext.route", new String[]{
       "void route(String url, Consumer<Route> handler);",
       "void route(Pattern url, Consumer<Route> handler);",
@@ -582,11 +565,6 @@ class Method extends Element {
     };
     customSignature.put("Page.setInputFiles", setInputFilesWithSelector);
     customSignature.put("Frame.setInputFiles", setInputFilesWithSelector);
-
-    // We only have typed onPage/onDownload/... event listeners in Java.
-    customSignature.put("Page.waitForEvent", new String[] {});
-    customSignature.put("BrowserContext.waitForEvent", new String[] {});
-    customSignature.put("WebSocket.waitForEvent", new String[] {});
 
     customSignature.put("Page.waitForRequest", new String[] {
       "default Request waitForRequest(Runnable code) { return waitForRequest(code, (Predicate<Request>) null, null); }",
@@ -687,7 +665,6 @@ class Method extends Element {
         }
       }
     }
-    name = tsToJavaMethodName.containsKey(jsonName) ? tsToJavaMethodName.get(jsonName) : jsonName;
   }
 
   private String toJava() {
@@ -698,7 +675,7 @@ class Method extends Element {
       paramList.append(p.toJava());
     }
 
-    return returnType.toJava() + " " + name + "(" + paramList + ");";
+    return returnType.toJava() + " " + jsonName + "(" + paramList + ");";
   }
 
   void writeTo(List<String> output, String offset) {
@@ -740,8 +717,8 @@ class Method extends Element {
     }
     argList.append("int".equals(params.get(paramCount).type.toJava()) ? "0" : "null");
     String returns = returnType.toJava().equals("void") ? "" : "return ";
-    output.add(offset + "default " + returnType.toJava() + " " + name + "(" + paramList + ") {");
-    output.add(offset + "  " + returns + name + "(" + argList + ");");
+    output.add(offset + "default " + returnType.toJava() + " " + jsonName + "(" + paramList + ") {");
+    output.add(offset + "  " + returns + jsonName + "(" + argList + ");");
     output.add(offset + "}");
   }
 
@@ -840,8 +817,8 @@ class Field extends Element {
       output.add(offset + "public byte[] bodyBytes;");
       return;
     }
-    if (asList("Page.emulateMedia.params.media",
-               "Page.emulateMedia.params.colorScheme").contains(jsonPath)) {
+    if (asList("Page.emulateMedia.options.media",
+               "Page.emulateMedia.options.colorScheme").contains(jsonPath)) {
       output.add(offset + access + "Optional<" + type.toJava() + "> " + name + ";");
       return;
     }
@@ -913,8 +890,8 @@ class Field extends Element {
       output.add(offset + "}");
       return;
     }
-    if (asList("Page.emulateMedia.params.media",
-               "Page.emulateMedia.params.colorScheme").contains(jsonPath)) {
+    if (asList("Page.emulateMedia.options.media",
+               "Page.emulateMedia.options.colorScheme").contains(jsonPath)) {
       output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + type.toJava() + " " + name + ") {");
       output.add(offset + "  this." + name + " = Optional.ofNullable(" + name + ");");
       output.add(offset + "  return this;");
@@ -947,7 +924,7 @@ class Field extends Element {
       output.add(offset + "}");
       return;
     }
-    if ("Route.continue.options.postData".equals(jsonPath)) {
+    if ("Route.continue_.options.postData".equals(jsonPath)) {
       output.add(offset + "public " + parentClass + " withPostData(String postData) {");
       output.add(offset + "  this.postData = postData.getBytes(StandardCharsets.UTF_8);");
       output.add(offset + "  return this;");
@@ -1078,7 +1055,7 @@ class Interface extends TypeDefinition {
     if (autoCloseableInterfaces.contains(jsonName)) {
       superInterfaces.add("AutoCloseable");
     }
-    String implementsClause = superInterfaces.isEmpty() ? "" : " extends " + superInterfaces.stream().collect(Collectors.joining(", "));
+    String implementsClause = superInterfaces.isEmpty() ? "" : " extends " + String.join(", ", superInterfaces);
 
     writeJavadoc(output, offset, formattedComment());
     output.add("public interface " + jsonName + implementsClause + " {");
@@ -1094,9 +1071,6 @@ class Interface extends TypeDefinition {
       output.add(offset + "static Playwright create() {");
       output.add(offset + "  return PlaywrightImpl.create();");
       output.add(offset + "}");
-      output.add("");
-      output.add(offset + "@Override");
-      output.add(offset + "void close();");
     }
     output.add("}");
     output.add("\n");
@@ -1316,21 +1290,6 @@ class NestedClass extends TypeDefinition {
   final String name;
   final List<Field> fields = new ArrayList<>();
 
-  private static Set<String> deprecatedOptions = new HashSet<>();
-  static {
-    deprecatedOptions.add("Browser.newPage.options.videosPath");
-    deprecatedOptions.add("Browser.newPage.options.videoSize");
-    deprecatedOptions.add("Browser.newPage.options.logger");
-    deprecatedOptions.add("Browser.newContext.options.videosPath");
-    deprecatedOptions.add("Browser.newContext.options.videoSize");
-    deprecatedOptions.add("Browser.newContext.options.logger");
-    deprecatedOptions.add("BrowserType.launchPersistentContext.options.videosPath");
-    deprecatedOptions.add("BrowserType.launchPersistentContext.options.videoSize");
-    deprecatedOptions.add("BrowserType.launchPersistentContext.options.logger");
-    deprecatedOptions.add("BrowserType.launch.options.logger");
-  }
-
-
   NestedClass(Element parent, String name, JsonObject jsonElement) {
     super(parent, true, jsonElement);
     this.name = name;
@@ -1357,9 +1316,6 @@ class NestedClass extends TypeDefinition {
       for (JsonElement item : jsonType.getAsJsonArray("properties")) {
         JsonObject propertyJson = item.getAsJsonObject();
         String propertyName = propertyJson.get("name").getAsString();
-        if (deprecatedOptions.contains(jsonPath + "." + propertyName)) {
-          continue;
-        }
         fields.add(new Field(this, propertyName, propertyJson));
       }
     }
@@ -1490,17 +1446,34 @@ public class ApiGenerator {
 
   private static void filterOtherLangs(JsonElement json) {
     if (json.isJsonArray()) {
-      List<JsonElement> toRemove = new ArrayList<>();
+      List<Integer> toRemove = new ArrayList<>();
       JsonArray array = json.getAsJsonArray();
-      for (JsonElement item : array) {
+      for (int i = 0; i < array.size(); i++) {
+        JsonElement item = array.get(i);
         if (isSupported(item)) {
           filterOtherLangs(item);
+          String alias = alias(item);
+          if (alias == null) {
+            continue;
+          }
+          int aliasIndex = indexOfAlias(array, alias);
+          if (aliasIndex == -1) {
+            // Rename in place.
+            item.getAsJsonObject().addProperty("name", alias);
+          } else {
+            array.set(i, array.get(aliasIndex));
+            if (aliasIndex < i) {
+              throw new RuntimeException("Alias should go after original param, aliasIndex = " + aliasIndex + ", i = " + i);
+            }
+            toRemove.add(aliasIndex);
+          }
         } else {
-          toRemove.add(item);
+          toRemove.add(i);
         }
       }
-      for (JsonElement e : toRemove) {
-        array.remove(e);
+      reverse(toRemove);
+      for (int index : toRemove) {
+        array.remove(index);
       }
     } else if (json.isJsonObject()) {
       List<String> toRemove = new ArrayList<>();
@@ -1518,7 +1491,39 @@ public class ApiGenerator {
     }
   }
 
-  static boolean isSupported(JsonElement json) {
+  private static int indexOfAlias(JsonArray array, String alias) {
+    for (int i = 0; i < array.size(); i++) {
+      JsonElement item = array.get(i);
+      if (!isSupported(item)) {
+        continue;
+      }
+      if (alias.equals(item.getAsJsonObject().get("name").getAsString())) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  private static String alias(JsonElement json) {
+    if (!json.isJsonObject()) {
+      return null;
+    }
+    JsonObject jsonObject = json.getAsJsonObject();
+    if (!jsonObject.has("langs")) {
+      return null;
+    }
+    JsonObject langs = jsonObject.getAsJsonObject("langs");
+    if (!langs.has("aliases")) {
+      return null;
+    }
+    JsonElement javaAlias = langs.getAsJsonObject("aliases").get("java");
+    if (javaAlias == null) {
+      return null;
+    }
+    return javaAlias.getAsString();
+  }
+
+  private static boolean isSupported(JsonElement json) {
     if (!json.isJsonObject()) {
       return true;
     }
@@ -1532,11 +1537,11 @@ public class ApiGenerator {
     }
     JsonArray only = langs.getAsJsonArray("only");
     for (JsonElement lang : only) {
-      if (!"js".equals(lang.getAsString())) {
-        return false;
+      if ("java".equals(lang.getAsString())) {
+        return true;
       }
     }
-    return true;
+    return false;
   }
 
   public static void main(String[] args) throws IOException {
