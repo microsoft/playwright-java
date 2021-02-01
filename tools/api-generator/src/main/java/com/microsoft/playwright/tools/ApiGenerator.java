@@ -1296,21 +1296,6 @@ class NestedClass extends TypeDefinition {
   final String name;
   final List<Field> fields = new ArrayList<>();
 
-  private static Set<String> deprecatedOptions = new HashSet<>();
-  static {
-    deprecatedOptions.add("Browser.newPage.options.videosPath");
-    deprecatedOptions.add("Browser.newPage.options.videoSize");
-    deprecatedOptions.add("Browser.newPage.options.logger");
-    deprecatedOptions.add("Browser.newContext.options.videosPath");
-    deprecatedOptions.add("Browser.newContext.options.videoSize");
-    deprecatedOptions.add("Browser.newContext.options.logger");
-    deprecatedOptions.add("BrowserType.launchPersistentContext.options.videosPath");
-    deprecatedOptions.add("BrowserType.launchPersistentContext.options.videoSize");
-    deprecatedOptions.add("BrowserType.launchPersistentContext.options.logger");
-    deprecatedOptions.add("BrowserType.launch.options.logger");
-  }
-
-
   NestedClass(Element parent, String name, JsonObject jsonElement) {
     super(parent, true, jsonElement);
     this.name = name;
@@ -1337,9 +1322,6 @@ class NestedClass extends TypeDefinition {
       for (JsonElement item : jsonType.getAsJsonArray("properties")) {
         JsonObject propertyJson = item.getAsJsonObject();
         String propertyName = propertyJson.get("name").getAsString();
-        if (deprecatedOptions.contains(jsonPath + "." + propertyName)) {
-          continue;
-        }
         fields.add(new Field(this, propertyName, propertyJson));
       }
     }
