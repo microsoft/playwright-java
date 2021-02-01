@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 /**
  * - extends: [EventEmitter]
  *
- * <p> A Browser is created via [{@code method: BrowserType.launch}]. An example of using a {@code Browser} to create a [Page]:
+ * <p> A Browser is created via [{@code method: BrowserType.launch}]. An example of using a {@code Browser} to create a {@code Page}:
  */
 public interface Browser {
   class VideoSize {

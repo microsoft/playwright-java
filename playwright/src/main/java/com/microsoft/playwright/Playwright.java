@@ -37,19 +37,21 @@ public interface Playwright {
    */
   BrowserType firefox();
   /**
-   * Selectors can be used to install custom selector engines. See
-   * [Working with selectors](./selectors.md#working-with-selectors) for more information.
+   * Selectors can be used to install custom selector engines. See [Working with selectors](./selectors.md) for more
+   * information.
    */
   Selectors selectors();
   /**
    * This object can be used to launch or connect to WebKit, returning instances of {@code WebKitBrowser}.
    */
   BrowserType webkit();
+  /**
+   * Terminates this instance of Playwright, will also close all created browsers if they are still running.
+   */
+  void close();
 
   static Playwright create() {
     return PlaywrightImpl.create();
   }
-
-  void close();
 }
 

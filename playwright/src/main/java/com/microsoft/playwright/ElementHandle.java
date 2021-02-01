@@ -22,12 +22,14 @@ import java.util.*;
 /**
  * - extends: {@code JSHandle}
  *
- * <p> ElementHandle represents an in-page DOM element. ElementHandles can be created with the [{@code method: Page.$}] method.
+ * <p> ElementHandle represents an in-page DOM element. ElementHandles can be created with the [{@code method: Page.querySelector}]
+ * method.
  *
  * <p> ElementHandle prevents DOM element from garbage collection unless the handle is disposed with
  * [{@code method: JSHandle.dispose}]. ElementHandles are auto-disposed when their origin frame gets navigated.
  *
- * <p> ElementHandle instances can be used as an argument in [{@code method: Page.$eval}] and [{@code method: Page.evaluate}] methods.
+ * <p> ElementHandle instances can be used as an argument in [{@code method: Page.evalOnSelector}] and [{@code method: Page.evaluate}]
+ * methods.
  */
 public interface ElementHandle extends JSHandle {
   class BoundingBox {
@@ -605,58 +607,6 @@ public interface ElementHandle extends JSHandle {
     }
   }
   /**
-   * The method finds an element matching the specified selector in the {@code ElementHandle}'s subtree. See
-   * [Working with selectors](./selectors.md#working-with-selectors) for more details. If no elements match the selector,
-   * returns {@code null}.
-   *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
-   */
-  ElementHandle querySelector(String selector);
-  /**
-   * The method finds all elements matching the specified selector in the {@code ElementHandle}s subtree. See
-   * [Working with selectors](./selectors.md#working-with-selectors) for more details. If no elements match the selector,
-   * returns empty array.
-   *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
-   */
-  List<ElementHandle> querySelectorAll(String selector);
-  default Object evalOnSelector(String selector, String pageFunction) {
-    return evalOnSelector(selector, pageFunction, null);
-  }
-  /**
-   * Returns the return value of {@code pageFunction}
-   *
-   * <p> The method finds an element matching the specified selector in the {@code ElementHandle}s subtree and passes it as a first
-   * argument to {@code pageFunction}. See [Working with selectors](./selectors.md#working-with-selectors) for more details. If no
-   * elements match the selector, the method throws an error.
-   *
-   * <p> If {@code pageFunction} returns a [Promise], then {@code frame.$eval} would wait for the promise to resolve and return its value.
-   *
-   *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
-   * @param pageFunction Function to be evaluated in browser context
-   * @param arg Optional argument to pass to {@code pageFunction}
-   */
-  Object evalOnSelector(String selector, String pageFunction, Object arg);
-  default Object evalOnSelectorAll(String selector, String pageFunction) {
-    return evalOnSelectorAll(selector, pageFunction, null);
-  }
-  /**
-   * Returns the return value of {@code pageFunction}
-   *
-   * <p> The method finds all elements matching the specified selector in the {@code ElementHandle}'s subtree and passes an array of
-   * matched elements as a first argument to {@code pageFunction}. See
-   * [Working with selectors](./selectors.md#working-with-selectors) for more details.
-   *
-   * <p> If {@code pageFunction} returns a [Promise], then {@code frame.$$eval} would wait for the promise to resolve and return its value.
-   *
-   *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
-   * @param pageFunction Function to be evaluated in browser context
-   * @param arg Optional argument to pass to {@code pageFunction}
-   */
-  Object evalOnSelectorAll(String selector, String pageFunction, Object arg);
-  /**
    * This method returns the bounding box of the element, or {@code null} if the element is not visible. The bounding box is
    * calculated relative to the main frame viewport - which is usually the same as the browser window.
    *
@@ -756,13 +706,54 @@ public interface ElementHandle extends JSHandle {
    * @param eventInit Optional event-specific initialization properties.
    */
   void dispatchEvent(String type, Object eventInit);
+  default Object evalOnSelector(String selector, String expression) {
+    return evalOnSelector(selector, expression, null);
+  }
+  /**
+   * Returns the return value of {@code expression}.
+   *
+   * <p> The method finds an element matching the specified selector in the {@code ElementHandle}s subtree and passes it as a first
+   * argument to {@code expression}. See [Working with selectors](./selectors.md) for more details. If no elements match the
+   * selector, the method throws an error.
+   *
+   * <p> If {@code expression} returns a [Promise], then [{@code method: ElementHandle.evalOnSelector}] would wait for the promise to resolve
+   * and return its value.
+   *
+   *
+   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   * @param arg Optional argument to pass to {@code expression}
+   */
+  Object evalOnSelector(String selector, String expression, Object arg);
+  default Object evalOnSelectorAll(String selector, String expression) {
+    return evalOnSelectorAll(selector, expression, null);
+  }
+  /**
+   * Returns the return value of {@code expression}.
+   *
+   * <p> The method finds all elements matching the specified selector in the {@code ElementHandle}'s subtree and passes an array of
+   * matched elements as a first argument to {@code expression}. See [Working with selectors](./selectors.md) for more details.
+   *
+   * <p> If {@code expression} returns a [Promise], then [{@code method: ElementHandle.evalOnSelectorAll}] would wait for the promise to
+   * resolve and return its value.
+   *
+   *
+   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   * @param arg Optional argument to pass to {@code expression}
+   */
+  Object evalOnSelectorAll(String selector, String expression, Object arg);
   default void fill(String value) {
     fill(value, null);
   }
   /**
    * This method waits for [actionability](./actionability.md) checks, focuses the element, fills it and triggers an {@code input}
-   * event after filling. If the element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws
-   * an error. Note that you can pass an empty string to clear the input field.
+   * event after filling. If the element is inside the {@code <label>} element that has associated
+   * [control](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control), that control will be filled
+   * instead. If the element to be filled is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method
+   * throws an error. Note that you can pass an empty string to clear the input field.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
@@ -855,6 +846,20 @@ public interface ElementHandle extends JSHandle {
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
   void press(String key, PressOptions options);
+  /**
+   * The method finds an element matching the specified selector in the {@code ElementHandle}'s subtree. See
+   * [Working with selectors](./selectors.md) for more details. If no elements match the selector, returns {@code null}.
+   *
+   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   */
+  ElementHandle querySelector(String selector);
+  /**
+   * The method finds all elements matching the specified selector in the {@code ElementHandle}s subtree. See
+   * [Working with selectors](./selectors.md) for more details. If no elements match the selector, returns empty array.
+   *
+   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   */
+  List<ElementHandle> querySelectorAll(String selector);
   default byte[] screenshot() {
     return screenshot(null);
   }
@@ -1041,7 +1046,7 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> <strong>NOTE:</strong> This method does not work across navigations, use [{@code method: Page.waitForSelector}] instead.
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md#working-with-selectors) for more details.
+   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    */
   ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
 }

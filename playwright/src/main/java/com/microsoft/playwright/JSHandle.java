@@ -26,7 +26,7 @@ import java.util.*;
  * [{@code method: JSHandle.dispose}]. JSHandles are auto-disposed when their origin frame gets navigated or the parent context
  * gets destroyed.
  *
- * <p> JSHandle instances can be used as an argument in [{@code method: Page.$eval}], [{@code method: Page.evaluate}] and
+ * <p> JSHandle instances can be used as an argument in [{@code method: Page.evalOnSelector}], [{@code method: Page.evaluate}] and
  * [{@code method: Page.evaluateHandle}] methods.
  */
 public interface JSHandle {
@@ -38,42 +38,43 @@ public interface JSHandle {
    * The {@code jsHandle.dispose} method stops referencing the element handle.
    */
   void dispose();
-  default Object evaluate(String pageFunction) {
-    return evaluate(pageFunction, null);
+  default Object evaluate(String expression) {
+    return evaluate(expression, null);
   }
   /**
-   * Returns the return value of {@code pageFunction}
+   * Returns the return value of {@code expression}.
    *
-   * <p> This method passes this handle as the first argument to {@code pageFunction}.
+   * <p> This method passes this handle as the first argument to {@code expression}.
    *
-   * <p> If {@code pageFunction} returns a [Promise], then {@code handle.evaluate} would wait for the promise to resolve and return its
-   * value.
+   * <p> If {@code expression} returns a [Promise], then {@code handle.evaluate} would wait for the promise to resolve and return its value.
    *
    *
-   * @param pageFunction Function to be evaluated in browser context
-   * @param arg Optional argument to pass to {@code pageFunction}
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   * @param arg Optional argument to pass to {@code expression}
    */
-  Object evaluate(String pageFunction, Object arg);
-  default JSHandle evaluateHandle(String pageFunction) {
-    return evaluateHandle(pageFunction, null);
+  Object evaluate(String expression, Object arg);
+  default JSHandle evaluateHandle(String expression) {
+    return evaluateHandle(expression, null);
   }
   /**
-   * Returns the return value of {@code pageFunction} as in-page object (JSHandle).
+   * Returns the return value of {@code expression} as a {@code JSHandle}.
    *
-   * <p> This method passes this handle as the first argument to {@code pageFunction}.
+   * <p> This method passes this handle as the first argument to {@code expression}.
    *
    * <p> The only difference between {@code jsHandle.evaluate} and {@code jsHandle.evaluateHandle} is that {@code jsHandle.evaluateHandle} returns
-   * in-page object (JSHandle).
+   * {@code JSHandle}.
    *
    * <p> If the function passed to the {@code jsHandle.evaluateHandle} returns a [Promise], then {@code jsHandle.evaluateHandle} would wait
    * for the promise to resolve and return its value.
    *
    * <p> See [{@code method: Page.evaluateHandle}] for more details.
    *
-   * @param pageFunction Function to be evaluated
-   * @param arg Optional argument to pass to {@code pageFunction}
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   * @param arg Optional argument to pass to {@code expression}
    */
-  JSHandle evaluateHandle(String pageFunction, Object arg);
+  JSHandle evaluateHandle(String expression, Object arg);
   /**
    * The method returns a map with **own property names** as keys and JSHandle instances for the property values.
    */
