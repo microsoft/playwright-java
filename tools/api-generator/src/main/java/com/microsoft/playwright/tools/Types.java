@@ -205,14 +205,6 @@ class Types {
     add("FileChooser.setFiles.files", "Array<Object>|Array<path>|Object|path", "String");
     add("Route.continue_.options.postData", "Buffer|string", "byte[]", new Empty());
     add("Route.fulfill.options.body", "Buffer|string", "String");
-    add("BrowserType.launch.options.ignoreDefaultArgs", "Array<string>|boolean", "Custom");
-    add("BrowserType.launch.options.firefoxUserPrefs", "Object<string, boolean|float|string>", "Map<String, Object>", new Empty());
-    add("BrowserType.launch.options.env", "Object<string, string>", "Map<String, String>", new Empty());
-    add("BrowserType.launchPersistentContext.options.ignoreDefaultArgs", "Array<string>|boolean", "Custom");
-    add("BrowserType.launchPersistentContext.options.env", "Object<string, boolean|float|string>", "Map<String, String>", new Empty());
-    add("BrowserType.launchServer.options.ignoreDefaultArgs", "Array<string>|boolean", "Custom");
-    add("BrowserType.launchServer.options.firefoxUserPrefs", "Object<string, boolean|float|string>", "Map<String, Object>", new Empty());
-    add("BrowserType.launchServer.options.env", "Object<string, boolean|float|string>", "Map<String, String>", new Empty());
     add("Logger.log.message", "string|Error", "String");
 
     add("BrowserContext.setGeolocation.geolocation", "Object|null", "Geolocation", new Empty());
