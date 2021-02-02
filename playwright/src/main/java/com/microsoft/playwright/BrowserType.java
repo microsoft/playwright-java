@@ -121,11 +121,15 @@ public interface BrowserType {
      */
     public Boolean headless;
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. If an array is
-     * given, then filters out the given default arguments. Dangerous option; use with care. Defaults to {@code false}.
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
+     * use with care. Defaults to {@code false}.
+     */
+    public Boolean ignoreAllDefaultArgs;
+    /**
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
+     * use with care.
      */
     public List<String> ignoreDefaultArgs;
-    public Boolean ignoreAllDefaultArgs;
     /**
      * Network proxy settings.
      */
@@ -184,12 +188,12 @@ public interface BrowserType {
       this.headless = headless;
       return this;
     }
-    public LaunchOptions withIgnoreDefaultArgs(List<String> argumentNames) {
-      this.ignoreDefaultArgs = argumentNames;
+    public LaunchOptions withIgnoreAllDefaultArgs(boolean ignoreAllDefaultArgs) {
+      this.ignoreAllDefaultArgs = ignoreAllDefaultArgs;
       return this;
     }
-    public LaunchOptions withIgnoreAllDefaultArgs(boolean ignore) {
-      this.ignoreAllDefaultArgs = ignore;
+    public LaunchOptions withIgnoreDefaultArgs(List<String> ignoreDefaultArgs) {
+      this.ignoreDefaultArgs = ignoreDefaultArgs;
       return this;
     }
     public Proxy setProxy() {
@@ -404,11 +408,15 @@ public interface BrowserType {
      */
     public BrowserContext.HTTPCredentials httpCredentials;
     /**
-     * If {@code true}, then do not use any of the default arguments. If an array is given, then filter out the given default
-     * arguments. Dangerous option; use with care. Defaults to {@code false}.
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
+     * use with care. Defaults to {@code false}.
+     */
+    public Boolean ignoreAllDefaultArgs;
+    /**
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
+     * use with care.
      */
     public List<String> ignoreDefaultArgs;
-    public Boolean ignoreAllDefaultArgs;
     /**
      * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
      */
@@ -547,12 +555,12 @@ public interface BrowserType {
       this.httpCredentials = new BrowserContext.HTTPCredentials(username, password);
       return this;
     }
-    public LaunchPersistentContextOptions withIgnoreDefaultArgs(List<String> argumentNames) {
-      this.ignoreDefaultArgs = argumentNames;
+    public LaunchPersistentContextOptions withIgnoreAllDefaultArgs(boolean ignoreAllDefaultArgs) {
+      this.ignoreAllDefaultArgs = ignoreAllDefaultArgs;
       return this;
     }
-    public LaunchPersistentContextOptions withIgnoreAllDefaultArgs(boolean ignore) {
-      this.ignoreAllDefaultArgs = ignore;
+    public LaunchPersistentContextOptions withIgnoreDefaultArgs(List<String> ignoreDefaultArgs) {
+      this.ignoreDefaultArgs = ignoreDefaultArgs;
       return this;
     }
     public LaunchPersistentContextOptions withIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {

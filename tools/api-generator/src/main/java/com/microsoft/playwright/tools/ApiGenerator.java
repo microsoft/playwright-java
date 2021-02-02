@@ -21,6 +21,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import javax.crypto.spec.PSource;
 import java.io.*;
 import java.nio.file.FileSystems;
 import java.util.*;
@@ -132,6 +133,10 @@ class TypeRef extends Element {
         return GeneratedType.ENUM;
       }
       case "Object": {
+        String expression = typeExpression(jsonType);
+        if ("Object<string, string>".equals(expression) || "Object<string, any>".equals(expression)) {
+          return GeneratedType.OTHER;
+        }
         return GeneratedType.CLASS;
       }
       case "Array":
@@ -284,11 +289,21 @@ class TypeRef extends Element {
     if ("Serializable".equals(name)) {
       return "Object";
     }
+    if ("any".equals(name)) {
+      return "Object";
+    }
     if ("Buffer".equals(name)) {
       return "byte[]";
     }
     if ("Array".equals(name)) {
       return "List<" + convertTemplateParams(jsonType) + ">";
+    }
+    if ("Object".equals(name)) {
+      String expression = typeExpression(jsonType);
+      if (!"Object<string, string>".equals(expression) && !"Object<string, any>".equals(expression)) {
+        throw new RuntimeException("Unexpected object type: " + typeExpression(jsonType));
+      }
+      return "Map<" + convertTemplateParams(jsonType) + ">";
     }
     if ("Map".equals(name)) {
       return "Map<" + convertTemplateParams(jsonType) + ">";
@@ -828,12 +843,6 @@ class Field extends Element {
       output.add(offset + access + "Path " + name + "Path;");
       return;
     }
-    if (asList("BrowserType.launch.options.ignoreDefaultArgs",
-               "BrowserType.launchPersistentContext.options.ignoreDefaultArgs").contains(jsonPath)) {
-      output.add(offset + access + "List<String> ignoreDefaultArgs;");
-      output.add(offset + access + "Boolean ignoreAllDefaultArgs;");
-      return;
-    }
     output.add(offset + access + type.toJava() + " " + name + ";");
   }
 
@@ -894,18 +903,6 @@ class Field extends Element {
                "Page.emulateMedia.options.colorScheme").contains(jsonPath)) {
       output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + type.toJava() + " " + name + ") {");
       output.add(offset + "  this." + name + " = Optional.ofNullable(" + name + ");");
-      output.add(offset + "  return this;");
-      output.add(offset + "}");
-      return;
-    }
-    if (asList("BrowserType.launch.options.ignoreDefaultArgs",
-               "BrowserType.launchPersistentContext.options.ignoreDefaultArgs").contains(jsonPath)) {
-      output.add(offset + "public " + parentClass + " withIgnoreDefaultArgs(List<String> argumentNames) {");
-      output.add(offset + "  this.ignoreDefaultArgs = argumentNames;");
-      output.add(offset + "  return this;");
-      output.add(offset + "}");
-      output.add(offset + "public " + parentClass + " withIgnoreAllDefaultArgs(boolean ignore) {");
-      output.add(offset + "  this.ignoreAllDefaultArgs = ignore;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
       return;
@@ -1413,17 +1410,6 @@ class Enum extends TypeDefinition {
 }
 
 public class ApiGenerator {
-  private static Set<String> skipList = new HashSet<>(Arrays.asList(
-    "BrowserServer",
-    "ChromiumBrowser",
-    "ChromiumBrowserContext",
-    "ChromiumCoverage",
-    "CDPSession",
-    "FirefoxBrowser",
-    "Logger",
-    "WebKitBrowser"
-  ));
-
   ApiGenerator(Reader reader) throws IOException {
     JsonArray api = new Gson().fromJson(reader, JsonArray.class);
     File cwd = FileSystems.getDefault().getPath(".").toFile();
@@ -1432,9 +1418,6 @@ public class ApiGenerator {
     filterOtherLangs(api);
     for (JsonElement entry: api) {
       String name = entry.getAsJsonObject().get("name").getAsString();
-      if (skipList.contains(name)) {
-        continue;
-      }
       List<String> lines = new ArrayList<>();
       new Interface(entry.getAsJsonObject()).writeTo(lines, "");
       String text = String.join("\n", lines);
@@ -1452,21 +1435,6 @@ public class ApiGenerator {
         JsonElement item = array.get(i);
         if (isSupported(item)) {
           filterOtherLangs(item);
-          String alias = alias(item);
-          if (alias == null) {
-            continue;
-          }
-          int aliasIndex = indexOfAlias(array, alias);
-          if (aliasIndex == -1) {
-            // Rename in place.
-            item.getAsJsonObject().addProperty("name", alias);
-          } else {
-            array.set(i, array.get(aliasIndex));
-            if (aliasIndex < i) {
-              throw new RuntimeException("Alias should go after original param, aliasIndex = " + aliasIndex + ", i = " + i);
-            }
-            toRemove.add(aliasIndex);
-          }
         } else {
           toRemove.add(i);
         }
@@ -1478,6 +1446,11 @@ public class ApiGenerator {
     } else if (json.isJsonObject()) {
       List<String> toRemove = new ArrayList<>();
       JsonObject object = json.getAsJsonObject();
+      String alias = alias(object);
+      if (alias != null) {
+        // Rename in place.
+        object.addProperty("name", alias);
+      }
       for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
         if (isSupported(entry.getValue())) {
           filterOtherLangs(entry.getValue());
@@ -1491,24 +1464,7 @@ public class ApiGenerator {
     }
   }
 
-  private static int indexOfAlias(JsonArray array, String alias) {
-    for (int i = 0; i < array.size(); i++) {
-      JsonElement item = array.get(i);
-      if (!isSupported(item)) {
-        continue;
-      }
-      if (alias.equals(item.getAsJsonObject().get("name").getAsString())) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  private static String alias(JsonElement json) {
-    if (!json.isJsonObject()) {
-      return null;
-    }
-    JsonObject jsonObject = json.getAsJsonObject();
+  private static String alias(JsonObject jsonObject) {
     if (!jsonObject.has("langs")) {
       return null;
     }
