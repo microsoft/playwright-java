@@ -119,17 +119,6 @@ class Types {
     add("Browser.newContext.options.httpCredentials", "Object", "BrowserContext.HTTPCredentials", new Empty());
     add("Browser.newPage.options.httpCredentials", "Object", "BrowserContext.HTTPCredentials", new Empty());
     add("BrowserType.launchPersistentContext.options.httpCredentials", "Object", "BrowserContext.HTTPCredentials", new Empty());
-    add("BrowserContext.setHTTPCredentials.httpCredentials", "Object|null", "do nothing", new Empty());
-
-    // js functions are always passed as text in java.
-    add("Page.$eval.pageFunction", "function(Element)", "String");
-    add("Page.$$eval.pageFunction", "function(Array<Element>)", "String");
-    add("Frame.$eval.pageFunction", "function(Element)", "String");
-    add("Frame.$$eval.pageFunction", "function(Array<Element>)", "String");
-    add("ElementHandle.$eval.pageFunction", "function(Element)", "String");
-    add("ElementHandle.$$eval.pageFunction", "function(Array<Element>)", "String");
-    add("ElementHandle.evaluate.pageFunction", "function", "String");
-    add("JSHandle.evaluate.pageFunction", "function", "String");
 
     add("BrowserContext.exposeBinding.callback", "function", "Page.Binding");
     add("BrowserContext.exposeFunction.callback", "function", "Page.Function");
@@ -213,25 +202,11 @@ class Types {
     add("Browser.newPage.options.storageState", "Object|path", "BrowserContext.StorageState", new Empty());
     add("Browser.newPage.options.geolocation", "Object", "Geolocation", new Empty());
     add("BrowserType.launchPersistentContext.options.geolocation", "Object", "Geolocation", new Empty());
-    add("Download.createReadStream", "Readable|null", "InputStream", new Empty());
 
     // node.js types
-    add("BrowserServer.process", "ChildProcess", "Object");
-
-    add("Response.finished", "Error|null", "String");
-
     add("Route.continue_.options", "Object", "ContinueOptions");
 
     // TODO: fix upstream types!
-    add("Request.headers", "Object<string, string>", "Map<String, String>", new Empty());
-    add("Response.headers", "Object<string, string>", "Map<String, String>", new Empty());
-    add("Browser.newContext.options.extraHTTPHeaders", "Object<string, string>", "Map<String, String>", new Empty());
-    add("Browser.newPage.options.extraHTTPHeaders", "Object<string, string>", "Map<String, String>", new Empty());
-    add("BrowserType.launchPersistentContext.options.extraHTTPHeaders", "Object<string, string>", "Map<String, String>", new Empty());
-    add("Page.setExtraHTTPHeaders.headers", "Object<string, string>", "Map<String, String>", new Empty());
-    add("BrowserContext.setExtraHTTPHeaders.headers", "Object<string, string>", "Map<String, String>", new Empty());
-    add("Route.continue_.options.headers", "Object<string, string>", "Map<String, String>", new Empty());
-    add("Route.fulfill.options.headers", "Object<string, string>", "Map<String, String>", new Empty());
     add("Playwright.devices", "Object", "Map<String, DeviceDescriptor>", new Empty());
   }
 

@@ -292,6 +292,9 @@ class TypeRef extends Element {
     if ("any".equals(name)) {
       return "Object";
     }
+    if ("Readable".equals(name)) {
+      return "InputStream";
+    }
     if ("Buffer".equals(name)) {
       return "byte[]";
     }
