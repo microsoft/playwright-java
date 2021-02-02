@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  * <p> Playwright allows creation of "incognito" browser contexts with {@code browser.newContext()} method. "Incognito" browser
  * contexts don't write any browsing data to disk.
  */
-public interface BrowserContext {
+public interface BrowserContext extends AutoCloseable {
   enum SameSite { STRICT, LAX, NONE }
 
   class HTTPCredentials {

@@ -63,23 +63,8 @@ public class TestBase {
   static void launchBrowser(BrowserType.LaunchOptions launchOptions) {
     playwright = Playwright.create();
 
-    String browserName = System.getenv("BROWSER");
-    if (browserName == null) {
-      browserName = "chromium";
-    }
-    switch (browserName) {
-      case "webkit":
-        browserType = playwright.webkit();
-        break;
-      case "firefox":
-        browserType = playwright.firefox();
-        break;
-      case "chromium":
-        browserType = playwright.chromium();
-        break;
-      default:
-        throw new IllegalArgumentException("Unknown browser: " + browserName);
-    }
+    browserType = Utils.getBrowserTypeFromEnv(playwright);
+
     browser = browserType.launch(launchOptions);
   }
 

@@ -19,18 +19,16 @@ package org.example;
 import com.microsoft.playwright.*;
 
 public class InterceptNetworkRequests {
-  public static void main(String[] args) throws Exception {
-    Playwright playwright = Playwright.create();
-    BrowserType browserType = playwright.webkit();
-    Browser browser = browserType.launch();
-    BrowserContext context = browser.newContext();
-    Page page = context.newPage();
-    page.route("**", route -> {
-      System.out.println(route.request().url());
-      route.continue_();
-    });
-    page.navigate("http://todomvc.com");
-    browser.close();
-    playwright.close();
+  public static void main(String[] args) {
+    try (Playwright playwright = Playwright.create();
+         Browser browser = playwright.webkit().launch();
+         BrowserContext context = browser.newContext();
+         Page page = context.newPage()) {
+      page.route("**", route -> {
+        System.out.println(route.request().url());
+        route.continue_();
+      });
+      page.navigate("http://todomvc.com");
+    }
   }
 }

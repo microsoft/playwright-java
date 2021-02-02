@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  *
  * <p> To unsubscribe from events use the {@code removeListener} method:
  */
-public interface Page {
+public interface Page extends AutoCloseable {
   class Viewport {
     private final int width;
     private final int height;

@@ -23,7 +23,7 @@ import java.util.*;
  * Playwright module provides a method to launch a browser instance. The following is a typical example of using Playwright
  * to drive automation:
  */
-public interface Playwright {
+public interface Playwright extends AutoCloseable {
   /**
    * This object can be used to launch or connect to Chromium, returning instances of {@code ChromiumBrowser}.
    */

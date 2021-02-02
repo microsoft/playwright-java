@@ -103,4 +103,23 @@ class Utils {
         return Arrays.asList("SSL_ERROR_UNKNOWN");
     }
   }
+
+  static BrowserType getBrowserTypeFromEnv(Playwright playwright) {
+    String browserName = System.getenv("BROWSER");
+
+    if (browserName == null) {
+      browserName = "chromium";
+    }
+
+    switch (browserName) {
+      case "webkit":
+        return playwright.webkit();
+      case "firefox":
+        return playwright.firefox();
+      case "chromium":
+        return playwright.chromium();
+      default:
+        throw new IllegalArgumentException("Unknown browser: " + browserName);
+    }
+  }
 }
