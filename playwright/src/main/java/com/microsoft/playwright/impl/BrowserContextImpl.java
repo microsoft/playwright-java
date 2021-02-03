@@ -313,12 +313,12 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public StorageState storageState(StorageStateOptions options) {
+  public String storageState(StorageStateOptions options) {
     return withLogging("BrowserContext.storageState", () -> {
       JsonElement json = sendMessage("storageState");
-      StorageState storageState = gson().fromJson(json, StorageState.class);
+      String storageState = json.toString();
       if (options != null && options.path != null) {
-        Utils.writeToFile(json.toString().getBytes(StandardCharsets.UTF_8), options.path);
+        Utils.writeToFile(storageState.getBytes(StandardCharsets.UTF_8), options.path);
       }
       return storageState;
     });

@@ -43,9 +43,10 @@ public class TestBrowserContextStorageState extends TestBase {
     page.evaluate("localStorage['name1'] = 'value1';");
     page.navigate("https://www.domain.com");
     page.evaluate("localStorage['name2'] = 'value2';");
-    BrowserContext.StorageState storageState = context.storageState();
-
-    assertJsonEquals("[{\n" +
+    String storageState = context.storageState();
+    assertJsonEquals("{" +
+      "cookies:[]," +
+      "origins:[{\n" +
       "  origin: 'https://www.example.com',\n" +
       "  localStorage: [{\n" +
       "    name: 'name1',\n" +
@@ -57,15 +58,22 @@ public class TestBrowserContextStorageState extends TestBase {
       "    name: 'name2',\n" +
       "    value: 'value2'\n" +
       "  }]\n" +
-      "}]", storageState.origins());
+      "}]}", new Gson().fromJson(storageState, JsonObject.class));
   }
 
   @Test
   void shouldSetLocalStorage() {
-    BrowserContext.StorageState storageState =  new BrowserContext.StorageState();
-    storageState.origins.add(new BrowserContext.StorageState.OriginState("https://www.example.com")
-      .withLocalStorage(Arrays.asList(
-        new BrowserContext.StorageState.OriginState.LocalStorageItem("name1", "value1"))));
+    String storageState = "{\n" +
+      "  origins: [\n" +
+      "    {\n" +
+      "      origin: 'https://www.example.com',\n" +
+      "      localStorage: [{\n" +
+      "        name: 'name1',\n" +
+      "        value: 'value1'\n" +
+      "      }]\n" +
+      "    }\n" +
+      "  ]\n" +
+      "}";
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().withStorageState(storageState));
     Page page = context.newPage();
     page.route("**/*", route -> {
@@ -90,7 +98,7 @@ public class TestBrowserContextStorageState extends TestBase {
       "  return document.cookie;\n" +
       "}");
     Path path = tempDir.resolve("storage-state.json");
-    BrowserContext.StorageState state = context.storageState(new BrowserContext.StorageStateOptions().withPath(path));
+    context.storageState(new BrowserContext.StorageStateOptions().withPath(path));
     JsonObject expected = new Gson().fromJson(
       "{\n" +
       "  \"cookies\":[\n" +
@@ -117,7 +125,7 @@ public class TestBrowserContextStorageState extends TestBase {
     try (InputStreamReader reader = new InputStreamReader(new FileInputStream(path.toFile()), StandardCharsets.UTF_8)) {
       assertEquals(expected, new Gson().fromJson(reader, JsonObject.class));
     }
-    BrowserContext context2 = browser.newContext(new Browser.NewContextOptions().withStorageState(path));
+    BrowserContext context2 = browser.newContext(new Browser.NewContextOptions().withStorageStatePath(path));
     Page page2 = context2.newPage();
     page2.route("**/*", route -> {
       route.fulfill(new Route.FulfillOptions().withBody("<html></html>"));

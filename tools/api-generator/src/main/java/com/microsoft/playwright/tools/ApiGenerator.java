@@ -21,11 +21,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import javax.crypto.spec.PSource;
 import java.io.*;
 import java.nio.file.FileSystems;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.reverse;
@@ -840,12 +838,6 @@ class Field extends Element {
       output.add(offset + access + "Optional<" + type.toJava() + "> " + name + ";");
       return;
     }
-    if (asList("Browser.newContext.options.storageState",
-               "Browser.newPage.options.storageState").contains(jsonPath)) {
-      output.add(offset + access + type.toJava() + " " + name + ";");
-      output.add(offset + access + "Path " + name + "Path;");
-      return;
-    }
     output.add(offset + access + type.toJava() + " " + name + ";");
   }
 
@@ -906,20 +898,6 @@ class Field extends Element {
                "Page.emulateMedia.options.colorScheme").contains(jsonPath)) {
       output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + type.toJava() + " " + name + ") {");
       output.add(offset + "  this." + name + " = Optional.ofNullable(" + name + ");");
-      output.add(offset + "  return this;");
-      output.add(offset + "}");
-      return;
-    }
-    if (asList("Browser.newContext.options.storageState",
-               "Browser.newPage.options.storageState").contains(jsonPath)) {
-      output.add(offset + "public " + parentClass + " withStorageState(BrowserContext.StorageState storageState) {");
-      output.add(offset + "  this.storageState = storageState;");
-      output.add(offset + "  this.storageStatePath = null;");
-      output.add(offset + "  return this;");
-      output.add(offset + "}");
-      output.add(offset + "public " + parentClass + " withStorageState(Path storageStatePath) {");
-      output.add(offset + "  this.storageState = null;");
-      output.add(offset + "  this.storageStatePath = storageStatePath;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
       return;
@@ -1164,46 +1142,6 @@ class Interface extends TypeDefinition {
         output.add("");
         output.add(offset + "  public String password() {");
         output.add(offset + "    return password;");
-        output.add(offset + "  }");
-        output.add(offset + "}");
-        output.add("");
-        output.add(offset + "class StorageState {");
-        output.add(offset + "  public List<AddCookie> cookies;");
-        output.add(offset + "  public List<OriginState> origins;");
-        output.add("");
-        output.add(offset + "  public static class OriginState {");
-        output.add(offset + "    public final String origin;");
-        output.add(offset + "    public List<LocalStorageItem> localStorage;");
-        output.add("");
-        output.add(offset + "    public static class LocalStorageItem {");
-        output.add(offset + "      public String name;");
-        output.add(offset + "      public String value;");
-        output.add(offset + "      public LocalStorageItem(String name, String value) {");
-        output.add(offset + "        this.name = name;");
-        output.add(offset + "        this.value = value;");
-        output.add(offset + "      }");
-        output.add(offset + "    }");
-        output.add("");
-        output.add(offset + "    public OriginState(String origin) {");
-        output.add(offset + "      this.origin = origin;");
-        output.add(offset + "    }");
-        output.add("");
-        output.add(offset + "    public OriginState withLocalStorage(List<LocalStorageItem> localStorage) {");
-        output.add(offset + "      this.localStorage = localStorage;");
-        output.add(offset + "      return this;");
-        output.add(offset + "    }");
-        output.add(offset + "  }");
-        output.add("");
-        output.add(offset + "  public StorageState() {");
-        output.add(offset + "    cookies = new ArrayList<>();");
-        output.add(offset + "    origins = new ArrayList<>();");
-        output.add(offset + "  }");
-        output.add("");
-        output.add(offset + "  public List<AddCookie> cookies() {");
-        output.add(offset + "    return this.cookies;");
-        output.add(offset + "  }");
-        output.add(offset + "  public List<OriginState> origins() {");
-        output.add(offset + "    return this.origins;");
         output.add(offset + "  }");
         output.add(offset + "}");
         output.add("");
@@ -1454,6 +1392,7 @@ public class ApiGenerator {
         // Rename in place.
         object.addProperty("name", alias);
       }
+      overrideType(object);
       for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
         if (isSupported(entry.getValue())) {
           filterOtherLangs(entry.getValue());
@@ -1465,6 +1404,21 @@ public class ApiGenerator {
         object.remove(key);
       }
     }
+  }
+
+  private static void overrideType(JsonObject jsonObject) {
+    if (!jsonObject.has("langs")) {
+      return;
+    }
+    JsonObject langs = jsonObject.getAsJsonObject("langs");
+    if (!langs.has("types")) {
+      return;
+    }
+    JsonElement type = langs.getAsJsonObject("types").get("java");
+    if (type == null) {
+      return;
+    }
+    jsonObject.add("type", type);
   }
 
   private static String alias(JsonObject jsonObject) {

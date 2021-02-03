@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
@@ -23,6 +24,8 @@ import com.microsoft.playwright.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -90,14 +93,23 @@ class BrowserImpl extends ChannelOwner implements Browser {
       options = new NewContextOptions();
     }
     if (options.storageStatePath != null) {
-      try (FileReader reader = new FileReader(options.storageStatePath.toFile())) {
-        options.storageState = gson().fromJson(reader, BrowserContext.StorageState.class);
+      try {
+        byte[] bytes = Files.readAllBytes(options.storageStatePath);
+        options.storageState = new String(bytes, StandardCharsets.UTF_8);
         options.storageStatePath = null;
       } catch (IOException e) {
         throw new PlaywrightException("Failed to read storage state from file", e);
       }
     }
+    JsonObject storageState = null;
+    if (options.storageState != null) {
+      storageState = new Gson().fromJson(options.storageState, JsonObject.class);
+      options.storageState = null;
+    }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    if (storageState != null) {
+      params.add("storageState", storageState);
+    }
     JsonElement result = sendMessage("newContext", params);
     BrowserContextImpl context = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("context").get("guid").getAsString());
     if (options.recordVideo != null) {
