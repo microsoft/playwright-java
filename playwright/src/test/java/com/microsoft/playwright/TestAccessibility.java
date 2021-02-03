@@ -16,115 +16,23 @@
 
 package com.microsoft.playwright;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.condition.EnabledIf;
 
-import java.lang.reflect.Type;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestAccessibility extends TestBase {
-  private static class AccessibilityNodeSerializer implements JsonSerializer<AccessibilityNode> {
-    @Override
-    public JsonElement serialize(AccessibilityNode src, Type typeOfSrc, JsonSerializationContext context) {
-      JsonObject json = new JsonObject();
-      if (src.role() != null) {
-        json.addProperty("role", src.role());
-      }
-      if (src.name() != null) {
-        json.addProperty("name", src.name());
-      }
-      if (src.valueString() != null) {
-        json.addProperty("valueString", src.valueString());
-      }
-      if (src.valueNumber() != null) {
-        json.addProperty("valueNumber", src.valueNumber());
-      }
-      if (src.description() != null) {
-        json.addProperty("description", src.description());
-      }
-      if (src.keyshortcuts() != null) {
-        json.addProperty("keyshortcuts", src.keyshortcuts());
-      }
-      if (src.roledescription() != null) {
-        json.addProperty("roledescription", src.roledescription());
-      }
-      if (src.valuetext() != null) {
-        json.addProperty("valuetext", src.valuetext());
-      }
-      if (src.disabled() != null) {
-        json.addProperty("disabled", src.disabled());
-      }
-      if (src.expanded() != null) {
-        json.addProperty("expanded", src.expanded());
-      }
-      if (src.focused() != null) {
-        json.addProperty("focused", src.focused());
-      }
-      if (src.modal() != null) {
-        json.addProperty("modal", src.modal());
-      }
-      if (src.multiline() != null) {
-        json.addProperty("multiline", src.multiline());
-      }
-      if (src.multiselectable() != null) {
-        json.addProperty("multiselectable", src.multiselectable());
-      }
-      if (src.readonly() != null) {
-        json.addProperty("readonly", src.readonly());
-      }
-      if (src.required() != null) {
-        json.addProperty("required", src.required());
-      }
-      if (src.selected() != null) {
-        json.addProperty("selected", src.selected());
-      }
-      if (src.level() != null) {
-        json.addProperty("level", src.level());
-      }
-      if (src.valuemin() != null) {
-        json.addProperty("valuemin", src.valuemin());
-      }
-      if (src.valuemax() != null) {
-        json.addProperty("valuemax", src.valuemax());
-      }
-      if (src.autocomplete() != null) {
-        json.addProperty("autocomplete", src.autocomplete());
-      }
-      if (src.haspopup() != null) {
-        json.addProperty("haspopup", src.haspopup());
-      }
-      if (src.invalid() != null) {
-        json.addProperty("invalid", src.invalid());
-      }
-      if (src.orientation() != null) {
-        json.addProperty("orientation", src.orientation());
-      }
-      if (src.checked() != null) {
-        json.addProperty("checked", src.checked().toString().toLowerCase());
-      }
-      if (src.pressed() != null) {
-        json.addProperty("pressed", src.pressed().toString().toLowerCase());
-      }
-      if (src.children() != null) {
-        JsonArray children = new JsonArray();
-        for (AccessibilityNode child : src.children()) {
-          children.add(context.serialize(child));
-        }
-        json.add("children", children);
-      }
-      return json;
-    }
+  static void assertNodeEquals(String expected, String actual) {
+    JsonElement actualJson = new Gson().fromJson(actual, JsonElement.class);
+    assertNodeEquals(expected, actualJson);
   }
 
-  private static Gson gson = new GsonBuilder()
-    .registerTypeHierarchyAdapter(AccessibilityNode.class, new AccessibilityNodeSerializer()).create();
-
-
-  static void assertNodeEquals(String expected, AccessibilityNode actual) {
-    JsonElement actualJson = gson.toJsonTree(actual);
+  static void assertNodeEquals(String expected, JsonElement actualJson) {
     assertEquals(JsonParser.parseString(expected), actualJson);
   }
 
@@ -193,45 +101,55 @@ public class TestAccessibility extends TestBase {
   @Test
   void shouldWorkWithRegularText() {
     page.setContent("<div>Hello World</div>");
-    AccessibilityNode snapshot = page.accessibility().snapshot();
-    AccessibilityNode node = snapshot.children().get(0);
-    assertEquals(isFirefox() ? "text leaf" : "text", node.role());
-    assertEquals("Hello World", node.name());
+    JsonObject snapshot = new Gson().fromJson(page.accessibility().snapshot(), JsonObject.class);
+    JsonObject node = snapshot.getAsJsonArray("children").get(0).getAsJsonObject();
+    assertEquals(isFirefox() ? "text leaf" : "text", node.get("role").getAsString());
+    assertEquals("Hello World", node.get("name").getAsString());
   }
 
   @Test
   void roledescription() {
     page.setContent("<div tabIndex=-1 aria-roledescription='foo'>Hi</div>");
-    AccessibilityNode snapshot = page.accessibility().snapshot();
-    assertEquals("foo", snapshot.children().get(0).roledescription());
+    JsonObject snapshot = new Gson().fromJson(page.accessibility().snapshot(), JsonObject.class);
+    assertEquals("foo", snapshot.getAsJsonArray("children")
+      .get(0).getAsJsonObject()
+      .get("roledescription").getAsString());
   }
 
   @Test
   void orientation() {
     page.setContent("<a href='' role='slider' aria-orientation='vertical'>11</a>");
-    AccessibilityNode snapshot = page.accessibility().snapshot();
-    assertEquals("vertical", snapshot.children().get(0).orientation());
+    JsonObject snapshot = new Gson().fromJson(page.accessibility().snapshot(), JsonObject.class);
+    assertEquals("vertical", snapshot.getAsJsonArray("children")
+      .get(0).getAsJsonObject()
+      .get("orientation").getAsString());
   }
 
   @Test
   void autocomplete() {
     page.setContent("<div role='textbox' aria-autocomplete='list'>hi</div>");
-    AccessibilityNode snapshot = page.accessibility().snapshot();
-    assertEquals("list", snapshot.children().get(0).autocomplete());
+    JsonObject snapshot = new Gson().fromJson(page.accessibility().snapshot(), JsonObject.class);
+    assertEquals("list", snapshot.getAsJsonArray("children")
+      .get(0).getAsJsonObject()
+      .get("autocomplete").getAsString());
   }
 
   @Test
   void multiselectable() {
     page.setContent("<div role='grid' tabIndex=-1 aria-multiselectable=true>hey</div>");
-    AccessibilityNode snapshot = page.accessibility().snapshot();
-    assertEquals(true, snapshot.children().get(0).multiselectable());
+    JsonObject snapshot = new Gson().fromJson(page.accessibility().snapshot(), JsonObject.class);
+    assertEquals(true, snapshot.getAsJsonArray("children")
+      .get(0).getAsJsonObject()
+      .get("multiselectable").getAsBoolean());
   }
 
   @Test
   void keyshortcuts() {
     page.setContent("<div role='grid' tabIndex=-1 aria-keyshortcuts='foo'>hey</div>");
-    AccessibilityNode snapshot = page.accessibility().snapshot();
-    assertEquals("foo", snapshot.children().get(0).keyshortcuts());
+    JsonObject snapshot = new Gson().fromJson(page.accessibility().snapshot(), JsonObject.class);
+    assertEquals("foo", snapshot.getAsJsonArray("children")
+      .get(0).getAsJsonObject()
+      .get("keyshortcuts").getAsString());
   }
 
   @Test
@@ -283,8 +201,8 @@ public class TestAccessibility extends TestBase {
       "    name: 'my fake image'\n" +
       "  }]\n" +
       "}";
-    AccessibilityNode snapshot = page.accessibility().snapshot();
-    assertNodeEquals(golden, snapshot.children().get(0));
+    JsonObject snapshot = new Gson().fromJson(page.accessibility().snapshot(), JsonObject.class);
+    assertNodeEquals(golden, snapshot.getAsJsonArray("children").get(0));
   }
 
   @Test
@@ -313,42 +231,42 @@ public class TestAccessibility extends TestBase {
       "    name: 'my fake image'\n" +
       "  }]\n" +
       "}";
-    AccessibilityNode snapshot = page.accessibility().snapshot();
-    assertNodeEquals(golden, snapshot.children().get(0));
+    JsonObject snapshot = new Gson().fromJson(page.accessibility().snapshot(), JsonObject.class);
+    assertNodeEquals(golden, snapshot.getAsJsonArray("children").get(0));
   }
 
   @Test
   @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
   void plainTextFieldWithRoleShouldNotHaveChildren() {
     page.setContent("<div contenteditable='plaintext-only' role='textbox'>Edit this image:<img src='fakeimage.png' alt='my fake image'></div>");
-    AccessibilityNode snapshot = page.accessibility().snapshot();
+    JsonObject snapshot = new Gson().fromJson(page.accessibility().snapshot(), JsonObject.class);
     assertNodeEquals("{\n" +
       "  role: 'textbox',\n" +
       "  name: '',\n" +
       "  valueString: 'Edit this image:'\n" +
-      "}", snapshot.children().get(0));
+      "}", snapshot.getAsJsonArray("children").get(0));
   }
 
   @Test
   @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
   void plainTextFieldWithoutRoleShouldNotHaveContent() {
     page.setContent("<div contenteditable='plaintext-only'>Edit this image:<img src='fakeimage.png' alt='my fake image'></div>");
-    AccessibilityNode snapshot = page.accessibility().snapshot();
+    JsonObject snapshot = new Gson().fromJson(page.accessibility().snapshot(), JsonObject.class);
     assertNodeEquals("{\n" +
       "  role: 'generic',\n" +
       "  name: ''\n" +
-      "}", snapshot.children().get(0));
+      "}", snapshot.getAsJsonArray("children").get(0));
   }
 
   @Test
   @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
   void plainTextFieldWithTabindexAndWithoutRoleShouldNotHaveContent() {
     page.setContent("<div contenteditable='plaintext-only' tabIndex=0>Edit this image:<img src='fakeimage.png' alt='my fake image'></div>");
-    AccessibilityNode snapshot = page.accessibility().snapshot();
+    JsonObject snapshot = new Gson().fromJson(page.accessibility().snapshot(), JsonObject.class);
     assertNodeEquals("{\n" +
       "  role: 'generic',\n" +
       "  name: ''\n" +
-      "}", snapshot.children().get(0));
+      "}", snapshot.getAsJsonArray("children").get(0));
   }
 
   @Test
@@ -370,8 +288,8 @@ public class TestAccessibility extends TestBase {
       "  name: 'my favorite textbox',\n" +
       "  valueString: 'this is the inner content '\n" +
       "}";
-    AccessibilityNode snapshot = page.accessibility().snapshot();
-    assertNodeEquals(golden, snapshot.children().get(0));
+    JsonObject snapshot = new Gson().fromJson(page.accessibility().snapshot(), JsonObject.class);
+    assertNodeEquals(golden, snapshot.getAsJsonArray("children").get(0));
   }
 
   @Test
@@ -385,8 +303,8 @@ public class TestAccessibility extends TestBase {
       "  name: 'my favorite checkbox',\n" +
       "  checked: 'checked'\n" +
       "}";
-    AccessibilityNode snapshot = page.accessibility().snapshot();
-    assertNodeEquals(golden, snapshot.children().get(0));
+    JsonObject snapshot = new Gson().fromJson(page.accessibility().snapshot(), JsonObject.class);
+    assertNodeEquals(golden, snapshot.getAsJsonArray("children").get(0));
   }
 
   @Test
@@ -404,8 +322,8 @@ public class TestAccessibility extends TestBase {
       "  name: 'this is the inner content yo',\n" +
       "  checked: 'checked'\n" +
       "}";
-    AccessibilityNode snapshot = page.accessibility().snapshot();
-    assertNodeEquals(golden, snapshot.children().get(0));
+    JsonObject snapshot = new Gson().fromJson(page.accessibility().snapshot(), JsonObject.class);
+    assertNodeEquals(golden, snapshot.getAsJsonArray("children").get(0));
   }
 
   @Test
@@ -470,20 +388,23 @@ public class TestAccessibility extends TestBase {
       "  </div>\n" +
       "</div>");
     ElementHandle root = page.querySelector("#root");
-    AccessibilityNode snapshot = page.accessibility().snapshot(
-      new Accessibility.SnapshotOptions().withRoot(root).withInterestingOnly(false));
-    assertEquals("textbox", snapshot.role());
-    assertTrue(snapshot.valueString().contains("hello"));
-    assertTrue(snapshot.valueString().contains("world"));
-    assertNotNull(snapshot.children());
+    JsonObject snapshot = new Gson().fromJson(page.accessibility().snapshot(
+      new Accessibility.SnapshotOptions().withRoot(root).withInterestingOnly(false)),
+      JsonObject.class);
+    assertEquals("textbox", snapshot.get("role").getAsString());
+    assertTrue(snapshot.get("valueString").getAsString().contains("hello"));
+    assertTrue(snapshot.get("valueString").getAsString().contains("world"));
+    assertNotNull(snapshot.get("children"));
   }
 
   @Test
   void shouldWorkWhenThereIsATitle() {
     page.setContent("<title>This is the title</title>\n" +
       "<div>This is the content</div>");
-    AccessibilityNode snapshot = page.accessibility().snapshot();
-    assertEquals("This is the title", snapshot.name());
-    assertEquals("This is the content", snapshot.children().get(0).name());
+    JsonObject snapshot = new Gson().fromJson(page.accessibility().snapshot(), JsonObject.class);
+    assertEquals("This is the title", snapshot.get("name").getAsString());
+    assertEquals("This is the content", snapshot.getAsJsonArray("children")
+      .get(0).getAsJsonObject()
+      .get("name").getAsString());
   }
 }

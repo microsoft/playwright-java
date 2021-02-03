@@ -143,7 +143,6 @@ class Types {
     // Return structures
     add("ConsoleMessage.location", "Object", "Location");
     add("ElementHandle.boundingBox", "Object|null", "BoundingBox", new Empty());
-    add("Accessibility.snapshot", "Object|null", "AccessibilityNode", new Empty());
     add("WebSocket.framereceived", "Object", "FrameData", new Empty());
     add("WebSocket.framesent", "Object", "FrameData", new Empty());
 

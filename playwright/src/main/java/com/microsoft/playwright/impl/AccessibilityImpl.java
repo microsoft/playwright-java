@@ -16,9 +16,8 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.microsoft.playwright.Accessibility;
-import com.microsoft.playwright.AccessibilityNode;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
@@ -30,11 +29,11 @@ class AccessibilityImpl implements Accessibility {
   }
 
   @Override
-  public AccessibilityNode snapshot(SnapshotOptions options) {
+  public String snapshot(SnapshotOptions options) {
     return page.withLogging("Accessibility.snapshot", () -> snapshotImpl(options));
   }
 
-  private AccessibilityNode snapshotImpl(SnapshotOptions options) {
+  private String snapshotImpl(SnapshotOptions options) {
     if (options == null) {
       options = new SnapshotOptions();
     }
@@ -43,6 +42,6 @@ class AccessibilityImpl implements Accessibility {
     if (!json.has("rootAXNode")) {
       return null;
     }
-    return new AccessibilityNodeImpl(json.getAsJsonObject("rootAXNode"));
+    return json.getAsJsonObject("rootAXNode").toString();
   }
 }

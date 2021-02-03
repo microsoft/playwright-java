@@ -53,7 +53,7 @@ public interface Accessibility {
       return this;
     }
   }
-  default AccessibilityNode snapshot() {
+  default String snapshot() {
     return snapshot(null);
   }
   /**
@@ -63,6 +63,6 @@ public interface Accessibility {
    * <p> <strong>NOTE:</strong> The Chromium accessibility tree contains nodes that go unused on most platforms and by most screen readers.
    * Playwright will discard them as well for an easier to process tree, unless {@code interestingOnly} is set to {@code false}.
    */
-  AccessibilityNode snapshot(SnapshotOptions options);
+  String snapshot(SnapshotOptions options);
 }
 
