@@ -20,6 +20,11 @@ import java.util.*;
 
 /**
  * {@code Dialog} objects are dispatched by page via the [{@code event: Page.dialog}] event.
+ *
+ * <p> <strong>NOTE:</strong> Dialogs are dismissed automatically, unless there is a [{@code event: Page.dialog}] listener. When listener is
+ * present, it **must** either [{@code method: Dialog.accept}] or [{@code method: Dialog.dismiss}] the dialog - otherwise the page will
+ * [freeze](https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop#never_blocking) waiting for the dialog, and
+ * actions like click will never finish.
  */
 public interface Dialog {
   default void accept() {
