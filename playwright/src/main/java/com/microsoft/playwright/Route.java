@@ -25,7 +25,7 @@ import java.util.*;
  * allows to handle the route.
  */
 public interface Route {
-  class ContinueOptions {
+  class ResumeOptions {
     /**
      * If set changes the request HTTP headers. Header values will be converted to a string.
      */
@@ -43,23 +43,23 @@ public interface Route {
      */
     public String url;
 
-    public ContinueOptions withHeaders(Map<String, String> headers) {
+    public ResumeOptions withHeaders(Map<String, String> headers) {
       this.headers = headers;
       return this;
     }
-    public ContinueOptions withMethod(String method) {
+    public ResumeOptions withMethod(String method) {
       this.method = method;
       return this;
     }
-    public ContinueOptions withPostData(String postData) {
+    public ResumeOptions withPostData(String postData) {
       this.postData = postData.getBytes(StandardCharsets.UTF_8);
       return this;
     }
-    public ContinueOptions withPostData(byte[] postData) {
+    public ResumeOptions withPostData(byte[] postData) {
       this.postData = postData;
       return this;
     }
-    public ContinueOptions withUrl(String url) {
+    public ResumeOptions withUrl(String url) {
       this.url = url;
       return this;
     }
@@ -138,13 +138,13 @@ public interface Route {
    * - {@code 'failed'} - A generic failure occurred.
    */
   void abort(String errorCode);
-  default void continue_() {
-    continue_(null);
+  default void resume() {
+    resume(null);
   }
   /**
    * Continues route's request with optional overrides.
    */
-  void continue_(ContinueOptions options);
+  void resume(ResumeOptions options);
   default void fulfill() {
     fulfill(null);
   }

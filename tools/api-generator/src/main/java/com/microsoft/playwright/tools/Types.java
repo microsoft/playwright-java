@@ -190,7 +190,7 @@ class Types {
     add("ElementHandle.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");
     add("ElementHandle.setInputFiles.files", "Array<Object>|Array<path>|Object|path", "String");
     add("FileChooser.setFiles.files", "Array<Object>|Array<path>|Object|path", "String");
-    add("Route.continue_.options.postData", "Buffer|string", "byte[]", new Empty());
+    add("Route.resume.options.postData", "Buffer|string", "byte[]", new Empty());
     add("Route.fulfill.options.body", "Buffer|string", "String");
     add("Logger.log.message", "string|Error", "String");
 
@@ -198,9 +198,6 @@ class Types {
     add("Browser.newContext.options.geolocation", "Object", "Geolocation", new Empty());
     add("Browser.newPage.options.geolocation", "Object", "Geolocation", new Empty());
     add("BrowserType.launchPersistentContext.options.geolocation", "Object", "Geolocation", new Empty());
-
-    // node.js types
-    add("Route.continue_.options", "Object", "ContinueOptions");
 
     // TODO: fix upstream types!
     add("Playwright.devices", "Object", "Map<String, DeviceDescriptor>", new Empty());

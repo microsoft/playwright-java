@@ -34,19 +34,6 @@ import java.util.*;
  * request is  issued to a redirected url.
  */
 public interface Request {
-  class RequestFailure {
-    /**
-     * Human-readable error message, e.g. {@code 'net::ERR_FAILED'}.
-     */
-    private String errorText;
-
-    public RequestFailure(String errorText) {
-      this.errorText = errorText;
-    }
-    public String errorText() {
-      return this.errorText;
-    }
-  }
   class RequestTiming {
     /**
      * Request start time in milliseconds elapsed since January 1, 1970 00:00:00 UTC
@@ -126,7 +113,7 @@ public interface Request {
    *
    * <p> Example of logging of all the failed requests:
    */
-  RequestFailure failure();
+  String failure();
   /**
    * Returns the {@code Frame} that initiated this request.
    */

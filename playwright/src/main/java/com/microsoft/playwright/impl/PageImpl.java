@@ -168,7 +168,7 @@ public class PageImpl extends ChannelOwner implements Page {
       String guid = params.getAsJsonObject("request").get("guid").getAsString();
       RequestImpl request = connection.getExistingObject(guid);
       if (params.has("failureText")) {
-        request.failure = new Request.RequestFailure(params.get("failureText").getAsString());
+        request.failure = params.get("failureText").getAsString();
       }
       listeners.notify(EventType.REQUESTFAILED, request);
     } else if ("requestFinished".equals(event)) {
@@ -204,7 +204,7 @@ public class PageImpl extends ChannelOwner implements Page {
         handled = browserContext.routes.handle(route);
       }
       if (!handled) {
-        route.continue_();
+        route.resume();
       }
     } else if ("video".equals(event)) {
       video().setRelativePath(params.get("relativePath").getAsString());

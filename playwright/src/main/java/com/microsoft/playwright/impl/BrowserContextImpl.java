@@ -367,7 +367,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       Route route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
       boolean handled = routes.handle(route);
       if (!handled) {
-        route.continue_();
+        route.resume();
       }
     } else if ("page".equals(event)) {
       PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
