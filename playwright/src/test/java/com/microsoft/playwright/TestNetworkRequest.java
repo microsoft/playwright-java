@@ -81,7 +81,7 @@ public class TestNetworkRequest extends TestBase {
     List<Request> requests = new ArrayList<>();
     page.route("**", route -> {
       requests.add(route.request());
-      route.continue_();
+      route.resume();
     });
     page.navigate(server.PREFIX + "/foo.html");
 
@@ -185,7 +185,7 @@ public class TestNetworkRequest extends TestBase {
     });
     Request[] request = {null};
     page.onRequest(r -> request[0] = r);
-    page.route("/post", route -> route.continue_());
+    page.route("/post", route -> route.resume());
     page.evaluate("async () => {\n" +
       "  await fetch('./post', { method: 'POST', body: new Uint8Array(Array.from(Array(256).keys())) });\n" +
       "}");

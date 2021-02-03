@@ -43,7 +43,7 @@ public class TestBrowserContextRoute extends TestBase {
       assertEquals("document", request.resourceType());
       assertEquals(page.mainFrame(), request.frame());
       assertEquals("about:blank", request.frame().url());
-      route.continue_();
+      route.resume();
     });
     Response response = page.navigate(server.EMPTY_PAGE);
     assertTrue(response.ok());
@@ -59,20 +59,20 @@ public class TestBrowserContextRoute extends TestBase {
     List<Integer> intercepted = new ArrayList<>();
     Consumer<Route> handler1 = route -> {
       intercepted.add(1);
-      route.continue_();
+      route.resume();
     };
     context.route("**/empty.html", handler1);
     context.route("**/empty.html", route -> {
       intercepted.add(2);
-      route.continue_();
+      route.resume();
     });
     context.route("**/empty.html", route -> {
       intercepted.add(3);
-      route.continue_();
+      route.resume();
     });
     context.route("**/*", route -> {
       intercepted.add(4);
-      route.continue_();
+      route.resume();
     });
     page.navigate(server.EMPTY_PAGE);
     assertEquals(asList(1), intercepted);

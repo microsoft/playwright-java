@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Request;
@@ -25,7 +24,6 @@ import com.microsoft.playwright.Route;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -44,13 +42,13 @@ public class RouteImpl extends ChannelOwner implements Route {
   }
 
   @Override
-  public void continue_(ContinueOptions options) {
-    withLogging("Route.continue", () -> continueImpl(options));
+  public void resume(ResumeOptions options) {
+    withLogging("Route.resume", () -> resumeImpl(options));
   }
 
-  private void continueImpl(ContinueOptions options) {
+  private void resumeImpl(ResumeOptions options) {
     if (options == null) {
-      options = new ContinueOptions();
+      options = new ResumeOptions();
     }
     JsonObject params = new JsonObject();
     if (options.url != null) {

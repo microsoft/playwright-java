@@ -54,7 +54,7 @@ public class TestPopup extends TestBase {
     page.setContent("<a target=_blank rel=noopener href='empty.html'>link</a>");
     boolean[] intercepted = {false};
     context.route("**/empty.html", route -> {
-      route.continue_();
+      route.resume();
       intercepted[0] = true;
     });
     context.waitForPage(() -> page.click("a"));
@@ -162,7 +162,7 @@ public class TestPopup extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     boolean[] intercepted = {false};
     context.route("**/empty.html", route -> {
-      route.continue_();
+      route.resume();
       intercepted[0] = true;
     });
     page.waitForPopup(() -> {

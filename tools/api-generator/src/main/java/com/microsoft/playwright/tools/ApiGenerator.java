@@ -888,7 +888,7 @@ class Field extends Element {
       output.add(offset + "}");
       return;
     }
-    if ("Route.continue_.options.postData".equals(jsonPath)) {
+    if ("Route.resume.options.postData".equals(jsonPath)) {
       output.add(offset + "public " + parentClass + " withPostData(String postData) {");
       output.add(offset + "  this.postData = postData.getBytes(StandardCharsets.UTF_8);");
       output.add(offset + "  return this;");

@@ -32,7 +32,7 @@ public class RequestImpl extends ChannelOwner implements Request {
   private RequestImpl redirectedFrom;
   private RequestImpl redirectedTo;
   final Map<String, String> headers = new HashMap<>();
-  RequestFailure failure;
+  String failure;
   RequestTiming timing;
 
   RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -54,7 +54,7 @@ public class RequestImpl extends ChannelOwner implements Request {
   }
 
   @Override
-  public RequestFailure failure() {
+  public String failure() {
     return failure;
   }
 
