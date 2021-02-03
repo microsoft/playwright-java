@@ -114,7 +114,7 @@ public interface Keyboard {
    *
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
-  void press(String key, PressOptions delay);
+  void press(String key, PressOptions options);
   default void type(String text) {
     type(text, null);
   }
@@ -127,7 +127,7 @@ public interface Keyboard {
    *
    * @param text A text to type into a focused element.
    */
-  void type(String text, TypeOptions delay);
+  void type(String text, TypeOptions options);
   /**
    * Dispatches a {@code keyup} event.
    *
