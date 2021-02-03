@@ -760,7 +760,7 @@ class Method extends Element {
           sections.add("");
           hasBlankLine = true;
         }
-        sections.add("@param " + p.name() + " " + comment);
+        sections.add("@param " + p.jsonName + " " + comment);
       }
     }
     if (jsonElement.getAsJsonObject().has("returnComment")) {
@@ -778,12 +778,6 @@ class Method extends Element {
 class Param extends Element {
   final TypeRef type;
 
-  private static Map<String, String> customName = new HashMap<>();
-  static {
-    customName.put("Keyboard.type.options", "delay");
-    customName.put("Keyboard.press.options", "delay");
-  }
-
   Param(Method method, JsonObject jsonElement) {
     super(method, jsonElement);
     type = new TypeRef(this, jsonElement.get("type").getAsJsonObject());
@@ -793,16 +787,8 @@ class Param extends Element {
     return !jsonElement.getAsJsonObject().get("required").getAsBoolean();
   }
 
-  String name() {
-    String name = customName.get(jsonPath);
-    if (name != null) {
-      return name;
-    }
-    return jsonName;
-  }
-
   String toJava() {
-    return type.toJava() + " " + name();
+    return type.toJava() + " " + jsonName;
   }
 }
 
