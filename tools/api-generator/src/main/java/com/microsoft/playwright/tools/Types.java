@@ -173,7 +173,6 @@ class Types {
     add("BrowserContext.addCookies.cookies.sameSite", "\"Lax\"|\"None\"|\"Strict\"", "SameSite", new Empty());
     add("BrowserContext.route.url", "RegExp|function(URL):boolean|string", "String");
     add("BrowserContext.unroute.url", "RegExp|function(URL):boolean|string", "String");
-    add("BrowserContext.storageState", "Object", "StorageState", new Empty());
     add("Page.waitForNavigation.options.url", "RegExp|function(URL):boolean|string", "Custom");
     add("Page.waitForNavigation.options", "Object", "WaitForNavigationOptions");
     add("Page.waitForRequest.options", "Object", "WaitForRequestOptions");
@@ -198,8 +197,6 @@ class Types {
 
     add("BrowserContext.setGeolocation.geolocation", "Object|null", "Geolocation", new Empty());
     add("Browser.newContext.options.geolocation", "Object", "Geolocation", new Empty());
-    add("Browser.newContext.options.storageState", "Object|path", "BrowserContext.StorageState", new Empty());
-    add("Browser.newPage.options.storageState", "Object|path", "BrowserContext.StorageState", new Empty());
     add("Browser.newPage.options.geolocation", "Object", "Geolocation", new Empty());
     add("BrowserType.launchPersistentContext.options.geolocation", "Object", "Geolocation", new Empty());
 

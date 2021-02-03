@@ -54,46 +54,6 @@ public interface BrowserContext extends AutoCloseable {
     }
   }
 
-  class StorageState {
-    public List<AddCookie> cookies;
-    public List<OriginState> origins;
-
-    public static class OriginState {
-      public final String origin;
-      public List<LocalStorageItem> localStorage;
-
-      public static class LocalStorageItem {
-        public String name;
-        public String value;
-        public LocalStorageItem(String name, String value) {
-          this.name = name;
-          this.value = value;
-        }
-      }
-
-      public OriginState(String origin) {
-        this.origin = origin;
-      }
-
-      public OriginState withLocalStorage(List<LocalStorageItem> localStorage) {
-        this.localStorage = localStorage;
-        return this;
-      }
-    }
-
-    public StorageState() {
-      cookies = new ArrayList<>();
-      origins = new ArrayList<>();
-    }
-
-    public List<AddCookie> cookies() {
-      return this.cookies;
-    }
-    public List<OriginState> origins() {
-      return this.origins;
-    }
-  }
-
 
   void onClose(Consumer<BrowserContext> handler);
   void offClose(Consumer<BrowserContext> handler);
@@ -431,13 +391,13 @@ public interface BrowserContext extends AutoCloseable {
    * @param offline Whether to emulate network being offline for the browser context.
    */
   void setOffline(boolean offline);
-  default StorageState storageState() {
+  default String storageState() {
     return storageState(null);
   }
   /**
    * Returns storage state for this browser context, contains current cookies and local storage snapshot.
    */
-  StorageState storageState(StorageStateOptions options);
+  String storageState(StorageStateOptions options);
   default void unroute(String url) { unroute(url, null); }
   default void unroute(Pattern url) { unroute(url, null); }
   default void unroute(Predicate<String> url) { unroute(url, null); }

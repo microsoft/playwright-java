@@ -218,11 +218,14 @@ public interface Browser extends AutoCloseable {
      */
     public RecordVideo recordVideo;
     /**
-     * Populates context with given storage state. This method can be used to initialize context with logged-in information
-     * obtained via [{@code method: BrowserContext.storageState}]. Either a path to the file with saved storage, or an object with
-     * the following fields:
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via [{@code method: BrowserContext.storageState}].
      */
-    public BrowserContext.StorageState storageState;
+    public String storageState;
+    /**
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via [{@code method: BrowserContext.storageState}]. Path to the file with saved storage state.
+     */
     public Path storageStatePath;
     /**
      * Changes the timezone of the context. See
@@ -307,13 +310,11 @@ public interface Browser extends AutoCloseable {
       this.recordVideo = new RecordVideo();
       return this.recordVideo;
     }
-    public NewContextOptions withStorageState(BrowserContext.StorageState storageState) {
+    public NewContextOptions withStorageState(String storageState) {
       this.storageState = storageState;
-      this.storageStatePath = null;
       return this;
     }
-    public NewContextOptions withStorageState(Path storageStatePath) {
-      this.storageState = null;
+    public NewContextOptions withStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
       return this;
     }
@@ -507,11 +508,14 @@ public interface Browser extends AutoCloseable {
      */
     public RecordVideo recordVideo;
     /**
-     * Populates context with given storage state. This method can be used to initialize context with logged-in information
-     * obtained via [{@code method: BrowserContext.storageState}]. Either a path to the file with saved storage, or an object with
-     * the following fields:
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via [{@code method: BrowserContext.storageState}].
      */
-    public BrowserContext.StorageState storageState;
+    public String storageState;
+    /**
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via [{@code method: BrowserContext.storageState}]. Path to the file with saved storage state.
+     */
     public Path storageStatePath;
     /**
      * Changes the timezone of the context. See
@@ -596,13 +600,11 @@ public interface Browser extends AutoCloseable {
       this.recordVideo = new RecordVideo();
       return this.recordVideo;
     }
-    public NewPageOptions withStorageState(BrowserContext.StorageState storageState) {
+    public NewPageOptions withStorageState(String storageState) {
       this.storageState = storageState;
-      this.storageStatePath = null;
       return this;
     }
-    public NewPageOptions withStorageState(Path storageStatePath) {
-      this.storageState = null;
+    public NewPageOptions withStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
       return this;
     }
