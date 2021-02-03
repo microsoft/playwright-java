@@ -814,11 +814,6 @@ class Field extends Element {
       output.add(offset + "public Integer pollingInterval;");
       return;
     }
-    if ("Route.fulfill.options.body".equals(jsonPath)) {
-      output.add(offset + "public String body;");
-      output.add(offset + "public byte[] bodyBytes;");
-      return;
-    }
     if (asList("Page.emulateMedia.options.media",
                "Page.emulateMedia.options.colorScheme").contains(jsonPath)) {
       output.add(offset + access + "Optional<" + type.toJava() + "> " + name + ";");
@@ -891,12 +886,6 @@ class Field extends Element {
     if ("Route.resume.options.postData".equals(jsonPath)) {
       output.add(offset + "public " + parentClass + " withPostData(String postData) {");
       output.add(offset + "  this.postData = postData.getBytes(StandardCharsets.UTF_8);");
-      output.add(offset + "  return this;");
-      output.add(offset + "}");
-    }
-    if ("Route.fulfill.options.body".equals(jsonPath)) {
-      output.add(offset + "public " + parentClass + " withBody(byte[] body) {");
-      output.add(offset + "  this.bodyBytes = body;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
     }

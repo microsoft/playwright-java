@@ -49,8 +49,6 @@ class Types {
     add("Page.waitForLoadState.state", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "Frame.LoadState", new Empty());
     add("Frame.waitForLoadState.state", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState");
     add("ElementHandle.waitForElementState.state", "\"disabled\"|\"editable\"|\"enabled\"|\"hidden\"|\"stable\"|\"visible\"", "ElementState");
-    add("Logger.isEnabled.severity", "\"error\"|\"info\"|\"verbose\"|\"warning\"", "Severity");
-    add("Logger.log.severity", "\"error\"|\"info\"|\"verbose\"|\"warning\"", "Severity");
 
     // Option enums
     add("Browser.newContext.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme", new Empty());
@@ -127,18 +125,7 @@ class Types {
 
     add("BrowserContext.addInitScript.script", "Object|function|string", "String");
     add("Page.addInitScript.script", "Object|function|string", "String");
-    add("Page.evaluate.pageFunction", "function|string", "String");
-    add("Page.evaluateHandle.pageFunction", "function|string", "String");
-    add("Page.waitForFunction.pageFunction", "function|string", "String");
-    add("Frame.evaluate.pageFunction", "function|string", "String");
-    add("Frame.evaluateHandle.pageFunction", "function|string", "String");
-    add("Frame.waitForFunction.pageFunction", "function|string", "String");
-    add("ElementHandle.evaluateHandle.pageFunction", "function|string", "String");
-    add("JSHandle.evaluateHandle.pageFunction", "function|string", "String");
     add("Selectors.register.script", "Object|function|string", "String");
-    add("Worker.evaluate.pageFunction", "function|string", "String");
-    add("Worker.evaluateHandle.pageFunction", "function|string", "String");
-    add("WebSocket.waitForEvent.optionsOrPredicate", "Function|Object", "String");
 
     // Return structures
     add("ConsoleMessage.location", "Object", "Location");
@@ -191,8 +178,6 @@ class Types {
     add("ElementHandle.setInputFiles.files", "Array<Object>|Array<path>|Object|path", "String");
     add("FileChooser.setFiles.files", "Array<Object>|Array<path>|Object|path", "String");
     add("Route.resume.options.postData", "Buffer|string", "byte[]", new Empty());
-    add("Route.fulfill.options.body", "Buffer|string", "String");
-    add("Logger.log.message", "string|Error", "String");
 
     add("BrowserContext.setGeolocation.geolocation", "Object|null", "Geolocation", new Empty());
     add("Browser.newContext.options.geolocation", "Object", "Geolocation", new Empty());

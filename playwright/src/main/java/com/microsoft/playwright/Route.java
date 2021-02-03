@@ -66,9 +66,12 @@ public interface Route {
   }
   class FulfillOptions {
     /**
-     * Response body.
+     * Optional response body as text.
      */
     public String body;
+    /**
+     * Optional response body as raw bytes.
+     */
     public byte[] bodyBytes;
     /**
      * If set, equals to setting {@code Content-Type} response header.
@@ -88,12 +91,12 @@ public interface Route {
      */
     public Integer status;
 
-    public FulfillOptions withBody(byte[] body) {
-      this.bodyBytes = body;
-      return this;
-    }
     public FulfillOptions withBody(String body) {
       this.body = body;
+      return this;
+    }
+    public FulfillOptions withBodyBytes(byte[] bodyBytes) {
+      this.bodyBytes = bodyBytes;
       return this;
     }
     public FulfillOptions withContentType(String contentType) {
