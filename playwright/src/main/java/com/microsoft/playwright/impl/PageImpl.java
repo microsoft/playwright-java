@@ -878,6 +878,11 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public void pause() {
+
+  }
+
+  @Override
   public byte[] pdf(PdfOptions options) {
     return withLogging("Page.pdf", () -> pdfImpl(options));
   }

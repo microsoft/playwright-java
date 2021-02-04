@@ -1987,6 +1987,17 @@ public interface Page extends AutoCloseable {
    * Returns the opener for popup pages and {@code null} for others. If the opener has been closed already the returns {@code null}.
    */
   Page opener();
+  /**
+   * Pauses script execution. Playwright will stop executing the script and wait for the user to either press 'Resume' button
+   * in the page overlay or to call {@code playwright.resume()} in the DevTools console.
+   *
+   * <p> User can inspect selectors or perform manual steps while paused. Resume will continue running the original script from
+   * the place it was paused.
+   *
+   * <p> <strong>NOTE:</strong> This method requires Playwright to be started in a headed mode, with a falsy [{@code options: headless}] value in the
+   * [{@code method: BrowserType.launch}].
+   */
+  void pause();
   default byte[] pdf() {
     return pdf(null);
   }
