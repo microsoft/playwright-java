@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+import static com.microsoft.playwright.Utils.verifyViewport;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBrowserContextBasic extends TestBase {
@@ -91,13 +92,6 @@ public class TestBrowserContextBasic extends TestBase {
     context2.close();
 
     assertEquals(1, browser.contexts().size());
-  }
-
-  static void verifyViewport(Page page, int width, int height) {
-    assertEquals(width, page.viewportSize().width());
-    assertEquals(height, page.viewportSize().height());
-    assertEquals(width, page.evaluate("window.innerWidth"));
-    assertEquals(height, page.evaluate("window.innerHeight"));
   }
 
   @Test
