@@ -361,6 +361,10 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     });
   }
 
+  void pause() {
+    sendMessage("pause");
+  }
+
   @Override
   protected void handleEvent(String event, JsonObject params) {
     if ("route".equals(event)) {
