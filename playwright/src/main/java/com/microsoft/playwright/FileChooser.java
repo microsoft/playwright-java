@@ -20,7 +20,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * {@code FileChooser} objects are dispatched by the page in the [{@code event: Page.filechooser}] event.
+ * {@code FileChooser} objects are dispatched by the page in the [{@code event: Page.fileChooser}] event.
  */
 public interface FileChooser {
   class FilePayload {

@@ -1664,7 +1664,7 @@ public interface Page extends AutoCloseable {
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
-   * @param arg Optional argument to pass to {@code expression}
+   * @param arg Optional argument to pass to {@code expression}.
    */
   Object evalOnSelector(String selector, String expression, Object arg);
   default Object evalOnSelectorAll(String selector, String expression) {
@@ -1681,7 +1681,7 @@ public interface Page extends AutoCloseable {
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
-   * @param arg Optional argument to pass to {@code expression}
+   * @param arg Optional argument to pass to {@code expression}.
    */
   Object evalOnSelectorAll(String selector, String expression, Object arg);
   default Object evaluate(String expression) {
@@ -1707,7 +1707,7 @@ public interface Page extends AutoCloseable {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
-   * @param arg Optional argument to pass to {@code expression}
+   * @param arg Optional argument to pass to {@code expression}.
    */
   Object evaluate(String expression, Object arg);
   default JSHandle evaluateHandle(String expression) {
@@ -1729,7 +1729,7 @@ public interface Page extends AutoCloseable {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
-   * @param arg Optional argument to pass to {@code expression}
+   * @param arg Optional argument to pass to {@code expression}.
    */
   JSHandle evaluateHandle(String expression, Object arg);
   default void exposeBinding(String name, Binding callback) {
@@ -2365,7 +2365,7 @@ public interface Page extends AutoCloseable {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
-   * @param arg Optional argument to pass to {@code expression}
+   * @param arg Optional argument to pass to {@code expression}.
    */
   JSHandle waitForFunction(String expression, Object arg, WaitForFunctionOptions options);
   default void waitForLoadState(Frame.LoadState state) {

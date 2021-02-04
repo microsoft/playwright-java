@@ -22,10 +22,10 @@ import java.util.*;
  * Whenever the page sends a request for a network resource the following sequence of events are emitted by {@code Page}:
  * - [{@code event: Page.request}] emitted when the request is issued by the page.
  * - [{@code event: Page.response}] emitted when/if the response status and headers are received for the request.
- * - [{@code event: Page.requestfinished}] emitted when the response body is downloaded and the request is complete.
+ * - [{@code event: Page.requestFinished}] emitted when the response body is downloaded and the request is complete.
  *
  * <p> If request fails at some point, then instead of {@code 'requestfinished'} event (and possibly instead of 'response' event),
- * the  [{@code event: Page.requestfailed}] event is emitted.
+ * the  [{@code event: Page.requestFailed}] event is emitted.
  *
  * <p> <strong>NOTE:</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will
  * complete with {@code 'requestfinished'} event.

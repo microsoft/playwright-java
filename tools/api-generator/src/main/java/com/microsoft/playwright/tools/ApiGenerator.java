@@ -382,41 +382,6 @@ abstract class TypeDefinition extends Element {
 }
 
 class Event extends Element {
-  private static Map<String, String> eventNames = new HashMap<>();
-  static {
-    eventNames.put("Browser.disconnected", "Disconnected");
-
-    eventNames.put("BrowserContext.close", "Close");
-    eventNames.put("BrowserContext.page", "Page");
-
-    eventNames.put("Page.close", "Close");
-    eventNames.put("Page.console", "Console");
-    eventNames.put("Page.crash", "Crash");
-    eventNames.put("Page.dialog", "Dialog");
-    eventNames.put("Page.domcontentloaded", "DOMContentLoaded");
-    eventNames.put("Page.download", "Download");
-    eventNames.put("Page.filechooser", "FileChooser");
-    eventNames.put("Page.frameattached", "FrameAttached");
-    eventNames.put("Page.framedetached", "FrameDetached");
-    eventNames.put("Page.framenavigated", "FrameNavigated");
-    eventNames.put("Page.load", "Load");
-    eventNames.put("Page.pageerror", "PageError");
-    eventNames.put("Page.popup", "Popup");
-    eventNames.put("Page.request", "Request");
-    eventNames.put("Page.requestfailed", "RequestFailed");
-    eventNames.put("Page.requestfinished", "RequestFinished");
-    eventNames.put("Page.response", "Response");
-    eventNames.put("Page.websocket", "WebSocket");
-    eventNames.put("Page.worker", "Worker");
-
-    eventNames.put("WebSocket.close", "Close");
-    eventNames.put("WebSocket.framereceived", "FrameReceived");
-    eventNames.put("WebSocket.framesent", "FrameSent");
-    eventNames.put("WebSocket.socketerror", "SocketError");
-
-    eventNames.put("Worker.close", "Close");
-  }
-
   private static Set<String> waitForEvents = new HashSet<>();
   static {
     waitForEvents.add("BrowserContext.page");
@@ -424,22 +389,22 @@ class Event extends Element {
     waitForEvents.add("Page.close");
     waitForEvents.add("Page.console");
     waitForEvents.add("Page.download");
-    waitForEvents.add("Page.filechooser");
-    waitForEvents.add("Page.frameattached");
-    waitForEvents.add("Page.framedetached");
-    waitForEvents.add("Page.framenavigated");
-    waitForEvents.add("Page.pageerror");
+    waitForEvents.add("Page.fileChooser");
+    waitForEvents.add("Page.frameAttached");
+    waitForEvents.add("Page.frameDetached");
+    waitForEvents.add("Page.frameNavigated");
+    waitForEvents.add("Page.pageError");
     waitForEvents.add("Page.popup");
     waitForEvents.add("Page.request");
-    waitForEvents.add("Page.requestfailed");
-    waitForEvents.add("Page.requestfinished");
+    waitForEvents.add("Page.requestFailed");
+    waitForEvents.add("Page.requestFinished");
     waitForEvents.add("Page.response");
-    waitForEvents.add("Page.websocket");
+    waitForEvents.add("Page.webSocket");
     waitForEvents.add("Page.worker");
 
-    waitForEvents.add("WebSocket.framereceived");
-    waitForEvents.add("WebSocket.framesent");
-    waitForEvents.add("WebSocket.socketerror");
+    waitForEvents.add("WebSocket.frameReceived");
+    waitForEvents.add("WebSocket.frameSent");
+    waitForEvents.add("WebSocket.socketError");
 
     waitForEvents.add("Worker.close");
   }
@@ -452,16 +417,8 @@ class Event extends Element {
   }
 
   void writeListenerMethods(List<String> output, String offset) {
-    if (!eventNames.containsKey(jsonPath)) {
-      throw new RuntimeException("Unknown event: " + jsonPath);
-    }
-    String name = eventNames.get(jsonPath);
-    String paramType = type.toJava();
-    // TODO: remove once fixed upstream
-    if (paramType.equals("void")) {
-      paramType = parent.jsonName;
-    }
-    String listenerType = "Consumer<" + paramType + ">";
+    String name = toTitle(jsonName);
+    String listenerType = "Consumer<" + type.toJava() + ">";
     output.add(offset + "void on" + name + "(" + listenerType + " handler);");
     output.add(offset + "void off" + name + "(" + listenerType + " handler);");
   }
@@ -470,7 +427,7 @@ class Event extends Element {
     if (!waitForEvents.contains(jsonPath)) {
       return;
     }
-    String name = eventNames.get(jsonPath);
+    String name = toTitle(jsonName);
     String methodName = "waitFor" + name;
     // Skip events for which there is waitFor* method in the upstream API, that method will generate the code.
     if (Method.waitForMethods.contains(parent.jsonPath + "." + methodName)) {
