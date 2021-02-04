@@ -879,7 +879,9 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void pause() {
-
+    withLogging("BrowserContext.pause", () -> {
+      context().pause();
+    });
   }
 
   @Override
