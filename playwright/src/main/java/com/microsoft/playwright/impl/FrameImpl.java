@@ -30,7 +30,6 @@ import java.util.function.Consumer;
 
 import static com.microsoft.playwright.Frame.LoadState.*;
 import static com.microsoft.playwright.impl.Serialization.*;
-import static com.microsoft.playwright.impl.Utils.convertViaJson;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 public class FrameImpl extends ChannelOwner implements Frame {
@@ -112,7 +111,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     JsonObject params = new JsonObject();
     params.addProperty("selector", selector);
     params.addProperty("expression", pageFunction);
-    params.addProperty("isFunction", isFunctionBody(pageFunction));
     params.add("arg", gson().toJsonTree(serializeArgument(arg)));
     JsonElement json = sendMessage("evalOnSelector", params);
     SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
@@ -128,7 +126,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     JsonObject params = new JsonObject();
     params.addProperty("selector", selector);
     params.addProperty("expression", pageFunction);
-    params.addProperty("isFunction", isFunctionBody(pageFunction));
     params.add("arg", gson().toJsonTree(serializeArgument(arg)));
     JsonElement json = sendMessage("evalOnSelectorAll", params);
     SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
@@ -268,7 +265,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     JsonObject params = new JsonObject();
     params.addProperty("expression", expression);
     params.addProperty("world", "main");
-    params.addProperty("isFunction", isFunctionBody(expression));
     params.add("arg", gson().toJsonTree(serializeArgument(arg)));
     JsonElement json = sendMessage("evaluateExpression", params);
     SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
@@ -284,7 +280,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     JsonObject params = new JsonObject();
     params.addProperty("expression", pageFunction);
     params.addProperty("world", "main");
-    params.addProperty("isFunction", isFunctionBody(pageFunction));
     params.add("arg", gson().toJsonTree(serializeArgument(arg)));
     JsonElement json = sendMessage("evaluateExpressionHandle", params);
     return connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("handle").get("guid").getAsString());
@@ -696,6 +691,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("expression", pageFunction);
+    // TODO: remove once fixed upstream
     params.addProperty("isFunction", isFunctionBody(pageFunction));
     params.add("arg", gson().toJsonTree(serializeArgument(arg)));
     JsonElement json = sendMessage("waitForFunction", params);

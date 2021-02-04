@@ -79,7 +79,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
       JsonObject params = new JsonObject();
       params.addProperty("selector", selector);
       params.addProperty("expression", pageFunction);
-      params.addProperty("isFunction", isFunctionBody(pageFunction));
       params.add("arg", gson().toJsonTree(serializeArgument(arg)));
       JsonElement json = sendMessage("evalOnSelector", params);
       SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);
@@ -93,7 +92,6 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
       JsonObject params = new JsonObject();
       params.addProperty("selector", selector);
       params.addProperty("expression", pageFunction);
-      params.addProperty("isFunction", isFunctionBody(pageFunction));
       params.add("arg", gson().toJsonTree(serializeArgument(arg)));
       JsonElement json = sendMessage("evalOnSelectorAll", params);
       SerializedValue value = gson().fromJson(json.getAsJsonObject().get("value"), SerializedValue.class);

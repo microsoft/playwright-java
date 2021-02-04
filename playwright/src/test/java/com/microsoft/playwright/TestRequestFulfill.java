@@ -72,7 +72,7 @@ public class TestRequestFulfill extends TestBase {
       }
       route.fulfill(new Route.FulfillOptions()
         .withContentType("image/png")
-        .withBody(imageBuffer));
+        .withBodyBytes(imageBuffer));
     });
     page.evaluate("PREFIX => {\n" +
       "  const img = document.createElement('img');\n" +
