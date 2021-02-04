@@ -51,7 +51,7 @@ public interface JSHandle {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
-   * @param arg Optional argument to pass to {@code expression}
+   * @param arg Optional argument to pass to {@code expression}.
    */
   Object evaluate(String expression, Object arg);
   default JSHandle evaluateHandle(String expression) {
@@ -72,7 +72,7 @@ public interface JSHandle {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
-   * @param arg Optional argument to pass to {@code expression}
+   * @param arg Optional argument to pass to {@code expression}.
    */
   JSHandle evaluateHandle(String expression, Object arg);
   /**

@@ -26,10 +26,10 @@ import java.util.regex.Pattern;
  * [{@code method: Frame.childFrames}] methods.
  *
  * <p> {@code Frame} object's lifecycle is controlled by three events, dispatched on the page object:
- * - [{@code event: Page.frameattached}] - fired when the frame gets attached to the page. A Frame can be attached to the page
+ * - [{@code event: Page.frameAttached}] - fired when the frame gets attached to the page. A Frame can be attached to the page
  *   only once.
- * - [{@code event: Page.framenavigated}] - fired when the frame commits navigation to a different URL.
- * - [{@code event: Page.framedetached}] - fired when the frame gets detached from the page.  A Frame can be detached from the
+ * - [{@code event: Page.frameNavigated}] - fired when the frame commits navigation to a different URL.
+ * - [{@code event: Page.frameDetached}] - fired when the frame gets detached from the page.  A Frame can be detached from the
  *   page only once.
  */
 public interface Frame {
@@ -983,7 +983,7 @@ public interface Frame {
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
-   * @param arg Optional argument to pass to {@code expression}
+   * @param arg Optional argument to pass to {@code expression}.
    */
   Object evalOnSelector(String selector, String expression, Object arg);
   default Object evalOnSelectorAll(String selector, String expression) {
@@ -1002,7 +1002,7 @@ public interface Frame {
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
-   * @param arg Optional argument to pass to {@code expression}
+   * @param arg Optional argument to pass to {@code expression}.
    */
   Object evalOnSelectorAll(String selector, String expression, Object arg);
   default Object evaluate(String expression) {
@@ -1025,7 +1025,7 @@ public interface Frame {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
-   * @param arg Optional argument to pass to {@code expression}
+   * @param arg Optional argument to pass to {@code expression}.
    */
   Object evaluate(String expression, Object arg);
   default JSHandle evaluateHandle(String expression) {
@@ -1047,7 +1047,7 @@ public interface Frame {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
-   * @param arg Optional argument to pass to {@code expression}
+   * @param arg Optional argument to pass to {@code expression}.
    */
   JSHandle evaluateHandle(String expression, Object arg);
   default void fill(String selector, String value) {
@@ -1459,7 +1459,7 @@ public interface Frame {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
-   * @param arg Optional argument to pass to {@code expression}
+   * @param arg Optional argument to pass to {@code expression}.
    */
   JSHandle waitForFunction(String expression, Object arg, WaitForFunctionOptions options);
   default void waitForLoadState(LoadState state) {

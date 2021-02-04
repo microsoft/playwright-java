@@ -130,8 +130,8 @@ class Types {
     // Return structures
     add("ConsoleMessage.location", "Object", "Location");
     add("ElementHandle.boundingBox", "Object|null", "BoundingBox", new Empty());
-    add("WebSocket.framereceived", "Object", "FrameData", new Empty());
-    add("WebSocket.framesent", "Object", "FrameData", new Empty());
+    add("WebSocket.frameReceived", "Object", "FrameData", new Empty());
+    add("WebSocket.frameSent", "Object", "FrameData", new Empty());
 
     // Custom options
     add("Page.pdf.options.margin.top", "float|string", "String");

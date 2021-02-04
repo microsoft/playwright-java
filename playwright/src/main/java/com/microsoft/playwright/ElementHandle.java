@@ -723,7 +723,7 @@ public interface ElementHandle extends JSHandle {
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
-   * @param arg Optional argument to pass to {@code expression}
+   * @param arg Optional argument to pass to {@code expression}.
    */
   Object evalOnSelector(String selector, String expression, Object arg);
   default Object evalOnSelectorAll(String selector, String expression) {
@@ -742,7 +742,7 @@ public interface ElementHandle extends JSHandle {
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
-   * @param arg Optional argument to pass to {@code expression}
+   * @param arg Optional argument to pass to {@code expression}.
    */
   Object evalOnSelectorAll(String selector, String expression, Object arg);
   default void fill(String value) {
