@@ -184,12 +184,12 @@ public class TestPageExposeFunction extends TestBase {
     }, new Page.ExposeBindingOptions().withHandle(true));
     page.navigate(server.EMPTY_PAGE);
 
-    page.waitForNavigation(() -> {
+    page.waitForNavigation(new Page.WaitForNavigationOptions().withWaitUntil(LOAD), () -> {
       page.evaluate("async url => {\n" +
         "  window['logme']({ foo: 42 });\n" +
         "  window.location.href = url;\n" +
         "}", server.PREFIX + "/one-style.html");
-    }, new Page.WaitForNavigationOptions().withWaitUntil(LOAD));
+    });
   }
 
   @Test

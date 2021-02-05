@@ -1482,7 +1482,7 @@ public interface Frame {
    * - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
    */
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
-  default Response waitForNavigation(Runnable code) { return waitForNavigation(code, null); }
+  default Response waitForNavigation(Runnable callback) { return waitForNavigation(null, callback); }
   /**
    * Waits for the frame navigation and returns the main resource response. In case of multiple redirects, the navigation
    * will resolve with the response of the last redirect. In case of navigation to a different anchor or navigation due to
@@ -1494,7 +1494,7 @@ public interface Frame {
    * <p> <strong>NOTE:</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is
    * considered a navigation.
    */
-  Response waitForNavigation(Runnable code, WaitForNavigationOptions options);
+  Response waitForNavigation(WaitForNavigationOptions options, Runnable callback);
   default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }

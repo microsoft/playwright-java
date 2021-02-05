@@ -41,8 +41,8 @@ public class TestPageWaitForNavigation extends TestBase {
   void shouldRespectTimeout() {
     try {
       page.waitForNavigation(
-        () -> page.navigate(server.EMPTY_PAGE),
-        new Page.WaitForNavigationOptions().withUrl("**/frame.html").withTimeout(5000));
+        new Page.WaitForNavigationOptions().withUrl("**/frame.html").withTimeout(5000),
+        () -> page.navigate(server.EMPTY_PAGE));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout 5000ms exceeded"));
@@ -150,26 +150,26 @@ public class TestPageWaitForNavigation extends TestBase {
     page.navigate(server.EMPTY_PAGE);
 
     Response response1 = page.waitForNavigation(
-      () -> page.navigate(server.PREFIX + "/one-style.html"),
-      new Page.WaitForNavigationOptions().withUrl("**/one-style.html"));
+      new Page.WaitForNavigationOptions().withUrl("**/one-style.html"),
+      () -> page.navigate(server.PREFIX + "/one-style.html"));
     assertNotNull(response1);
     assertEquals(server.PREFIX + "/one-style.html", response1.url());
 
     Response response2 = page.waitForNavigation(
-      () -> page.navigate(server.PREFIX + "/frame.html"),
-      new Page.WaitForNavigationOptions().withUrl(Pattern.compile("frame.html$")));
+      new Page.WaitForNavigationOptions().withUrl(Pattern.compile("frame.html$")),
+      () -> page.navigate(server.PREFIX + "/frame.html"));
     assertNotNull(response2);
     assertEquals(server.PREFIX + "/frame.html", response2.url());
 
     Response response3 = page.waitForNavigation(
-      () -> page.navigate(server.PREFIX + "/frame.html?foo=bar"),
       new Page.WaitForNavigationOptions().withUrl(url -> {
         try {
           return new URL(url).getQuery().contains("foo=bar");
         } catch (MalformedURLException e) {
           throw new RuntimeException(e);
         }
-      }));
+      }),
+      () -> page.navigate(server.PREFIX + "/frame.html?foo=bar"));
     assertNotNull(response3);
     assertEquals(server.PREFIX + "/frame.html?foo=bar", response3.url());
   }
@@ -177,7 +177,7 @@ public class TestPageWaitForNavigation extends TestBase {
   @Test
   void shouldWorkWithUrlMatchForSameDocumentNavigations() {
     page.navigate(server.EMPTY_PAGE);
-    Response response = page.waitForNavigation(() -> {
+    Response response = page.waitForNavigation(new Page.WaitForNavigationOptions().withUrl("**/third.html"), () -> {
       page.evaluate("() => {\n" +
         "  history.pushState({}, '', '/first.html');\n" +
         "}");
@@ -187,7 +187,7 @@ public class TestPageWaitForNavigation extends TestBase {
       page.evaluate("() => {\n" +
         "  history.pushState({}, '', '/third.html');\n" +
         "}");
-    }, new Page.WaitForNavigationOptions().withUrl("**/third.html"));
+    });
     assertNull(response);
   }
 
@@ -196,8 +196,8 @@ public class TestPageWaitForNavigation extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     String url = server.CROSS_PROCESS_PREFIX + "/empty.html";
     Response response = page.waitForNavigation(
-      () -> page.navigate(url),
-      new Page.WaitForNavigationOptions().withWaitUntil(Frame.LoadState.DOMCONTENTLOADED));
+      new Page.WaitForNavigationOptions().withWaitUntil(Frame.LoadState.DOMCONTENTLOADED),
+      () -> page.navigate(url));
     assertEquals(url, response.url());
     assertEquals(url, page.url());
     assertEquals(url, page.evaluate("document.location.href"));

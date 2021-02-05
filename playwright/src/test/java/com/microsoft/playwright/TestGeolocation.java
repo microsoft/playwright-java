@@ -118,24 +118,24 @@ public class TestGeolocation extends TestBase {
       "  }, err => {});\n" +
       "}");
     {
-      ConsoleMessage message = page.waitForConsole(() -> context.setGeolocation(new Geolocation(0, 10)));
+      ConsoleMessage message = page.waitForConsoleMessage(() -> context.setGeolocation(new Geolocation(0, 10)));
       // Location change events come several times so we loop until expected one is received.
       while (!message.text().contains("lat=0 lng=10")) {
-        message = page.waitForConsole(() -> {});
+        message = page.waitForConsoleMessage(() -> {});
       }
       assertTrue(message.text().contains("lat=0 lng=10"), message.text());
     }
     {
-      ConsoleMessage message = page.waitForConsole(() -> context.setGeolocation(new Geolocation(20, 30)));
+      ConsoleMessage message = page.waitForConsoleMessage(() -> context.setGeolocation(new Geolocation(20, 30)));
       while (!message.text().contains("lat=20 lng=30")) {
-        message = page.waitForConsole(() -> {});
+        message = page.waitForConsoleMessage(() -> {});
       }
       assertTrue(message.text().contains("lat=20 lng=30"), message.text());
     }
     {
-      ConsoleMessage message = page.waitForConsole(() -> context.setGeolocation(new Geolocation(40, 50)));
+      ConsoleMessage message = page.waitForConsoleMessage(() -> context.setGeolocation(new Geolocation(40, 50)));
       while (!message.text().contains("lat=40 lng=50")) {
-        message = page.waitForConsole(() -> {});
+        message = page.waitForConsoleMessage(() -> {});
       }
       assertTrue(message.text().contains("lat=40 lng=50"), message.text());
     }

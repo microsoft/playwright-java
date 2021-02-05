@@ -312,8 +312,17 @@ class TypeRef extends Element {
     if ("Promise".equals(name)) {
       return convertTemplateParams(jsonType);
     }
+    // {"name":"function","args":[{"name":"ConsoleMessage"}],"returnType":{"name":"bool"},"expression":"[function]([ConsoleMessage]):[bool]"}
     if ("function".equals(name)) {
-      throw new RuntimeException("Missing mapping for " + jsonType);
+      if (jsonType.getAsJsonArray("args").size() == 1) {
+        String paramType = convertBuiltinType(jsonType.getAsJsonArray("args").get(0).getAsJsonObject());
+        String returnType = "void";
+        if (jsonType.has("returnType")
+          && "bool".equals(jsonType.getAsJsonObject("returnType").get("name").getAsString())) {
+          return "Predicate<" + paramType + ">";
+        }
+        throw new RuntimeException("Missing mapping for " + jsonType);
+      }
     }
     return name;
   }
@@ -382,33 +391,6 @@ abstract class TypeDefinition extends Element {
 }
 
 class Event extends Element {
-  private static Set<String> waitForEvents = new HashSet<>();
-  static {
-    waitForEvents.add("BrowserContext.page");
-
-    waitForEvents.add("Page.close");
-    waitForEvents.add("Page.console");
-    waitForEvents.add("Page.download");
-    waitForEvents.add("Page.fileChooser");
-    waitForEvents.add("Page.frameAttached");
-    waitForEvents.add("Page.frameDetached");
-    waitForEvents.add("Page.frameNavigated");
-    waitForEvents.add("Page.pageError");
-    waitForEvents.add("Page.popup");
-    waitForEvents.add("Page.request");
-    waitForEvents.add("Page.requestFailed");
-    waitForEvents.add("Page.requestFinished");
-    waitForEvents.add("Page.response");
-    waitForEvents.add("Page.webSocket");
-    waitForEvents.add("Page.worker");
-
-    waitForEvents.add("WebSocket.frameReceived");
-    waitForEvents.add("WebSocket.frameSent");
-    waitForEvents.add("WebSocket.socketError");
-
-    waitForEvents.add("Worker.close");
-  }
-
   private final TypeRef type;
 
   Event(Element parent, JsonObject jsonElement) {
@@ -418,47 +400,19 @@ class Event extends Element {
 
   void writeListenerMethods(List<String> output, String offset) {
     String name = toTitle(jsonName);
-    String listenerType = "Consumer<" + type.toJava() + ">";
+    String paramType = type.toJava();
+    if ("FrameData".equals(paramType)) {
+      paramType = "WebSocketFrame";
+    }
+    String listenerType = "Consumer<" + paramType + ">";
     output.add(offset + "void on" + name + "(" + listenerType + " handler);");
     output.add(offset + "void off" + name + "(" + listenerType + " handler);");
-  }
-
-  void writeWaitForEventIfNeeded(List<String> output, String offset) {
-    if (!waitForEvents.contains(jsonPath)) {
-      return;
-    }
-    String name = toTitle(jsonName);
-    String methodName = "waitFor" + name;
-    // Skip events for which there is waitFor* method in the upstream API, that method will generate the code.
-    if (Method.waitForMethods.contains(parent.jsonPath + "." + methodName)) {
-      return;
-    }
-    output.add("");
-    String optionsClass = toTitle(methodName) + "Options";
-    output.add(offset + "class " + optionsClass + " {");
-    output.add(offset + "  public Double timeout;");
-    output.add(offset + "  public " + optionsClass + " withTimeout(double timeout) {");
-    output.add(offset + "    this.timeout = timeout;");
-    output.add(offset + "    return this;");
-    output.add(offset + "  }");
-    output.add(offset + "}");
-    String paramType = jsonPath.equals("Page.close") ? "Page" : type.toJava();
-    output.add(offset + paramType + " " + methodName + "(Runnable code, " + optionsClass + " options);");
-    output.add(offset + "default " + paramType + " " + methodName + "(Runnable code) { return " + methodName + "(code, null); }");
   }
 }
 
 class Method extends Element {
   final TypeRef returnType;
   final List<Param> params = new ArrayList<>();
-
-  static Set<String> waitForMethods = new HashSet<>();
-  static {
-    waitForMethods.add("Page.waitForNavigation");
-    waitForMethods.add("Page.waitForRequest");
-    waitForMethods.add("Page.waitForResponse");
-    waitForMethods.add("Frame.waitForNavigation");
-  }
 
   private static Map<String, String[]> customSignature = new HashMap<>();
   static {
@@ -540,27 +494,27 @@ class Method extends Element {
     customSignature.put("Frame.setInputFiles", setInputFilesWithSelector);
 
     customSignature.put("Page.waitForRequest", new String[] {
-      "default Request waitForRequest(Runnable code) { return waitForRequest(code, (Predicate<Request>) null, null); }",
-      "default Request waitForRequest(Runnable code, String urlGlob) { return waitForRequest(code, urlGlob, null); }",
-      "default Request waitForRequest(Runnable code, Pattern urlPattern) { return waitForRequest(code, urlPattern, null); }",
-      "default Request waitForRequest(Runnable code, Predicate<Request> predicate) { return waitForRequest(code, predicate, null); }",
-      "Request waitForRequest(Runnable code, String urlGlob, WaitForRequestOptions options);",
-      "Request waitForRequest(Runnable code, Pattern urlPattern, WaitForRequestOptions options);",
-      "Request waitForRequest(Runnable code, Predicate<Request> predicate, WaitForRequestOptions options);"
+      "default Request waitForRequest(Runnable callback) { return waitForRequest((Predicate<Request>) null, null, callback); }",
+      "default Request waitForRequest(String urlGlob, Runnable callback) { return waitForRequest(urlGlob, null, callback); }",
+      "default Request waitForRequest(Pattern urlPattern, Runnable callback) { return waitForRequest(urlPattern, null, callback); }",
+      "default Request waitForRequest(Predicate<Request> predicate, Runnable callback) { return waitForRequest(predicate, null, callback); }",
+      "Request waitForRequest(String urlGlob, WaitForRequestOptions options, Runnable callback);",
+      "Request waitForRequest(Pattern urlPattern, WaitForRequestOptions options, Runnable callback);",
+      "Request waitForRequest(Predicate<Request> predicate, WaitForRequestOptions options, Runnable callback);"
     });
     customSignature.put("Page.waitForResponse", new String[] {
-      "default Response waitForResponse(Runnable code) { return waitForResponse(code, (Predicate<Response>) null, null); }",
-      "default Response waitForResponse(Runnable code, String urlGlob) { return waitForResponse(code, urlGlob, null); }",
-      "default Response waitForResponse(Runnable code, Pattern urlPattern) { return waitForResponse(code, urlPattern, null); }",
-      "default Response waitForResponse(Runnable code, Predicate<Response> predicate) { return waitForResponse(code, predicate, null); }",
-      "Response waitForResponse(Runnable code, String urlGlob, WaitForResponseOptions options);",
-      "Response waitForResponse(Runnable code, Pattern urlPattern, WaitForResponseOptions options);",
-      "Response waitForResponse(Runnable code, Predicate<Response> predicate, WaitForResponseOptions options);"
+      "default Response waitForResponse(Runnable callback) { return waitForResponse((Predicate<Response>) null, null, callback); }",
+      "default Response waitForResponse(String urlGlob, Runnable callback) { return waitForResponse(urlGlob, null, callback); }",
+      "default Response waitForResponse(Pattern urlPattern, Runnable callback) { return waitForResponse(urlPattern, null, callback); }",
+      "default Response waitForResponse(Predicate<Response> predicate, Runnable callback) { return waitForResponse(predicate, null, callback); }",
+      "Response waitForResponse(String urlGlob, WaitForResponseOptions options, Runnable callback);",
+      "Response waitForResponse(Pattern urlPattern, WaitForResponseOptions options, Runnable callback);",
+      "Response waitForResponse(Predicate<Response> predicate, WaitForResponseOptions option, Runnable callbacks);"
     });
 
     String[] waitForNavigation = {
-      "default Response waitForNavigation(Runnable code) { return waitForNavigation(code, null); }",
-      "Response waitForNavigation(Runnable code, WaitForNavigationOptions options);"
+      "default Response waitForNavigation(Runnable callback) { return waitForNavigation(null, callback); }",
+      "Response waitForNavigation(WaitForNavigationOptions options, Runnable callback);"
     };
     customSignature.put("Frame.waitForNavigation", waitForNavigation);
     customSignature.put("Page.waitForNavigation", waitForNavigation);
@@ -621,11 +575,6 @@ class Method extends Element {
     });
   }
 
-  private static Set<String> skipJavadoc = new HashSet<>(asList(
-    "Page.waitForRequest",
-    "Page.waitForResponse"
-    ));
-
   Method(TypeDefinition parent, JsonObject jsonElement) {
     super(parent, jsonElement);
     if (customSignature.containsKey(jsonPath) && customSignature.get(jsonPath).length == 0) {
@@ -665,7 +614,7 @@ class Method extends Element {
     for (int i = params.size() - 1; i >= 0; i--) {
       Param p = params.get(i);
       if (!p.isOptional()) {
-        break;
+        continue;
       }
       writeDefaultOverloadedMethod(i, output, offset);
     }
@@ -673,32 +622,28 @@ class Method extends Element {
     output.add(offset + toJava());
   }
 
-  private void writeDefaultOverloadedMethod(int paramCount, List<String> output, String offset) {
-    StringBuilder paramList = new StringBuilder();
-    StringBuilder argList = new StringBuilder();
-    for (int i = 0; i < paramCount; i++) {
+  private void writeDefaultOverloadedMethod(int firstNullOptional, List<String> output, String offset) {
+    List<String> paramList = new ArrayList<>();
+    List<String> argList = new ArrayList<>();
+    for (int i = 0; i < params.size(); i++) {
       Param p = params.get(i);
-      if (paramList.length() > 0) {
-        paramList.append(", ");
-        argList.append(", ");
+      if (i == firstNullOptional) {
+        argList.add("int".equals(params.get(firstNullOptional).type.toJava()) ? "0" : "null");
+        continue;
       }
-      paramList.append(p.toJava());
-      argList.append(p.jsonName);
+      if (p.isOptional() && i > firstNullOptional) {
+        continue;
+      }
+      paramList.add(p.toJava());
+      argList.add(p.jsonName);
     }
-    if (argList.length() > 0) {
-      argList.append(", ");
-    }
-    argList.append("int".equals(params.get(paramCount).type.toJava()) ? "0" : "null");
     String returns = returnType.toJava().equals("void") ? "" : "return ";
-    output.add(offset + "default " + returnType.toJava() + " " + jsonName + "(" + paramList + ") {");
-    output.add(offset + "  " + returns + jsonName + "(" + argList + ");");
+    output.add(offset + "default " + returnType.toJava() + " " + jsonName + "(" + String.join(", ", paramList) + ") {");
+    output.add(offset + "  " + returns + jsonName + "(" + String.join(", ", argList) + ");");
     output.add(offset + "}");
   }
 
   private void writeJavadoc(List<String> output, String offset) {
-    if (skipJavadoc.contains(jsonPath)) {
-      return;
-    }
     List<String> sections = new ArrayList<>();
     sections.add(formattedComment());
     boolean hasBlankLine = false;
@@ -706,9 +651,6 @@ class Method extends Element {
       for (Param p : params) {
         String comment = p.comment();
         if (comment.isEmpty()) {
-          continue;
-        }
-        if (skipJavadoc.contains(p.jsonPath)) {
           continue;
         }
         if (!hasBlankLine) {
@@ -995,10 +937,6 @@ class Interface extends TypeDefinition {
       e.writeListenerMethods(output, offset);
     }
     output.add("");
-    for (Event e : events) {
-      e.writeWaitForEventIfNeeded(output, offset);
-    }
-    output.add("");
   }
 
   private void writeSharedTypes(List<String> output, String offset) {
@@ -1140,14 +1078,6 @@ class Interface extends TypeDefinition {
         output.add(offset + "    this.mimeType = mimeType;");
         output.add(offset + "    this.buffer = buffer;");
         output.add(offset + "  }");
-        output.add(offset + "}");
-        output.add("");
-        break;
-      }
-      case "WebSocket": {
-        output.add(offset + "interface FrameData {");
-        output.add(offset + "  byte[] body();");
-        output.add(offset + "  String text();");
         output.add(offset + "}");
         output.add("");
         break;

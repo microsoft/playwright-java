@@ -132,137 +132,6 @@ public interface Page extends AutoCloseable {
   void onWorker(Consumer<Worker> handler);
   void offWorker(Consumer<Worker> handler);
 
-
-  class WaitForCloseOptions {
-    public Double timeout;
-    public WaitForCloseOptions withTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  Page waitForClose(Runnable code, WaitForCloseOptions options);
-  default Page waitForClose(Runnable code) { return waitForClose(code, null); }
-
-  class WaitForConsoleOptions {
-    public Double timeout;
-    public WaitForConsoleOptions withTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  ConsoleMessage waitForConsole(Runnable code, WaitForConsoleOptions options);
-  default ConsoleMessage waitForConsole(Runnable code) { return waitForConsole(code, null); }
-
-  class WaitForDownloadOptions {
-    public Double timeout;
-    public WaitForDownloadOptions withTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  Download waitForDownload(Runnable code, WaitForDownloadOptions options);
-  default Download waitForDownload(Runnable code) { return waitForDownload(code, null); }
-
-  class WaitForFileChooserOptions {
-    public Double timeout;
-    public WaitForFileChooserOptions withTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  FileChooser waitForFileChooser(Runnable code, WaitForFileChooserOptions options);
-  default FileChooser waitForFileChooser(Runnable code) { return waitForFileChooser(code, null); }
-
-  class WaitForFrameAttachedOptions {
-    public Double timeout;
-    public WaitForFrameAttachedOptions withTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  Frame waitForFrameAttached(Runnable code, WaitForFrameAttachedOptions options);
-  default Frame waitForFrameAttached(Runnable code) { return waitForFrameAttached(code, null); }
-
-  class WaitForFrameDetachedOptions {
-    public Double timeout;
-    public WaitForFrameDetachedOptions withTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  Frame waitForFrameDetached(Runnable code, WaitForFrameDetachedOptions options);
-  default Frame waitForFrameDetached(Runnable code) { return waitForFrameDetached(code, null); }
-
-  class WaitForFrameNavigatedOptions {
-    public Double timeout;
-    public WaitForFrameNavigatedOptions withTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  Frame waitForFrameNavigated(Runnable code, WaitForFrameNavigatedOptions options);
-  default Frame waitForFrameNavigated(Runnable code) { return waitForFrameNavigated(code, null); }
-
-  class WaitForPageErrorOptions {
-    public Double timeout;
-    public WaitForPageErrorOptions withTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  Error waitForPageError(Runnable code, WaitForPageErrorOptions options);
-  default Error waitForPageError(Runnable code) { return waitForPageError(code, null); }
-
-  class WaitForPopupOptions {
-    public Double timeout;
-    public WaitForPopupOptions withTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  Page waitForPopup(Runnable code, WaitForPopupOptions options);
-  default Page waitForPopup(Runnable code) { return waitForPopup(code, null); }
-
-  class WaitForRequestFailedOptions {
-    public Double timeout;
-    public WaitForRequestFailedOptions withTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  Request waitForRequestFailed(Runnable code, WaitForRequestFailedOptions options);
-  default Request waitForRequestFailed(Runnable code) { return waitForRequestFailed(code, null); }
-
-  class WaitForRequestFinishedOptions {
-    public Double timeout;
-    public WaitForRequestFinishedOptions withTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  Request waitForRequestFinished(Runnable code, WaitForRequestFinishedOptions options);
-  default Request waitForRequestFinished(Runnable code) { return waitForRequestFinished(code, null); }
-
-  class WaitForWebSocketOptions {
-    public Double timeout;
-    public WaitForWebSocketOptions withTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  WebSocket waitForWebSocket(Runnable code, WaitForWebSocketOptions options);
-  default WebSocket waitForWebSocket(Runnable code) { return waitForWebSocket(code, null); }
-
-  class WaitForWorkerOptions {
-    public Double timeout;
-    public WaitForWorkerOptions withTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  Worker waitForWorker(Runnable code, WaitForWorkerOptions options);
-  default Worker waitForWorker(Runnable code) { return waitForWorker(code, null); }
-
   class AddScriptTagOptions {
     /**
      * Raw JavaScript content to be injected into frame.
@@ -1350,6 +1219,78 @@ public interface Page extends AutoCloseable {
       return this;
     }
   }
+  class WaitForCloseOptions {
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the [{@code method: BrowserContext.setDefaultTimeout}].
+     */
+    public Double timeout;
+
+    public WaitForCloseOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class WaitForConsoleMessageOptions {
+    /**
+     * Receives the {@code ConsoleMessage} object and resolves to truthy value when the waiting should resolve.
+     */
+    public Predicate<ConsoleMessage> predicate;
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the [{@code method: BrowserContext.setDefaultTimeout}].
+     */
+    public Double timeout;
+
+    public WaitForConsoleMessageOptions withPredicate(Predicate<ConsoleMessage> predicate) {
+      this.predicate = predicate;
+      return this;
+    }
+    public WaitForConsoleMessageOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class WaitForDownloadOptions {
+    /**
+     * Receives the {@code Download} object and resolves to truthy value when the waiting should resolve.
+     */
+    public Predicate<Download> predicate;
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the [{@code method: BrowserContext.setDefaultTimeout}].
+     */
+    public Double timeout;
+
+    public WaitForDownloadOptions withPredicate(Predicate<Download> predicate) {
+      this.predicate = predicate;
+      return this;
+    }
+    public WaitForDownloadOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class WaitForFileChooserOptions {
+    /**
+     * Receives the {@code FileChooser} object and resolves to truthy value when the waiting should resolve.
+     */
+    public Predicate<FileChooser> predicate;
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the [{@code method: BrowserContext.setDefaultTimeout}].
+     */
+    public Double timeout;
+
+    public WaitForFileChooserOptions withPredicate(Predicate<FileChooser> predicate) {
+      this.predicate = predicate;
+      return this;
+    }
+    public WaitForFileChooserOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class WaitForFunctionOptions {
     /**
      * If {@code polling} is {@code 'raf'}, then {@code expression} is constantly executed in {@code requestAnimationFrame} callback. If {@code polling} is a
@@ -1432,6 +1373,26 @@ public interface Page extends AutoCloseable {
       return this;
     }
   }
+  class WaitForPopupOptions {
+    /**
+     * Receives the {@code Page} object and resolves to truthy value when the waiting should resolve.
+     */
+    public Predicate<Page> predicate;
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the [{@code method: BrowserContext.setDefaultTimeout}].
+     */
+    public Double timeout;
+
+    public WaitForPopupOptions withPredicate(Predicate<Page> predicate) {
+      this.predicate = predicate;
+      return this;
+    }
+    public WaitForPopupOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class WaitForRequestOptions {
     /**
      * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be
@@ -1479,6 +1440,46 @@ public interface Page extends AutoCloseable {
       return this;
     }
     public WaitForSelectorOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class WaitForWebSocketOptions {
+    /**
+     * Receives the {@code WebSocket} object and resolves to truthy value when the waiting should resolve.
+     */
+    public Predicate<WebSocket> predicate;
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the [{@code method: BrowserContext.setDefaultTimeout}].
+     */
+    public Double timeout;
+
+    public WaitForWebSocketOptions withPredicate(Predicate<WebSocket> predicate) {
+      this.predicate = predicate;
+      return this;
+    }
+    public WaitForWebSocketOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class WaitForWorkerOptions {
+    /**
+     * Receives the {@code Worker} object and resolves to truthy value when the waiting should resolve.
+     */
+    public Predicate<Worker> predicate;
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the [{@code method: BrowserContext.setDefaultTimeout}].
+     */
+    public Double timeout;
+
+    public WaitForWorkerOptions withPredicate(Predicate<Worker> predicate) {
+      this.predicate = predicate;
+      return this;
+    }
+    public WaitForWorkerOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -2348,6 +2349,48 @@ public interface Page extends AutoCloseable {
    */
   Video video();
   Viewport viewportSize();
+  default Page waitForClose(Runnable callback) {
+    return waitForClose(null, callback);
+  }
+  /**
+   * Performs action and waits for the Page to close.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
+  Page waitForClose(WaitForCloseOptions options, Runnable callback);
+  default ConsoleMessage waitForConsoleMessage(Runnable callback) {
+    return waitForConsoleMessage(null, callback);
+  }
+  /**
+   * Performs action and waits for a [ConoleMessage] to be logged by in the page. If predicate is provided, it passes
+   * {@code ConsoleMessage} value into the {@code predicate} function and waits for {@code predicate(message)} to return a truthy value. Will
+   * throw an error if the page is closed before the console event is fired.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
+  ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable callback);
+  default Download waitForDownload(Runnable callback) {
+    return waitForDownload(null, callback);
+  }
+  /**
+   * Performs action and waits for a new {@code Download}. If predicate is provided, it passes {@code Download} value into the
+   * {@code predicate} function and waits for {@code predicate(download)} to return a truthy value. Will throw an error if the page is
+   * closed before the download event is fired.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
+  Download waitForDownload(WaitForDownloadOptions options, Runnable callback);
+  default FileChooser waitForFileChooser(Runnable callback) {
+    return waitForFileChooser(null, callback);
+  }
+  /**
+   * Performs action and waits for a new {@code FileChooser} to be created. If predicate is provided, it passes {@code FileChooser} value
+   * into the {@code predicate} function and waits for {@code predicate(fileChooser)} to return a truthy value. Will throw an error if
+   * the page is closed before the file chooser is opened.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
+  FileChooser waitForFileChooser(WaitForFileChooserOptions options, Runnable callback);
   default JSHandle waitForFunction(String expression, Object arg) {
     return waitForFunction(expression, arg, null);
   }
@@ -2389,7 +2432,7 @@ public interface Page extends AutoCloseable {
    * - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
    */
   void waitForLoadState(Frame.LoadState state, WaitForLoadStateOptions options);
-  default Response waitForNavigation(Runnable code) { return waitForNavigation(code, null); }
+  default Response waitForNavigation(Runnable callback) { return waitForNavigation(null, callback); }
   /**
    * Waits for the main frame navigation and returns the main resource response. In case of multiple redirects, the
    * navigation will resolve with the response of the last redirect. In case of navigation to a different anchor or
@@ -2404,21 +2447,46 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's [{@code method: Frame.waitForNavigation}].
    */
-  Response waitForNavigation(Runnable code, WaitForNavigationOptions options);
-  default Request waitForRequest(Runnable code) { return waitForRequest(code, (Predicate<Request>) null, null); }
-  default Request waitForRequest(Runnable code, String urlGlob) { return waitForRequest(code, urlGlob, null); }
-  default Request waitForRequest(Runnable code, Pattern urlPattern) { return waitForRequest(code, urlPattern, null); }
-  default Request waitForRequest(Runnable code, Predicate<Request> predicate) { return waitForRequest(code, predicate, null); }
-  Request waitForRequest(Runnable code, String urlGlob, WaitForRequestOptions options);
-  Request waitForRequest(Runnable code, Pattern urlPattern, WaitForRequestOptions options);
-  Request waitForRequest(Runnable code, Predicate<Request> predicate, WaitForRequestOptions options);
-  default Response waitForResponse(Runnable code) { return waitForResponse(code, (Predicate<Response>) null, null); }
-  default Response waitForResponse(Runnable code, String urlGlob) { return waitForResponse(code, urlGlob, null); }
-  default Response waitForResponse(Runnable code, Pattern urlPattern) { return waitForResponse(code, urlPattern, null); }
-  default Response waitForResponse(Runnable code, Predicate<Response> predicate) { return waitForResponse(code, predicate, null); }
-  Response waitForResponse(Runnable code, String urlGlob, WaitForResponseOptions options);
-  Response waitForResponse(Runnable code, Pattern urlPattern, WaitForResponseOptions options);
-  Response waitForResponse(Runnable code, Predicate<Response> predicate, WaitForResponseOptions options);
+  Response waitForNavigation(WaitForNavigationOptions options, Runnable callback);
+  default Page waitForPopup(Runnable callback) {
+    return waitForPopup(null, callback);
+  }
+  /**
+   * Performs action and waits for a popup {@code Page}. If predicate is provided, it passes [Popup] value into the {@code predicate}
+   * function and waits for {@code predicate(page)} to return a truthy value. Will throw an error if the page is closed before the
+   * popup event is fired.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
+  Page waitForPopup(WaitForPopupOptions options, Runnable callback);
+  default Request waitForRequest(Runnable callback) { return waitForRequest((Predicate<Request>) null, null, callback); }
+  default Request waitForRequest(String urlGlob, Runnable callback) { return waitForRequest(urlGlob, null, callback); }
+  default Request waitForRequest(Pattern urlPattern, Runnable callback) { return waitForRequest(urlPattern, null, callback); }
+  default Request waitForRequest(Predicate<Request> predicate, Runnable callback) { return waitForRequest(predicate, null, callback); }
+  Request waitForRequest(String urlGlob, WaitForRequestOptions options, Runnable callback);
+  Request waitForRequest(Pattern urlPattern, WaitForRequestOptions options, Runnable callback);
+  /**
+   * Waits for the matching request and returns it.
+   *
+   *
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
+   * @param callback Callback that performs the action triggering the event.
+   */
+  Request waitForRequest(Predicate<Request> predicate, WaitForRequestOptions options, Runnable callback);
+  default Response waitForResponse(Runnable callback) { return waitForResponse((Predicate<Response>) null, null, callback); }
+  default Response waitForResponse(String urlGlob, Runnable callback) { return waitForResponse(urlGlob, null, callback); }
+  default Response waitForResponse(Pattern urlPattern, Runnable callback) { return waitForResponse(urlPattern, null, callback); }
+  default Response waitForResponse(Predicate<Response> predicate, Runnable callback) { return waitForResponse(predicate, null, callback); }
+  Response waitForResponse(String urlGlob, WaitForResponseOptions options, Runnable callback);
+  Response waitForResponse(Pattern urlPattern, WaitForResponseOptions options, Runnable callback);
+  /**
+   * Returns the matched response.
+   *
+   *
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
+   * @param callback Callback that performs the action triggering the event.
+   */
+  Response waitForResponse(Predicate<Response> predicate, WaitForResponseOptions option, Runnable callbacks);
   default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }
@@ -2447,6 +2515,28 @@ public interface Page extends AutoCloseable {
    * @param timeout A timeout to wait for
    */
   void waitForTimeout(double timeout);
+  default WebSocket waitForWebSocket(Runnable callback) {
+    return waitForWebSocket(null, callback);
+  }
+  /**
+   * Performs action and waits for a new {@code WebSocket}. If predicate is provided, it passes {@code WebSocket} value into the
+   * {@code predicate} function and waits for {@code predicate(webSocket)} to return a truthy value. Will throw an error if the page is
+   * closed before the WebSocket event is fired.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
+  WebSocket waitForWebSocket(WaitForWebSocketOptions options, Runnable callback);
+  default Worker waitForWorker(Runnable callback) {
+    return waitForWorker(null, callback);
+  }
+  /**
+   * Performs action and waits for a new {@code Worker}. If predicate is provided, it passes {@code Worker} value into the {@code predicate}
+   * function and waits for {@code predicate(worker)} to return a truthy value. Will throw an error if the page is closed before
+   * the worker event is fired.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
+  Worker waitForWorker(WaitForWorkerOptions options, Runnable callback);
   /**
    * This method returns all of the dedicated [WebWorkers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)
    * associated with the page.
