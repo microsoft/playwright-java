@@ -211,19 +211,20 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldBeAbortableWithCustomErrorCodes() {
     page.route("**/*", route -> route.abort("internetdisconnected"));
-    Request failedRequest = page.waitForRequestFailed(() -> {
-      try {
-        page.navigate(server.EMPTY_PAGE);
-      } catch (PlaywrightException e) {
-      }
-    });
-    assertNotNull(failedRequest);
-    if (isWebKit())
-      assertEquals("Request intercepted", failedRequest.failure());
-    else if (isFirefox())
-      assertEquals("NS_ERROR_OFFLINE", failedRequest.failure());
-    else
-      assertEquals("net::ERR_INTERNET_DISCONNECTED", failedRequest.failure());
+    Request[] failedRequest = {null};
+    page.onRequestFailed(r -> failedRequest[0] = r);
+    try {
+      page.navigate(server.EMPTY_PAGE);
+    } catch (PlaywrightException e) {
+    }
+    assertNotNull(failedRequest[0]);
+    if (isWebKit()) {
+      assertEquals("Request intercepted", failedRequest[0].failure());
+    } else if (isFirefox()) {
+      assertEquals("NS_ERROR_OFFLINE", failedRequest[0].failure());
+    } else {
+      assertEquals("net::ERR_INTERNET_DISCONNECTED", failedRequest[0].failure());
+    }
   }
 
   @Test

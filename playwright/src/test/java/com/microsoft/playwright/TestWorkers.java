@@ -20,6 +20,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.condition.EnabledIf;
 
+import java.time.Duration;
+import java.time.Instant;
+
 import static com.microsoft.playwright.Utils.attachFrame;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,16 +81,21 @@ public class TestWorkers extends TestBase {
 
   @Test
   void shouldReportErrors() {
-    Page.Error errorLog = page.waitForPageError(() -> {
-      page.evaluate("() => new Worker(URL.createObjectURL(new Blob([`\n" +
-        "  setTimeout(() => {\n" +
-        "    // Do a console.log just to check that we do not confuse it with an error.\n" +
-        "    console.log('hey');\n" +
-        "    throw new Error('this is my error');\n" +
-        "  })\n" +
-        "`], {type: 'application/javascript'})))");
-    });
-    assertTrue(errorLog.message().contains("this is my error"));
+    Page.Error[] errorLog = {null};
+    page.onPageError(e -> errorLog[0] = e);
+    page.evaluate("() => new Worker(URL.createObjectURL(new Blob([`\n" +
+      "  setTimeout(() => {\n" +
+      "    // Do a console.log just to check that we do not confuse it with an error.\n" +
+      "    console.log('hey');\n" +
+      "    throw new Error('this is my error');\n" +
+      "  })\n" +
+      "`], {type: 'application/javascript'})))");
+    Instant start = Instant.now();
+    while (errorLog[0] == null) {
+      page.waitForTimeout(100);
+      assertTrue(Duration.between(start, Instant.now()).getSeconds() < 30, "Timed out");
+    }
+    assertTrue(errorLog[0].message().contains("this is my error"));
   }
 
   @Test
