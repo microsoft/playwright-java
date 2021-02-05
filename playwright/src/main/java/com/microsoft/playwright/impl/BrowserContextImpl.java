@@ -86,7 +86,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public Page waitForPage(Runnable code, WaitForPageOptions options) {
+  public Page waitForPage(WaitForPageOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForPageOptions();
     }

@@ -29,17 +29,18 @@ public interface Worker {
   void onClose(Consumer<Worker> handler);
   void offClose(Consumer<Worker> handler);
 
-
   class WaitForCloseOptions {
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the [{@code method: BrowserContext.setDefaultTimeout}].
+     */
     public Double timeout;
+
     public WaitForCloseOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
   }
-  Worker waitForClose(Runnable code, WaitForCloseOptions options);
-  default Worker waitForClose(Runnable code) { return waitForClose(code, null); }
-
   default Object evaluate(String expression) {
     return evaluate(expression, null);
   }
@@ -76,5 +77,14 @@ public interface Worker {
    */
   JSHandle evaluateHandle(String expression, Object arg);
   String url();
+  default Worker waitForClose(Runnable callback) {
+    return waitForClose(null, callback);
+  }
+  /**
+   * Performs action and waits for the Worker to close.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
+  Worker waitForClose(WaitForCloseOptions options, Runnable callback);
 }
 

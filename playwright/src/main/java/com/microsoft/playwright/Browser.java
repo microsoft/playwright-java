@@ -48,7 +48,6 @@ public interface Browser extends AutoCloseable {
   void onDisconnected(Consumer<Browser> handler);
   void offDisconnected(Consumer<Browser> handler);
 
-
   class NewContextOptions {
     public class Proxy {
       /**

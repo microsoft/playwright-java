@@ -58,14 +58,14 @@ public class TestWorkers extends TestBase {
 
   @Test
   void shouldReportConsoleLogs() {
-    ConsoleMessage message = page.waitForConsole(() -> page.evaluate(
+    ConsoleMessage message = page.waitForConsoleMessage(() -> page.evaluate(
       "() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))"));
     assertEquals("1", message.text());
   }
 
   @Test
   void shouldHaveJSHandlesForConsoleLogs() {
-    ConsoleMessage log = page.waitForConsole(() -> page.evaluate(
+    ConsoleMessage log = page.waitForConsoleMessage(() -> page.evaluate(
       "() => new Worker(URL.createObjectURL(new Blob(['console.log(1,2,3,this)'], {type: 'application/javascript'})))"));
     assertEquals("1 2 3 JSHandle@object", log.text());
     assertEquals(4, log.args().size());
@@ -133,9 +133,9 @@ public class TestWorkers extends TestBase {
     });
     assertNotNull(frame[0]);
     String url = server.PREFIX + "/one-style.css";
-    Request request = page.waitForRequest(() -> {
+    Request request = page.waitForRequest(url, () -> {
       worker.evaluate("url => fetch(url).then(response => response.text()).then(console.log)", url);
-    }, url);
+    });
     assertEquals(url, request.url());
     assertEquals(frame[0], request.frame());
   }
@@ -145,12 +145,12 @@ public class TestWorkers extends TestBase {
     Worker worker = page.waitForWorker(() -> page.navigate(server.PREFIX + "/worker/worker.html"));
     String url = server.PREFIX + "/one-style.css";
     Request[] request = {null};
-    Response response = page.waitForResponse(() -> {
-      request[0] = page.waitForRequest(() -> {
+    Response response = page.waitForResponse(url, () -> {
+      request[0] = page.waitForRequest(url, () -> {
         worker.evaluate("url => fetch(url).then(response => response.text()).then(console.log)", url);
-      }, url);
+      });
       assertEquals(url, request[0].url());
-    }, url);
+    });
     assertEquals(request[0], response.request());
     assertTrue(response.ok());
   }
@@ -161,14 +161,14 @@ public class TestWorkers extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     String url = server.PREFIX + "/one-style.css";
     Request[] request = {null};
-    Response response = page.waitForResponse(() -> {
-      request[0] = page.waitForRequest(() -> {
+    Response response = page.waitForResponse(url, () -> {
+      request[0] = page.waitForRequest(url, () -> {
         page.evaluate("url => new Worker(URL.createObjectURL(new Blob([`\n" +
           "  fetch('${url}').then(response => response.text()).then(console.log);\n" +
           "`], {type: 'application/javascript'})))", url);
-      }, url);
+      });
       assertEquals(url, request[0].url());
-    }, url);
+    });
     assertEquals(request[0], response.request());
     assertTrue(response.ok());
   }

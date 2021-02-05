@@ -54,22 +54,22 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
   }
 
   @Override
-  public void onFrameReceived(Consumer<FrameData> handler) {
+  public void onFrameReceived(Consumer<WebSocketFrame> handler) {
     listeners.add(EventType.FRAMERECEIVED, handler);
   }
 
   @Override
-  public void offFrameReceived(Consumer<FrameData> handler) {
+  public void offFrameReceived(Consumer<WebSocketFrame> handler) {
     listeners.remove(EventType.FRAMERECEIVED, handler);
   }
 
   @Override
-  public void onFrameSent(Consumer<FrameData> handler) {
+  public void onFrameSent(Consumer<WebSocketFrame> handler) {
     listeners.add(EventType.FRAMESENT, handler);
   }
 
   @Override
-  public void offFrameSent(Consumer<FrameData> handler) {
+  public void offFrameSent(Consumer<WebSocketFrame> handler) {
     listeners.remove(EventType.FRAMESENT, handler);
   }
 
@@ -84,7 +84,7 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
   }
 
   @Override
-  public FrameData waitForFrameReceived(Runnable code, WaitForFrameReceivedOptions options) {
+  public WebSocketFrame waitForFrameReceived(WaitForFrameReceivedOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForFrameReceivedOptions();
     }
@@ -92,19 +92,11 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
   }
 
   @Override
-  public FrameData waitForFrameSent(Runnable code, WaitForFrameSentOptions options) {
+  public WebSocketFrame waitForFrameSent(WaitForFrameSentOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForFrameSentOptions();
     }
     return waitForEventWithTimeout(EventType.FRAMESENT, code, options.timeout);
-  }
-
-  @Override
-  public String waitForSocketError(Runnable code, WaitForSocketErrorOptions options) {
-    if (options == null) {
-      options = new WaitForSocketErrorOptions();
-    }
-    return waitForEventWithTimeout(EventType.SOCKETERROR, code, options.timeout);
   }
 
   @Override
@@ -149,10 +141,10 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
     return runUntil(code, new WaitableRace<>(waitables));
   }
 
-  private static class FrameDataImpl implements FrameData {
+  private static class WebSocketFrameImpl implements WebSocketFrame {
     private final byte[] bytes;
 
-    FrameDataImpl(String payload, boolean isBase64) {
+    WebSocketFrameImpl(String payload, boolean isBase64) {
       if (isBase64) {
         bytes = Base64.getDecoder().decode(payload);
       } else {
@@ -161,7 +153,7 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
     }
 
     @Override
-    public byte[] body() {
+    public byte[] binary() {
       return bytes;
     }
 
@@ -175,15 +167,15 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
   void handleEvent(String event, JsonObject parameters) {
     switch (event) {
       case "frameSent": {
-        FrameDataImpl frameData = new FrameDataImpl(
+        WebSocketFrameImpl WebSocketFrame = new WebSocketFrameImpl(
           parameters.get("data").getAsString(), parameters.get("opcode").getAsInt() == 2);
-        listeners.notify(EventType.FRAMESENT, frameData);
+        listeners.notify(EventType.FRAMESENT, WebSocketFrame);
         break;
       }
       case "frameReceived": {
-        FrameDataImpl frameData = new FrameDataImpl(
+        WebSocketFrameImpl WebSocketFrame = new WebSocketFrameImpl(
           parameters.get("data").getAsString(), parameters.get("opcode").getAsInt() == 2);
-        listeners.notify(EventType.FRAMERECEIVED, frameData);
+        listeners.notify(EventType.FRAMERECEIVED, WebSocketFrame);
         break;
       }
       case "socketError": {

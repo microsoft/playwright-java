@@ -109,7 +109,7 @@ public class TestPageBasic extends TestBase {
     try {
       newPage.waitForResponse(() -> {
         try {
-          newPage.waitForRequest(() -> newPage.close(), server.EMPTY_PAGE);
+          newPage.waitForRequest(server.EMPTY_PAGE, () -> newPage.close());
           fail("waitForRequest() should throw");
         } catch (PlaywrightException e) {
           assertTrue(e.getMessage().contains("Page closed"));

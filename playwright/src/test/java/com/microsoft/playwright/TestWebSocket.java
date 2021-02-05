@@ -144,7 +144,7 @@ public class TestWebSocket extends TestBase {
   @Test
   void shouldEmitBinaryFrameEvents() {
     boolean[] socketClosed = {false};
-    List<com.microsoft.playwright.WebSocket.FrameData> sent = new ArrayList<>();
+    List<WebSocketFrame> sent = new ArrayList<>();
     page.onWebSocket(ws -> {
       ws.onClose(ws1 -> socketClosed[0] = true);
       ws.onFrameSent(frameData -> sent.add(frameData));
@@ -163,7 +163,7 @@ public class TestWebSocket extends TestBase {
     waitForCondition(socketClosed);
     assertEquals("text", sent.get(0).text());
     for (int i = 0; i < 5; ++i) {
-      assertEquals(i, sent.get(1).body()[i]);
+      assertEquals(i, sent.get(1).binary()[i]);
     }
   }
 

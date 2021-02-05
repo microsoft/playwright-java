@@ -429,7 +429,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Page waitForClose(Runnable code, WaitForCloseOptions options) {
+  public Page waitForClose(WaitForCloseOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForCloseOptions();
     }
@@ -437,9 +437,9 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public ConsoleMessage waitForConsole(Runnable code, WaitForConsoleOptions options) {
+  public ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable code) {
     if (options == null) {
-      options = new WaitForConsoleOptions();
+      options = new WaitForConsoleMessageOptions();
     }
     return waitForEventWithTimeout(EventType.CONSOLE, code, options.timeout);
   }
@@ -453,7 +453,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Download waitForDownload(Runnable code, WaitForDownloadOptions options) {
+  public Download waitForDownload(WaitForDownloadOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForDownloadOptions();
     }
@@ -461,7 +461,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public FileChooser waitForFileChooser(Runnable code, WaitForFileChooserOptions options) {
+  public FileChooser waitForFileChooser(WaitForFileChooserOptions options, Runnable code) {
     // TODO: enable/disable file chooser interception
     if (options == null) {
       options = new WaitForFileChooserOptions();
@@ -470,39 +470,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Frame waitForFrameAttached(Runnable code, WaitForFrameAttachedOptions options) {
-    if (options == null) {
-      options = new WaitForFrameAttachedOptions();
-    }
-    return waitForEventWithTimeout(EventType.FRAMEATTACHED, code, options.timeout);
-  }
-
-  @Override
-  public Frame waitForFrameDetached(Runnable code, WaitForFrameDetachedOptions options) {
-    if (options == null) {
-      options = new WaitForFrameDetachedOptions();
-    }
-    return waitForEventWithTimeout(EventType.FRAMEDETACHED, code, options.timeout);
-  }
-
-  @Override
-  public Frame waitForFrameNavigated(Runnable code, WaitForFrameNavigatedOptions options) {
-    if (options == null) {
-      options = new WaitForFrameNavigatedOptions();
-    }
-    return waitForEventWithTimeout(EventType.FRAMENAVIGATED, code, options.timeout);
-  }
-
-  @Override
-  public Error waitForPageError(Runnable code, WaitForPageErrorOptions options) {
-    if (options == null) {
-      options = new WaitForPageErrorOptions();
-    }
-    return waitForEventWithTimeout(EventType.PAGEERROR, code, options.timeout);
-  }
-
-  @Override
-  public Page waitForPopup(Runnable code, WaitForPopupOptions options) {
+  public Page waitForPopup(WaitForPopupOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForPopupOptions();
     }
@@ -510,23 +478,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Request waitForRequestFailed(Runnable code, WaitForRequestFailedOptions options) {
-    if (options == null) {
-      options = new WaitForRequestFailedOptions();
-    }
-    return waitForEventWithTimeout(EventType.REQUESTFAILED, code, options.timeout);
-  }
-
-  @Override
-  public Request waitForRequestFinished(Runnable code, WaitForRequestFinishedOptions options) {
-    if (options == null) {
-      options = new WaitForRequestFinishedOptions();
-    }
-    return waitForEventWithTimeout(EventType.REQUESTFINISHED, code, options.timeout);
-  }
-
-  @Override
-  public WebSocket waitForWebSocket(Runnable code, WaitForWebSocketOptions options) {
+  public WebSocket waitForWebSocket(WaitForWebSocketOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForWebSocketOptions();
     }
@@ -534,7 +486,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Worker waitForWorker(Runnable code, WaitForWorkerOptions options) {
+  public Worker waitForWorker(WaitForWorkerOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForWorkerOptions();
     }
@@ -1171,7 +1123,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Response waitForNavigation(Runnable code, WaitForNavigationOptions options) {
+  public Response waitForNavigation(WaitForNavigationOptions options, Runnable code) {
     return withLogging("Page.waitForNavigation", () -> waitForNavigationImpl(code, options));
   }
 
@@ -1258,25 +1210,25 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Request waitForRequest(Runnable code, String urlGlob, WaitForRequestOptions options) {
-    return waitForRequest(code, toRequestPredicate(new UrlMatcher(urlGlob)), options);
+  public Request waitForRequest(String urlGlob, WaitForRequestOptions options, Runnable code) {
+    return waitForRequest(toRequestPredicate(new UrlMatcher(urlGlob)), options, code);
   }
 
   @Override
-  public Request waitForRequest(Runnable code, Pattern urlPattern, WaitForRequestOptions options) {
-    return waitForRequest(code, toRequestPredicate(new UrlMatcher(urlPattern)), options);
+  public Request waitForRequest(Pattern urlPattern, WaitForRequestOptions options, Runnable code) {
+    return waitForRequest(toRequestPredicate(new UrlMatcher(urlPattern)), options, code);
   }
 
   @Override
-  public Request waitForRequest(Runnable code, Predicate<Request> predicate, WaitForRequestOptions options) {
-    return withLogging("Page.waitForRequest", () -> waitForRequestImpl(code, predicate, options));
+  public Request waitForRequest(Predicate<Request> predicate, WaitForRequestOptions options, Runnable code) {
+    return withLogging("Page.waitForRequest", () -> waitForRequestImpl(predicate, options, code));
   }
 
   private static Predicate<Request> toRequestPredicate(UrlMatcher matcher) {
     return request -> matcher.test(request.url());
   }
 
-  private Request waitForRequestImpl(Runnable code, Predicate<Request> predicate, WaitForRequestOptions options) {
+  private Request waitForRequestImpl(Predicate<Request> predicate, WaitForRequestOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForRequestOptions();
     }
@@ -1289,25 +1241,25 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Response waitForResponse(Runnable code, String urlGlob, WaitForResponseOptions options) {
-    return waitForResponse(code, toResponsePredicate(new UrlMatcher(urlGlob)), options);
+  public Response waitForResponse(String urlGlob, WaitForResponseOptions options, Runnable code) {
+    return waitForResponse(toResponsePredicate(new UrlMatcher(urlGlob)), options, code);
   }
 
   @Override
-  public Response waitForResponse(Runnable code, Pattern urlPattern, WaitForResponseOptions options) {
-    return waitForResponse(code, toResponsePredicate(new UrlMatcher(urlPattern)), options);
+  public Response waitForResponse(Pattern urlPattern, WaitForResponseOptions options, Runnable code) {
+    return waitForResponse(toResponsePredicate(new UrlMatcher(urlPattern)), options, code);
   }
 
   @Override
-  public Response waitForResponse(Runnable code, Predicate<Response> predicate, WaitForResponseOptions options) {
-    return withLogging("Page.waitForResponse", () -> waitForResponseImpl(code, predicate, options));
+  public Response waitForResponse(Predicate<Response> predicate, WaitForResponseOptions options, Runnable code) {
+    return withLogging("Page.waitForResponse", () -> waitForResponseImpl(predicate, options, code));
   }
 
   private static Predicate<Response> toResponsePredicate(UrlMatcher matcher) {
     return response -> matcher.test(response.url());
   }
 
-  private Response waitForResponseImpl(Runnable code, Predicate<Response> predicate, WaitForResponseOptions options) {
+  private Response waitForResponseImpl(Predicate<Response> predicate, WaitForResponseOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForResponseOptions();
     }

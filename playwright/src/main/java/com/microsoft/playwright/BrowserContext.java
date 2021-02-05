@@ -61,17 +61,6 @@ public interface BrowserContext extends AutoCloseable {
   void onPage(Consumer<Page> handler);
   void offPage(Consumer<Page> handler);
 
-
-  class WaitForPageOptions {
-    public Double timeout;
-    public WaitForPageOptions withTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  Page waitForPage(Runnable code, WaitForPageOptions options);
-  default Page waitForPage(Runnable code) { return waitForPage(code, null); }
-
   class AddCookie {
     public String name;
     public String value;
@@ -211,6 +200,26 @@ public interface BrowserContext extends AutoCloseable {
 
     public StorageStateOptions withPath(Path path) {
       this.path = path;
+      return this;
+    }
+  }
+  class WaitForPageOptions {
+    /**
+     * Receives the {@code Page} object and resolves to truthy value when the waiting should resolve.
+     */
+    public Predicate<Page> predicate;
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the [{@code method: BrowserContext.setDefaultTimeout}].
+     */
+    public Double timeout;
+
+    public WaitForPageOptions withPredicate(Predicate<Page> predicate) {
+      this.predicate = predicate;
+      return this;
+    }
+    public WaitForPageOptions withTimeout(double timeout) {
+      this.timeout = timeout;
       return this;
     }
   }
@@ -412,5 +421,16 @@ public interface BrowserContext extends AutoCloseable {
    * @param handler Optional handler function used to register a routing with [{@code method: BrowserContext.route}].
    */
   void unroute(Predicate<String> url, Consumer<Route> handler);
+  default Page waitForPage(Runnable callback) {
+    return waitForPage(null, callback);
+  }
+  /**
+   * Performs action and waits for a new {@code Page} to be created in the context. If predicate is provided, it passes {@code Page}
+   * value into the {@code predicate} function and waits for {@code predicate(event)} to return a truthy value. Will throw an error if
+   * the context closes before new {@code Page} is created.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
+  Page waitForPage(WaitForPageOptions options, Runnable callback);
 }
 
