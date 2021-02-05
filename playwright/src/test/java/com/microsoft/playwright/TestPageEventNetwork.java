@@ -81,6 +81,7 @@ public class TestPageEventNetwork extends TestBase {
     Request[] requestRef = {null};
     page.onRequestFinished(r -> requestRef[0] = r);
     Response response = page.navigate(server.EMPTY_PAGE);
+    assertNull(response.finished());
     assertNotNull(response);
     Request request = requestRef[0];
     assertEquals(response.request(), request);
