@@ -312,11 +312,9 @@ class TypeRef extends Element {
     if ("Promise".equals(name)) {
       return convertTemplateParams(jsonType);
     }
-    // {"name":"function","args":[{"name":"ConsoleMessage"}],"returnType":{"name":"bool"},"expression":"[function]([ConsoleMessage]):[bool]"}
     if ("function".equals(name)) {
       if (jsonType.getAsJsonArray("args").size() == 1) {
         String paramType = convertBuiltinType(jsonType.getAsJsonArray("args").get(0).getAsJsonObject());
-        String returnType = "void";
         if (jsonType.has("returnType")
           && "bool".equals(jsonType.getAsJsonObject("returnType").get("name").getAsString())) {
           return "Predicate<" + paramType + ">";
@@ -401,6 +399,7 @@ class Event extends Element {
   void writeListenerMethods(List<String> output, String offset) {
     String name = toTitle(jsonName);
     String paramType = type.toJava();
+    // TODO: fix upstream
     if ("FrameData".equals(paramType)) {
       paramType = "WebSocketFrame";
     }
