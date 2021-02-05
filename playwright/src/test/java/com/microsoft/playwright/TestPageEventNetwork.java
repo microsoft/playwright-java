@@ -78,13 +78,13 @@ public class TestPageEventNetwork extends TestBase {
 
   @Test
   void PageEventsRequestFinished() {
-    Response[] response = {null};
-    Request finishedRequest = page.waitForRequestFinished(() -> {
-      response[0] = page.navigate(server.EMPTY_PAGE);
-    });
-    assertNotNull(response[0]);
-    Request request = response[0].request();
-    assertEquals(request, finishedRequest);
+    Request[] requestRef = {null};
+    page.onRequestFinished(r -> requestRef[0] = r);
+    Response response = page.navigate(server.EMPTY_PAGE);
+    assertNull(response.finished());
+    assertNotNull(response);
+    Request request = requestRef[0];
+    assertEquals(response.request(), request);
     assertEquals(server.EMPTY_PAGE, request.url());
     assertNotNull(request.response());
     assertEquals(page.mainFrame(), request.frame());
