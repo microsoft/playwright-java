@@ -20,6 +20,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.ElementHandle;
+import com.microsoft.playwright.ElementState;
 import com.microsoft.playwright.FileChooser;
 import com.microsoft.playwright.Frame;
 
@@ -28,8 +29,9 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
+import static com.microsoft.playwright.ScreenshotType.JPEG;
+import static com.microsoft.playwright.ScreenshotType.PNG;
 import static com.microsoft.playwright.impl.Serialization.*;
-import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   ElementHandleImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -307,14 +309,14 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
       options = new ScreenshotOptions();
     }
     if (options.type == null) {
-      options.type = ScreenshotOptions.Type.PNG;
+      options.type = PNG;
       if (options.path != null) {
         String fileName = options.path.getFileName().toString();
         int extStart = fileName.lastIndexOf('.');
         if (extStart != -1) {
           String extension = fileName.substring(extStart).toLowerCase();
           if (".jpeg".equals(extension) || ".jpg".equals(extension)) {
-            options.type = ScreenshotOptions.Type.JPEG;
+            options.type = JPEG;
           }
         }
       }

@@ -26,6 +26,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.ScreenshotType.JPEG;
+import static com.microsoft.playwright.ScreenshotType.PNG;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
@@ -917,14 +919,14 @@ public class PageImpl extends ChannelOwner implements Page {
       options = new ScreenshotOptions();
     }
     if (options.type == null) {
-      options.type = ScreenshotOptions.Type.PNG;
+      options.type = PNG;
       if (options.path != null) {
         String fileName = options.path.getFileName().toString();
         int extStart = fileName.lastIndexOf('.');
         if (extStart != -1) {
           String extension = fileName.substring(extStart).toLowerCase();
           if (".jpeg".equals(extension) || ".jpg".equals(extension)) {
-            options.type = ScreenshotOptions.Type.JPEG;
+            options.type = JPEG;
           }
         }
       }
@@ -1117,7 +1119,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void waitForLoadState(Frame.LoadState state, WaitForLoadStateOptions options) {
+  public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
     withLogging("Page.waitForLoadState",
       () -> mainFrame.waitForLoadStateImpl(state, convertViaJson(options, Frame.WaitForLoadStateOptions.class)));
   }

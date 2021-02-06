@@ -239,7 +239,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Sets a consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
      */
-    public Page.Viewport viewport;
+    public Optional<Page.Viewport> viewport;
 
     public NewContextOptions withAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
@@ -326,7 +326,10 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     public NewContextOptions withViewport(int width, int height) {
-      this.viewport = new Page.Viewport(width, height);
+      return withViewport(new Page.Viewport(width, height));
+    }
+    public NewContextOptions withViewport(Page.Viewport viewport) {
+      this.viewport = Optional.ofNullable(viewport);
       return this;
     }
     public NewContextOptions withDevice(DeviceDescriptor device) {
@@ -529,7 +532,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Sets a consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
      */
-    public Page.Viewport viewport;
+    public Optional<Page.Viewport> viewport;
 
     public NewPageOptions withAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
@@ -616,7 +619,10 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     public NewPageOptions withViewport(int width, int height) {
-      this.viewport = new Page.Viewport(width, height);
+      return withViewport(new Page.Viewport(width, height));
+    }
+    public NewPageOptions withViewport(Page.Viewport viewport) {
+      this.viewport = Optional.ofNullable(viewport);
       return this;
     }
     public NewPageOptions withDevice(DeviceDescriptor device) {

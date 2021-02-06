@@ -58,6 +58,10 @@ abstract class Element {
     return parent.typeScope();
   }
 
+  Map<String, Enum> enums() {
+    return parent.enums();
+  }
+
   static String toTitle(String name) {
     return Character.toUpperCase(name.charAt(0)) + name.substring(1);
   }
@@ -112,24 +116,27 @@ class TypeRef extends Element {
 
   enum GeneratedType { ENUM, CLASS, OTHER };
   private static GeneratedType generatedTypeFor(JsonObject jsonType) {
-    switch (jsonType.get("name").getAsString()) {
-      case "union": {
-        for (JsonElement item : jsonType.getAsJsonArray("union")) {
-          String valueName = item.getAsJsonObject().get("name").getAsString();
-          if ("null".equals(valueName)) {
-            continue;
-          }
-          if (valueName.startsWith("\"")) {
-            continue;
-          }
-          if (valueName.equals("Object")) {
-            return GeneratedType.CLASS;
-          }
-          // If a value is not null and not a string it is a class name.
-          return GeneratedType.OTHER;
-        }
+    if (jsonType.has("union")) {
+      if (!jsonType.get("name").getAsString().isEmpty()) {
         return GeneratedType.ENUM;
       }
+      for (JsonElement item : jsonType.getAsJsonArray("union")) {
+        String valueName = item.getAsJsonObject().get("name").getAsString();
+        if ("null".equals(valueName)) {
+          continue;
+        }
+        GeneratedType memberType = generatedTypeFor(item.getAsJsonObject());
+        if (memberType == GeneratedType.ENUM) {
+          // Nullable enum.
+          return GeneratedType.ENUM;
+        }
+        // If a value is not null and not a string it is a class name.
+        return GeneratedType.OTHER;
+      }
+      throw new RuntimeException("Unknown union type: " + jsonType);
+    }
+
+    switch (jsonType.get("name").getAsString()) {
       case "Object": {
         String expression = typeExpression(jsonType);
         if ("Object<string, string>".equals(expression) || "Object<string, any>".equals(expression)) {
@@ -151,13 +158,14 @@ class TypeRef extends Element {
 
   private static String typeExpression(JsonObject jsonType) {
     String typeName = jsonType.get("name").getAsString();
-    if ("union".equals(typeName)) {
+    if (jsonType.has("union")) {
       List<String> values = new ArrayList<>();
       for (JsonElement item : jsonType.getAsJsonArray("union")) {
         values.add(typeExpression(item.getAsJsonObject()));
       }
       values.sort(String::compareTo);
-      return String.join("|", values);
+      String enumValues = String.join("|", values);
+      return typeName.isEmpty() ? enumValues : typeName + "<" + enumValues + ">";
     }
     if ("function".equals(typeName)) {
       if (!jsonType.has("args")) {
@@ -187,13 +195,15 @@ class TypeRef extends Element {
 
   void createCustomType() {
     GeneratedType generatedType = generatedTypeFor(jsonElement.getAsJsonObject());
+    if (generatedType == GeneratedType.ENUM) {
+      createEnums(jsonElement.getAsJsonObject());
+      return;
+    }
+
     // Use path to the corresponding method, param of field as the key.
     String parentPath = parent.jsonPath;
     Types.Mapping mapping = TypeDefinition.types.findForPath(parentPath);
     if (mapping == null) {
-      if (generatedType == GeneratedType.ENUM) {
-        throw new RuntimeException("Cannot create enum, type mapping is missing for: " + parentPath);
-      }
       if (generatedType != GeneratedType.CLASS) {
         return;
       }
@@ -216,11 +226,31 @@ class TypeRef extends Element {
         return;
       }
     }
-    if (generatedType == GeneratedType.ENUM) {
-      typeScope().createEnum(customType, jsonElement.getAsJsonObject());
-    } else if (generatedType == GeneratedType.CLASS) {
+    if (generatedType == GeneratedType.CLASS) {
       typeScope().createNestedClass(customType, this, jsonElement.getAsJsonObject());
       isNestedClass = true;
+    }
+  }
+
+  private void createEnums(JsonObject jsonObject) {
+    if (jsonObject.has("union")) {
+      if (jsonObject.get("name").getAsString().isEmpty()) {
+        for (JsonElement item : jsonObject.getAsJsonArray("union")) {
+          if (item.isJsonObject()) {
+            createEnums(item.getAsJsonObject());
+          }
+        }
+      } else {
+        typeScope().createEnum(jsonObject);
+      }
+      return;
+    }
+    if (jsonObject.has("templates")) {
+      for (JsonElement item : jsonObject.getAsJsonArray("templates")) {
+        if (item.isJsonObject()) {
+          createEnums(item.getAsJsonObject());
+        }
+      }
     }
   }
 
@@ -246,9 +276,33 @@ class TypeRef extends Element {
     return convertBuiltinType(stripNullable());
   }
 
+  boolean isNullable() {
+    JsonObject jsonType = jsonElement.getAsJsonObject();
+    if (!jsonType.has("union")) {
+      return false;
+    }
+    if (!jsonType.get("name").getAsString().isEmpty()) {
+      return false;
+    }
+    JsonArray values = jsonType.getAsJsonArray("union");
+    if (values.size() != 2) {
+      return false;
+    }
+    for (JsonElement item : values) {
+      JsonObject o = item.getAsJsonObject();
+      if ("null".equals(o.get("name").getAsString())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private JsonObject stripNullable() {
     JsonObject jsonType = jsonElement.getAsJsonObject();
-    if (!"union".equals(jsonType.get("name").getAsString())) {
+    if (!jsonType.has("union")) {
+      return jsonType;
+    }
+    if (!jsonType.get("name").getAsString().isEmpty()) {
       return jsonType;
     }
     JsonArray values = jsonType.getAsJsonArray("union");
@@ -266,6 +320,12 @@ class TypeRef extends Element {
 
   private static String convertBuiltinType(JsonObject jsonType) {
     String name = jsonType.get("name").getAsString();
+    if (jsonType.has("union")) {
+      if (name.isEmpty()) {
+        throw new RuntimeException("Unexpected enum without name: " + jsonType);
+      }
+      return name;
+    }
     if ("int".equals(name)) {
       return "int";
     }
@@ -356,17 +416,16 @@ abstract class TypeDefinition extends Element {
     return this;
   }
 
-  void createEnum(String name, JsonObject jsonObject) {
-    addEnum(new Enum(this, name, jsonObject));
-  }
-
-  void addEnum(Enum newEnum) {
-    for (Enum e : enums) {
-      if (e.name.equals(newEnum.name)) {
-        return;
-      }
+  void createEnum(JsonObject jsonObject) {
+    Enum newEnum = new Enum(this, jsonObject);
+    if (newEnum.jsonName == null) {
+      throw new RuntimeException("Enum without name: " + jsonObject);
     }
-    enums.add(newEnum);
+    Map<String, Enum> enumMap = enums();
+    Enum existing = enumMap.putIfAbsent(newEnum.jsonName, newEnum);
+    if (existing != null && !existing.hasSameValues(newEnum)) {
+      throw new RuntimeException("Two enums with same name have different values:\n" + jsonObject + "\n" + existing.jsonElement);
+    }
   }
 
   void createNestedClass(String name, Element parent, JsonObject jsonObject) {
@@ -379,9 +438,6 @@ abstract class TypeDefinition extends Element {
   }
 
   void writeTo(List<String> output, String offset) {
-    for (Enum e : enums) {
-      e.writeTo(output, offset);
-    }
     for (NestedClass c : classes) {
       c.writeTo(output, offset);
     }
@@ -712,12 +768,11 @@ class Field extends Element {
       output.add(offset + "public Integer pollingInterval;");
       return;
     }
-    if (asList("Page.emulateMedia.options.media",
-               "Page.emulateMedia.options.colorScheme").contains(jsonPath)) {
-      output.add(offset + access + "Optional<" + type.toJava() + "> " + name + ";");
-      return;
+    String typeStr = type.toJava();
+    if (type.isNullable()) {
+      typeStr = "Optional<" + typeStr + ">";
     }
-    output.add(offset + access + type.toJava() + " " + name + ";");
+    output.add(offset + access + typeStr + " " + name + ";");
   }
 
   void writeGetter(List<String> output, String offset) {
@@ -773,18 +828,15 @@ class Field extends Element {
       output.add(offset + "}");
       return;
     }
-    if (asList("Page.emulateMedia.options.media",
-               "Page.emulateMedia.options.colorScheme").contains(jsonPath)) {
-      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + type.toJava() + " " + name + ") {");
-      output.add(offset + "  this." + name + " = Optional.ofNullable(" + name + ");");
-      output.add(offset + "  return this;");
-      output.add(offset + "}");
-      return;
-    }
     if ("Route.resume.options.postData".equals(jsonPath)) {
       output.add(offset + "public " + parentClass + " withPostData(String postData) {");
       output.add(offset + "  this.postData = postData.getBytes(StandardCharsets.UTF_8);");
       output.add(offset + "  return this;");
+      output.add(offset + "}");
+    }
+    if ("Page.Viewport".equals(type.toJava()) || "Viewport".equals(type.toJava())) {
+      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(int width, int height) {");
+      output.add(offset + "  return with" + toTitle(name) + "(new " + type.toJava() + "(width, height));");
       output.add(offset + "}");
     }
     if (name.equals("httpCredentials")) {
@@ -795,17 +847,9 @@ class Field extends Element {
       output.add(offset + "public " + type.toJava() + " set" + toTitle(name) + "() {");
       output.add(offset + "  this." + name + " = new " + type.toJava() + "();");
       output.add(offset + "  return this." + name + ";");
-    } else if ("Page.Viewport".equals(type.toJava()) || "Viewport".equals(type.toJava())) {
-      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(int width, int height) {");
-      output.add(offset + "  this." + name + " = new " + type.toJava() + "(width, height);");
-      output.add(offset + "  return this;");
     } else if ("Browser.VideoSize".equals(type.toJava()) || "VideoSize".equals(type.toJava())) {
       output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(int width, int height) {");
       output.add(offset + "  this." + name + " = new " + type.toJava() + "(width, height);");
-      output.add(offset + "  return this;");
-    } else if ("Set<Keyboard.Modifier>".equals(type.toJava())) {
-      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(Keyboard.Modifier... modifiers) {");
-      output.add(offset + "  this." + name + " = new HashSet<>(Arrays.asList(modifiers));");
       output.add(offset + "  return this;");
     } else {
       String paramType = type.toJava();
@@ -817,7 +861,8 @@ class Field extends Element {
         paramType = "double";
       }
       output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + paramType + " " + name + ") {");
-      output.add(offset + "  this." + name + " = " + name + ";");
+      String rvalue = type.isNullable() ? "Optional.ofNullable(" + name + ")" : name;
+      output.add(offset + "  this." + name + " = " + rvalue + ";");
       output.add(offset + "  return this;");
     }
     output.add(offset + "}");
@@ -827,7 +872,8 @@ class Field extends Element {
 class Interface extends TypeDefinition {
   private final List<Method> methods = new ArrayList<>();
   private final List<Event> events = new ArrayList<>();
-  private static String header = "/*\n" +
+  private final Map<String, Enum> enums;
+  static final String header = "/*\n" +
     " * Copyright (c) Microsoft Corporation.\n" +
     " *\n" +
     " * Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
@@ -848,8 +894,9 @@ class Interface extends TypeDefinition {
   private static Set<String> allowedBaseInterfaces = new HashSet<>(asList("Browser", "JSHandle", "BrowserContext"));
   private static Set<String> autoCloseableInterfaces = new HashSet<>(asList("Playwright", "Browser", "BrowserContext", "Page"));
 
-  Interface(JsonObject jsonElement) {
+  Interface(JsonObject jsonElement, Map<String, Enum> enums) {
     super(null, jsonElement);
+    this.enums = enums;
     for (JsonElement item : jsonElement.getAsJsonArray("members")) {
       JsonObject memberJson = item.getAsJsonObject();
       switch (memberJson.get("kind").getAsString()) {
@@ -868,6 +915,10 @@ class Interface extends TypeDefinition {
           throw new RuntimeException("Unexpected member kind: " + memberJson.toString());
       }
     }
+  }
+
+  Map<String, Enum> enums() {
+    return enums;
   }
 
   void writeTo(List<String> output, String offset) {
@@ -940,16 +991,6 @@ class Interface extends TypeDefinition {
 
   private void writeSharedTypes(List<String> output, String offset) {
     switch (jsonName) {
-      case "Mouse": {
-        output.add(offset + "enum Button { LEFT, MIDDLE, RIGHT }");
-        output.add("");
-        break;
-      }
-      case "Keyboard": {
-        output.add(offset + "enum Modifier { ALT, CONTROL, META, SHIFT }");
-        output.add("");
-        break;
-      }
       case "Page": {
         output.add(offset + "class Viewport {");
         output.add(offset + "  private final int width;");
@@ -994,8 +1035,6 @@ class Interface extends TypeDefinition {
         break;
       }
       case "BrowserContext": {
-        output.add(offset + "enum SameSite { STRICT, LAX, NONE }");
-        output.add("");
         output.add(offset + "class HTTPCredentials {");
         output.add(offset + "  private final String username;");
         output.add(offset + "  private final String password;");
@@ -1189,12 +1228,10 @@ class NestedClass extends TypeDefinition {
 }
 
 class Enum extends TypeDefinition {
-  final String name;
   final List<String> enumValues;
 
-  Enum(TypeDefinition parent, String name, JsonObject jsonObject) {
+  Enum(TypeDefinition parent, JsonObject jsonObject) {
     super(parent, jsonObject);
-    this.name = name;
     enumValues = new ArrayList<>();
     for (JsonElement item : jsonObject.getAsJsonArray("union")) {
       String value = item.getAsJsonObject().get("name").getAsString();
@@ -1205,9 +1242,12 @@ class Enum extends TypeDefinition {
     }
   }
 
-  void writeTo(List<String> output, String offset) {
-    String access = parent.typeScope() instanceof NestedClass ? "public " : "";
-    output.add(offset + access + "enum " + name + " { " + String.join(", ", enumValues) + " }");
+  void writeTo(List<String> output) {
+    output.add("public enum " + jsonName + " {\n  " + String.join(",\n  ", enumValues) + "\n}");
+  }
+
+  boolean hasSameValues(Enum other) {
+    return enumValues.equals(other.enumValues);
   }
 }
 
@@ -1218,12 +1258,22 @@ public class ApiGenerator {
     File dir = new File(cwd, "playwright/src/main/java/com/microsoft/playwright");
     System.out.println("Writing files to: " + dir.getCanonicalPath());
     filterOtherLangs(api);
+    Map<String, Enum> enums = new HashMap<>();
     for (JsonElement entry: api) {
       String name = entry.getAsJsonObject().get("name").getAsString();
       List<String> lines = new ArrayList<>();
-      new Interface(entry.getAsJsonObject()).writeTo(lines, "");
+      new Interface(entry.getAsJsonObject(), enums).writeTo(lines, "");
       String text = String.join("\n", lines);
       try (FileWriter writer = new FileWriter(new File(dir, name + ".java"))) {
+        writer.write(text);
+      }
+    }
+    for (Enum e : enums.values()) {
+      List<String> lines = new ArrayList<>();
+      lines.add(Interface.header);
+      e.writeTo(lines);
+      String text = String.join("\n", lines);
+      try (FileWriter writer = new FileWriter(new File(dir, e.jsonName + ".java"))) {
         writer.write(text);
       }
     }

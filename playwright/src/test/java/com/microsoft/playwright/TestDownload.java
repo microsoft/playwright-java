@@ -31,10 +31,11 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 
-import static com.microsoft.playwright.Keyboard.Modifier.ALT;
+import static com.microsoft.playwright.KeyboardModifier.ALT;
 import static com.microsoft.playwright.Utils.copy;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestDownload extends TestBase {
@@ -299,7 +300,7 @@ public class TestDownload extends TestBase {
     });
     Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
-    Download download = page.waitForDownload(() -> page.click("a", new Page.ClickOptions().withModifiers(ALT)));
+    Download download = page.waitForDownload(() -> page.click("a", new Page.ClickOptions().withModifiers(asList(ALT))));
     Path path = download.path();
     assertTrue(Files.exists(path));
     byte[] bytes = readAllBytes(path);

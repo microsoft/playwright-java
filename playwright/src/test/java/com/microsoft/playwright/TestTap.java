@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import static com.microsoft.playwright.KeyboardModifier.ALT;
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -131,7 +132,7 @@ public class TestTap extends TestBase {
       "    }, {passive: false});\n" +
       "  });\n" +
       "}");
-    page.tap("body", new Page.TapOptions().withModifiers(Keyboard.Modifier.ALT));
+    page.tap("body", new Page.TapOptions().withModifiers(asList(ALT)));
     Object altKey = page.evaluate("() => window.touchPromise");
     assertEquals(true, altKey);
   }

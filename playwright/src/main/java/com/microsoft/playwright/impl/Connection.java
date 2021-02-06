@@ -20,9 +20,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.time.Duration;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 

@@ -28,8 +28,6 @@ import java.util.*;
  * <p> An example to trigger select-all with the keyboard
  */
 public interface Keyboard {
-  enum Modifier { ALT, CONTROL, META, SHIFT }
-
   class PressOptions {
     /**
      * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.

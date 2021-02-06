@@ -18,11 +18,8 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
 import com.microsoft.playwright.FileChooser;
-import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
 
-import java.io.DataOutputStream;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;

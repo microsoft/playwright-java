@@ -16,12 +16,10 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Mouse;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Serialization.toProtocol;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 
 class MouseImpl implements Mouse {

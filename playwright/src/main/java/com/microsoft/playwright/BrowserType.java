@@ -481,7 +481,7 @@ public interface BrowserType {
     /**
      * Sets a consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
      */
-    public Page.Viewport viewport;
+    public Optional<Page.Viewport> viewport;
 
     public LaunchPersistentContextOptions withAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
@@ -616,7 +616,10 @@ public interface BrowserType {
       return this;
     }
     public LaunchPersistentContextOptions withViewport(int width, int height) {
-      this.viewport = new Page.Viewport(width, height);
+      return withViewport(new Page.Viewport(width, height));
+    }
+    public LaunchPersistentContextOptions withViewport(Page.Viewport viewport) {
+      this.viewport = Optional.ofNullable(viewport);
       return this;
     }
   }
@@ -632,19 +635,19 @@ public interface BrowserType {
    *
    * <p> You can use {@code ignoreDefaultArgs} to filter out {@code --mute-audio} from default arguments:
    *
-   * <p> **Chromium-only** Playwright can also be used to control the Chrome browser, but it works best with the version of
-   * Chromium it is bundled with. There is no guarantee it will work with any other version. Use {@code executablePath} option with
-   * extreme caution.
+   * <p> **Chromium-only** Playwright can also be used to control the Google Chrome or Microsoft Edge browsers, but it works
+   * best with the version of Chromium it is bundled with. There is no guarantee it will work with any other version. Use
+   * {@code executablePath} option with extreme caution.
    * >
    * If Google Chrome (rather than Chromium) is preferred, a
    * [Chrome Canary](https://www.google.com/chrome/browser/canary.html) or
    * [Dev Channel](https://www.chromium.org/getting-involved/dev-channel) build is suggested.
    * >
-   * In [{@code method: BrowserType.launch}] above, any mention of Chromium also applies to Chrome.
-   * >
-   * See [{@code this article}](https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/) for
-   * a description of the differences between Chromium and Chrome.
-   * [{@code This article}](https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md)
+   * Stock browsers like Google Chrome and Microsoft Edge are suitable for tests that require proprietary media codecs for
+   * video playback. See
+   * [this article](https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/) for other
+   * differences between Chromium and Chrome.
+   * [This article](https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md)
    * describes some differences for Linux users.
    */
   Browser launch(LaunchOptions options);

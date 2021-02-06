@@ -34,8 +34,6 @@ import java.util.regex.Pattern;
  * contexts don't write any browsing data to disk.
  */
 public interface BrowserContext extends AutoCloseable {
-  enum SameSite { STRICT, LAX, NONE }
-
   class HTTPCredentials {
     private final String username;
     private final String password;
@@ -91,7 +89,7 @@ public interface BrowserContext extends AutoCloseable {
     /**
      * Optional.
      */
-    public SameSite sameSite;
+    public SameSiteAttribute sameSite;
 
     public AddCookie withName(String name) {
       this.name = name;
@@ -125,7 +123,7 @@ public interface BrowserContext extends AutoCloseable {
       this.secure = secure;
       return this;
     }
-    public AddCookie withSameSite(SameSite sameSite) {
+    public AddCookie withSameSite(SameSiteAttribute sameSite) {
       this.sameSite = sameSite;
       return this;
     }
@@ -141,7 +139,7 @@ public interface BrowserContext extends AutoCloseable {
     private double expires;
     private boolean httpOnly;
     private boolean secure;
-    private SameSite sameSite;
+    private SameSiteAttribute sameSite;
 
     public String name() {
       return this.name;
@@ -164,7 +162,7 @@ public interface BrowserContext extends AutoCloseable {
     public boolean secure() {
       return this.secure;
     }
-    public SameSite sameSite() {
+    public SameSiteAttribute sameSite() {
       return this.sameSite;
     }
   }
@@ -350,7 +348,6 @@ public interface BrowserContext extends AutoCloseable {
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
-   * @param handler handler function to route the request.
    */
   void route(Predicate<String> url, Consumer<Route> handler);
   /**
@@ -418,7 +415,6 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with
    * [{@code method: BrowserContext.route}].
-   * @param handler Optional handler function used to register a routing with [{@code method: BrowserContext.route}].
    */
   void unroute(Predicate<String> url, Consumer<Route> handler);
   default Page waitForPage(Runnable callback) {

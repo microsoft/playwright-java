@@ -16,17 +16,17 @@
 
 package com.microsoft.playwright;
 
-import com.google.gson.JsonObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static com.microsoft.playwright.Keyboard.Modifier.SHIFT;
-import static com.microsoft.playwright.Mouse.Button.RIGHT;
+import static com.microsoft.playwright.KeyboardModifier.SHIFT;
+import static com.microsoft.playwright.MouseButton.RIGHT;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestClick extends TestBase {
@@ -146,7 +146,7 @@ public class TestClick extends TestBase {
       page.evaluate("() => window.scrollTo(0, 0)");
       page.click("#btn" + i);
     }
-    assertEquals(Arrays.asList(
+    assertEquals(asList(
       "button #0 clicked",
       "button #1 clicked",
       "button #2 clicked",
@@ -208,7 +208,7 @@ public class TestClick extends TestBase {
     assertNull(page.evaluate("() => window['result'].check"));
     page.click("input#agree");
     assertTrue((Boolean) page.evaluate("() => window['result'].check"));
-    assertEquals(Arrays.asList(
+    assertEquals(asList(
       "mouseover",
       "mouseenter",
       "mousemove",
@@ -228,7 +228,7 @@ public class TestClick extends TestBase {
     assertNull(page.evaluate("() => window['result'].check"));
     page.click("label[for='agree']");
     assertTrue((Boolean) page.evaluate("() => window['result'].check"));
-    assertEquals(Arrays.asList(
+    assertEquals(asList(
       "click",
       "input",
       "change"),
@@ -534,13 +534,13 @@ public class TestClick extends TestBase {
   @Test
   void shouldUpdateModifiersCorrectly() {
     page.navigate(server.PREFIX + "/input/button.html");
-    page.click("button", new Page.ClickOptions().withModifiers(SHIFT));
+    page.click("button", new Page.ClickOptions().withModifiers(asList(SHIFT)));
     assertEquals(true, page.evaluate("shiftKey"));
-    page.click("button", new Page.ClickOptions().withModifiers());
+    page.click("button", new Page.ClickOptions().withModifiers(emptyList()));
     assertEquals(false, page.evaluate("shiftKey"));
 
     page.keyboard().down("Shift");
-    page.click("button", new Page.ClickOptions().withModifiers());
+    page.click("button", new Page.ClickOptions().withModifiers(emptyList()));
     assertEquals(false, page.evaluate("shiftKey"));
     page.click("button");
     assertEquals(true, page.evaluate("shiftKey"));

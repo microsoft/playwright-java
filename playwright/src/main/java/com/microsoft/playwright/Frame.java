@@ -33,7 +33,6 @@ import java.util.regex.Pattern;
  *   page only once.
  */
 public interface Frame {
-  enum LoadState { LOAD, DOMCONTENTLOADED, NETWORKIDLE }
   class AddScriptTagOptions {
     /**
      * Raw JavaScript content to be injected into frame.
@@ -133,7 +132,7 @@ public interface Frame {
     /**
      * Defaults to {@code left}.
      */
-    public Mouse.Button button;
+    public MouseButton button;
     /**
      * defaults to 1. See [UIEvent.detail].
      */
@@ -150,7 +149,7 @@ public interface Frame {
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
      * modifiers back. If not specified, currently pressed modifiers are used.
      */
-    public Set<Keyboard.Modifier> modifiers;
+    public List<KeyboardModifier> modifiers;
     /**
      * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
      * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
@@ -168,7 +167,7 @@ public interface Frame {
      */
     public Double timeout;
 
-    public ClickOptions withButton(Mouse.Button button) {
+    public ClickOptions withButton(MouseButton button) {
       this.button = button;
       return this;
     }
@@ -184,8 +183,8 @@ public interface Frame {
       this.force = force;
       return this;
     }
-    public ClickOptions withModifiers(Keyboard.Modifier... modifiers) {
-      this.modifiers = new HashSet<>(Arrays.asList(modifiers));
+    public ClickOptions withModifiers(List<KeyboardModifier> modifiers) {
+      this.modifiers = modifiers;
       return this;
     }
     public ClickOptions withNoWaitAfter(boolean noWaitAfter) {
@@ -208,7 +207,7 @@ public interface Frame {
     /**
      * Defaults to {@code left}.
      */
-    public Mouse.Button button;
+    public MouseButton button;
     /**
      * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
      */
@@ -221,7 +220,7 @@ public interface Frame {
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
      * modifiers back. If not specified, currently pressed modifiers are used.
      */
-    public Set<Keyboard.Modifier> modifiers;
+    public List<KeyboardModifier> modifiers;
     /**
      * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
      * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
@@ -239,7 +238,7 @@ public interface Frame {
      */
     public Double timeout;
 
-    public DblclickOptions withButton(Mouse.Button button) {
+    public DblclickOptions withButton(MouseButton button) {
       this.button = button;
       return this;
     }
@@ -251,8 +250,8 @@ public interface Frame {
       this.force = force;
       return this;
     }
-    public DblclickOptions withModifiers(Keyboard.Modifier... modifiers) {
-      this.modifiers = new HashSet<>(Arrays.asList(modifiers));
+    public DblclickOptions withModifiers(List<KeyboardModifier> modifiers) {
+      this.modifiers = modifiers;
       return this;
     }
     public DblclickOptions withNoWaitAfter(boolean noWaitAfter) {
@@ -348,7 +347,7 @@ public interface Frame {
      * - {@code 'load'} - consider operation to be finished when the {@code load} event is fired.
      * - {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.
      */
-    public LoadState waitUntil;
+    public WaitUntilState waitUntil;
 
     public NavigateOptions withReferer(String referer) {
       this.referer = referer;
@@ -358,7 +357,7 @@ public interface Frame {
       this.timeout = timeout;
       return this;
     }
-    public NavigateOptions withWaitUntil(LoadState waitUntil) {
+    public NavigateOptions withWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -372,7 +371,7 @@ public interface Frame {
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
      * modifiers back. If not specified, currently pressed modifiers are used.
      */
-    public Set<Keyboard.Modifier> modifiers;
+    public List<KeyboardModifier> modifiers;
     /**
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
@@ -388,8 +387,8 @@ public interface Frame {
       this.force = force;
       return this;
     }
-    public HoverOptions withModifiers(Keyboard.Modifier... modifiers) {
-      this.modifiers = new HashSet<>(Arrays.asList(modifiers));
+    public HoverOptions withModifiers(List<KeyboardModifier> modifiers) {
+      this.modifiers = modifiers;
       return this;
     }
     public HoverOptions withPosition(Position position) {
@@ -566,13 +565,13 @@ public interface Frame {
      * - {@code 'load'} - consider operation to be finished when the {@code load} event is fired.
      * - {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.
      */
-    public LoadState waitUntil;
+    public WaitUntilState waitUntil;
 
     public SetContentOptions withTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
-    public SetContentOptions withWaitUntil(LoadState waitUntil) {
+    public SetContentOptions withWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -627,7 +626,7 @@ public interface Frame {
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
      * modifiers back. If not specified, currently pressed modifiers are used.
      */
-    public Set<Keyboard.Modifier> modifiers;
+    public List<KeyboardModifier> modifiers;
     /**
      * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
      * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
@@ -649,8 +648,8 @@ public interface Frame {
       this.force = force;
       return this;
     }
-    public TapOptions withModifiers(Keyboard.Modifier... modifiers) {
-      this.modifiers = new HashSet<>(Arrays.asList(modifiers));
+    public TapOptions withModifiers(List<KeyboardModifier> modifiers) {
+      this.modifiers = modifiers;
       return this;
     }
     public TapOptions withNoWaitAfter(boolean noWaitAfter) {
@@ -797,7 +796,7 @@ public interface Frame {
      * - {@code 'load'} - consider operation to be finished when the {@code load} event is fired.
      * - {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.
      */
-    public LoadState waitUntil;
+    public WaitUntilState waitUntil;
 
     public WaitForNavigationOptions withTimeout(double timeout) {
       this.timeout = timeout;
@@ -815,13 +814,12 @@ public interface Frame {
       this.predicate = predicate;
       return this;
     }
-    public WaitForNavigationOptions withWaitUntil(LoadState waitUntil) {
+    public WaitForNavigationOptions withWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
   }
   class WaitForSelectorOptions {
-    public enum State { ATTACHED, DETACHED, VISIBLE, HIDDEN }
     /**
      * Defaults to {@code 'visible'}. Can be either:
      * - {@code 'attached'} - wait for element to be present in DOM.
@@ -831,14 +829,14 @@ public interface Frame {
      * - {@code 'hidden'} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}.
      *   This is opposite to the {@code 'visible'} option.
      */
-    public State state;
+    public WaitForSelectorState state;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
      */
     public Double timeout;
 
-    public WaitForSelectorOptions withState(State state) {
+    public WaitForSelectorOptions withState(WaitForSelectorState state) {
       this.state = state;
       return this;
     }

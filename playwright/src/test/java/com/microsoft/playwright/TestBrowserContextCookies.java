@@ -70,7 +70,7 @@ public class TestBrowserContextCookies extends TestBase {
     assertEquals(timestamp, cookie.expires());
     assertEquals(false, cookie.httpOnly());
     assertEquals(false, cookie.secure());
-    assertEquals(BrowserContext.SameSite.NONE, cookie.sameSite());
+    assertEquals(SameSiteAttribute.NONE, cookie.sameSite());
   }
 
   @Test
@@ -101,7 +101,7 @@ public class TestBrowserContextCookies extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     List<BrowserContext.Cookie> cookies = context.cookies();
     assertEquals(1, cookies.size());
-    assertEquals(BrowserContext.SameSite.STRICT, cookies.get(0).sameSite());
+    assertEquals(SameSiteAttribute.STRICT, cookies.get(0).sameSite());
   }
 
   @Test
@@ -115,7 +115,7 @@ public class TestBrowserContextCookies extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     List<BrowserContext.Cookie> cookies = context.cookies();
     assertEquals(1, cookies.size());
-    assertEquals(BrowserContext.SameSite.LAX, cookies.get(0).sameSite());
+    assertEquals(SameSiteAttribute.LAX, cookies.get(0).sameSite());
   }
 
   @Test

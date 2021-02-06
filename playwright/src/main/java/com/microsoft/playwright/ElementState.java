@@ -16,8 +16,11 @@
 
 package com.microsoft.playwright;
 
-public enum ColorScheme {
-  LIGHT,
-  DARK,
-  NO_PREFERENCE
+public enum ElementState {
+  VISIBLE,
+  HIDDEN,
+  STABLE,
+  ENABLED,
+  DISABLED,
+  EDITABLE
 }

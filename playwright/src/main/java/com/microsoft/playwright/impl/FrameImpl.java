@@ -28,8 +28,9 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
 
-import static com.microsoft.playwright.Frame.LoadState.*;
+import static com.microsoft.playwright.LoadState.*;
 import static com.microsoft.playwright.impl.Serialization.*;
+import static com.microsoft.playwright.impl.Utils.convertViaJson;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 public class FrameImpl extends ChannelOwner implements Frame {
@@ -828,12 +829,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
       options = new WaitForNavigationOptions();
     }
     if (options.waitUntil == null) {
-      options.waitUntil = LOAD;
+      options.waitUntil = WaitUntilState.LOAD;
     }
 
     List<Waitable<Response>> waitables = new ArrayList<>();
     UrlMatcher matcher = UrlMatcher.forOneOf(options.glob, options.pattern, options.predicate);
-    waitables.add(new WaitForNavigationHelper(matcher, options.waitUntil));
+    waitables.add(new WaitForNavigationHelper(matcher, convertViaJson(options.waitUntil, LoadState.class)));
     waitables.add(page.createWaitForCloseHelper());
     waitables.add(page.createWaitableFrameDetach(this));
     waitables.add(page.createWaitableNavigationTimeout(options.timeout));

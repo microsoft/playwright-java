@@ -18,13 +18,11 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
 
 import java.nio.file.Path;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Serialization.toProtocol;
 
 class BrowserTypeImpl extends ChannelOwner implements BrowserType {
   BrowserTypeImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
