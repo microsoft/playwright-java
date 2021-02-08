@@ -26,7 +26,7 @@ public class InterceptNetworkRequests {
          Page page = context.newPage()) {
       page.route("**", route -> {
         System.out.println(route.request().url());
-        route.continue_();
+        route.resume();
       });
       page.navigate("http://todomvc.com");
     }
