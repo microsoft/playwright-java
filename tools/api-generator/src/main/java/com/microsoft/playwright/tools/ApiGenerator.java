@@ -398,7 +398,6 @@ class TypeRef extends Element {
 }
 
 abstract class TypeDefinition extends Element {
-  final List<Enum> enums = new ArrayList<>();
   final List<NestedClass> classes = new ArrayList<>();
 
   static final Types types = new Types();
@@ -1171,9 +1170,6 @@ class NestedClass extends TypeDefinition {
       f.writeTo(output, bodyOffset, fieldAccess);
     }
     output.add("");
-    if ("Request.failure".equals(jsonPath)) {
-      writeConstructor(output, bodyOffset);
-    }
     if (isReturnType) {
       for (Field f : fields) {
         f.writeGetter(output, bodyOffset);
@@ -1236,7 +1232,7 @@ class Enum extends TypeDefinition {
     for (JsonElement item : jsonObject.getAsJsonArray("union")) {
       String value = item.getAsJsonObject().get("name").getAsString();
       if ("null".equals(value)) {
-        continue;
+        throw new RuntimeException("Unexpected null: " + jsonObject);
       }
       enumValues.add(value.substring(1, value.length() - 1).replace("-", "_").toUpperCase());
     }

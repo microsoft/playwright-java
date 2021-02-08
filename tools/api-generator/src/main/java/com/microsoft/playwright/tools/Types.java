@@ -45,62 +45,6 @@ class Types {
   private final Map<String, Mapping> jsonPathToMapping = new HashMap<>();
 
   Types() {
-    // State enums
-    add("Page.waitForLoadState.state", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
-    add("Frame.waitForLoadState.state", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState");
-    add("ElementHandle.waitForElementState.state", "\"disabled\"|\"editable\"|\"enabled\"|\"hidden\"|\"stable\"|\"visible\"", "ElementState");
-
-    // Option enums
-    add("Browser.newContext.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme", new Empty());
-    add("Browser.newPage.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme", new Empty());
-    add("Page.click.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
-    add("Page.click.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<KeyboardModifier>", new Empty());
-    add("Page.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
-    add("Page.dblclick.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<KeyboardModifier>", new Empty());
-    add("Page.tap.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<KeyboardModifier>", new Empty());
-    add("Page.emulateMedia.options.media", "\"print\"|\"screen\"|null", "Media");
-    add("Page.emulateMedia.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"|null", "ColorScheme", new Empty());
-    add("Page.goBack.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
-    add("Page.goForward.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
-    add("Page.navigate.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
-    add("Page.hover.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<KeyboardModifier>", new Empty());
-    add("Page.reload.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
-    add("Page.screenshot.options.type", "\"jpeg\"|\"png\"", "Type");
-    add("Page.setContent.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
-    add("Page.waitForFunction.options.polling", "\"raf\"|float", "double", new Empty());
-    add("Page.waitForNavigation.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
-    add("Page.waitForSelector.options.state", "\"attached\"|\"detached\"|\"hidden\"|\"visible\"", "State");
-    add("Frame.click.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
-    add("Frame.click.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<KeyboardModifier>", new Empty());
-    add("Frame.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
-    add("Frame.dblclick.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<KeyboardModifier>", new Empty());
-    add("Frame.tap.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<KeyboardModifier>", new Empty());
-    add("Frame.navigate.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
-    add("Frame.hover.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<KeyboardModifier>", new Empty());
-    add("Frame.setContent.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
-    add("Frame.waitForFunction.options.polling", "\"raf\"|float", "double", new Empty());
-    add("Frame.waitForNavigation.options.waitUntil", "\"domcontentloaded\"|\"load\"|\"networkidle\"", "LoadState", new Empty());
-    add("Frame.waitForSelector.options.state", "\"attached\"|\"detached\"|\"hidden\"|\"visible\"", "State");
-    add("ElementHandle.click.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
-    add("ElementHandle.click.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<KeyboardModifier>", new Empty());
-    add("ElementHandle.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Mouse.Button", new Empty());
-    add("ElementHandle.dblclick.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<KeyboardModifier>", new Empty());
-    add("ElementHandle.tap.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<KeyboardModifier>", new Empty());
-    add("ElementHandle.hover.options.modifiers", "Array<\"Alt\"|\"Control\"|\"Meta\"|\"Shift\">", "Set<KeyboardModifier>", new Empty());
-    add("ElementHandle.screenshot.options.type", "\"jpeg\"|\"png\"", "Type");
-    add("ElementHandle.waitForSelector.options.state", "\"attached\"|\"detached\"|\"hidden\"|\"visible\"", "State");
-    add("Mouse.click.options.button", "\"left\"|\"middle\"|\"right\"", "Button", new Empty());
-    add("Mouse.dblclick.options.button", "\"left\"|\"middle\"|\"right\"", "Button", new Empty());
-    add("Mouse.down.options.button", "\"left\"|\"middle\"|\"right\"", "Button", new Empty());
-    add("Mouse.up.options.button", "\"left\"|\"middle\"|\"right\"", "Button", new Empty());
-    add("BrowserType.launchPersistentContext.options.colorScheme", "\"dark\"|\"light\"|\"no-preference\"", "ColorScheme", new Empty());
-
-    // Route
-    add("BrowserContext.route.handler", "function(Route, Request)", "Consumer<Route>");
-    add("BrowserContext.unroute.handler", "function(Route, Request)", "Consumer<Route>");
-    add("Page.route.handler", "function(Route, Request)", "Consumer<Route>");
-    add("Page.unroute.handler", "function(Route, Request)", "Consumer<Route>");
-
     // Viewport size.
     add("Browser.newContext.options.viewport", "Object|null", "Page.Viewport", new Empty());
     add("Browser.newPage.options.viewport", "Object|null", "Page.Viewport", new Empty());
@@ -140,7 +84,6 @@ class Types {
     add("Page.pdf.options.margin.left", "float|string", "String");
     add("Page.pdf.options.width", "float|string", "String");
     add("Page.pdf.options.height", "float|string", "String");
-    add("Page.pdf.options.scale", "float", "Double");
 
     add("Page.click.options.position", "Object", "Position", new Empty());
     add("Page.dblclick.options.position", "Object", "Position", new Empty());
@@ -160,9 +103,6 @@ class Types {
     add("BrowserContext.route.url", "RegExp|function(URL):boolean|string", "String");
     add("BrowserContext.unroute.url", "RegExp|function(URL):boolean|string", "String");
     add("Page.waitForNavigation.options.url", "RegExp|function(URL):boolean|string", "Custom");
-    add("Page.waitForNavigation.options", "Object", "WaitForNavigationOptions");
-    add("Page.waitForRequest.options", "Object", "WaitForRequestOptions");
-    add("Page.waitForResponse.options", "Object", "WaitForResponseOptions");
     add("Page.frame.options", "Object", "FrameOptions", new Empty());
     add("Page.route.url", "RegExp|function(URL):boolean|string", "String");
     add("Page.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");
@@ -171,7 +111,6 @@ class Types {
     add("Page.waitForRequest.urlOrPredicate", "RegExp|function(Request):boolean|string", "String");
     add("Page.waitForResponse.urlOrPredicate", "RegExp|function(Response):boolean|string", "String");
     add("Frame.waitForNavigation.options.url", "RegExp|function(URL):boolean|string", "Custom");
-    add("Frame.waitForNavigation.options", "Object", "WaitForNavigationOptions");
     add("Frame.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");
     add("Frame.setInputFiles.files", "Array<Object>|Array<path>|Object|path", "String");
     add("ElementHandle.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");
