@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.*;
+import com.google.gson.JsonObject;
 import com.microsoft.playwright.Accessibility;
 
 import static com.microsoft.playwright.impl.Serialization.gson;

@@ -16,9 +16,9 @@
 
 package com.microsoft.playwright;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * This test simply makes sure that all 4 main interfaces implement AutoCloseable. If it compiles, then it passes.

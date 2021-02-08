@@ -24,13 +24,11 @@ import java.util.*;
  * <p> Every {@code page} object has its own Mouse, accessible with [{@code property: Page.mouse}].
  */
 public interface Mouse {
-  enum Button { LEFT, MIDDLE, RIGHT }
-
   class ClickOptions {
     /**
      * Defaults to {@code left}.
      */
-    public Button button;
+    public MouseButton button;
     /**
      * defaults to 1. See [UIEvent.detail].
      */
@@ -40,7 +38,7 @@ public interface Mouse {
      */
     public Double delay;
 
-    public ClickOptions withButton(Button button) {
+    public ClickOptions withButton(MouseButton button) {
       this.button = button;
       return this;
     }
@@ -57,13 +55,13 @@ public interface Mouse {
     /**
      * Defaults to {@code left}.
      */
-    public Button button;
+    public MouseButton button;
     /**
      * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
      */
     public Double delay;
 
-    public DblclickOptions withButton(Button button) {
+    public DblclickOptions withButton(MouseButton button) {
       this.button = button;
       return this;
     }
@@ -76,13 +74,13 @@ public interface Mouse {
     /**
      * Defaults to {@code left}.
      */
-    public Button button;
+    public MouseButton button;
     /**
      * defaults to 1. See [UIEvent.detail].
      */
     public Integer clickCount;
 
-    public DownOptions withButton(Button button) {
+    public DownOptions withButton(MouseButton button) {
       this.button = button;
       return this;
     }
@@ -106,13 +104,13 @@ public interface Mouse {
     /**
      * Defaults to {@code left}.
      */
-    public Button button;
+    public MouseButton button;
     /**
      * defaults to 1. See [UIEvent.detail].
      */
     public Integer clickCount;
 
-    public UpOptions withButton(Button button) {
+    public UpOptions withButton(MouseButton button) {
       this.button = button;
       return this;
     }

@@ -16,8 +16,9 @@
 
 package com.microsoft.playwright;
 
-public enum ColorScheme {
-  LIGHT,
-  DARK,
-  NO_PREFERENCE
+public enum KeyboardModifier {
+  ALT,
+  CONTROL,
+  META,
+  SHIFT
 }

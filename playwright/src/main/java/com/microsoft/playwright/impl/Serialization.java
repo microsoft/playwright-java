@@ -36,17 +36,15 @@ class Serialization {
   static Gson gson() {
     if (gson == null) {
       gson = new GsonBuilder()
-        .registerTypeAdapter(BrowserContext.SameSite.class, new SameSiteAdapter().nullSafe())
+        .registerTypeAdapter(SameSiteAttribute.class, new SameSiteAdapter().nullSafe())
         .registerTypeAdapter(ColorScheme.class, new ColorSchemeAdapter().nullSafe())
-        .registerTypeAdapter(Page.EmulateMediaOptions.Media.class, new MediaSerializer())
-        .registerTypeAdapter(ElementHandle.ScreenshotOptions.Type.class, new ToLowerCaseSerializer<ElementHandle.ScreenshotOptions.Type>())
-        .registerTypeAdapter(Page.ScreenshotOptions.Type.class, new ToLowerCaseSerializer<Page.ScreenshotOptions.Type>())
-        .registerTypeAdapter(Mouse.Button.class, new ToLowerCaseSerializer<Mouse.Button>())
-        .registerTypeAdapter(Frame.LoadState.class, new ToLowerCaseSerializer<Frame.LoadState>())
-        .registerTypeAdapter(ElementHandle.WaitForSelectorOptions.State.class, new ToLowerCaseSerializer<ElementHandle.WaitForSelectorOptions.State>())
-        .registerTypeAdapter(Frame.WaitForSelectorOptions.State.class, new ToLowerCaseSerializer<Frame.WaitForSelectorOptions.State>())
-        .registerTypeAdapter(Page.WaitForSelectorOptions.State.class, new ToLowerCaseSerializer<Page.WaitForSelectorOptions.State>())
-        .registerTypeAdapter((new TypeToken<Set<Keyboard.Modifier>>(){}).getType(), new KeyboardModifiersSerializer())
+        .registerTypeAdapter(Media.class, new MediaSerializer())
+        .registerTypeAdapter(ScreenshotType.class, new ToLowerCaseSerializer<ScreenshotType>())
+        .registerTypeAdapter(MouseButton.class, new ToLowerCaseSerializer<MouseButton>())
+        .registerTypeAdapter(LoadState.class, new ToLowerCaseSerializer<LoadState>())
+        .registerTypeAdapter(WaitUntilState.class, new ToLowerCaseSerializer<WaitUntilState>())
+        .registerTypeAdapter(WaitForSelectorState.class, new ToLowerCaseSerializer<WaitForSelectorState>())
+        .registerTypeAdapter((new TypeToken<List<KeyboardModifier>>(){}).getType(), new KeyboardModifiersSerializer())
         .registerTypeAdapter(Optional.class, new OptionalSerializer())
         .registerTypeHierarchyAdapter(JSHandleImpl.class, new HandleSerializer())
         .registerTypeHierarchyAdapter(Map.class, new StringMapSerializer())
@@ -188,20 +186,20 @@ class Serialization {
     throw new PlaywrightException("Unexpected result: " + gson().toJson(value));
   }
 
-  private static class KeyboardModifiersSerializer implements JsonSerializer<Set<Keyboard.Modifier>> {
+  private static class KeyboardModifiersSerializer implements JsonSerializer<List<KeyboardModifier>> {
     @Override
-    public JsonArray serialize(Set<Keyboard.Modifier> modifiers, Type typeOfSrc, JsonSerializationContext context) {
+    public JsonArray serialize(List<KeyboardModifier> modifiers, Type typeOfSrc, JsonSerializationContext context) {
       JsonArray result = new JsonArray();
-      if (modifiers.contains(Keyboard.Modifier.ALT)) {
+      if (modifiers.contains(KeyboardModifier.ALT)) {
         result.add("Alt");
       }
-      if (modifiers.contains(Keyboard.Modifier.CONTROL)) {
+      if (modifiers.contains(KeyboardModifier.CONTROL)) {
         result.add("Control");
       }
-      if (modifiers.contains(Keyboard.Modifier.META)) {
+      if (modifiers.contains(KeyboardModifier.META)) {
         result.add("Meta");
       }
-      if (modifiers.contains(Keyboard.Modifier.SHIFT)) {
+      if (modifiers.contains(KeyboardModifier.SHIFT)) {
         result.add("Shift");
       }
       return result;
@@ -251,13 +249,14 @@ class Serialization {
 
   private static class OptionalSerializer implements JsonSerializer<Optional<?>> {
     private static boolean isSupported(Type type) {
-      return new TypeToken<Optional<Page.EmulateMediaOptions.Media>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
-        new TypeToken<Optional<ColorScheme>>() {}.getType().getTypeName().equals(type.getTypeName());
+      return new TypeToken<Optional<Media>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
+        new TypeToken<Optional<ColorScheme>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
+        new TypeToken<Optional<Page.Viewport>>() {}.getType().getTypeName().equals(type.getTypeName());
     }
 
     @Override
     public JsonElement serialize(Optional<?> src, Type typeOfSrc, JsonSerializationContext context) {
-      assert isSupported(typeOfSrc);
+      assert isSupported(typeOfSrc) : "Unexpected optional type: " + typeOfSrc.getTypeName();
       if (!src.isPresent()) {
         return new JsonPrimitive("null");
       }
@@ -284,9 +283,9 @@ class Serialization {
     }
   }
 
-  private static class MediaSerializer implements JsonSerializer<Page.EmulateMediaOptions.Media> {
+  private static class MediaSerializer implements JsonSerializer<Media> {
     @Override
-    public JsonElement serialize(Page.EmulateMediaOptions.Media src, Type typeOfSrc, JsonSerializationContext context) {
+    public JsonElement serialize(Media src, Type typeOfSrc, JsonSerializationContext context) {
       return new JsonPrimitive(src.toString().toLowerCase());
     }
   }
@@ -305,9 +304,9 @@ class Serialization {
     }
   }
 
-  private static class SameSiteAdapter extends TypeAdapter<BrowserContext.SameSite> {
+  private static class SameSiteAdapter extends TypeAdapter<SameSiteAttribute> {
     @Override
-    public void write(JsonWriter out, BrowserContext.SameSite value) throws IOException {
+    public void write(JsonWriter out, SameSiteAttribute value) throws IOException {
       String stringValue;
       switch (value) {
         case STRICT:
@@ -326,9 +325,9 @@ class Serialization {
     }
 
     @Override
-    public BrowserContext.SameSite read(JsonReader in) throws IOException {
+    public SameSiteAttribute read(JsonReader in) throws IOException {
       String value = in.nextString();
-      return BrowserContext.SameSite.valueOf(value.toUpperCase());
+      return SameSiteAttribute.valueOf(value.toUpperCase());
     }
   }
 

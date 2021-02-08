@@ -19,7 +19,7 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
-import static com.microsoft.playwright.ElementHandle.ElementState.*;
+import static com.microsoft.playwright.ElementState.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 

@@ -20,8 +20,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static com.microsoft.playwright.Frame.LoadState.LOAD;
 import static com.microsoft.playwright.Utils.mapOf;
+import static com.microsoft.playwright.WaitUntilState.LOAD;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 

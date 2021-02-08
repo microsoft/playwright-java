@@ -18,7 +18,7 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
-import static com.microsoft.playwright.Frame.LoadState.DOMCONTENTLOADED;
+import static com.microsoft.playwright.LoadState.DOMCONTENTLOADED;
 import static com.microsoft.playwright.Utils.attachFrame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

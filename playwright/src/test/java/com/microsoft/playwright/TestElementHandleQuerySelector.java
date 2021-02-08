@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.microsoft.playwright.Frame.LoadState.DOMCONTENTLOADED;
+import static com.microsoft.playwright.LoadState.DOMCONTENTLOADED;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestElementHandleQuerySelector extends TestBase {

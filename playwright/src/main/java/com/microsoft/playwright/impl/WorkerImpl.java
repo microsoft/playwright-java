@@ -16,17 +16,16 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.*;
+import com.microsoft.playwright.JSHandle;
+import com.microsoft.playwright.Worker;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.*;
-import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 class WorkerImpl extends ChannelOwner implements Worker {
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();

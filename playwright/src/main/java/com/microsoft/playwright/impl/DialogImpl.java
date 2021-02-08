@@ -18,7 +18,6 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Dialog;
-import com.microsoft.playwright.PlaywrightException;
 
 class DialogImpl extends ChannelOwner implements Dialog {
   DialogImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {

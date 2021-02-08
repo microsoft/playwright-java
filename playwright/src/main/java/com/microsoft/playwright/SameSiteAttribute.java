@@ -16,8 +16,8 @@
 
 package com.microsoft.playwright;
 
-public enum ColorScheme {
-  LIGHT,
-  DARK,
-  NO_PREFERENCE
+public enum SameSiteAttribute {
+  STRICT,
+  LAX,
+  NONE
 }

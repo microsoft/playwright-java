@@ -196,7 +196,7 @@ public class TestPageWaitForNavigation extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     String url = server.CROSS_PROCESS_PREFIX + "/empty.html";
     Response response = page.waitForNavigation(
-      new Page.WaitForNavigationOptions().withWaitUntil(Frame.LoadState.DOMCONTENTLOADED),
+      new Page.WaitForNavigationOptions().withWaitUntil(WaitUntilState.DOMCONTENTLOADED),
       () -> page.navigate(url));
     assertEquals(url, response.url());
     assertEquals(url, page.url());

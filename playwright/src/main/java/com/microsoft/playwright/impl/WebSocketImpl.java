@@ -17,11 +17,12 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.*;
+import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.WebSocket;
+import com.microsoft.playwright.WebSocketFrame;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.function.Consumer;

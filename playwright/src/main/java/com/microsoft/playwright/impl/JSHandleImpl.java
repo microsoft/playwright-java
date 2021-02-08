@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.Serialization.*;
-import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 public class JSHandleImpl extends ChannelOwner implements JSHandle {
   private String preview;
