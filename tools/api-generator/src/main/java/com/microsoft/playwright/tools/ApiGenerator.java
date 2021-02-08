@@ -1180,8 +1180,9 @@ class NestedClass extends TypeDefinition {
       }
     } else {
       writeBuilderMethods(output, bodyOffset);
-      if ("Browser.newContext.options".equals(jsonPath) ||
-          "Browser.newPage.options".equals(jsonPath)) {
+      if (asList("Browser.newContext.options",
+        "Browser.newPage.options",
+        "BrowserType.launchPersistentContext.options").contains(jsonPath)) {
         writeDeviceDescriptorBuilder(output, bodyOffset);
       }
     }

@@ -622,6 +622,14 @@ public interface BrowserType {
       this.viewport = Optional.ofNullable(viewport);
       return this;
     }
+    public LaunchPersistentContextOptions withDevice(DeviceDescriptor device) {
+      withViewport(device.viewport().width(), device.viewport().height());
+      withUserAgent(device.userAgent());
+      withDeviceScaleFactor(device.deviceScaleFactor());
+      withIsMobile(device.isMobile());
+      withHasTouch(device.hasTouch());
+      return this;
+    }
   }
   /**
    * A path where Playwright expects to find a bundled browser executable.
