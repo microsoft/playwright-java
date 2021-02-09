@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright;
+package com.microsoft.playwright.options;
 
-public enum ColorScheme {
-  LIGHT,
-  DARK,
-  NO_PREFERENCE
+public enum ScreenshotType {
+  PNG,
+  JPEG
 }

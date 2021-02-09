@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright;
+package com.microsoft.playwright.options;
 
-public enum SameSiteAttribute {
-  STRICT,
-  LAX,
-  NONE
+public enum LoadState {
+  LOAD,
+  DOMCONTENTLOADED,
+  NETWORKIDLE
 }

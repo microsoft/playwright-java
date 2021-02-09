@@ -20,7 +20,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.ElementHandle;
-import com.microsoft.playwright.ElementState;
+import com.microsoft.playwright.options.ElementState;
 import com.microsoft.playwright.FileChooser;
 import com.microsoft.playwright.Frame;
 
@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-import static com.microsoft.playwright.ScreenshotType.JPEG;
-import static com.microsoft.playwright.ScreenshotType.PNG;
+import static com.microsoft.playwright.options.ScreenshotType.JPEG;
+import static com.microsoft.playwright.options.ScreenshotType.PNG;
 import static com.microsoft.playwright.impl.Serialization.*;
 
 public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {

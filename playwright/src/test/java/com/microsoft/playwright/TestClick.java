@@ -23,8 +23,8 @@ import org.junit.jupiter.api.condition.EnabledIf;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.microsoft.playwright.KeyboardModifier.SHIFT;
-import static com.microsoft.playwright.MouseButton.RIGHT;
+import static com.microsoft.playwright.options.KeyboardModifier.SHIFT;
+import static com.microsoft.playwright.options.MouseButton.RIGHT;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;

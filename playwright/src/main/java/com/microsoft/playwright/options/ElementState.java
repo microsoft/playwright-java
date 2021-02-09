@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright;
+package com.microsoft.playwright.options;
 
-public enum WaitForSelectorState {
-  ATTACHED,
-  DETACHED,
+public enum ElementState {
   VISIBLE,
-  HIDDEN
+  HIDDEN,
+  STABLE,
+  ENABLED,
+  DISABLED,
+  EDITABLE
 }

@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright;
+package com.microsoft.playwright.options;
 
-public enum ScreenshotType {
-  PNG,
-  JPEG
+public enum KeyboardModifier {
+  ALT,
+  CONTROL,
+  META,
+  SHIFT
 }

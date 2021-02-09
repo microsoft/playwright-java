@@ -14,26 +14,9 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright;
+package com.microsoft.playwright.options;
 
-public class Position {
-  public int x;
-  public int y;
-
-  public Position() {
-  }
-
-  public Position(int x, int y) {
-    this.x = x;
-    this.y = y;
-  }
-
-  public Position withX(int x) {
-    this.x = x;
-    return this;
-  }
-  public Position withY(int y) {
-    this.y = y;
-    return this;
-  }
+public enum Media {
+  SCREEN,
+  PRINT
 }

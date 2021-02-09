@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;

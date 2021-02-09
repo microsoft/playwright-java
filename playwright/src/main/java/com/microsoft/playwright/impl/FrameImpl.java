@@ -20,6 +20,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.*;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +29,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
 
-import static com.microsoft.playwright.LoadState.*;
+import static com.microsoft.playwright.options.LoadState.*;
 import static com.microsoft.playwright.impl.Serialization.*;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;

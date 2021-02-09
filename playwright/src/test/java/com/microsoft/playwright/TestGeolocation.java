@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.Geolocation;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

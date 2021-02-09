@@ -19,6 +19,7 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.*;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -26,8 +27,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.ScreenshotType.JPEG;
-import static com.microsoft.playwright.ScreenshotType.PNG;
+import static com.microsoft.playwright.options.ScreenshotType.JPEG;
+import static com.microsoft.playwright.options.ScreenshotType.PNG;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
