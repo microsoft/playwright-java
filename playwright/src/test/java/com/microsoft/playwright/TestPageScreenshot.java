@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.Clip;
 import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
@@ -43,7 +44,7 @@ public class TestPageScreenshot extends TestBase {
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");
     byte[] screenshot = page.screenshot(new Page.ScreenshotOptions()
-      .setClip().withX(50).withY(100).withWidth(150).withHeight(100).done());
+      .withClip(new Clip().withX(50).withY(100).withWidth(150).withHeight(100)));
     BufferedImage image = ImageIO.read(new ByteArrayInputStream(screenshot));
     assertEquals(150, image.getWidth());
     assertEquals(100, image.getHeight());

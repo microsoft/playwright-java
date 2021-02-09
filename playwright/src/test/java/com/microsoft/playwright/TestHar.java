@@ -19,6 +19,7 @@ package com.microsoft.playwright;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.options.RecordHar;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,8 +43,8 @@ public class TestHar extends TestBase {
 
     PageWithHar() throws IOException {
       harFile = Files.createTempFile("test-", ".har");
-      context = browser.newContext(new Browser.NewContextOptions().setRecordHar()
-        .withPath(harFile).done().withIgnoreHTTPSErrors(true));
+      context = browser.newContext(new Browser.NewContextOptions().withRecordHar(new RecordHar()
+        .withPath(harFile)).withIgnoreHTTPSErrors(true));
       page = context.newPage();
     }
 
@@ -73,7 +74,7 @@ public class TestHar extends TestBase {
   @Test
   void shouldThrowWithoutPath() {
     try {
-      browser.newContext(new Browser.NewContextOptions().setRecordHar().done());
+      browser.newContext(new Browser.NewContextOptions().withRecordHar(new RecordHar()));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("recordHar.path: expected string, got undefined"));
@@ -118,7 +119,7 @@ public class TestHar extends TestBase {
     Path userDataDir = Files.createTempDirectory("user-data-dir-");
     BrowserContext context = browserType.launchPersistentContext(userDataDir,
       new BrowserType.LaunchPersistentContextOptions()
-      .setRecordHar().withPath(harPath).done().withIgnoreHTTPSErrors(true));
+      .withRecordHar(new RecordHar().withPath(harPath)).withIgnoreHTTPSErrors(true));
     Page page = context.pages().get(0);
 
     page.navigate("data:text/html,<title>Hello</title>");

@@ -35,24 +35,6 @@ import java.util.regex.Pattern;
  * contexts don't write any browsing data to disk.
  */
 public interface BrowserContext extends AutoCloseable {
-  class HTTPCredentials {
-    private final String username;
-    private final String password;
-
-    public HTTPCredentials(String username, String password) {
-      this.username = username;
-      this.password = password;
-    }
-
-    public String username() {
-      return username;
-    }
-
-    public String password() {
-      return password;
-    }
-  }
-
 
   void onClose(Consumer<BrowserContext> handler);
   void offClose(Consumer<BrowserContext> handler);

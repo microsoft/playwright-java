@@ -295,7 +295,7 @@ public interface Page extends AutoCloseable {
       this.position = position;
       return this;
     }
-    public ClickOptions withPosition(int x, int y) {
+    public ClickOptions withPosition(double x, double y) {
       return withPosition(new Position(x, y));
     }
     public ClickOptions withTimeout(double timeout) {
@@ -374,7 +374,7 @@ public interface Page extends AutoCloseable {
       this.position = position;
       return this;
     }
-    public DblclickOptions withPosition(int x, int y) {
+    public DblclickOptions withPosition(double x, double y) {
       return withPosition(new Position(x, y));
     }
     public DblclickOptions withTimeout(double timeout) {
@@ -590,7 +590,7 @@ public interface Page extends AutoCloseable {
       this.position = position;
       return this;
     }
-    public HoverOptions withPosition(int x, int y) {
+    public HoverOptions withPosition(double x, double y) {
       return withPosition(new Position(x, y));
     }
     public HoverOptions withTimeout(double timeout) {
@@ -695,47 +695,6 @@ public interface Page extends AutoCloseable {
     }
   }
   class PdfOptions {
-    public class Margin {
-      /**
-       * Top margin, accepts values labeled with units. Defaults to {@code 0}.
-       */
-      public String top;
-      /**
-       * Right margin, accepts values labeled with units. Defaults to {@code 0}.
-       */
-      public String right;
-      /**
-       * Bottom margin, accepts values labeled with units. Defaults to {@code 0}.
-       */
-      public String bottom;
-      /**
-       * Left margin, accepts values labeled with units. Defaults to {@code 0}.
-       */
-      public String left;
-
-      Margin() {
-      }
-      public PdfOptions done() {
-        return PdfOptions.this;
-      }
-
-      public Margin withTop(String top) {
-        this.top = top;
-        return this;
-      }
-      public Margin withRight(String right) {
-        this.right = right;
-        return this;
-      }
-      public Margin withBottom(String bottom) {
-        this.bottom = bottom;
-        return this;
-      }
-      public Margin withLeft(String left) {
-        this.left = left;
-        return this;
-      }
-    }
     /**
      * Display header and footer. Defaults to {@code false}.
      */
@@ -821,9 +780,9 @@ public interface Page extends AutoCloseable {
       this.landscape = landscape;
       return this;
     }
-    public Margin setMargin() {
-      this.margin = new Margin();
-      return this.margin;
+    public PdfOptions withMargin(Margin margin) {
+      this.margin = margin;
+      return this;
     }
     public PdfOptions withPageRanges(String pageRanges) {
       this.pageRanges = pageRanges;
@@ -906,47 +865,6 @@ public interface Page extends AutoCloseable {
     }
   }
   class ScreenshotOptions {
-    public class Clip {
-      /**
-       * x-coordinate of top-left corner of clip area
-       */
-      public double x;
-      /**
-       * y-coordinate of top-left corner of clip area
-       */
-      public double y;
-      /**
-       * width of clipping area
-       */
-      public double width;
-      /**
-       * height of clipping area
-       */
-      public double height;
-
-      Clip() {
-      }
-      public ScreenshotOptions done() {
-        return ScreenshotOptions.this;
-      }
-
-      public Clip withX(double x) {
-        this.x = x;
-        return this;
-      }
-      public Clip withY(double y) {
-        this.y = y;
-        return this;
-      }
-      public Clip withWidth(double width) {
-        this.width = width;
-        return this;
-      }
-      public Clip withHeight(double height) {
-        this.height = height;
-        return this;
-      }
-    }
     /**
      * An object which specifies clipping of the resulting image. Should have the following fields:
      */
@@ -981,9 +899,9 @@ public interface Page extends AutoCloseable {
      */
     public ScreenshotType type;
 
-    public Clip setClip() {
-      this.clip = new Clip();
-      return this.clip;
+    public ScreenshotOptions withClip(Clip clip) {
+      this.clip = clip;
+      return this;
     }
     public ScreenshotOptions withFullPage(boolean fullPage) {
       this.fullPage = fullPage;
@@ -1080,25 +998,6 @@ public interface Page extends AutoCloseable {
     }
   }
   class TapOptions {
-    public class Position {
-      public double x;
-      public double y;
-
-      Position() {
-      }
-      public TapOptions done() {
-        return TapOptions.this;
-      }
-
-      public Position withX(double x) {
-        this.x = x;
-        return this;
-      }
-      public Position withY(double y) {
-        this.y = y;
-        return this;
-      }
-    }
     /**
      * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
      */
@@ -1137,9 +1036,9 @@ public interface Page extends AutoCloseable {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public Position setPosition() {
-      this.position = new Position();
-      return this.position;
+    public TapOptions withPosition(Position position) {
+      this.position = position;
+      return this;
     }
     public TapOptions withTimeout(double timeout) {
       this.timeout = timeout;

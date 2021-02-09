@@ -196,7 +196,7 @@ public interface Frame {
       this.position = position;
       return this;
     }
-    public ClickOptions withPosition(int x, int y) {
+    public ClickOptions withPosition(double x, double y) {
       return withPosition(new Position(x, y));
     }
     public ClickOptions withTimeout(double timeout) {
@@ -263,7 +263,7 @@ public interface Frame {
       this.position = position;
       return this;
     }
-    public DblclickOptions withPosition(int x, int y) {
+    public DblclickOptions withPosition(double x, double y) {
       return withPosition(new Position(x, y));
     }
     public DblclickOptions withTimeout(double timeout) {
@@ -396,7 +396,7 @@ public interface Frame {
       this.position = position;
       return this;
     }
-    public HoverOptions withPosition(int x, int y) {
+    public HoverOptions withPosition(double x, double y) {
       return withPosition(new Position(x, y));
     }
     public HoverOptions withTimeout(double timeout) {
@@ -600,25 +600,6 @@ public interface Frame {
     }
   }
   class TapOptions {
-    public class Position {
-      public double x;
-      public double y;
-
-      Position() {
-      }
-      public TapOptions done() {
-        return TapOptions.this;
-      }
-
-      public Position withX(double x) {
-        this.x = x;
-        return this;
-      }
-      public Position withY(double y) {
-        this.y = y;
-        return this;
-      }
-    }
     /**
      * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
      */
@@ -657,9 +638,9 @@ public interface Frame {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public Position setPosition() {
-      this.position = new Position();
-      return this.position;
+    public TapOptions withPosition(Position position) {
+      this.position = position;
+      return this;
     }
     public TapOptions withTimeout(double timeout) {
       this.timeout = timeout;
