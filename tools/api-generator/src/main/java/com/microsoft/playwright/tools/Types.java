@@ -78,13 +78,6 @@ class Types {
     add("WebSocket.frameSent", "Object", "FrameData", new Empty());
 
     // Custom options
-    add("Page.pdf.options.margin.top", "float|string", "String");
-    add("Page.pdf.options.margin.right", "float|string", "String");
-    add("Page.pdf.options.margin.bottom", "float|string", "String");
-    add("Page.pdf.options.margin.left", "float|string", "String");
-    add("Page.pdf.options.width", "float|string", "String");
-    add("Page.pdf.options.height", "float|string", "String");
-
     add("Page.click.options.position", "Object", "Position", new Empty());
     add("Page.dblclick.options.position", "Object", "Position", new Empty());
     add("Page.hover.options.position", "Object", "Position", new Empty());
