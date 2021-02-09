@@ -925,6 +925,9 @@ class Interface extends TypeDefinition {
     if ("Playwright".equals(jsonName)) {
       output.add("import com.microsoft.playwright.impl.PlaywrightImpl;");
     }
+    if (asList("Page", "Frame", "ElementHandle", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard").contains(jsonName)) {
+      output.add("import com.microsoft.playwright.options.*;");
+    }
     if (jsonName.equals("Route")) {
       output.add("import java.nio.charset.StandardCharsets;");
     }
@@ -1265,9 +1268,10 @@ public class ApiGenerator {
         writer.write(text);
       }
     }
+    dir = new File(dir, "options");
     for (Enum e : enums.values()) {
       List<String> lines = new ArrayList<>();
-      lines.add(Interface.header);
+      lines.add(Interface.header.replace("package com.microsoft.playwright;", "package com.microsoft.playwright.options;"));
       e.writeTo(lines);
       String text = String.join("\n", lines);
       try (FileWriter writer = new FileWriter(new File(dir, e.jsonName + ".java"))) {

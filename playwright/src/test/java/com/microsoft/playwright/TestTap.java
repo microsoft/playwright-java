@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-import static com.microsoft.playwright.KeyboardModifier.ALT;
+import static com.microsoft.playwright.options.KeyboardModifier.ALT;
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;

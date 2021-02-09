@@ -1,5 +1,6 @@
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.Geolocation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
@@ -12,7 +13,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-import static com.microsoft.playwright.ColorScheme.DARK;
+import static com.microsoft.playwright.options.ColorScheme.DARK;
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;

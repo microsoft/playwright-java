@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright;
+package com.microsoft.playwright.options;
 
-public enum Media {
-  SCREEN,
-  PRINT
+public enum SameSiteAttribute {
+  STRICT,
+  LAX,
+  NONE
 }

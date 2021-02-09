@@ -20,9 +20,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Supplier;
 
-import static com.microsoft.playwright.ColorScheme.DARK;
-import static com.microsoft.playwright.ColorScheme.LIGHT;
-import static com.microsoft.playwright.Media.PRINT;
+import static com.microsoft.playwright.options.ColorScheme.DARK;
+import static com.microsoft.playwright.options.ColorScheme.LIGHT;
+import static com.microsoft.playwright.options.Media.PRINT;
 import static com.microsoft.playwright.Utils.attachFrame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

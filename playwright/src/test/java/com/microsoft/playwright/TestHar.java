@@ -29,7 +29,7 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static com.microsoft.playwright.LoadState.DOMCONTENTLOADED;
+import static com.microsoft.playwright.options.LoadState.DOMCONTENTLOADED;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestHar extends TestBase {

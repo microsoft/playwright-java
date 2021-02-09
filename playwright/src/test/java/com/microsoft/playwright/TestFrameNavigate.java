@@ -18,7 +18,7 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
-import static com.microsoft.playwright.WaitUntilState.NETWORKIDLE;
+import static com.microsoft.playwright.options.WaitUntilState.NETWORKIDLE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

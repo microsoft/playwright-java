@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright;
+package com.microsoft.playwright.options;
 
-public enum KeyboardModifier {
-  ALT,
-  CONTROL,
-  META,
-  SHIFT
+public enum WaitForSelectorState {
+  ATTACHED,
+  DETACHED,
+  VISIBLE,
+  HIDDEN
 }

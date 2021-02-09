@@ -31,7 +31,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 
-import static com.microsoft.playwright.KeyboardModifier.ALT;
+import static com.microsoft.playwright.options.KeyboardModifier.ALT;
 import static com.microsoft.playwright.Utils.copy;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;

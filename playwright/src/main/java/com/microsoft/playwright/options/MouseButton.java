@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright;
+package com.microsoft.playwright.options;
 
-public enum WaitUntilState {
-  LOAD,
-  DOMCONTENTLOADED,
-  NETWORKIDLE
+public enum MouseButton {
+  LEFT,
+  RIGHT,
+  MIDDLE
 }

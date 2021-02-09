@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.WaitUntilState;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
