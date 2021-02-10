@@ -52,16 +52,6 @@ class Types {
     add("Page.viewportSize", "Object|null", "Viewport", new Empty());
     add("BrowserType.launchPersistentContext.options.viewport", "Object|null", "Page.Viewport", new Empty());
 
-    // RecordVideo size.
-    add("Browser.newContext.options.recordVideo.size", "Object", "VideoSize", new Empty());
-    add("Browser.newPage.options.recordVideo.size", "Object", "VideoSize", new Empty());
-    add("BrowserType.launchPersistentContext.recordVideo.size", "Object", "Browser.VideoSize", new Empty());
-
-    // HTTP credentials.
-    add("Browser.newContext.options.httpCredentials", "Object", "BrowserContext.HTTPCredentials", new Empty());
-    add("Browser.newPage.options.httpCredentials", "Object", "BrowserContext.HTTPCredentials", new Empty());
-    add("BrowserType.launchPersistentContext.options.httpCredentials", "Object", "BrowserContext.HTTPCredentials", new Empty());
-
     add("BrowserContext.exposeBinding.callback", "function", "Page.Binding");
     add("BrowserContext.exposeFunction.callback", "function", "Page.Function");
     add("Page.exposeBinding.callback", "function", "Binding");
@@ -74,17 +64,6 @@ class Types {
     // Return structures
     add("ConsoleMessage.location", "Object", "Location");
     add("ElementHandle.boundingBox", "Object|null", "BoundingBox", new Empty());
-
-    // Custom options
-    add("Page.click.options.position", "Object", "Position", new Empty());
-    add("Page.dblclick.options.position", "Object", "Position", new Empty());
-    add("Page.hover.options.position", "Object", "Position", new Empty());
-    add("Frame.click.options.position", "Object", "Position", new Empty());
-    add("Frame.dblclick.options.position", "Object", "Position", new Empty());
-    add("Frame.hover.options.position", "Object", "Position", new Empty());
-    add("ElementHandle.click.options.position", "Object", "Position", new Empty());
-    add("ElementHandle.dblclick.options.position", "Object", "Position", new Empty());
-    add("ElementHandle.hover.options.position", "Object", "Position", new Empty());
 
     // The method has custom signatures
     add("BrowserContext.cookies", "Array<Object>", "Cookie");

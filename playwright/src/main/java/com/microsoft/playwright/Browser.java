@@ -27,123 +27,11 @@ import java.util.function.Consumer;
  * <p> A Browser is created via [{@code method: BrowserType.launch}]. An example of using a {@code Browser} to create a {@code Page}:
  */
 public interface Browser extends AutoCloseable {
-  class VideoSize {
-    private final int width;
-    private final int height;
-
-    public VideoSize(int width, int height) {
-      this.width = width;
-      this.height = height;
-    }
-
-    public int width() {
-      return width;
-    }
-
-    public int height() {
-      return height;
-    }
-  }
-
 
   void onDisconnected(Consumer<Browser> handler);
   void offDisconnected(Consumer<Browser> handler);
 
   class NewContextOptions {
-    public class Proxy {
-      /**
-       * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example {@code http://myproxy.com:3128} or
-       * {@code socks5://myproxy.com:3128}. Short form {@code myproxy.com:3128} is considered an HTTP proxy.
-       */
-      public String server;
-      /**
-       * Optional coma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
-       */
-      public String bypass;
-      /**
-       * Optional username to use if HTTP proxy requires authentication.
-       */
-      public String username;
-      /**
-       * Optional password to use if HTTP proxy requires authentication.
-       */
-      public String password;
-
-      Proxy() {
-      }
-      public NewContextOptions done() {
-        return NewContextOptions.this;
-      }
-
-      public Proxy withServer(String server) {
-        this.server = server;
-        return this;
-      }
-      public Proxy withBypass(String bypass) {
-        this.bypass = bypass;
-        return this;
-      }
-      public Proxy withUsername(String username) {
-        this.username = username;
-        return this;
-      }
-      public Proxy withPassword(String password) {
-        this.password = password;
-        return this;
-      }
-    }
-    public class RecordHar {
-      /**
-       * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
-       */
-      public Boolean omitContent;
-      /**
-       * Path on the filesystem to write the HAR file to.
-       */
-      public Path path;
-
-      RecordHar() {
-      }
-      public NewContextOptions done() {
-        return NewContextOptions.this;
-      }
-
-      public RecordHar withOmitContent(boolean omitContent) {
-        this.omitContent = omitContent;
-        return this;
-      }
-      public RecordHar withPath(Path path) {
-        this.path = path;
-        return this;
-      }
-    }
-    public class RecordVideo {
-      /**
-       * Path to the directory to put videos into.
-       */
-      public Path dir;
-      /**
-       * Optional dimensions of the recorded videos. If not specified the size will be equal to {@code viewport}. If {@code viewport} is not
-       * configured explicitly the video size defaults to 1280x720. Actual picture of each page will be scaled down if necessary
-       * to fit the specified size.
-       */
-      public VideoSize size;
-
-      RecordVideo() {
-      }
-      public NewContextOptions done() {
-        return NewContextOptions.this;
-      }
-
-      public RecordVideo withDir(Path dir) {
-        this.dir = dir;
-        return this;
-      }
-      public RecordVideo withSize(int width, int height) {
-        this.size = new VideoSize(width, height);
-        return this;
-      }
-    }
     /**
      * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
      */
@@ -173,7 +61,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Credentials for [HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication).
      */
-    public BrowserContext.HTTPCredentials httpCredentials;
+    public HttpCredentials httpCredentials;
     /**
      * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
      */
@@ -271,7 +159,7 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     public NewContextOptions withHttpCredentials(String username, String password) {
-      this.httpCredentials = new BrowserContext.HTTPCredentials(username, password);
+      this.httpCredentials = new HttpCredentials(username, password);
       return this;
     }
     public NewContextOptions withIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
@@ -298,17 +186,17 @@ public interface Browser extends AutoCloseable {
       this.permissions = permissions;
       return this;
     }
-    public Proxy setProxy() {
-      this.proxy = new Proxy();
-      return this.proxy;
+    public NewContextOptions withProxy(Proxy proxy) {
+      this.proxy = proxy;
+      return this;
     }
-    public RecordHar setRecordHar() {
-      this.recordHar = new RecordHar();
-      return this.recordHar;
+    public NewContextOptions withRecordHar(RecordHar recordHar) {
+      this.recordHar = recordHar;
+      return this;
     }
-    public RecordVideo setRecordVideo() {
-      this.recordVideo = new RecordVideo();
-      return this.recordVideo;
+    public NewContextOptions withRecordVideo(RecordVideo recordVideo) {
+      this.recordVideo = recordVideo;
+      return this;
     }
     public NewContextOptions withStorageState(String storageState) {
       this.storageState = storageState;
@@ -343,100 +231,6 @@ public interface Browser extends AutoCloseable {
     }
   }
   class NewPageOptions {
-    public class Proxy {
-      /**
-       * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example {@code http://myproxy.com:3128} or
-       * {@code socks5://myproxy.com:3128}. Short form {@code myproxy.com:3128} is considered an HTTP proxy.
-       */
-      public String server;
-      /**
-       * Optional coma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
-       */
-      public String bypass;
-      /**
-       * Optional username to use if HTTP proxy requires authentication.
-       */
-      public String username;
-      /**
-       * Optional password to use if HTTP proxy requires authentication.
-       */
-      public String password;
-
-      Proxy() {
-      }
-      public NewPageOptions done() {
-        return NewPageOptions.this;
-      }
-
-      public Proxy withServer(String server) {
-        this.server = server;
-        return this;
-      }
-      public Proxy withBypass(String bypass) {
-        this.bypass = bypass;
-        return this;
-      }
-      public Proxy withUsername(String username) {
-        this.username = username;
-        return this;
-      }
-      public Proxy withPassword(String password) {
-        this.password = password;
-        return this;
-      }
-    }
-    public class RecordHar {
-      /**
-       * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
-       */
-      public Boolean omitContent;
-      /**
-       * Path on the filesystem to write the HAR file to.
-       */
-      public Path path;
-
-      RecordHar() {
-      }
-      public NewPageOptions done() {
-        return NewPageOptions.this;
-      }
-
-      public RecordHar withOmitContent(boolean omitContent) {
-        this.omitContent = omitContent;
-        return this;
-      }
-      public RecordHar withPath(Path path) {
-        this.path = path;
-        return this;
-      }
-    }
-    public class RecordVideo {
-      /**
-       * Path to the directory to put videos into.
-       */
-      public Path dir;
-      /**
-       * Optional dimensions of the recorded videos. If not specified the size will be equal to {@code viewport}. If {@code viewport} is not
-       * configured explicitly the video size defaults to 1280x720. Actual picture of each page will be scaled down if necessary
-       * to fit the specified size.
-       */
-      public VideoSize size;
-
-      RecordVideo() {
-      }
-      public NewPageOptions done() {
-        return NewPageOptions.this;
-      }
-
-      public RecordVideo withDir(Path dir) {
-        this.dir = dir;
-        return this;
-      }
-      public RecordVideo withSize(int width, int height) {
-        this.size = new VideoSize(width, height);
-        return this;
-      }
-    }
     /**
      * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
      */
@@ -466,7 +260,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Credentials for [HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication).
      */
-    public BrowserContext.HTTPCredentials httpCredentials;
+    public HttpCredentials httpCredentials;
     /**
      * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
      */
@@ -564,7 +358,7 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     public NewPageOptions withHttpCredentials(String username, String password) {
-      this.httpCredentials = new BrowserContext.HTTPCredentials(username, password);
+      this.httpCredentials = new HttpCredentials(username, password);
       return this;
     }
     public NewPageOptions withIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
@@ -591,17 +385,17 @@ public interface Browser extends AutoCloseable {
       this.permissions = permissions;
       return this;
     }
-    public Proxy setProxy() {
-      this.proxy = new Proxy();
-      return this.proxy;
+    public NewPageOptions withProxy(Proxy proxy) {
+      this.proxy = proxy;
+      return this;
     }
-    public RecordHar setRecordHar() {
-      this.recordHar = new RecordHar();
-      return this.recordHar;
+    public NewPageOptions withRecordHar(RecordHar recordHar) {
+      this.recordHar = recordHar;
+      return this;
     }
-    public RecordVideo setRecordVideo() {
-      this.recordVideo = new RecordVideo();
-      return this.recordVideo;
+    public NewPageOptions withRecordVideo(RecordVideo recordVideo) {
+      this.recordVideo = recordVideo;
+      return this;
     }
     public NewPageOptions withStorageState(String storageState) {
       this.storageState = storageState;

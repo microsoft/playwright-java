@@ -62,6 +62,10 @@ abstract class Element {
     return parent.enums();
   }
 
+  Map<String, NestedClass> topLevelClasses() {
+    return parent.topLevelClasses();
+  }
+
   static String toTitle(String name) {
     return Character.toUpperCase(name.charAt(0)) + name.substring(1);
   }
@@ -211,8 +215,6 @@ class TypeRef extends Element {
       if (parent instanceof Field) {
         customType = toTitle(parent.jsonName);
       } else {
-//        String typeExpression = typeExpression(jsonElement.getAsJsonObject());
-//        System.out.println("add(\"" + parentPath + "\", \"" + typeExpression + "\", \"" + typeExpression + "\");" );
         customType = toTitle(parent.parent.jsonName) + toTitle(parent.jsonName);
       }
     } else {
@@ -227,8 +229,12 @@ class TypeRef extends Element {
       }
     }
     if (generatedType == GeneratedType.CLASS) {
-      typeScope().createNestedClass(customType, this, jsonElement.getAsJsonObject());
-      isNestedClass = true;
+      if (parent instanceof Field ) {
+        typeScope().createTopLevelClass(customType, this, jsonElement.getAsJsonObject());
+      } else {
+        typeScope().createNestedClass(customType, this, jsonElement.getAsJsonObject());
+        isNestedClass = true;
+      }
     }
   }
 
@@ -425,6 +431,15 @@ abstract class TypeDefinition extends Element {
     if (existing != null && !existing.hasSameValues(newEnum)) {
       throw new RuntimeException("Two enums with same name have different values:\n" + jsonObject + "\n" + existing.jsonElement);
     }
+  }
+
+  void createTopLevelClass(String name, Element parent, JsonObject jsonObject) {
+    Map<String, NestedClass> map = topLevelClasses();
+    if (map.containsKey(name)) {
+      // TODO: check equal
+      return;
+    }
+    map.put(name, new NestedClass(parent, name, jsonObject));
   }
 
   void createNestedClass(String name, Element parent, JsonObject jsonObject) {
@@ -818,7 +833,7 @@ class Field extends Element {
       output.add(offset + "  this.position = position;");
       output.add(offset + "  return this;");
       output.add(offset + "}");
-      output.add(offset + "public " + parentClass + " withPosition(int x, int y) {");
+      output.add(offset + "public " + parentClass + " withPosition(double x, double y) {");
       output.add(offset + "  return withPosition(new Position(x, y));");
       output.add(offset + "}");
       return;
@@ -868,6 +883,7 @@ class Interface extends TypeDefinition {
   private final List<Method> methods = new ArrayList<>();
   private final List<Event> events = new ArrayList<>();
   private final Map<String, Enum> enums;
+  private final Map<String, NestedClass> topLevelClasses;
   static final String header = "/*\n" +
     " * Copyright (c) Microsoft Corporation.\n" +
     " *\n" +
@@ -889,9 +905,10 @@ class Interface extends TypeDefinition {
   private static Set<String> allowedBaseInterfaces = new HashSet<>(asList("Browser", "JSHandle", "BrowserContext"));
   private static Set<String> autoCloseableInterfaces = new HashSet<>(asList("Playwright", "Browser", "BrowserContext", "Page"));
 
-  Interface(JsonObject jsonElement, Map<String, Enum> enums) {
+  Interface(JsonObject jsonElement, Map<String, Enum> enums, Map<String, NestedClass> topLevelClasses) {
     super(null, jsonElement);
     this.enums = enums;
+    this.topLevelClasses = topLevelClasses;
     for (JsonElement item : jsonElement.getAsJsonArray("members")) {
       JsonObject memberJson = item.getAsJsonObject();
       switch (memberJson.get("kind").getAsString()) {
@@ -914,6 +931,10 @@ class Interface extends TypeDefinition {
 
   Map<String, Enum> enums() {
     return enums;
+  }
+
+  Map<String, NestedClass> topLevelClasses() {
+    return topLevelClasses;
   }
 
   void writeTo(List<String> output, String offset) {
@@ -1032,48 +1053,6 @@ class Interface extends TypeDefinition {
         output.add("");
         break;
       }
-      case "BrowserContext": {
-        output.add(offset + "class HTTPCredentials {");
-        output.add(offset + "  private final String username;");
-        output.add(offset + "  private final String password;");
-        output.add("");
-        output.add(offset + "  public HTTPCredentials(String username, String password) {");
-        output.add(offset + "    this.username = username;");
-        output.add(offset + "    this.password = password;");
-        output.add(offset + "  }");
-        output.add("");
-        output.add(offset + "  public String username() {");
-        output.add(offset + "    return username;");
-        output.add(offset + "  }");
-        output.add("");
-        output.add(offset + "  public String password() {");
-        output.add(offset + "    return password;");
-        output.add(offset + "  }");
-        output.add(offset + "}");
-        output.add("");
-        break;
-      }
-      case "Browser": {
-        output.add(offset + "class VideoSize {");
-        output.add(offset + "  private final int width;");
-        output.add(offset + "  private final int height;");
-        output.add("");
-        output.add(offset + "  public VideoSize(int width, int height) {");
-        output.add(offset + "    this.width = width;");
-        output.add(offset + "    this.height = height;");
-        output.add(offset + "  }");
-        output.add("");
-        output.add(offset + "  public int width() {");
-        output.add(offset + "    return width;");
-        output.add(offset + "  }");
-        output.add("");
-        output.add(offset + "  public int height() {");
-        output.add(offset + "    return height;");
-        output.add(offset + "  }");
-        output.add(offset + "}");
-        output.add("");
-        break;
-      }
       case "ElementHandle": {
         output.add(offset + "class BoundingBox {");
         output.add(offset + "  public double x;");
@@ -1158,6 +1137,9 @@ class NestedClass extends TypeDefinition {
   }
 
   void writeTo(List<String> output, String offset) {
+    if (asList("RecordHar", "RecordVideo").contains(name)) {
+      output.add("import java.nio.file.Path;");
+    }
     String access = parent.typeScope() instanceof NestedClass ? "public " : "";
     output.add(offset + access + "class " + name + " {");
     String bodyOffset = offset + "  ";
@@ -1174,6 +1156,9 @@ class NestedClass extends TypeDefinition {
         f.writeGetter(output, bodyOffset);
       }
     } else {
+      if (parent.parent instanceof Field) {
+        writeConstructor(output, bodyOffset);
+      }
       writeBuilderMethods(output, bodyOffset);
       if (asList("Browser.newContext.options",
         "Browser.newPage.options",
@@ -1186,13 +1171,8 @@ class NestedClass extends TypeDefinition {
 
   private void writeBuilderMethods(List<String> output, String bodyOffset) {
     if (parent.typeScope() instanceof  NestedClass) {
-      NestedClass outer = (NestedClass) parent.typeScope();
-      output.add(bodyOffset + name + "() {");
+      output.add(bodyOffset + "public " + name + "() {");
       output.add(bodyOffset + "}");
-      output.add(bodyOffset + "public " + outer.name + " done() {");
-      output.add(bodyOffset + "  return " + outer.name + ".this;");
-      output.add(bodyOffset + "}");
-      output.add("");
     }
     for (Field f : fields) {
       f.writeBuilderMethod(output, bodyOffset, name);
@@ -1255,10 +1235,11 @@ public class ApiGenerator {
     System.out.println("Writing files to: " + dir.getCanonicalPath());
     filterOtherLangs(api);
     Map<String, Enum> enums = new HashMap<>();
+    Map<String, NestedClass> topLevelClasses = new HashMap<>();
     for (JsonElement entry: api) {
       String name = entry.getAsJsonObject().get("name").getAsString();
       List<String> lines = new ArrayList<>();
-      new Interface(entry.getAsJsonObject(), enums).writeTo(lines, "");
+      new Interface(entry.getAsJsonObject(), enums, topLevelClasses).writeTo(lines, "");
       String text = String.join("\n", lines);
       try (FileWriter writer = new FileWriter(new File(dir, name + ".java"))) {
         writer.write(text);
@@ -1271,6 +1252,15 @@ public class ApiGenerator {
       e.writeTo(lines);
       String text = String.join("\n", lines);
       try (FileWriter writer = new FileWriter(new File(dir, e.jsonName + ".java"))) {
+        writer.write(text);
+      }
+    }
+    for (NestedClass e : topLevelClasses.values()) {
+      List<String> lines = new ArrayList<>();
+      lines.add(Interface.header.replace("package com.microsoft.playwright;", "package com.microsoft.playwright.options;"));
+      e.writeTo(lines, "");
+      String text = String.join("\n", lines);
+      try (FileWriter writer = new FileWriter(new File(dir, e.name + ".java"))) {
         writer.write(text);
       }
     }

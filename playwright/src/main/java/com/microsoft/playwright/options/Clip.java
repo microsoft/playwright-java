@@ -16,22 +16,46 @@
 
 package com.microsoft.playwright.options;
 
-public class Position {
+public class Clip {
+  /**
+   * x-coordinate of top-left corner of clip area
+   */
   public double x;
+  /**
+   * y-coordinate of top-left corner of clip area
+   */
   public double y;
+  /**
+   * width of clipping area
+   */
+  public double width;
+  /**
+   * height of clipping area
+   */
+  public double height;
 
-  public Position(double x, double y) {
+  public Clip(double x, double y, double width, double height) {
     this.x = x;
     this.y = y;
+    this.width = width;
+    this.height = height;
   }
-  public Position() {
+  public Clip() {
   }
-  public Position withX(double x) {
+  public Clip withX(double x) {
     this.x = x;
     return this;
   }
-  public Position withY(double y) {
+  public Clip withY(double y) {
     this.y = y;
+    return this;
+  }
+  public Clip withWidth(double width) {
+    this.width = width;
+    return this;
+  }
+  public Clip withHeight(double height) {
+    this.height = height;
     return this;
   }
 }

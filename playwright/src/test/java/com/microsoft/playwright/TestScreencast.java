@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.RecordVideo;
+import com.microsoft.playwright.options.Size;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -28,7 +30,7 @@ public class TestScreencast extends TestBase {
   @Test
   void shouldExposeVideoPath(@TempDir Path videosDir) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .setRecordVideo().withDir(videosDir).withSize(320, 240).done()
+      .withRecordVideo(new RecordVideo().withDir(videosDir).withSize(new Size(320, 240)))
       .withViewport(320, 240));
     Page page = context.newPage();
     page.evaluate("() => document.body.style.backgroundColor = 'red'");

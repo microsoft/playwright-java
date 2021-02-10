@@ -26,48 +26,6 @@ import java.util.*;
  */
 public interface BrowserType {
   class LaunchOptions {
-    public class Proxy {
-      /**
-       * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example {@code http://myproxy.com:3128} or
-       * {@code socks5://myproxy.com:3128}. Short form {@code myproxy.com:3128} is considered an HTTP proxy.
-       */
-      public String server;
-      /**
-       * Optional coma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
-       */
-      public String bypass;
-      /**
-       * Optional username to use if HTTP proxy requires authentication.
-       */
-      public String username;
-      /**
-       * Optional password to use if HTTP proxy requires authentication.
-       */
-      public String password;
-
-      Proxy() {
-      }
-      public LaunchOptions done() {
-        return LaunchOptions.this;
-      }
-
-      public Proxy withServer(String server) {
-        this.server = server;
-        return this;
-      }
-      public Proxy withBypass(String bypass) {
-        this.bypass = bypass;
-        return this;
-      }
-      public Proxy withUsername(String username) {
-        this.username = username;
-        return this;
-      }
-      public Proxy withPassword(String password) {
-        this.password = password;
-        return this;
-      }
-    }
     /**
      * Additional arguments to pass to the browser instance. The list of Chromium flags can be found
      * [here](http://peter.sh/experiments/chromium-command-line-switches/).
@@ -197,9 +155,9 @@ public interface BrowserType {
       this.ignoreDefaultArgs = ignoreDefaultArgs;
       return this;
     }
-    public Proxy setProxy() {
-      this.proxy = new Proxy();
-      return this.proxy;
+    public LaunchOptions withProxy(Proxy proxy) {
+      this.proxy = proxy;
+      return this;
     }
     public LaunchOptions withSlowMo(double slowMo) {
       this.slowMo = slowMo;
@@ -211,125 +169,6 @@ public interface BrowserType {
     }
   }
   class LaunchPersistentContextOptions {
-    public class Proxy {
-      /**
-       * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example {@code http://myproxy.com:3128} or
-       * {@code socks5://myproxy.com:3128}. Short form {@code myproxy.com:3128} is considered an HTTP proxy.
-       */
-      public String server;
-      /**
-       * Optional coma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
-       */
-      public String bypass;
-      /**
-       * Optional username to use if HTTP proxy requires authentication.
-       */
-      public String username;
-      /**
-       * Optional password to use if HTTP proxy requires authentication.
-       */
-      public String password;
-
-      Proxy() {
-      }
-      public LaunchPersistentContextOptions done() {
-        return LaunchPersistentContextOptions.this;
-      }
-
-      public Proxy withServer(String server) {
-        this.server = server;
-        return this;
-      }
-      public Proxy withBypass(String bypass) {
-        this.bypass = bypass;
-        return this;
-      }
-      public Proxy withUsername(String username) {
-        this.username = username;
-        return this;
-      }
-      public Proxy withPassword(String password) {
-        this.password = password;
-        return this;
-      }
-    }
-    public class RecordHar {
-      /**
-       * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
-       */
-      public Boolean omitContent;
-      /**
-       * Path on the filesystem to write the HAR file to.
-       */
-      public Path path;
-
-      RecordHar() {
-      }
-      public LaunchPersistentContextOptions done() {
-        return LaunchPersistentContextOptions.this;
-      }
-
-      public RecordHar withOmitContent(boolean omitContent) {
-        this.omitContent = omitContent;
-        return this;
-      }
-      public RecordHar withPath(Path path) {
-        this.path = path;
-        return this;
-      }
-    }
-    public class RecordVideo {
-      public class Size {
-        /**
-         * Video frame width.
-         */
-        public int width;
-        /**
-         * Video frame height.
-         */
-        public int height;
-
-        Size() {
-        }
-        public RecordVideo done() {
-          return RecordVideo.this;
-        }
-
-        public Size withWidth(int width) {
-          this.width = width;
-          return this;
-        }
-        public Size withHeight(int height) {
-          this.height = height;
-          return this;
-        }
-      }
-      /**
-       * Path to the directory to put videos into.
-       */
-      public Path dir;
-      /**
-       * Optional dimensions of the recorded videos. If not specified the size will be equal to {@code viewport}. If {@code viewport} is not
-       * configured explicitly the video size defaults to 1280x720. Actual picture of each page will be scaled down if necessary
-       * to fit the specified size.
-       */
-      public Size size;
-
-      RecordVideo() {
-      }
-      public LaunchPersistentContextOptions done() {
-        return LaunchPersistentContextOptions.this;
-      }
-
-      public RecordVideo withDir(Path dir) {
-        this.dir = dir;
-        return this;
-      }
-      public Size setSize() {
-        this.size = new Size();
-        return this.size;
-      }
-    }
     /**
      * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
      */
@@ -407,7 +246,7 @@ public interface BrowserType {
     /**
      * Credentials for [HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication).
      */
-    public BrowserContext.HTTPCredentials httpCredentials;
+    public HttpCredentials httpCredentials;
     /**
      * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
      * use with care. Defaults to {@code false}.
@@ -553,7 +392,7 @@ public interface BrowserType {
       return this;
     }
     public LaunchPersistentContextOptions withHttpCredentials(String username, String password) {
-      this.httpCredentials = new BrowserContext.HTTPCredentials(username, password);
+      this.httpCredentials = new HttpCredentials(username, password);
       return this;
     }
     public LaunchPersistentContextOptions withIgnoreAllDefaultArgs(boolean ignoreAllDefaultArgs) {
@@ -588,17 +427,17 @@ public interface BrowserType {
       this.permissions = permissions;
       return this;
     }
-    public Proxy setProxy() {
-      this.proxy = new Proxy();
-      return this.proxy;
+    public LaunchPersistentContextOptions withProxy(Proxy proxy) {
+      this.proxy = proxy;
+      return this;
     }
-    public RecordHar setRecordHar() {
-      this.recordHar = new RecordHar();
-      return this.recordHar;
+    public LaunchPersistentContextOptions withRecordHar(RecordHar recordHar) {
+      this.recordHar = recordHar;
+      return this;
     }
-    public RecordVideo setRecordVideo() {
-      this.recordVideo = new RecordVideo();
-      return this.recordVideo;
+    public LaunchPersistentContextOptions withRecordVideo(RecordVideo recordVideo) {
+      this.recordVideo = recordVideo;
+      return this;
     }
     public LaunchPersistentContextOptions withSlowMo(double slowMo) {
       this.slowMo = slowMo;

@@ -16,22 +16,29 @@
 
 package com.microsoft.playwright.options;
 
-public class Position {
-  public double x;
-  public double y;
+import java.nio.file.Path;
+public class RecordHar {
+  /**
+   * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
+   */
+  public Boolean omitContent;
+  /**
+   * Path on the filesystem to write the HAR file to.
+   */
+  public Path path;
 
-  public Position(double x, double y) {
-    this.x = x;
-    this.y = y;
+  public RecordHar(Boolean omitContent, Path path) {
+    this.omitContent = omitContent;
+    this.path = path;
   }
-  public Position() {
+  public RecordHar() {
   }
-  public Position withX(double x) {
-    this.x = x;
+  public RecordHar withOmitContent(boolean omitContent) {
+    this.omitContent = omitContent;
     return this;
   }
-  public Position withY(double y) {
-    this.y = y;
+  public RecordHar withPath(Path path) {
+    this.path = path;
     return this;
   }
 }

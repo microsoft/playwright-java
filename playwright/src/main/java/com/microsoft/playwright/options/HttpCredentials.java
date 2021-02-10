@@ -16,22 +16,22 @@
 
 package com.microsoft.playwright.options;
 
-public class Position {
-  public double x;
-  public double y;
+public class HttpCredentials {
+  public String username;
+  public String password;
 
-  public Position(double x, double y) {
-    this.x = x;
-    this.y = y;
+  public HttpCredentials(String username, String password) {
+    this.username = username;
+    this.password = password;
   }
-  public Position() {
+  public HttpCredentials() {
   }
-  public Position withX(double x) {
-    this.x = x;
+  public HttpCredentials withUsername(String username) {
+    this.username = username;
     return this;
   }
-  public Position withY(double y) {
-    this.y = y;
+  public HttpCredentials withPassword(String password) {
+    this.password = password;
     return this;
   }
 }

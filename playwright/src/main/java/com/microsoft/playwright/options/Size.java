@@ -16,22 +16,28 @@
 
 package com.microsoft.playwright.options;
 
-public class Position {
-  public double x;
-  public double y;
+public class Size {
+  /**
+   * Video frame width.
+   */
+  public int width;
+  /**
+   * Video frame height.
+   */
+  public int height;
 
-  public Position(double x, double y) {
-    this.x = x;
-    this.y = y;
+  public Size(int width, int height) {
+    this.width = width;
+    this.height = height;
   }
-  public Position() {
+  public Size() {
   }
-  public Position withX(double x) {
-    this.x = x;
+  public Size withWidth(int width) {
+    this.width = width;
     return this;
   }
-  public Position withY(double y) {
-    this.y = y;
+  public Size withHeight(int height) {
+    this.height = height;
     return this;
   }
 }
