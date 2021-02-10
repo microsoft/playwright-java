@@ -454,10 +454,6 @@ class Event extends Element {
   void writeListenerMethods(List<String> output, String offset) {
     String name = toTitle(jsonName);
     String paramType = type.toJava();
-    // TODO: fix upstream
-    if ("FrameData".equals(paramType)) {
-      paramType = "WebSocketFrame";
-    }
     String listenerType = "Consumer<" + paramType + ">";
     output.add(offset + "void on" + name + "(" + listenerType + " handler);");
     output.add(offset + "void off" + name + "(" + listenerType + " handler);");
