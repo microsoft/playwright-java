@@ -44,7 +44,7 @@ public class TestPageScreenshot extends TestBase {
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");
     byte[] screenshot = page.screenshot(new Page.ScreenshotOptions()
-      .withClip(new Clip().withX(50).withY(100).withWidth(150).withHeight(100)));
+      .withClip(new Clip(50, 100, 150, 100)));
     BufferedImage image = ImageIO.read(new ByteArrayInputStream(screenshot));
     assertEquals(150, image.getWidth());
     assertEquals(100, image.getHeight());

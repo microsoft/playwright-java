@@ -43,8 +43,8 @@ public class TestHar extends TestBase {
 
     PageWithHar() throws IOException {
       harFile = Files.createTempFile("test-", ".har");
-      context = browser.newContext(new Browser.NewContextOptions().withRecordHar(new RecordHar()
-        .withPath(harFile)).withIgnoreHTTPSErrors(true));
+      context = browser.newContext(new Browser.NewContextOptions().withRecordHar(
+        new RecordHar(harFile)).withIgnoreHTTPSErrors(true));
       page = context.newPage();
     }
 
@@ -74,7 +74,7 @@ public class TestHar extends TestBase {
   @Test
   void shouldThrowWithoutPath() {
     try {
-      browser.newContext(new Browser.NewContextOptions().withRecordHar(new RecordHar()));
+      browser.newContext(new Browser.NewContextOptions().withRecordHar(new RecordHar(null)));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("recordHar.path: expected string, got undefined"));
@@ -119,7 +119,7 @@ public class TestHar extends TestBase {
     Path userDataDir = Files.createTempDirectory("user-data-dir-");
     BrowserContext context = browserType.launchPersistentContext(userDataDir,
       new BrowserType.LaunchPersistentContextOptions()
-      .withRecordHar(new RecordHar().withPath(harPath)).withIgnoreHTTPSErrors(true));
+      .withRecordHar(new RecordHar(harPath)).withIgnoreHTTPSErrors(true));
     Page page = context.pages().get(0);
 
     page.navigate("data:text/html,<title>Hello</title>");

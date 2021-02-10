@@ -27,18 +27,11 @@ public class RecordHar {
    */
   public Path path;
 
-  public RecordHar(Boolean omitContent, Path path) {
-    this.omitContent = omitContent;
+  public RecordHar(Path path) {
     this.path = path;
-  }
-  public RecordHar() {
   }
   public RecordHar withOmitContent(boolean omitContent) {
     this.omitContent = omitContent;
-    return this;
-  }
-  public RecordHar withPath(Path path) {
-    this.path = path;
     return this;
   }
 }

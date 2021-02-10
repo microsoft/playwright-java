@@ -24,14 +24,4 @@ public class Position {
     this.x = x;
     this.y = y;
   }
-  public Position() {
-  }
-  public Position withX(double x) {
-    this.x = x;
-    return this;
-  }
-  public Position withY(double y) {
-    this.y = y;
-    return this;
-  }
 }

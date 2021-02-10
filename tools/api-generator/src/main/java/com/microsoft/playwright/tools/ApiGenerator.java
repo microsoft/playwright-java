@@ -24,9 +24,11 @@ import com.google.gson.JsonObject;
 import java.io.*;
 import java.nio.file.FileSystems;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.reverse;
+import static java.util.stream.Collectors.toList;
 
 abstract class Element {
   final String jsonName;
@@ -764,6 +766,11 @@ class Field extends Element {
     this.type = new TypeRef(this, jsonElement.getAsJsonObject().get("type"));
   }
 
+  boolean isRequired() {
+    return jsonElement.getAsJsonObject().has("required") &&
+      jsonElement.getAsJsonObject().get("required").getAsBoolean();
+  }
+
   void writeTo(List<String> output, String offset, String access) {
     writeJavadoc(output, offset, comment());
     if (asList("Frame.waitForNavigation.options.url",
@@ -1156,9 +1163,7 @@ class NestedClass extends TypeDefinition {
         f.writeGetter(output, bodyOffset);
       }
     } else {
-      if (parent.parent instanceof Field) {
-        writeConstructor(output, bodyOffset);
-      }
+      writeConstructor(output, bodyOffset);
       writeBuilderMethods(output, bodyOffset);
       if (asList("Browser.newContext.options",
         "Browser.newPage.options",
@@ -1170,24 +1175,21 @@ class NestedClass extends TypeDefinition {
   }
 
   private void writeBuilderMethods(List<String> output, String bodyOffset) {
-    if (parent.typeScope() instanceof  NestedClass) {
-      output.add(bodyOffset + "public " + name + "() {");
-      output.add(bodyOffset + "}");
-    }
     for (Field f : fields) {
-      f.writeBuilderMethod(output, bodyOffset, name);
+      if (!f.isRequired()) {
+        f.writeBuilderMethod(output, bodyOffset, name);
+      }
     }
   }
 
   private void writeConstructor(List<String> output, String bodyOffset) {
-    List<String> args = new ArrayList<>();
-    for (Field f : fields) {
-      args.add(f.type.toJava() + " " + f.name);
+    List<Field> requiredFields = fields.stream().filter(f -> f.isRequired()).collect(toList());
+    if (requiredFields.isEmpty()) {
+      return;
     }
+    List<String> args = requiredFields.stream().map(f -> f.type.toJava() + " " + f.name).collect(toList());
     output.add(bodyOffset + "public " + name + "(" + String.join(", ", args) + ") {");
-    for (Field f : fields) {
-      output.add(bodyOffset + "  this." + f.name + " = " + f.name + ";");
-    }
+    requiredFields.forEach(f -> output.add(bodyOffset + "  this." + f.name + " = " + f.name + ";"));
     output.add(bodyOffset + "}");
   }
 

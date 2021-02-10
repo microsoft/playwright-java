@@ -30,7 +30,7 @@ public class TestScreencast extends TestBase {
   @Test
   void shouldExposeVideoPath(@TempDir Path videosDir) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withRecordVideo(new RecordVideo().withDir(videosDir).withSize(new Size(320, 240)))
+      .withRecordVideo(new RecordVideo(videosDir).withSize(new Size(320, 240)))
       .withViewport(320, 240));
     Page page = context.newPage();
     page.evaluate("() => document.body.style.backgroundColor = 'red'");
