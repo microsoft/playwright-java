@@ -30,14 +30,4 @@ public class Size {
     this.width = width;
     this.height = height;
   }
-  public Size() {
-  }
-  public Size withWidth(int width) {
-    this.width = width;
-    return this;
-  }
-  public Size withHeight(int height) {
-    this.height = height;
-    return this;
-  }
 }

@@ -34,14 +34,6 @@ public class Margin {
    */
   public String left;
 
-  public Margin(String top, String right, String bottom, String left) {
-    this.top = top;
-    this.right = right;
-    this.bottom = bottom;
-    this.left = left;
-  }
-  public Margin() {
-  }
   public Margin withTop(String top) {
     this.top = top;
     return this;

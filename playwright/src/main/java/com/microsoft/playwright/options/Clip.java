@@ -40,22 +40,4 @@ public class Clip {
     this.width = width;
     this.height = height;
   }
-  public Clip() {
-  }
-  public Clip withX(double x) {
-    this.x = x;
-    return this;
-  }
-  public Clip withY(double y) {
-    this.y = y;
-    return this;
-  }
-  public Clip withWidth(double width) {
-    this.width = width;
-    return this;
-  }
-  public Clip withHeight(double height) {
-    this.height = height;
-    return this;
-  }
 }

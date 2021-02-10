@@ -74,13 +74,9 @@ public interface BrowserContext extends AutoCloseable {
      */
     public SameSiteAttribute sameSite;
 
-    public AddCookie withName(String name) {
+    public AddCookie(String name, String value) {
       this.name = name;
-      return this;
-    }
-    public AddCookie withValue(String value) {
       this.value = value;
-      return this;
     }
     public AddCookie withUrl(String url) {
       this.url = url;

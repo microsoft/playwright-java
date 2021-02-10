@@ -24,14 +24,4 @@ public class HttpCredentials {
     this.username = username;
     this.password = password;
   }
-  public HttpCredentials() {
-  }
-  public HttpCredentials withUsername(String username) {
-    this.username = username;
-    return this;
-  }
-  public HttpCredentials withPassword(String password) {
-    this.password = password;
-    return this;
-  }
 }

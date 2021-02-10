@@ -29,15 +29,8 @@ public class RecordVideo {
    */
   public Size size;
 
-  public RecordVideo(Path dir, Size size) {
+  public RecordVideo(Path dir) {
     this.dir = dir;
-    this.size = size;
-  }
-  public RecordVideo() {
-  }
-  public RecordVideo withDir(Path dir) {
-    this.dir = dir;
-    return this;
   }
   public RecordVideo withSize(Size size) {
     this.size = size;

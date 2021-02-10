@@ -148,8 +148,8 @@ public class TestPageRoute extends TestBase {
   void shouldProperlyReturnNavigationResponseWhenURLHasCookies() {
     // Setup cookie.
     page.navigate(server.EMPTY_PAGE);
-    context.addCookies(asList(new BrowserContext.AddCookie()
-      .withUrl(server.EMPTY_PAGE).withName("foo").withValue("bar")));
+    context.addCookies(asList(new BrowserContext.AddCookie("foo", "bar")
+      .withUrl(server.EMPTY_PAGE)));
     // Setup request interception.
     page.route("**/*", route -> route.resume());
     Response response = page.reload();

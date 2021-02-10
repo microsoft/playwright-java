@@ -35,17 +35,8 @@ public class Proxy {
    */
   public String password;
 
-  public Proxy(String server, String bypass, String username, String password) {
+  public Proxy(String server) {
     this.server = server;
-    this.bypass = bypass;
-    this.username = username;
-    this.password = password;
-  }
-  public Proxy() {
-  }
-  public Proxy withServer(String server) {
-    this.server = server;
-    return this;
   }
   public Proxy withBypass(String bypass) {
     this.bypass = bypass;
