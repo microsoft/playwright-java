@@ -48,7 +48,11 @@ public class ConsoleMessageImpl extends ChannelOwner implements ConsoleMessage {
     return result;
   }
 
-  public Location location() {
-    return gson().fromJson(initializer.get("location"), Location.class);
+  @Override
+  public String location() {
+    JsonObject location = initializer.getAsJsonObject("location");
+    return location.get("url").getAsString() + ":" +
+      location.get("lineNumber").getAsNumber() + ":" +
+      location.get("columnNumber").getAsNumber();
   }
 }

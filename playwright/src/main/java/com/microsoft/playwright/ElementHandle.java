@@ -33,13 +33,6 @@ import java.util.*;
  * methods.
  */
 public interface ElementHandle extends JSHandle {
-  class BoundingBox {
-    public double x;
-    public double y;
-    public double width;
-    public double height;
-  }
-
   class SelectOption {
     public String value;
     public String label;

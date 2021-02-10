@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.*;
 import java.util.*;
 
 /**
@@ -34,80 +35,6 @@ import java.util.*;
  * request is  issued to a redirected url.
  */
 public interface Request {
-  class RequestTiming {
-    /**
-     * Request start time in milliseconds elapsed since January 1, 1970 00:00:00 UTC
-     */
-    private double startTime;
-    /**
-     * Time immediately before the browser starts the domain name lookup for the resource. The value is given in milliseconds
-     * relative to {@code startTime}, -1 if not available.
-     */
-    private double domainLookupStart;
-    /**
-     * Time immediately after the browser starts the domain name lookup for the resource. The value is given in milliseconds
-     * relative to {@code startTime}, -1 if not available.
-     */
-    private double domainLookupEnd;
-    /**
-     * Time immediately before the user agent starts establishing the connection to the server to retrieve the resource. The
-     * value is given in milliseconds relative to {@code startTime}, -1 if not available.
-     */
-    private double connectStart;
-    /**
-     * Time immediately before the browser starts the handshake process to secure the current connection. The value is given in
-     * milliseconds relative to {@code startTime}, -1 if not available.
-     */
-    private double secureConnectionStart;
-    /**
-     * Time immediately before the user agent starts establishing the connection to the server to retrieve the resource. The
-     * value is given in milliseconds relative to {@code startTime}, -1 if not available.
-     */
-    private double connectEnd;
-    /**
-     * Time immediately before the browser starts requesting the resource from the server, cache, or local resource. The value
-     * is given in milliseconds relative to {@code startTime}, -1 if not available.
-     */
-    private double requestStart;
-    /**
-     * Time immediately after the browser starts requesting the resource from the server, cache, or local resource. The value
-     * is given in milliseconds relative to {@code startTime}, -1 if not available.
-     */
-    private double responseStart;
-    /**
-     * Time immediately after the browser receives the last byte of the resource or immediately before the transport connection
-     * is closed, whichever comes first. The value is given in milliseconds relative to {@code startTime}, -1 if not available.
-     */
-    private double responseEnd;
-
-    public double startTime() {
-      return this.startTime;
-    }
-    public double domainLookupStart() {
-      return this.domainLookupStart;
-    }
-    public double domainLookupEnd() {
-      return this.domainLookupEnd;
-    }
-    public double connectStart() {
-      return this.connectStart;
-    }
-    public double secureConnectionStart() {
-      return this.secureConnectionStart;
-    }
-    public double connectEnd() {
-      return this.connectEnd;
-    }
-    public double requestStart() {
-      return this.requestStart;
-    }
-    public double responseStart() {
-      return this.responseStart;
-    }
-    public double responseEnd() {
-      return this.responseEnd;
-    }
-  }
   /**
    * The method returns {@code null} unless this request has failed, as reported by {@code requestfailed} event.
    *
@@ -171,7 +98,7 @@ public interface Request {
    * {@code responseEnd} becomes available when request finishes. Find more information at
    * [Resource Timing API](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming).
    */
-  RequestTiming timing();
+  Timing timing();
   /**
    * URL of the request.
    */

@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import com.google.gson.Gson;
+import com.microsoft.playwright.options.Cookie;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -35,7 +36,7 @@ public class TestBrowserContextAddCookies extends TestBase {
   void shouldWork() {
     page.navigate(server.EMPTY_PAGE);
     context.addCookies(asList(
-      new BrowserContext.AddCookie("password", "123456").withUrl(server.EMPTY_PAGE)));
+      new Cookie("password", "123456").withUrl(server.EMPTY_PAGE)));
     assertEquals("password=123456", page.evaluate("document.cookie"));
   }
 
@@ -49,13 +50,13 @@ public class TestBrowserContextAddCookies extends TestBase {
       "  return document.cookie;\n" +
       "}");
     assertEquals("username=John Doe", documentCookie);
-    List<BrowserContext.Cookie> cookies = context.cookies();
+    List<Cookie> cookies = context.cookies();
     context.clearCookies();
     assertEquals(emptyList(), context.cookies());
-    context.addCookies(asList(new BrowserContext.AddCookie(cookies.get(0).name(), cookies.get(0).value())
-      .withDomain(cookies.get(0).domain())
-      .withPath(cookies.get(0).path())
-      .withExpires(cookies.get(0).expires())
+    context.addCookies(asList(new Cookie(cookies.get(0).name, cookies.get(0).value)
+      .withDomain(cookies.get(0).domain)
+      .withPath(cookies.get(0).path)
+      .withExpires(cookies.get(0).expires)
     ));
     assertJsonEquals(new Gson().toJson(cookies), context.cookies());
   }
@@ -64,7 +65,7 @@ public class TestBrowserContextAddCookies extends TestBase {
   void shouldSendCookieHeader() throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/empty.html");
     context.addCookies(asList(
-      new BrowserContext.AddCookie("cookie", "value").withUrl(server.EMPTY_PAGE)));
+      new Cookie("cookie", "value").withUrl(server.EMPTY_PAGE)));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     List<String> cookies = request.get().headers.get("cookie");
@@ -75,17 +76,17 @@ public class TestBrowserContextAddCookies extends TestBase {
   void shouldIsolateCookiesInBrowserContexts() {
     BrowserContext anotherContext = browser.newContext();
     context.addCookies(asList(
-      new BrowserContext.AddCookie("isolatecookie", "page1value").withUrl(server.EMPTY_PAGE)));
+      new Cookie("isolatecookie", "page1value").withUrl(server.EMPTY_PAGE)));
     anotherContext.addCookies(asList(
-      new BrowserContext.AddCookie("isolatecookie", "page2value").withUrl(server.EMPTY_PAGE)));
-    List<BrowserContext.Cookie> cookies1 = context.cookies();
-    List<BrowserContext.Cookie> cookies2 = anotherContext.cookies();
+      new Cookie("isolatecookie", "page2value").withUrl(server.EMPTY_PAGE)));
+    List<Cookie> cookies1 = context.cookies();
+    List<Cookie> cookies2 = anotherContext.cookies();
     assertEquals(1, cookies1.size());
     assertEquals(1, cookies2.size());
-    assertEquals("isolatecookie", cookies1.get(0).name());
-    assertEquals("page1value", cookies1.get(0).value());
-    assertEquals("isolatecookie", cookies2.get(0).name());
-    assertEquals("page2value", cookies2.get(0).value());
+    assertEquals("isolatecookie", cookies1.get(0).name);
+    assertEquals("page1value", cookies1.get(0).value);
+    assertEquals("isolatecookie", cookies2.get(0).name);
+    assertEquals("page2value", cookies2.get(0).value);
     anotherContext.close();
   }
 
@@ -103,15 +104,15 @@ public class TestBrowserContextAddCookies extends TestBase {
     {
       Page page = context.newPage();
       page.navigate(server.EMPTY_PAGE);
-      List<BrowserContext.Cookie> cookies = context.cookies();
+      List<Cookie> cookies = context.cookies();
       assertEquals(1, cookies.size());
-      assertEquals("value", cookies.get(0).value());
+      assertEquals("value", cookies.get(0).value);
     }
     {
       BrowserContext context2 = browser.newContext();
       Page page = context2.newPage();
       page.navigate(server.EMPTY_PAGE);
-      List<BrowserContext.Cookie> cookies = context2.cookies();
+      List<Cookie> cookies = context2.cookies();
       assertEquals(0, cookies.size());
       context2.close();
     }
@@ -133,11 +134,11 @@ public class TestBrowserContextAddCookies extends TestBase {
     Page page2 = context2.newPage();
     page1.navigate(server.EMPTY_PAGE);
     page2.navigate(server.EMPTY_PAGE);
-    List<BrowserContext.Cookie> cookies1 = context1.cookies();
-    List<BrowserContext.Cookie> cookies2 = context2.cookies();
+    List<Cookie> cookies1 = context1.cookies();
+    List<Cookie> cookies2 = context2.cookies();
     assertEquals(1, cookies1.size());
-    assertEquals("persistent", cookies1.get(0).name());
-    assertEquals("persistent-value", cookies1.get(0).value());
+    assertEquals("persistent", cookies1.get(0).name);
+    assertEquals("persistent-value", cookies1.get(0).value);
     assertEquals(0, cookies2.size());
     context2.close();
   }
@@ -145,7 +146,7 @@ public class TestBrowserContextAddCookies extends TestBase {
   @Test
   void shouldIsolateSendCookieHeader() throws ExecutionException, InterruptedException {
     context.addCookies(asList(
-      new BrowserContext.AddCookie("sendcookie", "value").withUrl(server.EMPTY_PAGE)));
+      new Cookie("sendcookie", "value").withUrl(server.EMPTY_PAGE)));
     {
       Page page = context.newPage();
       Future<Server.Request> request = server.futureRequest("/empty.html");
@@ -169,7 +170,7 @@ public class TestBrowserContextAddCookies extends TestBase {
 // TODO:  const browser1 = browserType.launch(browserOptions);
     Browser browser1 = browserType.launch();
     BrowserContext context1 = browser1.newContext();
-    context1.addCookies(asList(new BrowserContext.AddCookie("cookie-in-context-1", "value")
+    context1.addCookies(asList(new Cookie("cookie-in-context-1", "value")
       .withUrl(server.EMPTY_PAGE)
       .withExpires(Instant.now().getEpochSecond() +  + 10000)));
     browser1.close();
@@ -177,7 +178,7 @@ public class TestBrowserContextAddCookies extends TestBase {
 //  const browser2 = browserType.launch(browserOptions);
     Browser browser2 = browserType.launch();
     BrowserContext context2 = browser2.newContext();
-    List<BrowserContext.Cookie> cookies = context2.cookies();
+    List<Cookie> cookies = context2.cookies();
     assertEquals(0, cookies.size());
     browser2.close();
   }
@@ -186,8 +187,8 @@ public class TestBrowserContextAddCookies extends TestBase {
   void shouldSetMultipleCookies() {
     page.navigate(server.EMPTY_PAGE);
     context.addCookies(asList(
-      new BrowserContext.AddCookie("multiple-1", "123456").withUrl(server.EMPTY_PAGE),
-      new BrowserContext.AddCookie("multiple-2", "bar").withUrl(server.EMPTY_PAGE)
+      new Cookie("multiple-1", "123456").withUrl(server.EMPTY_PAGE),
+      new Cookie("multiple-2", "bar").withUrl(server.EMPTY_PAGE)
     ));
     assertEquals(asList("multiple-1=123456", "multiple-2=bar"), page.evaluate("() => {\n" +
       "  const cookies = document.cookie.split(';');\n" +
@@ -198,16 +199,16 @@ public class TestBrowserContextAddCookies extends TestBase {
   @Test
   void shouldHaveExpiresSetTo1ForSessionCookies() {
     context.addCookies(asList(
-      new BrowserContext.AddCookie("expires", "123456").withUrl(server.EMPTY_PAGE)));
-    List<BrowserContext.Cookie> cookies = context.cookies();
-    assertEquals(-1, cookies.get(0).expires());
+      new Cookie("expires", "123456").withUrl(server.EMPTY_PAGE)));
+    List<Cookie> cookies = context.cookies();
+    assertEquals(-1, cookies.get(0).expires);
   }
 
   @Test
   void shouldSetCookieWithReasonableDefaults() {
     context.addCookies(asList(
-      new BrowserContext.AddCookie("defaults", "123456").withUrl(server.EMPTY_PAGE)));
-    List<BrowserContext.Cookie> cookies = context.cookies();
+      new Cookie("defaults", "123456").withUrl(server.EMPTY_PAGE)));
+    List<Cookie> cookies = context.cookies();
     assertJsonEquals("[{\n" +
       "  name: 'defaults',\n" +
       "  value: '123456',\n" +
@@ -223,10 +224,10 @@ public class TestBrowserContextAddCookies extends TestBase {
   @Test
   void shouldSetACookieWithAPath() {
     page.navigate(server.PREFIX + "/grid.html");
-    context.addCookies(asList(new BrowserContext.AddCookie("gridcookie", "GRID")
+    context.addCookies(asList(new Cookie("gridcookie", "GRID")
       .withDomain("localhost")
       .withPath("/grid.html")));
-    List<BrowserContext.Cookie> cookies = context.cookies();
+    List<Cookie> cookies = context.cookies();
     assertJsonEquals("[{\n" +
       "  name: 'gridcookie',\n" +
       "  value: 'GRID',\n" +
@@ -248,8 +249,8 @@ public class TestBrowserContextAddCookies extends TestBase {
   void shouldNotSetACookieWithBlankPageURL() {
     try {
       context.addCookies(asList(
-        new BrowserContext.AddCookie("example-cookie", "best").withUrl(server.EMPTY_PAGE),
-        new BrowserContext.AddCookie("example-cookie-blank", "best").withUrl("about:blank")
+        new Cookie("example-cookie", "best").withUrl(server.EMPTY_PAGE),
+        new Cookie("example-cookie-blank", "best").withUrl("about:blank")
       ));
       fail("did not throw");
     } catch (PlaywrightException e) {
@@ -261,7 +262,7 @@ public class TestBrowserContextAddCookies extends TestBase {
   void shouldNotSetACookieOnADataURLPage() {
     try {
       context.addCookies(asList(
-        new BrowserContext.AddCookie("example-cookie", "best").withUrl("data:,Hello%2C%20World!")
+        new Cookie("example-cookie", "best").withUrl("data:,Hello%2C%20World!")
       ));
       fail("did not throw");
     } catch (PlaywrightException e) {
@@ -274,11 +275,11 @@ public class TestBrowserContextAddCookies extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     String SECURE_URL = "https://example.com";
     context.addCookies(asList(
-      new BrowserContext.AddCookie("foo", "bar").withUrl(SECURE_URL)
+      new Cookie("foo", "bar").withUrl(SECURE_URL)
     ));
-    List<BrowserContext.Cookie> cookies = context.cookies(SECURE_URL);
+    List<Cookie> cookies = context.cookies(SECURE_URL);
     assertEquals(1, cookies.size());
-    assertTrue(cookies.get(0).secure());
+    assertTrue(cookies.get(0).secure);
   }
 
   @Test
@@ -286,18 +287,18 @@ public class TestBrowserContextAddCookies extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     String HTTP_URL = "http://example.com";
     context.addCookies(asList(
-      new BrowserContext.AddCookie("foo", "bar").withUrl(HTTP_URL)
+      new Cookie("foo", "bar").withUrl(HTTP_URL)
     ));
-    List<BrowserContext.Cookie> cookies = context.cookies(HTTP_URL);
+    List<Cookie> cookies = context.cookies(HTTP_URL);
     assertEquals(1, cookies.size());
-    assertFalse(cookies.get(0).secure());
+    assertFalse(cookies.get(0).secure);
   }
 
   @Test
   void shouldSetACookieOnADifferentDomain() {
     page.navigate(server.EMPTY_PAGE);
     context.addCookies(asList(
-      new BrowserContext.AddCookie("example-cookie", "best").withUrl("https://www.example.com")
+      new Cookie("example-cookie", "best").withUrl("https://www.example.com")
     ));
     assertEquals("", page.evaluate("document.cookie"));
     assertJsonEquals("[{\n" +
@@ -316,7 +317,7 @@ public class TestBrowserContextAddCookies extends TestBase {
   void shouldSetCookiesForAFrame() {
     page.navigate(server.EMPTY_PAGE);
     context.addCookies(asList(
-      new BrowserContext.AddCookie("frame-cookie", "value").withUrl(server.PREFIX)
+      new Cookie("frame-cookie", "value").withUrl(server.PREFIX)
     ));
     page.evaluate("src => {\n" +
       "  let fulfill;\n" +
@@ -345,7 +346,7 @@ public class TestBrowserContextAddCookies extends TestBase {
     page.frames().get(1).evaluate("document.cookie = 'username=John Doe'");
     page.waitForTimeout(2000);
     boolean allowsThirdParty = isChromium() || isFirefox();
-    List<BrowserContext.Cookie> cookies = context.cookies(server.CROSS_PROCESS_PREFIX + "/grid.html");
+    List<Cookie> cookies = context.cookies(server.CROSS_PROCESS_PREFIX + "/grid.html");
     if (allowsThirdParty) {
       assertJsonEquals("[{\n" +
         "  'domain': '127.0.0.1',\n" +

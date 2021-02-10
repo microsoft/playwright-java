@@ -21,6 +21,7 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Response;
+import com.microsoft.playwright.options.Timing;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -45,7 +46,7 @@ public class ResponseImpl extends ChannelOwner implements Response {
       JsonObject item = e.getAsJsonObject();
       request.headers.put(item.get("name").getAsString().toLowerCase(), item.get("value").getAsString());
     }
-    request.timing = Serialization.gson().fromJson(initializer.get("timing"), Request.RequestTiming.class);
+    request.timing = Serialization.gson().fromJson(initializer.get("timing"), Timing.class);
   }
 
   @Override

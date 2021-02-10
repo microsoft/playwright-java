@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.Cookie;
 import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.asList;
@@ -27,7 +28,7 @@ public class TestBrowserContextClearCookies extends TestBase {
   void shouldClearCookies() {
     page.navigate(server.EMPTY_PAGE);
     context.addCookies(asList(
-      new BrowserContext.AddCookie("cookie1", "1").withUrl(server.EMPTY_PAGE)));
+      new Cookie("cookie1", "1").withUrl(server.EMPTY_PAGE)));
     assertEquals("cookie1=1", page.evaluate("document.cookie"));
     context.clearCookies();
     assertEquals(emptyList(), context.cookies());
@@ -39,9 +40,9 @@ public class TestBrowserContextClearCookies extends TestBase {
   void shouldIsolateCookiesWhenClearing() {
     BrowserContext anotherContext = browser.newContext();
     context.addCookies(asList(
-      new BrowserContext.AddCookie("page1cookie", "page1value").withUrl(server.EMPTY_PAGE)));
+      new Cookie("page1cookie", "page1value").withUrl(server.EMPTY_PAGE)));
     anotherContext.addCookies(asList(
-      new BrowserContext.AddCookie("page2cookie", "page2value").withUrl(server.EMPTY_PAGE)));
+      new Cookie("page2cookie", "page2value").withUrl(server.EMPTY_PAGE)));
 
     assertEquals(1, (context.cookies()).size());
     assertEquals(1, (anotherContext.cookies()).size());

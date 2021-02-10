@@ -111,7 +111,7 @@ public class TestGeolocation extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     List<String> messages = new ArrayList<>();
     page.onConsole(message -> messages.add(message.text()));
-    context.setGeolocation(new Geolocation());
+    context.setGeolocation(new Geolocation(0, 0));
     page.evaluate("() => {\n" +
       "  navigator.geolocation.watchPosition(pos => {\n" +
       "    const coords = pos.coords;\n" +

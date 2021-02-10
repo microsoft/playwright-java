@@ -16,26 +16,22 @@
 
 package com.microsoft.playwright.options;
 
-public class Geolocation {
+public class BoundingBox {
   /**
-   * Latitude between -90 and 90.
+   * the x coordinate of the element in pixels.
    */
-  public double latitude;
+  public double x;
   /**
-   * Longitude between -180 and 180.
+   * the y coordinate of the element in pixels.
    */
-  public double longitude;
+  public double y;
   /**
-   * Non-negative accuracy value. Defaults to {@code 0}.
+   * the width of the element in pixels.
    */
-  public Double accuracy;
+  public double width;
+  /**
+   * the height of the element in pixels.
+   */
+  public double height;
 
-  public Geolocation(double latitude, double longitude) {
-    this.latitude = latitude;
-    this.longitude = longitude;
-  }
-  public Geolocation withAccuracy(double accuracy) {
-    this.accuracy = accuracy;
-    return this;
-  }
 }
