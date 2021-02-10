@@ -96,15 +96,23 @@ public interface Browser extends AutoCloseable {
      */
     public Proxy proxy;
     /**
-     * Enables [HAR](http://www.softwareishard.com/blog/har-12-spec) recording for all pages into {@code recordHar.path} file. If not
-     * specified, the HAR is not recorded. Make sure to await [{@code method: BrowserContext.close}] for the HAR to be saved.
+     * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
      */
-    public RecordHar recordHar;
+    public Boolean recordHarOmitContent;
     /**
-     * Enables video recording for all pages into {@code recordVideo.dir} directory. If not specified videos are not recorded. Make
-     * sure to await [{@code method: BrowserContext.close}] for videos to be saved.
+     * Path on the filesystem to write the HAR file to.
      */
-    public RecordVideo recordVideo;
+    public Path recordHarPath;
+    /**
+     * Path to the directory to put videos into.
+     */
+    public Path recordVideoDir;
+    /**
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
+     * be scaled down if necessary to fit the specified size.
+     */
+    public RecordVideoSize recordVideoSize;
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
      * obtained via [{@code method: BrowserContext.storageState}].
@@ -128,7 +136,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Sets a consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
      */
-    public Optional<Page.Viewport> viewport;
+    public Optional<ViewportSize> viewportSize;
 
     public NewContextOptions withAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
@@ -190,12 +198,20 @@ public interface Browser extends AutoCloseable {
       this.proxy = proxy;
       return this;
     }
-    public NewContextOptions withRecordHar(RecordHar recordHar) {
-      this.recordHar = recordHar;
+    public NewContextOptions withRecordHarOmitContent(boolean recordHarOmitContent) {
+      this.recordHarOmitContent = recordHarOmitContent;
       return this;
     }
-    public NewContextOptions withRecordVideo(RecordVideo recordVideo) {
-      this.recordVideo = recordVideo;
+    public NewContextOptions withRecordHarPath(Path recordHarPath) {
+      this.recordHarPath = recordHarPath;
+      return this;
+    }
+    public NewContextOptions withRecordVideoDir(Path recordVideoDir) {
+      this.recordVideoDir = recordVideoDir;
+      return this;
+    }
+    public NewContextOptions withRecordVideoSize(RecordVideoSize recordVideoSize) {
+      this.recordVideoSize = recordVideoSize;
       return this;
     }
     public NewContextOptions withStorageState(String storageState) {
@@ -214,15 +230,15 @@ public interface Browser extends AutoCloseable {
       this.userAgent = userAgent;
       return this;
     }
-    public NewContextOptions withViewport(int width, int height) {
-      return withViewport(new Page.Viewport(width, height));
+    public NewContextOptions withViewportSize(int width, int height) {
+      return withViewportSize(new ViewportSize(width, height));
     }
-    public NewContextOptions withViewport(Page.Viewport viewport) {
-      this.viewport = Optional.ofNullable(viewport);
+    public NewContextOptions withViewportSize(ViewportSize viewportSize) {
+      this.viewportSize = Optional.ofNullable(viewportSize);
       return this;
     }
     public NewContextOptions withDevice(DeviceDescriptor device) {
-      withViewport(device.viewport().width(), device.viewport().height());
+      withViewportSize(device.viewportSize());
       withUserAgent(device.userAgent());
       withDeviceScaleFactor(device.deviceScaleFactor());
       withIsMobile(device.isMobile());
@@ -295,15 +311,23 @@ public interface Browser extends AutoCloseable {
      */
     public Proxy proxy;
     /**
-     * Enables [HAR](http://www.softwareishard.com/blog/har-12-spec) recording for all pages into {@code recordHar.path} file. If not
-     * specified, the HAR is not recorded. Make sure to await [{@code method: BrowserContext.close}] for the HAR to be saved.
+     * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
      */
-    public RecordHar recordHar;
+    public Boolean recordHarOmitContent;
     /**
-     * Enables video recording for all pages into {@code recordVideo.dir} directory. If not specified videos are not recorded. Make
-     * sure to await [{@code method: BrowserContext.close}] for videos to be saved.
+     * Path on the filesystem to write the HAR file to.
      */
-    public RecordVideo recordVideo;
+    public Path recordHarPath;
+    /**
+     * Path to the directory to put videos into.
+     */
+    public Path recordVideoDir;
+    /**
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
+     * be scaled down if necessary to fit the specified size.
+     */
+    public RecordVideoSize recordVideoSize;
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
      * obtained via [{@code method: BrowserContext.storageState}].
@@ -327,7 +351,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Sets a consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
      */
-    public Optional<Page.Viewport> viewport;
+    public Optional<ViewportSize> viewportSize;
 
     public NewPageOptions withAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
@@ -389,12 +413,20 @@ public interface Browser extends AutoCloseable {
       this.proxy = proxy;
       return this;
     }
-    public NewPageOptions withRecordHar(RecordHar recordHar) {
-      this.recordHar = recordHar;
+    public NewPageOptions withRecordHarOmitContent(boolean recordHarOmitContent) {
+      this.recordHarOmitContent = recordHarOmitContent;
       return this;
     }
-    public NewPageOptions withRecordVideo(RecordVideo recordVideo) {
-      this.recordVideo = recordVideo;
+    public NewPageOptions withRecordHarPath(Path recordHarPath) {
+      this.recordHarPath = recordHarPath;
+      return this;
+    }
+    public NewPageOptions withRecordVideoDir(Path recordVideoDir) {
+      this.recordVideoDir = recordVideoDir;
+      return this;
+    }
+    public NewPageOptions withRecordVideoSize(RecordVideoSize recordVideoSize) {
+      this.recordVideoSize = recordVideoSize;
       return this;
     }
     public NewPageOptions withStorageState(String storageState) {
@@ -413,15 +445,15 @@ public interface Browser extends AutoCloseable {
       this.userAgent = userAgent;
       return this;
     }
-    public NewPageOptions withViewport(int width, int height) {
-      return withViewport(new Page.Viewport(width, height));
+    public NewPageOptions withViewportSize(int width, int height) {
+      return withViewportSize(new ViewportSize(width, height));
     }
-    public NewPageOptions withViewport(Page.Viewport viewport) {
-      this.viewport = Optional.ofNullable(viewport);
+    public NewPageOptions withViewportSize(ViewportSize viewportSize) {
+      this.viewportSize = Optional.ofNullable(viewportSize);
       return this;
     }
     public NewPageOptions withDevice(DeviceDescriptor device) {
-      withViewport(device.viewport().width(), device.viewport().height());
+      withViewportSize(device.viewportSize());
       withUserAgent(device.userAgent());
       withDeviceScaleFactor(device.deviceScaleFactor());
       withIsMobile(device.isMobile());

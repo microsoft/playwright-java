@@ -108,7 +108,7 @@ public class TestPopup extends TestBase {
   @Test
   void shouldInheritTouchSupportFromBrowserContext() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withViewport(400, 500)
+      .withViewportSize(400, 500)
       .withHasTouch(true));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
@@ -123,7 +123,7 @@ public class TestPopup extends TestBase {
   @Test
   void shouldInheritViewportSizeFromBrowserContext() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withViewport(400, 500));
+      .withViewportSize(400, 500));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     Object size = page.evaluate("() => {\n" +
@@ -137,7 +137,7 @@ public class TestPopup extends TestBase {
   @Test
   void shouldUseViewportSizeFromWindowFeatures() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withViewport(700, 700));
+      .withViewportSize(700, 700));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     Object[] size = {null};

@@ -96,7 +96,7 @@ public class TestBrowserContextBasic extends TestBase {
 
   @Test
   void shouldPropagateDefaultViewportToThePage() {
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withViewport(456, 789));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withViewportSize(456, 789));
     Page page = context.newPage();
     verifyViewport(page, 456, 789);
     context.close();

@@ -16,12 +16,10 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.*;
+
 public interface DeviceDescriptor {
-  interface Viewport {
-    int width();
-    int height();
-  }
-  Viewport viewport();
+  ViewportSize viewportSize();
   String userAgent();
   double deviceScaleFactor();
   boolean isMobile();

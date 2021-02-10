@@ -252,7 +252,7 @@ class Serialization {
     private static boolean isSupported(Type type) {
       return new TypeToken<Optional<Media>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
         new TypeToken<Optional<ColorScheme>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
-        new TypeToken<Optional<Page.Viewport>>() {}.getType().getTypeName().equals(type.getTypeName());
+        new TypeToken<Optional<ViewportSize>>() {}.getType().getTypeName().equals(type.getTypeName());
     }
 
     @Override

@@ -59,7 +59,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
   void shouldWorkInPersistentContext() {
     // Firefox does not support mobile.
     Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions()
-      .withViewport(320, 480).withIsMobile(true));
+      .withViewportSize(320, 480).withIsMobile(true));
     page.navigate(server.PREFIX + "/empty.html");
     assertEquals(980, page.evaluate("() => window.innerWidth"));
   }

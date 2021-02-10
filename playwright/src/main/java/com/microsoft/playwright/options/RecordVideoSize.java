@@ -16,24 +16,18 @@
 
 package com.microsoft.playwright.options;
 
-import java.nio.file.Path;
-public class RecordVideo {
+public class RecordVideoSize {
   /**
-   * Path to the directory to put videos into.
+   * Video frame width.
    */
-  public Path dir;
+  public int width;
   /**
-   * Optional dimensions of the recorded videos. If not specified the size will be equal to {@code viewport}. If {@code viewport} is not
-   * configured explicitly the video size defaults to 1280x720. Actual picture of each page will be scaled down if necessary
-   * to fit the specified size.
+   * Video frame height.
    */
-  public Size size;
+  public int height;
 
-  public RecordVideo(Path dir) {
-    this.dir = dir;
-  }
-  public RecordVideo withSize(Size size) {
-    this.size = size;
-    return this;
+  public RecordVideoSize(int width, int height) {
+    this.width = width;
+    this.height = height;
   }
 }

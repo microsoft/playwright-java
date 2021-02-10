@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 import static com.microsoft.playwright.Utils.verifyViewport;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBrowserContextViewport extends TestBase {
 
@@ -97,8 +96,8 @@ public class TestBrowserContextViewport extends TestBase {
 
   @Test
   void shouldSupportTouchWithNullViewport() {
-    Browser.NewContextOptions options = new Browser.NewContextOptions().withHasTouch(true);
-    options.viewport = null;
+    Browser.NewContextOptions options = new Browser.NewContextOptions()
+      .withHasTouch(true).withViewportSize(null);
     BrowserContext context = browser.newContext(options);
     Page page = context.newPage();
     page.navigate(server.PREFIX + "/mobile.html");
@@ -106,15 +105,12 @@ public class TestBrowserContextViewport extends TestBase {
     context.close();
   }
 
-  // TODO Wait for special constant implementation
-//  @Test
-//  void shouldReportNullViewPortSizeWhenGivenNullViewport() {
-//    Browser.NewContextOptions options = new Browser.NewContextOptions();
-//    options.viewport = null;
-//    BrowserContext context = browser.newContext(options);
-//    Page page = context.newPage();
-//    assertNull(page.viewportSize());
-//    context.close();
-//  }
-
+  @Test
+  void shouldReportNullViewPortSizeWhenGivenNullViewport() {
+    Browser.NewContextOptions options = new Browser.NewContextOptions().withViewportSize(null);
+    BrowserContext context = browser.newContext(options);
+    Page page = context.newPage();
+    assertNull(page.viewportSize());
+    context.close();
+  }
 }

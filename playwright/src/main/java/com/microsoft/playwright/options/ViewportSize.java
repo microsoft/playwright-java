@@ -16,17 +16,17 @@
 
 package com.microsoft.playwright.options;
 
-public class Size {
+public class ViewportSize {
   /**
-   * Video frame width.
+   * page width in pixels.
    */
   public int width;
   /**
-   * Video frame height.
+   * page height in pixels.
    */
   public int height;
 
-  public Size(int width, int height) {
+  public ViewportSize(int width, int height) {
     this.width = width;
     this.height = height;
   }

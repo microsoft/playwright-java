@@ -124,8 +124,8 @@ class Utils {
   }
 
   static void verifyViewport(Page page, int width, int height) {
-    assertEquals(width, page.viewportSize().width());
-    assertEquals(height, page.viewportSize().height());
+    assertEquals(width, page.viewportSize().width);
+    assertEquals(height, page.viewportSize().height);
     assertEquals(width, page.evaluate("window.innerWidth"));
     assertEquals(height, page.evaluate("window.innerHeight"));
   }
