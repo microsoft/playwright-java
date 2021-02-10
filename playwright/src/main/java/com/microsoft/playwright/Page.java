@@ -37,24 +37,6 @@ import java.util.regex.Pattern;
  * <p> To unsubscribe from events use the {@code removeListener} method:
  */
 public interface Page extends AutoCloseable {
-  class Viewport {
-    private final int width;
-    private final int height;
-
-    public Viewport(int width, int height) {
-      this.width = width;
-      this.height = height;
-    }
-
-    public int width() {
-      return width;
-    }
-
-    public int height() {
-      return height;
-    }
-  }
-
   interface Function {
     Object call(Object... args);
   }
@@ -997,6 +979,21 @@ public interface Page extends AutoCloseable {
       return this;
     }
   }
+  class SetViewportSizeViewportSize {
+    /**
+     * page width in pixels.
+     */
+    public int width;
+    /**
+     * page height in pixels.
+     */
+    public int height;
+
+    public SetViewportSizeViewportSize(int width, int height) {
+      this.width = width;
+      this.height = height;
+    }
+  }
   class TapOptions {
     /**
      * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
@@ -1859,7 +1856,8 @@ public interface Page extends AutoCloseable {
     return isHidden(selector, null);
   }
   /**
-   * Returns whether the element is hidden, the opposite of [visible](./actionability.md#visible).
+   * Returns whether the element is hidden, the opposite of [visible](./actionability.md#visible).  {@code selector} that does not
+   * match any elements is considered hidden.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md) for more details.
@@ -1869,7 +1867,8 @@ public interface Page extends AutoCloseable {
     return isVisible(selector, null);
   }
   /**
-   * Returns whether the element is [visible](./actionability.md#visible).
+   * Returns whether the element is [visible](./actionability.md#visible). {@code selector} that does not match any elements is
+   * considered not visible.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md) for more details.
@@ -1892,7 +1891,7 @@ public interface Page extends AutoCloseable {
    * <p> User can inspect selectors or perform manual steps while paused. Resume will continue running the original script from
    * the place it was paused.
    *
-   * <p> <strong>NOTE:</strong> This method requires Playwright to be started in a headed mode, with a falsy [{@code options: headless}] value in the
+   * <p> <strong>NOTE:</strong> This method requires Playwright to be started in a headed mode, with a falsy {@code headless} value in the
    * [{@code method: BrowserType.launch}].
    */
   void pause();
@@ -2243,7 +2242,7 @@ public interface Page extends AutoCloseable {
    * Video object associated with this page.
    */
   Video video();
-  Viewport viewportSize();
+  ViewportSize viewportSize();
   default Page waitForClose(Runnable callback) {
     return waitForClose(null, callback);
   }

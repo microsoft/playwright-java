@@ -242,7 +242,7 @@ public class TestClick extends TestBase {
     // @see https://github.com/GoogleChrome/puppeteer/issues/161
     DeviceDescriptor descriptor = playwright.devices().get("iPhone 6");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withViewport(descriptor.viewport().width(), descriptor.viewport().height())
+      .withViewportSize(descriptor.viewportSize())
       .withHasTouch(descriptor.hasTouch()));
     Page page = context.newPage();
     page.mouse().down();
@@ -341,7 +341,7 @@ public class TestClick extends TestBase {
   @Test
   void shouldClickTheButtonWithDeviceScaleFactorSet() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withViewport(400, 400)
+      .withViewportSize(400, 400)
       .withDeviceScaleFactor(5.0));
     Page page = context.newPage();
     assertEquals(5, page.evaluate("() => window.devicePixelRatio"));
@@ -414,7 +414,7 @@ public class TestClick extends TestBase {
   @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
   void shouldClickTheButtonWithOffsetWithPageScale() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withViewport(400, 400)
+      .withViewportSize(400, 400)
       .withIsMobile(true));
     Page page = context.newPage();
     page.navigate(server.PREFIX + "/input/button.html");

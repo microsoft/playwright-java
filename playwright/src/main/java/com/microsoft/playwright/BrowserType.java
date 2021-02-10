@@ -289,15 +289,23 @@ public interface BrowserType {
      */
     public Proxy proxy;
     /**
-     * Enables [HAR](http://www.softwareishard.com/blog/har-12-spec) recording for all pages into {@code recordHar.path} file. If not
-     * specified, the HAR is not recorded. Make sure to await [{@code method: BrowserContext.close}] for the HAR to be saved.
+     * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
      */
-    public RecordHar recordHar;
+    public Boolean recordHarOmitContent;
     /**
-     * Enables video recording for all pages into {@code recordVideo.dir} directory. If not specified videos are not recorded. Make
-     * sure to await [{@code method: BrowserContext.close}] for videos to be saved.
+     * Path on the filesystem to write the HAR file to.
      */
-    public RecordVideo recordVideo;
+    public Path recordHarPath;
+    /**
+     * Path to the directory to put videos into.
+     */
+    public Path recordVideoDir;
+    /**
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
+     * be scaled down if necessary to fit the specified size.
+     */
+    public RecordVideoSize recordVideoSize;
     /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      * Defaults to 0.
@@ -321,7 +329,7 @@ public interface BrowserType {
     /**
      * Sets a consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
      */
-    public Optional<Page.Viewport> viewport;
+    public Optional<ViewportSize> viewportSize;
 
     public LaunchPersistentContextOptions withAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
@@ -431,12 +439,20 @@ public interface BrowserType {
       this.proxy = proxy;
       return this;
     }
-    public LaunchPersistentContextOptions withRecordHar(RecordHar recordHar) {
-      this.recordHar = recordHar;
+    public LaunchPersistentContextOptions withRecordHarOmitContent(boolean recordHarOmitContent) {
+      this.recordHarOmitContent = recordHarOmitContent;
       return this;
     }
-    public LaunchPersistentContextOptions withRecordVideo(RecordVideo recordVideo) {
-      this.recordVideo = recordVideo;
+    public LaunchPersistentContextOptions withRecordHarPath(Path recordHarPath) {
+      this.recordHarPath = recordHarPath;
+      return this;
+    }
+    public LaunchPersistentContextOptions withRecordVideoDir(Path recordVideoDir) {
+      this.recordVideoDir = recordVideoDir;
+      return this;
+    }
+    public LaunchPersistentContextOptions withRecordVideoSize(RecordVideoSize recordVideoSize) {
+      this.recordVideoSize = recordVideoSize;
       return this;
     }
     public LaunchPersistentContextOptions withSlowMo(double slowMo) {
@@ -455,15 +471,15 @@ public interface BrowserType {
       this.userAgent = userAgent;
       return this;
     }
-    public LaunchPersistentContextOptions withViewport(int width, int height) {
-      return withViewport(new Page.Viewport(width, height));
+    public LaunchPersistentContextOptions withViewportSize(int width, int height) {
+      return withViewportSize(new ViewportSize(width, height));
     }
-    public LaunchPersistentContextOptions withViewport(Page.Viewport viewport) {
-      this.viewport = Optional.ofNullable(viewport);
+    public LaunchPersistentContextOptions withViewportSize(ViewportSize viewportSize) {
+      this.viewportSize = Optional.ofNullable(viewportSize);
       return this;
     }
     public LaunchPersistentContextOptions withDevice(DeviceDescriptor device) {
-      withViewport(device.viewport().width(), device.viewport().height());
+      withViewportSize(device.viewportSize());
       withUserAgent(device.userAgent());
       withDeviceScaleFactor(device.deviceScaleFactor());
       withIsMobile(device.isMobile());

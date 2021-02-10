@@ -200,7 +200,7 @@ class TypeRef extends Element {
   }
 
   void createCustomType() {
-    GeneratedType generatedType = generatedTypeFor(jsonElement.getAsJsonObject());
+    GeneratedType generatedType = generatedTypeFor(stripNullable());
     if (generatedType == GeneratedType.ENUM) {
       createEnums(jsonElement.getAsJsonObject());
       return;
@@ -315,7 +315,7 @@ class TypeRef extends Element {
     }
     JsonArray values = jsonType.getAsJsonArray("union");
     if (values.size() != 2) {
-      throw new RuntimeException("Unexpected union without custom mapping " + jsonPath + ": " + jsonType);
+      return jsonType;
     }
     for (JsonElement item : values) {
       JsonObject o = item.getAsJsonObject();
@@ -851,7 +851,7 @@ class Field extends Element {
       output.add(offset + "  return this;");
       output.add(offset + "}");
     }
-    if ("Page.Viewport".equals(type.toJava()) || "Viewport".equals(type.toJava())) {
+    if ("ViewportSize".equals(type.toJava())) {
       output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(int width, int height) {");
       output.add(offset + "  return with" + toTitle(name) + "(new " + type.toJava() + "(width, height));");
       output.add(offset + "}");
@@ -1018,25 +1018,6 @@ class Interface extends TypeDefinition {
   private void writeSharedTypes(List<String> output, String offset) {
     switch (jsonName) {
       case "Page": {
-        output.add(offset + "class Viewport {");
-        output.add(offset + "  private final int width;");
-        output.add(offset + "  private final int height;");
-        output.add("");
-        output.add(offset + "  public Viewport(int width, int height) {");
-        output.add(offset + "    this.width = width;");
-        output.add(offset + "    this.height = height;");
-        output.add(offset + "  }");
-        output.add("");
-        output.add(offset + "  public int width() {");
-        output.add(offset + "    return width;");
-        output.add(offset + "  }");
-        output.add("");
-        output.add(offset + "  public int height() {");
-        output.add(offset + "    return height;");
-        output.add(offset + "  }");
-        output.add(offset + "}");
-        output.add("");
-
         output.add(offset + "interface Function {");
         output.add(offset + "  Object call(Object... args);");
         output.add(offset + "}");
@@ -1117,7 +1098,10 @@ class NestedClass extends TypeDefinition {
     this.name = name;
 
     JsonObject jsonType = jsonElement;
-    if ("union".equals(jsonName)) {
+    if (jsonType.has("union")) {
+      if (!jsonName.isEmpty()) {
+        throw new RuntimeException("Unexpected named union: " + jsonElement);
+      }
       for (JsonElement item : jsonType.getAsJsonArray("union")) {
         if (!"null".equals(item.getAsJsonObject().get("name").getAsString())) {
           jsonType = item.getAsJsonObject();
@@ -1195,7 +1179,7 @@ class NestedClass extends TypeDefinition {
 
   private void writeDeviceDescriptorBuilder(List<String> output, String bodyOffset) {
     output.add(bodyOffset + "public " + name + " withDevice(DeviceDescriptor device) {");
-    output.add(bodyOffset + "  withViewport(device.viewport().width(), device.viewport().height());");
+    output.add(bodyOffset + "  withViewportSize(device.viewportSize());");
     output.add(bodyOffset + "  withUserAgent(device.userAgent());");
     output.add(bodyOffset + "  withDeviceScaleFactor(device.deviceScaleFactor());");
     output.add(bodyOffset + "  withIsMobile(device.isMobile());");

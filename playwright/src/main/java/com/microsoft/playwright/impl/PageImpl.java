@@ -42,7 +42,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private final MouseImpl mouse;
   private final AccessibilityImpl accessibility;
   private final TouchscreenImpl touchscreen;
-  private Viewport viewport;
+  private ViewportSize viewport;
   private final Router routes = new Router();
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
   private final ListenerCollection<EventType> listeners = new ListenerCollection<EventType>() {
@@ -98,7 +98,7 @@ public class PageImpl extends ChannelOwner implements Page {
     mainFrame.page = this;
     isClosed = initializer.get("isClosed").getAsBoolean();
     if (initializer.has("viewportSize")) {
-      viewport = gson().fromJson(initializer.get("viewportSize"), Viewport.class);
+      viewport = gson().fromJson(initializer.get("viewportSize"), ViewportSize.class);
     }
     keyboard = new KeyboardImpl(this);
     mouse = new MouseImpl(this);
@@ -1012,7 +1012,7 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void setViewportSize(int width, int height) {
     withLogging("Page.setViewportSize", () -> {
-      viewport = new Viewport(width, height);
+      viewport = new ViewportSize(width, height);
       JsonObject params = new JsonObject();
       params.add("viewportSize", gson().toJsonTree(viewport));
       sendMessage("setViewportSize", params);
@@ -1101,7 +1101,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Viewport viewportSize() {
+  public ViewportSize viewportSize() {
     return viewport;
   }
 

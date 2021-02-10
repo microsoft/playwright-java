@@ -19,24 +19,11 @@ package com.microsoft.playwright.impl;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.DeviceDescriptor;
 import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.options.ViewportSize;
 
 class DeviceDescriptorImpl implements DeviceDescriptor {
   PlaywrightImpl playwright;
-  private static class ViewportImpl implements Viewport{
-    private int width;
-    private int height;
-
-    @Override
-    public int width() {
-      return width;
-    }
-
-    @Override
-    public int height() {
-      return height;
-    }
-  }
-  private ViewportImpl viewport;
+  private ViewportSize viewport;
   private String userAgent;
   private double deviceScaleFactor;
   private boolean isMobile;
@@ -44,7 +31,7 @@ class DeviceDescriptorImpl implements DeviceDescriptor {
   private String defaultBrowserType;
 
   @Override
-  public Viewport viewport() {
+  public ViewportSize viewportSize() {
     return viewport;
   }
 

@@ -46,11 +46,7 @@ class Types {
 
   Types() {
     // Viewport size.
-    add("Browser.newContext.options.viewport", "Object|null", "Page.Viewport", new Empty());
-    add("Browser.newPage.options.viewport", "Object|null", "Page.Viewport", new Empty());
-    add("Page.setViewportSize.viewportSize", "Object", "Viewport", new Empty());
-    add("Page.viewportSize", "Object|null", "Viewport", new Empty());
-    add("BrowserType.launchPersistentContext.options.viewport", "Object|null", "Page.Viewport", new Empty());
+    add("Page.viewportSize", "Object|null", "ViewportSize", new Empty());
 
     add("BrowserContext.exposeBinding.callback", "function", "Page.Binding");
     add("BrowserContext.exposeFunction.callback", "function", "Page.Function");

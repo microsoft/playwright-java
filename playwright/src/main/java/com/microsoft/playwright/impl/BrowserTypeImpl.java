@@ -19,6 +19,7 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.PlaywrightException;
 
 import java.nio.file.Path;
 
@@ -59,10 +60,44 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("userDataDir", userDataDir.toString());
+    if (options.recordHarPath != null) {
+      JsonObject recordHar = new JsonObject();
+      recordHar.addProperty("path", options.recordHarPath.toString());
+      if (options.recordHarOmitContent != null) {
+        recordHar.addProperty("omitContent", true);
+      }
+      params.remove("recordHarPath");
+      params.remove("recordHarOmitContent");
+      params.add("recordHar", recordHar);
+    } else if (options.recordHarOmitContent != null) {
+      throw new PlaywrightException("recordHarOmitContent is set but recordHarPath is null");
+    }
+    if (options.recordVideoDir != null) {
+      JsonObject recordVideo = new JsonObject();
+      recordVideo.addProperty("dir", options.recordVideoDir.toString());
+      if (options.recordVideoSize != null) {
+        recordVideo.add("size", gson().toJsonTree(options.recordVideoSize));
+      }
+      params.remove("recordVideoDir");
+      params.remove("recordVideoSize");
+      params.add("recordVideo", recordVideo);
+    } else if (options.recordVideoSize != null) {
+      throw new PlaywrightException("recordVideoSize is set but recordVideoDir is null");
+    }
+    if (options.viewportSize != null) {
+      if (options.viewportSize.isPresent()) {
+        JsonElement size = params.get("viewportSize");
+        params.remove("viewportSize");
+        params.add("viewport", size);
+      } else {
+        params.remove("viewportSize");
+        params.addProperty("noDefaultViewport", true);
+      }
+    }
     JsonObject json = sendMessage("launchPersistentContext", params).getAsJsonObject();
     BrowserContextImpl context = connection.getExistingObject(json.getAsJsonObject("context").get("guid").getAsString());
-    if (options.recordVideo != null) {
-      context.videosDir = options.recordVideo.dir;
+    if (options.recordVideoDir != null) {
+      context.videosDir = options.recordVideoDir;
     }
     return context;
   }
