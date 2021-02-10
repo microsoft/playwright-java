@@ -59,12 +59,8 @@ abstract class Element {
     return parent.typeScope();
   }
 
-  Map<String, Enum> enums() {
-    return parent.enums();
-  }
-
-  Map<String, NestedClass> topLevelClasses() {
-    return parent.topLevelClasses();
+  Map<String, TypeDefinition> topLevelTypes() {
+    return parent.topLevelTypes();
   }
 
   static String toTitle(String name) {
@@ -354,6 +350,10 @@ abstract class TypeDefinition extends Element {
     super(parent, useParentJsonPath, jsonElement);
   }
 
+  String name() {
+    return jsonName;
+  }
+
   @Override
   TypeDefinition typeScope() {
     return this;
@@ -364,20 +364,19 @@ abstract class TypeDefinition extends Element {
     if (newEnum.jsonName == null) {
       throw new RuntimeException("Enum without name: " + jsonObject);
     }
-    Map<String, Enum> enumMap = enums();
-    Enum existing = enumMap.putIfAbsent(newEnum.jsonName, newEnum);
-    if (existing != null && !existing.hasSameValues(newEnum)) {
+    Map<String, TypeDefinition> enumMap = topLevelTypes();
+    TypeDefinition existing = enumMap.putIfAbsent(newEnum.jsonName, newEnum);
+    if (existing != null && (!(existing instanceof Enum) || !((Enum) existing).hasSameValues(newEnum))) {
       throw new RuntimeException("Two enums with same name have different values:\n" + jsonObject + "\n" + existing.jsonElement);
     }
   }
 
   void createTopLevelClass(String name, Element parent, JsonObject jsonObject) {
-    Map<String, NestedClass> map = topLevelClasses();
-    if (map.containsKey(name)) {
-      // TODO: check equal
-      return;
+    Map<String, TypeDefinition> map = topLevelTypes();
+    TypeDefinition existing = map.putIfAbsent(name, new NestedClass(parent, name, jsonObject));
+    if (existing != null && (!(existing instanceof NestedClass))) {
+      throw new RuntimeException("Two classes with same name have different values:\n" + jsonObject + "\n" + existing.jsonElement);
     }
-    map.put(name, new NestedClass(parent, name, jsonObject));
   }
 
   void createNestedClass(String name, Element parent, JsonObject jsonObject) {
@@ -835,8 +834,7 @@ class Field extends Element {
 class Interface extends TypeDefinition {
   private final List<Method> methods = new ArrayList<>();
   private final List<Event> events = new ArrayList<>();
-  private final Map<String, Enum> enums;
-  private final Map<String, NestedClass> topLevelClasses;
+  private final Map<String, TypeDefinition> topLevelTypes;
   static final String header = "/*\n" +
     " * Copyright (c) Microsoft Corporation.\n" +
     " *\n" +
@@ -858,19 +856,15 @@ class Interface extends TypeDefinition {
   private static Set<String> allowedBaseInterfaces = new HashSet<>(asList("Browser", "JSHandle", "BrowserContext"));
   private static Set<String> autoCloseableInterfaces = new HashSet<>(asList("Playwright", "Browser", "BrowserContext", "Page"));
 
-  Interface(JsonObject jsonElement, Map<String, Enum> enums, Map<String, NestedClass> topLevelClasses) {
+  Interface(JsonObject jsonElement, Map<String, TypeDefinition> topLevelTypes) {
     super(null, jsonElement);
-    this.enums = enums;
-    this.topLevelClasses = topLevelClasses;
+    this.topLevelTypes = topLevelTypes;
     for (JsonElement item : jsonElement.getAsJsonArray("members")) {
       JsonObject memberJson = item.getAsJsonObject();
       switch (memberJson.get("kind").getAsString()) {
         case "method":
         // All properties are converted to methods in Java.
         case "property":
-          if ("Playwright".equals(jsonName) && "errors".equals(memberJson.get("name").getAsString())) {
-            continue;
-          }
           methods.add(new Method(this, memberJson));
           break;
         case "event":
@@ -882,12 +876,9 @@ class Interface extends TypeDefinition {
     }
   }
 
-  Map<String, Enum> enums() {
-    return enums;
-  }
-
-  Map<String, NestedClass> topLevelClasses() {
-    return topLevelClasses;
+  @Override
+  Map<String, TypeDefinition> topLevelTypes() {
+    return topLevelTypes;
   }
 
   void writeTo(List<String> output, String offset) {
@@ -1066,11 +1057,17 @@ class NestedClass extends TypeDefinition {
     }
   }
 
+  @Override
+  String name() {
+    return name;
+  }
+
+  @Override
   void writeTo(List<String> output, String offset) {
     if (asList("RecordHar", "RecordVideo").contains(name)) {
       output.add("import java.nio.file.Path;");
     }
-    String access = (parent.typeScope() instanceof NestedClass) || topLevelClasses().containsKey(name) ? "public " : "";
+    String access = (parent.typeScope() instanceof NestedClass) || topLevelTypes().containsKey(name) ? "public " : "";
     output.add(offset + access + "class " + name + " {");
     String bodyOffset = offset + "  ";
     super.writeTo(output, bodyOffset);
@@ -1138,7 +1135,8 @@ class Enum extends TypeDefinition {
     }
   }
 
-  void writeTo(List<String> output) {
+  @Override
+  void writeTo(List<String> output, String offset) {
     output.add("public enum " + jsonName + " {\n  " + String.join(",\n  ", enumValues) + "\n}");
   }
 
@@ -1154,33 +1152,23 @@ public class ApiGenerator {
     File dir = new File(cwd, "playwright/src/main/java/com/microsoft/playwright");
     System.out.println("Writing files to: " + dir.getCanonicalPath());
     filterOtherLangs(api);
-    Map<String, Enum> enums = new HashMap<>();
-    Map<String, NestedClass> topLevelClasses = new HashMap<>();
+    Map<String, TypeDefinition> topLevelTypes = new HashMap<>();
     for (JsonElement entry: api) {
       String name = entry.getAsJsonObject().get("name").getAsString();
       List<String> lines = new ArrayList<>();
-      new Interface(entry.getAsJsonObject(), enums, topLevelClasses).writeTo(lines, "");
+      new Interface(entry.getAsJsonObject(), topLevelTypes).writeTo(lines, "");
       String text = String.join("\n", lines);
       try (FileWriter writer = new FileWriter(new File(dir, name + ".java"))) {
         writer.write(text);
       }
     }
     dir = new File(dir, "options");
-    for (Enum e : enums.values()) {
-      List<String> lines = new ArrayList<>();
-      lines.add(Interface.header.replace("package com.microsoft.playwright;", "package com.microsoft.playwright.options;"));
-      e.writeTo(lines);
-      String text = String.join("\n", lines);
-      try (FileWriter writer = new FileWriter(new File(dir, e.jsonName + ".java"))) {
-        writer.write(text);
-      }
-    }
-    for (NestedClass e : topLevelClasses.values()) {
+    for (TypeDefinition e : topLevelTypes.values()) {
       List<String> lines = new ArrayList<>();
       lines.add(Interface.header.replace("package com.microsoft.playwright;", "package com.microsoft.playwright.options;"));
       e.writeTo(lines, "");
       String text = String.join("\n", lines);
-      try (FileWriter writer = new FileWriter(new File(dir, e.name + ".java"))) {
+      try (FileWriter writer = new FileWriter(new File(dir, e.name() + ".java"))) {
         writer.write(text);
       }
     }

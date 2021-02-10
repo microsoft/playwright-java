@@ -46,8 +46,6 @@ class Types {
 
   Types() {
     // Viewport size.
-    add("Page.viewportSize", "Object|null", "ViewportSize", new Empty());
-
     add("BrowserContext.exposeBinding.callback", "function", "Page.Binding");
     add("BrowserContext.exposeFunction.callback", "function", "Page.Function");
     add("Page.exposeBinding.callback", "function", "Binding");
