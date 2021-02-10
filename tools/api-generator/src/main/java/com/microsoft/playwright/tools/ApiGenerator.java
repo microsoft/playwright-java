@@ -24,7 +24,6 @@ import com.google.gson.JsonObject;
 import java.io.*;
 import java.nio.file.FileSystems;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.reverse;
@@ -120,48 +119,6 @@ class TypeRef extends Element {
     createCustomType();
   }
 
-  enum GeneratedType { ENUM, CLASS, OTHER };
-  private static GeneratedType generatedTypeFor(JsonObject jsonType) {
-    if (jsonType.has("union")) {
-      if (!jsonType.get("name").getAsString().isEmpty()) {
-        return GeneratedType.ENUM;
-      }
-      for (JsonElement item : jsonType.getAsJsonArray("union")) {
-        String valueName = item.getAsJsonObject().get("name").getAsString();
-        if ("null".equals(valueName)) {
-          continue;
-        }
-        GeneratedType memberType = generatedTypeFor(item.getAsJsonObject());
-        if (memberType == GeneratedType.ENUM) {
-          // Nullable enum.
-          return GeneratedType.ENUM;
-        }
-        // If a value is not null and not a string it is a class name.
-        return GeneratedType.OTHER;
-      }
-      throw new RuntimeException("Unknown union type: " + jsonType);
-    }
-
-    switch (jsonType.get("name").getAsString()) {
-      case "Object": {
-        String expression = typeExpression(jsonType);
-        if ("Object<string, string>".equals(expression) || "Object<string, any>".equals(expression)) {
-          return GeneratedType.OTHER;
-        }
-        return GeneratedType.CLASS;
-      }
-      case "Array":
-      case "Promise": {
-        for (JsonElement item : jsonType.getAsJsonArray("templates")) {
-          return generatedTypeFor(item.getAsJsonObject());
-        }
-        return GeneratedType.OTHER;
-      }
-      default:
-        return GeneratedType.OTHER;
-    }
-  }
-
   private static String typeExpression(JsonObject jsonType) {
     String typeName = jsonType.get("name").getAsString();
     if (jsonType.has("union")) {
@@ -200,52 +157,26 @@ class TypeRef extends Element {
   }
 
   void createCustomType() {
-    GeneratedType generatedType = generatedTypeFor(stripNullable());
-    if (generatedType == GeneratedType.ENUM) {
-      createEnums(jsonElement.getAsJsonObject());
-      return;
-    }
-
     // Use path to the corresponding method, param of field as the key.
     String parentPath = parent.jsonPath;
     Types.Mapping mapping = TypeDefinition.types.findForPath(parentPath);
-    if (mapping == null) {
-      if (generatedType != GeneratedType.CLASS) {
-        return;
-      }
-
-      if (parent instanceof Field) {
-        customType = toTitle(parent.jsonName);
-      } else {
-        customType = toTitle(parent.parent.jsonName) + toTitle(parent.jsonName);
-      }
-    } else {
+    if (mapping != null) {
       String typeExpression = typeExpression(jsonElement.getAsJsonObject());
       if (!mapping.from.equals(typeExpression)) {
         throw new RuntimeException("Unexpected source type for: " + parentPath +". Expected: " + mapping.from + "; found: " + typeExpression);
       }
       customType = mapping.to;
-      if (mapping.customMapping != null) {
-        mapping.customMapping.defineTypesIn(typeScope());
-        return;
-      }
+      return;
     }
-    if (generatedType == GeneratedType.CLASS) {
-      if (parent instanceof Field ) {
-        typeScope().createTopLevelClass(customType, this, jsonElement.getAsJsonObject());
-      } else {
-        typeScope().createNestedClass(customType, this, jsonElement.getAsJsonObject());
-        isNestedClass = true;
-      }
-    }
+    createClassesAndEnums(jsonElement.getAsJsonObject());
   }
 
-  private void createEnums(JsonObject jsonObject) {
+  private void createClassesAndEnums(JsonObject jsonObject) {
     if (jsonObject.has("union")) {
       if (jsonObject.get("name").getAsString().isEmpty()) {
         for (JsonElement item : jsonObject.getAsJsonArray("union")) {
           if (item.isJsonObject()) {
-            createEnums(item.getAsJsonObject());
+            createClassesAndEnums(item.getAsJsonObject());
           }
         }
       } else {
@@ -256,8 +187,25 @@ class TypeRef extends Element {
     if (jsonObject.has("templates")) {
       for (JsonElement item : jsonObject.getAsJsonArray("templates")) {
         if (item.isJsonObject()) {
-          createEnums(item.getAsJsonObject());
+          createClassesAndEnums(item.getAsJsonObject());
         }
+      }
+      return;
+    }
+    if ("Object".equals(jsonObject.get("name").getAsString())) {
+      if (customType != null) {
+        throw new RuntimeException("Custom type has already been created: " + customType);
+      }
+      if (parent.jsonName.equals("cookies")) {
+        customType = "Cookie";
+        typeScope().createTopLevelClass(customType, this, jsonElement.getAsJsonObject());
+      } else if (parent instanceof Method || parent instanceof Field || (parent instanceof Param && !"options".equals(parent.jsonName))) {
+        customType = toTitle(parent.jsonName);
+        typeScope().createTopLevelClass(customType, this, jsonElement.getAsJsonObject());
+      } else {
+        customType = toTitle(parent.parent.jsonName) + toTitle(parent.jsonName);
+        typeScope().createNestedClass(customType, this, jsonElement.getAsJsonObject());
+        isNestedClass = true;
       }
     }
   }
@@ -268,18 +216,6 @@ class TypeRef extends Element {
     }
     if (jsonElement.isJsonNull()) {
       return "void";
-    }
-    // Convert optional fields to boxed types.
-    if (!parent.jsonElement.getAsJsonObject().get("required").getAsBoolean()) {
-      if (jsonName.equals("int")) {
-        return "Integer";
-      }
-      if (jsonName.equals("float")) {
-        return "Double";
-      }
-      if (jsonName.equals("boolean")) {
-        return "Boolean";
-      }
     }
     return convertBuiltinType(stripNullable());
   }
@@ -525,7 +461,7 @@ class Method extends Element {
       "List<Cookie> cookies(List<String> urls);",
     });
     customSignature.put("BrowserContext.addCookies", new String[]{
-      "void addCookies(List<AddCookie> cookies);"
+      "void addCookies(List<Cookie> cookies);"
     });
     customSignature.put("FileChooser.setFiles", new String[]{
       "default void setFiles(Path file) { setFiles(file, null); }",
@@ -771,7 +707,7 @@ class Field extends Element {
       jsonElement.getAsJsonObject().get("required").getAsBoolean();
   }
 
-  void writeTo(List<String> output, String offset, String access) {
+  void writeTo(List<String> output, String offset) {
     writeJavadoc(output, offset, comment());
     if (asList("Frame.waitForNavigation.options.url",
                "Page.waitForNavigation.options.url").contains(jsonPath)) {
@@ -789,7 +725,17 @@ class Field extends Element {
     if (type.isNullable()) {
       typeStr = "Optional<" + typeStr + ">";
     }
-    output.add(offset + access + typeStr + " " + name + ";");
+    // Convert optional fields to boxed types.
+    if (!isRequired()) {
+      if (typeStr.equals("int")) {
+        typeStr = "Integer";
+      } else if (typeStr.equals("double")) {
+        typeStr = "Double";
+      } else if (typeStr.equals("boolean")) {
+        typeStr = "Boolean";
+      }
+    }
+    output.add(offset + "public " + typeStr + " " + name + ";");
   }
 
   void writeGetter(List<String> output, String offset) {
@@ -949,7 +895,7 @@ class Interface extends TypeDefinition {
     if ("Playwright".equals(jsonName)) {
       output.add("import com.microsoft.playwright.impl.PlaywrightImpl;");
     }
-    if (asList("Page", "Frame", "ElementHandle", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard").contains(jsonName)) {
+    if (asList("Page", "Request", "Frame", "ElementHandle", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard").contains(jsonName)) {
       output.add("import com.microsoft.playwright.options.*;");
     }
     if (jsonName.equals("Route")) {
@@ -1042,13 +988,6 @@ class Interface extends TypeDefinition {
         break;
       }
       case "ElementHandle": {
-        output.add(offset + "class BoundingBox {");
-        output.add(offset + "  public double x;");
-        output.add(offset + "  public double y;");
-        output.add(offset + "  public double width;");
-        output.add(offset + "  public double height;");
-        output.add(offset + "}");
-        output.add("");
         output.add(offset + "class SelectOption {");
         output.add(offset + "  public String value;");
         output.add(offset + "  public String label;");
@@ -1131,22 +1070,17 @@ class NestedClass extends TypeDefinition {
     if (asList("RecordHar", "RecordVideo").contains(name)) {
       output.add("import java.nio.file.Path;");
     }
-    String access = parent.typeScope() instanceof NestedClass ? "public " : "";
+    String access = (parent.typeScope() instanceof NestedClass) || topLevelClasses().containsKey(name) ? "public " : "";
     output.add(offset + access + "class " + name + " {");
     String bodyOffset = offset + "  ";
     super.writeTo(output, bodyOffset);
 
     boolean isReturnType = parent.parent instanceof Method;
-    String fieldAccess = isReturnType ? "private " : "public ";
     for (Field f : fields) {
-      f.writeTo(output, bodyOffset, fieldAccess);
+      f.writeTo(output, bodyOffset);
     }
     output.add("");
-    if (isReturnType) {
-      for (Field f : fields) {
-        f.writeGetter(output, bodyOffset);
-      }
-    } else {
+    if (!isReturnType) {
       writeConstructor(output, bodyOffset);
       writeBuilderMethods(output, bodyOffset);
       if (asList("Browser.newContext.options",

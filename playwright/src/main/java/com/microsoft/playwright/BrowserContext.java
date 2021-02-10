@@ -42,109 +42,6 @@ public interface BrowserContext extends AutoCloseable {
   void onPage(Consumer<Page> handler);
   void offPage(Consumer<Page> handler);
 
-  class AddCookie {
-    public String name;
-    public String value;
-    /**
-     * either url or domain / path are required. Optional.
-     */
-    public String url;
-    /**
-     * either url or domain / path are required Optional.
-     */
-    public String domain;
-    /**
-     * either url or domain / path are required Optional.
-     */
-    public String path;
-    /**
-     * Unix time in seconds. Optional.
-     */
-    public Double expires;
-    /**
-     * Optional.
-     */
-    public Boolean httpOnly;
-    /**
-     * Optional.
-     */
-    public Boolean secure;
-    /**
-     * Optional.
-     */
-    public SameSiteAttribute sameSite;
-
-    public AddCookie(String name, String value) {
-      this.name = name;
-      this.value = value;
-    }
-    public AddCookie withUrl(String url) {
-      this.url = url;
-      return this;
-    }
-    public AddCookie withDomain(String domain) {
-      this.domain = domain;
-      return this;
-    }
-    public AddCookie withPath(String path) {
-      this.path = path;
-      return this;
-    }
-    public AddCookie withExpires(double expires) {
-      this.expires = expires;
-      return this;
-    }
-    public AddCookie withHttpOnly(boolean httpOnly) {
-      this.httpOnly = httpOnly;
-      return this;
-    }
-    public AddCookie withSecure(boolean secure) {
-      this.secure = secure;
-      return this;
-    }
-    public AddCookie withSameSite(SameSiteAttribute sameSite) {
-      this.sameSite = sameSite;
-      return this;
-    }
-  }
-  class Cookie {
-    private String name;
-    private String value;
-    private String domain;
-    private String path;
-    /**
-     * Unix time in seconds.
-     */
-    private double expires;
-    private boolean httpOnly;
-    private boolean secure;
-    private SameSiteAttribute sameSite;
-
-    public String name() {
-      return this.name;
-    }
-    public String value() {
-      return this.value;
-    }
-    public String domain() {
-      return this.domain;
-    }
-    public String path() {
-      return this.path;
-    }
-    public double expires() {
-      return this.expires;
-    }
-    public boolean httpOnly() {
-      return this.httpOnly;
-    }
-    public boolean secure() {
-      return this.secure;
-    }
-    public SameSiteAttribute sameSite() {
-      return this.sameSite;
-    }
-  }
   class ExposeBindingOptions {
     /**
      * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument is
@@ -204,7 +101,7 @@ public interface BrowserContext extends AutoCloseable {
    * Adds cookies into this browser context. All pages within this context will have these cookies installed. Cookies can be
    * obtained via [{@code method: BrowserContext.cookies}].
    */
-  void addCookies(List<AddCookie> cookies);
+  void addCookies(List<Cookie> cookies);
   /**
    * Adds a script which would be evaluated in one of the following scenarios:
    * - Whenever a page is created in the browser context or is navigated.

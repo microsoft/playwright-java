@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.Cookie;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
@@ -148,7 +149,7 @@ public class TestPageRoute extends TestBase {
   void shouldProperlyReturnNavigationResponseWhenURLHasCookies() {
     // Setup cookie.
     page.navigate(server.EMPTY_PAGE);
-    context.addCookies(asList(new BrowserContext.AddCookie("foo", "bar")
+    context.addCookies(asList(new Cookie("foo", "bar")
       .withUrl(server.EMPTY_PAGE)));
     // Setup request interception.
     page.route("**/*", route -> route.resume());

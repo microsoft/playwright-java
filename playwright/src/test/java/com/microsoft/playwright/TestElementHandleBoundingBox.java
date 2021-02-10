@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.BoundingBox;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
@@ -35,7 +36,7 @@ public class TestElementHandleBoundingBox extends TestBase {
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");
     ElementHandle elementHandle = page.querySelector(".box:nth-of-type(13)");
-    ElementHandle.BoundingBox box = elementHandle.boundingBox();
+    BoundingBox box = elementHandle.boundingBox();
     assertEquals(100, box.x);
     assertEquals(50, box.y);
     assertEquals(50, box.width);
@@ -49,7 +50,7 @@ public class TestElementHandleBoundingBox extends TestBase {
     Frame nestedFrame = page.frameByName("dos");
     assertNotNull(nestedFrame);
     ElementHandle elementHandle = nestedFrame.querySelector("div");
-    ElementHandle.BoundingBox box = elementHandle.boundingBox();
+    BoundingBox box = elementHandle.boundingBox();
     assertEquals(24, box.x);
     assertEquals(224, box.y);
     assertEquals(268, box.width);
@@ -69,7 +70,7 @@ public class TestElementHandleBoundingBox extends TestBase {
     page.setContent("<div style='width: 100px; height: 100px'>hello</div>");
     ElementHandle elementHandle = page.querySelector("div");
     page.evaluate("element => element.style.height = '200px'", elementHandle);
-    ElementHandle.BoundingBox box = elementHandle.boundingBox();
+    BoundingBox box = elementHandle.boundingBox();
     assertEquals(box.x, 8);
     assertEquals(box.y, 8);
     assertEquals(box.width, 100);
@@ -82,7 +83,7 @@ public class TestElementHandleBoundingBox extends TestBase {
       "<rect id='theRect' x='30' y='50' width='200' height='300'></rect>\n" +
       "</svg>");
     ElementHandle element = page.querySelector("#therect");
-    ElementHandle.BoundingBox pwBoundingBox = element.boundingBox();
+    BoundingBox pwBoundingBox = element.boundingBox();
     @SuppressWarnings("unchecked")
     Map<String, Integer> webBoundingBox = (Map<String, Integer>) page.evaluate("e => {\n" +
       "  const rect = e.getBoundingClientRect();\n" +
@@ -110,7 +111,7 @@ public class TestElementHandleBoundingBox extends TestBase {
       "  button.style.marginLeft = '17px';\n" +
       "  button.style.marginTop = '23px';\n" +
       "}");
-    ElementHandle.BoundingBox box = button.boundingBox();
+    BoundingBox box = button.boundingBox();
     assertEquals(17 * 100, round(box.x * 100));
     assertEquals(23 * 100, round(box.y * 100));
     assertEquals(200 * 100, round(box.width * 100));
@@ -139,7 +140,7 @@ public class TestElementHandleBoundingBox extends TestBase {
       "</style>\n" +
       "<span><i>woof</i><b>doggo</b></span>");
     ElementHandle handle = page.querySelector("span");
-    ElementHandle.BoundingBox pwBoundingBox = handle.boundingBox();
+    BoundingBox pwBoundingBox = handle.boundingBox();
     @SuppressWarnings("unchecked")
     Map<String, Object> webBoundingBox = (Map<String, Object>) handle.evaluate("e => {\n" +
       "  const rect = e.getBoundingClientRect();\n" +

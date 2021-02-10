@@ -979,21 +979,6 @@ public interface Page extends AutoCloseable {
       return this;
     }
   }
-  class SetViewportSizeViewportSize {
-    /**
-     * page width in pixels.
-     */
-    public int width;
-    /**
-     * page height in pixels.
-     */
-    public int height;
-
-    public SetViewportSizeViewportSize(int width, int height) {
-      this.width = width;
-      this.height = height;
-    }
-  }
   class TapOptions {
     /**
      * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.

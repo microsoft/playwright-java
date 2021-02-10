@@ -22,32 +22,11 @@ import java.util.*;
  * {@code ConsoleMessage} objects are dispatched by page via the [{@code event: Page.console}] event.
  */
 public interface ConsoleMessage {
-  class Location {
-    /**
-     * URL of the resource.
-     */
-    private String url;
-    /**
-     * 0-based line number in the resource.
-     */
-    private int lineNumber;
-    /**
-     * 0-based column number in the resource.
-     */
-    private int columnNumber;
-
-    public String url() {
-      return this.url;
-    }
-    public int lineNumber() {
-      return this.lineNumber;
-    }
-    public int columnNumber() {
-      return this.columnNumber;
-    }
-  }
   List<JSHandle> args();
-  Location location();
+  /**
+   * URL of the resource followed by 0-based line and column numbers in the resource formatted as {@code URL:line:column}.
+   */
+  String location();
   String text();
   /**
    * One of the following values: {@code 'log'}, {@code 'debug'}, {@code 'info'}, {@code 'error'}, {@code 'warning'}, {@code 'dir'}, {@code 'dirxml'}, {@code 'table'},

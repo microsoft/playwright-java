@@ -113,7 +113,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void addCookies(List<AddCookie> cookies) {
+  public void addCookies(List<Cookie> cookies) {
     withLogging("BrowserContext.addCookies", () -> {
       JsonObject params = new JsonObject();
       params.add("cookies", gson().toJsonTree(cookies));

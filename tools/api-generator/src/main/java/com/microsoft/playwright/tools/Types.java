@@ -57,18 +57,12 @@ class Types {
     add("Page.addInitScript.script", "Object|function|string", "String");
     add("Selectors.register.script", "Object|function|string", "String");
 
-    // Return structures
-    add("ConsoleMessage.location", "Object", "Location");
-    add("ElementHandle.boundingBox", "Object|null", "BoundingBox", new Empty());
-
     // The method has custom signatures
     add("BrowserContext.cookies", "Array<Object>", "Cookie");
-    add("BrowserContext.cookies.sameSite", "\"Lax\"|\"None\"|\"Strict\"", "SameSite", new Empty());
-    add("BrowserContext.addCookies.cookies", "Array<Object>", "AddCookie");
-    add("BrowserContext.addCookies.cookies.sameSite", "\"Lax\"|\"None\"|\"Strict\"", "SameSite", new Empty());
     add("BrowserContext.route.url", "RegExp|function(URL):boolean|string", "String");
     add("BrowserContext.unroute.url", "RegExp|function(URL):boolean|string", "String");
     add("Page.waitForNavigation.options.url", "RegExp|function(URL):boolean|string", "Custom");
+    add("Page.frame.frameSelector", "Object|string", "Custom", new Empty());
     add("Page.frame.options", "Object", "FrameOptions", new Empty());
     add("Page.route.url", "RegExp|function(URL):boolean|string", "String");
     add("Page.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");
@@ -83,11 +77,6 @@ class Types {
     add("ElementHandle.setInputFiles.files", "Array<Object>|Array<path>|Object|path", "String");
     add("FileChooser.setFiles.files", "Array<Object>|Array<path>|Object|path", "String");
     add("Route.resume.options.postData", "Buffer|string", "byte[]", new Empty());
-
-    add("BrowserContext.setGeolocation.geolocation", "Object|null", "Geolocation", new Empty());
-    add("Browser.newContext.options.geolocation", "Object", "Geolocation", new Empty());
-    add("Browser.newPage.options.geolocation", "Object", "Geolocation", new Empty());
-    add("BrowserType.launchPersistentContext.options.geolocation", "Object", "Geolocation", new Empty());
 
     // TODO: fix upstream types!
     add("Playwright.devices", "Object", "Map<String, DeviceDescriptor>", new Empty());

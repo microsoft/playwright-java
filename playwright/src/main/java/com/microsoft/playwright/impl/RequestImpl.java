@@ -21,6 +21,7 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Response;
+import com.microsoft.playwright.options.Timing;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -33,7 +34,7 @@ public class RequestImpl extends ChannelOwner implements Request {
   private RequestImpl redirectedTo;
   final Map<String, String> headers = new HashMap<>();
   String failure;
-  RequestTiming timing;
+  Timing timing;
 
   RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -118,8 +119,8 @@ public class RequestImpl extends ChannelOwner implements Request {
   }
 
   @Override
-  public RequestTiming timing() {
-    return null;
+  public Timing timing() {
+    return timing;
   }
 
   @Override
