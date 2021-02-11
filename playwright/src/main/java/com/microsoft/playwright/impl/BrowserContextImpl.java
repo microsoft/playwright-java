@@ -38,7 +38,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   final List<PageImpl> pages = new ArrayList<>();
   final Router routes = new Router();
   private boolean isClosedOrClosing;
-  final Map<String, Page.Binding> bindings = new HashMap<>();
+  final Map<String, BindingCallback> bindings = new HashMap<>();
   PageImpl ownerPage;
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   final TimeoutSettings timeoutSettings = new TimeoutSettings();
@@ -167,11 +167,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void exposeBinding(String name, Page.Binding playwrightBinding, ExposeBindingOptions options) {
+  public void exposeBinding(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
     withLogging("BrowserContext.exposeBinding", () -> exposeBindingImpl(name, playwrightBinding, options));
   }
 
-  private void exposeBindingImpl(String name, Page.Binding playwrightBinding, ExposeBindingOptions options) {
+  private void exposeBindingImpl(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
     if (bindings.containsKey(name)) {
       throw new PlaywrightException("Function \"" + name + "\" has been already registered");
     }
@@ -191,9 +191,9 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void exposeFunction(String name, Page.Function playwrightFunction) {
+  public void exposeFunction(String name, FunctionCallback playwrightFunction) {
     withLogging("BrowserContext.exposeFunction",
-      () -> exposeBindingImpl(name, (Page.Binding.Source source, Object... args) -> playwrightFunction.call(args), null));
+      () -> exposeBindingImpl(name, (BindingCallback.Source source, Object... args) -> playwrightFunction.call(args), null));
   }
 
   @Override
@@ -380,7 +380,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       pages.add(page);
     } else if ("bindingCall".equals(event)) {
       BindingCall bindingCall = connection.getExistingObject(params.getAsJsonObject("binding").get("guid").getAsString());
-      Page.Binding binding = bindings.get(bindingCall.name());
+      BindingCallback binding = bindings.get(bindingCall.name());
       if (binding != null) {
         bindingCall.call(binding);
       }

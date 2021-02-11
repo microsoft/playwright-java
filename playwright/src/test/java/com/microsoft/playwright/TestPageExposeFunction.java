@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.BindingCallback;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -31,7 +32,7 @@ public class TestPageExposeFunction extends TestBase {
   void exposeBindingShouldWork() {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
-    Page.Binding.Source[] bindingSource = { null };
+    BindingCallback.Source[] bindingSource = { null };
     page.exposeBinding("add", (source, args) -> {
       bindingSource[0] = source;
       return (Integer) args[0] + (Integer) args[1];

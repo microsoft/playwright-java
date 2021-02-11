@@ -46,10 +46,10 @@ class Types {
 
   Types() {
     // Viewport size.
-    add("BrowserContext.exposeBinding.callback", "function", "Page.Binding");
-    add("BrowserContext.exposeFunction.callback", "function", "Page.Function");
-    add("Page.exposeBinding.callback", "function", "Binding");
-    add("Page.exposeFunction.callback", "function", "Function");
+    add("BrowserContext.exposeBinding.callback", "function", "BindingCallback");
+    add("BrowserContext.exposeFunction.callback", "function", "FunctionCallback");
+    add("Page.exposeBinding.callback", "function", "BindingCallback");
+    add("Page.exposeFunction.callback", "function", "FunctionCallback");
 
     add("BrowserContext.addInitScript.script", "Object|function|string", "String");
     add("Page.addInitScript.script", "Object|function|string", "String");

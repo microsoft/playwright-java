@@ -144,7 +144,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param urls Optional list of URLs.
    */
   List<Cookie> cookies(List<String> urls);
-  default void exposeBinding(String name, Page.Binding callback) {
+  default void exposeBinding(String name, BindingCallback callback) {
     exposeBinding(name, callback, null);
   }
   /**
@@ -161,7 +161,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param name Name of the function on the window object.
    * @param callback Callback function that will be called in the Playwright's context.
    */
-  void exposeBinding(String name, Page.Binding callback, ExposeBindingOptions options);
+  void exposeBinding(String name, BindingCallback callback, ExposeBindingOptions options);
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context. When
    * called, the function executes {@code callback} and returns a [Promise] which resolves to the return value of {@code callback}.
@@ -174,7 +174,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param name Name of the function on the window object.
    * @param callback Callback function that will be called in the Playwright's context.
    */
-  void exposeFunction(String name, Page.Function callback);
+  void exposeFunction(String name, FunctionCallback callback);
   default void grantPermissions(List<String> permissions) {
     grantPermissions(permissions, null);
   }
