@@ -237,14 +237,6 @@ public interface Browser extends AutoCloseable {
       this.viewportSize = Optional.ofNullable(viewportSize);
       return this;
     }
-    public NewContextOptions withDevice(DeviceDescriptor device) {
-      withViewportSize(device.viewportSize());
-      withUserAgent(device.userAgent());
-      withDeviceScaleFactor(device.deviceScaleFactor());
-      withIsMobile(device.isMobile());
-      withHasTouch(device.hasTouch());
-      return this;
-    }
   }
   class NewPageOptions {
     /**
@@ -450,14 +442,6 @@ public interface Browser extends AutoCloseable {
     }
     public NewPageOptions withViewportSize(ViewportSize viewportSize) {
       this.viewportSize = Optional.ofNullable(viewportSize);
-      return this;
-    }
-    public NewPageOptions withDevice(DeviceDescriptor device) {
-      withViewportSize(device.viewportSize());
-      withUserAgent(device.userAgent());
-      withDeviceScaleFactor(device.deviceScaleFactor());
-      withIsMobile(device.isMobile());
-      withHasTouch(device.hasTouch());
       return this;
     }
   }

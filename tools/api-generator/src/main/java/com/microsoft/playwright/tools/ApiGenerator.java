@@ -1056,11 +1056,6 @@ class NestedClass extends TypeDefinition {
     if (!isReturnType) {
       writeConstructor(output, bodyOffset);
       writeBuilderMethods(output, bodyOffset);
-      if (asList("Browser.newContext.options",
-        "Browser.newPage.options",
-        "BrowserType.launchPersistentContext.options").contains(jsonPath)) {
-        writeDeviceDescriptorBuilder(output, bodyOffset);
-      }
     }
     output.add(offset + "}");
   }
@@ -1081,17 +1076,6 @@ class NestedClass extends TypeDefinition {
     List<String> args = requiredFields.stream().map(f -> f.type.toJava() + " " + f.name).collect(toList());
     output.add(bodyOffset + "public " + name + "(" + String.join(", ", args) + ") {");
     requiredFields.forEach(f -> output.add(bodyOffset + "  this." + f.name + " = " + f.name + ";"));
-    output.add(bodyOffset + "}");
-  }
-
-  private void writeDeviceDescriptorBuilder(List<String> output, String bodyOffset) {
-    output.add(bodyOffset + "public " + name + " withDevice(DeviceDescriptor device) {");
-    output.add(bodyOffset + "  withViewportSize(device.viewportSize());");
-    output.add(bodyOffset + "  withUserAgent(device.userAgent());");
-    output.add(bodyOffset + "  withDeviceScaleFactor(device.deviceScaleFactor());");
-    output.add(bodyOffset + "  withIsMobile(device.isMobile());");
-    output.add(bodyOffset + "  withHasTouch(device.hasTouch());");
-    output.add(bodyOffset + "  return this;");
     output.add(bodyOffset + "}");
   }
 }

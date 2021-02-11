@@ -29,10 +29,6 @@ public interface Playwright extends AutoCloseable {
    */
   BrowserType chromium();
   /**
-   * Returns a dictionary of devices to be used with [{@code method: Browser.newContext}] or [{@code method: Browser.newPage}].
-   */
-  Map<String, DeviceDescriptor> devices();
-  /**
    * This object can be used to launch or connect to Firefox, returning instances of {@code FirefoxBrowser}.
    */
   BrowserType firefox();
