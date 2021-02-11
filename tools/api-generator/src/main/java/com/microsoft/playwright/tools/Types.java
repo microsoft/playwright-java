@@ -74,9 +74,6 @@ class Types {
     add("ElementHandle.setInputFiles.files", "Array<Object>|Array<path>|Object|path", "String");
     add("FileChooser.setFiles.files", "Array<Object>|Array<path>|Object|path", "String");
     add("Route.resume.options.postData", "Buffer|string", "byte[]", new Empty());
-
-    // TODO: fix upstream types!
-    add("Playwright.devices", "Object", "Map<String, DeviceDescriptor>", new Empty());
   }
 
   Mapping findForPath(String jsonPath) {
