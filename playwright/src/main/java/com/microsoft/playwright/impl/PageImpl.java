@@ -215,10 +215,9 @@ public class PageImpl extends ChannelOwner implements Page {
       SerializedError error = gson().fromJson(params.getAsJsonObject("error"), SerializedError.class);
       String errorStr = "";
       if (error.error != null) {
+        errorStr = error.error.name + ": " + error.error.message;
         if (error.error.stack != null && !error.error.stack.isEmpty()) {
-          errorStr = error.error.stack;
-        } else {
-          errorStr = error.error.name + ": " + error.error.message;
+          errorStr += "\n" + error.error.stack;
         }
       }
       listeners.notify(EventType.PAGEERROR, errorStr);
