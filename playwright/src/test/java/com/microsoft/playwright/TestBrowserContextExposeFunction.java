@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.BindingCallback;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class TestBrowserContextExposeFunction extends TestBase {
 
   @Test
   void exposeBindingShouldWork() {
-    Page.Binding.Source[] bindingSource = {null};
+    BindingCallback.Source[] bindingSource = {null};
     context.exposeBinding("add", (source, args) -> {
       bindingSource[0] = source;
       return (Integer) args[0] + (Integer) args[1];

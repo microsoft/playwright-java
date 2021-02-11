@@ -954,30 +954,6 @@ class Interface extends TypeDefinition {
 
   private void writeSharedTypes(List<String> output, String offset) {
     switch (jsonName) {
-      case "Page": {
-        output.add(offset + "interface Function {");
-        output.add(offset + "  Object call(Object... args);");
-        output.add(offset + "}");
-        output.add("");
-
-        output.add(offset + "interface Binding {");
-        output.add(offset + "  interface Source {");
-        output.add(offset + "    BrowserContext context();");
-        output.add(offset + "    Page page();");
-        output.add(offset + "    Frame frame();");
-        output.add(offset + "  }");
-        output.add("");
-        output.add(offset + "  Object call(Source source, Object... args);");
-        output.add(offset + "}");
-        output.add("");
-        output.add(offset + "interface Error {");
-        output.add(offset + "  String message();");
-        output.add(offset + "  String name();");
-        output.add(offset + "  String stack();");
-        output.add(offset + "}");
-        output.add("");
-        break;
-      }
       case "ElementHandle": {
         output.add(offset + "class SelectOption {");
         output.add(offset + "  public String value;");
@@ -1266,7 +1242,8 @@ public class ApiGenerator {
   public static void main(String[] args) throws IOException {
     File cwd = FileSystems.getDefault().getPath(".").toFile();
     System.out.println(cwd.getCanonicalPath());
-    File file = new File(cwd, "tools/api-generator/src/main/resources/api.json");
+//    File file = new File(cwd, "tools/api-generator/src/main/resources/api.json");
+    File file = new File("/home/yurys/playwright/api.json");
     System.out.println("Reading from: " + file.getCanonicalPath());
     new ApiGenerator(new FileReader(file));
   }

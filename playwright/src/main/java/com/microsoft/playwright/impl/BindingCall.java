@@ -22,6 +22,7 @@ import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.JSHandle;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.BindingCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.List;
 import static com.microsoft.playwright.impl.Serialization.*;
 
 class BindingCall extends ChannelOwner {
-  private static class SourceImpl implements Page.Binding.Source {
+  private static class SourceImpl implements BindingCallback.Source {
     private final Frame frame;
 
     public SourceImpl(Frame frame) {
@@ -60,10 +61,10 @@ class BindingCall extends ChannelOwner {
     return initializer.get("name").getAsString();
   }
 
-  void call(Page.Binding binding) {
+  void call(BindingCallback binding) {
     try {
       Frame frame = connection.getExistingObject(initializer.getAsJsonObject("frame").get("guid").getAsString());
-      Page.Binding.Source source = new SourceImpl(frame);
+      BindingCallback.Source source = new SourceImpl(frame);
       List<Object> args = new ArrayList<>();
       if (initializer.has("handle")) {
         JSHandle handle = connection.getExistingObject(initializer.getAsJsonObject("handle").get("guid").getAsString());

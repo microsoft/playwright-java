@@ -81,7 +81,7 @@ public class TestWorkers extends TestBase {
 
   @Test
   void shouldReportErrors() {
-    Page.Error[] errorLog = {null};
+    String[] errorLog = {null};
     page.onPageError(e -> errorLog[0] = e);
     page.evaluate("() => new Worker(URL.createObjectURL(new Blob([`\n" +
       "  setTimeout(() => {\n" +
@@ -95,7 +95,7 @@ public class TestWorkers extends TestBase {
       page.waitForTimeout(100);
       assertTrue(Duration.between(start, Instant.now()).getSeconds() < 30, "Timed out");
     }
-    assertTrue(errorLog[0].message().contains("this is my error"));
+    assertTrue(errorLog[0].contains("this is my error"));
   }
 
   @Test

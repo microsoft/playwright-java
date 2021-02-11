@@ -62,7 +62,7 @@ public class PageImpl extends ChannelOwner implements Page {
       }
     }
   };
-  final Map<String, Binding> bindings = new HashMap<>();
+  final Map<String, BindingCallback> bindings = new HashMap<>();
   BrowserContextImpl ownedContext;
   private boolean isClosed;
   final Set<Worker> workers = new HashSet<>();
@@ -148,7 +148,7 @@ public class PageImpl extends ChannelOwner implements Page {
     } else if ("bindingCall".equals(event)) {
       String guid = params.getAsJsonObject("binding").get("guid").getAsString();
       BindingCall bindingCall = connection.getExistingObject(guid);
-      Binding binding = bindings.get(bindingCall.name());
+      BindingCallback binding = bindings.get(bindingCall.name());
       if (binding == null) {
         binding = browserContext.bindings.get(bindingCall.name());
       }
@@ -213,7 +213,15 @@ public class PageImpl extends ChannelOwner implements Page {
       video().setRelativePath(params.get("relativePath").getAsString());
     } else if ("pageError".equals(event)) {
       SerializedError error = gson().fromJson(params.getAsJsonObject("error"), SerializedError.class);
-      listeners.notify(EventType.PAGEERROR, new ErrorImpl(error));
+      String errorStr = "";
+      if (error.error != null) {
+        if (error.error.stack != null && !error.error.stack.isEmpty()) {
+          errorStr = error.error.stack;
+        } else {
+          errorStr = error.error.name + ": " + error.error.message;
+        }
+      }
+      listeners.notify(EventType.PAGEERROR, errorStr);
     } else if ("crash".equals(event)) {
       listeners.notify(EventType.CRASH, this);
     } else if ("close".equals(event)) {
@@ -352,12 +360,12 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void onPageError(Consumer<Error> handler) {
+  public void onPageError(Consumer<String> handler) {
     listeners.add(EventType.PAGEERROR, handler);
   }
 
   @Override
-  public void offPageError(Consumer<Error> handler) {
+  public void offPageError(Consumer<String> handler) {
     listeners.remove(EventType.PAGEERROR, handler);
   }
 
@@ -623,11 +631,11 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void exposeBinding(String name, Binding playwrightBinding, ExposeBindingOptions options) {
+  public void exposeBinding(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
     withLogging("Page.exposeBinding", () -> exposeBindingImpl(name, playwrightBinding, options));
   }
 
-  private void exposeBindingImpl(String name, Binding playwrightBinding, ExposeBindingOptions options) {
+  private void exposeBindingImpl(String name, BindingCallback playwrightBinding, ExposeBindingOptions options) {
     if (bindings.containsKey(name)) {
       throw new PlaywrightException("Function \"" + name + "\" has been already registered");
     }
@@ -645,9 +653,9 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void exposeFunction(String name, Function playwrightFunction) {
+  public void exposeFunction(String name, FunctionCallback playwrightFunction) {
     withLogging("Page.exposeFunction",
-      () -> exposeBindingImpl(name, (Binding.Source source, Object... args) -> playwrightFunction.call(args), null));
+      () -> exposeBindingImpl(name, (BindingCallback.Source source, Object... args) -> playwrightFunction.call(args), null));
   }
 
   @Override
@@ -1144,29 +1152,6 @@ public class PageImpl extends ChannelOwner implements Page {
 
   void frameNavigated(FrameImpl frame) {
     listeners.notify(EventType.FRAMENAVIGATED, frame);
-  }
-
-  private static class ErrorImpl implements Error {
-    private final SerializedError error;
-
-    ErrorImpl(SerializedError error) {
-      this.error = error;
-    }
-
-    @Override
-    public String message() {
-      return error.error.message;
-    }
-
-    @Override
-    public String name() {
-      return error.error.name;
-    }
-
-    @Override
-    public String stack() {
-      return error.error.stack;
-    }
   }
 
   private class WaitableFrameDetach extends WaitableEvent<EventType, Frame> {

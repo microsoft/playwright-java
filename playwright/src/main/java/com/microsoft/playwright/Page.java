@@ -37,26 +37,6 @@ import java.util.regex.Pattern;
  * <p> To unsubscribe from events use the {@code removeListener} method:
  */
 public interface Page extends AutoCloseable {
-  interface Function {
-    Object call(Object... args);
-  }
-
-  interface Binding {
-    interface Source {
-      BrowserContext context();
-      Page page();
-      Frame frame();
-    }
-
-    Object call(Source source, Object... args);
-  }
-
-  interface Error {
-    String message();
-    String name();
-    String stack();
-  }
-
 
   void onClose(Consumer<Page> handler);
   void offClose(Consumer<Page> handler);
@@ -91,8 +71,8 @@ public interface Page extends AutoCloseable {
   void onLoad(Consumer<Page> handler);
   void offLoad(Consumer<Page> handler);
 
-  void onPageError(Consumer<Error> handler);
-  void offPageError(Consumer<Error> handler);
+  void onPageError(Consumer<String> handler);
+  void offPageError(Consumer<String> handler);
 
   void onPopup(Consumer<Page> handler);
   void offPopup(Consumer<Page> handler);
@@ -1612,7 +1592,7 @@ public interface Page extends AutoCloseable {
    * @param arg Optional argument to pass to {@code expression}.
    */
   JSHandle evaluateHandle(String expression, Object arg);
-  default void exposeBinding(String name, Binding callback) {
+  default void exposeBinding(String name, BindingCallback callback) {
     exposeBinding(name, callback, null);
   }
   /**
@@ -1631,7 +1611,7 @@ public interface Page extends AutoCloseable {
    * @param name Name of the function on the window object.
    * @param callback Callback function that will be called in the Playwright's context.
    */
-  void exposeBinding(String name, Binding callback, ExposeBindingOptions options);
+  void exposeBinding(String name, BindingCallback callback, ExposeBindingOptions options);
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in the page. When called, the function
    * executes {@code callback} and returns a [Promise] which resolves to the return value of {@code callback}.
@@ -1646,7 +1626,7 @@ public interface Page extends AutoCloseable {
    * @param name Name of the function on the window object
    * @param callback Callback function which will be called in Playwright's context.
    */
-  void exposeFunction(String name, Function callback);
+  void exposeFunction(String name, FunctionCallback callback);
   default void fill(String selector, String value) {
     fill(selector, value, null);
   }
