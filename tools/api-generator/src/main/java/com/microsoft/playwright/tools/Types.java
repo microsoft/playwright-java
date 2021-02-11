@@ -56,7 +56,6 @@ class Types {
     add("Selectors.register.script", "Object|function|string", "String");
 
     // The method has custom signatures
-    add("BrowserContext.cookies", "Array<Object>", "Cookie");
     add("BrowserContext.route.url", "RegExp|function(URL):boolean|string", "String");
     add("BrowserContext.unroute.url", "RegExp|function(URL):boolean|string", "String");
     add("Page.waitForNavigation.options.url", "RegExp|function(URL):boolean|string", "Custom");

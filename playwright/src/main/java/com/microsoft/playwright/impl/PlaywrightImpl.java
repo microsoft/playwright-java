@@ -16,18 +16,13 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.DeviceDescriptor;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Selectors;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class PlaywrightImpl extends ChannelOwner implements Playwright {
@@ -53,7 +48,6 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private final BrowserTypeImpl firefox;
   private final BrowserTypeImpl webkit;
   private final Selectors selectors;
-  private final Map<String, DeviceDescriptor> devices = new HashMap<>();
 
   PlaywrightImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -61,15 +55,6 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
     firefox = parent.connection.getExistingObject(initializer.getAsJsonObject("firefox").get("guid").getAsString());
     webkit = parent.connection.getExistingObject(initializer.getAsJsonObject("webkit").get("guid").getAsString());
     selectors = parent.connection.getExistingObject(initializer.getAsJsonObject("selectors").get("guid").getAsString());
-
-    Gson gson = Serialization.gson();
-    for (JsonElement item : initializer.getAsJsonArray("deviceDescriptors")) {
-      JsonObject o = item.getAsJsonObject();
-      String name = o.get("name").getAsString();
-      DeviceDescriptorImpl descriptor = gson.fromJson(o.get("descriptor"), DeviceDescriptorImpl.class);
-      descriptor.playwright = this;
-      devices.put(name, descriptor);
-    }
   }
 
   @Override
@@ -85,11 +70,6 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   @Override
   public BrowserTypeImpl webkit() {
     return webkit;
-  }
-
-  @Override
-  public Map<String, DeviceDescriptor> devices() {
-    return devices;
   }
 
   @Override

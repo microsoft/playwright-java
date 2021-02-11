@@ -240,10 +240,9 @@ public class TestClick extends TestBase {
   @Test
   void shouldNotHangWithTouchEnabledViewports() {
     // @see https://github.com/GoogleChrome/puppeteer/issues/161
-    DeviceDescriptor descriptor = playwright.devices().get("iPhone 6");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withViewportSize(descriptor.viewportSize())
-      .withHasTouch(descriptor.hasTouch()));
+      .withViewportSize(375, 667)
+      .withHasTouch(true));
     Page page = context.newPage();
     page.mouse().down();
     page.mouse().move(100, 10);
