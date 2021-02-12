@@ -511,13 +511,6 @@ class Method extends Element {
       "Response waitForResponse(Predicate<Response> predicate, WaitForResponseOptions option, Runnable callbacks);"
     });
 
-    String[] waitForNavigation = {
-      "default Response waitForNavigation(Runnable callback) { return waitForNavigation(null, callback); }",
-      "Response waitForNavigation(WaitForNavigationOptions options, Runnable callback);"
-    };
-    customSignature.put("Frame.waitForNavigation", waitForNavigation);
-    customSignature.put("Page.waitForNavigation", waitForNavigation);
-
     String[] selectOption = {
       "default List<String> selectOption(String selector, String value) {",
       "  return selectOption(selector, value, null);",

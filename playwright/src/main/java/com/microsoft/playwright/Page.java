@@ -2293,7 +2293,9 @@ public interface Page extends AutoCloseable {
    * - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
    */
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
-  default Response waitForNavigation(Runnable callback) { return waitForNavigation(null, callback); }
+  default Response waitForNavigation(Runnable callback) {
+    return waitForNavigation(null, callback);
+  }
   /**
    * Waits for the main frame navigation and returns the main resource response. In case of multiple redirects, the
    * navigation will resolve with the response of the last redirect. In case of navigation to a different anchor or
