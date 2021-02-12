@@ -27,6 +27,7 @@ import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.reverse;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 abstract class Element {
@@ -578,7 +579,7 @@ class Method extends Element {
       String[] signatures = customSignature.get(jsonPath);
       for (int i = 0; i < signatures.length; i++) {
         if (i == signatures.length - 1) {
-          writeJavadoc(output, offset);
+          writeJavadoc(params, output, offset);
         }
         output.add(offset + signatures[i]);
       }
@@ -607,13 +608,13 @@ class Method extends Element {
     }
 
     List<String> paramList = params.stream().map(p -> p.type.isTypeUnion() ? p.toJavaOverload(overloadIndex) : p.toJava()).collect(toList());
-    writeJavadoc(output, offset);
+    writeJavadoc(params, output, offset);
     output.add(offset + returnType.toJava() + " " + jsonName + "(" + String.join(", ", paramList) + ");");
   }
 
 
   private void writeDefaultOverloadedMethod(int overloadIndex, int firstNullOptional, List<String> output, String offset) {
-    List<String> paramList = new ArrayList<>();
+    List<Param> paramList = new ArrayList<>();
     List<String> argList = new ArrayList<>();
     for (int i = 0; i < params.size(); i++) {
       Param p = params.get(i);
@@ -624,21 +625,24 @@ class Method extends Element {
       if (p.isOptional() && i > firstNullOptional) {
         continue;
       }
-      paramList.add(p.type.isTypeUnion() ? p.toJavaOverload(overloadIndex) : p.toJava());
+      paramList.add(p);
       argList.add(p.jsonName);
     }
+    String paramsStr = paramList.stream().map(p -> p.type.isTypeUnion() ? p.toJavaOverload(overloadIndex) : p.toJava())
+      .collect(joining(", "));
     String returns = returnType.toJava().equals("void") ? "" : "return ";
-    output.add(offset + "default " + returnType.toJava() + " " + jsonName + "(" + String.join(", ", paramList) + ") {");
+    writeJavadoc(paramList, output, offset);
+    output.add(offset + "default " + returnType.toJava() + " " + jsonName + "(" + paramsStr + ") {");
     output.add(offset + "  " + returns + jsonName + "(" + String.join(", ", argList) + ");");
     output.add(offset + "}");
   }
 
-  private void writeJavadoc(List<String> output, String offset) {
+  private void writeJavadoc(List<Param> paramsForOverload, List<String> output, String offset) {
     List<String> sections = new ArrayList<>();
     sections.add(formattedComment());
     boolean hasBlankLine = false;
-    if (!params.isEmpty()) {
-      for (Param p : params) {
+    if (!paramsForOverload.isEmpty()) {
+      for (Param p : paramsForOverload) {
         String comment = p.comment();
         if (comment.isEmpty()) {
           continue;

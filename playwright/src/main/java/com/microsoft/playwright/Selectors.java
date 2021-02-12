@@ -37,6 +37,14 @@ public interface Selectors {
       return this;
     }
   }
+  /**
+   * An example of registering selector engine that queries elements based on a tag name:
+   *
+   *
+   * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May only
+   * contain {@code [a-zA-Z0-9_]} characters.
+   * @param script Script that evaluates to a selector engine instance.
+   */
   default void register(String name, String script) {
     register(name, script, null);
   }
@@ -49,6 +57,14 @@ public interface Selectors {
    * @param script Script that evaluates to a selector engine instance.
    */
   void register(String name, String script, RegisterOptions options);
+  /**
+   * An example of registering selector engine that queries elements based on a tag name:
+   *
+   *
+   * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May only
+   * contain {@code [a-zA-Z0-9_]} characters.
+   * @param script Script that evaluates to a selector engine instance.
+   */
   default void register(String name, Path script) {
     register(name, script, null);
   }

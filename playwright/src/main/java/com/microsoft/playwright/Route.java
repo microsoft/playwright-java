@@ -116,6 +116,9 @@ public interface Route {
       return this;
     }
   }
+  /**
+   * Aborts the route's request.
+   */
   default void abort() {
     abort(null);
   }
@@ -141,6 +144,9 @@ public interface Route {
    * - {@code 'failed'} - A generic failure occurred.
    */
   void abort(String errorCode);
+  /**
+   * Continues route's request with optional overrides.
+   */
   default void resume() {
     resume(null);
   }
@@ -148,6 +154,9 @@ public interface Route {
    * Continues route's request with optional overrides.
    */
   void resume(ResumeOptions options);
+  /**
+   * Fulfills route's request with given response.
+   */
   default void fulfill() {
     fulfill(null);
   }

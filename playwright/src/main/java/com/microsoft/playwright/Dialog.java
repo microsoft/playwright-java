@@ -27,6 +27,9 @@ import java.util.*;
  * actions like click will never finish.
  */
 public interface Dialog {
+  /**
+   * Returns when the dialog has been accepted.
+   */
   default void accept() {
     accept(null);
   }

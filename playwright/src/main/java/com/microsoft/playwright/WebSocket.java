@@ -85,6 +85,13 @@ public interface WebSocket {
    * Contains the URL of the WebSocket.
    */
   String url();
+  /**
+   * Performs action and waits for a frame to be sent. If predicate is provided, it passes {@code WebSocketFrame} value into the
+   * {@code predicate} function and waits for {@code predicate(webSocketFrame)} to return a truthy value. Will throw an error if the
+   * WebSocket or Page is closed before the frame is received.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
   default WebSocketFrame waitForFrameReceived(Runnable callback) {
     return waitForFrameReceived(null, callback);
   }
@@ -96,6 +103,13 @@ public interface WebSocket {
    * @param callback Callback that performs the action triggering the event.
    */
   WebSocketFrame waitForFrameReceived(WaitForFrameReceivedOptions options, Runnable callback);
+  /**
+   * Performs action and waits for a frame to be sent. If predicate is provided, it passes {@code WebSocketFrame} value into the
+   * {@code predicate} function and waits for {@code predicate(webSocketFrame)} to return a truthy value. Will throw an error if the
+   * WebSocket or Page is closed before the frame is sent.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
   default WebSocketFrame waitForFrameSent(Runnable callback) {
     return waitForFrameSent(null, callback);
   }

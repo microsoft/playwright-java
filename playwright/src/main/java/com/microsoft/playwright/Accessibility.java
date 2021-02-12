@@ -53,6 +53,13 @@ public interface Accessibility {
       return this;
     }
   }
+  /**
+   * Captures the current state of the accessibility tree. The returned object represents the root accessible node of the
+   * page.
+   *
+   * <p> <strong>NOTE:</strong> The Chromium accessibility tree contains nodes that go unused on most platforms and by most screen readers.
+   * Playwright will discard them as well for an easier to process tree, unless {@code interestingOnly} is set to {@code false}.
+   */
   default String snapshot() {
     return snapshot(null);
   }

@@ -1374,6 +1374,12 @@ public interface Page extends AutoCloseable {
    * @param script Script to be evaluated in all pages in the browser context.
    */
   void addInitScript(Path script);
+  /**
+   * Adds a {@code <script>} tag into the page with the desired url or content. Returns the added tag when the script's onload
+   * fires or when the script content was injected into frame.
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.addScriptTag}].
+   */
   default ElementHandle addScriptTag() {
     return addScriptTag(null);
   }
@@ -1384,6 +1390,12 @@ public interface Page extends AutoCloseable {
    * <p> Shortcut for main frame's [{@code method: Frame.addScriptTag}].
    */
   ElementHandle addScriptTag(AddScriptTagOptions options);
+  /**
+   * Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag with the
+   * content. Returns the added tag when the stylesheet's onload fires or when the CSS content was injected into frame.
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.addStyleTag}].
+   */
   default ElementHandle addStyleTag() {
     return addStyleTag(null);
   }
@@ -1398,6 +1410,26 @@ public interface Page extends AutoCloseable {
    * Brings page to front (activates tab).
    */
   void bringToFront();
+  /**
+   * This method checks an element matching {@code selector} by performing the following steps:
+   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
+   * 1. Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
+   *    checked, this method returns immediately.
+   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
+   *    element is detached during the checks, the whole action is retried.
+   * 1. Scroll the element into view if needed.
+   * 1. Use [{@code property: Page.mouse}] to click in the center of the element.
+   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * 1. Ensure that the element is now checked. If not, this method rejects.
+   *
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
+   * Passing zero timeout disables this.
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.check}].
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
   default void check(String selector) {
     check(selector, null);
   }
@@ -1422,6 +1454,23 @@ public interface Page extends AutoCloseable {
    * [working with selectors](./selectors.md) for more details.
    */
   void check(String selector, CheckOptions options);
+  /**
+   * This method clicks an element matching {@code selector} by performing the following steps:
+   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
+   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
+   *    element is detached during the checks, the whole action is retried.
+   * 1. Scroll the element into view if needed.
+   * 1. Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.
+   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   *
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
+   * Passing zero timeout disables this.
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.click}].
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
   default void click(String selector) {
     click(selector, null);
   }
@@ -1443,6 +1492,15 @@ public interface Page extends AutoCloseable {
    * [working with selectors](./selectors.md) for more details.
    */
   void click(String selector, ClickOptions options);
+  /**
+   * If {@code runBeforeUnload} is {@code false}, does not run any unload handlers and waits for the page to be closed. If
+   * {@code runBeforeUnload} is {@code true} the method will run unload handlers, but will **not** wait for the page to close.
+   *
+   * <p> By default, {@code page.close()} **does not** run {@code beforeunload} handlers.
+   *
+   * <p> <strong>NOTE:</strong> if {@code runBeforeUnload} is passed as true, a {@code beforeunload} dialog might be summoned and should be handled manually
+   * via [{@code event: Page.dialog}] event.
+   */
   default void close() {
     close(null);
   }
@@ -1464,6 +1522,26 @@ public interface Page extends AutoCloseable {
    * Get the browser context that the page belongs to.
    */
   BrowserContext context();
+  /**
+   * This method double clicks an element matching {@code selector} by performing the following steps:
+   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
+   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
+   *    element is detached during the checks, the whole action is retried.
+   * 1. Scroll the element into view if needed.
+   * 1. Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.
+   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
+   *    first click of the {@code dblclick()} triggers a navigation event, this method will reject.
+   *
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
+   * Passing zero timeout disables this.
+   *
+   * <p> <strong>NOTE:</strong> {@code page.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.dblclick}].
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
   default void dblclick(String selector) {
     dblclick(selector, null);
   }
@@ -1488,9 +1566,58 @@ public interface Page extends AutoCloseable {
    * [working with selectors](./selectors.md) for more details.
    */
   void dblclick(String selector, DblclickOptions options);
+  /**
+   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
+   * is dispatched. This is equivalend to calling
+   * [element.click()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click).
+   *
+   * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
+   * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
+   *
+   * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
+   * - [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)
+   * - [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)
+   * - [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)
+   * - [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)
+   * - [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)
+   * - [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)
+   * - [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)
+   *
+   * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
+   *
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
+   * @param eventInit Optional event-specific initialization properties.
+   */
   default void dispatchEvent(String selector, String type, Object eventInit) {
     dispatchEvent(selector, type, eventInit, null);
   }
+  /**
+   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
+   * is dispatched. This is equivalend to calling
+   * [element.click()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click).
+   *
+   * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
+   * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
+   *
+   * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
+   * - [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)
+   * - [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)
+   * - [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)
+   * - [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)
+   * - [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)
+   * - [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)
+   * - [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)
+   *
+   * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
+   *
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
+   */
   default void dispatchEvent(String selector, String type) {
     dispatchEvent(selector, type, null);
   }
@@ -1524,6 +1651,19 @@ public interface Page extends AutoCloseable {
     emulateMedia(null);
   }
   void emulateMedia(EmulateMediaOptions options);
+  /**
+   * The method finds an element matching the specified selector within the page and passes it as a first argument to
+   * {@code expression}. If no elements match the selector, the method throws an error. Returns the value of {@code expression}.
+   *
+   * <p> If {@code expression} returns a [Promise], then [{@code method: Page.evalOnSelector}] would wait for the promise to resolve and
+   * return its value.
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.evalOnSelector}].
+   *
+   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   */
   default Object evalOnSelector(String selector, String expression) {
     return evalOnSelector(selector, expression, null);
   }
@@ -1542,6 +1682,18 @@ public interface Page extends AutoCloseable {
    * @param arg Optional argument to pass to {@code expression}.
    */
   Object evalOnSelector(String selector, String expression, Object arg);
+  /**
+   * The method finds all elements matching the specified selector within the page and passes an array of matched elements as
+   * a first argument to {@code expression}. Returns the result of {@code expression} invocation.
+   *
+   * <p> If {@code expression} returns a [Promise], then [{@code method: Page.evalOnSelectorAll}] would wait for the promise to resolve and
+   * return its value.
+   *
+   *
+   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   */
   default Object evalOnSelectorAll(String selector, String expression) {
     return evalOnSelectorAll(selector, expression, null);
   }
@@ -1559,6 +1711,27 @@ public interface Page extends AutoCloseable {
    * @param arg Optional argument to pass to {@code expression}.
    */
   Object evalOnSelectorAll(String selector, String expression, Object arg);
+  /**
+   * Returns the value of the {@code expression} invocation.
+   *
+   * <p> If the function passed to the [{@code method: Page.evaluate}] returns a [Promise], then [{@code method: Page.evaluate}] would wait
+   * for the promise to resolve and return its value.
+   *
+   * <p> If the function passed to the [{@code method: Page.evaluate}] returns a non-[Serializable] value, then
+   * [{@code method: Page.evaluate}] resolves to {@code undefined}. Playwright also supports transferring some additional values that are
+   * not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
+   *
+   * <p> Passing argument to {@code expression}:
+   *
+   * <p> A string can also be passed in instead of a function:
+   *
+   * <p> {@code ElementHandle} instances can be passed as an argument to the [{@code method: Page.evaluate}]:
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.evaluate}].
+   *
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   */
   default Object evaluate(String expression) {
     return evaluate(expression, null);
   }
@@ -1585,6 +1758,23 @@ public interface Page extends AutoCloseable {
    * @param arg Optional argument to pass to {@code expression}.
    */
   Object evaluate(String expression, Object arg);
+  /**
+   * Returns the value of the {@code expression} invocation as a {@code JSHandle}.
+   *
+   * <p> The only difference between [{@code method: Page.evaluate}] and [{@code method: Page.evaluateHandle}] is that
+   * [{@code method: Page.evaluateHandle}] returns {@code JSHandle}.
+   *
+   * <p> If the function passed to the [{@code method: Page.evaluateHandle}] returns a [Promise], then [{@code method: Page.evaluateHandle}]
+   * would wait for the promise to resolve and return its value.
+   *
+   * <p> A string can also be passed in instead of a function:
+   *
+   * <p> {@code JSHandle} instances can be passed as an argument to the [{@code method: Page.evaluateHandle}]:
+   *
+   *
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   */
   default JSHandle evaluateHandle(String expression) {
     return evaluateHandle(expression, null);
   }
@@ -1607,6 +1797,22 @@ public interface Page extends AutoCloseable {
    * @param arg Optional argument to pass to {@code expression}.
    */
   JSHandle evaluateHandle(String expression, Object arg);
+  /**
+   * The method adds a function called {@code name} on the {@code window} object of every frame in this page. When called, the function
+   * executes {@code callback} and returns a [Promise] which resolves to the return value of {@code callback}. If the {@code callback} returns
+   * a [Promise], it will be awaited.
+   *
+   * <p> The first argument of the {@code callback} function contains information about the caller: `{ browserContext: BrowserContext,
+   * page: Page, frame: Frame }`.
+   *
+   * <p> See [{@code method: BrowserContext.exposeBinding}] for the context-wide version.
+   *
+   * <p> <strong>NOTE:</strong> Functions installed via [{@code method: Page.exposeBinding}] survive navigations.
+   *
+   *
+   * @param name Name of the function on the window object.
+   * @param callback Callback function that will be called in the Playwright's context.
+   */
   default void exposeBinding(String name, BindingCallback callback) {
     exposeBinding(name, callback, null);
   }
@@ -1642,6 +1848,21 @@ public interface Page extends AutoCloseable {
    * @param callback Callback function which will be called in Playwright's context.
    */
   void exposeFunction(String name, FunctionCallback callback);
+  /**
+   * This method waits for an element matching {@code selector}, waits for [actionability](./actionability.md) checks, focuses the
+   * element, fills it and triggers an {@code input} event after filling. If the element is inside the {@code <label>} element that has
+   * associated [control](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control), that control will be
+   * filled instead. If the element to be filled is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this
+   * method throws an error. Note that you can pass an empty string to clear the input field.
+   *
+   * <p> To send fine-grained keyboard events, use [{@code method: Page.type}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.fill}]
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
+   */
   default void fill(String selector, String value) {
     fill(selector, value, null);
   }
@@ -1661,6 +1882,15 @@ public interface Page extends AutoCloseable {
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
   void fill(String selector, String value, FillOptions options);
+  /**
+   * This method fetches an element with {@code selector} and focuses it. If there's no element matching {@code selector}, the method
+   * waits until a matching element appears in the DOM.
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.focus}].
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
   default void focus(String selector) {
     focus(selector, null);
   }
@@ -1688,6 +1918,13 @@ public interface Page extends AutoCloseable {
    * An array of all frames attached to the page.
    */
   List<Frame> frames();
+  /**
+   * Returns element attribute value.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   * @param name Attribute name to get the value for.
+   */
   default String getAttribute(String selector, String name) {
     return getAttribute(selector, name, null);
   }
@@ -1699,6 +1936,12 @@ public interface Page extends AutoCloseable {
    * @param name Attribute name to get the value for.
    */
   String getAttribute(String selector, String name, GetAttributeOptions options);
+  /**
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
+   * last redirect. If can not go back, returns {@code null}.
+   *
+   * <p> Navigate to the previous page in history.
+   */
   default Response goBack() {
     return goBack(null);
   }
@@ -1709,6 +1952,12 @@ public interface Page extends AutoCloseable {
    * <p> Navigate to the previous page in history.
    */
   Response goBack(GoBackOptions options);
+  /**
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
+   * last redirect. If can not go forward, returns {@code null}.
+   *
+   * <p> Navigate to the next page in history.
+   */
   default Response goForward() {
     return goForward(null);
   }
@@ -1719,6 +1968,30 @@ public interface Page extends AutoCloseable {
    * <p> Navigate to the next page in history.
    */
   Response goForward(GoForwardOptions options);
+  /**
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
+   * last redirect.
+   *
+   * <p> {@code page.goto} will throw an error if:
+   * - there's an SSL error (e.g. in case of self-signed certificates).
+   * - target URL is invalid.
+   * - the {@code timeout} is exceeded during navigation.
+   * - the remote server does not respond or is unreachable.
+   * - the main resource failed to load.
+   *
+   * <p> {@code page.goto} will not throw an error when any valid HTTP status code is returned by the remote server, including 404 "Not
+   * Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling
+   * [{@code method: Response.status}].
+   *
+   * <p> <strong>NOTE:</strong> {@code page.goto} either throws an error or returns a main resource response. The only exceptions are navigation to
+   * {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
+   * <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the
+   * [upstream issue](https://bugs.chromium.org/p/chromium/issues/detail?id=761295).
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.goto}]
+   *
+   * @param url URL to navigate page to. The url should include scheme, e.g. {@code https://}.
+   */
   default Response navigate(String url) {
     return navigate(url, null);
   }
@@ -1747,6 +2020,23 @@ public interface Page extends AutoCloseable {
    * @param url URL to navigate page to. The url should include scheme, e.g. {@code https://}.
    */
   Response navigate(String url, NavigateOptions options);
+  /**
+   * This method hovers over an element matching {@code selector} by performing the following steps:
+   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
+   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
+   *    element is detached during the checks, the whole action is retried.
+   * 1. Scroll the element into view if needed.
+   * 1. Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.
+   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   *
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
+   * Passing zero timeout disables this.
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.hover}].
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
   default void hover(String selector) {
     hover(selector, null);
   }
@@ -1768,6 +2058,12 @@ public interface Page extends AutoCloseable {
    * [working with selectors](./selectors.md) for more details.
    */
   void hover(String selector, HoverOptions options);
+  /**
+   * Returns {@code element.innerHTML}.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
   default String innerHTML(String selector) {
     return innerHTML(selector, null);
   }
@@ -1778,6 +2074,12 @@ public interface Page extends AutoCloseable {
    * [working with selectors](./selectors.md) for more details.
    */
   String innerHTML(String selector, InnerHTMLOptions options);
+  /**
+   * Returns {@code element.innerText}.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
   default String innerText(String selector) {
     return innerText(selector, null);
   }
@@ -1788,6 +2090,12 @@ public interface Page extends AutoCloseable {
    * [working with selectors](./selectors.md) for more details.
    */
   String innerText(String selector, InnerTextOptions options);
+  /**
+   * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
   default boolean isChecked(String selector) {
     return isChecked(selector, null);
   }
@@ -1802,6 +2110,12 @@ public interface Page extends AutoCloseable {
    * Indicates that the page has been closed.
    */
   boolean isClosed();
+  /**
+   * Returns whether the element is disabled, the opposite of [enabled](./actionability.md#enabled).
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
   default boolean isDisabled(String selector) {
     return isDisabled(selector, null);
   }
@@ -1812,6 +2126,12 @@ public interface Page extends AutoCloseable {
    * [working with selectors](./selectors.md) for more details.
    */
   boolean isDisabled(String selector, IsDisabledOptions options);
+  /**
+   * Returns whether the element is [editable](./actionability.md#editable).
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
   default boolean isEditable(String selector) {
     return isEditable(selector, null);
   }
@@ -1822,6 +2142,12 @@ public interface Page extends AutoCloseable {
    * [working with selectors](./selectors.md) for more details.
    */
   boolean isEditable(String selector, IsEditableOptions options);
+  /**
+   * Returns whether the element is [enabled](./actionability.md#enabled).
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
   default boolean isEnabled(String selector) {
     return isEnabled(selector, null);
   }
@@ -1832,6 +2158,13 @@ public interface Page extends AutoCloseable {
    * [working with selectors](./selectors.md) for more details.
    */
   boolean isEnabled(String selector, IsEnabledOptions options);
+  /**
+   * Returns whether the element is hidden, the opposite of [visible](./actionability.md#visible).  {@code selector} that does not
+   * match any elements is considered hidden.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
   default boolean isHidden(String selector) {
     return isHidden(selector, null);
   }
@@ -1843,6 +2176,13 @@ public interface Page extends AutoCloseable {
    * [working with selectors](./selectors.md) for more details.
    */
   boolean isHidden(String selector, IsHiddenOptions options);
+  /**
+   * Returns whether the element is [visible](./actionability.md#visible). {@code selector} that does not match any elements is
+   * considered not visible.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
   default boolean isVisible(String selector) {
     return isVisible(selector, null);
   }
@@ -1875,6 +2215,47 @@ public interface Page extends AutoCloseable {
    * [{@code method: BrowserType.launch}].
    */
   void pause();
+  /**
+   * Returns the PDF buffer.
+   *
+   * <p> <strong>NOTE:</strong> Generating a pdf is currently only supported in Chromium headless.
+   *
+   * <p> {@code page.pdf()} generates a pdf of the page with {@code print} css media. To generate a pdf with {@code screen} media, call
+   * [{@code method: Page.emulateMedia}] before calling {@code page.pdf()}:
+   *
+   * <p> <strong>NOTE:</strong> By default, {@code page.pdf()} generates a pdf with modified colors for printing. Use the
+   * [{@code -webkit-print-color-adjust}](https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-print-color-adjust) property to
+   * force rendering of exact colors.
+   *
+   * <p> The {@code width}, {@code height}, and {@code margin} options accept values labeled with units. Unlabeled values are treated as pixels.
+   *
+   * <p> A few examples:
+   * - {@code page.pdf({width: 100})} - prints with width set to 100 pixels
+   * - {@code page.pdf({width: '100px'})} - prints with width set to 100 pixels
+   * - {@code page.pdf({width: '10cm'})} - prints with width set to 10 centimeters.
+   *
+   * <p> All possible units are:
+   * - {@code px} - pixel
+   * - {@code in} - inch
+   * - {@code cm} - centimeter
+   * - {@code mm} - millimeter
+   *
+   * <p> The {@code format} options are:
+   * - {@code Letter}: 8.5in x 11in
+   * - {@code Legal}: 8.5in x 14in
+   * - {@code Tabloid}: 11in x 17in
+   * - {@code Ledger}: 17in x 11in
+   * - {@code A0}: 33.1in x 46.8in
+   * - {@code A1}: 23.4in x 33.1in
+   * - {@code A2}: 16.54in x 23.4in
+   * - {@code A3}: 11.7in x 16.54in
+   * - {@code A4}: 8.27in x 11.7in
+   * - {@code A5}: 5.83in x 8.27in
+   * - {@code A6}: 4.13in x 5.83in
+   *
+   * <p> <strong>NOTE:</strong> {@code headerTemplate} and {@code footerTemplate} markup have the following limitations: > 1. Script tags inside templates
+   * are not evaluated. > 2. Page styles are not visible inside templates.
+   */
   default byte[] pdf() {
     return pdf(null);
   }
@@ -1920,6 +2301,31 @@ public interface Page extends AutoCloseable {
    * are not evaluated. > 2. Page styles are not visible inside templates.
    */
   byte[] pdf(PdfOptions options);
+  /**
+   * Focuses the element, and then uses [{@code method: Keyboard.down}] and [{@code method: Keyboard.up}].
+   *
+   * <p> {@code key} can specify the intended [keyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
+   * value or a single character to generate the text for. A superset of the {@code key} values can be found
+   * [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values). Examples of the keys are:
+   *
+   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
+   * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
+   *
+   * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
+   *
+   * <p> Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
+   *
+   * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
+   * texts.
+   *
+   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
+   * modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   *
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
+   */
   default void press(String selector, String key) {
     press(selector, key, null);
   }
@@ -1967,6 +2373,10 @@ public interface Page extends AutoCloseable {
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    */
   List<ElementHandle> querySelectorAll(String selector);
+  /**
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
+   * last redirect.
+   */
   default Response reload() {
     return reload(null);
   }
@@ -2029,6 +2439,12 @@ public interface Page extends AutoCloseable {
    * @param handler handler function to route the request.
    */
   void route(Predicate<String> url, Consumer<Route> handler);
+  /**
+   * Returns the buffer with the captured screenshot.
+   *
+   * <p> <strong>NOTE:</strong> Screenshots take at least 1/6 second on Chromium OS X and Chromium Windows. See https://crbug.com/741689 for
+   * discussion.
+   */
   default byte[] screenshot() {
     return screenshot(null);
   }
@@ -2094,6 +2510,11 @@ public interface Page extends AutoCloseable {
    * is considered matching if all specified properties match.
    */
   List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options);
+  /**
+   *
+   *
+   * @param html HTML markup to assign to the page.
+   */
   default void setContent(String html) {
     setContent(html, null);
   }
@@ -2160,6 +2581,25 @@ public interface Page extends AutoCloseable {
    * viewport size before navigating to the page.
    */
   void setViewportSize(int width, int height);
+  /**
+   * This method taps an element matching {@code selector} by performing the following steps:
+   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
+   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
+   *    element is detached during the checks, the whole action is retried.
+   * 1. Scroll the element into view if needed.
+   * 1. Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.
+   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   *
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
+   * Passing zero timeout disables this.
+   *
+   * <p> <strong>NOTE:</strong> [{@code method: Page.tap}] requires that the {@code hasTouch} option of the browser context be set to true.
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.tap}].
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
   default void tap(String selector) {
     tap(selector, null);
   }
@@ -2183,6 +2623,12 @@ public interface Page extends AutoCloseable {
    * [working with selectors](./selectors.md) for more details.
    */
   void tap(String selector, TapOptions options);
+  /**
+   * Returns {@code element.textContent}.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
   default String textContent(String selector) {
     return textContent(selector, null);
   }
@@ -2198,6 +2644,18 @@ public interface Page extends AutoCloseable {
    */
   String title();
   Touchscreen touchscreen();
+  /**
+   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code page.type} can be used to send
+   * fine-grained keyboard events. To fill values in form fields, use [{@code method: Page.fill}].
+   *
+   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: Keyboard.press}].
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.type}].
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   * @param text A text to type into a focused element.
+   */
   default void type(String selector, String text) {
     type(selector, text, null);
   }
@@ -2214,6 +2672,26 @@ public interface Page extends AutoCloseable {
    * @param text A text to type into a focused element.
    */
   void type(String selector, String text, TypeOptions options);
+  /**
+   * This method unchecks an element matching {@code selector} by performing the following steps:
+   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
+   * 1. Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
+   *    unchecked, this method returns immediately.
+   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
+   *    element is detached during the checks, the whole action is retried.
+   * 1. Scroll the element into view if needed.
+   * 1. Use [{@code property: Page.mouse}] to click in the center of the element.
+   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * 1. Ensure that the element is now unchecked. If not, this method rejects.
+   *
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
+   * Passing zero timeout disables this.
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.uncheck}].
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
   default void uncheck(String selector) {
     uncheck(selector, null);
   }
@@ -2238,6 +2716,11 @@ public interface Page extends AutoCloseable {
    * [working with selectors](./selectors.md) for more details.
    */
   void uncheck(String selector, UncheckOptions options);
+  /**
+   * Removes a route created with [{@code method: Page.route}]. When {@code handler} is not specified, removes all routes for the {@code url}.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   */
   default void unroute(String url) {
     unroute(url, null);
   }
@@ -2248,6 +2731,11 @@ public interface Page extends AutoCloseable {
    * @param handler Optional handler function to route the request.
    */
   void unroute(String url, Consumer<Route> handler);
+  /**
+   * Removes a route created with [{@code method: Page.route}]. When {@code handler} is not specified, removes all routes for the {@code url}.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   */
   default void unroute(Pattern url) {
     unroute(url, null);
   }
@@ -2258,6 +2746,11 @@ public interface Page extends AutoCloseable {
    * @param handler Optional handler function to route the request.
    */
   void unroute(Pattern url, Consumer<Route> handler);
+  /**
+   * Removes a route created with [{@code method: Page.route}]. When {@code handler} is not specified, removes all routes for the {@code url}.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   */
   default void unroute(Predicate<String> url) {
     unroute(url, null);
   }
@@ -2277,6 +2770,11 @@ public interface Page extends AutoCloseable {
    */
   Video video();
   ViewportSize viewportSize();
+  /**
+   * Performs action and waits for the Page to close.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
   default Page waitForClose(Runnable callback) {
     return waitForClose(null, callback);
   }
@@ -2286,6 +2784,13 @@ public interface Page extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    */
   Page waitForClose(WaitForCloseOptions options, Runnable callback);
+  /**
+   * Performs action and waits for a [ConoleMessage] to be logged by in the page. If predicate is provided, it passes
+   * {@code ConsoleMessage} value into the {@code predicate} function and waits for {@code predicate(message)} to return a truthy value. Will
+   * throw an error if the page is closed before the console event is fired.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
   default ConsoleMessage waitForConsoleMessage(Runnable callback) {
     return waitForConsoleMessage(null, callback);
   }
@@ -2297,6 +2802,13 @@ public interface Page extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    */
   ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable callback);
+  /**
+   * Performs action and waits for a new {@code Download}. If predicate is provided, it passes {@code Download} value into the
+   * {@code predicate} function and waits for {@code predicate(download)} to return a truthy value. Will throw an error if the page is
+   * closed before the download event is fired.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
   default Download waitForDownload(Runnable callback) {
     return waitForDownload(null, callback);
   }
@@ -2308,6 +2820,13 @@ public interface Page extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    */
   Download waitForDownload(WaitForDownloadOptions options, Runnable callback);
+  /**
+   * Performs action and waits for a new {@code FileChooser} to be created. If predicate is provided, it passes {@code FileChooser} value
+   * into the {@code predicate} function and waits for {@code predicate(fileChooser)} to return a truthy value. Will throw an error if
+   * the page is closed before the file chooser is opened.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
   default FileChooser waitForFileChooser(Runnable callback) {
     return waitForFileChooser(null, callback);
   }
@@ -2319,9 +2838,34 @@ public interface Page extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    */
   FileChooser waitForFileChooser(WaitForFileChooserOptions options, Runnable callback);
+  /**
+   * Returns when the {@code expression} returns a truthy value. It resolves to a JSHandle of the truthy value.
+   *
+   * <p> The [{@code method: Page.waitForFunction}] can be used to observe viewport size change:
+   *
+   * <p> To pass an argument to the predicate of [{@code method: Page.waitForFunction}] function:
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.waitForFunction}].
+   *
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   * @param arg Optional argument to pass to {@code expression}.
+   */
   default JSHandle waitForFunction(String expression, Object arg) {
     return waitForFunction(expression, arg, null);
   }
+  /**
+   * Returns when the {@code expression} returns a truthy value. It resolves to a JSHandle of the truthy value.
+   *
+   * <p> The [{@code method: Page.waitForFunction}] can be used to observe viewport size change:
+   *
+   * <p> To pass an argument to the predicate of [{@code method: Page.waitForFunction}] function:
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.waitForFunction}].
+   *
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   */
   default JSHandle waitForFunction(String expression) {
     return waitForFunction(expression, null);
   }
@@ -2339,9 +2883,31 @@ public interface Page extends AutoCloseable {
    * @param arg Optional argument to pass to {@code expression}.
    */
   JSHandle waitForFunction(String expression, Object arg, WaitForFunctionOptions options);
+  /**
+   * Returns when the required load state has been reached.
+   *
+   * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been committed
+   * when this method is called. If current document has already reached the required state, resolves immediately.
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.waitForLoadState}].
+   *
+   * @param state Optional load state to wait for, defaults to {@code load}. If the state has been already reached while loading current
+   * document, the method resolves immediately. Can be one of:
+   * - {@code 'load'} - wait for the {@code load} event to be fired.
+   * - {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.
+   * - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
+   */
   default void waitForLoadState(LoadState state) {
     waitForLoadState(state, null);
   }
+  /**
+   * Returns when the required load state has been reached.
+   *
+   * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been committed
+   * when this method is called. If current document has already reached the required state, resolves immediately.
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.waitForLoadState}].
+   */
   default void waitForLoadState() {
     waitForLoadState(null);
   }
@@ -2360,6 +2926,22 @@ public interface Page extends AutoCloseable {
    * - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
    */
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
+  /**
+   * Waits for the main frame navigation and returns the main resource response. In case of multiple redirects, the
+   * navigation will resolve with the response of the last redirect. In case of navigation to a different anchor or
+   * navigation due to History API usage, the navigation will resolve with {@code null}.
+   *
+   * <p> This resolves when the page navigates to a new URL or reloads. It is useful for when you run code which will indirectly
+   * cause the page to navigate. e.g. The click target has an {@code onclick} handler that triggers navigation from a {@code setTimeout}.
+   * Consider this example:
+   *
+   * <p> <strong>NOTE:</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is
+   * considered a navigation.
+   *
+   * <p> Shortcut for main frame's [{@code method: Frame.waitForNavigation}].
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
   default Response waitForNavigation(Runnable callback) {
     return waitForNavigation(null, callback);
   }
@@ -2380,6 +2962,13 @@ public interface Page extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    */
   Response waitForNavigation(WaitForNavigationOptions options, Runnable callback);
+  /**
+   * Performs action and waits for a popup {@code Page}. If predicate is provided, it passes [Popup] value into the {@code predicate}
+   * function and waits for {@code predicate(page)} to return a truthy value. Will throw an error if the page is closed before the
+   * popup event is fired.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
   default Page waitForPopup(Runnable callback) {
     return waitForPopup(null, callback);
   }
@@ -2391,6 +2980,13 @@ public interface Page extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    */
   Page waitForPopup(WaitForPopupOptions options, Runnable callback);
+  /**
+   * Waits for the matching request and returns it.
+   *
+   *
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
+   * @param callback Callback that performs the action triggering the event.
+   */
   default Request waitForRequest(String urlOrPredicate, Runnable callback) {
     return waitForRequest(urlOrPredicate, null, callback);
   }
@@ -2402,6 +2998,13 @@ public interface Page extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    */
   Request waitForRequest(String urlOrPredicate, WaitForRequestOptions options, Runnable callback);
+  /**
+   * Waits for the matching request and returns it.
+   *
+   *
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
+   * @param callback Callback that performs the action triggering the event.
+   */
   default Request waitForRequest(Pattern urlOrPredicate, Runnable callback) {
     return waitForRequest(urlOrPredicate, null, callback);
   }
@@ -2413,6 +3016,13 @@ public interface Page extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    */
   Request waitForRequest(Pattern urlOrPredicate, WaitForRequestOptions options, Runnable callback);
+  /**
+   * Waits for the matching request and returns it.
+   *
+   *
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
+   * @param callback Callback that performs the action triggering the event.
+   */
   default Request waitForRequest(Predicate<Request> urlOrPredicate, Runnable callback) {
     return waitForRequest(urlOrPredicate, null, callback);
   }
@@ -2424,6 +3034,13 @@ public interface Page extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    */
   Request waitForRequest(Predicate<Request> urlOrPredicate, WaitForRequestOptions options, Runnable callback);
+  /**
+   * Returns the matched response.
+   *
+   *
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
+   * @param callback Callback that performs the action triggering the event.
+   */
   default Response waitForResponse(String urlOrPredicate, Runnable callback) {
     return waitForResponse(urlOrPredicate, null, callback);
   }
@@ -2435,6 +3052,13 @@ public interface Page extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    */
   Response waitForResponse(String urlOrPredicate, WaitForResponseOptions options, Runnable callback);
+  /**
+   * Returns the matched response.
+   *
+   *
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
+   * @param callback Callback that performs the action triggering the event.
+   */
   default Response waitForResponse(Pattern urlOrPredicate, Runnable callback) {
     return waitForResponse(urlOrPredicate, null, callback);
   }
@@ -2446,6 +3070,13 @@ public interface Page extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    */
   Response waitForResponse(Pattern urlOrPredicate, WaitForResponseOptions options, Runnable callback);
+  /**
+   * Returns the matched response.
+   *
+   *
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
+   * @param callback Callback that performs the action triggering the event.
+   */
   default Response waitForResponse(Predicate<Response> urlOrPredicate, Runnable callback) {
     return waitForResponse(urlOrPredicate, null, callback);
   }
@@ -2457,6 +3088,19 @@ public interface Page extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    */
   Response waitForResponse(Predicate<Response> urlOrPredicate, WaitForResponseOptions options, Runnable callback);
+  /**
+   * Returns when element specified by selector satisfies {@code state} option. Returns {@code null} if waiting for {@code hidden} or
+   * {@code detached}.
+   *
+   * <p> Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at
+   * the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the
+   * selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
+   *
+   * <p> This method works across navigations:
+   *
+   *
+   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   */
   default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }
@@ -2485,6 +3129,13 @@ public interface Page extends AutoCloseable {
    * @param timeout A timeout to wait for
    */
   void waitForTimeout(double timeout);
+  /**
+   * Performs action and waits for a new {@code WebSocket}. If predicate is provided, it passes {@code WebSocket} value into the
+   * {@code predicate} function and waits for {@code predicate(webSocket)} to return a truthy value. Will throw an error if the page is
+   * closed before the WebSocket event is fired.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
   default WebSocket waitForWebSocket(Runnable callback) {
     return waitForWebSocket(null, callback);
   }
@@ -2496,6 +3147,13 @@ public interface Page extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    */
   WebSocket waitForWebSocket(WaitForWebSocketOptions options, Runnable callback);
+  /**
+   * Performs action and waits for a new {@code Worker}. If predicate is provided, it passes {@code Worker} value into the {@code predicate}
+   * function and waits for {@code predicate(worker)} to return a truthy value. Will throw an error if the page is closed before
+   * the worker event is fired.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
   default Worker waitForWorker(Runnable callback) {
     return waitForWorker(null, callback);
   }

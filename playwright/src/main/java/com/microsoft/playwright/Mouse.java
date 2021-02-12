@@ -120,6 +120,9 @@ public interface Mouse {
       return this;
     }
   }
+  /**
+   * Shortcut for [{@code method: Mouse.move}], [{@code method: Mouse.down}], [{@code method: Mouse.up}].
+   */
   default void click(double x, double y) {
     click(x, y, null);
   }
@@ -127,6 +130,10 @@ public interface Mouse {
    * Shortcut for [{@code method: Mouse.move}], [{@code method: Mouse.down}], [{@code method: Mouse.up}].
    */
   void click(double x, double y, ClickOptions options);
+  /**
+   * Shortcut for [{@code method: Mouse.move}], [{@code method: Mouse.down}], [{@code method: Mouse.up}], [{@code method: Mouse.down}] and
+   * [{@code method: Mouse.up}].
+   */
   default void dblclick(double x, double y) {
     dblclick(x, y, null);
   }
@@ -135,6 +142,9 @@ public interface Mouse {
    * [{@code method: Mouse.up}].
    */
   void dblclick(double x, double y, DblclickOptions options);
+  /**
+   * Dispatches a {@code mousedown} event.
+   */
   default void down() {
     down(null);
   }
@@ -142,6 +152,9 @@ public interface Mouse {
    * Dispatches a {@code mousedown} event.
    */
   void down(DownOptions options);
+  /**
+   * Dispatches a {@code mousemove} event.
+   */
   default void move(double x, double y) {
     move(x, y, null);
   }
@@ -149,6 +162,9 @@ public interface Mouse {
    * Dispatches a {@code mousemove} event.
    */
   void move(double x, double y, MoveOptions options);
+  /**
+   * Dispatches a {@code mouseup} event.
+   */
   default void up() {
     up(null);
   }

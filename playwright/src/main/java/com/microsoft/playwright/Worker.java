@@ -41,6 +41,19 @@ public interface Worker {
       return this;
     }
   }
+  /**
+   * Returns the return value of {@code expression}.
+   *
+   * <p> If the function passed to the [{@code method: Worker.evaluate}] returns a [Promise], then [{@code method: Worker.evaluate}] would
+   * wait for the promise to resolve and return its value.
+   *
+   * <p> If the function passed to the [{@code method: Worker.evaluate}] returns a non-[Serializable] value, then
+   * [{@code method: Worker.evaluate}] returns {@code undefined}. Playwright also supports transferring some  additional values that are
+   * not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
+   *
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   */
   default Object evaluate(String expression) {
     return evaluate(expression, null);
   }
@@ -59,6 +72,18 @@ public interface Worker {
    * @param arg Optional argument to pass to {@code expression}.
    */
   Object evaluate(String expression, Object arg);
+  /**
+   * Returns the return value of {@code expression} as a {@code JSHandle}.
+   *
+   * <p> The only difference between [{@code method: Worker.evaluate}] and [{@code method: Worker.evaluateHandle}] is that
+   * [{@code method: Worker.evaluateHandle}] returns {@code JSHandle}.
+   *
+   * <p> If the function passed to the [{@code method: Worker.evaluateHandle}] returns a [Promise], then
+   * [{@code method: Worker.evaluateHandle}] would wait for the promise to resolve and return its value.
+   *
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   */
   default JSHandle evaluateHandle(String expression) {
     return evaluateHandle(expression, null);
   }
@@ -77,6 +102,11 @@ public interface Worker {
    */
   JSHandle evaluateHandle(String expression, Object arg);
   String url();
+  /**
+   * Performs action and waits for the Worker to close.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
   default Worker waitForClose(Runnable callback) {
     return waitForClose(null, callback);
   }

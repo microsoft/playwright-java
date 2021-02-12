@@ -483,6 +483,26 @@ public interface BrowserType {
    * A path where Playwright expects to find a bundled browser executable.
    */
   String executablePath();
+  /**
+   * Returns the browser instance.
+   *
+   * <p> You can use {@code ignoreDefaultArgs} to filter out {@code --mute-audio} from default arguments:
+   *
+   * <p> **Chromium-only** Playwright can also be used to control the Google Chrome or Microsoft Edge browsers, but it works
+   * best with the version of Chromium it is bundled with. There is no guarantee it will work with any other version. Use
+   * {@code executablePath} option with extreme caution.
+   * >
+   * If Google Chrome (rather than Chromium) is preferred, a
+   * [Chrome Canary](https://www.google.com/chrome/browser/canary.html) or
+   * [Dev Channel](https://www.chromium.org/getting-involved/dev-channel) build is suggested.
+   * >
+   * Stock browsers like Google Chrome and Microsoft Edge are suitable for tests that require proprietary media codecs for
+   * video playback. See
+   * [this article](https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/) for other
+   * differences between Chromium and Chrome.
+   * [This article](https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md)
+   * describes some differences for Linux users.
+   */
   default Browser launch() {
     return launch(null);
   }
@@ -507,6 +527,17 @@ public interface BrowserType {
    * describes some differences for Linux users.
    */
   Browser launch(LaunchOptions options);
+  /**
+   * Returns the persistent browser context instance.
+   *
+   * <p> Launches browser that uses persistent storage located at {@code userDataDir} and returns the only context. Closing this
+   * context will automatically close the browser.
+   *
+   * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for
+   * [Chromium](https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md#introduction) and
+   * [Firefox](https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile). Note that Chromium's user
+   * data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}.
+   */
   default BrowserContext launchPersistentContext(Path userDataDir) {
     return launchPersistentContext(userDataDir, null);
   }
