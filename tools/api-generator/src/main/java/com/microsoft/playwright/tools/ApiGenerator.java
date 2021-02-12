@@ -637,12 +637,12 @@ class Method extends Element {
     output.add(offset + "}");
   }
 
-  private void writeJavadoc(List<Param> paramsForOverload, List<String> output, String offset) {
+  private void writeJavadoc(List<Param> paramList, List<String> output, String offset) {
     List<String> sections = new ArrayList<>();
     sections.add(formattedComment());
     boolean hasBlankLine = false;
-    if (!paramsForOverload.isEmpty()) {
-      for (Param p : paramsForOverload) {
+    if (!paramList.isEmpty()) {
+      for (Param p : paramList) {
         String comment = p.comment();
         if (comment.isEmpty()) {
           continue;
