@@ -130,7 +130,7 @@ public class TestNetworkRequest extends TestBase {
         writer.write("done");
       }
     });
-    Response response = page.waitForResponse(() -> {
+    Response response = page.waitForResponse("**", () -> {
         Object text = page.evaluate("async url => {\n" +
           "  const data = await fetch(url);\n" +
           "  return data.text();\n" +

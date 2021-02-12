@@ -118,6 +118,21 @@ public interface BrowserContext extends AutoCloseable {
    */
   void addInitScript(String script);
   /**
+   * Adds a script which would be evaluated in one of the following scenarios:
+   * - Whenever a page is created in the browser context or is navigated.
+   * - Whenever a child frame is attached or navigated in any page in the browser context. In this case, the script is
+   *   evaluated in the context of the newly attached frame.
+   *
+   * <p> The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend
+   * the JavaScript environment, e.g. to seed {@code Math.random}.
+   *
+   * <p> <strong>NOTE:</strong> The order of evaluation of multiple scripts installed via [{@code method: BrowserContext.addInitScript}] and
+   * [{@code method: Page.addInitScript}] is not defined.
+   *
+   * @param script Script to be evaluated in all pages in the browser context.
+   */
+  void addInitScript(Path script);
+  /**
    * Returns the browser instance of the context. If it was launched as a persistent context null gets returned.
    */
   Browser browser();
@@ -210,7 +225,35 @@ public interface BrowserContext extends AutoCloseable {
    * find them using [{@code method: ChromiumBrowserContext.backgroundPages}].
    */
   List<Page> pages();
+  /**
+   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
+   * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   *
+   * <p> or the same snippet using a regex pattern instead:
+   *
+   * <p> Page routes (set up with [{@code method: Page.route}]) take precedence over browser context routes when request matches both
+   * handlers.
+   *
+   * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param handler handler function to route the request.
+   */
   void route(String url, Consumer<Route> handler);
+  /**
+   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
+   * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   *
+   * <p> or the same snippet using a regex pattern instead:
+   *
+   * <p> Page routes (set up with [{@code method: Page.route}]) take precedence over browser context routes when request matches both
+   * handlers.
+   *
+   * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param handler handler function to route the request.
+   */
   void route(Pattern url, Consumer<Route> handler);
   /**
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
@@ -281,11 +324,33 @@ public interface BrowserContext extends AutoCloseable {
    * Returns storage state for this browser context, contains current cookies and local storage snapshot.
    */
   String storageState(StorageStateOptions options);
-  default void unroute(String url) { unroute(url, null); }
-  default void unroute(Pattern url) { unroute(url, null); }
-  default void unroute(Predicate<String> url) { unroute(url, null); }
+  default void unroute(String url) {
+    unroute(url, null);
+  }
+  /**
+   * Removes a route created with [{@code method: BrowserContext.route}]. When {@code handler} is not specified, removes all routes for
+   * the {@code url}.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with
+   * [{@code method: BrowserContext.route}].
+   * @param handler Optional handler function used to register a routing with [{@code method: BrowserContext.route}].
+   */
   void unroute(String url, Consumer<Route> handler);
+  default void unroute(Pattern url) {
+    unroute(url, null);
+  }
+  /**
+   * Removes a route created with [{@code method: BrowserContext.route}]. When {@code handler} is not specified, removes all routes for
+   * the {@code url}.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with
+   * [{@code method: BrowserContext.route}].
+   * @param handler Optional handler function used to register a routing with [{@code method: BrowserContext.route}].
+   */
   void unroute(Pattern url, Consumer<Route> handler);
+  default void unroute(Predicate<String> url) {
+    unroute(url, null);
+  }
   /**
    * Removes a route created with [{@code method: BrowserContext.route}]. When {@code handler} is not specified, removes all routes for
    * the {@code url}.

@@ -1356,9 +1356,24 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> The order of evaluation of multiple scripts installed via [{@code method: BrowserContext.addInitScript}] and
    * [{@code method: Page.addInitScript}] is not defined.
    *
-   * @param script Script to be evaluated in the page.
+   * @param script Script to be evaluated in all pages in the browser context.
    */
   void addInitScript(String script);
+  /**
+   * Adds a script which would be evaluated in one of the following scenarios:
+   * - Whenever the page is navigated.
+   * - Whenever the child frame is attached or navigated. In this case, the script is evaluated in the context of the newly
+   *   attached frame.
+   *
+   * <p> The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend
+   * the JavaScript environment, e.g. to seed {@code Math.random}.
+   *
+   * <p> <strong>NOTE:</strong> The order of evaluation of multiple scripts installed via [{@code method: BrowserContext.addInitScript}] and
+   * [{@code method: Page.addInitScript}] is not defined.
+   *
+   * @param script Script to be evaluated in all pages in the browser context.
+   */
+  void addInitScript(Path script);
   default ElementHandle addScriptTag() {
     return addScriptTag(null);
   }
@@ -1960,7 +1975,41 @@ public interface Page extends AutoCloseable {
    * last redirect.
    */
   Response reload(ReloadOptions options);
+  /**
+   * Routing provides the capability to modify network requests that are made by a page.
+   *
+   * <p> Once routing is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   *
+   * <p> <strong>NOTE:</strong> The handler will only be called for the first url if the response is a redirect.
+   *
+   * <p> or the same snippet using a regex pattern instead:
+   *
+   * <p> Page routes take precedence over browser context routes (set up with [{@code method: BrowserContext.route}]) when request
+   * matches both handlers.
+   *
+   * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param handler handler function to route the request.
+   */
   void route(String url, Consumer<Route> handler);
+  /**
+   * Routing provides the capability to modify network requests that are made by a page.
+   *
+   * <p> Once routing is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   *
+   * <p> <strong>NOTE:</strong> The handler will only be called for the first url if the response is a redirect.
+   *
+   * <p> or the same snippet using a regex pattern instead:
+   *
+   * <p> Page routes take precedence over browser context routes (set up with [{@code method: BrowserContext.route}]) when request
+   * matches both handlers.
+   *
+   * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param handler handler function to route the request.
+   */
   void route(Pattern url, Consumer<Route> handler);
   /**
    * Routing provides the capability to modify network requests that are made by a page.
@@ -2189,11 +2238,29 @@ public interface Page extends AutoCloseable {
    * [working with selectors](./selectors.md) for more details.
    */
   void uncheck(String selector, UncheckOptions options);
-  default void unroute(String url) { unroute(url, null); }
-  default void unroute(Pattern url) { unroute(url, null); }
-  default void unroute(Predicate<String> url) { unroute(url, null); }
+  default void unroute(String url) {
+    unroute(url, null);
+  }
+  /**
+   * Removes a route created with [{@code method: Page.route}]. When {@code handler} is not specified, removes all routes for the {@code url}.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param handler Optional handler function to route the request.
+   */
   void unroute(String url, Consumer<Route> handler);
+  default void unroute(Pattern url) {
+    unroute(url, null);
+  }
+  /**
+   * Removes a route created with [{@code method: Page.route}]. When {@code handler} is not specified, removes all routes for the {@code url}.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param handler Optional handler function to route the request.
+   */
   void unroute(Pattern url, Consumer<Route> handler);
+  default void unroute(Predicate<String> url) {
+    unroute(url, null);
+  }
   /**
    * Removes a route created with [{@code method: Page.route}]. When {@code handler} is not specified, removes all routes for the {@code url}.
    *
@@ -2324,12 +2391,9 @@ public interface Page extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    */
   Page waitForPopup(WaitForPopupOptions options, Runnable callback);
-  default Request waitForRequest(Runnable callback) { return waitForRequest((Predicate<Request>) null, null, callback); }
-  default Request waitForRequest(String urlGlob, Runnable callback) { return waitForRequest(urlGlob, null, callback); }
-  default Request waitForRequest(Pattern urlPattern, Runnable callback) { return waitForRequest(urlPattern, null, callback); }
-  default Request waitForRequest(Predicate<Request> predicate, Runnable callback) { return waitForRequest(predicate, null, callback); }
-  Request waitForRequest(String urlGlob, WaitForRequestOptions options, Runnable callback);
-  Request waitForRequest(Pattern urlPattern, WaitForRequestOptions options, Runnable callback);
+  default Request waitForRequest(String urlOrPredicate, Runnable callback) {
+    return waitForRequest(urlOrPredicate, null, callback);
+  }
   /**
    * Waits for the matching request and returns it.
    *
@@ -2337,13 +2401,32 @@ public interface Page extends AutoCloseable {
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
    * @param callback Callback that performs the action triggering the event.
    */
-  Request waitForRequest(Predicate<Request> predicate, WaitForRequestOptions options, Runnable callback);
-  default Response waitForResponse(Runnable callback) { return waitForResponse((Predicate<Response>) null, null, callback); }
-  default Response waitForResponse(String urlGlob, Runnable callback) { return waitForResponse(urlGlob, null, callback); }
-  default Response waitForResponse(Pattern urlPattern, Runnable callback) { return waitForResponse(urlPattern, null, callback); }
-  default Response waitForResponse(Predicate<Response> predicate, Runnable callback) { return waitForResponse(predicate, null, callback); }
-  Response waitForResponse(String urlGlob, WaitForResponseOptions options, Runnable callback);
-  Response waitForResponse(Pattern urlPattern, WaitForResponseOptions options, Runnable callback);
+  Request waitForRequest(String urlOrPredicate, WaitForRequestOptions options, Runnable callback);
+  default Request waitForRequest(Pattern urlOrPredicate, Runnable callback) {
+    return waitForRequest(urlOrPredicate, null, callback);
+  }
+  /**
+   * Waits for the matching request and returns it.
+   *
+   *
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
+   * @param callback Callback that performs the action triggering the event.
+   */
+  Request waitForRequest(Pattern urlOrPredicate, WaitForRequestOptions options, Runnable callback);
+  default Request waitForRequest(Predicate<Request> urlOrPredicate, Runnable callback) {
+    return waitForRequest(urlOrPredicate, null, callback);
+  }
+  /**
+   * Waits for the matching request and returns it.
+   *
+   *
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
+   * @param callback Callback that performs the action triggering the event.
+   */
+  Request waitForRequest(Predicate<Request> urlOrPredicate, WaitForRequestOptions options, Runnable callback);
+  default Response waitForResponse(String urlOrPredicate, Runnable callback) {
+    return waitForResponse(urlOrPredicate, null, callback);
+  }
   /**
    * Returns the matched response.
    *
@@ -2351,7 +2434,29 @@ public interface Page extends AutoCloseable {
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
    * @param callback Callback that performs the action triggering the event.
    */
-  Response waitForResponse(Predicate<Response> predicate, WaitForResponseOptions option, Runnable callbacks);
+  Response waitForResponse(String urlOrPredicate, WaitForResponseOptions options, Runnable callback);
+  default Response waitForResponse(Pattern urlOrPredicate, Runnable callback) {
+    return waitForResponse(urlOrPredicate, null, callback);
+  }
+  /**
+   * Returns the matched response.
+   *
+   *
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
+   * @param callback Callback that performs the action triggering the event.
+   */
+  Response waitForResponse(Pattern urlOrPredicate, WaitForResponseOptions options, Runnable callback);
+  default Response waitForResponse(Predicate<Response> urlOrPredicate, Runnable callback) {
+    return waitForResponse(urlOrPredicate, null, callback);
+  }
+  /**
+   * Returns the matched response.
+   *
+   *
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
+   * @param callback Callback that performs the action triggering the event.
+   */
+  Response waitForResponse(Predicate<Response> urlOrPredicate, WaitForResponseOptions options, Runnable callback);
   default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }

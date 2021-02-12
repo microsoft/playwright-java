@@ -21,6 +21,7 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
@@ -32,6 +33,8 @@ import static com.microsoft.playwright.options.ScreenshotType.PNG;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
 
 
@@ -548,11 +551,25 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void addInitScript(String script) {
+    withLogging("Page.addInitScript", () -> addInitScriptImpl(script));
+  }
+
+  @Override
+  public void addInitScript(Path path) {
     withLogging("Page.addInitScript", () -> {
-      JsonObject params = new JsonObject();
-      params.addProperty("source", script);
-      sendMessage("addInitScript", params);
+      try {
+        byte[] bytes = readAllBytes(path);
+        addInitScriptImpl(new String(bytes, UTF_8));
+      } catch (IOException e) {
+        throw new PlaywrightException("Failed to read script from file", e);
+      }
     });
+  }
+
+  private void addInitScriptImpl(String script) {
+    JsonObject params = new JsonObject();
+    params.addProperty("source", script);
+    sendMessage("addInitScript", params);
   }
 
   @Override

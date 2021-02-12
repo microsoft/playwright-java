@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
@@ -32,6 +33,8 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.readAllBytes;
 
 class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private final BrowserImpl browser;
@@ -125,6 +128,19 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   public void addInitScript(String script) {
     withLogging("BrowserContext.addInitScript", () -> addInitScriptImpl(script));
   }
+
+  @Override
+  public void addInitScript(Path path) {
+    withLogging("BrowserContext.addInitScript", () -> {
+      try {
+        byte[] bytes = readAllBytes(path);
+        addInitScriptImpl(new String(bytes, UTF_8));
+      } catch (IOException e) {
+        throw new PlaywrightException("Failed to read script from file", e);
+      }
+    });
+  }
+
   private void addInitScriptImpl(String script) {
     // TODO: serialize arg
     JsonObject params = new JsonObject();
