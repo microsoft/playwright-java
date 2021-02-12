@@ -21,27 +21,8 @@ import com.microsoft.playwright.PlaywrightException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-class ServerException extends PlaywrightException {
-  private final SerializedError.Error error;
-
-  ServerException(SerializedError.Error error) {
-    super(error.name + ": " + error.message);
-    this.error = error;
-  }
-
-  @Override
-  public void printStackTrace(PrintWriter s) {
-    super.printStackTrace(s);
-    s.println("Caused by Playwright server error:");
-    s.println(getMessage());
-    s.println(error.stack);
-  }
-
-  @Override
-  public void printStackTrace(PrintStream s) {
-    super.printStackTrace(s);
-    s.println("Caused by Playwright server error:");
-    s.println(getMessage());
-    s.println(error.stack);
+class DriverException extends PlaywrightException {
+  DriverException(SerializedError.Error error) {
+    super(error.toString());
   }
 }
