@@ -159,6 +159,20 @@ public interface BrowserContext extends AutoCloseable {
    * @param urls Optional list of URLs.
    */
   List<Cookie> cookies(List<String> urls);
+  /**
+   * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context. When
+   * called, the function executes {@code callback} and returns a [Promise] which resolves to the return value of {@code callback}. If
+   * the {@code callback} returns a [Promise], it will be awaited.
+   *
+   * <p> The first argument of the {@code callback} function contains information about the caller: `{ browserContext: BrowserContext,
+   * page: Page, frame: Frame }`.
+   *
+   * <p> See [{@code method: Page.exposeBinding}] for page-only version.
+   *
+   *
+   * @param name Name of the function on the window object.
+   * @param callback Callback function that will be called in the Playwright's context.
+   */
   default void exposeBinding(String name, BindingCallback callback) {
     exposeBinding(name, callback, null);
   }
@@ -190,6 +204,28 @@ public interface BrowserContext extends AutoCloseable {
    * @param callback Callback function that will be called in the Playwright's context.
    */
   void exposeFunction(String name, FunctionCallback callback);
+  /**
+   * Grants specified permissions to the browser context. Only grants corresponding permissions to the given origin if
+   * specified.
+   *
+   * @param permissions A permission or an array of permissions to grant. Permissions can be one of the following values:
+   * - {@code 'geolocation'}
+   * - {@code 'midi'}
+   * - {@code 'midi-sysex'} (system-exclusive midi)
+   * - {@code 'notifications'}
+   * - {@code 'push'}
+   * - {@code 'camera'}
+   * - {@code 'microphone'}
+   * - {@code 'background-sync'}
+   * - {@code 'ambient-light-sensor'}
+   * - {@code 'accelerometer'}
+   * - {@code 'gyroscope'}
+   * - {@code 'magnetometer'}
+   * - {@code 'accessibility-events'}
+   * - {@code 'clipboard-read'}
+   * - {@code 'clipboard-write'}
+   * - {@code 'payment-handler'}
+   */
   default void grantPermissions(List<String> permissions) {
     grantPermissions(permissions, null);
   }
@@ -317,6 +353,9 @@ public interface BrowserContext extends AutoCloseable {
    * @param offline Whether to emulate network being offline for the browser context.
    */
   void setOffline(boolean offline);
+  /**
+   * Returns storage state for this browser context, contains current cookies and local storage snapshot.
+   */
   default String storageState() {
     return storageState(null);
   }
@@ -324,6 +363,13 @@ public interface BrowserContext extends AutoCloseable {
    * Returns storage state for this browser context, contains current cookies and local storage snapshot.
    */
   String storageState(StorageStateOptions options);
+  /**
+   * Removes a route created with [{@code method: BrowserContext.route}]. When {@code handler} is not specified, removes all routes for
+   * the {@code url}.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with
+   * [{@code method: BrowserContext.route}].
+   */
   default void unroute(String url) {
     unroute(url, null);
   }
@@ -336,6 +382,13 @@ public interface BrowserContext extends AutoCloseable {
    * @param handler Optional handler function used to register a routing with [{@code method: BrowserContext.route}].
    */
   void unroute(String url, Consumer<Route> handler);
+  /**
+   * Removes a route created with [{@code method: BrowserContext.route}]. When {@code handler} is not specified, removes all routes for
+   * the {@code url}.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with
+   * [{@code method: BrowserContext.route}].
+   */
   default void unroute(Pattern url) {
     unroute(url, null);
   }
@@ -348,6 +401,13 @@ public interface BrowserContext extends AutoCloseable {
    * @param handler Optional handler function used to register a routing with [{@code method: BrowserContext.route}].
    */
   void unroute(Pattern url, Consumer<Route> handler);
+  /**
+   * Removes a route created with [{@code method: BrowserContext.route}]. When {@code handler} is not specified, removes all routes for
+   * the {@code url}.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with
+   * [{@code method: BrowserContext.route}].
+   */
   default void unroute(Predicate<String> url) {
     unroute(url, null);
   }
@@ -360,6 +420,13 @@ public interface BrowserContext extends AutoCloseable {
    * @param handler Optional handler function used to register a routing with [{@code method: BrowserContext.route}].
    */
   void unroute(Predicate<String> url, Consumer<Route> handler);
+  /**
+   * Performs action and waits for a new {@code Page} to be created in the context. If predicate is provided, it passes {@code Page}
+   * value into the {@code predicate} function and waits for {@code predicate(event)} to return a truthy value. Will throw an error if
+   * the context closes before new {@code Page} is created.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
   default Page waitForPage(Runnable callback) {
     return waitForPage(null, callback);
   }

@@ -38,6 +38,17 @@ public interface JSHandle {
    * The {@code jsHandle.dispose} method stops referencing the element handle.
    */
   void dispose();
+  /**
+   * Returns the return value of {@code expression}.
+   *
+   * <p> This method passes this handle as the first argument to {@code expression}.
+   *
+   * <p> If {@code expression} returns a [Promise], then {@code handle.evaluate} would wait for the promise to resolve and return its value.
+   *
+   *
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   */
   default Object evaluate(String expression) {
     return evaluate(expression, null);
   }
@@ -54,6 +65,22 @@ public interface JSHandle {
    * @param arg Optional argument to pass to {@code expression}.
    */
   Object evaluate(String expression, Object arg);
+  /**
+   * Returns the return value of {@code expression} as a {@code JSHandle}.
+   *
+   * <p> This method passes this handle as the first argument to {@code expression}.
+   *
+   * <p> The only difference between {@code jsHandle.evaluate} and {@code jsHandle.evaluateHandle} is that {@code jsHandle.evaluateHandle} returns
+   * {@code JSHandle}.
+   *
+   * <p> If the function passed to the {@code jsHandle.evaluateHandle} returns a [Promise], then {@code jsHandle.evaluateHandle} would wait
+   * for the promise to resolve and return its value.
+   *
+   * <p> See [{@code method: Page.evaluateHandle}] for more details.
+   *
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
+   */
   default JSHandle evaluateHandle(String expression) {
     return evaluateHandle(expression, null);
   }

@@ -463,6 +463,9 @@ public interface Browser extends AutoCloseable {
    * Indicates that the browser is connected.
    */
   boolean isConnected();
+  /**
+   * Creates a new browser context. It won't share cookies/cache with other browser contexts.
+   */
   default BrowserContext newContext() {
     return newContext(null);
   }
@@ -470,6 +473,13 @@ public interface Browser extends AutoCloseable {
    * Creates a new browser context. It won't share cookies/cache with other browser contexts.
    */
   BrowserContext newContext(NewContextOptions options);
+  /**
+   * Creates a new page in a new browser context. Closing this page will close the context as well.
+   *
+   * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and
+   * testing frameworks should explicitly create [{@code method: Browser.newContext}] followed by the
+   * [{@code method: BrowserContext.newPage}] to control their exact life times.
+   */
   default Page newPage() {
     return newPage(null);
   }
