@@ -107,7 +107,7 @@ public class TestPageBasic extends TestBase {
   void shouldTerminateNetworkWaiters() {
     Page newPage = context.newPage();
     try {
-      newPage.waitForResponse(() -> {
+      newPage.waitForResponse("**", () -> {
         try {
           newPage.waitForRequest(server.EMPTY_PAGE, () -> newPage.close());
           fail("waitForRequest() should throw");

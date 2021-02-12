@@ -216,6 +216,41 @@ class TypeRef extends Element {
     return convertBuiltinType(stripNullable());
   }
 
+  boolean isTypeUnion() {
+    if (isNullable()) {
+      return false;
+    }
+    if (!jsonElement.getAsJsonObject().has("union")) {
+      return false;
+    }
+    return jsonElement.getAsJsonObject().get("name").getAsString().isEmpty();
+  }
+
+  private List<JsonObject> supportedUnionTypes() {
+    List<JsonObject> result = new ArrayList<>();
+    for (JsonElement item : jsonElement.getAsJsonObject().getAsJsonArray("union")) {
+      JsonObject o = item.getAsJsonObject();
+      try {
+        if (o.get("name").getAsString().equals("function") && !o.has("args")) {
+          continue;
+        }
+      } catch (NullPointerException e) {
+        System.out.println(o);
+      }
+      result.add(o);
+    }
+    return result;
+  }
+
+  int unionSize() {
+    return supportedUnionTypes().size();
+  }
+
+  String formatTypeFromUnion(int i) {
+    JsonElement overloadedType = supportedUnionTypes().get(i);
+    return convertBuiltinType(overloadedType.getAsJsonObject());
+  }
+
   boolean isNullable() {
     JsonObject jsonType = jsonElement.getAsJsonObject();
     if (!jsonType.has("union")) {
@@ -296,6 +331,12 @@ class TypeRef extends Element {
     if ("Buffer".equals(name)) {
       return "byte[]";
     }
+    if ("URL".equals(name)) {
+      return "String";
+    }
+    if ("RegExp".equals(name)) {
+      return "Pattern";
+    }
     if ("Array".equals(name)) {
       return "List<" + convertTemplateParams(jsonType) + ">";
     }
@@ -315,6 +356,9 @@ class TypeRef extends Element {
     if ("function".equals(name)) {
       if (jsonType.getAsJsonArray("args").size() == 1) {
         String paramType = convertBuiltinType(jsonType.getAsJsonArray("args").get(0).getAsJsonObject());
+        if (!jsonType.has("returnType") || jsonType.get("returnType").isJsonNull()) {
+          return "Consumer<" + paramType + ">";
+        }
         if (jsonType.has("returnType")
           && "boolean".equals(jsonType.getAsJsonObject("returnType").get("name").getAsString())) {
           return "Predicate<" + paramType + ">";
@@ -419,37 +463,11 @@ class Method extends Element {
   private static Map<String, String[]> customSignature = new HashMap<>();
   static {
     customSignature.put("Page.setViewportSize", new String[]{"void setViewportSize(int width, int height);"});
-    customSignature.put("BrowserContext.route", new String[]{
-      "void route(String url, Consumer<Route> handler);",
-      "void route(Pattern url, Consumer<Route> handler);",
-      "void route(Predicate<String> url, Consumer<Route> handler);",
-    });
     customSignature.put("Page.frame", new String[]{
       "Frame frameByName(String name);",
       "Frame frameByUrl(String glob);",
       "Frame frameByUrl(Pattern pattern);",
       "Frame frameByUrl(Predicate<String> predicate);",
-    });
-    customSignature.put("Page.route", new String[]{
-      "void route(String url, Consumer<Route> handler);",
-      "void route(Pattern url, Consumer<Route> handler);",
-      "void route(Predicate<String> url, Consumer<Route> handler);",
-    });
-    customSignature.put("BrowserContext.unroute", new String[]{
-      "default void unroute(String url) { unroute(url, null); }",
-      "default void unroute(Pattern url) { unroute(url, null); }",
-      "default void unroute(Predicate<String> url) { unroute(url, null); }",
-      "void unroute(String url, Consumer<Route> handler);",
-      "void unroute(Pattern url, Consumer<Route> handler);",
-      "void unroute(Predicate<String> url, Consumer<Route> handler);",
-    });
-    customSignature.put("Page.unroute", new String[]{
-      "default void unroute(String url) { unroute(url, null); }",
-      "default void unroute(Pattern url) { unroute(url, null); }",
-      "default void unroute(Predicate<String> url) { unroute(url, null); }",
-      "void unroute(String url, Consumer<Route> handler);",
-      "void unroute(Pattern url, Consumer<Route> handler);",
-      "void unroute(Predicate<String> url, Consumer<Route> handler);",
     });
     customSignature.put("BrowserContext.cookies", new String[]{
       "default List<Cookie> cookies() { return cookies((List<String>) null); }",
@@ -491,25 +509,6 @@ class Method extends Element {
     };
     customSignature.put("Page.setInputFiles", setInputFilesWithSelector);
     customSignature.put("Frame.setInputFiles", setInputFilesWithSelector);
-
-    customSignature.put("Page.waitForRequest", new String[] {
-      "default Request waitForRequest(Runnable callback) { return waitForRequest((Predicate<Request>) null, null, callback); }",
-      "default Request waitForRequest(String urlGlob, Runnable callback) { return waitForRequest(urlGlob, null, callback); }",
-      "default Request waitForRequest(Pattern urlPattern, Runnable callback) { return waitForRequest(urlPattern, null, callback); }",
-      "default Request waitForRequest(Predicate<Request> predicate, Runnable callback) { return waitForRequest(predicate, null, callback); }",
-      "Request waitForRequest(String urlGlob, WaitForRequestOptions options, Runnable callback);",
-      "Request waitForRequest(Pattern urlPattern, WaitForRequestOptions options, Runnable callback);",
-      "Request waitForRequest(Predicate<Request> predicate, WaitForRequestOptions options, Runnable callback);"
-    });
-    customSignature.put("Page.waitForResponse", new String[] {
-      "default Response waitForResponse(Runnable callback) { return waitForResponse((Predicate<Response>) null, null, callback); }",
-      "default Response waitForResponse(String urlGlob, Runnable callback) { return waitForResponse(urlGlob, null, callback); }",
-      "default Response waitForResponse(Pattern urlPattern, Runnable callback) { return waitForResponse(urlPattern, null, callback); }",
-      "default Response waitForResponse(Predicate<Response> predicate, Runnable callback) { return waitForResponse(predicate, null, callback); }",
-      "Response waitForResponse(String urlGlob, WaitForResponseOptions options, Runnable callback);",
-      "Response waitForResponse(Pattern urlPattern, WaitForResponseOptions options, Runnable callback);",
-      "Response waitForResponse(Predicate<Response> predicate, WaitForResponseOptions option, Runnable callbacks);"
-    });
 
     String[] selectOption = {
       "default List<String> selectOption(String selector, String value) {",
@@ -558,13 +557,6 @@ class Method extends Element {
       .replace("String selector, ", "")
       .replace("(selector, ", "(")
       .replace("ElementHandle.", "")).toArray(String[]::new));
-
-    customSignature.put("Selectors.register", new String[] {
-      "default void register(String name, String script) { register(name, script, null); }",
-      "void register(String name, String script, RegisterOptions options);",
-      "default void register(String name, Path path) { register(name, path, null); }",
-      "void register(String name, Path path, RegisterOptions options);"
-    });
   }
 
   Method(TypeDefinition parent, JsonObject jsonElement) {
@@ -581,17 +573,6 @@ class Method extends Element {
     }
   }
 
-  private String toJava() {
-    StringBuilder paramList = new StringBuilder();
-    for (Param p : params) {
-      if (paramList.length() > 0)
-        paramList.append(", ");
-      paramList.append(p.toJava());
-    }
-
-    return returnType.toJava() + " " + jsonName + "(" + paramList + ");";
-  }
-
   void writeTo(List<String> output, String offset) {
     if (customSignature.containsKey(jsonPath)) {
       String[] signatures = customSignature.get(jsonPath);
@@ -603,18 +584,35 @@ class Method extends Element {
       }
       return;
     }
+    int numOverloads = 1;
+    for (int i = 0; i < params.size(); i++) {
+      if (params.get(i).type.isTypeUnion()) {
+        numOverloads = params.get(i).type.unionSize();
+        break;
+      }
+    }
+
+    for (int i = 0; i < numOverloads; i++) {
+      writeOverloadedMethods(i, output, offset);
+    }
+  }
+
+  private void writeOverloadedMethods(int overloadIndex, List<String> output, String offset) {
     for (int i = params.size() - 1; i >= 0; i--) {
       Param p = params.get(i);
       if (!p.isOptional()) {
         continue;
       }
-      writeDefaultOverloadedMethod(i, output, offset);
+      writeDefaultOverloadedMethod(overloadIndex, i, output, offset);
     }
+
+    List<String> paramList = params.stream().map(p -> p.type.isTypeUnion() ? p.toJavaOverload(overloadIndex) : p.toJava()).collect(toList());
     writeJavadoc(output, offset);
-    output.add(offset + toJava());
+    output.add(offset + returnType.toJava() + " " + jsonName + "(" + String.join(", ", paramList) + ");");
   }
 
-  private void writeDefaultOverloadedMethod(int firstNullOptional, List<String> output, String offset) {
+
+  private void writeDefaultOverloadedMethod(int overloadIndex, int firstNullOptional, List<String> output, String offset) {
     List<String> paramList = new ArrayList<>();
     List<String> argList = new ArrayList<>();
     for (int i = 0; i < params.size(); i++) {
@@ -626,7 +624,7 @@ class Method extends Element {
       if (p.isOptional() && i > firstNullOptional) {
         continue;
       }
-      paramList.add(p.toJava());
+      paramList.add(p.type.isTypeUnion() ? p.toJavaOverload(overloadIndex) : p.toJava());
       argList.add(p.jsonName);
     }
     String returns = returnType.toJava().equals("void") ? "" : "return ";
@@ -674,6 +672,10 @@ class Param extends Element {
 
   boolean isOptional() {
     return !jsonElement.getAsJsonObject().get("required").getAsBoolean();
+  }
+
+  String toJavaOverload(int overoadIndex) {
+    return type.formatTypeFromUnion(overoadIndex) + " " + jsonName;
   }
 
   String toJava() {
@@ -725,12 +727,6 @@ class Field extends Element {
       }
     }
     output.add(offset + "public " + typeStr + " " + name + ";");
-  }
-
-  void writeGetter(List<String> output, String offset) {
-    output.add(offset + "public " + type.toJava() + " " + name + "() {");
-    output.add(offset + "  return this." + name + ";");
-    output.add(offset + "}");
   }
 
   void writeBuilderMethod(List<String> output, String offset, String parentClass) {

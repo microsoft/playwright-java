@@ -102,7 +102,8 @@ public class TestNetworkResponse extends TestBase {
       requestFinished[0] |= request.url().contains("/get");
     });
     // send request and wait for server response
-    Response pageResponse = page.waitForResponse(() -> page.evaluate("() => fetch('./get', { method: 'GET'})"));
+    Response pageResponse = page.waitForResponse("**",
+      () -> page.evaluate("() => fetch('./get', { method: 'GET'})"));
     assertNotNull(pageResponse);
     responseWritten.acquire();
     assertEquals(200, pageResponse.status());

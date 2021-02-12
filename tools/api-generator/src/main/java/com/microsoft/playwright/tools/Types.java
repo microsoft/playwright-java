@@ -51,21 +51,11 @@ class Types {
     add("Page.exposeBinding.callback", "function", "BindingCallback");
     add("Page.exposeFunction.callback", "function", "FunctionCallback");
 
-    add("BrowserContext.addInitScript.script", "Object|function|string", "String");
-    add("Page.addInitScript.script", "Object|function|string", "String");
-    add("Selectors.register.script", "Object|function|string", "String");
-
     // The method has custom signatures
-    add("BrowserContext.route.url", "RegExp|function(URL):boolean|string", "String");
-    add("BrowserContext.unroute.url", "RegExp|function(URL):boolean|string", "String");
     add("Page.frame.frameSelector", "Object|string", "Custom", new Empty());
     add("Page.frame.options", "Object", "FrameOptions", new Empty());
-    add("Page.route.url", "RegExp|function(URL):boolean|string", "String");
     add("Page.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");
     add("Page.setInputFiles.files", "Array<Object>|Array<path>|Object|path", "String");
-    add("Page.unroute.url", "RegExp|function(URL):boolean|string", "String");
-    add("Page.waitForRequest.urlOrPredicate", "RegExp|function(Request):boolean|string", "String");
-    add("Page.waitForResponse.urlOrPredicate", "RegExp|function(Response):boolean|string", "String");
     add("Frame.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");
     add("Frame.setInputFiles.files", "Array<Object>|Array<path>|Object|path", "String");
     add("ElementHandle.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");
