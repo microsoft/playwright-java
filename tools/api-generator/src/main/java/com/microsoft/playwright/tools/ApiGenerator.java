@@ -424,9 +424,6 @@ class Method extends Element {
       "void route(Pattern url, Consumer<Route> handler);",
       "void route(Predicate<String> url, Consumer<Route> handler);",
     });
-    // There is no standard JSON type in Java.
-    customSignature.put("Response.json", new String[0]);
-    customSignature.put("Request.postDataJSON", new String[0]);
     customSignature.put("Page.frame", new String[]{
       "Frame frameByName(String name);",
       "Frame frameByUrl(String glob);",
