@@ -1977,6 +1977,7 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param handler handler function to route the request.
    */
   void route(Predicate<String> url, Consumer<Route> handler);
   default byte[] screenshot() {
@@ -2197,6 +2198,7 @@ public interface Page extends AutoCloseable {
    * Removes a route created with [{@code method: Page.route}]. When {@code handler} is not specified, removes all routes for the {@code url}.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param handler Optional handler function to route the request.
    */
   void unroute(Predicate<String> url, Consumer<Route> handler);
   /**
@@ -2305,6 +2307,8 @@ public interface Page extends AutoCloseable {
    * considered a navigation.
    *
    * <p> Shortcut for main frame's [{@code method: Frame.waitForNavigation}].
+   *
+   * @param callback Callback that performs the action triggering the event.
    */
   Response waitForNavigation(WaitForNavigationOptions options, Runnable callback);
   default Page waitForPopup(Runnable callback) {

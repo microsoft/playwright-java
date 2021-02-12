@@ -1475,6 +1475,8 @@ public interface Frame {
    *
    * <p> <strong>NOTE:</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is
    * considered a navigation.
+   *
+   * @param callback Callback that performs the action triggering the event.
    */
   Response waitForNavigation(WaitForNavigationOptions options, Runnable callback);
   default ElementHandle waitForSelector(String selector) {

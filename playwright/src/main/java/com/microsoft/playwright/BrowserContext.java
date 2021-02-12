@@ -224,6 +224,7 @@ public interface BrowserContext extends AutoCloseable {
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param handler handler function to route the request.
    */
   void route(Predicate<String> url, Consumer<Route> handler);
   /**
@@ -291,6 +292,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with
    * [{@code method: BrowserContext.route}].
+   * @param handler Optional handler function used to register a routing with [{@code method: BrowserContext.route}].
    */
   void unroute(Predicate<String> url, Consumer<Route> handler);
   default Page waitForPage(Runnable callback) {
