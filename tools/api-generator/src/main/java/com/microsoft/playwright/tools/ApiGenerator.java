@@ -316,7 +316,7 @@ class TypeRef extends Element {
       if (jsonType.getAsJsonArray("args").size() == 1) {
         String paramType = convertBuiltinType(jsonType.getAsJsonArray("args").get(0).getAsJsonObject());
         if (jsonType.has("returnType")
-          && "bool".equals(jsonType.getAsJsonObject("returnType").get("name").getAsString())) {
+          && "boolean".equals(jsonType.getAsJsonObject("returnType").get("name").getAsString())) {
           return "Predicate<" + paramType + ">";
         }
         throw new RuntimeException("Missing mapping for " + jsonType);
@@ -510,13 +510,6 @@ class Method extends Element {
       "Response waitForResponse(Pattern urlPattern, WaitForResponseOptions options, Runnable callback);",
       "Response waitForResponse(Predicate<Response> predicate, WaitForResponseOptions option, Runnable callbacks);"
     });
-
-    String[] waitForNavigation = {
-      "default Response waitForNavigation(Runnable callback) { return waitForNavigation(null, callback); }",
-      "Response waitForNavigation(WaitForNavigationOptions options, Runnable callback);"
-    };
-    customSignature.put("Frame.waitForNavigation", waitForNavigation);
-    customSignature.put("Page.waitForNavigation", waitForNavigation);
 
     String[] selectOption = {
       "default List<String> selectOption(String selector, String value) {",

@@ -145,6 +145,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
         params.addProperty("noDefaultViewport", true);
       }
     }
+    params.addProperty("sdkLanguage", "java");
     JsonElement result = sendMessage("newContext", params);
     BrowserContextImpl context = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("context").get("guid").getAsString());
     if (options.recordVideoDir != null) {
