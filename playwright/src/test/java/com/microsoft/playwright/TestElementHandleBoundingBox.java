@@ -47,7 +47,7 @@ public class TestElementHandleBoundingBox extends TestBase {
   void shouldHandleNestedFrames() {
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/frames/nested-frames.html");
-    Frame nestedFrame = page.frameByName("dos");
+    Frame nestedFrame = page.frame("dos");
     assertNotNull(nestedFrame);
     ElementHandle elementHandle = nestedFrame.querySelector("div");
     BoundingBox box = elementHandle.boundingBox();

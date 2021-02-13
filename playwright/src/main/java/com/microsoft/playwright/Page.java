@@ -1904,16 +1904,31 @@ public interface Page extends AutoCloseable {
    * [working with selectors](./selectors.md) for more details.
    */
   void focus(String selector, FocusOptions options);
-  Frame frameByName(String name);
-  Frame frameByUrl(String glob);
-  Frame frameByUrl(Pattern pattern);
   /**
    * Returns frame matching the specified criteria. Either {@code name} or {@code url} must be specified.
    *
    *
-   * @param frameSelector Frame name or other frame lookup options.
+   * @param name Frame name specified in the {@code iframe}'s {@code name} attribute.
    */
-  Frame frameByUrl(Predicate<String> predicate);
+  Frame frame(String name);
+  /**
+   * Returns frame with matching URL.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving frame's {@code url} as a [URL] object.
+   */
+  Frame frameByUrl(String url);
+  /**
+   * Returns frame with matching URL.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving frame's {@code url} as a [URL] object.
+   */
+  Frame frameByUrl(Pattern url);
+  /**
+   * Returns frame with matching URL.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving frame's {@code url} as a [URL] object.
+   */
+  Frame frameByUrl(Predicate<String> url);
   /**
    * An array of all frames attached to the page.
    */

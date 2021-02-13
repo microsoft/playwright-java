@@ -687,7 +687,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Frame frameByName(String name) {
+  public Frame frame(String name) {
     for (Frame frame : frames) {
       if (name.equals(frame.name())) {
         return frame;
