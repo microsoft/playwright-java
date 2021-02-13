@@ -52,8 +52,6 @@ class Types {
     add("Page.exposeFunction.callback", "function", "FunctionCallback");
 
     // The method has custom signatures
-    add("Page.frame.frameSelector", "Object|string", "Custom", new Empty());
-    add("Page.frame.options", "Object", "FrameOptions", new Empty());
     add("Page.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");
     add("Page.setInputFiles.files", "Array<Object>|Array<path>|Object|path", "String");
     add("Frame.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");

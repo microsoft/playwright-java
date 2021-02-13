@@ -210,8 +210,8 @@ public class TestPageBasic extends TestBase {
   @Test
   void pageFrameShouldRespectName() {
     page.setContent("<iframe name=target></iframe>");
-    assertNull(page.frameByName("bogus"));
-    Frame frame = page.frameByName("target");
+    assertNull(page.frame("bogus"));
+    Frame frame = page.frame("target");
     assertNotNull(frame);
     assertEquals(page.mainFrame().childFrames().get(0), frame);
   }
@@ -272,7 +272,7 @@ public class TestPageBasic extends TestBase {
   @Test
   void framePressShouldWork() {
     page.setContent("<iframe name=inner src='" + server.PREFIX + "/input/textarea.html'></iframe>");
-    Frame frame = page.frameByName("inner");
+    Frame frame = page.frame("inner");
     frame.press("textarea", "a");
     assertEquals("a", frame.evaluate("() => document.querySelector('textarea').value"));
   }

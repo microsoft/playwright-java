@@ -464,12 +464,6 @@ class Method extends Element {
   private static Map<String, String[]> customSignature = new HashMap<>();
   static {
     customSignature.put("Page.setViewportSize", new String[]{"void setViewportSize(int width, int height);"});
-    customSignature.put("Page.frame", new String[]{
-      "Frame frameByName(String name);",
-      "Frame frameByUrl(String glob);",
-      "Frame frameByUrl(Pattern pattern);",
-      "Frame frameByUrl(Predicate<String> predicate);",
-    });
     customSignature.put("BrowserContext.cookies", new String[]{
       "default List<Cookie> cookies() { return cookies((List<String>) null); }",
       "default List<Cookie> cookies(String url) { return cookies(Arrays.asList(url)); }",
@@ -568,6 +562,11 @@ class Method extends Element {
       returnType = new TypeRef(this, jsonElement.get("type"));
       if (jsonElement.has("args")) {
         for (JsonElement arg : jsonElement.getAsJsonArray("args")) {
+          JsonObject paramObj = arg.getAsJsonObject();
+          if (paramObj.get("name").getAsString().equals("options") &&
+            paramObj.getAsJsonObject("type").getAsJsonArray("properties").size() == 0) {
+            continue;
+          }
           params.add(new Param(this, arg.getAsJsonObject()));
         }
       }
