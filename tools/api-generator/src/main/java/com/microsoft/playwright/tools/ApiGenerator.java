@@ -110,6 +110,12 @@ class TypeRef extends Element {
   String customType;
   boolean isNestedClass;
 
+  private static final Map<String, String> customTypeNames = new HashMap<>();
+  static {
+    customTypeNames.put("cookies", "Cookie");
+    customTypeNames.put("files", "FilePayload");
+  }
+
   TypeRef(Element parent, JsonElement jsonElement) {
     super(parent, true, jsonElement);
 
@@ -191,14 +197,16 @@ class TypeRef extends Element {
     }
     if ("Object".equals(jsonObject.get("name").getAsString())) {
       if (customType != null) {
-        throw new RuntimeException("Custom type has already been created: " + customType);
+        // Same type maybe referenced as 'Object' in several union values, e.g. Object|Array<Object>
+        return;
       }
-      if (parent.jsonName.equals("cookies")) {
-        customType = "Cookie";
-        typeScope().createTopLevelClass(customType, this, jsonElement.getAsJsonObject());
-      } else if (parent instanceof Method || parent instanceof Field || (parent instanceof Param && !"options".equals(parent.jsonName))) {
-        customType = toTitle(parent.jsonName);
-        typeScope().createTopLevelClass(customType, this, jsonElement.getAsJsonObject());
+      if (parent instanceof Method || parent instanceof Field || (parent instanceof Param && !"options".equals(parent.jsonName))) {
+        if (customTypeNames.containsKey(parent.jsonName)) {
+          customType = customTypeNames.get(parent.jsonName);
+        } else {
+          customType = toTitle(parent.jsonName);
+        }
+        typeScope().createTopLevelClass(customType, this, jsonObject);
       } else {
         customType = toTitle(parent.parent.jsonName) + toTitle(parent.jsonName);
         typeScope().createNestedClass(customType, this, jsonElement.getAsJsonObject());
@@ -294,7 +302,7 @@ class TypeRef extends Element {
     throw new RuntimeException("Unexpected union " + jsonPath + ": " + jsonType);
   }
 
-  private static String convertBuiltinType(JsonObject jsonType) {
+  private String convertBuiltinType(JsonObject jsonType) {
     String name = jsonType.get("name").getAsString();
     if (jsonType.has("union")) {
       if (name.isEmpty()) {
@@ -339,9 +347,17 @@ class TypeRef extends Element {
       return "Pattern";
     }
     if ("Array".equals(name)) {
-      return "List<" + convertTemplateParams(jsonType) + ">";
+      String elementType = convertTemplateParams(jsonType);
+      if (parent instanceof Param) {
+        // Use array instead of List as after type erasure all list are indistinguishable and wouldn't allow overloads.
+        return elementType + "[]";
+      }
+      return "List<" + elementType + ">";
     }
     if ("Object".equals(name)) {
+      if (customType != null) {
+        return customType;
+      }
       String expression = typeExpression(jsonType);
       if (!"Object<string, string>".equals(expression) && !"Object<string, any>".equals(expression)) {
         throw new RuntimeException("Unexpected object type: " + typeExpression(jsonType));
@@ -370,7 +386,7 @@ class TypeRef extends Element {
     return name;
   }
 
-  private static String convertTemplateParams(JsonObject jsonType) {
+  private String convertTemplateParams(JsonObject jsonType) {
     if (!jsonType.has("templates")) {
       return "";
     }
@@ -472,39 +488,6 @@ class Method extends Element {
     customSignature.put("BrowserContext.addCookies", new String[]{
       "void addCookies(List<Cookie> cookies);"
     });
-    customSignature.put("FileChooser.setFiles", new String[]{
-      "default void setFiles(Path file) { setFiles(file, null); }",
-      "default void setFiles(Path file, SetFilesOptions options) { setFiles(new Path[]{ file }, options); }",
-      "default void setFiles(Path[] files) { setFiles(files, null); }",
-      "void setFiles(Path[] files, SetFilesOptions options);",
-      "default void setFiles(FileChooser.FilePayload file) { setFiles(file, null); }",
-      "default void setFiles(FileChooser.FilePayload file, SetFilesOptions options)  { setFiles(new FileChooser.FilePayload[]{ file }, options); }",
-      "default void setFiles(FileChooser.FilePayload[] files) { setFiles(files, null); }",
-      "void setFiles(FileChooser.FilePayload[] files, SetFilesOptions options);",
-    });
-    customSignature.put("ElementHandle.setInputFiles", new String[]{
-      "default void setInputFiles(Path file) { setInputFiles(file, null); }",
-      "default void setInputFiles(Path file, SetInputFilesOptions options) { setInputFiles(new Path[]{ file }, options); }",
-      "default void setInputFiles(Path[] files) { setInputFiles(files, null); }",
-      "void setInputFiles(Path[] files, SetInputFilesOptions options);",
-      "default void setInputFiles(FileChooser.FilePayload file) { setInputFiles(file, null); }",
-      "default void setInputFiles(FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(new FileChooser.FilePayload[]{ file }, options); }",
-      "default void setInputFiles(FileChooser.FilePayload[] files) { setInputFiles(files, null); }",
-      "void setInputFiles(FileChooser.FilePayload[] files, SetInputFilesOptions options);",
-    });
-    String[] setInputFilesWithSelector = {
-      "default void setInputFiles(String selector, Path file) { setInputFiles(selector, file, null); }",
-      "default void setInputFiles(String selector, Path file, SetInputFilesOptions options) { setInputFiles(selector, new Path[]{ file }, options); }",
-      "default void setInputFiles(String selector, Path[] files) { setInputFiles(selector, files, null); }",
-      "void setInputFiles(String selector, Path[] files, SetInputFilesOptions options);",
-      "default void setInputFiles(String selector, FileChooser.FilePayload file) { setInputFiles(selector, file, null); }",
-      "default void setInputFiles(String selector, FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(selector, new FileChooser.FilePayload[]{ file }, options); }",
-      "default void setInputFiles(String selector, FileChooser.FilePayload[] files) { setInputFiles(selector, files, null); }",
-      "void setInputFiles(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options);",
-    };
-    customSignature.put("Page.setInputFiles", setInputFilesWithSelector);
-    customSignature.put("Frame.setInputFiles", setInputFilesWithSelector);
-
     String[] selectOption = {
       "default List<String> selectOption(String selector, String value) {",
       "  return selectOption(selector, value, null);",
@@ -875,7 +858,7 @@ class Interface extends TypeDefinition {
     if ("Playwright".equals(jsonName)) {
       output.add("import com.microsoft.playwright.impl.PlaywrightImpl;");
     }
-    if (asList("Page", "Request", "Frame", "ElementHandle", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard").contains(jsonName)) {
+    if (asList("Page", "Request", "FileChooser", "Frame", "ElementHandle", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard").contains(jsonName)) {
       output.add("import com.microsoft.playwright.options.*;");
     }
     if (jsonName.equals("Route")) {
@@ -960,21 +943,6 @@ class Interface extends TypeDefinition {
         output.add(offset + "  public SelectOption withIndex(int index) {");
         output.add(offset + "    this.index = index;");
         output.add(offset + "    return this;");
-        output.add(offset + "  }");
-        output.add(offset + "}");
-        output.add("");
-        break;
-      }
-      case "FileChooser": {
-        output.add(offset + "class FilePayload {");
-        output.add(offset + "  public final String name;");
-        output.add(offset + "  public final String mimeType;");
-        output.add(offset + "  public final byte[] buffer;");
-        output.add("");
-        output.add(offset + "  public FilePayload(String name, String mimeType, byte[] buffer) {");
-        output.add(offset + "    this.name = name;");
-        output.add(offset + "    this.mimeType = mimeType;");
-        output.add(offset + "    this.buffer = buffer;");
         output.add(offset + "  }");
         output.add(offset + "}");
         output.add("");

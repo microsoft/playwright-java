@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.FilePayload;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -59,7 +60,7 @@ public class TestPageSetInputFiles extends TestBase {
   @Test
   void shouldSetFromMemory() {
     page.setContent("<input type=file>");
-    page.setInputFiles("input", new FileChooser.FilePayload("test.txt","text/plain","this is a test".getBytes()));
+    page.setInputFiles("input", new FilePayload("test.txt","text/plain","this is a test".getBytes()));
     assertEquals(1, page.evalOnSelector("input", "input => input.files.length"));
     assertEquals("test.txt", page.evalOnSelector("input", "input => input.files[0].name"));
   }

@@ -1022,13 +1022,23 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public void setInputFiles(String selector, Path files, SetInputFilesOptions options) {
+    setInputFiles(selector, new Path[]{files}, options);
+  }
+
+  @Override
   public void setInputFiles(String selector, Path[] files, SetInputFilesOptions options) {
     withLogging("Page.setInputFiles",
       () -> mainFrame.setInputFilesImpl(selector, files, convertViaJson(options, Frame.SetInputFilesOptions.class)));
   }
 
   @Override
-  public void setInputFiles(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options) {
+  public void setInputFiles(String selector, FilePayload files, SetInputFilesOptions options) {
+    setInputFiles(selector, new FilePayload[]{files}, options);
+  }
+
+  @Override
+  public void setInputFiles(String selector, FilePayload[] files, SetInputFilesOptions options) {
     withLogging("Page.setInputFiles",
       () -> mainFrame.setInputFilesImpl(selector, files, convertViaJson(options, Frame.SetInputFilesOptions.class)));
   }

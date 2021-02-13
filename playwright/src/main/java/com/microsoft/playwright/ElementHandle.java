@@ -1068,13 +1068,6 @@ public interface ElementHandle extends JSHandle {
    * content.
    */
   void selectText(SelectTextOptions options);
-  default void setInputFiles(Path file) { setInputFiles(file, null); }
-  default void setInputFiles(Path file, SetInputFilesOptions options) { setInputFiles(new Path[]{ file }, options); }
-  default void setInputFiles(Path[] files) { setInputFiles(files, null); }
-  void setInputFiles(Path[] files, SetInputFilesOptions options);
-  default void setInputFiles(FileChooser.FilePayload file) { setInputFiles(file, null); }
-  default void setInputFiles(FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(new FileChooser.FilePayload[]{ file }, options); }
-  default void setInputFiles(FileChooser.FilePayload[] files) { setInputFiles(files, null); }
   /**
    * This method expects {@code elementHandle} to point to an
    * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
@@ -1082,7 +1075,71 @@ public interface ElementHandle extends JSHandle {
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    */
-  void setInputFiles(FileChooser.FilePayload[] files, SetInputFilesOptions options);
+  default void setInputFiles(Path files) {
+    setInputFiles(files, null);
+  }
+  /**
+   * This method expects {@code elementHandle} to point to an
+   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   */
+  void setInputFiles(Path files, SetInputFilesOptions options);
+  /**
+   * This method expects {@code elementHandle} to point to an
+   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   */
+  default void setInputFiles(Path[] files) {
+    setInputFiles(files, null);
+  }
+  /**
+   * This method expects {@code elementHandle} to point to an
+   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   */
+  void setInputFiles(Path[] files, SetInputFilesOptions options);
+  /**
+   * This method expects {@code elementHandle} to point to an
+   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   */
+  default void setInputFiles(FilePayload files) {
+    setInputFiles(files, null);
+  }
+  /**
+   * This method expects {@code elementHandle} to point to an
+   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   */
+  void setInputFiles(FilePayload files, SetInputFilesOptions options);
+  /**
+   * This method expects {@code elementHandle} to point to an
+   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   */
+  default void setInputFiles(FilePayload[] files) {
+    setInputFiles(files, null);
+  }
+  /**
+   * This method expects {@code elementHandle} to point to an
+   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   */
+  void setInputFiles(FilePayload[] files, SetInputFilesOptions options);
   /**
    * This method taps the element by performing the following steps:
    * 1. Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.

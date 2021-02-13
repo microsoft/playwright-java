@@ -207,9 +207,9 @@ class Serialization {
     }
   }
 
-  static JsonArray toJsonArray(FileChooser.FilePayload[] files) {
+  static JsonArray toJsonArray(FilePayload[] files) {
     JsonArray jsonFiles = new JsonArray();
-    for (FileChooser.FilePayload p : files) {
+    for (FilePayload p : files) {
       JsonObject jsonFile = new JsonObject();
       jsonFile.addProperty("name", p.name);
       jsonFile.addProperty("mimeType", p.mimeType);

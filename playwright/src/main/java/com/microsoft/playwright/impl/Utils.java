@@ -19,6 +19,7 @@ package com.microsoft.playwright.impl;
 import com.google.gson.Gson;
 import com.microsoft.playwright.FileChooser;
 import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.options.FilePayload;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -111,8 +112,8 @@ class Utils {
     return mimeType;
   }
 
-  static FileChooser.FilePayload[] toFilePayloads(Path[] files) {
-    List<FileChooser.FilePayload> payloads = new ArrayList<>();
+  static FilePayload[] toFilePayloads(Path[] files) {
+    List<FilePayload> payloads = new ArrayList<>();
     for (Path file : files) {
       byte[] buffer;
       try {
@@ -120,9 +121,9 @@ class Utils {
       } catch (IOException e) {
         throw new PlaywrightException("Failed to read from file", e);
       }
-      payloads.add(new FileChooser.FilePayload(file.getFileName().toString(), mimeType(file), buffer));
+      payloads.add(new FilePayload(file.getFileName().toString(), mimeType(file), buffer));
     }
-    return payloads.toArray(new FileChooser.FilePayload[0]);
+    return payloads.toArray(new FilePayload[0]);
   }
 
   static void writeToFile(byte[] buffer, Path path) {

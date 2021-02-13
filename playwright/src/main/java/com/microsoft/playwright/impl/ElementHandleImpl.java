@@ -24,6 +24,7 @@ import com.microsoft.playwright.FileChooser;
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.options.BoundingBox;
 import com.microsoft.playwright.options.ElementState;
+import com.microsoft.playwright.options.FilePayload;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -382,6 +383,11 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     withLogging("ElementHandle.selectText", () -> selectTextImpl(options));
   }
 
+  @Override
+  public void setInputFiles(Path files, SetInputFilesOptions options) {
+    setInputFiles(new Path[]{files}, options);
+  }
+
   private void selectTextImpl(SelectTextOptions options) {
     if (options == null) {
       options = new SelectTextOptions();
@@ -396,11 +402,16 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   }
 
   @Override
-  public void setInputFiles(FileChooser.FilePayload[] files, SetInputFilesOptions options) {
+  public void setInputFiles(FilePayload files, SetInputFilesOptions options) {
+    setInputFiles(new FilePayload[]{files}, options);
+  }
+
+  @Override
+  public void setInputFiles(FilePayload[] files, SetInputFilesOptions options) {
     withLogging("ElementHandle.setInputFiles", () -> setInputFilesImpl(files, options));
   }
 
-  void setInputFilesImpl(FileChooser.FilePayload[] files, SetInputFilesOptions options) {
+  void setInputFilesImpl(FilePayload[] files, SetInputFilesOptions options) {
     if (options == null) {
       options = new SetInputFilesOptions();
     }

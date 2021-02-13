@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -23,18 +24,6 @@ import java.util.*;
  * {@code FileChooser} objects are dispatched by the page in the [{@code event: Page.fileChooser}] event.
  */
 public interface FileChooser {
-  class FilePayload {
-    public final String name;
-    public final String mimeType;
-    public final byte[] buffer;
-
-    public FilePayload(String name, String mimeType, byte[] buffer) {
-      this.name = name;
-      this.mimeType = mimeType;
-      this.buffer = buffer;
-    }
-  }
-
   class SetFilesOptions {
     /**
      * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
@@ -69,17 +58,53 @@ public interface FileChooser {
    * Returns page this file chooser belongs to.
    */
   Page page();
-  default void setFiles(Path file) { setFiles(file, null); }
-  default void setFiles(Path file, SetFilesOptions options) { setFiles(new Path[]{ file }, options); }
-  default void setFiles(Path[] files) { setFiles(files, null); }
-  void setFiles(Path[] files, SetFilesOptions options);
-  default void setFiles(FileChooser.FilePayload file) { setFiles(file, null); }
-  default void setFiles(FileChooser.FilePayload file, SetFilesOptions options)  { setFiles(new FileChooser.FilePayload[]{ file }, options); }
-  default void setFiles(FileChooser.FilePayload[] files) { setFiles(files, null); }
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the the current working directory. For empty array, clears the selected files.
    */
-  void setFiles(FileChooser.FilePayload[] files, SetFilesOptions options);
+  default void setFiles(Path files) {
+    setFiles(files, null);
+  }
+  /**
+   * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
+   * they are resolved relative to the the current working directory. For empty array, clears the selected files.
+   */
+  void setFiles(Path files, SetFilesOptions options);
+  /**
+   * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
+   * they are resolved relative to the the current working directory. For empty array, clears the selected files.
+   */
+  default void setFiles(Path[] files) {
+    setFiles(files, null);
+  }
+  /**
+   * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
+   * they are resolved relative to the the current working directory. For empty array, clears the selected files.
+   */
+  void setFiles(Path[] files, SetFilesOptions options);
+  /**
+   * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
+   * they are resolved relative to the the current working directory. For empty array, clears the selected files.
+   */
+  default void setFiles(FilePayload files) {
+    setFiles(files, null);
+  }
+  /**
+   * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
+   * they are resolved relative to the the current working directory. For empty array, clears the selected files.
+   */
+  void setFiles(FilePayload files, SetFilesOptions options);
+  /**
+   * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
+   * they are resolved relative to the the current working directory. For empty array, clears the selected files.
+   */
+  default void setFiles(FilePayload[] files) {
+    setFiles(files, null);
+  }
+  /**
+   * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
+   * they are resolved relative to the the current working directory. For empty array, clears the selected files.
+   */
+  void setFiles(FilePayload[] files, SetFilesOptions options);
 }
 

@@ -578,6 +578,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
     withLogging("Frame.setContent", () -> setContentImpl(html, options));
   }
 
+  @Override
+  public void setInputFiles(String selector, Path files, SetInputFilesOptions options) {
+    setInputFiles(selector, new Path[] {files}, options);
+  }
+
   void setContentImpl(String html, SetContentOptions options) {
     if (options == null) {
       options = new SetContentOptions();
@@ -592,16 +597,21 @@ public class FrameImpl extends ChannelOwner implements Frame {
     withLogging("Frame.setInputFiles", () -> setInputFilesImpl(selector, files, options));
   }
 
+  @Override
+  public void setInputFiles(String selector, FilePayload files, SetInputFilesOptions options) {
+    setInputFiles(selector, new FilePayload[]{files}, options);
+  }
+
   void setInputFilesImpl(String selector, Path[] files, SetInputFilesOptions options) {
     setInputFiles(selector, Utils.toFilePayloads(files), options);
   }
 
   @Override
-  public void setInputFiles(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options) {
+  public void setInputFiles(String selector, FilePayload[] files, SetInputFilesOptions options) {
     withLogging("Frame.setInputFiles", () -> setInputFilesImpl(selector, files, options));
   }
 
-  void setInputFilesImpl(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options) {
+  void setInputFilesImpl(String selector, FilePayload[] files, SetInputFilesOptions options) {
     if (options == null) {
       options = new SetInputFilesOptions();
     }
