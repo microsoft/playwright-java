@@ -2570,13 +2570,6 @@ public interface Page extends AutoCloseable {
    * @param headers An object containing additional HTTP headers to be sent with every request. All header values must be strings.
    */
   void setExtraHTTPHeaders(Map<String, String> headers);
-  default void setInputFiles(String selector, Path file) { setInputFiles(selector, file, null); }
-  default void setInputFiles(String selector, Path file, SetInputFilesOptions options) { setInputFiles(selector, new Path[]{ file }, options); }
-  default void setInputFiles(String selector, Path[] files) { setInputFiles(selector, files, null); }
-  void setInputFiles(String selector, Path[] files, SetInputFilesOptions options);
-  default void setInputFiles(String selector, FileChooser.FilePayload file) { setInputFiles(selector, file, null); }
-  default void setInputFiles(String selector, FileChooser.FilePayload file, SetInputFilesOptions options)  { setInputFiles(selector, new FileChooser.FilePayload[]{ file }, options); }
-  default void setInputFiles(String selector, FileChooser.FilePayload[] files) { setInputFiles(selector, files, null); }
   /**
    * This method expects {@code selector} to point to an
    * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
@@ -2587,7 +2580,92 @@ public interface Page extends AutoCloseable {
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md) for more details.
    */
-  void setInputFiles(String selector, FileChooser.FilePayload[] files, SetInputFilesOptions options);
+  default void setInputFiles(String selector, Path files) {
+    setInputFiles(selector, files, null);
+  }
+  /**
+   * This method expects {@code selector} to point to an
+   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
+  void setInputFiles(String selector, Path files, SetInputFilesOptions options);
+  /**
+   * This method expects {@code selector} to point to an
+   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
+  default void setInputFiles(String selector, Path[] files) {
+    setInputFiles(selector, files, null);
+  }
+  /**
+   * This method expects {@code selector} to point to an
+   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
+  void setInputFiles(String selector, Path[] files, SetInputFilesOptions options);
+  /**
+   * This method expects {@code selector} to point to an
+   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
+  default void setInputFiles(String selector, FilePayload files) {
+    setInputFiles(selector, files, null);
+  }
+  /**
+   * This method expects {@code selector} to point to an
+   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
+  void setInputFiles(String selector, FilePayload files, SetInputFilesOptions options);
+  /**
+   * This method expects {@code selector} to point to an
+   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
+  default void setInputFiles(String selector, FilePayload[] files) {
+    setInputFiles(selector, files, null);
+  }
+  /**
+   * This method expects {@code selector} to point to an
+   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
+   * [working with selectors](./selectors.md) for more details.
+   */
+  void setInputFiles(String selector, FilePayload[] files, SetInputFilesOptions options);
   /**
    * In the case of multiple pages in a single browser, each page can have its own viewport size. However,
    * [{@code method: Browser.newContext}] allows to set viewport size (and more) for all pages in the context at once.

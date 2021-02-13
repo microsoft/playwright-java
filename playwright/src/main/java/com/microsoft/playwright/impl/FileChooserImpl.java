@@ -19,6 +19,7 @@ package com.microsoft.playwright.impl;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.FileChooser;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.FilePayload;
 
 import java.nio.file.Path;
 
@@ -51,8 +52,18 @@ class FileChooserImpl implements FileChooser {
   }
 
   @Override
+  public void setFiles(Path files, SetFilesOptions options) {
+    setFiles(new Path[]{files}, options);
+  }
+
+  @Override
   public void setFiles(Path[] files, SetFilesOptions options) {
     setFiles(Utils.toFilePayloads(files), options);
+  }
+
+  @Override
+  public void setFiles(FilePayload files, SetFilesOptions options) {
+    setFiles(new FilePayload[]{files}, options);
   }
 
   @Override

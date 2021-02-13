@@ -213,16 +213,16 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void grantPermissions(List<String> permissions, GrantPermissionsOptions options) {
+  public void grantPermissions(String[] permissions, GrantPermissionsOptions options) {
     withLogging("BrowserContext.grantPermissions", () -> grantPermissionsImpl(permissions, options));
   }
 
-  private void grantPermissionsImpl(List<String> permissions, GrantPermissionsOptions options) {
+  private void grantPermissionsImpl(String[] permissions, GrantPermissionsOptions options) {
     if (options == null) {
       options = new GrantPermissionsOptions();
     }
     if (permissions == null) {
-      permissions = Collections.emptyList();
+      permissions = new String[0];
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.add("permissions", gson().toJsonTree(permissions));
