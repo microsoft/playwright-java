@@ -96,7 +96,7 @@ public class TestWaitForFunction extends TestBase {
   @Test
   void shouldPollOnRaf() {
     page.evaluate("() => window['__FOO'] = 'hit'");
-    page.waitForFunction("() => window['__FOO'] === 'hit'", null, new Page.WaitForFunctionOptions().withRequestAnimationFrame());
+    page.waitForFunction("() => window['__FOO'] === 'hit'", null, new Page.WaitForFunctionOptions());
   }
 
   @Test
