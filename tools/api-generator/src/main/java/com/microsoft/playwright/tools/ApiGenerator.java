@@ -113,6 +113,7 @@ class TypeRef extends Element {
   static {
     customTypeNames.put("cookies", "Cookie");
     customTypeNames.put("files", "FilePayload");
+    customTypeNames.put("values", "SelectOption");
   }
 
   TypeRef(Element parent, JsonElement jsonElement) {
@@ -245,12 +246,11 @@ class TypeRef extends Element {
     List<JsonObject> result = new ArrayList<>();
     for (JsonElement item : jsonElement.getAsJsonObject().getAsJsonArray("union")) {
       JsonObject o = item.getAsJsonObject();
-      try {
-        if (o.get("name").getAsString().equals("function") && !o.has("args")) {
-          continue;
-        }
-      } catch (NullPointerException e) {
-        System.out.println(o);
+      if (o.get("name").getAsString().equals("function") && !o.has("args")) {
+        continue;
+      }
+      if (o.get("name").getAsString().equals("null")) {
+        continue;
       }
       result.add(o);
     }
@@ -501,53 +501,6 @@ class Method extends Element {
     customSignature.put("BrowserContext.addCookies", new String[]{
       "void addCookies(List<Cookie> cookies);"
     });
-    String[] selectOption = {
-      "default List<String> selectOption(String selector, String value) {",
-      "  return selectOption(selector, value, null);",
-      "}",
-      "default List<String> selectOption(String selector, String value, SelectOptionOptions options) {",
-      "  String[] values = value == null ? null : new String[]{ value };",
-      "  return selectOption(selector, values, options);",
-      "}",
-      "default List<String> selectOption(String selector, String[] values) {",
-      "  return selectOption(selector, values, null);",
-      "}",
-      "default List<String> selectOption(String selector, String[] values, SelectOptionOptions options) {",
-      "  if (values == null) {",
-      "    return selectOption(selector, new ElementHandle.SelectOption[0], options);",
-      "  }",
-      "  return selectOption(selector, Arrays.asList(values).stream().map(",
-      "    v -> new ElementHandle.SelectOption().withValue(v)).toArray(ElementHandle.SelectOption[]::new), options);",
-      "}",
-      "default List<String> selectOption(String selector, ElementHandle.SelectOption value) {",
-      "  return selectOption(selector, value, null);",
-      "}",
-      "default List<String> selectOption(String selector, ElementHandle.SelectOption value, SelectOptionOptions options) {",
-      "  ElementHandle.SelectOption[] values = value == null ? null : new ElementHandle.SelectOption[]{value};",
-      "  return selectOption(selector, values, options);",
-      "}",
-      "default List<String> selectOption(String selector, ElementHandle.SelectOption[] values) {",
-      "  return selectOption(selector, values, null);",
-      "}",
-      "List<String> selectOption(String selector, ElementHandle.SelectOption[] values, SelectOptionOptions options);",
-      "default List<String> selectOption(String selector, ElementHandle value) {",
-      "  return selectOption(selector, value, null);",
-      "}",
-      "default List<String> selectOption(String selector, ElementHandle value, SelectOptionOptions options) {",
-      "  ElementHandle[] values = value == null ? null : new ElementHandle[]{value};",
-      "  return selectOption(selector, values, options);",
-      "}",
-      "default List<String> selectOption(String selector, ElementHandle[] values) {",
-      "  return selectOption(selector, values, null);",
-      "}",
-      "List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options);",
-    };
-    customSignature.put("Page.selectOption", selectOption);
-    customSignature.put("Frame.selectOption", selectOption);
-    customSignature.put("ElementHandle.selectOption", Arrays.stream(selectOption).map(s -> s
-      .replace("String selector, ", "")
-      .replace("(selector, ", "(")
-      .replace("ElementHandle.", "")).toArray(String[]::new));
   }
 
   Method(TypeDefinition parent, JsonObject jsonElement) {
@@ -604,6 +557,9 @@ class Method extends Element {
 
     List<String> paramList = params.stream().map(p -> p.type.isTypeUnion() ? p.toJavaOverload(overloadIndex) : p.toJava()).collect(toList());
     writeJavadoc(params, output, offset);
+    if (jsonPath.equals("ElementHandle.selectOption")) {
+      System.out.println(String.join(", ", paramList));
+    }
     output.add(offset + returnType.toJava() + " " + jsonName + "(" + String.join(", ", paramList) + ");");
   }
 
@@ -625,6 +581,9 @@ class Method extends Element {
     }
     String paramsStr = paramList.stream().map(p -> p.type.isTypeUnion() ? p.toJavaOverload(overloadIndex) : p.toJava())
       .collect(joining(", "));
+    if (jsonPath.equals("ElementHandle.selectOption")) {
+      System.out.println(paramsStr);
+    }
     String returns = returnType.toJava().equals("void") ? "" : "return ";
     writeJavadoc(paramList, output, offset);
     output.add(offset + "default " + returnType.toJava() + " " + jsonName + "(" + paramsStr + ") {");
@@ -855,7 +814,6 @@ class Interface extends TypeDefinition {
     writeJavadoc(output, offset, formattedComment());
     output.add("public interface " + jsonName + implementsClause + " {");
     offset = "  ";
-    writeSharedTypes(output, offset);
     writeEvents(output, offset);
     super.writeTo(output, offset);
     for (Method m : methods) {
@@ -880,33 +838,6 @@ class Interface extends TypeDefinition {
       e.writeListenerMethods(output, offset);
     }
     output.add("");
-  }
-
-  private void writeSharedTypes(List<String> output, String offset) {
-    switch (jsonName) {
-      case "ElementHandle": {
-        output.add(offset + "class SelectOption {");
-        output.add(offset + "  public String value;");
-        output.add(offset + "  public String label;");
-        output.add(offset + "  public Integer index;");
-        output.add("");
-        output.add(offset + "  public SelectOption withValue(String value) {");
-        output.add(offset + "    this.value = value;");
-        output.add(offset + "    return this;");
-        output.add(offset + "  }");
-        output.add(offset + "  public SelectOption withLabel(String label) {");
-        output.add(offset + "    this.label = label;");
-        output.add(offset + "    return this;");
-        output.add(offset + "  }");
-        output.add(offset + "  public SelectOption withIndex(int index) {");
-        output.add(offset + "    this.index = index;");
-        output.add(offset + "    return this;");
-        output.add(offset + "  }");
-        output.add(offset + "}");
-        output.add("");
-        break;
-      }
-    }
   }
 }
 

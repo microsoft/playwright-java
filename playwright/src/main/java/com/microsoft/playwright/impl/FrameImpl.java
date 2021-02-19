@@ -88,6 +88,33 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return withLogging("Frame.querySelectorAll", () -> querySelectorAllImpl(selector));
   }
 
+  @Override
+  public List<String> selectOption(String selector, String value, SelectOptionOptions options) {
+    String[] values = value == null ? null : new String[]{ value };
+    return selectOption(selector, values, options);
+  }
+
+  @Override
+  public List<String> selectOption(String selector, ElementHandle value, SelectOptionOptions options) {
+    ElementHandle[] values = value == null ? null : new ElementHandle[]{value};
+    return selectOption(selector, values, options);
+  }
+
+  @Override
+  public List<String> selectOption(String selector, String[] values, SelectOptionOptions options) {
+    if (values == null) {
+      return selectOption(selector, new SelectOption[0], options);
+    }
+    return selectOption(selector, Arrays.asList(values).stream().map(
+      v -> new SelectOption().withValue(v)).toArray(SelectOption[]::new), options);
+  }
+
+  @Override
+  public List<String> selectOption(String selector, SelectOption value, SelectOptionOptions options) {
+    SelectOption[] values = value == null ? null : new SelectOption[]{value};
+    return selectOption(selector, values, options);
+  }
+
   List<ElementHandle> querySelectorAllImpl(String selector) {
     JsonObject params = new JsonObject();
     params.addProperty("selector", selector);
@@ -534,11 +561,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public List<String> selectOption(String selector, ElementHandle.SelectOption[] values, SelectOptionOptions options) {
+  public List<String> selectOption(String selector, SelectOption[] values, SelectOptionOptions options) {
     return withLogging("Frame.selectOption", () -> selectOptionImpl(selector, values, options));
   }
 
-  List<String> selectOptionImpl(String selector, ElementHandle.SelectOption[] values, SelectOptionOptions options) {
+  List<String> selectOptionImpl(String selector, SelectOption[] values, SelectOptionOptions options) {
     if (options == null) {
       options = new SelectOptionOptions();
     }

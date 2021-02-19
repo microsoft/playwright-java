@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.SelectOption;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -37,7 +38,7 @@ public class TestPageSelectOption extends TestBase {
   @Test
   void shouldSelectSingleOptionByValue() {
     page.navigate(server.PREFIX + "/input/select.html");
-    page.selectOption("select", new ElementHandle.SelectOption().withValue("blue"));
+    page.selectOption("select", new SelectOption().withValue("blue"));
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onChange"));
   }
@@ -45,7 +46,7 @@ public class TestPageSelectOption extends TestBase {
   @Test
   void shouldSelectSingleOptionByLabel() {
     page.navigate(server.PREFIX + "/input/select.html");
-    page.selectOption("select", new ElementHandle.SelectOption().withLabel("Indigo"));
+    page.selectOption("select", new SelectOption().withLabel("Indigo"));
     assertEquals(asList("indigo"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("indigo"), page.evaluate("() => window['result'].onChange"));
   }
@@ -61,7 +62,7 @@ public class TestPageSelectOption extends TestBase {
   @Test
   void shouldSelectSingleOptionByIndex() {
     page.navigate(server.PREFIX + "/input/select.html");
-    page.selectOption("select", new ElementHandle.SelectOption().withIndex(2));
+    page.selectOption("select", new SelectOption().withIndex(2));
     assertEquals(asList("brown"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("brown"), page.evaluate("() => window['result'].onChange"));
   }
@@ -69,7 +70,7 @@ public class TestPageSelectOption extends TestBase {
   @Test
   void shouldSelectSingleOptionByMultipleAttributes() {
     page.navigate(server.PREFIX + "/input/select.html");
-    page.selectOption("select", new ElementHandle.SelectOption().withValue("green").withLabel("Green"));
+    page.selectOption("select", new SelectOption().withValue("green").withLabel("Green"));
     assertEquals(asList("green"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("green"), page.evaluate("() => window['result'].onChange"));
   }
@@ -79,7 +80,7 @@ public class TestPageSelectOption extends TestBase {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evalOnSelector("select", "s => s.value = undefined");
     try {
-      page.selectOption("select", new ElementHandle.SelectOption()
+      page.selectOption("select", new SelectOption()
         .withValue("green").withLabel("Brown"), new Page.SelectOptionOptions().withTimeout(300));
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout"));
@@ -116,10 +117,10 @@ public class TestPageSelectOption extends TestBase {
   void shouldSelectMultipleOptionsWithAttributes() {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");
-    page.selectOption("select", new ElementHandle.SelectOption[] {
-      new ElementHandle.SelectOption().withValue("blue"),
-      new ElementHandle.SelectOption().withLabel("Green"),
-      new ElementHandle.SelectOption().withIndex(4),
+    page.selectOption("select", new SelectOption[] {
+      new SelectOption().withValue("blue"),
+      new SelectOption().withLabel("Green"),
+      new SelectOption().withIndex(4),
     });
     assertEquals(asList("blue", "gray", "green"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("blue", "gray", "green"), page.evaluate("() => window['result'].onChange"));
@@ -201,7 +202,7 @@ public class TestPageSelectOption extends TestBase {
     assertEquals(true, page.evalOnSelector("select", "select => Array.from(select.options).every(option => !option.selected)"));
     page.selectOption("select", (String[]) null);
     assertEquals(true, page.evalOnSelector("select", "select => Array.from(select.options).every(option => !option.selected)"));
-    page.selectOption("select", (ElementHandle.SelectOption[]) null);
+    page.selectOption("select", (SelectOption[]) null);
     assertEquals(true, page.evalOnSelector("select", "select => Array.from(select.options).every(option => !option.selected)"));
   }
 
