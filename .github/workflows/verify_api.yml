@@ -1,12 +1,16 @@
 name: Verify API
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - release-*
     paths:
       - 'scripts/*'
       - 'api-generator/*'
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
+      - release-*
     paths:
       - 'scripts/**'
       - 'api-generator/**'
