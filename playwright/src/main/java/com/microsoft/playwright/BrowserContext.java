@@ -257,8 +257,7 @@ public interface BrowserContext extends AutoCloseable {
    */
   Page newPage();
   /**
-   * Returns all open pages in the context. Non visible pages, such as {@code "background_page"}, will not be listed here. You can
-   * find them using [{@code method: ChromiumBrowserContext.backgroundPages}].
+   * Returns all open pages in the context. 
    */
   List<Page> pages();
   /**

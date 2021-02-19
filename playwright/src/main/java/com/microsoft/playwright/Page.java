@@ -1153,22 +1153,18 @@ public interface Page extends AutoCloseable {
   }
   class WaitForFunctionOptions {
     /**
-     * If {@code polling} is {@code 'raf'}, then {@code expression} is constantly executed in {@code requestAnimationFrame} callback. If {@code polling} is a
-     * number, then it is treated as an interval in milliseconds at which the function would be executed. Defaults to {@code raf}.
+     * If specified, then it is treated as an interval in milliseconds at which the function would be executed. By default if
+     * the option is not specified {@code expression} is executed in {@code requestAnimationFrame} callback.
      */
-    public Integer pollingInterval;
+    public Double pollingInterval;
     /**
      * maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the [{@code method: BrowserContext.setDefaultTimeout}].
      */
     public Double timeout;
 
-    public WaitForFunctionOptions withRequestAnimationFrame() {
-      this.pollingInterval = null;
-      return this;
-    }
-    public WaitForFunctionOptions withPollingInterval(int millis) {
-      this.pollingInterval = millis;
+    public WaitForFunctionOptions withPollingInterval(double pollingInterval) {
+      this.pollingInterval = pollingInterval;
       return this;
     }
     public WaitForFunctionOptions withTimeout(double timeout) {
