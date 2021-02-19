@@ -841,7 +841,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
 
     List<Waitable<Response>> waitables = new ArrayList<>();
-    UrlMatcher matcher = UrlMatcher.forOneOf(options.glob, options.pattern, options.predicate);
+    UrlMatcher matcher = UrlMatcher.forOneOf(options.url);
     waitables.add(new WaitForNavigationHelper(matcher, convertViaJson(options.waitUntil, LoadState.class)));
     waitables.add(page.createWaitForCloseHelper());
     waitables.add(page.createWaitableFrameDetach(this));

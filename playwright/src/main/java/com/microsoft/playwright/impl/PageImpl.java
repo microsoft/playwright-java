@@ -1169,9 +1169,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options != null) {
       frameOptions.timeout = options.timeout;
       frameOptions.waitUntil = options.waitUntil;
-      frameOptions.glob = options.glob;
-      frameOptions.pattern = options.pattern;
-      frameOptions.predicate = options.predicate;
+      frameOptions.url = options.url;
     }
     return mainFrame.waitForNavigationImpl(code, frameOptions);
   }

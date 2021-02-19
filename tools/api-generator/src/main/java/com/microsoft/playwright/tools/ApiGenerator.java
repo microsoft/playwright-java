@@ -306,6 +306,9 @@ class TypeRef extends Element {
     String name = jsonType.get("name").getAsString();
     if (jsonType.has("union")) {
       if (name.isEmpty()) {
+        if (parent instanceof Field) {
+          return "Object";
+        }
         throw new RuntimeException("Unexpected enum without name: " + jsonType);
       }
       return name;
@@ -690,13 +693,6 @@ class Field extends Element {
 
   void writeTo(List<String> output, String offset) {
     writeJavadoc(output, offset, comment());
-    if (asList("Frame.waitForNavigation.options.url",
-               "Page.waitForNavigation.options.url").contains(jsonPath)) {
-      output.add(offset + "public String glob;");
-      output.add(offset + "public Pattern pattern;");
-      output.add(offset + "public Predicate<String> predicate;");
-      return;
-    }
     String typeStr = type.toJava();
     if (type.isNullable()) {
       typeStr = "Optional<" + typeStr + ">";
@@ -715,20 +711,10 @@ class Field extends Element {
   }
 
   void writeBuilderMethod(List<String> output, String offset, String parentClass) {
-    if (asList("Frame.waitForNavigation.options.url",
-               "Page.waitForNavigation.options.url").contains(jsonPath)) {
-      output.add(offset + "public WaitForNavigationOptions withUrl(String glob) {");
-      output.add(offset + "  this.glob = glob;");
-      output.add(offset + "  return this;");
-      output.add(offset + "}");
-      output.add(offset + "public WaitForNavigationOptions withUrl(Pattern pattern) {");
-      output.add(offset + "  this.pattern = pattern;");
-      output.add(offset + "  return this;");
-      output.add(offset + "}");
-      output.add(offset + "public WaitForNavigationOptions withUrl(Predicate<String> predicate) {");
-      output.add(offset + "  this.predicate = predicate;");
-      output.add(offset + "  return this;");
-      output.add(offset + "}");
+    if (type.customType == null && type.isTypeUnion()) {
+      for (int i = 0; i < type.unionSize(); i++) {
+        writeGenericBuilderMethod(output, offset, parentClass, type.formatTypeFromUnion(i));
+      }
       return;
     }
     if (asList("Page.click.options.position",
@@ -781,11 +767,17 @@ class Field extends Element {
       } else if ("Double".equals(paramType)) {
         paramType = "double";
       }
-      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + paramType + " " + name + ") {");
-      String rvalue = type.isNullable() ? "Optional.ofNullable(" + name + ")" : name;
-      output.add(offset + "  this." + name + " = " + rvalue + ";");
-      output.add(offset + "  return this;");
+      writeGenericBuilderMethod(output, offset, parentClass, paramType);
+      return;
     }
+    output.add(offset + "}");
+  }
+
+  private void writeGenericBuilderMethod(List<String> output, String offset, String parentClass, String paramType) {
+    output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + paramType + " " + name + ") {");
+    String rvalue = type.isNullable() ? "Optional.ofNullable(" + name + ")" : name;
+    output.add(offset + "  this." + name + " = " + rvalue + ";");
+    output.add(offset + "  return this;");
     output.add(offset + "}");
   }
 }

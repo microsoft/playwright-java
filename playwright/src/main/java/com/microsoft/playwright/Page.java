@@ -1197,9 +1197,7 @@ public interface Page extends AutoCloseable {
     /**
      * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
      */
-    public String glob;
-    public Pattern pattern;
-    public Predicate<String> predicate;
+    public Object url;
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
      * - {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.
@@ -1212,16 +1210,16 @@ public interface Page extends AutoCloseable {
       this.timeout = timeout;
       return this;
     }
-    public WaitForNavigationOptions withUrl(String glob) {
-      this.glob = glob;
+    public WaitForNavigationOptions withUrl(String url) {
+      this.url = url;
       return this;
     }
-    public WaitForNavigationOptions withUrl(Pattern pattern) {
-      this.pattern = pattern;
+    public WaitForNavigationOptions withUrl(Pattern url) {
+      this.url = url;
       return this;
     }
-    public WaitForNavigationOptions withUrl(Predicate<String> predicate) {
-      this.predicate = predicate;
+    public WaitForNavigationOptions withUrl(Predicate<String> url) {
+      this.url = url;
       return this;
     }
     public WaitForNavigationOptions withWaitUntil(WaitUntilState waitUntil) {

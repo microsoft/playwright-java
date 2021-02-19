@@ -235,5 +235,29 @@ public class TestPageWaitForNavigation extends TestBase {
     }
   }
 
+  @Test
+  void shouldThrowOnInvalidUrlMatcherTypeInPage() {
+    try {
+      Page.WaitForNavigationOptions options = new Page.WaitForNavigationOptions();
+      options.url = new Object();
+      page.waitForNavigation(options, () -> {});
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Url must be String, Pattern or Predicate<String>"));
+    }
+  }
 
+  @Test
+  void shouldThrowOnInvalidUrlMatcherTypeInFrame() {
+    page.navigate(server.PREFIX + "/frames/one-frame.html");
+    Frame frame = page.frames().get(1);
+    try {
+      Frame.WaitForNavigationOptions options = new Frame.WaitForNavigationOptions();
+      options.url = new Object();
+      frame.waitForNavigation(options, () -> {});
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Url must be String, Pattern or Predicate<String>"));
+    }
+  }
 }
