@@ -33,25 +33,6 @@ import java.util.*;
  * methods.
  */
 public interface ElementHandle extends JSHandle {
-  class SelectOption {
-    public String value;
-    public String label;
-    public Integer index;
-
-    public SelectOption withValue(String value) {
-      this.value = value;
-      return this;
-    }
-    public SelectOption withLabel(String label) {
-      this.label = label;
-      return this;
-    }
-    public SelectOption withIndex(int index) {
-      this.index = index;
-      return this;
-    }
-  }
-
   class CheckOptions {
     /**
      * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
@@ -1007,41 +988,139 @@ public interface ElementHandle extends JSHandle {
    * [connected](https://developer.mozilla.org/en-US/docs/Web/API/Node/isConnected) to a Document or a ShadowRoot.
    */
   void scrollIntoViewIfNeeded(ScrollIntoViewIfNeededOptions options);
-  default List<String> selectOption(String value) {
-    return selectOption(value, null);
+  /**
+   * Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
+   * element, the method throws an error.
+   *
+   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   *
+   *
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
+   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
+   * is considered matching if all specified properties match.
+   */
+  default List<String> selectOption(String values) {
+    return selectOption(values, null);
   }
-  default List<String> selectOption(String value, SelectOptionOptions options) {
-    String[] values = value == null ? null : new String[]{ value };
-    return selectOption(values, options);
+  /**
+   * Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
+   * element, the method throws an error.
+   *
+   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   *
+   *
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
+   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
+   * is considered matching if all specified properties match.
+   */
+  List<String> selectOption(String values, SelectOptionOptions options);
+  /**
+   * Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
+   * element, the method throws an error.
+   *
+   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   *
+   *
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
+   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
+   * is considered matching if all specified properties match.
+   */
+  default List<String> selectOption(ElementHandle values) {
+    return selectOption(values, null);
   }
+  /**
+   * Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
+   * element, the method throws an error.
+   *
+   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   *
+   *
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
+   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
+   * is considered matching if all specified properties match.
+   */
+  List<String> selectOption(ElementHandle values, SelectOptionOptions options);
+  /**
+   * Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
+   * element, the method throws an error.
+   *
+   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   *
+   *
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
+   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
+   * is considered matching if all specified properties match.
+   */
   default List<String> selectOption(String[] values) {
     return selectOption(values, null);
   }
-  default List<String> selectOption(String[] values, SelectOptionOptions options) {
-    if (values == null) {
-      return selectOption(new SelectOption[0], options);
-    }
-    return selectOption(Arrays.asList(values).stream().map(
-      v -> new SelectOption().withValue(v)).toArray(SelectOption[]::new), options);
-  }
-  default List<String> selectOption(SelectOption value) {
-    return selectOption(value, null);
-  }
-  default List<String> selectOption(SelectOption value, SelectOptionOptions options) {
-    SelectOption[] values = value == null ? null : new SelectOption[]{value};
-    return selectOption(values, options);
-  }
-  default List<String> selectOption(SelectOption[] values) {
+  /**
+   * Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
+   * element, the method throws an error.
+   *
+   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   *
+   *
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
+   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
+   * is considered matching if all specified properties match.
+   */
+  List<String> selectOption(String[] values, SelectOptionOptions options);
+  /**
+   * Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
+   * element, the method throws an error.
+   *
+   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   *
+   *
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
+   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
+   * is considered matching if all specified properties match.
+   */
+  default List<String> selectOption(SelectOption values) {
     return selectOption(values, null);
   }
-  List<String> selectOption(SelectOption[] values, SelectOptionOptions options);
-  default List<String> selectOption(ElementHandle value) {
-    return selectOption(value, null);
-  }
-  default List<String> selectOption(ElementHandle value, SelectOptionOptions options) {
-    ElementHandle[] values = value == null ? null : new ElementHandle[]{value};
-    return selectOption(values, options);
-  }
+  /**
+   * Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
+   * element, the method throws an error.
+   *
+   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   *
+   *
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
+   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
+   * is considered matching if all specified properties match.
+   */
+  List<String> selectOption(SelectOption values, SelectOptionOptions options);
+  /**
+   * Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
+   * element, the method throws an error.
+   *
+   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   *
+   *
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
+   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
+   * is considered matching if all specified properties match.
+   */
   default List<String> selectOption(ElementHandle[] values) {
     return selectOption(values, null);
   }
@@ -1059,6 +1138,36 @@ public interface ElementHandle extends JSHandle {
    * is considered matching if all specified properties match.
    */
   List<String> selectOption(ElementHandle[] values, SelectOptionOptions options);
+  /**
+   * Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
+   * element, the method throws an error.
+   *
+   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   *
+   *
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
+   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
+   * is considered matching if all specified properties match.
+   */
+  default List<String> selectOption(SelectOption[] values) {
+    return selectOption(values, null);
+  }
+  /**
+   * Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
+   * element, the method throws an error.
+   *
+   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   *
+   *
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
+   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
+   * is considered matching if all specified properties match.
+   */
+  List<String> selectOption(SelectOption[] values, SelectOptionOptions options);
   /**
    * This method waits for [actionability](./actionability.md) checks, then focuses the element and selects all its text
    * content.

@@ -25,9 +25,11 @@ import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.options.BoundingBox;
 import com.microsoft.playwright.options.ElementState;
 import com.microsoft.playwright.options.FilePayload;
+import com.microsoft.playwright.options.SelectOption;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
@@ -339,6 +341,33 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     withLogging("ElementHandle.scrollIntoViewIfNeeded", () -> scrollIntoViewIfNeededImpl(options));
   }
 
+  @Override
+  public List<String> selectOption(String value, SelectOptionOptions options) {
+    String[] values = value == null ? null : new String[]{ value };
+    return selectOption(values, options);
+  }
+
+  @Override
+  public List<String> selectOption(ElementHandle value, SelectOptionOptions options) {
+    ElementHandle[] values = value == null ? null : new ElementHandle[]{ value };
+    return selectOption(values, options);
+  }
+
+  @Override
+  public List<String> selectOption(String[] values, SelectOptionOptions options) {
+    if (values == null) {
+      return selectOption(new SelectOption[0], options);
+    }
+    return selectOption(Arrays.asList(values).stream().map(
+      v -> new SelectOption().withValue(v)).toArray(SelectOption[]::new), options);
+  }
+
+  @Override
+  public List<String> selectOption(SelectOption value, SelectOptionOptions options) {
+    SelectOption[] values = value == null ? null : new SelectOption[]{ value };
+    return selectOption(values, options);
+  }
+
   private void scrollIntoViewIfNeededImpl(ScrollIntoViewIfNeededOptions options) {
     if (options == null) {
       options = new ScrollIntoViewIfNeededOptions();
@@ -372,7 +401,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   }
 
   private List<String> selectOption(JsonObject params) {
-    return withLogging("ElementHandle.selectOption", () -> {
+    return withLogging("SelectOption", () -> {
       JsonObject json = sendMessage("selectOption", params).getAsJsonObject();
       return parseStringList(json.getAsJsonArray("values"));
     });

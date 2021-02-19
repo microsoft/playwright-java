@@ -52,9 +52,6 @@ class Types {
     add("Page.exposeFunction.callback", "function", "FunctionCallback");
 
     // The method has custom signatures
-    add("Page.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");
-    add("Frame.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");
-    add("ElementHandle.selectOption.values", "Array<ElementHandle>|Array<Object>|Array<string>|ElementHandle|Object|null|string", "String");
     add("Route.resume.options.postData", "Buffer|string", "byte[]", new Empty());
   }
 
