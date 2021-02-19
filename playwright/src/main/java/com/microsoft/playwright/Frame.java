@@ -1225,7 +1225,8 @@ public interface Frame {
     return isHidden(selector, null);
   }
   /**
-   * Returns whether the element is hidden, the opposite of [visible](./actionability.md#visible).
+   * Returns whether the element is hidden, the opposite of [visible](./actionability.md#visible).  {@code selector} that does not
+   * match any elements is considered hidden.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
@@ -1235,7 +1236,8 @@ public interface Frame {
     return isVisible(selector, null);
   }
   /**
-   * Returns whether the element is [visible](./actionability.md#visible).
+   * Returns whether the element is [visible](./actionability.md#visible). {@code selector} that does not match any elements is
+   * considered not visible.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md#working-with-selectors) for more details.
