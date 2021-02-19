@@ -155,6 +155,9 @@ public interface BrowserType {
       this.ignoreDefaultArgs = ignoreDefaultArgs;
       return this;
     }
+    public LaunchOptions withProxy(String server) {
+      return withProxy(new Proxy(server));
+    }
     public LaunchOptions withProxy(Proxy proxy) {
       this.proxy = proxy;
       return this;
@@ -375,6 +378,9 @@ public interface BrowserType {
       this.extraHTTPHeaders = extraHTTPHeaders;
       return this;
     }
+    public LaunchPersistentContextOptions withGeolocation(double latitude, double longitude) {
+      return withGeolocation(new Geolocation(latitude, longitude));
+    }
     public LaunchPersistentContextOptions withGeolocation(Geolocation geolocation) {
       this.geolocation = geolocation;
       return this;
@@ -400,7 +406,10 @@ public interface BrowserType {
       return this;
     }
     public LaunchPersistentContextOptions withHttpCredentials(String username, String password) {
-      this.httpCredentials = new HttpCredentials(username, password);
+      return withHttpCredentials(new HttpCredentials(username, password));
+    }
+    public LaunchPersistentContextOptions withHttpCredentials(HttpCredentials httpCredentials) {
+      this.httpCredentials = httpCredentials;
       return this;
     }
     public LaunchPersistentContextOptions withIgnoreAllDefaultArgs(boolean ignoreAllDefaultArgs) {
@@ -435,6 +444,9 @@ public interface BrowserType {
       this.permissions = permissions;
       return this;
     }
+    public LaunchPersistentContextOptions withProxy(String server) {
+      return withProxy(new Proxy(server));
+    }
     public LaunchPersistentContextOptions withProxy(Proxy proxy) {
       this.proxy = proxy;
       return this;
@@ -450,6 +462,9 @@ public interface BrowserType {
     public LaunchPersistentContextOptions withRecordVideoDir(Path recordVideoDir) {
       this.recordVideoDir = recordVideoDir;
       return this;
+    }
+    public LaunchPersistentContextOptions withRecordVideoSize(int width, int height) {
+      return withRecordVideoSize(new RecordVideoSize(width, height));
     }
     public LaunchPersistentContextOptions withRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;

@@ -108,7 +108,6 @@ abstract class Element {
 // Represents return type of a method, type of a method param or type of a field.
 class TypeRef extends Element {
   String customType;
-  boolean isNestedClass;
 
   private static final Map<String, String> customTypeNames = new HashMap<>();
   static {
@@ -210,7 +209,6 @@ class TypeRef extends Element {
       } else {
         customType = toTitle(parent.parent.jsonName) + toTitle(parent.jsonName);
         typeScope().createNestedClass(customType, this, jsonElement.getAsJsonObject());
-        isNestedClass = true;
       }
     }
   }
@@ -223,6 +221,14 @@ class TypeRef extends Element {
       return "void";
     }
     return convertBuiltinType(stripNullable());
+  }
+
+  boolean isCustomClass() {
+    JsonObject jsonObject = stripNullable();
+    if (!"Object".equals(jsonObject.get("name").getAsString())) {
+      return false;
+    }
+    return !jsonElement.getAsJsonObject().has("templates");
   }
 
   boolean isTypeUnion() {
@@ -406,7 +412,7 @@ class TypeRef extends Element {
 }
 
 abstract class TypeDefinition extends Element {
-  final List<NestedClass> classes = new ArrayList<>();
+  final List<CustomClass> classes = new ArrayList<>();
 
   static final Types types = new Types();
 
@@ -441,23 +447,23 @@ abstract class TypeDefinition extends Element {
 
   void createTopLevelClass(String name, Element parent, JsonObject jsonObject) {
     Map<String, TypeDefinition> map = topLevelTypes();
-    TypeDefinition existing = map.putIfAbsent(name, new NestedClass(parent, name, jsonObject));
-    if (existing != null && (!(existing instanceof NestedClass))) {
+    TypeDefinition existing = map.putIfAbsent(name, new CustomClass(parent, name, jsonObject));
+    if (existing != null && (!(existing instanceof CustomClass))) {
       throw new RuntimeException("Two classes with same name have different values:\n" + jsonObject + "\n" + existing.jsonElement);
     }
   }
 
   void createNestedClass(String name, Element parent, JsonObject jsonObject) {
-    for (NestedClass c : classes) {
+    for (CustomClass c : classes) {
       if (c.name.equals(name)) {
         return;
       }
     }
-    classes.add(new NestedClass(parent, name, jsonObject));
+    classes.add(new CustomClass(parent, name, jsonObject));
   }
 
   void writeTo(List<String> output, String offset) {
-    for (NestedClass c : classes) {
+    for (CustomClass c : classes) {
       c.writeTo(output, offset);
     }
   }
@@ -680,7 +686,7 @@ class Field extends Element {
   final String name;
   final TypeRef type;
 
-  Field(NestedClass parent, String name, JsonObject jsonElement) {
+  Field(CustomClass parent, String name, JsonObject jsonElement) {
     super(parent, jsonElement);
     this.name = name;
     this.type = new TypeRef(this, jsonElement.getAsJsonObject().get("type"));
@@ -717,23 +723,25 @@ class Field extends Element {
       }
       return;
     }
-    if (asList("Page.click.options.position",
-      "Page.dblclick.options.position",
-      "Page.hover.options.position",
-      "Frame.click.options.position",
-      "Frame.dblclick.options.position",
-      "Frame.hover.options.position",
-      "ElementHandle.click.options.position",
-      "ElementHandle.dblclick.options.position",
-      "ElementHandle.hover.options.position").contains(jsonPath)) {
-      output.add(offset + "public " + parentClass + " withPosition(Position position) {");
-      output.add(offset + "  this.position = position;");
-      output.add(offset + "  return this;");
-      output.add(offset + "}");
-      output.add(offset + "public " + parentClass + " withPosition(double x, double y) {");
-      output.add(offset + "  return withPosition(new Position(x, y));");
-      output.add(offset + "}");
-      return;
+    if (type.isCustomClass()) {
+      TypeDefinition customType = topLevelTypes().get(type.customType);
+      if (customType instanceof CustomClass) {
+        CustomClass clazz = (CustomClass) customType;
+        List<String> params = new ArrayList<>();
+        List<String> args = new ArrayList<>();
+        for (Field f : clazz.fields) {
+          if (!f.isRequired()) {
+            continue;
+          }
+          params.add(f.type.toJava() + " " + f.name);
+          args.add(f.name);
+        }
+        if (!params.isEmpty()) {
+          output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + String.join(", ", params) + ") {");
+          output.add(offset + "  return with" + toTitle(name) + "(new " + type.toJava() + "(" + String.join(", ", args) + "));");
+          output.add(offset + "}");
+        }
+      }
     }
     if ("Route.resume.options.postData".equals(jsonPath)) {
       output.add(offset + "public " + parentClass + " withPostData(String postData) {");
@@ -741,36 +749,7 @@ class Field extends Element {
       output.add(offset + "  return this;");
       output.add(offset + "}");
     }
-    if ("ViewportSize".equals(type.toJava())) {
-      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(int width, int height) {");
-      output.add(offset + "  return with" + toTitle(name) + "(new " + type.toJava() + "(width, height));");
-      output.add(offset + "}");
-    }
-    if (name.equals("httpCredentials")) {
-      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(String username, String password) {");
-      output.add(offset + "  this." + name + " = new " + type.toJava() + "(username, password);");
-      output.add(offset + "  return this;");
-    } else if (type.isNestedClass) {
-      output.add(offset + "public " + type.toJava() + " set" + toTitle(name) + "() {");
-      output.add(offset + "  this." + name + " = new " + type.toJava() + "();");
-      output.add(offset + "  return this." + name + ";");
-    } else if ("Browser.VideoSize".equals(type.toJava()) || "VideoSize".equals(type.toJava())) {
-      output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(int width, int height) {");
-      output.add(offset + "  this." + name + " = new " + type.toJava() + "(width, height);");
-      output.add(offset + "  return this;");
-    } else {
-      String paramType = type.toJava();
-      if ("Boolean".equals(paramType)) {
-        paramType = "boolean";
-      } else if ("Integer".equals(paramType)) {
-        paramType = "int";
-      } else if ("Double".equals(paramType)) {
-        paramType = "double";
-      }
-      writeGenericBuilderMethod(output, offset, parentClass, paramType);
-      return;
-    }
-    output.add(offset + "}");
+    writeGenericBuilderMethod(output, offset, parentClass, type.toJava());
   }
 
   private void writeGenericBuilderMethod(List<String> output, String offset, String parentClass, String paramType) {
@@ -931,11 +910,11 @@ class Interface extends TypeDefinition {
   }
 }
 
-class NestedClass extends TypeDefinition {
+class CustomClass extends TypeDefinition {
   final String name;
   final List<Field> fields = new ArrayList<>();
 
-  NestedClass(Element parent, String name, JsonObject jsonElement) {
+  CustomClass(Element parent, String name, JsonObject jsonElement) {
     super(parent, true, jsonElement);
     this.name = name;
 
@@ -979,7 +958,7 @@ class NestedClass extends TypeDefinition {
     if (asList("RecordHar", "RecordVideo").contains(name)) {
       output.add("import java.nio.file.Path;");
     }
-    String access = (parent.typeScope() instanceof NestedClass) || topLevelTypes().containsKey(name) ? "public " : "";
+    String access = (parent.typeScope() instanceof CustomClass) || topLevelTypes().containsKey(name) ? "public " : "";
     output.add(offset + access + "class " + name + " {");
     String bodyOffset = offset + "  ";
     super.writeTo(output, bodyOffset);

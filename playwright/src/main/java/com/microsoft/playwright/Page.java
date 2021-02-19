@@ -253,12 +253,12 @@ public interface Page extends AutoCloseable {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    public ClickOptions withPosition(double x, double y) {
+      return withPosition(new Position(x, y));
+    }
     public ClickOptions withPosition(Position position) {
       this.position = position;
       return this;
-    }
-    public ClickOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
     }
     public ClickOptions withTimeout(double timeout) {
       this.timeout = timeout;
@@ -332,12 +332,12 @@ public interface Page extends AutoCloseable {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    public DblclickOptions withPosition(double x, double y) {
+      return withPosition(new Position(x, y));
+    }
     public DblclickOptions withPosition(Position position) {
       this.position = position;
       return this;
-    }
-    public DblclickOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
     }
     public DblclickOptions withTimeout(double timeout) {
       this.timeout = timeout;
@@ -548,12 +548,12 @@ public interface Page extends AutoCloseable {
       this.modifiers = modifiers;
       return this;
     }
+    public HoverOptions withPosition(double x, double y) {
+      return withPosition(new Position(x, y));
+    }
     public HoverOptions withPosition(Position position) {
       this.position = position;
       return this;
-    }
-    public HoverOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
     }
     public HoverOptions withTimeout(double timeout) {
       this.timeout = timeout;
@@ -861,6 +861,9 @@ public interface Page extends AutoCloseable {
      */
     public ScreenshotType type;
 
+    public ScreenshotOptions withClip(double x, double y, double width, double height) {
+      return withClip(new Clip(x, y, width, height));
+    }
     public ScreenshotOptions withClip(Clip clip) {
       this.clip = clip;
       return this;
@@ -997,6 +1000,9 @@ public interface Page extends AutoCloseable {
     public TapOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
+    }
+    public TapOptions withPosition(double x, double y) {
+      return withPosition(new Position(x, y));
     }
     public TapOptions withPosition(Position position) {
       this.position = position;
