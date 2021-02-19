@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.PlaywrightException;
+
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -34,25 +36,20 @@ class UrlMatcher {
     return new UrlMatcher(null, null);
   }
 
-  static UrlMatcher forOneOf(String glob, Pattern pattern, Predicate<String> predicate) {
-    UrlMatcher result = UrlMatcher.any();
-    int conditionCount = 0;
-    if (glob != null) {
-      conditionCount += 1;
-      result = new UrlMatcher(glob);
+  static UrlMatcher forOneOf(Object object) {
+    if (object == null) {
+      return UrlMatcher.any();
     }
-    if (pattern != null) {
-      conditionCount += 1;
-      result = new UrlMatcher(pattern);
+    if (object instanceof String) {
+      return new UrlMatcher((String) object);
     }
-    if (predicate != null) {
-      conditionCount += 1;
-      result = new UrlMatcher(predicate);
+    if (object instanceof Pattern) {
+      return new UrlMatcher((Pattern) object);
     }
-    if (conditionCount > 1) {
-      throw new IllegalArgumentException("Only one of glob, pattern and predicate can be specified");
+    if (object instanceof Predicate) {
+      return new UrlMatcher((Predicate<String>) object);
     }
-    return result;
+    throw new PlaywrightException("Url must be String, Pattern or Predicate<String>, found: " + object.getClass().getTypeName());
   }
 
   UrlMatcher(String url) {
