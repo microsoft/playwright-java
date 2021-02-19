@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestGeolocation extends TestBase {
   @Test
   void shouldWork() {
-    context.grantPermissions(new String[]{"geolocation"});
+    context.grantPermissions(asList("geolocation"));
     page.navigate(server.EMPTY_PAGE);
     context.setGeolocation(new Geolocation(10, 10));
     Object geolocation = page.evaluate("() => new Promise(resolve => navigator.geolocation.getCurrentPosition(position => {\n" +
@@ -50,7 +50,7 @@ public class TestGeolocation extends TestBase {
 
   @Test
   void shouldIsolateContexts() {
-    context.grantPermissions(new String[]{"geolocation"});
+    context.grantPermissions(asList("geolocation"));
     context.setGeolocation(new Geolocation(10, 10));
     page.navigate(server.EMPTY_PAGE);
 
@@ -107,7 +107,7 @@ public class TestGeolocation extends TestBase {
 
   @Test
   void watchPositionShouldBeNotified() {
-    context.grantPermissions(new String[]{"geolocation"});
+    context.grantPermissions(asList("geolocation"));
     page.navigate(server.EMPTY_PAGE);
     List<String> messages = new ArrayList<>();
     page.onConsole(message -> messages.add(message.text()));
@@ -147,7 +147,7 @@ public class TestGeolocation extends TestBase {
 
   @Test
   void shouldUseContextOptionsForPopup() {
-    context.grantPermissions(new String[]{"geolocation"});
+    context.grantPermissions(asList("geolocation"));
     context.setGeolocation(new Geolocation(10, 10));
     Page popup = page.waitForPopup(() -> page.evaluate(
       "url => window['_popup'] = window.open(url)", server.PREFIX + "/geolocation.html"));

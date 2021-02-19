@@ -226,7 +226,7 @@ public interface BrowserContext extends AutoCloseable {
    * - {@code 'clipboard-write'}
    * - {@code 'payment-handler'}
    */
-  default void grantPermissions(String[] permissions) {
+  default void grantPermissions(List<String> permissions) {
     grantPermissions(permissions, null);
   }
   /**
@@ -251,7 +251,7 @@ public interface BrowserContext extends AutoCloseable {
    * - {@code 'clipboard-write'}
    * - {@code 'payment-handler'}
    */
-  void grantPermissions(String[] permissions, GrantPermissionsOptions options);
+  void grantPermissions(List<String> permissions, GrantPermissionsOptions options);
   /**
    * Creates a new page in the browser context.
    */

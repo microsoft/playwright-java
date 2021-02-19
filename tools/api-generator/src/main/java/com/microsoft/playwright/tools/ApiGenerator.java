@@ -348,9 +348,13 @@ class TypeRef extends Element {
     }
     if ("Array".equals(name)) {
       String elementType = convertTemplateParams(jsonType);
-      if (parent instanceof Param) {
-        // Use array instead of List as after type erasure all list are indistinguishable and wouldn't allow overloads.
-        return elementType + "[]";
+      if (parent instanceof Param && isTypeUnion()) {
+        long numArrayOverloads = supportedUnionTypes().stream().filter(
+          jsonObject -> "Array".equals(jsonObject.get("name").getAsString())).count();
+        if (numArrayOverloads > 1) {
+          // Use array instead of List as after type erasure all lists are indistinguishable and wouldn't allow overloads.
+          return elementType + "[]";
+        }
       }
       return "List<" + elementType + ">";
     }

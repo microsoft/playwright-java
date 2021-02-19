@@ -32,7 +32,6 @@ import java.util.function.Consumer;
 import static com.microsoft.playwright.options.LoadState.*;
 import static com.microsoft.playwright.impl.Serialization.*;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
-import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 
 public class FrameImpl extends ChannelOwner implements Frame {
   private String name;
@@ -703,8 +702,6 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("expression", pageFunction);
-    // TODO: remove once fixed upstream
-    params.addProperty("isFunction", isFunctionBody(pageFunction));
     params.add("arg", gson().toJsonTree(serializeArgument(arg)));
     JsonElement json = sendMessage("waitForFunction", params);
     JsonObject element = json.getAsJsonObject().getAsJsonObject("handle");
