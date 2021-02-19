@@ -557,9 +557,6 @@ class Method extends Element {
 
     List<String> paramList = params.stream().map(p -> p.type.isTypeUnion() ? p.toJavaOverload(overloadIndex) : p.toJava()).collect(toList());
     writeJavadoc(params, output, offset);
-    if (jsonPath.equals("ElementHandle.selectOption")) {
-      System.out.println(String.join(", ", paramList));
-    }
     output.add(offset + returnType.toJava() + " " + jsonName + "(" + String.join(", ", paramList) + ");");
   }
 
@@ -581,9 +578,6 @@ class Method extends Element {
     }
     String paramsStr = paramList.stream().map(p -> p.type.isTypeUnion() ? p.toJavaOverload(overloadIndex) : p.toJava())
       .collect(joining(", "));
-    if (jsonPath.equals("ElementHandle.selectOption")) {
-      System.out.println(paramsStr);
-    }
     String returns = returnType.toJava().equals("void") ? "" : "return ";
     writeJavadoc(paramList, output, offset);
     output.add(offset + "default " + returnType.toJava() + " " + jsonName + "(" + paramsStr + ") {");
