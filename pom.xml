@@ -6,7 +6,7 @@
 
   <groupId>com.microsoft.playwright</groupId>
   <artifactId>parent-pom</artifactId>
-  <version>0.180.0</version>
+  <version>0.181.0</version>
   <packaging>pom</packaging>
   <name>Playwright Parent Project</name>
   <description>Java library to automate Chromium, Firefox and WebKit with a single API.
