@@ -41,7 +41,7 @@ public class TestBrowserContextProxy extends TestBase {
   void shouldThrowForMissingGlobalProxy() {
     Browser browser = browserType.launch(createLaunchOptions());
     try {
-      browser.newContext(new Browser.NewContextOptions().withProxy(new Proxy("localhost:" + server.PORT)));
+      browser.newContext(new Browser.NewContextOptions().withProxy("localhost:" + server.PORT));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Browser needs to be launched with the global proxy"));
@@ -62,8 +62,7 @@ public class TestBrowserContextProxy extends TestBase {
         writer.write("<html><title>Served by the proxy</title></html>");
       }
     });
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withProxy(
-      new Proxy("localhost:" + server.PORT)));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withProxy("localhost:" + server.PORT));
     Page page = context.newPage();
     page.navigate("http://non-existent.com/target.html");
     assertEquals("Served by the proxy", page.title());

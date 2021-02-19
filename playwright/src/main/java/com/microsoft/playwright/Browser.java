@@ -158,6 +158,9 @@ public interface Browser extends AutoCloseable {
       this.extraHTTPHeaders = extraHTTPHeaders;
       return this;
     }
+    public NewContextOptions withGeolocation(double latitude, double longitude) {
+      return withGeolocation(new Geolocation(latitude, longitude));
+    }
     public NewContextOptions withGeolocation(Geolocation geolocation) {
       this.geolocation = geolocation;
       return this;
@@ -167,7 +170,10 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     public NewContextOptions withHttpCredentials(String username, String password) {
-      this.httpCredentials = new HttpCredentials(username, password);
+      return withHttpCredentials(new HttpCredentials(username, password));
+    }
+    public NewContextOptions withHttpCredentials(HttpCredentials httpCredentials) {
+      this.httpCredentials = httpCredentials;
       return this;
     }
     public NewContextOptions withIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
@@ -194,6 +200,9 @@ public interface Browser extends AutoCloseable {
       this.permissions = permissions;
       return this;
     }
+    public NewContextOptions withProxy(String server) {
+      return withProxy(new Proxy(server));
+    }
     public NewContextOptions withProxy(Proxy proxy) {
       this.proxy = proxy;
       return this;
@@ -209,6 +218,9 @@ public interface Browser extends AutoCloseable {
     public NewContextOptions withRecordVideoDir(Path recordVideoDir) {
       this.recordVideoDir = recordVideoDir;
       return this;
+    }
+    public NewContextOptions withRecordVideoSize(int width, int height) {
+      return withRecordVideoSize(new RecordVideoSize(width, height));
     }
     public NewContextOptions withRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
@@ -365,6 +377,9 @@ public interface Browser extends AutoCloseable {
       this.extraHTTPHeaders = extraHTTPHeaders;
       return this;
     }
+    public NewPageOptions withGeolocation(double latitude, double longitude) {
+      return withGeolocation(new Geolocation(latitude, longitude));
+    }
     public NewPageOptions withGeolocation(Geolocation geolocation) {
       this.geolocation = geolocation;
       return this;
@@ -374,7 +389,10 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     public NewPageOptions withHttpCredentials(String username, String password) {
-      this.httpCredentials = new HttpCredentials(username, password);
+      return withHttpCredentials(new HttpCredentials(username, password));
+    }
+    public NewPageOptions withHttpCredentials(HttpCredentials httpCredentials) {
+      this.httpCredentials = httpCredentials;
       return this;
     }
     public NewPageOptions withIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
@@ -401,6 +419,9 @@ public interface Browser extends AutoCloseable {
       this.permissions = permissions;
       return this;
     }
+    public NewPageOptions withProxy(String server) {
+      return withProxy(new Proxy(server));
+    }
     public NewPageOptions withProxy(Proxy proxy) {
       this.proxy = proxy;
       return this;
@@ -416,6 +437,9 @@ public interface Browser extends AutoCloseable {
     public NewPageOptions withRecordVideoDir(Path recordVideoDir) {
       this.recordVideoDir = recordVideoDir;
       return this;
+    }
+    public NewPageOptions withRecordVideoSize(int width, int height) {
+      return withRecordVideoSize(new RecordVideoSize(width, height));
     }
     public NewPageOptions withRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;

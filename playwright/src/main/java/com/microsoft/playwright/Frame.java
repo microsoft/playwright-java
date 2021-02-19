@@ -192,12 +192,12 @@ public interface Frame {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    public ClickOptions withPosition(double x, double y) {
+      return withPosition(new Position(x, y));
+    }
     public ClickOptions withPosition(Position position) {
       this.position = position;
       return this;
-    }
-    public ClickOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
     }
     public ClickOptions withTimeout(double timeout) {
       this.timeout = timeout;
@@ -259,12 +259,12 @@ public interface Frame {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    public DblclickOptions withPosition(double x, double y) {
+      return withPosition(new Position(x, y));
+    }
     public DblclickOptions withPosition(Position position) {
       this.position = position;
       return this;
-    }
-    public DblclickOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
     }
     public DblclickOptions withTimeout(double timeout) {
       this.timeout = timeout;
@@ -392,12 +392,12 @@ public interface Frame {
       this.modifiers = modifiers;
       return this;
     }
+    public HoverOptions withPosition(double x, double y) {
+      return withPosition(new Position(x, y));
+    }
     public HoverOptions withPosition(Position position) {
       this.position = position;
       return this;
-    }
-    public HoverOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
     }
     public HoverOptions withTimeout(double timeout) {
       this.timeout = timeout;
@@ -637,6 +637,9 @@ public interface Frame {
     public TapOptions withNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
+    }
+    public TapOptions withPosition(double x, double y) {
+      return withPosition(new Position(x, y));
     }
     public TapOptions withPosition(Position position) {
       this.position = position;
