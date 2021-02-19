@@ -175,7 +175,7 @@ public class TestPopup extends TestBase {
   @Test
   void BrowserContextAddInitScriptShouldApplyToAnInProcessPopup() {
     BrowserContext context = browser.newContext();
-    context.addInitScript("() => window['injected'] = 123");
+    context.addInitScript("window['injected'] = 123");
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     Object injected = page.evaluate("() => {\n" +
@@ -189,7 +189,7 @@ public class TestPopup extends TestBase {
   @Test
   void BrowserContextAddInitScriptShouldApplyToACrossProcessPopup() {
     BrowserContext context = browser.newContext();
-    context.addInitScript("() => window['injected'] = 123");
+    context.addInitScript("(() => window['injected'] = 123)()");
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     Page popup = page.waitForPopup(() -> {

@@ -31,7 +31,6 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Utils.isFunctionBody;
 import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
@@ -142,11 +141,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   private void addInitScriptImpl(String script) {
-    // TODO: serialize arg
     JsonObject params = new JsonObject();
-    if (isFunctionBody(script)) {
-      script = "(" + script + ")()";
-    }
     params.addProperty("source", script);
     sendMessage("addInitScript", params);
   }
@@ -213,16 +208,16 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void grantPermissions(String[] permissions, GrantPermissionsOptions options) {
+  public void grantPermissions(List<String> permissions, GrantPermissionsOptions options) {
     withLogging("BrowserContext.grantPermissions", () -> grantPermissionsImpl(permissions, options));
   }
 
-  private void grantPermissionsImpl(String[] permissions, GrantPermissionsOptions options) {
+  private void grantPermissionsImpl(List<String> permissions, GrantPermissionsOptions options) {
     if (options == null) {
       options = new GrantPermissionsOptions();
     }
     if (permissions == null) {
-      permissions = new String[0];
+      permissions = Collections.emptyList();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.add("permissions", gson().toJsonTree(permissions));
