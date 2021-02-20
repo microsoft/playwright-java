@@ -22,6 +22,7 @@ import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Route;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.LinkedHashMap;
@@ -61,7 +62,15 @@ public class RouteImpl extends ChannelOwner implements Route {
       params.add("headers", Serialization.toProtocol(options.headers));
     }
     if (options.postData != null) {
-      String base64 = Base64.getEncoder().encodeToString(options.postData);
+      byte[] bytes = null;
+      if (options.postData instanceof byte[]) {
+        bytes = (byte[]) options.postData;
+      } else if (options.postData instanceof String) {
+        bytes = ((String) options.postData).getBytes(StandardCharsets.UTF_8);
+      } else {
+        throw new PlaywrightException("postData must be either String or byte[], found: " + options.postData.getClass().getName());
+      }
+      String base64 = Base64.getEncoder().encodeToString(bytes);
       params.addProperty("postData", base64);
     }
     sendMessage("continue", params);

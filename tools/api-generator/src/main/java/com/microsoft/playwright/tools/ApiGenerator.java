@@ -289,6 +289,9 @@ class TypeRef extends Element {
 
   private JsonObject stripNullable() {
     JsonObject jsonType = jsonElement.getAsJsonObject();
+    if (!isNullable()) {
+      return jsonType;
+    }
     if (!jsonType.has("union")) {
       return jsonType;
     }
@@ -695,12 +698,6 @@ class Field extends Element {
           output.add(offset + "}");
         }
       }
-    }
-    if ("Route.resume.options.postData".equals(jsonPath)) {
-      output.add(offset + "public " + parentClass + " withPostData(String postData) {");
-      output.add(offset + "  this.postData = postData.getBytes(StandardCharsets.UTF_8);");
-      output.add(offset + "  return this;");
-      output.add(offset + "}");
     }
     writeGenericBuilderMethod(output, offset, parentClass, type.toJava());
   }

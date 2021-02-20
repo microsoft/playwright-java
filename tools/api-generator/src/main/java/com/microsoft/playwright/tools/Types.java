@@ -50,9 +50,6 @@ class Types {
     add("BrowserContext.exposeFunction.callback", "function", "FunctionCallback");
     add("Page.exposeBinding.callback", "function", "BindingCallback");
     add("Page.exposeFunction.callback", "function", "FunctionCallback");
-
-    // The method has custom signatures
-    add("Route.resume.options.postData", "Buffer|string", "byte[]", new Empty());
   }
 
   Mapping findForPath(String jsonPath) {
