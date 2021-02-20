@@ -150,8 +150,20 @@ public interface BrowserContext extends AutoCloseable {
    * <p> <strong>NOTE:</strong> The default browser context cannot be closed.
    */
   void close();
-  default List<Cookie> cookies() { return cookies((List<String>) null); }
-  default List<Cookie> cookies(String url) { return cookies(Arrays.asList(url)); }
+  /**
+   * If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those URLs
+   * are returned.
+   */
+  default List<Cookie> cookies() {
+    return cookies((String) null);
+  }
+  /**
+   * If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those URLs
+   * are returned.
+   *
+   * @param urls Optional list of URLs.
+   */
+  List<Cookie> cookies(String urls);
   /**
    * If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those URLs
    * are returned.

@@ -200,9 +200,6 @@ class TypeRef extends Element {
   }
 
   String toJava() {
-    if (customType != null) {
-      return customType;
-    }
     if (jsonElement.isJsonNull()) {
       return "void";
     }
@@ -303,7 +300,7 @@ class TypeRef extends Element {
         if (parent instanceof Field) {
           return "Object";
         }
-        throw new RuntimeException("Unexpected enum without name: " + jsonType);
+        throw new RuntimeException("Unexpected union without name: " + jsonType);
       }
       return name;
     }
@@ -489,14 +486,6 @@ class Method extends Element {
   private static Map<String, String[]> customSignature = new HashMap<>();
   static {
     customSignature.put("Page.setViewportSize", new String[]{"void setViewportSize(int width, int height);"});
-    customSignature.put("BrowserContext.cookies", new String[]{
-      "default List<Cookie> cookies() { return cookies((List<String>) null); }",
-      "default List<Cookie> cookies(String url) { return cookies(Arrays.asList(url)); }",
-      "List<Cookie> cookies(List<String> urls);",
-    });
-    customSignature.put("BrowserContext.addCookies", new String[]{
-      "void addCookies(List<Cookie> cookies);"
-    });
   }
 
   Method(TypeDefinition parent, JsonObject jsonElement) {
@@ -548,6 +537,10 @@ class Method extends Element {
       if (!p.isOptional()) {
         continue;
       }
+      // For optional overloaded params generate only overload without the param.
+      if (p.type.isTypeUnion() && overloadIndex != 0) {
+        continue;
+      }
       writeDefaultOverloadedMethod(overloadIndex, i, output, offset);
     }
 
@@ -563,7 +556,12 @@ class Method extends Element {
     for (int i = 0; i < params.size(); i++) {
       Param p = params.get(i);
       if (i == firstNullOptional) {
-        argList.add("int".equals(params.get(firstNullOptional).type.toJava()) ? "0" : "null");
+        if (p.type.isTypeUnion()) {
+          String type = p.type.formatTypeFromUnion(overloadIndex);
+          argList.add("int".equals(type) ? "0" : "(" + type + ") null");
+        } else {
+          argList.add("int".equals(p.toJava()) ? "0" : "null");
+        }
         continue;
       }
       if (p.isOptional() && i > firstNullOptional) {

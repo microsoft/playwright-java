@@ -34,6 +34,7 @@ import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
+import static java.util.Arrays.asList;
 
 class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private final BrowserImpl browser;
@@ -100,6 +101,12 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   public void close() {
     withLogging("BrowserContext.close", () -> closeImpl());
   }
+
+  @Override
+  public List<Cookie> cookies(String url) {
+    return cookies(asList(url));
+  }
+
   private void closeImpl() {
     if (isClosedOrClosing) {
       return;
@@ -174,7 +181,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     params.add("urls", gson().toJsonTree(urls));
     JsonObject json = sendMessage("cookies", params).getAsJsonObject();
     Cookie[] cookies = gson().fromJson(json.getAsJsonArray("cookies"), Cookie[].class);
-    return Arrays.asList(cookies);
+    return asList(cookies);
   }
 
   @Override
