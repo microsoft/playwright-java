@@ -37,7 +37,7 @@ public interface Route {
     /**
      * If set changes the post data of request
      */
-    public byte[] postData;
+    public Object postData;
     /**
      * If set changes the request URL. New URL must have same protocol as original one.
      */
@@ -52,7 +52,7 @@ public interface Route {
       return this;
     }
     public ResumeOptions withPostData(String postData) {
-      this.postData = postData.getBytes(StandardCharsets.UTF_8);
+      this.postData = postData;
       return this;
     }
     public ResumeOptions withPostData(byte[] postData) {
