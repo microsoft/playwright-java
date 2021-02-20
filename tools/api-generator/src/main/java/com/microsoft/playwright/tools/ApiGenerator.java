@@ -119,7 +119,7 @@ class TypeRef extends Element {
   TypeRef(Element parent, JsonElement jsonElement) {
     super(parent, true, jsonElement);
 
-    createCustomType();
+    createClassesAndEnums(jsonElement.getAsJsonObject());
   }
 
   private static String typeExpression(JsonObject jsonType) {
@@ -157,21 +157,6 @@ class TypeRef extends Element {
       return typeName;
     }
     return typeName + "<" + String.join(", ", templateArgs) + ">";
-  }
-
-  void createCustomType() {
-    // Use path to the corresponding method, param of field as the key.
-    String parentPath = parent.jsonPath;
-    Types.Mapping mapping = TypeDefinition.types.findForPath(parentPath);
-    if (mapping != null) {
-      String typeExpression = typeExpression(jsonElement.getAsJsonObject());
-      if (!mapping.from.equals(typeExpression)) {
-        throw new RuntimeException("Unexpected source type for: " + parentPath +". Expected: " + mapping.from + "; found: " + typeExpression);
-      }
-      customType = mapping.to;
-      return;
-    }
-    createClassesAndEnums(jsonElement.getAsJsonObject());
   }
 
   private void createClassesAndEnums(JsonObject jsonObject) {
@@ -387,6 +372,16 @@ class TypeRef extends Element {
       return convertTemplateParams(jsonType);
     }
     if ("function".equals(name)) {
+      if (!jsonType.has("args")) {
+        switch (jsonPath) {
+          case "BrowserContext.exposeBinding.callback": return "BindingCallback";
+          case "BrowserContext.exposeFunction.callback": return "FunctionCallback";
+          case "Page.exposeBinding.callback": return "BindingCallback";
+          case "Page.exposeFunction.callback": return "FunctionCallback";
+          default:
+            throw new RuntimeException("Missing mapping for " + jsonPath);
+        }
+      }
       if (jsonType.getAsJsonArray("args").size() == 1) {
         String paramType = convertBuiltinType(jsonType.getAsJsonArray("args").get(0).getAsJsonObject());
         if (!jsonType.has("returnType") || jsonType.get("returnType").isJsonNull()) {
@@ -416,8 +411,6 @@ class TypeRef extends Element {
 
 abstract class TypeDefinition extends Element {
   final List<CustomClass> classes = new ArrayList<>();
-
-  static final Types types = new Types();
 
   TypeDefinition(Element parent, JsonObject jsonElement) {
     super(parent, jsonElement);
