@@ -35,6 +35,7 @@ import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private final BrowserImpl browser;
@@ -104,7 +105,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public List<Cookie> cookies(String url) {
-    return cookies(asList(url));
+    return cookies(url == null ? emptyList() : asList(url));
   }
 
   private void closeImpl() {
@@ -176,7 +177,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private List<Cookie> cookiesImpl(List<String> urls) {
     JsonObject params = new JsonObject();
     if (urls == null) {
-      urls = Collections.emptyList();
+      urls = emptyList();
     }
     params.add("urls", gson().toJsonTree(urls));
     JsonObject json = sendMessage("cookies", params).getAsJsonObject();
@@ -224,7 +225,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       options = new GrantPermissionsOptions();
     }
     if (permissions == null) {
-      permissions = Collections.emptyList();
+      permissions = emptyList();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.add("permissions", gson().toJsonTree(permissions));
