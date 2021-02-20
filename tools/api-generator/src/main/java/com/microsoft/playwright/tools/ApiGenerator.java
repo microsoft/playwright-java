@@ -111,52 +111,23 @@ class TypeRef extends Element {
 
   private static final Map<String, String> customTypeNames = new HashMap<>();
   static {
-    customTypeNames.put("cookies", "Cookie");
-    customTypeNames.put("files", "FilePayload");
-    customTypeNames.put("values", "SelectOption");
+    customTypeNames.put("BrowserContext.addCookies.cookies", "Cookie");
+    customTypeNames.put("BrowserContext.cookies", "Cookie");
+
+    customTypeNames.put("ElementHandle.selectOption.values", "SelectOption");
+    customTypeNames.put("Frame.selectOption.values", "SelectOption");
+    customTypeNames.put("Page.selectOption.values", "SelectOption");
+
+    customTypeNames.put("ElementHandle.setInputFiles.files", "FilePayload");
+    customTypeNames.put("FileChooser.setFiles.files", "FilePayload");
+    customTypeNames.put("Frame.setInputFiles.files", "FilePayload");
+    customTypeNames.put("Page.setInputFiles.files", "FilePayload");
   }
 
   TypeRef(Element parent, JsonElement jsonElement) {
     super(parent, true, jsonElement);
 
     createClassesAndEnums(jsonElement.getAsJsonObject());
-  }
-
-  private static String typeExpression(JsonObject jsonType) {
-    String typeName = jsonType.get("name").getAsString();
-    if (jsonType.has("union")) {
-      List<String> values = new ArrayList<>();
-      for (JsonElement item : jsonType.getAsJsonArray("union")) {
-        values.add(typeExpression(item.getAsJsonObject()));
-      }
-      values.sort(String::compareTo);
-      String enumValues = String.join("|", values);
-      return typeName.isEmpty() ? enumValues : typeName + "<" + enumValues + ">";
-    }
-    if ("function".equals(typeName)) {
-      if (!jsonType.has("args")) {
-        return typeName;
-      }
-      List<String> args = new ArrayList<>();
-      for (JsonElement item : jsonType.getAsJsonArray("args")) {
-        args.add(typeExpression(item.getAsJsonObject()));
-      }
-      String returnType = "";
-      if (jsonType.has("returnType") && jsonType.get("returnType").isJsonObject()) {
-        returnType = ":" + typeExpression(jsonType.getAsJsonObject("returnType"));
-      }
-      return typeName + "(" + String.join(", ", args) + ")" + returnType;
-    }
-    List<String> templateArgs = new ArrayList<>();
-    if (jsonType.has("templates")) {
-      for (JsonElement item : jsonType.getAsJsonArray("templates")) {
-        templateArgs.add(typeExpression(item.getAsJsonObject()));
-      }
-    }
-    if (templateArgs.isEmpty()) {
-      return typeName;
-    }
-    return typeName + "<" + String.join(", ", templateArgs) + ">";
   }
 
   private void createClassesAndEnums(JsonObject jsonObject) {
@@ -185,16 +156,16 @@ class TypeRef extends Element {
         // Same type maybe referenced as 'Object' in several union values, e.g. Object|Array<Object>
         return;
       }
-      if (parent instanceof Method || parent instanceof Field || (parent instanceof Param && !"options".equals(parent.jsonName))) {
-        if (customTypeNames.containsKey(parent.jsonName)) {
-          customType = customTypeNames.get(parent.jsonName);
+      if (parent instanceof Param && "options".equals(parent.jsonName)) {
+        customType = toTitle(parent.parent.jsonName) + toTitle(parent.jsonName);
+        typeScope().createNestedClass(customType, this, jsonObject);
+      } else {
+        if (customTypeNames.containsKey(jsonPath)) {
+          customType = customTypeNames.get(jsonPath);
         } else {
           customType = toTitle(parent.jsonName);
         }
         typeScope().createTopLevelClass(customType, this, jsonObject);
-      } else {
-        customType = toTitle(parent.parent.jsonName) + toTitle(parent.jsonName);
-        typeScope().createNestedClass(customType, this, jsonElement.getAsJsonObject());
       }
     }
   }
@@ -355,10 +326,6 @@ class TypeRef extends Element {
     if ("Object".equals(name)) {
       if (customType != null) {
         return customType;
-      }
-      String expression = typeExpression(jsonType);
-      if (!"Object<string, string>".equals(expression) && !"Object<string, any>".equals(expression)) {
-        throw new RuntimeException("Unexpected object type: " + typeExpression(jsonType));
       }
       return "Map<" + convertTemplateParams(jsonType) + ">";
     }
