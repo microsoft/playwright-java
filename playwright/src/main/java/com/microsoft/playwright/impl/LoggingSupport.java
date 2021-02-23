@@ -16,9 +16,9 @@
 
 package com.microsoft.playwright.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.function.Supplier;
 
 class LoggingSupport {
@@ -28,12 +28,8 @@ class LoggingSupport {
     isEnabled = (debug != null) && debug.contains("pw:api");
   }
 
-  private static final SimpleDateFormat timestampFormat;
-  static {
-    timestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-    timestampFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-  }
-
+  private static final DateTimeFormatter timestampFormat = DateTimeFormatter.ofPattern(
+    "yyyy-MM-dd'T'HH:mm:ss.SSSXXX").withZone(ZoneId.of("UTC"));
 
   void withLogging(String apiName, Runnable code) {
     withLogging(apiName, () -> {
@@ -60,7 +56,7 @@ class LoggingSupport {
 
   private void logApi(String message) {
     // This matches log format produced by the server.
-    String timestamp = timestampFormat.format(new Date());
+    String timestamp = ZonedDateTime.now().format(timestampFormat);
     System.err.println(timestamp + " pw:api " + message);
   }
 }
