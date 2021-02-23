@@ -31,9 +31,9 @@ public class PageScreenshot {
           playwright.firefox()
       );
       for (BrowserType browserType : browserTypes) {
-        try (Browser browser = browserType.launch();
-             BrowserContext context = browser.newContext(new Browser.NewContextOptions().withViewport(800, 600));
-             Page page = context.newPage()) {
+        try (Browser browser = browserType.launch()) {
+          BrowserContext context = browser.newContext();
+          Page page = context.newPage();
           page.navigate("http://whatsmyuseragent.org/");
           page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("screenshot-" + browserType.name() + ".png")));
         }

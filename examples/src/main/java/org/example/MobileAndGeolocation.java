@@ -25,14 +25,18 @@ import static java.util.Arrays.asList;
 
 public class MobileAndGeolocation {
   public static void main(String[] args) {
-    try (Playwright playwright = Playwright.create();
-         Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().withHeadless(false));
-         BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-          .withDevice(playwright.devices().get("Pixel 2"))
-          .withLocale("en-US")
-          .withGeolocation(new Geolocation(41.889938, 12.492507))
-          .withPermissions(asList("geolocation")));
-         Page page = context.newPage()) {
+    try (Playwright playwright = Playwright.create()) {
+      Browser browser = playwright.chromium().launch();
+      BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+        .withUserAgent("Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3765.0 Mobile Safari/537.36")
+        .withViewportSize(411, 731)
+        .withDeviceScaleFactor(2.625)
+        .withIsMobile(true)
+        .withHasTouch(true)
+        .withLocale("en-US")
+        .withGeolocation(41.889938, 12.492507)
+        .withPermissions(asList("geolocation")));
+      Page page = context.newPage();
       page.navigate("https://www.openstreetmap.org/");
       page.click("a[data-original-title=\"Show My Location\"]");
       page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("colosseum-pixel2.png")));
