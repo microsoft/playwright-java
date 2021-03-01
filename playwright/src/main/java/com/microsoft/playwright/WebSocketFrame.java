@@ -20,7 +20,8 @@ import java.util.*;
 
 /**
  * The {@code WebSocketFrame} class represents frames sent over {@code WebSocket} connections in the page. Frame payload is returned by
- * either [{@code method: WebSocketFrame.text}] or [{@code method: WebSocketFrame.binary}] method depending on the its type.
+ * either {@link WebSocketFrame#text WebSocketFrame.text()} or {@link WebSocketFrame#binary WebSocketFrame.binary()} method
+ * depending on the its type.
  */
 public interface WebSocketFrame {
   /**

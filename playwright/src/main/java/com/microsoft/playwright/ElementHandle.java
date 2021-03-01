@@ -21,8 +21,8 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * ElementHandle represents an in-page DOM element. ElementHandles can be created with the [{@code method: Page.querySelector}]
- * method.
+ * ElementHandle represents an in-page DOM element. ElementHandles can be created with the {@link Page#querySelector
+ * Page.querySelector()} method.
  * <pre>{@code
  * import com.microsoft.playwright.*;
  *
@@ -41,16 +41,17 @@ import java.util.*;
  * }
  * }</pre>
  *
- * <p> ElementHandle prevents DOM element from garbage collection unless the handle is disposed with
- * [{@code method: JSHandle.dispose}]. ElementHandles are auto-disposed when their origin frame gets navigated.
+ * <p> ElementHandle prevents DOM element from garbage collection unless the handle is disposed with {@link JSHandle#dispose
+ * JSHandle.dispose()}. ElementHandles are auto-disposed when their origin frame gets navigated.
  *
- * <p> ElementHandle instances can be used as an argument in [{@code method: Page.evalOnSelector}] and [{@code method: Page.evaluate}]
- * methods.
+ * <p> ElementHandle instances can be used as an argument in {@link Page#evalOnSelector Page.evalOnSelector()} and {@link
+ * Page#evaluate Page.evaluate()} methods.
  */
 public interface ElementHandle extends JSHandle {
   class CheckOptions {
     /**
-     * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
      */
     public Boolean force;
     /**
@@ -61,7 +62,8 @@ public interface ElementHandle extends JSHandle {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -92,7 +94,8 @@ public interface ElementHandle extends JSHandle {
      */
     public Double delay;
     /**
-     * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
      */
     public Boolean force;
     /**
@@ -113,7 +116,8 @@ public interface ElementHandle extends JSHandle {
     public Position position;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -163,7 +167,8 @@ public interface ElementHandle extends JSHandle {
      */
     public Double delay;
     /**
-     * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
      */
     public Boolean force;
     /**
@@ -184,7 +189,8 @@ public interface ElementHandle extends JSHandle {
     public Position position;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -229,7 +235,8 @@ public interface ElementHandle extends JSHandle {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -244,7 +251,8 @@ public interface ElementHandle extends JSHandle {
   }
   class HoverOptions {
     /**
-     * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
      */
     public Boolean force;
     /**
@@ -259,7 +267,8 @@ public interface ElementHandle extends JSHandle {
     public Position position;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -296,7 +305,8 @@ public interface ElementHandle extends JSHandle {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -331,7 +341,8 @@ public interface ElementHandle extends JSHandle {
     public Integer quality;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -363,7 +374,8 @@ public interface ElementHandle extends JSHandle {
   class ScrollIntoViewIfNeededOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -381,7 +393,8 @@ public interface ElementHandle extends JSHandle {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -397,7 +410,8 @@ public interface ElementHandle extends JSHandle {
   class SelectTextOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -415,7 +429,8 @@ public interface ElementHandle extends JSHandle {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -430,7 +445,8 @@ public interface ElementHandle extends JSHandle {
   }
   class TapOptions {
     /**
-     * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
      */
     public Boolean force;
     /**
@@ -451,7 +467,8 @@ public interface ElementHandle extends JSHandle {
     public Position position;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -492,7 +509,8 @@ public interface ElementHandle extends JSHandle {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -511,7 +529,8 @@ public interface ElementHandle extends JSHandle {
   }
   class UncheckOptions {
     /**
-     * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
      */
     public Boolean force;
     /**
@@ -522,7 +541,8 @@ public interface ElementHandle extends JSHandle {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -542,7 +562,8 @@ public interface ElementHandle extends JSHandle {
   class WaitForElementStateOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -566,7 +587,8 @@ public interface ElementHandle extends JSHandle {
     public WaitForSelectorState state;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -583,12 +605,12 @@ public interface ElementHandle extends JSHandle {
    * This method returns the bounding box of the element, or {@code null} if the element is not visible. The bounding box is
    * calculated relative to the main frame viewport - which is usually the same as the browser window.
    *
-   * <p> Scrolling affects the returned bonding box, similarly to
-   * [Element.getBoundingClientRect](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect). That
-   * means {@code x} and/or {@code y} may be negative.
+   * <p> Scrolling affects the returned bonding box, similarly to <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">Element.getBoundingClientRect</a>.
+   * That means {@code x} and/or {@code y} may be negative.
    *
-   * <p> Elements from child frames return the bounding box relative to the main frame, unlike the
-   * [Element.getBoundingClientRect](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect).
+   * <p> Elements from child frames return the bounding box relative to the main frame, unlike the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">Element.getBoundingClientRect</a>.
    *
    * <p> Assuming the page is static, it is safe to use bounding box coordinates to perform input. For example, the following
    * snippet should click the center of the element.
@@ -603,9 +625,10 @@ public interface ElementHandle extends JSHandle {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already checked, this
    * method returns immediately.</li>
-   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now checked. If not, this method rejects.</li>
    * </ol>
@@ -623,9 +646,10 @@ public interface ElementHandle extends JSHandle {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already checked, this
    * method returns immediately.</li>
-   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now checked. If not, this method rejects.</li>
    * </ol>
@@ -639,9 +663,10 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method clicks the element by performing the following steps:
    * <ol>
-   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -656,9 +681,10 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method clicks the element by performing the following steps:
    * <ol>
-   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -675,9 +701,10 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method double clicks the element by performing the following steps:
    * <ol>
-   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
    * click of the {@code dblclick()} triggers a navigation event, this method will reject.</li>
    * </ol>
@@ -695,9 +722,10 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method double clicks the element by performing the following steps:
    * <ol>
-   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
    * click of the {@code dblclick()} triggers a navigation event, this method will reject.</li>
    * </ol>
@@ -712,8 +740,8 @@ public interface ElementHandle extends JSHandle {
   void dblclick(DblclickOptions options);
   /**
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
-   * is dispatched. This is equivalend to calling
-   * [element.click()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click).
+   * is dispatched. This is equivalend to calling <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    * <pre>{@code
    * elementHandle.dispatchEvent("click");
    * }</pre>
@@ -723,13 +751,13 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
    * <ul>
-   * <li> [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)</li>
-   * <li> [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)</li>
-   * <li> [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)</li>
-   * <li> [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)</li>
-   * <li> [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)</li>
-   * <li> [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)</li>
-   * <li> [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)</li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent">DragEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent">FocusEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent">KeyboardEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent">MouseEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent">PointerEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent">TouchEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/Event/Event">Event</a></li>
    * </ul>
    *
    * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
@@ -748,8 +776,8 @@ public interface ElementHandle extends JSHandle {
   }
   /**
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
-   * is dispatched. This is equivalend to calling
-   * [element.click()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click).
+   * is dispatched. This is equivalend to calling <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    * <pre>{@code
    * elementHandle.dispatchEvent("click");
    * }</pre>
@@ -759,13 +787,13 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
    * <ul>
-   * <li> [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)</li>
-   * <li> [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)</li>
-   * <li> [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)</li>
-   * <li> [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)</li>
-   * <li> [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)</li>
-   * <li> [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)</li>
-   * <li> [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)</li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent">DragEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent">FocusEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent">KeyboardEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent">MouseEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent">PointerEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent">TouchEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/Event/Event">Event</a></li>
    * </ul>
    *
    * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
@@ -785,11 +813,11 @@ public interface ElementHandle extends JSHandle {
    * Returns the return value of {@code expression}.
    *
    * <p> The method finds an element matching the specified selector in the {@code ElementHandle}s subtree and passes it as a first
-   * argument to {@code expression}. See [Working with selectors](./selectors.md) for more details. If no elements match the
-   * selector, the method throws an error.
+   * argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more
+   * details. If no elements match the selector, the method throws an error.
    *
-   * <p> If {@code expression} returns a [Promise], then [{@code method: ElementHandle.evalOnSelector}] would wait for the promise to resolve
-   * and return its value.
+   * <p> If {@code expression} returns a [Promise], then {@link ElementHandle#evalOnSelector ElementHandle.evalOnSelector()} would wait
+   * for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -798,7 +826,8 @@ public interface ElementHandle extends JSHandle {
    * assertEquals("10", tweetHandle.evalOnSelector(".retweets", "node => node.innerText"));
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
    */
@@ -809,11 +838,11 @@ public interface ElementHandle extends JSHandle {
    * Returns the return value of {@code expression}.
    *
    * <p> The method finds an element matching the specified selector in the {@code ElementHandle}s subtree and passes it as a first
-   * argument to {@code expression}. See [Working with selectors](./selectors.md) for more details. If no elements match the
-   * selector, the method throws an error.
+   * argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more
+   * details. If no elements match the selector, the method throws an error.
    *
-   * <p> If {@code expression} returns a [Promise], then [{@code method: ElementHandle.evalOnSelector}] would wait for the promise to resolve
-   * and return its value.
+   * <p> If {@code expression} returns a [Promise], then {@link ElementHandle#evalOnSelector ElementHandle.evalOnSelector()} would wait
+   * for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -822,7 +851,8 @@ public interface ElementHandle extends JSHandle {
    * assertEquals("10", tweetHandle.evalOnSelector(".retweets", "node => node.innerText"));
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
    * @param arg Optional argument to pass to {@code expression}.
@@ -832,10 +862,11 @@ public interface ElementHandle extends JSHandle {
    * Returns the return value of {@code expression}.
    *
    * <p> The method finds all elements matching the specified selector in the {@code ElementHandle}'s subtree and passes an array of
-   * matched elements as a first argument to {@code expression}. See [Working with selectors](./selectors.md) for more details.
+   * matched elements as a first argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working
+   * with selectors</a> for more details.
    *
-   * <p> If {@code expression} returns a [Promise], then [{@code method: ElementHandle.evalOnSelectorAll}] would wait for the promise to
-   * resolve and return its value.
+   * <p> If {@code expression} returns a [Promise], then {@link ElementHandle#evalOnSelectorAll ElementHandle.evalOnSelectorAll()}
+   * would wait for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -843,7 +874,8 @@ public interface ElementHandle extends JSHandle {
    * assertEquals(Arrays.asList("Hello!", "Hi!"), feedHandle.evalOnSelectorAll(".tweet", "nodes => nodes.map(n => n.innerText)"));
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
    */
@@ -854,10 +886,11 @@ public interface ElementHandle extends JSHandle {
    * Returns the return value of {@code expression}.
    *
    * <p> The method finds all elements matching the specified selector in the {@code ElementHandle}'s subtree and passes an array of
-   * matched elements as a first argument to {@code expression}. See [Working with selectors](./selectors.md) for more details.
+   * matched elements as a first argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working
+   * with selectors</a> for more details.
    *
-   * <p> If {@code expression} returns a [Promise], then [{@code method: ElementHandle.evalOnSelectorAll}] would wait for the promise to
-   * resolve and return its value.
+   * <p> If {@code expression} returns a [Promise], then {@link ElementHandle#evalOnSelectorAll ElementHandle.evalOnSelectorAll()}
+   * would wait for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -865,18 +898,19 @@ public interface ElementHandle extends JSHandle {
    * assertEquals(Arrays.asList("Hello!", "Hi!"), feedHandle.evalOnSelectorAll(".tweet", "nodes => nodes.map(n => n.innerText)"));
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
    * @param arg Optional argument to pass to {@code expression}.
    */
   Object evalOnSelectorAll(String selector, String expression, Object arg);
   /**
-   * This method waits for [actionability](./actionability.md) checks, focuses the element, fills it and triggers an {@code input}
-   * event after filling. If the element is inside the {@code <label>} element that has associated
-   * [control](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control), that control will be filled
-   * instead. If the element to be filled is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method
-   * throws an error. Note that you can pass an empty string to clear the input field.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, focuses the
+   * element, fills it and triggers an {@code input} event after filling. If the element is inside the {@code <label>} element that has
+   * associated <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, that control
+   * will be filled instead. If the element to be filled is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element,
+   * this method throws an error. Note that you can pass an empty string to clear the input field.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
@@ -884,17 +918,17 @@ public interface ElementHandle extends JSHandle {
     fill(value, null);
   }
   /**
-   * This method waits for [actionability](./actionability.md) checks, focuses the element, fills it and triggers an {@code input}
-   * event after filling. If the element is inside the {@code <label>} element that has associated
-   * [control](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control), that control will be filled
-   * instead. If the element to be filled is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method
-   * throws an error. Note that you can pass an empty string to clear the input field.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, focuses the
+   * element, fills it and triggers an {@code input} event after filling. If the element is inside the {@code <label>} element that has
+   * associated <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, that control
+   * will be filled instead. If the element to be filled is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element,
+   * this method throws an error. Note that you can pass an empty string to clear the input field.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
   void fill(String value, FillOptions options);
   /**
-   * Calls [focus](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus) on the element.
+   * Calls <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus">focus</a> on the element.
    */
   void focus();
   /**
@@ -906,9 +940,10 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method hovers over the element by performing the following steps:
    * <ol>
-   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to hover over the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -923,9 +958,10 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method hovers over the element by performing the following steps:
    * <ol>
-   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to hover over the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -948,23 +984,25 @@ public interface ElementHandle extends JSHandle {
    */
   boolean isChecked();
   /**
-   * Returns whether the element is disabled, the opposite of [enabled](./actionability.md#enabled).
+   * Returns whether the element is disabled, the opposite of <a
+   * href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.
    */
   boolean isDisabled();
   /**
-   * Returns whether the element is [editable](./actionability.md#editable).
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#editable">editable</a>.
    */
   boolean isEditable();
   /**
-   * Returns whether the element is [enabled](./actionability.md#enabled).
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.
    */
   boolean isEnabled();
   /**
-   * Returns whether the element is hidden, the opposite of [visible](./actionability.md#visible).
+   * Returns whether the element is hidden, the opposite of <a
+   * href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.
    */
   boolean isHidden();
   /**
-   * Returns whether the element is [visible](./actionability.md#visible).
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.
    */
   boolean isVisible();
   /**
@@ -972,11 +1010,12 @@ public interface ElementHandle extends JSHandle {
    */
   Frame ownerFrame();
   /**
-   * Focuses the element, and then uses [{@code method: Keyboard.down}] and [{@code method: Keyboard.up}].
+   * Focuses the element, and then uses {@link Keyboard#down Keyboard.down()} and {@link Keyboard#up Keyboard.up()}.
    *
-   * <p> {@code key} can specify the intended [keyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
-   * value or a single character to generate the text for. A superset of the {@code key} values can be found
-   * [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values). Examples of the keys are:
+   * <p> {@code key} can specify the intended <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key">keyboardEvent.key</a> value or a single
+   * character to generate the text for. A superset of the {@code key} values can be found <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
    *
    * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
    * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
@@ -997,11 +1036,12 @@ public interface ElementHandle extends JSHandle {
     press(key, null);
   }
   /**
-   * Focuses the element, and then uses [{@code method: Keyboard.down}] and [{@code method: Keyboard.up}].
+   * Focuses the element, and then uses {@link Keyboard#down Keyboard.down()} and {@link Keyboard#up Keyboard.up()}.
    *
-   * <p> {@code key} can specify the intended [keyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
-   * value or a single character to generate the text for. A superset of the {@code key} values can be found
-   * [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values). Examples of the keys are:
+   * <p> {@code key} can specify the intended <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key">keyboardEvent.key</a> value or a single
+   * character to generate the text for. A superset of the {@code key} values can be found <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
    *
    * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
    * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
@@ -1020,24 +1060,28 @@ public interface ElementHandle extends JSHandle {
    */
   void press(String key, PressOptions options);
   /**
-   * The method finds an element matching the specified selector in the {@code ElementHandle}'s subtree. See
-   * [Working with selectors](./selectors.md) for more details. If no elements match the selector, returns {@code null}.
+   * The method finds an element matching the specified selector in the {@code ElementHandle}'s subtree. See <a
+   * href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If no elements match the
+   * selector, returns {@code null}.
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    */
   ElementHandle querySelector(String selector);
   /**
-   * The method finds all elements matching the specified selector in the {@code ElementHandle}s subtree. See
-   * [Working with selectors](./selectors.md) for more details. If no elements match the selector, returns empty array.
+   * The method finds all elements matching the specified selector in the {@code ElementHandle}s subtree. See <a
+   * href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If no elements match the
+   * selector, returns empty array.
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    */
   List<ElementHandle> querySelectorAll(String selector);
   /**
    * Returns the buffer with the captured screenshot.
    *
-   * <p> This method waits for the [actionability](./actionability.md) checks, then scrolls element into view before taking a
-   * screenshot. If the element is detached from DOM, the method throws an error.
+   * <p> This method waits for the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then
+   * scrolls element into view before taking a screenshot. If the element is detached from DOM, the method throws an error.
    */
   default byte[] screenshot() {
     return screenshot(null);
@@ -1045,28 +1089,28 @@ public interface ElementHandle extends JSHandle {
   /**
    * Returns the buffer with the captured screenshot.
    *
-   * <p> This method waits for the [actionability](./actionability.md) checks, then scrolls element into view before taking a
-   * screenshot. If the element is detached from DOM, the method throws an error.
+   * <p> This method waits for the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then
+   * scrolls element into view before taking a screenshot. If the element is detached from DOM, the method throws an error.
    */
   byte[] screenshot(ScreenshotOptions options);
   /**
-   * This method waits for [actionability](./actionability.md) checks, then tries to scroll element into view, unless it is
-   * completely visible as defined by
-   * [IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)'s {@code ratio}.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then tries to
+   * scroll element into view, unless it is completely visible as defined by <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">IntersectionObserver</a>'s {@code ratio}.
    *
-   * <p> Throws when {@code elementHandle} does not point to an element
-   * [connected](https://developer.mozilla.org/en-US/docs/Web/API/Node/isConnected) to a Document or a ShadowRoot.
+   * <p> Throws when {@code elementHandle} does not point to an element <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Node/isConnected">connected</a> to a Document or a ShadowRoot.
    */
   default void scrollIntoViewIfNeeded() {
     scrollIntoViewIfNeeded(null);
   }
   /**
-   * This method waits for [actionability](./actionability.md) checks, then tries to scroll element into view, unless it is
-   * completely visible as defined by
-   * [IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)'s {@code ratio}.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then tries to
+   * scroll element into view, unless it is completely visible as defined by <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">IntersectionObserver</a>'s {@code ratio}.
    *
-   * <p> Throws when {@code elementHandle} does not point to an element
-   * [connected](https://developer.mozilla.org/en-US/docs/Web/API/Node/isConnected) to a Document or a ShadowRoot.
+   * <p> Throws when {@code elementHandle} does not point to an element <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Node/isConnected">connected</a> to a Document or a ShadowRoot.
    */
   void scrollIntoViewIfNeeded(ScrollIntoViewIfNeededOptions options);
   /**
@@ -1334,20 +1378,20 @@ public interface ElementHandle extends JSHandle {
    */
   List<String> selectOption(SelectOption[] values, SelectOptionOptions options);
   /**
-   * This method waits for [actionability](./actionability.md) checks, then focuses the element and selects all its text
-   * content.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then focuses
+   * the element and selects all its text content.
    */
   default void selectText() {
     selectText(null);
   }
   /**
-   * This method waits for [actionability](./actionability.md) checks, then focuses the element and selects all its text
-   * content.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then focuses
+   * the element and selects all its text content.
    */
   void selectText(SelectTextOptions options);
   /**
-   * This method expects {@code elementHandle} to point to an
-   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   * This method expects {@code elementHandle} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
@@ -1356,16 +1400,16 @@ public interface ElementHandle extends JSHandle {
     setInputFiles(files, null);
   }
   /**
-   * This method expects {@code elementHandle} to point to an
-   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   * This method expects {@code elementHandle} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    */
   void setInputFiles(Path files, SetInputFilesOptions options);
   /**
-   * This method expects {@code elementHandle} to point to an
-   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   * This method expects {@code elementHandle} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
@@ -1374,16 +1418,16 @@ public interface ElementHandle extends JSHandle {
     setInputFiles(files, null);
   }
   /**
-   * This method expects {@code elementHandle} to point to an
-   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   * This method expects {@code elementHandle} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    */
   void setInputFiles(Path[] files, SetInputFilesOptions options);
   /**
-   * This method expects {@code elementHandle} to point to an
-   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   * This method expects {@code elementHandle} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
@@ -1392,16 +1436,16 @@ public interface ElementHandle extends JSHandle {
     setInputFiles(files, null);
   }
   /**
-   * This method expects {@code elementHandle} to point to an
-   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   * This method expects {@code elementHandle} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    */
   void setInputFiles(FilePayload files, SetInputFilesOptions options);
   /**
-   * This method expects {@code elementHandle} to point to an
-   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   * This method expects {@code elementHandle} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
@@ -1410,8 +1454,8 @@ public interface ElementHandle extends JSHandle {
     setInputFiles(files, null);
   }
   /**
-   * This method expects {@code elementHandle} to point to an
-   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   * This method expects {@code elementHandle} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
@@ -1420,9 +1464,10 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method taps the element by performing the following steps:
    * <ol>
-   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link Page#touchscreen Page.touchscreen()} to tap the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -1439,9 +1484,10 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method taps the element by performing the following steps:
    * <ol>
-   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link Page#touchscreen Page.touchscreen()} to tap the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -1460,7 +1506,7 @@ public interface ElementHandle extends JSHandle {
   /**
    * Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
    *
-   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: ElementHandle.press}].
+   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link ElementHandle#press ElementHandle.press()}.
    * <pre>{@code
    * elementHandle.type("Hello"); // Types instantly
    * elementHandle.type("World", new ElementHandle.TypeOptions().withDelay(100)); // Types slower, like a user
@@ -1481,7 +1527,7 @@ public interface ElementHandle extends JSHandle {
   /**
    * Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
    *
-   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: ElementHandle.press}].
+   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link ElementHandle#press ElementHandle.press()}.
    * <pre>{@code
    * elementHandle.type("Hello"); // Types instantly
    * elementHandle.type("World", new ElementHandle.TypeOptions().withDelay(100)); // Types slower, like a user
@@ -1502,9 +1548,10 @@ public interface ElementHandle extends JSHandle {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already unchecked,
    * this method returns immediately.</li>
-   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now unchecked. If not, this method rejects.</li>
    * </ol>
@@ -1522,9 +1569,10 @@ public interface ElementHandle extends JSHandle {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already unchecked,
    * this method returns immediately.</li>
-   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now unchecked. If not, this method rejects.</li>
    * </ol>
@@ -1538,16 +1586,20 @@ public interface ElementHandle extends JSHandle {
   /**
    * Returns when the element satisfies the {@code state}.
    *
-   * <p> Depending on the {@code state} parameter, this method waits for one of the [actionability](./actionability.md) checks to pass.
-   * This method throws when the element is detached while waiting, unless waiting for the {@code "hidden"} state.
+   * <p> Depending on the {@code state} parameter, this method waits for one of the <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks to pass. This method throws when the
+   * element is detached while waiting, unless waiting for the {@code "hidden"} state.
    * <ul>
-   * <li> {@code "visible"} Wait until the element is [visible](./actionability.md#visible).</li>
-   * <li> {@code "hidden"} Wait until the element is [not visible](./actionability.md#visible) or
-   * [not attached](./actionability.md#attached). Note that waiting for hidden does not throw when the element detaches.</li>
-   * <li> {@code "stable"} Wait until the element is both [visible](./actionability.md#visible) and [stable](./actionability.md#stable).</li>
-   * <li> {@code "enabled"} Wait until the element is [enabled](./actionability.md#enabled).</li>
-   * <li> {@code "disabled"} Wait until the element is [not enabled](./actionability.md#enabled).</li>
-   * <li> {@code "editable"} Wait until the element is [editable](./actionability.md#editable).</li>
+   * <li> {@code "visible"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.</li>
+   * <li> {@code "hidden"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#visible">not visible</a>
+   * or <a href="https://playwright.dev/java/docs/actionability/#attached">not attached</a>. Note that waiting for hidden
+   * does not throw when the element detaches.</li>
+   * <li> {@code "stable"} Wait until the element is both <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>
+   * and <a href="https://playwright.dev/java/docs/actionability/#stable">stable</a>.</li>
+   * <li> {@code "enabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.</li>
+   * <li> {@code "disabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#enabled">not
+   * enabled</a>.</li>
+   * <li> {@code "editable"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#editable">editable</a>.</li>
    * </ul>
    *
    * <p> If the element does not satisfy the condition for the {@code timeout} milliseconds, this method will throw.
@@ -1560,16 +1612,20 @@ public interface ElementHandle extends JSHandle {
   /**
    * Returns when the element satisfies the {@code state}.
    *
-   * <p> Depending on the {@code state} parameter, this method waits for one of the [actionability](./actionability.md) checks to pass.
-   * This method throws when the element is detached while waiting, unless waiting for the {@code "hidden"} state.
+   * <p> Depending on the {@code state} parameter, this method waits for one of the <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks to pass. This method throws when the
+   * element is detached while waiting, unless waiting for the {@code "hidden"} state.
    * <ul>
-   * <li> {@code "visible"} Wait until the element is [visible](./actionability.md#visible).</li>
-   * <li> {@code "hidden"} Wait until the element is [not visible](./actionability.md#visible) or
-   * [not attached](./actionability.md#attached). Note that waiting for hidden does not throw when the element detaches.</li>
-   * <li> {@code "stable"} Wait until the element is both [visible](./actionability.md#visible) and [stable](./actionability.md#stable).</li>
-   * <li> {@code "enabled"} Wait until the element is [enabled](./actionability.md#enabled).</li>
-   * <li> {@code "disabled"} Wait until the element is [not enabled](./actionability.md#enabled).</li>
-   * <li> {@code "editable"} Wait until the element is [editable](./actionability.md#editable).</li>
+   * <li> {@code "visible"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.</li>
+   * <li> {@code "hidden"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#visible">not visible</a>
+   * or <a href="https://playwright.dev/java/docs/actionability/#attached">not attached</a>. Note that waiting for hidden
+   * does not throw when the element detaches.</li>
+   * <li> {@code "stable"} Wait until the element is both <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>
+   * and <a href="https://playwright.dev/java/docs/actionability/#stable">stable</a>.</li>
+   * <li> {@code "enabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.</li>
+   * <li> {@code "disabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#enabled">not
+   * enabled</a>.</li>
+   * <li> {@code "editable"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#editable">editable</a>.</li>
    * </ul>
    *
    * <p> If the element does not satisfy the condition for the {@code timeout} milliseconds, this method will throw.
@@ -1593,9 +1649,10 @@ public interface ElementHandle extends JSHandle {
    *   .withState(WaitForSelectorState.ATTACHED));
    * }</pre>
    *
-   * <p> <strong>NOTE:</strong> This method does not work across navigations, use [{@code method: Page.waitForSelector}] instead.
+   * <p> <strong>NOTE:</strong> This method does not work across navigations, use {@link Page#waitForSelector Page.waitForSelector()} instead.
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    */
   default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
@@ -1616,9 +1673,10 @@ public interface ElementHandle extends JSHandle {
    *   .withState(WaitForSelectorState.ATTACHED));
    * }</pre>
    *
-   * <p> <strong>NOTE:</strong> This method does not work across navigations, use [{@code method: Page.waitForSelector}] instead.
+   * <p> <strong>NOTE:</strong> This method does not work across navigations, use {@link Page#waitForSelector Page.waitForSelector()} instead.
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    */
   ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
 }

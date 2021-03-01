@@ -21,7 +21,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * {@code FileChooser} objects are dispatched by the page in the [{@code event: Page.fileChooser}] event.
+ * {@code FileChooser} objects are dispatched by the page in the {@link Page#onFileChooser Page.onFileChooser()} event.
  * <pre>{@code
  * FileChooser fileChooser = page.waitForFileChooser(() -> page.click("upload"));
  * fileChooser.setFiles(Paths.get("myfile.pdf"));
@@ -37,7 +37,8 @@ public interface FileChooser {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 

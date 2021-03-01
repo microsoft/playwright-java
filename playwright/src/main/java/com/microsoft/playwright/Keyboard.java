@@ -20,11 +20,11 @@ import com.microsoft.playwright.options.*;
 import java.util.*;
 
 /**
- * Keyboard provides an api for managing a virtual keyboard. The high level api is [{@code method: Keyboard.type}], which takes
- * raw characters and generates proper keydown, keypress/input, and keyup events on your page.
+ * Keyboard provides an api for managing a virtual keyboard. The high level api is {@link Keyboard#type Keyboard.type()},
+ * which takes raw characters and generates proper keydown, keypress/input, and keyup events on your page.
  *
- * <p> For finer control, you can use [{@code method: Keyboard.down}], [{@code method: Keyboard.up}], and [{@code method: Keyboard.insertText}]
- * to manually fire events as if they were generated from a real keyboard.
+ * <p> For finer control, you can use {@link Keyboard#down Keyboard.down()}, {@link Keyboard#up Keyboard.up()}, and {@link
+ * Keyboard#insertText Keyboard.insertText()} to manually fire events as if they were generated from a real keyboard.
  *
  * <p> An example of holding down {@code Shift} in order to select and delete some text:
  * <pre>{@code
@@ -79,9 +79,10 @@ public interface Keyboard {
   /**
    * Dispatches a {@code keydown} event.
    *
-   * <p> {@code key} can specify the intended [keyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
-   * value or a single character to generate the text for. A superset of the {@code key} values can be found
-   * [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values). Examples of the keys are:
+   * <p> {@code key} can specify the intended <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key">keyboardEvent.key</a> value or a single
+   * character to generate the text for. A superset of the {@code key} values can be found <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
    *
    * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
    * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
@@ -94,11 +95,11 @@ public interface Keyboard {
    * texts.
    *
    * <p> If {@code key} is a modifier key, {@code Shift}, {@code Meta}, {@code Control}, or {@code Alt}, subsequent key presses will be sent with that modifier
-   * active. To release the modifier key, use [{@code method: Keyboard.up}].
+   * active. To release the modifier key, use {@link Keyboard#up Keyboard.up()}.
    *
-   * <p> After the key is pressed once, subsequent calls to [{@code method: Keyboard.down}] will have
-   * [repeat](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/repeat) set to true. To release the key, use
-   * [{@code method: Keyboard.up}].
+   * <p> After the key is pressed once, subsequent calls to {@link Keyboard#down Keyboard.down()} will have <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/repeat">repeat</a> set to true. To release the key,
+   * use {@link Keyboard#up Keyboard.up()}.
    *
    * <p> <strong>NOTE:</strong> Modifier keys DO influence {@code keyboard.down}. Holding down {@code Shift} will type the text in upper case.
    *
@@ -117,9 +118,10 @@ public interface Keyboard {
    */
   void insertText(String text);
   /**
-   * {@code key} can specify the intended [keyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
-   * value or a single character to generate the text for. A superset of the {@code key} values can be found
-   * [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values). Examples of the keys are:
+   * {@code key} can specify the intended <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key">keyboardEvent.key</a> value or a single
+   * character to generate the text for. A superset of the {@code key} values can be found <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
    *
    * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
    * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
@@ -145,7 +147,7 @@ public interface Keyboard {
    * browser.close();
    * }</pre>
    *
-   * <p> Shortcut for [{@code method: Keyboard.down}] and [{@code method: Keyboard.up}].
+   * <p> Shortcut for {@link Keyboard#down Keyboard.down()} and {@link Keyboard#up Keyboard.up()}.
    *
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
@@ -153,9 +155,10 @@ public interface Keyboard {
     press(key, null);
   }
   /**
-   * {@code key} can specify the intended [keyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
-   * value or a single character to generate the text for. A superset of the {@code key} values can be found
-   * [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values). Examples of the keys are:
+   * {@code key} can specify the intended <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key">keyboardEvent.key</a> value or a single
+   * character to generate the text for. A superset of the {@code key} values can be found <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
    *
    * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
    * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
@@ -181,7 +184,7 @@ public interface Keyboard {
    * browser.close();
    * }</pre>
    *
-   * <p> Shortcut for [{@code method: Keyboard.down}] and [{@code method: Keyboard.up}].
+   * <p> Shortcut for {@link Keyboard#down Keyboard.down()} and {@link Keyboard#up Keyboard.up()}.
    *
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
@@ -189,7 +192,7 @@ public interface Keyboard {
   /**
    * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
    *
-   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: Keyboard.press}].
+   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Keyboard#press Keyboard.press()}.
    * <pre>{@code
    * // Types instantly
    * page.keyboard().type("Hello");
@@ -207,7 +210,7 @@ public interface Keyboard {
   /**
    * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
    *
-   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: Keyboard.press}].
+   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Keyboard#press Keyboard.press()}.
    * <pre>{@code
    * // Types instantly
    * page.keyboard().type("Hello");

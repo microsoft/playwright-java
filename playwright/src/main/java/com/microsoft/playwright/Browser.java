@@ -22,7 +22,8 @@ import java.util.*;
 import java.util.function.Consumer;
 
 /**
- * A Browser is created via [{@code method: BrowserType.launch}]. An example of using a {@code Browser} to create a {@code Page}:
+ * A Browser is created via {@link BrowserType#launch BrowserType.launch()}. An example of using a {@code Browser} to create a
+ * {@code Page}:
  * <pre>{@code
  * import com.microsoft.playwright.*;
  *
@@ -55,7 +56,7 @@ public interface Browser extends AutoCloseable {
     public Boolean bypassCSP;
     /**
      * Emulates {@code 'prefers-colors-scheme'} media feature, supported values are {@code 'light'}, {@code 'dark'}, {@code 'no-preference'}. See
-     * [{@code method: Page.emulateMedia}] for more details. Defaults to '{@code light}'.
+     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to '{@code light}'.
      */
     public ColorScheme colorScheme;
     /**
@@ -72,7 +73,7 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean hasTouch;
     /**
-     * Credentials for [HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication).
+     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>.
      */
     public HttpCredentials httpCredentials;
     /**
@@ -98,8 +99,8 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean offline;
     /**
-     * A list of permissions to grant to all pages in this context. See [{@code method: BrowserContext.grantPermissions}] for more
-     * details.
+     * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
+     * BrowserContext.grantPermissions()} for more details.
      */
     public List<String> permissions;
     /**
@@ -128,18 +129,19 @@ public interface Browser extends AutoCloseable {
     public RecordVideoSize recordVideoSize;
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via [{@code method: BrowserContext.storageState}].
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
     public String storageState;
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via [{@code method: BrowserContext.storageState}]. Path to the file with saved storage state.
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
+     * state.
      */
     public Path storageStatePath;
     /**
-     * Changes the timezone of the context. See
-     * [ICU's metaZones.txt](https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1)
-     * for a list of supported timezone IDs.
+     * Changes the timezone of the context. See <a
+     * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
+     * metaZones.txt</a> for a list of supported timezone IDs.
      */
     public String timezoneId;
     /**
@@ -274,7 +276,7 @@ public interface Browser extends AutoCloseable {
     public Boolean bypassCSP;
     /**
      * Emulates {@code 'prefers-colors-scheme'} media feature, supported values are {@code 'light'}, {@code 'dark'}, {@code 'no-preference'}. See
-     * [{@code method: Page.emulateMedia}] for more details. Defaults to '{@code light}'.
+     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to '{@code light}'.
      */
     public ColorScheme colorScheme;
     /**
@@ -291,7 +293,7 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean hasTouch;
     /**
-     * Credentials for [HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication).
+     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>.
      */
     public HttpCredentials httpCredentials;
     /**
@@ -317,8 +319,8 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean offline;
     /**
-     * A list of permissions to grant to all pages in this context. See [{@code method: BrowserContext.grantPermissions}] for more
-     * details.
+     * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
+     * BrowserContext.grantPermissions()} for more details.
      */
     public List<String> permissions;
     /**
@@ -347,18 +349,19 @@ public interface Browser extends AutoCloseable {
     public RecordVideoSize recordVideoSize;
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via [{@code method: BrowserContext.storageState}].
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
     public String storageState;
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via [{@code method: BrowserContext.storageState}]. Path to the file with saved storage state.
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
+     * state.
      */
     public Path storageStatePath;
     /**
-     * Changes the timezone of the context. See
-     * [ICU's metaZones.txt](https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1)
-     * for a list of supported timezone IDs.
+     * Changes the timezone of the context. See <a
+     * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
+     * metaZones.txt</a> for a list of supported timezone IDs.
      */
     public String timezoneId;
     /**
@@ -483,8 +486,8 @@ public interface Browser extends AutoCloseable {
     }
   }
   /**
-   * In case this browser is obtained using [{@code method: BrowserType.launch}], closes the browser and all of its pages (if any
-   * were opened).
+   * In case this browser is obtained using {@link BrowserType#launch BrowserType.launch()}, closes the browser and all of
+   * its pages (if any were opened).
    *
    * <p> In case this browser is connected to, clears all created contexts belonging to this browser and disconnects from the
    * browser server.
@@ -536,8 +539,8 @@ public interface Browser extends AutoCloseable {
    * Creates a new page in a new browser context. Closing this page will close the context as well.
    *
    * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and
-   * testing frameworks should explicitly create [{@code method: Browser.newContext}] followed by the
-   * [{@code method: BrowserContext.newPage}] to control their exact life times.
+   * testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the {@link
+   * BrowserContext#newPage BrowserContext.newPage()} to control their exact life times.
    */
   default Page newPage() {
     return newPage(null);
@@ -546,8 +549,8 @@ public interface Browser extends AutoCloseable {
    * Creates a new page in a new browser context. Closing this page will close the context as well.
    *
    * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and
-   * testing frameworks should explicitly create [{@code method: Browser.newContext}] followed by the
-   * [{@code method: BrowserContext.newPage}] to control their exact life times.
+   * testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the {@link
+   * BrowserContext#newPage BrowserContext.newPage()} to control their exact life times.
    */
   Page newPage(NewPageOptions options);
   /**

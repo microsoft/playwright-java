@@ -20,8 +20,8 @@ import java.util.*;
 
 /**
  * The Accessibility class provides methods for inspecting Chromium's accessibility tree. The accessibility tree is used by
- * assistive technology such as [screen readers](https://en.wikipedia.org/wiki/Screen_reader) or
- * [switches](https://en.wikipedia.org/wiki/Switch_access).
+ * assistive technology such as <a href="https://en.wikipedia.org/wiki/Screen_reader">screen readers</a> or <a
+ * href="https://en.wikipedia.org/wiki/Switch_access">switches</a>.
  *
  * <p> Accessibility is a very platform-specific thing. On different platforms, there are different screen readers that might
  * have wildly different output.

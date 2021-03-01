@@ -22,13 +22,14 @@ import java.util.*;
 /**
  * Whenever the page sends a request for a network resource the following sequence of events are emitted by {@code Page}:
  * <ul>
- * <li> [{@code event: Page.request}] emitted when the request is issued by the page.</li>
- * <li> [{@code event: Page.response}] emitted when/if the response status and headers are received for the request.</li>
- * <li> [{@code event: Page.requestFinished}] emitted when the response body is downloaded and the request is complete.</li>
+ * <li> {@link Page#onRequest Page.onRequest()} emitted when the request is issued by the page.</li>
+ * <li> {@link Page#onResponse Page.onResponse()} emitted when/if the response status and headers are received for the request.</li>
+ * <li> {@link Page#onRequestFinished Page.onRequestFinished()} emitted when the response body is downloaded and the request is
+ * complete.</li>
  * </ul>
  *
  * <p> If request fails at some point, then instead of {@code 'requestfinished'} event (and possibly instead of 'response' event),
- * the  [{@code event: Page.requestFailed}] event is emitted.
+ * the  {@link Page#onRequestFailed Page.onRequestFailed()} event is emitted.
  *
  * <p> <strong>NOTE:</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will complete
  * with {@code 'requestfinished'} event.
@@ -95,7 +96,7 @@ public interface Request {
   /**
    * New request issued by the browser if the server responded with redirect.
    *
-   * <p> This method is the opposite of [{@code method: Request.redirectedFrom}]:
+   * <p> This method is the opposite of {@link Request#redirectedFrom Request.redirectedFrom()}:
    * <pre>{@code
    * System.out.println(request.redirectedFrom().redirectedTo() == request); // true
    * }</pre>
@@ -113,8 +114,8 @@ public interface Request {
   Response response();
   /**
    * Returns resource timing information for given request. Most of the timing values become available upon the response,
-   * {@code responseEnd} becomes available when request finishes. Find more information at
-   * [Resource Timing API](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming).
+   * {@code responseEnd} becomes available when request finishes. Find more information at <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming">Resource Timing API</a>.
    * <pre>{@code
    * page.onRequestFinished(request -> {
    *   Timing timing = request.timing();
