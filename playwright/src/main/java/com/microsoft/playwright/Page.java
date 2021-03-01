@@ -24,17 +24,47 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
- * - extends: [EventEmitter]
- *
- * <p> Page provides methods to interact with a single tab in a {@code Browser}, or an
+ * Page provides methods to interact with a single tab in a {@code Browser}, or an
  * [extension background page](https://developer.chrome.com/extensions/background_pages) in Chromium. One {@code Browser}
  * instance might have multiple {@code Page} instances.
+ *
+ * <p> This example creates a page, navigates it to a URL, and then saves a screenshot:
+ * <pre>{@code
+ * import com.microsoft.playwright.*;
+ *
+ * public class Example {
+ *   public static void main(String[] args) {
+ *     try (Playwright playwright = Playwright.create()) {
+ *       BrowserType webkit = playwright.webkit();
+ *       Browser browser = webkit.launch();
+ *       BrowserContext context = browser.newContext();
+ *       Page page = context.newPage();
+ *       page.navigate("https://example.com");
+ *       page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("screenshot.png")));
+ *       browser.close();
+ *     }
+ *   }
+ * }
+ * }</pre>
  *
  * <p> The Page class emits various events (described below) which can be handled using any of Node's native
  * [{@code EventEmitter}](https://nodejs.org/api/events.html#events_class_eventemitter) methods, such as {@code on}, {@code once} or
  * {@code removeListener}.
  *
+ * <p> This example logs a message for a single page {@code load} event:
+ * <pre>{@code
+ * page.onLoad(p -> System.out.println("Page loaded!"));
+ * }</pre>
+ *
  * <p> To unsubscribe from events use the {@code removeListener} method:
+ * <pre>{@code
+ * Consumer<Request> logRequest = interceptedRequest -> {
+ *   System.out.println("A request was made: " + interceptedRequest.url());
+ * };
+ * page.onRequest(logRequest);
+ * // Sometime later...
+ * page.offRequest(logRequest);
+ * }</pre>
  */
 public interface Page extends AutoCloseable {
 
@@ -445,9 +475,11 @@ public interface Page extends AutoCloseable {
     public Double timeout;
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
-     * - {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.
-     * - {@code 'load'} - consider operation to be finished when the {@code load} event is fired.
-     * - {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.
+     * <ul>
+     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
      */
     public WaitUntilState waitUntil;
 
@@ -470,9 +502,11 @@ public interface Page extends AutoCloseable {
     public Double timeout;
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
-     * - {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.
-     * - {@code 'load'} - consider operation to be finished when the {@code load} event is fired.
-     * - {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.
+     * <ul>
+     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
      */
     public WaitUntilState waitUntil;
 
@@ -500,9 +534,11 @@ public interface Page extends AutoCloseable {
     public Double timeout;
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
-     * - {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.
-     * - {@code 'load'} - consider operation to be finished when the {@code load} event is fired.
-     * - {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.
+     * <ul>
+     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
      */
     public WaitUntilState waitUntil;
 
@@ -672,11 +708,13 @@ public interface Page extends AutoCloseable {
     /**
      * HTML template for the print header. Should be valid HTML markup with following classes used to inject printing values
      * into them:
-     * - {@code 'date'} formatted print date
-     * - {@code 'title'} document title
-     * - {@code 'url'} document location
-     * - {@code 'pageNumber'} current page number
-     * - {@code 'totalPages'} total pages in the document
+     * <ul>
+     * <li> {@code 'date'} formatted print date</li>
+     * <li> {@code 'title'} document title</li>
+     * <li> {@code 'url'} document location</li>
+     * <li> {@code 'pageNumber'} current page number</li>
+     * <li> {@code 'totalPages'} total pages in the document</li>
+     * </ul>
      */
     public String headerTemplate;
     /**
@@ -811,9 +849,11 @@ public interface Page extends AutoCloseable {
     public Double timeout;
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
-     * - {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.
-     * - {@code 'load'} - consider operation to be finished when the {@code load} event is fired.
-     * - {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.
+     * <ul>
+     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
      */
     public WaitUntilState waitUntil;
 
@@ -925,9 +965,11 @@ public interface Page extends AutoCloseable {
     public Double timeout;
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
-     * - {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.
-     * - {@code 'load'} - consider operation to be finished when the {@code load} event is fired.
-     * - {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.
+     * <ul>
+     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
      */
     public WaitUntilState waitUntil;
 
@@ -1206,9 +1248,11 @@ public interface Page extends AutoCloseable {
     public Object url;
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
-     * - {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.
-     * - {@code 'load'} - consider operation to be finished when the {@code load} event is fired.
-     * - {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.
+     * <ul>
+     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
      */
     public WaitUntilState waitUntil;
 
@@ -1280,12 +1324,14 @@ public interface Page extends AutoCloseable {
   class WaitForSelectorOptions {
     /**
      * Defaults to {@code 'visible'}. Can be either:
-     * - {@code 'attached'} - wait for element to be present in DOM.
-     * - {@code 'detached'} - wait for element to not be present in DOM.
-     * - {@code 'visible'} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without
-     *   any content or with {@code display:none} has an empty bounding box and is not considered visible.
-     * - {@code 'hidden'} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}.
-     *   This is opposite to the {@code 'visible'} option.
+     * <ul>
+     * <li> {@code 'attached'} - wait for element to be present in DOM.</li>
+     * <li> {@code 'detached'} - wait for element to not be present in DOM.</li>
+     * <li> {@code 'visible'} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
+     * content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
+     * <li> {@code 'hidden'} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
+     * is opposite to the {@code 'visible'} option.</li>
+     * </ul>
      */
     public WaitForSelectorState state;
     /**
@@ -1346,12 +1392,20 @@ public interface Page extends AutoCloseable {
   Accessibility accessibility();
   /**
    * Adds a script which would be evaluated in one of the following scenarios:
-   * - Whenever the page is navigated.
-   * - Whenever the child frame is attached or navigated. In this case, the script is evaluated in the context of the newly
-   *   attached frame.
+   * <ul>
+   * <li> Whenever the page is navigated.</li>
+   * <li> Whenever the child frame is attached or navigated. In this case, the script is evaluated in the context of the newly
+   * attached frame.</li>
+   * </ul>
    *
    * <p> The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend
    * the JavaScript environment, e.g. to seed {@code Math.random}.
+   *
+   * <p> An example of overriding {@code Math.random} before the page loads:
+   * <pre>{@code
+   * // In your playwright script, assuming the preload.js file is in same directory
+   * page.addInitScript(Paths.get("./preload.js"));
+   * }</pre>
    *
    * <p> <strong>NOTE:</strong> The order of evaluation of multiple scripts installed via [{@code method: BrowserContext.addInitScript}] and
    * [{@code method: Page.addInitScript}] is not defined.
@@ -1361,12 +1415,20 @@ public interface Page extends AutoCloseable {
   void addInitScript(String script);
   /**
    * Adds a script which would be evaluated in one of the following scenarios:
-   * - Whenever the page is navigated.
-   * - Whenever the child frame is attached or navigated. In this case, the script is evaluated in the context of the newly
-   *   attached frame.
+   * <ul>
+   * <li> Whenever the page is navigated.</li>
+   * <li> Whenever the child frame is attached or navigated. In this case, the script is evaluated in the context of the newly
+   * attached frame.</li>
+   * </ul>
    *
    * <p> The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend
    * the JavaScript environment, e.g. to seed {@code Math.random}.
+   *
+   * <p> An example of overriding {@code Math.random} before the page loads:
+   * <pre>{@code
+   * // In your playwright script, assuming the preload.js file is in same directory
+   * page.addInitScript(Paths.get("./preload.js"));
+   * }</pre>
    *
    * <p> <strong>NOTE:</strong> The order of evaluation of multiple scripts installed via [{@code method: BrowserContext.addInitScript}] and
    * [{@code method: Page.addInitScript}] is not defined.
@@ -1412,15 +1474,17 @@ public interface Page extends AutoCloseable {
   void bringToFront();
   /**
    * This method checks an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
-   *    checked, this method returns immediately.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * 1. Ensure that the element is now checked. If not, this method rejects.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
+   * checked, this method returns immediately.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * <li> Ensure that the element is now checked. If not, this method rejects.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -1435,15 +1499,17 @@ public interface Page extends AutoCloseable {
   }
   /**
    * This method checks an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
-   *    checked, this method returns immediately.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * 1. Ensure that the element is now checked. If not, this method rejects.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
+   * checked, this method returns immediately.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * <li> Ensure that the element is now checked. If not, this method rejects.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -1456,12 +1522,14 @@ public interface Page extends AutoCloseable {
   void check(String selector, CheckOptions options);
   /**
    * This method clicks an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -1476,12 +1544,14 @@ public interface Page extends AutoCloseable {
   }
   /**
    * This method clicks an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -1498,8 +1568,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> By default, {@code page.close()} **does not** run {@code beforeunload} handlers.
    *
-   * <p> <strong>NOTE:</strong> if {@code runBeforeUnload} is passed as true, a {@code beforeunload} dialog might be summoned and should be handled manually
-   * via [{@code event: Page.dialog}] event.
+   * <p> <strong>NOTE:</strong> if {@code runBeforeUnload} is passed as true, a {@code beforeunload} dialog might be summoned and should be handled manually via
+   * [{@code event: Page.dialog}] event.
    */
   default void close() {
     close(null);
@@ -1510,8 +1580,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> By default, {@code page.close()} **does not** run {@code beforeunload} handlers.
    *
-   * <p> <strong>NOTE:</strong> if {@code runBeforeUnload} is passed as true, a {@code beforeunload} dialog might be summoned and should be handled manually
-   * via [{@code event: Page.dialog}] event.
+   * <p> <strong>NOTE:</strong> if {@code runBeforeUnload} is passed as true, a {@code beforeunload} dialog might be summoned and should be handled manually via
+   * [{@code event: Page.dialog}] event.
    */
   void close(CloseOptions options);
   /**
@@ -1524,13 +1594,15 @@ public interface Page extends AutoCloseable {
   BrowserContext context();
   /**
    * This method double clicks an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
-   *    first click of the {@code dblclick()} triggers a navigation event, this method will reject.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
+   * click of the {@code dblclick()} triggers a navigation event, this method will reject.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -1547,13 +1619,15 @@ public interface Page extends AutoCloseable {
   }
   /**
    * This method double clicks an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
-   *    first click of the {@code dblclick()} triggers a navigation event, this method will reject.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
+   * click of the {@code dblclick()} triggers a navigation event, this method will reject.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -1570,21 +1644,32 @@ public interface Page extends AutoCloseable {
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
    * is dispatched. This is equivalend to calling
    * [element.click()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click).
+   * <pre>{@code
+   * page.dispatchEvent("button#submit", "click");
+   * }</pre>
    *
    * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
    * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
-   * - [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)
-   * - [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)
-   * - [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)
-   * - [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)
-   * - [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)
-   * - [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)
-   * - [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)
+   * <ul>
+   * <li> [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)</li>
+   * <li> [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)</li>
+   * <li> [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)</li>
+   * <li> [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)</li>
+   * <li> [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)</li>
+   * <li> [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)</li>
+   * <li> [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)</li>
+   * </ul>
    *
    * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
-   *
+   * <pre>{@code
+   * // Note you can only create DataTransfer in Chromium and Firefox
+   * JSHandle dataTransfer = page.evaluateHandle("() => new DataTransfer()");
+   * Map<String, Object> arg = new HashMap<>();
+   * arg.put("dataTransfer", dataTransfer);
+   * page.dispatchEvent("#source", "dragstart", arg);
+   * }</pre>
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md) for more details.
@@ -1598,21 +1683,32 @@ public interface Page extends AutoCloseable {
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
    * is dispatched. This is equivalend to calling
    * [element.click()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click).
+   * <pre>{@code
+   * page.dispatchEvent("button#submit", "click");
+   * }</pre>
    *
    * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
    * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
-   * - [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)
-   * - [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)
-   * - [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)
-   * - [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)
-   * - [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)
-   * - [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)
-   * - [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)
+   * <ul>
+   * <li> [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)</li>
+   * <li> [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)</li>
+   * <li> [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)</li>
+   * <li> [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)</li>
+   * <li> [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)</li>
+   * <li> [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)</li>
+   * <li> [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)</li>
+   * </ul>
    *
    * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
-   *
+   * <pre>{@code
+   * // Note you can only create DataTransfer in Chromium and Firefox
+   * JSHandle dataTransfer = page.evaluateHandle("() => new DataTransfer()");
+   * Map<String, Object> arg = new HashMap<>();
+   * arg.put("dataTransfer", dataTransfer);
+   * page.dispatchEvent("#source", "dragstart", arg);
+   * }</pre>
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md) for more details.
@@ -1625,21 +1721,32 @@ public interface Page extends AutoCloseable {
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
    * is dispatched. This is equivalend to calling
    * [element.click()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click).
+   * <pre>{@code
+   * page.dispatchEvent("button#submit", "click");
+   * }</pre>
    *
    * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
    * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
-   * - [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)
-   * - [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)
-   * - [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)
-   * - [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)
-   * - [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)
-   * - [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)
-   * - [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)
+   * <ul>
+   * <li> [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)</li>
+   * <li> [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)</li>
+   * <li> [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)</li>
+   * <li> [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)</li>
+   * <li> [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)</li>
+   * <li> [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)</li>
+   * <li> [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)</li>
+   * </ul>
    *
    * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
-   *
+   * <pre>{@code
+   * // Note you can only create DataTransfer in Chromium and Firefox
+   * JSHandle dataTransfer = page.evaluateHandle("() => new DataTransfer()");
+   * Map<String, Object> arg = new HashMap<>();
+   * arg.put("dataTransfer", dataTransfer);
+   * page.dispatchEvent("#source", "dragstart", arg);
+   * }</pre>
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md) for more details.
@@ -1647,9 +1754,67 @@ public interface Page extends AutoCloseable {
    * @param eventInit Optional event-specific initialization properties.
    */
   void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options);
+  /**
+   * <pre>{@code
+   * page.evaluate("() => matchMedia('screen').matches");
+   * // → true
+   * page.evaluate("() => matchMedia('print').matches");
+   * // → false
+   *
+   * page.emulateMedia(new Page.EmulateMediaOptions().withMedia(Media.PRINT));
+   * page.evaluate("() => matchMedia('screen').matches");
+   * // → false
+   * page.evaluate("() => matchMedia('print').matches");
+   * // → true
+   *
+   * page.emulateMedia(new Page.EmulateMediaOptions());
+   * page.evaluate("() => matchMedia('screen').matches");
+   * // → true
+   * page.evaluate("() => matchMedia('print').matches");
+   * // → false
+   * }</pre>
+   * <pre>{@code
+   * page.emulateMedia(new Page.EmulateMediaOptions().withColorScheme(ColorScheme.DARK));
+   * page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches");
+   * // → true
+   * page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches");
+   * // → false
+   * page.evaluate("() => matchMedia('(prefers-color-scheme: no-preference)').matches");
+   * // → false
+   * }</pre>
+   */
   default void emulateMedia() {
     emulateMedia(null);
   }
+  /**
+   * <pre>{@code
+   * page.evaluate("() => matchMedia('screen').matches");
+   * // → true
+   * page.evaluate("() => matchMedia('print').matches");
+   * // → false
+   *
+   * page.emulateMedia(new Page.EmulateMediaOptions().withMedia(Media.PRINT));
+   * page.evaluate("() => matchMedia('screen').matches");
+   * // → false
+   * page.evaluate("() => matchMedia('print').matches");
+   * // → true
+   *
+   * page.emulateMedia(new Page.EmulateMediaOptions());
+   * page.evaluate("() => matchMedia('screen').matches");
+   * // → true
+   * page.evaluate("() => matchMedia('print').matches");
+   * // → false
+   * }</pre>
+   * <pre>{@code
+   * page.emulateMedia(new Page.EmulateMediaOptions().withColorScheme(ColorScheme.DARK));
+   * page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches");
+   * // → true
+   * page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches");
+   * // → false
+   * page.evaluate("() => matchMedia('(prefers-color-scheme: no-preference)').matches");
+   * // → false
+   * }</pre>
+   */
   void emulateMedia(EmulateMediaOptions options);
   /**
    * The method finds an element matching the specified selector within the page and passes it as a first argument to
@@ -1657,6 +1822,13 @@ public interface Page extends AutoCloseable {
    *
    * <p> If {@code expression} returns a [Promise], then [{@code method: Page.evalOnSelector}] would wait for the promise to resolve and
    * return its value.
+   *
+   * <p> Examples:
+   * <pre>{@code
+   * String searchValue = (String) page.evalOnSelector("#search", "el => el.value");
+   * String preloadHref = (String) page.evalOnSelector("link[rel=preload]", "el => el.href");
+   * String html = (String) page.evalOnSelector(".main-container", "(e, suffix) => e.outerHTML + suffix", "hello");
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.evalOnSelector}].
    *
@@ -1674,6 +1846,13 @@ public interface Page extends AutoCloseable {
    * <p> If {@code expression} returns a [Promise], then [{@code method: Page.evalOnSelector}] would wait for the promise to resolve and
    * return its value.
    *
+   * <p> Examples:
+   * <pre>{@code
+   * String searchValue = (String) page.evalOnSelector("#search", "el => el.value");
+   * String preloadHref = (String) page.evalOnSelector("link[rel=preload]", "el => el.href");
+   * String html = (String) page.evalOnSelector(".main-container", "(e, suffix) => e.outerHTML + suffix", "hello");
+   * }</pre>
+   *
    * <p> Shortcut for main frame's [{@code method: Frame.evalOnSelector}].
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
@@ -1689,6 +1868,10 @@ public interface Page extends AutoCloseable {
    * <p> If {@code expression} returns a [Promise], then [{@code method: Page.evalOnSelectorAll}] would wait for the promise to resolve and
    * return its value.
    *
+   * <p> Examples:
+   * <pre>{@code
+   * boolean divCounts = (boolean) page.evalOnSelectorAll("div", "(divs, min) => divs.length >= min", 10);
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
@@ -1704,6 +1887,10 @@ public interface Page extends AutoCloseable {
    * <p> If {@code expression} returns a [Promise], then [{@code method: Page.evalOnSelectorAll}] would wait for the promise to resolve and
    * return its value.
    *
+   * <p> Examples:
+   * <pre>{@code
+   * boolean divCounts = (boolean) page.evalOnSelectorAll("div", "(divs, min) => divs.length >= min", 10);
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
@@ -1722,10 +1909,24 @@ public interface Page extends AutoCloseable {
    * not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    *
    * <p> Passing argument to {@code expression}:
+   * <pre>{@code
+   * Object result = page.evaluate("([x, y]) => {\n" +
+   *   "  return Promise.resolve(x * y);\n" +
+   *   "}", Arrays.asList(7, 8));
+   * System.out.println(result); // prints "56"
+   * }</pre>
    *
    * <p> A string can also be passed in instead of a function:
+   * <pre>{@code
+   * System.out.println(page.evaluate("1 + 2")); // prints "3"
+   * }</pre>
    *
    * <p> {@code ElementHandle} instances can be passed as an argument to the [{@code method: Page.evaluate}]:
+   * <pre>{@code
+   * ElementHandle bodyHandle = page.querySelector("body");
+   * String html = (String) page.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
+   * bodyHandle.dispose();
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.evaluate}].
    *
@@ -1746,10 +1947,24 @@ public interface Page extends AutoCloseable {
    * not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    *
    * <p> Passing argument to {@code expression}:
+   * <pre>{@code
+   * Object result = page.evaluate("([x, y]) => {\n" +
+   *   "  return Promise.resolve(x * y);\n" +
+   *   "}", Arrays.asList(7, 8));
+   * System.out.println(result); // prints "56"
+   * }</pre>
    *
    * <p> A string can also be passed in instead of a function:
+   * <pre>{@code
+   * System.out.println(page.evaluate("1 + 2")); // prints "3"
+   * }</pre>
    *
    * <p> {@code ElementHandle} instances can be passed as an argument to the [{@code method: Page.evaluate}]:
+   * <pre>{@code
+   * ElementHandle bodyHandle = page.querySelector("body");
+   * String html = (String) page.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
+   * bodyHandle.dispose();
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.evaluate}].
    *
@@ -1766,11 +1981,23 @@ public interface Page extends AutoCloseable {
    *
    * <p> If the function passed to the [{@code method: Page.evaluateHandle}] returns a [Promise], then [{@code method: Page.evaluateHandle}]
    * would wait for the promise to resolve and return its value.
+   * <pre>{@code
+   * // Handle for the window object.
+   * JSHandle aWindowHandle = page.evaluateHandle("() => Promise.resolve(window)");
+   * }</pre>
    *
    * <p> A string can also be passed in instead of a function:
+   * <pre>{@code
+   * JSHandle aHandle = page.evaluateHandle("document"); // Handle for the "document".
+   * }</pre>
    *
    * <p> {@code JSHandle} instances can be passed as an argument to the [{@code method: Page.evaluateHandle}]:
-   *
+   * <pre>{@code
+   * JSHandle aHandle = page.evaluateHandle("() => document.body");
+   * JSHandle resultHandle = page.evaluateHandle("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(aHandle, "hello"));
+   * System.out.println(resultHandle.jsonValue());
+   * resultHandle.dispose();
+   * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
@@ -1786,11 +2013,23 @@ public interface Page extends AutoCloseable {
    *
    * <p> If the function passed to the [{@code method: Page.evaluateHandle}] returns a [Promise], then [{@code method: Page.evaluateHandle}]
    * would wait for the promise to resolve and return its value.
+   * <pre>{@code
+   * // Handle for the window object.
+   * JSHandle aWindowHandle = page.evaluateHandle("() => Promise.resolve(window)");
+   * }</pre>
    *
    * <p> A string can also be passed in instead of a function:
+   * <pre>{@code
+   * JSHandle aHandle = page.evaluateHandle("document"); // Handle for the "document".
+   * }</pre>
    *
    * <p> {@code JSHandle} instances can be passed as an argument to the [{@code method: Page.evaluateHandle}]:
-   *
+   * <pre>{@code
+   * JSHandle aHandle = page.evaluateHandle("() => document.body");
+   * JSHandle resultHandle = page.evaluateHandle("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(aHandle, "hello"));
+   * System.out.println(resultHandle.jsonValue());
+   * resultHandle.dispose();
+   * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
@@ -1802,13 +2041,52 @@ public interface Page extends AutoCloseable {
    * executes {@code callback} and returns a [Promise] which resolves to the return value of {@code callback}. If the {@code callback} returns
    * a [Promise], it will be awaited.
    *
-   * <p> The first argument of the {@code callback} function contains information about the caller: `{ browserContext: BrowserContext,
-   * page: Page, frame: Frame }`.
+   * <p> The first argument of the {@code callback} function contains information about the caller: {@code { browserContext: BrowserContext,
+   * page: Page, frame: Frame }}.
    *
    * <p> See [{@code method: BrowserContext.exposeBinding}] for the context-wide version.
    *
    * <p> <strong>NOTE:</strong> Functions installed via [{@code method: Page.exposeBinding}] survive navigations.
    *
+   * <p> An example of exposing page URL to all frames in a page:
+   * <pre>{@code
+   * import com.microsoft.playwright.*;
+   *
+   * public class Example {
+   *   public static void main(String[] args) {
+   *     try (Playwright playwright = Playwright.create()) {
+   *       BrowserType webkit = playwright.webkit();
+   *       Browser browser = webkit.launch({ headless: false });
+   *       BrowserContext context = browser.newContext();
+   *       Page page = context.newPage();
+   *       page.exposeBinding("pageURL", (source, args) -> source.page().url());
+   *       page.setContent("<script>\n" +
+   *         "  async function onClick() {\n" +
+   *         "    document.querySelector('div').textContent = await window.pageURL();\n" +
+   *         "  }\n" +
+   *         "</script>\n" +
+   *         "<button onclick=\"onClick()\">Click me</button>\n" +
+   *         "<div></div>");
+   *       page.click("button");
+   *     }
+   *   }
+   * }
+   * }</pre>
+   *
+   * <p> An example of passing an element handle:
+   * <pre>{@code
+   * page.exposeBinding("clicked", (source, args) -> {
+   *   ElementHandle element = (ElementHandle) args[0];
+   *   System.out.println(element.textContent());
+   *   return null;
+   * }, new Page.ExposeBindingOptions().withHandle(true));
+   * page.setContent("" +
+   *   "<script>\n" +
+   *   "  document.addEventListener('click', event => window.clicked(event.target));\n" +
+   *   "</script>\n" +
+   *   "<div>Click me</div>\n" +
+   *   "<div>Or click me</div>\n");
+   * }</pre>
    *
    * @param name Name of the function on the window object.
    * @param callback Callback function that will be called in the Playwright's context.
@@ -1821,13 +2099,52 @@ public interface Page extends AutoCloseable {
    * executes {@code callback} and returns a [Promise] which resolves to the return value of {@code callback}. If the {@code callback} returns
    * a [Promise], it will be awaited.
    *
-   * <p> The first argument of the {@code callback} function contains information about the caller: `{ browserContext: BrowserContext,
-   * page: Page, frame: Frame }`.
+   * <p> The first argument of the {@code callback} function contains information about the caller: {@code { browserContext: BrowserContext,
+   * page: Page, frame: Frame }}.
    *
    * <p> See [{@code method: BrowserContext.exposeBinding}] for the context-wide version.
    *
    * <p> <strong>NOTE:</strong> Functions installed via [{@code method: Page.exposeBinding}] survive navigations.
    *
+   * <p> An example of exposing page URL to all frames in a page:
+   * <pre>{@code
+   * import com.microsoft.playwright.*;
+   *
+   * public class Example {
+   *   public static void main(String[] args) {
+   *     try (Playwright playwright = Playwright.create()) {
+   *       BrowserType webkit = playwright.webkit();
+   *       Browser browser = webkit.launch({ headless: false });
+   *       BrowserContext context = browser.newContext();
+   *       Page page = context.newPage();
+   *       page.exposeBinding("pageURL", (source, args) -> source.page().url());
+   *       page.setContent("<script>\n" +
+   *         "  async function onClick() {\n" +
+   *         "    document.querySelector('div').textContent = await window.pageURL();\n" +
+   *         "  }\n" +
+   *         "</script>\n" +
+   *         "<button onclick=\"onClick()\">Click me</button>\n" +
+   *         "<div></div>");
+   *       page.click("button");
+   *     }
+   *   }
+   * }
+   * }</pre>
+   *
+   * <p> An example of passing an element handle:
+   * <pre>{@code
+   * page.exposeBinding("clicked", (source, args) -> {
+   *   ElementHandle element = (ElementHandle) args[0];
+   *   System.out.println(element.textContent());
+   *   return null;
+   * }, new Page.ExposeBindingOptions().withHandle(true));
+   * page.setContent("" +
+   *   "<script>\n" +
+   *   "  document.addEventListener('click', event => window.clicked(event.target));\n" +
+   *   "</script>\n" +
+   *   "<div>Click me</div>\n" +
+   *   "<div>Or click me</div>\n");
+   * }</pre>
    *
    * @param name Name of the function on the window object.
    * @param callback Callback function that will be called in the Playwright's context.
@@ -1843,6 +2160,44 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Functions installed via [{@code method: Page.exposeFunction}] survive navigations.
    *
+   * <p> An example of adding an {@code sha1} function to the page:
+   * <pre>{@code
+   * import com.microsoft.playwright.*;
+   *
+   * import java.nio.charset.StandardCharsets;
+   * import java.security.MessageDigest;
+   * import java.security.NoSuchAlgorithmException;
+   * import java.util.Base64;
+   *
+   * public class Example {
+   *   public static void main(String[] args) {
+   *     try (Playwright playwright = Playwright.create()) {
+   *       BrowserType webkit = playwright.webkit();
+   *       Browser browser = webkit.launch({ headless: false });
+   *       Page page = browser.newPage();
+   *       page.exposeFunction("sha1", args -> {
+   *         String text = (String) args[0];
+   *         MessageDigest crypto;
+   *         try {
+   *           crypto = MessageDigest.getInstance("SHA-1");
+   *         } catch (NoSuchAlgorithmException e) {
+   *           return null;
+   *         }
+   *         byte[] token = crypto.digest(text.getBytes(StandardCharsets.UTF_8));
+   *         return Base64.getEncoder().encodeToString(token);
+   *       });
+   *       page.setContent("<script>\n" +
+   *         "  async function onClick() {\n" +
+   *         "    document.querySelector('div').textContent = await window.sha1('PLAYWRIGHT');\n" +
+   *         "  }\n" +
+   *         "</script>\n" +
+   *         "<button onclick=\"onClick()\">Click me</button>\n" +
+   *         "<div></div>\n");
+   *       page.click("button");
+   *     }
+   *   }
+   * }
+   * }</pre>
    *
    * @param name Name of the function on the window object
    * @param callback Callback function which will be called in Playwright's context.
@@ -1906,7 +2261,12 @@ public interface Page extends AutoCloseable {
   void focus(String selector, FocusOptions options);
   /**
    * Returns frame matching the specified criteria. Either {@code name} or {@code url} must be specified.
-   *
+   * <pre>{@code
+   * Frame frame = page.frame("frame-name");
+   * }</pre>
+   * <pre>{@code
+   * Frame frame = page.frameByUrl(Pattern.compile(".*domain.*");
+   * }</pre>
    *
    * @param name Frame name specified in the {@code iframe}'s {@code name} attribute.
    */
@@ -1988,11 +2348,13 @@ public interface Page extends AutoCloseable {
    * last redirect.
    *
    * <p> {@code page.goto} will throw an error if:
-   * - there's an SSL error (e.g. in case of self-signed certificates).
-   * - target URL is invalid.
-   * - the {@code timeout} is exceeded during navigation.
-   * - the remote server does not respond or is unreachable.
-   * - the main resource failed to load.
+   * <ul>
+   * <li> there's an SSL error (e.g. in case of self-signed certificates).</li>
+   * <li> target URL is invalid.</li>
+   * <li> the {@code timeout} is exceeded during navigation.</li>
+   * <li> the remote server does not respond or is unreachable.</li>
+   * <li> the main resource failed to load.</li>
+   * </ul>
    *
    * <p> {@code page.goto} will not throw an error when any valid HTTP status code is returned by the remote server, including 404 "Not
    * Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling
@@ -2000,7 +2362,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@code page.goto} either throws an error or returns a main resource response. The only exceptions are navigation to
    * {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
-   * <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the
+   *
+   * <p> <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the
    * [upstream issue](https://bugs.chromium.org/p/chromium/issues/detail?id=761295).
    *
    * <p> Shortcut for main frame's [{@code method: Frame.goto}]
@@ -2015,11 +2378,13 @@ public interface Page extends AutoCloseable {
    * last redirect.
    *
    * <p> {@code page.goto} will throw an error if:
-   * - there's an SSL error (e.g. in case of self-signed certificates).
-   * - target URL is invalid.
-   * - the {@code timeout} is exceeded during navigation.
-   * - the remote server does not respond or is unreachable.
-   * - the main resource failed to load.
+   * <ul>
+   * <li> there's an SSL error (e.g. in case of self-signed certificates).</li>
+   * <li> target URL is invalid.</li>
+   * <li> the {@code timeout} is exceeded during navigation.</li>
+   * <li> the remote server does not respond or is unreachable.</li>
+   * <li> the main resource failed to load.</li>
+   * </ul>
    *
    * <p> {@code page.goto} will not throw an error when any valid HTTP status code is returned by the remote server, including 404 "Not
    * Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling
@@ -2027,7 +2392,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@code page.goto} either throws an error or returns a main resource response. The only exceptions are navigation to
    * {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
-   * <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the
+   *
+   * <p> <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the
    * [upstream issue](https://bugs.chromium.org/p/chromium/issues/detail?id=761295).
    *
    * <p> Shortcut for main frame's [{@code method: Frame.goto}]
@@ -2037,12 +2403,14 @@ public interface Page extends AutoCloseable {
   Response navigate(String url, NavigateOptions options);
   /**
    * This method hovers over an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -2057,12 +2425,14 @@ public interface Page extends AutoCloseable {
   }
   /**
    * This method hovers over an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -2241,35 +2611,46 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> By default, {@code page.pdf()} generates a pdf with modified colors for printing. Use the
    * [{@code -webkit-print-color-adjust}](https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-print-color-adjust) property to
    * force rendering of exact colors.
+   * <pre>{@code
+   * // Generates a PDF with "screen" media type.
+   * page.emulateMedia(new Page.EmulateMediaOptions().withMedia(Media.SCREEN));
+   * page.pdf(new Page.PdfOptions().withPath(Paths.get("page.pdf")));
+   * }</pre>
    *
    * <p> The {@code width}, {@code height}, and {@code margin} options accept values labeled with units. Unlabeled values are treated as pixels.
    *
    * <p> A few examples:
-   * - {@code page.pdf({width: 100})} - prints with width set to 100 pixels
-   * - {@code page.pdf({width: '100px'})} - prints with width set to 100 pixels
-   * - {@code page.pdf({width: '10cm'})} - prints with width set to 10 centimeters.
+   * <ul>
+   * <li> {@code page.pdf({width: 100})} - prints with width set to 100 pixels</li>
+   * <li> {@code page.pdf({width: '100px'})} - prints with width set to 100 pixels</li>
+   * <li> {@code page.pdf({width: '10cm'})} - prints with width set to 10 centimeters.</li>
+   * </ul>
    *
    * <p> All possible units are:
-   * - {@code px} - pixel
-   * - {@code in} - inch
-   * - {@code cm} - centimeter
-   * - {@code mm} - millimeter
+   * <ul>
+   * <li> {@code px} - pixel</li>
+   * <li> {@code in} - inch</li>
+   * <li> {@code cm} - centimeter</li>
+   * <li> {@code mm} - millimeter</li>
+   * </ul>
    *
    * <p> The {@code format} options are:
-   * - {@code Letter}: 8.5in x 11in
-   * - {@code Legal}: 8.5in x 14in
-   * - {@code Tabloid}: 11in x 17in
-   * - {@code Ledger}: 17in x 11in
-   * - {@code A0}: 33.1in x 46.8in
-   * - {@code A1}: 23.4in x 33.1in
-   * - {@code A2}: 16.54in x 23.4in
-   * - {@code A3}: 11.7in x 16.54in
-   * - {@code A4}: 8.27in x 11.7in
-   * - {@code A5}: 5.83in x 8.27in
-   * - {@code A6}: 4.13in x 5.83in
+   * <ul>
+   * <li> {@code Letter}: 8.5in x 11in</li>
+   * <li> {@code Legal}: 8.5in x 14in</li>
+   * <li> {@code Tabloid}: 11in x 17in</li>
+   * <li> {@code Ledger}: 17in x 11in</li>
+   * <li> {@code A0}: 33.1in x 46.8in</li>
+   * <li> {@code A1}: 23.4in x 33.1in</li>
+   * <li> {@code A2}: 16.54in x 23.4in</li>
+   * <li> {@code A3}: 11.7in x 16.54in</li>
+   * <li> {@code A4}: 8.27in x 11.7in</li>
+   * <li> {@code A5}: 5.83in x 8.27in</li>
+   * <li> {@code A6}: 4.13in x 5.83in</li>
+   * </ul>
    *
-   * <p> <strong>NOTE:</strong> {@code headerTemplate} and {@code footerTemplate} markup have the following limitations: > 1. Script tags inside templates
-   * are not evaluated. > 2. Page styles are not visible inside templates.
+   * <p> <strong>NOTE:</strong> {@code headerTemplate} and {@code footerTemplate} markup have the following limitations: > 1. Script tags inside templates are not
+   * evaluated. > 2. Page styles are not visible inside templates.
    */
   default byte[] pdf() {
     return pdf(null);
@@ -2285,35 +2666,46 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> By default, {@code page.pdf()} generates a pdf with modified colors for printing. Use the
    * [{@code -webkit-print-color-adjust}](https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-print-color-adjust) property to
    * force rendering of exact colors.
+   * <pre>{@code
+   * // Generates a PDF with "screen" media type.
+   * page.emulateMedia(new Page.EmulateMediaOptions().withMedia(Media.SCREEN));
+   * page.pdf(new Page.PdfOptions().withPath(Paths.get("page.pdf")));
+   * }</pre>
    *
    * <p> The {@code width}, {@code height}, and {@code margin} options accept values labeled with units. Unlabeled values are treated as pixels.
    *
    * <p> A few examples:
-   * - {@code page.pdf({width: 100})} - prints with width set to 100 pixels
-   * - {@code page.pdf({width: '100px'})} - prints with width set to 100 pixels
-   * - {@code page.pdf({width: '10cm'})} - prints with width set to 10 centimeters.
+   * <ul>
+   * <li> {@code page.pdf({width: 100})} - prints with width set to 100 pixels</li>
+   * <li> {@code page.pdf({width: '100px'})} - prints with width set to 100 pixels</li>
+   * <li> {@code page.pdf({width: '10cm'})} - prints with width set to 10 centimeters.</li>
+   * </ul>
    *
    * <p> All possible units are:
-   * - {@code px} - pixel
-   * - {@code in} - inch
-   * - {@code cm} - centimeter
-   * - {@code mm} - millimeter
+   * <ul>
+   * <li> {@code px} - pixel</li>
+   * <li> {@code in} - inch</li>
+   * <li> {@code cm} - centimeter</li>
+   * <li> {@code mm} - millimeter</li>
+   * </ul>
    *
    * <p> The {@code format} options are:
-   * - {@code Letter}: 8.5in x 11in
-   * - {@code Legal}: 8.5in x 14in
-   * - {@code Tabloid}: 11in x 17in
-   * - {@code Ledger}: 17in x 11in
-   * - {@code A0}: 33.1in x 46.8in
-   * - {@code A1}: 23.4in x 33.1in
-   * - {@code A2}: 16.54in x 23.4in
-   * - {@code A3}: 11.7in x 16.54in
-   * - {@code A4}: 8.27in x 11.7in
-   * - {@code A5}: 5.83in x 8.27in
-   * - {@code A6}: 4.13in x 5.83in
+   * <ul>
+   * <li> {@code Letter}: 8.5in x 11in</li>
+   * <li> {@code Legal}: 8.5in x 14in</li>
+   * <li> {@code Tabloid}: 11in x 17in</li>
+   * <li> {@code Ledger}: 17in x 11in</li>
+   * <li> {@code A0}: 33.1in x 46.8in</li>
+   * <li> {@code A1}: 23.4in x 33.1in</li>
+   * <li> {@code A2}: 16.54in x 23.4in</li>
+   * <li> {@code A3}: 11.7in x 16.54in</li>
+   * <li> {@code A4}: 8.27in x 11.7in</li>
+   * <li> {@code A5}: 5.83in x 8.27in</li>
+   * <li> {@code A6}: 4.13in x 5.83in</li>
+   * </ul>
    *
-   * <p> <strong>NOTE:</strong> {@code headerTemplate} and {@code footerTemplate} markup have the following limitations: > 1. Script tags inside templates
-   * are not evaluated. > 2. Page styles are not visible inside templates.
+   * <p> <strong>NOTE:</strong> {@code headerTemplate} and {@code footerTemplate} markup have the following limitations: > 1. Script tags inside templates are not
+   * evaluated. > 2. Page styles are not visible inside templates.
    */
   byte[] pdf(PdfOptions options);
   /**
@@ -2335,7 +2727,16 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
-   *
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.navigate("https://keycode.info");
+   * page.press("body", "A");
+   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("A.png")));
+   * page.press("body", "ArrowLeft");
+   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("ArrowLeft.png" )));
+   * page.press("body", "Shift+O");
+   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("O.png" )));
+   * }</pre>
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md) for more details.
@@ -2363,7 +2764,16 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
-   *
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.navigate("https://keycode.info");
+   * page.press("body", "A");
+   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("A.png")));
+   * page.press("body", "ArrowLeft");
+   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("ArrowLeft.png" )));
+   * page.press("body", "Shift+O");
+   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("O.png" )));
+   * }</pre>
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md) for more details.
@@ -2407,7 +2817,21 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> The handler will only be called for the first url if the response is a redirect.
    *
+   * <p> An example of a naïve handler that aborts all image requests:
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
    * <p> or the same snippet using a regex pattern instead:
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.route(Pattern.compile("(\\.png$)|(\\.jpg$)"),route -> route.abort());
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
    *
    * <p> Page routes take precedence over browser context routes (set up with [{@code method: BrowserContext.route}]) when request
    * matches both handlers.
@@ -2425,7 +2849,21 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> The handler will only be called for the first url if the response is a redirect.
    *
+   * <p> An example of a naïve handler that aborts all image requests:
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
    * <p> or the same snippet using a regex pattern instead:
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.route(Pattern.compile("(\\.png$)|(\\.jpg$)"),route -> route.abort());
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
    *
    * <p> Page routes take precedence over browser context routes (set up with [{@code method: BrowserContext.route}]) when request
    * matches both handlers.
@@ -2443,7 +2881,21 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> The handler will only be called for the first url if the response is a redirect.
    *
+   * <p> An example of a naïve handler that aborts all image requests:
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
    * <p> or the same snippet using a regex pattern instead:
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.route(Pattern.compile("(\\.png$)|(\\.jpg$)"),route -> route.abort());
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
    *
    * <p> Page routes take precedence over browser context routes (set up with [{@code method: BrowserContext.route}]) when request
    * matches both handlers.
@@ -2457,8 +2909,7 @@ public interface Page extends AutoCloseable {
   /**
    * Returns the buffer with the captured screenshot.
    *
-   * <p> <strong>NOTE:</strong> Screenshots take at least 1/6 second on Chromium OS X and Chromium Windows. See https://crbug.com/741689 for
-   * discussion.
+   * <p> <strong>NOTE:</strong> Screenshots take at least 1/6 second on Chromium OS X and Chromium Windows. See https://crbug.com/741689 for discussion.
    */
   default byte[] screenshot() {
     return screenshot(null);
@@ -2466,8 +2917,7 @@ public interface Page extends AutoCloseable {
   /**
    * Returns the buffer with the captured screenshot.
    *
-   * <p> <strong>NOTE:</strong> Screenshots take at least 1/6 second on Chromium OS X and Chromium Windows. See https://crbug.com/741689 for
-   * discussion.
+   * <p> <strong>NOTE:</strong> Screenshots take at least 1/6 second on Chromium OS X and Chromium Windows. See https://crbug.com/741689 for discussion.
    */
   byte[] screenshot(ScreenshotOptions options);
   /**
@@ -2477,6 +2927,14 @@ public interface Page extends AutoCloseable {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <pre>{@code
+   * // single selection matching the value
+   * page.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * page.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.selectOption}]
    *
@@ -2496,6 +2954,14 @@ public interface Page extends AutoCloseable {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <pre>{@code
+   * // single selection matching the value
+   * page.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * page.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.selectOption}]
    *
@@ -2513,6 +2979,14 @@ public interface Page extends AutoCloseable {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <pre>{@code
+   * // single selection matching the value
+   * page.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * page.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.selectOption}]
    *
@@ -2532,6 +3006,14 @@ public interface Page extends AutoCloseable {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <pre>{@code
+   * // single selection matching the value
+   * page.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * page.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.selectOption}]
    *
@@ -2549,6 +3031,14 @@ public interface Page extends AutoCloseable {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <pre>{@code
+   * // single selection matching the value
+   * page.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * page.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.selectOption}]
    *
@@ -2568,6 +3058,14 @@ public interface Page extends AutoCloseable {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <pre>{@code
+   * // single selection matching the value
+   * page.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * page.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.selectOption}]
    *
@@ -2585,6 +3083,14 @@ public interface Page extends AutoCloseable {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <pre>{@code
+   * // single selection matching the value
+   * page.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * page.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.selectOption}]
    *
@@ -2604,6 +3110,14 @@ public interface Page extends AutoCloseable {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <pre>{@code
+   * // single selection matching the value
+   * page.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * page.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.selectOption}]
    *
@@ -2621,6 +3135,14 @@ public interface Page extends AutoCloseable {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <pre>{@code
+   * // single selection matching the value
+   * page.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * page.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.selectOption}]
    *
@@ -2640,6 +3162,14 @@ public interface Page extends AutoCloseable {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <pre>{@code
+   * // single selection matching the value
+   * page.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * page.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.selectOption}]
    *
@@ -2657,6 +3187,14 @@ public interface Page extends AutoCloseable {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <pre>{@code
+   * // single selection matching the value
+   * page.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * page.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.selectOption}]
    *
@@ -2676,6 +3214,14 @@ public interface Page extends AutoCloseable {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <pre>{@code
+   * // single selection matching the value
+   * page.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * page.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.selectOption}]
    *
@@ -2702,12 +3248,14 @@ public interface Page extends AutoCloseable {
   void setContent(String html, SetContentOptions options);
   /**
    * This setting will change the default maximum navigation time for the following methods and related shortcuts:
-   * - [{@code method: Page.goBack}]
-   * - [{@code method: Page.goForward}]
-   * - [{@code method: Page.goto}]
-   * - [{@code method: Page.reload}]
-   * - [{@code method: Page.setContent}]
-   * - [{@code method: Page.waitForNavigation}]
+   * <ul>
+   * <li> [{@code method: Page.goBack}]</li>
+   * <li> [{@code method: Page.goForward}]</li>
+   * <li> [{@code method: Page.goto}]</li>
+   * <li> [{@code method: Page.reload}]</li>
+   * <li> [{@code method: Page.setContent}]</li>
+   * <li> [{@code method: Page.waitForNavigation}]</li>
+   * </ul>
    *
    * <p> <strong>NOTE:</strong> [{@code method: Page.setDefaultNavigationTimeout}] takes priority over [{@code method: Page.setDefaultTimeout}],
    * [{@code method: BrowserContext.setDefaultTimeout}] and [{@code method: BrowserContext.setDefaultNavigationTimeout}].
@@ -2833,16 +3381,23 @@ public interface Page extends AutoCloseable {
    *
    * <p> {@code page.setViewportSize} will resize the page. A lot of websites don't expect phones to change size, so you should set the
    * viewport size before navigating to the page.
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.setViewportSize(640, 480);
+   * page.navigate("https://example.com");
+   * }</pre>
    */
   void setViewportSize(int width, int height);
   /**
    * This method taps an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -2859,12 +3414,14 @@ public interface Page extends AutoCloseable {
   }
   /**
    * This method taps an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -2903,6 +3460,12 @@ public interface Page extends AutoCloseable {
    * fine-grained keyboard events. To fill values in form fields, use [{@code method: Page.fill}].
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: Keyboard.press}].
+   * <pre>{@code
+   * // Types instantly
+   * page.type("#mytextarea", "Hello");
+   * // Types slower, like a user
+   * page.type("#mytextarea", "World", new Page.TypeOptions().withDelay(100));
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.type}].
    *
@@ -2918,6 +3481,12 @@ public interface Page extends AutoCloseable {
    * fine-grained keyboard events. To fill values in form fields, use [{@code method: Page.fill}].
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: Keyboard.press}].
+   * <pre>{@code
+   * // Types instantly
+   * page.type("#mytextarea", "Hello");
+   * // Types slower, like a user
+   * page.type("#mytextarea", "World", new Page.TypeOptions().withDelay(100));
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.type}].
    *
@@ -2928,15 +3497,17 @@ public interface Page extends AutoCloseable {
   void type(String selector, String text, TypeOptions options);
   /**
    * This method unchecks an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
-   *    unchecked, this method returns immediately.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * 1. Ensure that the element is now unchecked. If not, this method rejects.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
+   * unchecked, this method returns immediately.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * <li> Ensure that the element is now unchecked. If not, this method rejects.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -2951,15 +3522,17 @@ public interface Page extends AutoCloseable {
   }
   /**
    * This method unchecks an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
-   *    unchecked, this method returns immediately.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * 1. Ensure that the element is now unchecked. If not, this method rejects.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
+   * unchecked, this method returns immediately.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * <li> Ensure that the element is now unchecked. If not, this method rejects.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -3096,8 +3669,28 @@ public interface Page extends AutoCloseable {
    * Returns when the {@code expression} returns a truthy value. It resolves to a JSHandle of the truthy value.
    *
    * <p> The [{@code method: Page.waitForFunction}] can be used to observe viewport size change:
+   * <pre>{@code
+   * import com.microsoft.playwright.*;
+   *
+   * public class Example {
+   *   public static void main(String[] args) {
+   *     try (Playwright playwright = Playwright.create()) {
+   *       BrowserType webkit = playwright.webkit();
+   *       Browser browser = webkit.launch();
+   *       Page page = browser.newPage();
+   *       page.setViewportSize(50,  50);
+   *       page.waitForFunction("() => window.innerWidth < 100");
+   *       browser.close();
+   *     }
+   *   }
+   * }
+   * }</pre>
    *
    * <p> To pass an argument to the predicate of [{@code method: Page.waitForFunction}] function:
+   * <pre>{@code
+   * String selector = ".foo";
+   * page.waitForFunction("selector => !!document.querySelector(selector)", selector);
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.waitForFunction}].
    *
@@ -3112,8 +3705,28 @@ public interface Page extends AutoCloseable {
    * Returns when the {@code expression} returns a truthy value. It resolves to a JSHandle of the truthy value.
    *
    * <p> The [{@code method: Page.waitForFunction}] can be used to observe viewport size change:
+   * <pre>{@code
+   * import com.microsoft.playwright.*;
+   *
+   * public class Example {
+   *   public static void main(String[] args) {
+   *     try (Playwright playwright = Playwright.create()) {
+   *       BrowserType webkit = playwright.webkit();
+   *       Browser browser = webkit.launch();
+   *       Page page = browser.newPage();
+   *       page.setViewportSize(50,  50);
+   *       page.waitForFunction("() => window.innerWidth < 100");
+   *       browser.close();
+   *     }
+   *   }
+   * }
+   * }</pre>
    *
    * <p> To pass an argument to the predicate of [{@code method: Page.waitForFunction}] function:
+   * <pre>{@code
+   * String selector = ".foo";
+   * page.waitForFunction("selector => !!document.querySelector(selector)", selector);
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.waitForFunction}].
    *
@@ -3127,8 +3740,28 @@ public interface Page extends AutoCloseable {
    * Returns when the {@code expression} returns a truthy value. It resolves to a JSHandle of the truthy value.
    *
    * <p> The [{@code method: Page.waitForFunction}] can be used to observe viewport size change:
+   * <pre>{@code
+   * import com.microsoft.playwright.*;
+   *
+   * public class Example {
+   *   public static void main(String[] args) {
+   *     try (Playwright playwright = Playwright.create()) {
+   *       BrowserType webkit = playwright.webkit();
+   *       Browser browser = webkit.launch();
+   *       Page page = browser.newPage();
+   *       page.setViewportSize(50,  50);
+   *       page.waitForFunction("() => window.innerWidth < 100");
+   *       browser.close();
+   *     }
+   *   }
+   * }
+   * }</pre>
    *
    * <p> To pass an argument to the predicate of [{@code method: Page.waitForFunction}] function:
+   * <pre>{@code
+   * String selector = ".foo";
+   * page.waitForFunction("selector => !!document.querySelector(selector)", selector);
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.waitForFunction}].
    *
@@ -3142,14 +3775,27 @@ public interface Page extends AutoCloseable {
    *
    * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been committed
    * when this method is called. If current document has already reached the required state, resolves immediately.
+   * <pre>{@code
+   * page.click("button"); // Click triggers navigation.
+   * page.waitForLoadState(); // The promise resolves after "load" event.
+   * }</pre>
+   * <pre>{@code
+   * Page popup = page.waitForPopup(() -> {
+   *   page.click("button"); // Click triggers a popup.
+   * });
+   * popup.waitForLoadState(LoadState.DOMCONTENTLOADED);
+   * System.out.println(popup.title()); // Popup is ready to use.
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.waitForLoadState}].
    *
    * @param state Optional load state to wait for, defaults to {@code load}. If the state has been already reached while loading current
    * document, the method resolves immediately. Can be one of:
-   * - {@code 'load'} - wait for the {@code load} event to be fired.
-   * - {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.
-   * - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
+   * <ul>
+   * <li> {@code 'load'} - wait for the {@code load} event to be fired.</li>
+   * <li> {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.</li>
+   * <li> {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.</li>
+   * </ul>
    */
   default void waitForLoadState(LoadState state) {
     waitForLoadState(state, null);
@@ -3159,6 +3805,17 @@ public interface Page extends AutoCloseable {
    *
    * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been committed
    * when this method is called. If current document has already reached the required state, resolves immediately.
+   * <pre>{@code
+   * page.click("button"); // Click triggers navigation.
+   * page.waitForLoadState(); // The promise resolves after "load" event.
+   * }</pre>
+   * <pre>{@code
+   * Page popup = page.waitForPopup(() -> {
+   *   page.click("button"); // Click triggers a popup.
+   * });
+   * popup.waitForLoadState(LoadState.DOMCONTENTLOADED);
+   * System.out.println(popup.title()); // Popup is ready to use.
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.waitForLoadState}].
    */
@@ -3170,14 +3827,27 @@ public interface Page extends AutoCloseable {
    *
    * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been committed
    * when this method is called. If current document has already reached the required state, resolves immediately.
+   * <pre>{@code
+   * page.click("button"); // Click triggers navigation.
+   * page.waitForLoadState(); // The promise resolves after "load" event.
+   * }</pre>
+   * <pre>{@code
+   * Page popup = page.waitForPopup(() -> {
+   *   page.click("button"); // Click triggers a popup.
+   * });
+   * popup.waitForLoadState(LoadState.DOMCONTENTLOADED);
+   * System.out.println(popup.title()); // Popup is ready to use.
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.waitForLoadState}].
    *
    * @param state Optional load state to wait for, defaults to {@code load}. If the state has been already reached while loading current
    * document, the method resolves immediately. Can be one of:
-   * - {@code 'load'} - wait for the {@code load} event to be fired.
-   * - {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.
-   * - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
+   * <ul>
+   * <li> {@code 'load'} - wait for the {@code load} event to be fired.</li>
+   * <li> {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.</li>
+   * <li> {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.</li>
+   * </ul>
    */
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
   /**
@@ -3188,9 +3858,15 @@ public interface Page extends AutoCloseable {
    * <p> This resolves when the page navigates to a new URL or reloads. It is useful for when you run code which will indirectly
    * cause the page to navigate. e.g. The click target has an {@code onclick} handler that triggers navigation from a {@code setTimeout}.
    * Consider this example:
+   * <pre>{@code
+   * // The method returns after navigation has finished
+   * Response response = page.waitForNavigation(() -> {
+   *   page.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
+   * });
+   * }</pre>
    *
-   * <p> <strong>NOTE:</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is
-   * considered a navigation.
+   * <p> <strong>NOTE:</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is considered
+   * a navigation.
    *
    * <p> Shortcut for main frame's [{@code method: Frame.waitForNavigation}].
    *
@@ -3207,9 +3883,15 @@ public interface Page extends AutoCloseable {
    * <p> This resolves when the page navigates to a new URL or reloads. It is useful for when you run code which will indirectly
    * cause the page to navigate. e.g. The click target has an {@code onclick} handler that triggers navigation from a {@code setTimeout}.
    * Consider this example:
+   * <pre>{@code
+   * // The method returns after navigation has finished
+   * Response response = page.waitForNavigation(() -> {
+   *   page.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
+   * });
+   * }</pre>
    *
-   * <p> <strong>NOTE:</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is
-   * considered a navigation.
+   * <p> <strong>NOTE:</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is considered
+   * a navigation.
    *
    * <p> Shortcut for main frame's [{@code method: Frame.waitForNavigation}].
    *
@@ -3236,7 +3918,12 @@ public interface Page extends AutoCloseable {
   Page waitForPopup(WaitForPopupOptions options, Runnable callback);
   /**
    * Waits for the matching request and returns it.
-   *
+   * <pre>{@code
+   * Request firstRequest = page.waitForRequest("http://example.com/resource");
+   * Object finalRequest = page.waitForRequest(
+   *   request -> "http://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {});
+   * return firstRequest.url();
+   * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
    * @param callback Callback that performs the action triggering the event.
@@ -3246,7 +3933,12 @@ public interface Page extends AutoCloseable {
   }
   /**
    * Waits for the matching request and returns it.
-   *
+   * <pre>{@code
+   * Request firstRequest = page.waitForRequest("http://example.com/resource");
+   * Object finalRequest = page.waitForRequest(
+   *   request -> "http://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {});
+   * return firstRequest.url();
+   * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
    * @param callback Callback that performs the action triggering the event.
@@ -3254,7 +3946,12 @@ public interface Page extends AutoCloseable {
   Request waitForRequest(String urlOrPredicate, WaitForRequestOptions options, Runnable callback);
   /**
    * Waits for the matching request and returns it.
-   *
+   * <pre>{@code
+   * Request firstRequest = page.waitForRequest("http://example.com/resource");
+   * Object finalRequest = page.waitForRequest(
+   *   request -> "http://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {});
+   * return firstRequest.url();
+   * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
    * @param callback Callback that performs the action triggering the event.
@@ -3264,7 +3961,12 @@ public interface Page extends AutoCloseable {
   }
   /**
    * Waits for the matching request and returns it.
-   *
+   * <pre>{@code
+   * Request firstRequest = page.waitForRequest("http://example.com/resource");
+   * Object finalRequest = page.waitForRequest(
+   *   request -> "http://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {});
+   * return firstRequest.url();
+   * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
    * @param callback Callback that performs the action triggering the event.
@@ -3272,7 +3974,12 @@ public interface Page extends AutoCloseable {
   Request waitForRequest(Pattern urlOrPredicate, WaitForRequestOptions options, Runnable callback);
   /**
    * Waits for the matching request and returns it.
-   *
+   * <pre>{@code
+   * Request firstRequest = page.waitForRequest("http://example.com/resource");
+   * Object finalRequest = page.waitForRequest(
+   *   request -> "http://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {});
+   * return firstRequest.url();
+   * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
    * @param callback Callback that performs the action triggering the event.
@@ -3282,7 +3989,12 @@ public interface Page extends AutoCloseable {
   }
   /**
    * Waits for the matching request and returns it.
-   *
+   * <pre>{@code
+   * Request firstRequest = page.waitForRequest("http://example.com/resource");
+   * Object finalRequest = page.waitForRequest(
+   *   request -> "http://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {});
+   * return firstRequest.url();
+   * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
    * @param callback Callback that performs the action triggering the event.
@@ -3290,7 +4002,11 @@ public interface Page extends AutoCloseable {
   Request waitForRequest(Predicate<Request> urlOrPredicate, WaitForRequestOptions options, Runnable callback);
   /**
    * Returns the matched response.
-   *
+   * <pre>{@code
+   * Response firstResponse = page.waitForResponse("https://example.com/resource", () -> {});
+   * Response finalResponse = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {});
+   * return finalResponse.ok();
+   * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
    * @param callback Callback that performs the action triggering the event.
@@ -3300,7 +4016,11 @@ public interface Page extends AutoCloseable {
   }
   /**
    * Returns the matched response.
-   *
+   * <pre>{@code
+   * Response firstResponse = page.waitForResponse("https://example.com/resource", () -> {});
+   * Response finalResponse = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {});
+   * return finalResponse.ok();
+   * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
    * @param callback Callback that performs the action triggering the event.
@@ -3308,7 +4028,11 @@ public interface Page extends AutoCloseable {
   Response waitForResponse(String urlOrPredicate, WaitForResponseOptions options, Runnable callback);
   /**
    * Returns the matched response.
-   *
+   * <pre>{@code
+   * Response firstResponse = page.waitForResponse("https://example.com/resource", () -> {});
+   * Response finalResponse = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {});
+   * return finalResponse.ok();
+   * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
    * @param callback Callback that performs the action triggering the event.
@@ -3318,7 +4042,11 @@ public interface Page extends AutoCloseable {
   }
   /**
    * Returns the matched response.
-   *
+   * <pre>{@code
+   * Response firstResponse = page.waitForResponse("https://example.com/resource", () -> {});
+   * Response finalResponse = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {});
+   * return finalResponse.ok();
+   * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
    * @param callback Callback that performs the action triggering the event.
@@ -3326,7 +4054,11 @@ public interface Page extends AutoCloseable {
   Response waitForResponse(Pattern urlOrPredicate, WaitForResponseOptions options, Runnable callback);
   /**
    * Returns the matched response.
-   *
+   * <pre>{@code
+   * Response firstResponse = page.waitForResponse("https://example.com/resource", () -> {});
+   * Response finalResponse = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {});
+   * return finalResponse.ok();
+   * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
    * @param callback Callback that performs the action triggering the event.
@@ -3336,7 +4068,11 @@ public interface Page extends AutoCloseable {
   }
   /**
    * Returns the matched response.
-   *
+   * <pre>{@code
+   * Response firstResponse = page.waitForResponse("https://example.com/resource", () -> {});
+   * Response finalResponse = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {});
+   * return finalResponse.ok();
+   * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
    * @param callback Callback that performs the action triggering the event.
@@ -3351,7 +4087,25 @@ public interface Page extends AutoCloseable {
    * selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
    *
    * <p> This method works across navigations:
+   * <pre>{@code
+   * import com.microsoft.playwright.*;
    *
+   * public class Example {
+   *   public static void main(String[] args) {
+   *     try (Playwright playwright = Playwright.create()) {
+   *       BrowserType chromium = playwright.chromium();
+   *       Browser browser = chromium.launch();
+   *       Page page = browser.newPage();
+   *       for (String currentURL : Arrays.asList("https://google.com", "https://bbc.com")) {
+   *         page.navigate(currentURL);
+   *         ElementHandle element = page.waitForSelector("img");
+   *         System.out.println("Loaded image: " + element.getAttribute("src"));
+   *       }
+   *       browser.close();
+   *     }
+   *   }
+   * }
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    */
@@ -3367,7 +4121,25 @@ public interface Page extends AutoCloseable {
    * selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
    *
    * <p> This method works across navigations:
+   * <pre>{@code
+   * import com.microsoft.playwright.*;
    *
+   * public class Example {
+   *   public static void main(String[] args) {
+   *     try (Playwright playwright = Playwright.create()) {
+   *       BrowserType chromium = playwright.chromium();
+   *       Browser browser = chromium.launch();
+   *       Page page = browser.newPage();
+   *       for (String currentURL : Arrays.asList("https://google.com", "https://bbc.com")) {
+   *         page.navigate(currentURL);
+   *         ElementHandle element = page.waitForSelector("img");
+   *         System.out.println("Loaded image: " + element.getAttribute("src"));
+   *       }
+   *       browser.close();
+   *     }
+   *   }
+   * }
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    */
@@ -3377,6 +4149,10 @@ public interface Page extends AutoCloseable {
    *
    * <p> Note that {@code page.waitForTimeout()} should only be used for debugging. Tests using the timer in production are going to be
    * flaky. Use signals such as network events, selectors becoming visible and others instead.
+   * <pre>{@code
+   * // wait for 1 second
+   * page.waitForTimeout(1000);
+   * }</pre>
    *
    * <p> Shortcut for main frame's [{@code method: Frame.waitForTimeout}].
    *

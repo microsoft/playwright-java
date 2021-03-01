@@ -22,9 +22,22 @@ import java.util.*;
 import java.util.function.Consumer;
 
 /**
- * - extends: [EventEmitter]
+ * A Browser is created via [{@code method: BrowserType.launch}]. An example of using a {@code Browser} to create a {@code Page}:
+ * <pre>{@code
+ * import com.microsoft.playwright.*;
  *
- * <p> A Browser is created via [{@code method: BrowserType.launch}]. An example of using a {@code Browser} to create a {@code Page}:
+ * public class Example {
+ *   public static void main(String[] args) {
+ *     try (Playwright playwright = Playwright.create()) {
+ *       BrowserType firefox = playwright.firefox()
+ *       Browser browser = firefox.launch();
+ *       Page page = browser.newPage();
+ *       page.navigate('https://example.com');
+ *       browser.close();
+ *     }
+ *   }
+ * }
+ * }</pre>
  */
 public interface Browser extends AutoCloseable {
 
@@ -481,6 +494,12 @@ public interface Browser extends AutoCloseable {
   void close();
   /**
    * Returns an array of all open browser contexts. In a newly created browser, this will return zero browser contexts.
+   * <pre>{@code
+   * Browser browser = pw.webkit().launch();
+   * System.out.println(browser.contexts().size()); // prints "0"
+   * BrowserContext context = browser.newContext();
+   * System.out.println(browser.contexts().size()); // prints "1"
+   * }</pre>
    */
   List<BrowserContext> contexts();
   /**
@@ -489,12 +508,28 @@ public interface Browser extends AutoCloseable {
   boolean isConnected();
   /**
    * Creates a new browser context. It won't share cookies/cache with other browser contexts.
+   * <pre>{@code
+   * Browser browser = playwright.firefox().launch();  // Or 'chromium' or 'webkit'.
+   * // Create a new incognito browser context.
+   * BrowserContext context = browser.newContext();
+   * // Create a new page in a pristine context.
+   * Page page = context.newPage();
+   * page.navigate('https://example.com');
+   * }</pre>
    */
   default BrowserContext newContext() {
     return newContext(null);
   }
   /**
    * Creates a new browser context. It won't share cookies/cache with other browser contexts.
+   * <pre>{@code
+   * Browser browser = playwright.firefox().launch();  // Or 'chromium' or 'webkit'.
+   * // Create a new incognito browser context.
+   * BrowserContext context = browser.newContext();
+   * // Create a new page in a pristine context.
+   * Page page = context.newPage();
+   * page.navigate('https://example.com');
+   * }</pre>
    */
   BrowserContext newContext(NewContextOptions options);
   /**

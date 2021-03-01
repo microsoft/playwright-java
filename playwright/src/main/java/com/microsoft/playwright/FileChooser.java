@@ -22,6 +22,10 @@ import java.util.*;
 
 /**
  * {@code FileChooser} objects are dispatched by the page in the [{@code event: Page.fileChooser}] event.
+ * <pre>{@code
+ * FileChooser fileChooser = page.waitForFileChooser(() -> page.click("upload"));
+ * fileChooser.setFiles(Paths.get("myfile.pdf"));
+ * }</pre>
  */
 public interface FileChooser {
   class SetFilesOptions {

@@ -21,10 +21,25 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * - extends: {@code JSHandle}
- *
- * <p> ElementHandle represents an in-page DOM element. ElementHandles can be created with the [{@code method: Page.querySelector}]
+ * ElementHandle represents an in-page DOM element. ElementHandles can be created with the [{@code method: Page.querySelector}]
  * method.
+ * <pre>{@code
+ * import com.microsoft.playwright.*;
+ *
+ * public class Example {
+ *   public static void main(String[] args) {
+ *     try (Playwright playwright = Playwright.create()) {
+ *       BrowserType chromium = playwright.chromium();
+ *       Browser browser = chromium.launch();
+ *       Page page = browser.newPage();
+ *       page.navigate("https://example.com");
+ *       ElementHandle hrefElement = page.querySelector("a");
+ *       hrefElement.click();
+ *       // ...
+ *     }
+ *   }
+ * }
+ * }</pre>
  *
  * <p> ElementHandle prevents DOM element from garbage collection unless the handle is disposed with
  * [{@code method: JSHandle.dispose}]. ElementHandles are auto-disposed when their origin frame gets navigated.
@@ -539,12 +554,14 @@ public interface ElementHandle extends JSHandle {
   class WaitForSelectorOptions {
     /**
      * Defaults to {@code 'visible'}. Can be either:
-     * - {@code 'attached'} - wait for element to be present in DOM.
-     * - {@code 'detached'} - wait for element to not be present in DOM.
-     * - {@code 'visible'} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without
-     *   any content or with {@code display:none} has an empty bounding box and is not considered visible.
-     * - {@code 'hidden'} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}.
-     *   This is opposite to the {@code 'visible'} option.
+     * <ul>
+     * <li> {@code 'attached'} - wait for element to be present in DOM.</li>
+     * <li> {@code 'detached'} - wait for element to not be present in DOM.</li>
+     * <li> {@code 'visible'} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
+     * content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
+     * <li> {@code 'hidden'} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
+     * is opposite to the {@code 'visible'} option.</li>
+     * </ul>
      */
     public WaitForSelectorState state;
     /**
@@ -575,17 +592,23 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> Assuming the page is static, it is safe to use bounding box coordinates to perform input. For example, the following
    * snippet should click the center of the element.
+   * <pre>{@code
+   * BoundingBox box = elementHandle.boundingBox();
+   * page.mouse().click(box.x + box.width / 2, box.y + box.height / 2);
+   * }</pre>
    */
   BoundingBox boundingBox();
   /**
    * This method checks the element by performing the following steps:
-   * 1. Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already
-   *    checked, this method returns immediately.
-   * 1. Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * 1. Ensure that the element is now checked. If not, this method rejects.
+   * <ol>
+   * <li> Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already checked, this
+   * method returns immediately.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * <li> Ensure that the element is now checked. If not, this method rejects.</li>
+   * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
    *
@@ -597,13 +620,15 @@ public interface ElementHandle extends JSHandle {
   }
   /**
    * This method checks the element by performing the following steps:
-   * 1. Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already
-   *    checked, this method returns immediately.
-   * 1. Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * 1. Ensure that the element is now checked. If not, this method rejects.
+   * <ol>
+   * <li> Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already checked, this
+   * method returns immediately.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * <li> Ensure that the element is now checked. If not, this method rejects.</li>
+   * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
    *
@@ -613,10 +638,12 @@ public interface ElementHandle extends JSHandle {
   void check(CheckOptions options);
   /**
    * This method clicks the element by performing the following steps:
-   * 1. Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
    *
@@ -628,10 +655,12 @@ public interface ElementHandle extends JSHandle {
   }
   /**
    * This method clicks the element by performing the following steps:
-   * 1. Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
    *
@@ -645,11 +674,13 @@ public interface ElementHandle extends JSHandle {
   Frame contentFrame();
   /**
    * This method double clicks the element by performing the following steps:
-   * 1. Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
-   *    first click of the {@code dblclick()} triggers a navigation event, this method will reject.
+   * <ol>
+   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
+   * click of the {@code dblclick()} triggers a navigation event, this method will reject.</li>
+   * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
    *
@@ -663,11 +694,13 @@ public interface ElementHandle extends JSHandle {
   }
   /**
    * This method double clicks the element by performing the following steps:
-   * 1. Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
-   *    first click of the {@code dblclick()} triggers a navigation event, this method will reject.
+   * <ol>
+   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
+   * click of the {@code dblclick()} triggers a navigation event, this method will reject.</li>
+   * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
    *
@@ -681,21 +714,32 @@ public interface ElementHandle extends JSHandle {
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
    * is dispatched. This is equivalend to calling
    * [element.click()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click).
+   * <pre>{@code
+   * elementHandle.dispatchEvent("click");
+   * }</pre>
    *
    * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
    * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
-   * - [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)
-   * - [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)
-   * - [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)
-   * - [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)
-   * - [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)
-   * - [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)
-   * - [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)
+   * <ul>
+   * <li> [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)</li>
+   * <li> [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)</li>
+   * <li> [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)</li>
+   * <li> [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)</li>
+   * <li> [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)</li>
+   * <li> [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)</li>
+   * <li> [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)</li>
+   * </ul>
    *
    * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
-   *
+   * <pre>{@code
+   * // Note you can only create DataTransfer in Chromium and Firefox
+   * JSHandle dataTransfer = page.evaluateHandle("() => new DataTransfer()");
+   * Map<String, Object> arg = new HashMap<>();
+   * arg.put("dataTransfer", dataTransfer);
+   * elementHandle.dispatchEvent("dragstart", arg);
+   * }</pre>
    *
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    */
@@ -706,21 +750,32 @@ public interface ElementHandle extends JSHandle {
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
    * is dispatched. This is equivalend to calling
    * [element.click()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click).
+   * <pre>{@code
+   * elementHandle.dispatchEvent("click");
+   * }</pre>
    *
    * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
    * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
-   * - [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)
-   * - [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)
-   * - [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)
-   * - [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)
-   * - [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)
-   * - [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)
-   * - [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)
+   * <ul>
+   * <li> [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)</li>
+   * <li> [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)</li>
+   * <li> [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)</li>
+   * <li> [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)</li>
+   * <li> [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)</li>
+   * <li> [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)</li>
+   * <li> [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)</li>
+   * </ul>
    *
    * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
-   *
+   * <pre>{@code
+   * // Note you can only create DataTransfer in Chromium and Firefox
+   * JSHandle dataTransfer = page.evaluateHandle("() => new DataTransfer()");
+   * Map<String, Object> arg = new HashMap<>();
+   * arg.put("dataTransfer", dataTransfer);
+   * elementHandle.dispatchEvent("dragstart", arg);
+   * }</pre>
    *
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    * @param eventInit Optional event-specific initialization properties.
@@ -736,6 +791,12 @@ public interface ElementHandle extends JSHandle {
    * <p> If {@code expression} returns a [Promise], then [{@code method: ElementHandle.evalOnSelector}] would wait for the promise to resolve
    * and return its value.
    *
+   * <p> Examples:
+   * <pre>{@code
+   * ElementHandle tweetHandle = page.querySelector(".tweet");
+   * assertEquals("100", tweetHandle.evalOnSelector(".like", "node => node.innerText"));
+   * assertEquals("10", tweetHandle.evalOnSelector(".retweets", "node => node.innerText"));
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
@@ -754,6 +815,12 @@ public interface ElementHandle extends JSHandle {
    * <p> If {@code expression} returns a [Promise], then [{@code method: ElementHandle.evalOnSelector}] would wait for the promise to resolve
    * and return its value.
    *
+   * <p> Examples:
+   * <pre>{@code
+   * ElementHandle tweetHandle = page.querySelector(".tweet");
+   * assertEquals("100", tweetHandle.evalOnSelector(".like", "node => node.innerText"));
+   * assertEquals("10", tweetHandle.evalOnSelector(".retweets", "node => node.innerText"));
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
@@ -770,6 +837,11 @@ public interface ElementHandle extends JSHandle {
    * <p> If {@code expression} returns a [Promise], then [{@code method: ElementHandle.evalOnSelectorAll}] would wait for the promise to
    * resolve and return its value.
    *
+   * <p> Examples:
+   * <pre>{@code
+   * ElementHandle feedHandle = page.querySelector(".feed");
+   * assertEquals(Arrays.asList("Hello!", "Hi!"), feedHandle.evalOnSelectorAll(".tweet", "nodes => nodes.map(n => n.innerText)"));
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
@@ -787,6 +859,11 @@ public interface ElementHandle extends JSHandle {
    * <p> If {@code expression} returns a [Promise], then [{@code method: ElementHandle.evalOnSelectorAll}] would wait for the promise to
    * resolve and return its value.
    *
+   * <p> Examples:
+   * <pre>{@code
+   * ElementHandle feedHandle = page.querySelector(".feed");
+   * assertEquals(Arrays.asList("Hello!", "Hi!"), feedHandle.evalOnSelectorAll(".tweet", "nodes => nodes.map(n => n.innerText)"));
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
@@ -828,10 +905,12 @@ public interface ElementHandle extends JSHandle {
   String getAttribute(String name);
   /**
    * This method hovers over the element by performing the following steps:
-   * 1. Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
    *
@@ -843,10 +922,12 @@ public interface ElementHandle extends JSHandle {
   }
   /**
    * This method hovers over the element by performing the following steps:
-   * 1. Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
    *
@@ -995,7 +1076,14 @@ public interface ElementHandle extends JSHandle {
    * element, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * handle.selectOption("blue");
+   * // single selection matching the label
+   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * handle.selectOption(new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
@@ -1011,7 +1099,14 @@ public interface ElementHandle extends JSHandle {
    * element, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * handle.selectOption("blue");
+   * // single selection matching the label
+   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * handle.selectOption(new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
@@ -1025,7 +1120,14 @@ public interface ElementHandle extends JSHandle {
    * element, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * handle.selectOption("blue");
+   * // single selection matching the label
+   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * handle.selectOption(new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
@@ -1041,7 +1143,14 @@ public interface ElementHandle extends JSHandle {
    * element, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * handle.selectOption("blue");
+   * // single selection matching the label
+   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * handle.selectOption(new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
@@ -1055,7 +1164,14 @@ public interface ElementHandle extends JSHandle {
    * element, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * handle.selectOption("blue");
+   * // single selection matching the label
+   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * handle.selectOption(new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
@@ -1071,7 +1187,14 @@ public interface ElementHandle extends JSHandle {
    * element, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * handle.selectOption("blue");
+   * // single selection matching the label
+   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * handle.selectOption(new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
@@ -1085,7 +1208,14 @@ public interface ElementHandle extends JSHandle {
    * element, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * handle.selectOption("blue");
+   * // single selection matching the label
+   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * handle.selectOption(new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
@@ -1101,7 +1231,14 @@ public interface ElementHandle extends JSHandle {
    * element, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * handle.selectOption("blue");
+   * // single selection matching the label
+   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * handle.selectOption(new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
@@ -1115,7 +1252,14 @@ public interface ElementHandle extends JSHandle {
    * element, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * handle.selectOption("blue");
+   * // single selection matching the label
+   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * handle.selectOption(new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
@@ -1131,7 +1275,14 @@ public interface ElementHandle extends JSHandle {
    * element, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * handle.selectOption("blue");
+   * // single selection matching the label
+   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * handle.selectOption(new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
@@ -1145,7 +1296,14 @@ public interface ElementHandle extends JSHandle {
    * element, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * handle.selectOption("blue");
+   * // single selection matching the label
+   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * handle.selectOption(new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
@@ -1161,7 +1319,14 @@ public interface ElementHandle extends JSHandle {
    * element, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * handle.selectOption("blue");
+   * // single selection matching the label
+   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * handle.selectOption(new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
@@ -1254,10 +1419,12 @@ public interface ElementHandle extends JSHandle {
   void setInputFiles(FilePayload[] files, SetInputFilesOptions options);
   /**
    * This method taps the element by performing the following steps:
-   * 1. Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
    *
@@ -1271,10 +1438,12 @@ public interface ElementHandle extends JSHandle {
   }
   /**
    * This method taps the element by performing the following steps:
-   * 1. Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
    *
@@ -1292,7 +1461,17 @@ public interface ElementHandle extends JSHandle {
    * Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: ElementHandle.press}].
+   * <pre>{@code
+   * elementHandle.type("Hello"); // Types instantly
+   * elementHandle.type("World", new ElementHandle.TypeOptions().withDelay(100)); // Types slower, like a user
+   * }</pre>
    *
+   * <p> An example of typing into a text field and then submitting the form:
+   * <pre>{@code
+   * ElementHandle elementHandle = page.querySelector("input");
+   * elementHandle.type("some text");
+   * elementHandle.press("Enter");
+   * }</pre>
    *
    * @param text A text to type into a focused element.
    */
@@ -1303,20 +1482,32 @@ public interface ElementHandle extends JSHandle {
    * Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: ElementHandle.press}].
+   * <pre>{@code
+   * elementHandle.type("Hello"); // Types instantly
+   * elementHandle.type("World", new ElementHandle.TypeOptions().withDelay(100)); // Types slower, like a user
+   * }</pre>
    *
+   * <p> An example of typing into a text field and then submitting the form:
+   * <pre>{@code
+   * ElementHandle elementHandle = page.querySelector("input");
+   * elementHandle.type("some text");
+   * elementHandle.press("Enter");
+   * }</pre>
    *
    * @param text A text to type into a focused element.
    */
   void type(String text, TypeOptions options);
   /**
    * This method checks the element by performing the following steps:
-   * 1. Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already
-   *    unchecked, this method returns immediately.
-   * 1. Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * 1. Ensure that the element is now unchecked. If not, this method rejects.
+   * <ol>
+   * <li> Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already unchecked,
+   * this method returns immediately.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * <li> Ensure that the element is now unchecked. If not, this method rejects.</li>
+   * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
    *
@@ -1328,13 +1519,15 @@ public interface ElementHandle extends JSHandle {
   }
   /**
    * This method checks the element by performing the following steps:
-   * 1. Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already
-   *    unchecked, this method returns immediately.
-   * 1. Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * 1. Ensure that the element is now unchecked. If not, this method rejects.
+   * <ol>
+   * <li> Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already unchecked,
+   * this method returns immediately.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the element, unless {@code force} option is set.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * <li> Ensure that the element is now unchecked. If not, this method rejects.</li>
+   * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
    *
@@ -1347,14 +1540,15 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> Depending on the {@code state} parameter, this method waits for one of the [actionability](./actionability.md) checks to pass.
    * This method throws when the element is detached while waiting, unless waiting for the {@code "hidden"} state.
-   * - {@code "visible"} Wait until the element is [visible](./actionability.md#visible).
-   * - {@code "hidden"} Wait until the element is [not visible](./actionability.md#visible) or
-   *   [not attached](./actionability.md#attached). Note that waiting for hidden does not throw when the element detaches.
-   * - {@code "stable"} Wait until the element is both [visible](./actionability.md#visible) and
-   *   [stable](./actionability.md#stable).
-   * - {@code "enabled"} Wait until the element is [enabled](./actionability.md#enabled).
-   * - {@code "disabled"} Wait until the element is [not enabled](./actionability.md#enabled).
-   * - {@code "editable"} Wait until the element is [editable](./actionability.md#editable).
+   * <ul>
+   * <li> {@code "visible"} Wait until the element is [visible](./actionability.md#visible).</li>
+   * <li> {@code "hidden"} Wait until the element is [not visible](./actionability.md#visible) or
+   * [not attached](./actionability.md#attached). Note that waiting for hidden does not throw when the element detaches.</li>
+   * <li> {@code "stable"} Wait until the element is both [visible](./actionability.md#visible) and [stable](./actionability.md#stable).</li>
+   * <li> {@code "enabled"} Wait until the element is [enabled](./actionability.md#enabled).</li>
+   * <li> {@code "disabled"} Wait until the element is [not enabled](./actionability.md#enabled).</li>
+   * <li> {@code "editable"} Wait until the element is [editable](./actionability.md#editable).</li>
+   * </ul>
    *
    * <p> If the element does not satisfy the condition for the {@code timeout} milliseconds, this method will throw.
    *
@@ -1368,14 +1562,15 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> Depending on the {@code state} parameter, this method waits for one of the [actionability](./actionability.md) checks to pass.
    * This method throws when the element is detached while waiting, unless waiting for the {@code "hidden"} state.
-   * - {@code "visible"} Wait until the element is [visible](./actionability.md#visible).
-   * - {@code "hidden"} Wait until the element is [not visible](./actionability.md#visible) or
-   *   [not attached](./actionability.md#attached). Note that waiting for hidden does not throw when the element detaches.
-   * - {@code "stable"} Wait until the element is both [visible](./actionability.md#visible) and
-   *   [stable](./actionability.md#stable).
-   * - {@code "enabled"} Wait until the element is [enabled](./actionability.md#enabled).
-   * - {@code "disabled"} Wait until the element is [not enabled](./actionability.md#enabled).
-   * - {@code "editable"} Wait until the element is [editable](./actionability.md#editable).
+   * <ul>
+   * <li> {@code "visible"} Wait until the element is [visible](./actionability.md#visible).</li>
+   * <li> {@code "hidden"} Wait until the element is [not visible](./actionability.md#visible) or
+   * [not attached](./actionability.md#attached). Note that waiting for hidden does not throw when the element detaches.</li>
+   * <li> {@code "stable"} Wait until the element is both [visible](./actionability.md#visible) and [stable](./actionability.md#stable).</li>
+   * <li> {@code "enabled"} Wait until the element is [enabled](./actionability.md#enabled).</li>
+   * <li> {@code "disabled"} Wait until the element is [not enabled](./actionability.md#enabled).</li>
+   * <li> {@code "editable"} Wait until the element is [editable](./actionability.md#editable).</li>
+   * </ul>
    *
    * <p> If the element does not satisfy the condition for the {@code timeout} milliseconds, this method will throw.
    *
@@ -1390,6 +1585,13 @@ public interface ElementHandle extends JSHandle {
    * become visible/hidden). If at the moment of calling the method {@code selector} already satisfies the condition, the method
    * will return immediately. If the selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will
    * throw.
+   * <pre>{@code
+   * page.setContent("<div><span></span></div>");
+   * ElementHandle div = page.querySelector("div");
+   * // Waiting for the "span" selector relative to the div.
+   * ElementHandle span = div.waitForSelector("span", new ElementHandle.WaitForSelectorOptions()
+   *   .withState(WaitForSelectorState.ATTACHED));
+   * }</pre>
    *
    * <p> <strong>NOTE:</strong> This method does not work across navigations, use [{@code method: Page.waitForSelector}] instead.
    *
@@ -1406,6 +1608,13 @@ public interface ElementHandle extends JSHandle {
    * become visible/hidden). If at the moment of calling the method {@code selector} already satisfies the condition, the method
    * will return immediately. If the selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will
    * throw.
+   * <pre>{@code
+   * page.setContent("<div><span></span></div>");
+   * ElementHandle div = page.querySelector("div");
+   * // Waiting for the "span" selector relative to the div.
+   * ElementHandle span = div.waitForSelector("span", new ElementHandle.WaitForSelectorOptions()
+   *   .withState(WaitForSelectorState.ATTACHED));
+   * }</pre>
    *
    * <p> <strong>NOTE:</strong> This method does not work across navigations, use [{@code method: Page.waitForSelector}] instead.
    *

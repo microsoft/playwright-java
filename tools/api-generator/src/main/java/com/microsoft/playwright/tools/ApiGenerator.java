@@ -24,6 +24,9 @@ import com.google.gson.JsonObject;
 import java.io.*;
 import java.nio.file.FileSystems;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.reverse;
@@ -76,33 +79,120 @@ abstract class Element {
     String[] lines = text.split("\\n");
     for (String line : lines) {
       output.add((offset + " *" + (line.isEmpty() ? "" : " ") + line)
-        .replace("*/", "*\\/")
-        .replace("NOTE: ", "<strong>NOTE:</strong> ")
-        .replaceAll("`([^`]+)`", "{@code $1}"));
+        .replace("*/", "*\\/"));
     }
     output.add(offset + " */");
   }
 
-  String formattedComment() {
-    return comment()
-      // Remove any code snippets between ``` and ```.
-      .replaceAll("\\n```((?<!`)`(?!`)|[^`])+```\\n", "")
-      .replaceAll("```((?<!`)`(?!`)|[^`])+```\\n", "")
-      .replaceAll("\\nAn example of[^\\n]+\\n", "")
-      .replaceAll("\\nThis example [^\\n]+\\n", "")
-      .replaceAll("\\nExamples:\\n", "")
-      .replaceAll("\\nSee ChromiumBrowser[^\\n]+", "\n")
-      // > **NOTE** ... => **NOTE** ...
-      .replaceAll("\\n> ", "\n")
-      .replaceAll("\\n\\n", "\n\n<p> ");
-  }
-
   String comment() {
     JsonObject json = jsonElement.getAsJsonObject();
-    if (!json.has("comment")) {
+    if (!json.has("spec")) {
       return "";
     }
-    return json.get("comment").getAsString();
+    return formatSpec(json.getAsJsonArray("spec"));
+  }
+
+  private static String formatSpec(JsonArray spec) {
+    List<String> out = new ArrayList<>();
+    String currentItemList = null;
+    for (JsonElement item : spec) {
+      JsonObject node = item.getAsJsonObject();
+      String type = node.get("type").getAsString();
+      if ("code".equals(type)) {
+        if (!node.get("codeLang").getAsString().contains("java")) {
+          continue;
+        }
+        out.add("<pre>{@code");
+        for (JsonElement line : node.getAsJsonArray("lines")) {
+          out.add(line.getAsString());
+        }
+        out.add("}</pre>");
+      } else if ("li".equals(type)) {
+        String text = node.get("text").getAsString();
+        if (text.startsWith("extends: ")) {
+          continue;
+        }
+        if (currentItemList == null) {
+          String liType = node.get("liType").getAsString();
+          if ("ordinal".equals(liType)) {
+            currentItemList = "ol";
+            out.add("<ol>");
+          } else {
+            currentItemList = "ul";
+            out.add("<ul>");
+          }
+        }
+        out.add("<li> " + beautify(text) + "</li>");
+      } else {
+        if (currentItemList != null) {
+          out.add("</" + currentItemList + ">");
+          currentItemList = null;
+        }
+        String paragraph = node.get("text").getAsString();
+        paragraph = beautify(paragraph);
+        if ("note".equals(type)) {
+          paragraph = "<strong>NOTE:</strong> " + paragraph;
+        }
+        if (!out.isEmpty())
+          paragraph = "\n<p> " + paragraph;
+        out.add(paragraph);
+      }
+    }
+    if (currentItemList != null) {
+      out.add("</" + currentItemList + ">");
+      currentItemList = null;
+    }
+    return String.join("\n", out);
+  }
+
+  private static String beautify(String paragraph) {
+    return wrapText(paragraph, 120, "")
+      .replaceAll("`([^`]+)`", "{@code $1}");
+  }
+
+  private static List<String> tokenizeNoBreakLinks(String text) {
+     List<String> links = new ArrayList<>();
+    // Don't wrap simple links with spaces.
+    Matcher mather = Pattern.compile("\\[[^\\]]+\\]").matcher(text);
+    String sanitized = "";
+    int start = 0;
+    while (mather.find()) {
+      sanitized += text.substring(start, mather.start());
+      sanitized += "[" + links.size() + "]";
+      start = mather.end();
+      links.add(mather.group());
+    }
+    sanitized += text.substring(start, text.length());
+    List<String> tokens = Arrays.asList(sanitized.split(" "));
+    for (int i = 0; i < links.size(); i++) {
+      int index = i;
+      tokens = tokens.stream().map(s -> s.replace("[" + index + "]", links.get(index))).collect(Collectors.toList());
+    }
+    return tokens;
+  }
+
+  private static String wrapText(String text, int maxColumns, String prefix) {
+    if (maxColumns == 0)
+      return prefix + text;
+    if (text.trim().startsWith("|"))
+      return prefix + text;
+    String indent = prefix;
+    List<String> lines = new ArrayList<>();
+    maxColumns -= indent.length();
+    List<String> words = tokenizeNoBreakLinks(text);
+    String line = "";
+    for (String word : words) {
+      if (!line.isEmpty() && line.length() + word.length() < maxColumns) {
+        line += " " + word;
+      } else {
+        if (!line.isEmpty())
+          lines.add(line);
+        line = (!lines.isEmpty() ? indent : prefix) + word;
+      }
+    }
+    if (!line.isEmpty())
+      lines.add(line);
+    return String.join("\n", lines);
   }
 }
 
@@ -547,7 +637,7 @@ class Method extends Element {
 
   private void writeJavadoc(List<Param> paramList, List<String> output, String offset) {
     List<String> sections = new ArrayList<>();
-    sections.add(formattedComment());
+    sections.add(comment());
     boolean hasBlankLine = false;
     if (!paramList.isEmpty()) {
       for (Param p : paramList) {
@@ -759,7 +849,7 @@ class Interface extends TypeDefinition {
     }
     String implementsClause = superInterfaces.isEmpty() ? "" : " extends " + String.join(", ", superInterfaces);
 
-    writeJavadoc(output, offset, formattedComment());
+    writeJavadoc(output, offset, comment());
     output.add("public interface " + jsonName + implementsClause + " {");
     offset = "  ";
     writeEvents(output, offset);

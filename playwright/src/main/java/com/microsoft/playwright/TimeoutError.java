@@ -19,9 +19,7 @@ package com.microsoft.playwright;
 import java.util.*;
 
 /**
- * - extends: [Error]
- *
- * <p> TimeoutError is emitted whenever certain operations are terminated due to timeout, e.g. [{@code method: Page.waitForSelector}]
+ * TimeoutError is emitted whenever certain operations are terminated due to timeout, e.g. [{@code method: Page.waitForSelector}]
  * or [{@code method: BrowserType.launch}].
  */
 public interface TimeoutError {

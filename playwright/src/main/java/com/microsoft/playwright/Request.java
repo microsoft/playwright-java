@@ -21,15 +21,17 @@ import java.util.*;
 
 /**
  * Whenever the page sends a request for a network resource the following sequence of events are emitted by {@code Page}:
- * - [{@code event: Page.request}] emitted when the request is issued by the page.
- * - [{@code event: Page.response}] emitted when/if the response status and headers are received for the request.
- * - [{@code event: Page.requestFinished}] emitted when the response body is downloaded and the request is complete.
+ * <ul>
+ * <li> [{@code event: Page.request}] emitted when the request is issued by the page.</li>
+ * <li> [{@code event: Page.response}] emitted when/if the response status and headers are received for the request.</li>
+ * <li> [{@code event: Page.requestFinished}] emitted when the response body is downloaded and the request is complete.</li>
+ * </ul>
  *
  * <p> If request fails at some point, then instead of {@code 'requestfinished'} event (and possibly instead of 'response' event),
  * the  [{@code event: Page.requestFailed}] event is emitted.
  *
- * <p> <strong>NOTE:</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will
- * complete with {@code 'requestfinished'} event.
+ * <p> <strong>NOTE:</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will complete
+ * with {@code 'requestfinished'} event.
  *
  * <p> If request gets a 'redirect' response, the request is successfully finished with the 'requestfinished' event, and a new
  * request is  issued to a redirected url.
@@ -39,6 +41,11 @@ public interface Request {
    * The method returns {@code null} unless this request has failed, as reported by {@code requestfailed} event.
    *
    * <p> Example of logging of all the failed requests:
+   * <pre>{@code
+   * page.onRequestFailed(request -> {
+   *   System.out.println(request.url() + " " + request.failure());
+   * });
+   * }</pre>
    */
   String failure();
   /**
@@ -73,14 +80,25 @@ public interface Request {
    * construct the whole redirect chain by repeatedly calling {@code redirectedFrom()}.
    *
    * <p> For example, if the website {@code http://example.com} redirects to {@code https://example.com}:
+   * <pre>{@code
+   * Response response = page.navigate("http://example.com");
+   * System.out.println(response.request().redirectedFrom().url()); // "http://example.com"
+   * }</pre>
    *
    * <p> If the website {@code https://google.com} has no redirects:
+   * <pre>{@code
+   * Response response = page.navigate("https://google.com");
+   * System.out.println(response.request().redirectedFrom()); // null
+   * }</pre>
    */
   Request redirectedFrom();
   /**
    * New request issued by the browser if the server responded with redirect.
    *
    * <p> This method is the opposite of [{@code method: Request.redirectedFrom}]:
+   * <pre>{@code
+   * System.out.println(request.redirectedFrom().redirectedTo() == request); // true
+   * }</pre>
    */
   Request redirectedTo();
   /**
@@ -97,6 +115,13 @@ public interface Request {
    * Returns resource timing information for given request. Most of the timing values become available upon the response,
    * {@code responseEnd} becomes available when request finishes. Find more information at
    * [Resource Timing API](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming).
+   * <pre>{@code
+   * page.onRequestFinished(request -> {
+   *   Timing timing = request.timing();
+   *   System.out.println(timing.responseEnd - timing.startTime);
+   * });
+   * page.navigate("http://example.com");
+   * }</pre>
    */
   Timing timing();
   /**

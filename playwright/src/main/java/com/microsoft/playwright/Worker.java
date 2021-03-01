@@ -23,6 +23,15 @@ import java.util.function.Consumer;
  * The Worker class represents a [WebWorker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API). {@code worker}
  * event is emitted on the page object to signal a worker creation. {@code close} event is emitted on the worker object when the
  * worker is gone.
+ * <pre>{@code
+ * page.onWorker(worker -> {
+ *   System.out.println("Worker created: " + worker.url());
+ *   worker.onClose(worker1 -> System.out.println("Worker destroyed: " + worker1.url()));
+ * });
+ * System.out.println("Current workers:");
+ * for (Worker worker : page.workers())
+ *   System.out.println("  " + worker.url());
+ * }</pre>
  */
 public interface Worker {
 
