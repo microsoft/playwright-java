@@ -87,6 +87,7 @@ abstract class Element {
     return comment()
       // Remove any code snippets between ``` and ```.
       .replaceAll("\\n```((?<!`)`(?!`)|[^`])+```\\n", "")
+      .replaceAll("```((?<!`)`(?!`)|[^`])+```\\n", "")
       .replaceAll("\\nAn example of[^\\n]+\\n", "")
       .replaceAll("\\nThis example [^\\n]+\\n", "")
       .replaceAll("\\nExamples:\\n", "")
@@ -453,35 +454,33 @@ class Method extends Element {
   private static Map<String, String[]> customSignature = new HashMap<>();
   static {
     customSignature.put("Page.setViewportSize", new String[]{"void setViewportSize(int width, int height);"});
+    customSignature.put("Playwright.create", new String[]{
+      "static Playwright create() {",
+      "  return PlaywrightImpl.create();",
+      "}"
+    });
   }
 
   Method(TypeDefinition parent, JsonObject jsonElement) {
     super(parent, jsonElement);
-    if (customSignature.containsKey(jsonPath) && customSignature.get(jsonPath).length == 0) {
-      returnType = null;
-    } else {
-      returnType = new TypeRef(this, jsonElement.get("type"));
-      if (jsonElement.has("args")) {
-        for (JsonElement arg : jsonElement.getAsJsonArray("args")) {
-          JsonObject paramObj = arg.getAsJsonObject();
-          if (paramObj.get("name").getAsString().equals("options") &&
-            paramObj.getAsJsonObject("type").getAsJsonArray("properties").size() == 0) {
-            continue;
-          }
-          params.add(new Param(this, arg.getAsJsonObject()));
+    returnType = new TypeRef(this, jsonElement.get("type"));
+    if (jsonElement.has("args")) {
+      for (JsonElement arg : jsonElement.getAsJsonArray("args")) {
+        JsonObject paramObj = arg.getAsJsonObject();
+        if (paramObj.get("name").getAsString().equals("options") &&
+          paramObj.getAsJsonObject("type").getAsJsonArray("properties").size() == 0) {
+          continue;
         }
+        params.add(new Param(this, arg.getAsJsonObject()));
       }
     }
   }
 
   void writeTo(List<String> output, String offset) {
     if (customSignature.containsKey(jsonPath)) {
-      String[] signatures = customSignature.get(jsonPath);
-      for (int i = 0; i < signatures.length; i++) {
-        if (i == signatures.length - 1) {
-          writeJavadoc(params, output, offset);
-        }
-        output.add(offset + signatures[i]);
+      writeJavadoc(params, output, offset);
+      for (String line : customSignature.get(jsonPath)) {
+        output.add(offset + line);
       }
       return;
     }
