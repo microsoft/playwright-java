@@ -21,6 +21,9 @@ import java.util.*;
 
 /**
  * When browser context is created with the {@code videosPath} option, each page has a video object associated with it.
+ * <pre>{@code
+ * System.out.println(page.video().path());
+ * }</pre>
  */
 public interface Video {
   /**

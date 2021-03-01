@@ -23,6 +23,22 @@ import java.util.*;
 /**
  * BrowserType provides methods to launch a specific browser instance or connect to an existing one. The following is a
  * typical example of using Playwright to drive automation:
+ * <pre>{@code
+ * import com.microsoft.playwright.*;
+ *
+ * public class Example {
+ *   public static void main(String[] args) {
+ *     try (Playwright playwright = Playwright.create()) {
+ *       BrowserType chromium = playwright.chromium();
+ *       Browser browser = chromium.launch();
+ *       Page page = browser.newPage();
+ *       page.navigate("https://example.com");
+ *       // other actions...
+ *       browser.close();
+ *     }
+ *   }
+ * }
+ * }</pre>
  */
 public interface BrowserType {
   class LaunchOptions {
@@ -502,16 +518,25 @@ public interface BrowserType {
    * Returns the browser instance.
    *
    * <p> You can use {@code ignoreDefaultArgs} to filter out {@code --mute-audio} from default arguments:
+   * <pre>{@code
+   * // Or "firefox" or "webkit".
+   * Browser browser = chromium.launch(new BrowserType.LaunchOptions()
+   *   .withIgnoreDefaultArgs(Arrays.asList("--mute-audio")));
+   * }</pre>
    *
-   * <p> **Chromium-only** Playwright can also be used to control the Google Chrome or Microsoft Edge browsers, but it works
+   * <p> > **Chromium-only** Playwright can also be used to control the Google Chrome or Microsoft Edge browsers, but it works
    * best with the version of Chromium it is bundled with. There is no guarantee it will work with any other version. Use
    * {@code executablePath} option with extreme caution.
-   * >
-   * If Google Chrome (rather than Chromium) is preferred, a
+   *
+   * <p> >
+   *
+   * <p> > If Google Chrome (rather than Chromium) is preferred, a
    * [Chrome Canary](https://www.google.com/chrome/browser/canary.html) or
    * [Dev Channel](https://www.chromium.org/getting-involved/dev-channel) build is suggested.
-   * >
-   * Stock browsers like Google Chrome and Microsoft Edge are suitable for tests that require proprietary media codecs for
+   *
+   * <p> >
+   *
+   * <p> > Stock browsers like Google Chrome and Microsoft Edge are suitable for tests that require proprietary media codecs for
    * video playback. See
    * [this article](https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/) for other
    * differences between Chromium and Chrome.
@@ -525,16 +550,25 @@ public interface BrowserType {
    * Returns the browser instance.
    *
    * <p> You can use {@code ignoreDefaultArgs} to filter out {@code --mute-audio} from default arguments:
+   * <pre>{@code
+   * // Or "firefox" or "webkit".
+   * Browser browser = chromium.launch(new BrowserType.LaunchOptions()
+   *   .withIgnoreDefaultArgs(Arrays.asList("--mute-audio")));
+   * }</pre>
    *
-   * <p> **Chromium-only** Playwright can also be used to control the Google Chrome or Microsoft Edge browsers, but it works
+   * <p> > **Chromium-only** Playwright can also be used to control the Google Chrome or Microsoft Edge browsers, but it works
    * best with the version of Chromium it is bundled with. There is no guarantee it will work with any other version. Use
    * {@code executablePath} option with extreme caution.
-   * >
-   * If Google Chrome (rather than Chromium) is preferred, a
+   *
+   * <p> >
+   *
+   * <p> > If Google Chrome (rather than Chromium) is preferred, a
    * [Chrome Canary](https://www.google.com/chrome/browser/canary.html) or
    * [Dev Channel](https://www.chromium.org/getting-involved/dev-channel) build is suggested.
-   * >
-   * Stock browsers like Google Chrome and Microsoft Edge are suitable for tests that require proprietary media codecs for
+   *
+   * <p> >
+   *
+   * <p> > Stock browsers like Google Chrome and Microsoft Edge are suitable for tests that require proprietary media codecs for
    * video playback. See
    * [this article](https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/) for other
    * differences between Chromium and Chrome.

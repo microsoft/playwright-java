@@ -24,15 +24,22 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
- * - extends: [EventEmitter]
- *
- * <p> BrowserContexts provide a way to operate multiple independent browser sessions.
+ * BrowserContexts provide a way to operate multiple independent browser sessions.
  *
  * <p> If a page opens another page, e.g. with a {@code window.open} call, the popup will belong to the parent page's browser
  * context.
  *
  * <p> Playwright allows creation of "incognito" browser contexts with {@code browser.newContext()} method. "Incognito" browser
  * contexts don't write any browsing data to disk.
+ * <pre>{@code
+ * // Create a new incognito browser context
+ * BrowserContext context = browser.newContext();
+ * // Create a new page inside context.
+ * Page page = context.newPage();
+ * page.navigate("https://example.com");
+ * // Dispose context once it"s no longer needed.
+ * context.close();
+ * }</pre>
  */
 public interface BrowserContext extends AutoCloseable {
 
@@ -100,16 +107,27 @@ public interface BrowserContext extends AutoCloseable {
   /**
    * Adds cookies into this browser context. All pages within this context will have these cookies installed. Cookies can be
    * obtained via [{@code method: BrowserContext.cookies}].
+   * <pre>{@code
+   * browserContext.addCookies(Arrays.asList(cookieObject1, cookieObject2));
+   * }</pre>
    */
   void addCookies(List<Cookie> cookies);
   /**
    * Adds a script which would be evaluated in one of the following scenarios:
-   * - Whenever a page is created in the browser context or is navigated.
-   * - Whenever a child frame is attached or navigated in any page in the browser context. In this case, the script is
-   *   evaluated in the context of the newly attached frame.
+   * <ul>
+   * <li> Whenever a page is created in the browser context or is navigated.</li>
+   * <li> Whenever a child frame is attached or navigated in any page in the browser context. In this case, the script is
+   * evaluated in the context of the newly attached frame.</li>
+   * </ul>
    *
    * <p> The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend
    * the JavaScript environment, e.g. to seed {@code Math.random}.
+   *
+   * <p> An example of overriding {@code Math.random} before the page loads:
+   * <pre>{@code
+   * // In your playwright script, assuming the preload.js file is in same directory.
+   * browserContext.addInitScript(Paths.get("preload.js"));
+   * }</pre>
    *
    * <p> <strong>NOTE:</strong> The order of evaluation of multiple scripts installed via [{@code method: BrowserContext.addInitScript}] and
    * [{@code method: Page.addInitScript}] is not defined.
@@ -119,12 +137,20 @@ public interface BrowserContext extends AutoCloseable {
   void addInitScript(String script);
   /**
    * Adds a script which would be evaluated in one of the following scenarios:
-   * - Whenever a page is created in the browser context or is navigated.
-   * - Whenever a child frame is attached or navigated in any page in the browser context. In this case, the script is
-   *   evaluated in the context of the newly attached frame.
+   * <ul>
+   * <li> Whenever a page is created in the browser context or is navigated.</li>
+   * <li> Whenever a child frame is attached or navigated in any page in the browser context. In this case, the script is
+   * evaluated in the context of the newly attached frame.</li>
+   * </ul>
    *
    * <p> The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend
    * the JavaScript environment, e.g. to seed {@code Math.random}.
+   *
+   * <p> An example of overriding {@code Math.random} before the page loads:
+   * <pre>{@code
+   * // In your playwright script, assuming the preload.js file is in same directory.
+   * browserContext.addInitScript(Paths.get("preload.js"));
+   * }</pre>
    *
    * <p> <strong>NOTE:</strong> The order of evaluation of multiple scripts installed via [{@code method: BrowserContext.addInitScript}] and
    * [{@code method: Page.addInitScript}] is not defined.
@@ -142,6 +168,12 @@ public interface BrowserContext extends AutoCloseable {
   void clearCookies();
   /**
    * Clears all permission overrides for the browser context.
+   * <pre>{@code
+   * BrowserContext context = browser.newContext();
+   * context.grantPermissions(Arrays.asList("clipboard-read"));
+   * // do stuff ..
+   * context.clearPermissions();
+   * }</pre>
    */
   void clearPermissions();
   /**
@@ -176,11 +208,50 @@ public interface BrowserContext extends AutoCloseable {
    * called, the function executes {@code callback} and returns a [Promise] which resolves to the return value of {@code callback}. If
    * the {@code callback} returns a [Promise], it will be awaited.
    *
-   * <p> The first argument of the {@code callback} function contains information about the caller: `{ browserContext: BrowserContext,
-   * page: Page, frame: Frame }`.
+   * <p> The first argument of the {@code callback} function contains information about the caller: {@code { browserContext: BrowserContext,
+   * page: Page, frame: Frame }}.
    *
    * <p> See [{@code method: Page.exposeBinding}] for page-only version.
    *
+   * <p> An example of exposing page URL to all frames in all pages in the context:
+   * <pre>{@code
+   * import com.microsoft.playwright.*;
+   *
+   * public class Example {
+   *   public static void main(String[] args) {
+   *     try (Playwright playwright = Playwright.create()) {
+   *       BrowserType webkit = playwright.webkit()
+   *       Browser browser = webkit.launch(new BrowserType.LaunchOptions().withHeadless(false));
+   *       BrowserContext context = browser.newContext();
+   *       context.exposeBinding("pageURL", (source, args) -> source.page().url());
+   *       Page page = context.newPage();
+   *       page.setContent("<script>\n" +
+   *         "  async function onClick() {\n" +
+   *         "    document.querySelector('div').textContent = await window.pageURL();\n" +
+   *         "  }\n" +
+   *         "</script>\n" +
+   *         "<button onclick=\"onClick()\">Click me</button>\n" +
+   *         "<div></div>");
+   *       page.click("button");
+   *     }
+   *   }
+   * }
+   * }</pre>
+   *
+   * <p> An example of passing an element handle:
+   * <pre>{@code
+   * context.exposeBinding("clicked", (source, args) -> {
+   *   ElementHandle element = (ElementHandle) args[0];
+   *   System.out.println(element.textContent());
+   *   return null;
+   * }, new BrowserContext.ExposeBindingOptions().withHandle(true));
+   * page.setContent("" +
+   *   "<script>\n" +
+   *   "  document.addEventListener('click', event => window.clicked(event.target));\n" +
+   *   "</script>\n" +
+   *   "<div>Click me</div>\n" +
+   *   "<div>Or click me</div>\n");
+   * }</pre>
    *
    * @param name Name of the function on the window object.
    * @param callback Callback function that will be called in the Playwright's context.
@@ -193,11 +264,50 @@ public interface BrowserContext extends AutoCloseable {
    * called, the function executes {@code callback} and returns a [Promise] which resolves to the return value of {@code callback}. If
    * the {@code callback} returns a [Promise], it will be awaited.
    *
-   * <p> The first argument of the {@code callback} function contains information about the caller: `{ browserContext: BrowserContext,
-   * page: Page, frame: Frame }`.
+   * <p> The first argument of the {@code callback} function contains information about the caller: {@code { browserContext: BrowserContext,
+   * page: Page, frame: Frame }}.
    *
    * <p> See [{@code method: Page.exposeBinding}] for page-only version.
    *
+   * <p> An example of exposing page URL to all frames in all pages in the context:
+   * <pre>{@code
+   * import com.microsoft.playwright.*;
+   *
+   * public class Example {
+   *   public static void main(String[] args) {
+   *     try (Playwright playwright = Playwright.create()) {
+   *       BrowserType webkit = playwright.webkit()
+   *       Browser browser = webkit.launch(new BrowserType.LaunchOptions().withHeadless(false));
+   *       BrowserContext context = browser.newContext();
+   *       context.exposeBinding("pageURL", (source, args) -> source.page().url());
+   *       Page page = context.newPage();
+   *       page.setContent("<script>\n" +
+   *         "  async function onClick() {\n" +
+   *         "    document.querySelector('div').textContent = await window.pageURL();\n" +
+   *         "  }\n" +
+   *         "</script>\n" +
+   *         "<button onclick=\"onClick()\">Click me</button>\n" +
+   *         "<div></div>");
+   *       page.click("button");
+   *     }
+   *   }
+   * }
+   * }</pre>
+   *
+   * <p> An example of passing an element handle:
+   * <pre>{@code
+   * context.exposeBinding("clicked", (source, args) -> {
+   *   ElementHandle element = (ElementHandle) args[0];
+   *   System.out.println(element.textContent());
+   *   return null;
+   * }, new BrowserContext.ExposeBindingOptions().withHandle(true));
+   * page.setContent("" +
+   *   "<script>\n" +
+   *   "  document.addEventListener('click', event => window.clicked(event.target));\n" +
+   *   "</script>\n" +
+   *   "<div>Click me</div>\n" +
+   *   "<div>Or click me</div>\n");
+   * }</pre>
    *
    * @param name Name of the function on the window object.
    * @param callback Callback function that will be called in the Playwright's context.
@@ -211,6 +321,44 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> See [{@code method: Page.exposeFunction}] for page-only version.
    *
+   * <p> An example of adding an {@code md5} function to all pages in the context:
+   * <pre>{@code
+   * import com.microsoft.playwright.*;
+   *
+   * import java.nio.charset.StandardCharsets;
+   * import java.security.MessageDigest;
+   * import java.security.NoSuchAlgorithmException;
+   * import java.util.Base64;
+   *
+   * public class Example {
+   *   public static void main(String[] args) {
+   *     try (Playwright playwright = Playwright.create()) {
+   *       BrowserType webkit = playwright.webkit()
+   *       Browser browser = webkit.launch(new BrowserType.LaunchOptions().withHeadless(false));
+   *       context.exposeFunction("sha1", args -> {
+   *         String text = (String) args[0];
+   *         MessageDigest crypto;
+   *         try {
+   *           crypto = MessageDigest.getInstance("SHA-1");
+   *         } catch (NoSuchAlgorithmException e) {
+   *           return null;
+   *         }
+   *         byte[] token = crypto.digest(text.getBytes(StandardCharsets.UTF_8));
+   *         return Base64.getEncoder().encodeToString(token);
+   *       });
+   *       Page page = context.newPage();
+   *       page.setContent("<script>\n" +
+   *         "  async function onClick() {\n" +
+   *         "    document.querySelector('div').textContent = await window.sha1('PLAYWRIGHT');\n" +
+   *         "  }\n" +
+   *         "</script>\n" +
+   *         "<button onclick=\"onClick()\">Click me</button>\n" +
+   *         "<div></div>\n");
+   *       page.click("button");
+   *     }
+   *   }
+   * }
+   * }</pre>
    *
    * @param name Name of the function on the window object.
    * @param callback Callback function that will be called in the Playwright's context.
@@ -221,22 +369,24 @@ public interface BrowserContext extends AutoCloseable {
    * specified.
    *
    * @param permissions A permission or an array of permissions to grant. Permissions can be one of the following values:
-   * - {@code 'geolocation'}
-   * - {@code 'midi'}
-   * - {@code 'midi-sysex'} (system-exclusive midi)
-   * - {@code 'notifications'}
-   * - {@code 'push'}
-   * - {@code 'camera'}
-   * - {@code 'microphone'}
-   * - {@code 'background-sync'}
-   * - {@code 'ambient-light-sensor'}
-   * - {@code 'accelerometer'}
-   * - {@code 'gyroscope'}
-   * - {@code 'magnetometer'}
-   * - {@code 'accessibility-events'}
-   * - {@code 'clipboard-read'}
-   * - {@code 'clipboard-write'}
-   * - {@code 'payment-handler'}
+   * <ul>
+   * <li> {@code 'geolocation'}</li>
+   * <li> {@code 'midi'}</li>
+   * <li> {@code 'midi-sysex'} (system-exclusive midi)</li>
+   * <li> {@code 'notifications'}</li>
+   * <li> {@code 'push'}</li>
+   * <li> {@code 'camera'}</li>
+   * <li> {@code 'microphone'}</li>
+   * <li> {@code 'background-sync'}</li>
+   * <li> {@code 'ambient-light-sensor'}</li>
+   * <li> {@code 'accelerometer'}</li>
+   * <li> {@code 'gyroscope'}</li>
+   * <li> {@code 'magnetometer'}</li>
+   * <li> {@code 'accessibility-events'}</li>
+   * <li> {@code 'clipboard-read'}</li>
+   * <li> {@code 'clipboard-write'}</li>
+   * <li> {@code 'payment-handler'}</li>
+   * </ul>
    */
   default void grantPermissions(List<String> permissions) {
     grantPermissions(permissions, null);
@@ -246,22 +396,24 @@ public interface BrowserContext extends AutoCloseable {
    * specified.
    *
    * @param permissions A permission or an array of permissions to grant. Permissions can be one of the following values:
-   * - {@code 'geolocation'}
-   * - {@code 'midi'}
-   * - {@code 'midi-sysex'} (system-exclusive midi)
-   * - {@code 'notifications'}
-   * - {@code 'push'}
-   * - {@code 'camera'}
-   * - {@code 'microphone'}
-   * - {@code 'background-sync'}
-   * - {@code 'ambient-light-sensor'}
-   * - {@code 'accelerometer'}
-   * - {@code 'gyroscope'}
-   * - {@code 'magnetometer'}
-   * - {@code 'accessibility-events'}
-   * - {@code 'clipboard-read'}
-   * - {@code 'clipboard-write'}
-   * - {@code 'payment-handler'}
+   * <ul>
+   * <li> {@code 'geolocation'}</li>
+   * <li> {@code 'midi'}</li>
+   * <li> {@code 'midi-sysex'} (system-exclusive midi)</li>
+   * <li> {@code 'notifications'}</li>
+   * <li> {@code 'push'}</li>
+   * <li> {@code 'camera'}</li>
+   * <li> {@code 'microphone'}</li>
+   * <li> {@code 'background-sync'}</li>
+   * <li> {@code 'ambient-light-sensor'}</li>
+   * <li> {@code 'accelerometer'}</li>
+   * <li> {@code 'gyroscope'}</li>
+   * <li> {@code 'magnetometer'}</li>
+   * <li> {@code 'accessibility-events'}</li>
+   * <li> {@code 'clipboard-read'}</li>
+   * <li> {@code 'clipboard-write'}</li>
+   * <li> {@code 'payment-handler'}</li>
+   * </ul>
    */
   void grantPermissions(List<String> permissions, GrantPermissionsOptions options);
   /**
@@ -269,14 +421,30 @@ public interface BrowserContext extends AutoCloseable {
    */
   Page newPage();
   /**
-   * Returns all open pages in the context. 
+   * Returns all open pages in the context.
    */
   List<Page> pages();
   /**
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
+   * <p> An example of a naïve handler that aborts all image requests:
+   * <pre>{@code
+   * BrowserContext context = browser.newContext();
+   * context.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
+   * Page page = context.newPage();
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
    * <p> or the same snippet using a regex pattern instead:
+   * <pre>{@code
+   * BrowserContext context = browser.newContext();
+   * context.route(Pattern.compile("(\\.png$)|(\\.jpg$)"), route -> route.abort());
+   * Page page = context.newPage();
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
    *
    * <p> Page routes (set up with [{@code method: Page.route}]) take precedence over browser context routes when request matches both
    * handlers.
@@ -291,7 +459,23 @@ public interface BrowserContext extends AutoCloseable {
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
+   * <p> An example of a naïve handler that aborts all image requests:
+   * <pre>{@code
+   * BrowserContext context = browser.newContext();
+   * context.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
+   * Page page = context.newPage();
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
    * <p> or the same snippet using a regex pattern instead:
+   * <pre>{@code
+   * BrowserContext context = browser.newContext();
+   * context.route(Pattern.compile("(\\.png$)|(\\.jpg$)"), route -> route.abort());
+   * Page page = context.newPage();
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
    *
    * <p> Page routes (set up with [{@code method: Page.route}]) take precedence over browser context routes when request matches both
    * handlers.
@@ -306,7 +490,23 @@ public interface BrowserContext extends AutoCloseable {
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
+   * <p> An example of a naïve handler that aborts all image requests:
+   * <pre>{@code
+   * BrowserContext context = browser.newContext();
+   * context.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
+   * Page page = context.newPage();
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
    * <p> or the same snippet using a regex pattern instead:
+   * <pre>{@code
+   * BrowserContext context = browser.newContext();
+   * context.route(Pattern.compile("(\\.png$)|(\\.jpg$)"), route -> route.abort());
+   * Page page = context.newPage();
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
    *
    * <p> Page routes (set up with [{@code method: Page.route}]) take precedence over browser context routes when request matches both
    * handlers.
@@ -319,12 +519,14 @@ public interface BrowserContext extends AutoCloseable {
   void route(Predicate<String> url, Consumer<Route> handler);
   /**
    * This setting will change the default maximum navigation time for the following methods and related shortcuts:
-   * - [{@code method: Page.goBack}]
-   * - [{@code method: Page.goForward}]
-   * - [{@code method: Page.goto}]
-   * - [{@code method: Page.reload}]
-   * - [{@code method: Page.setContent}]
-   * - [{@code method: Page.waitForNavigation}]
+   * <ul>
+   * <li> [{@code method: Page.goBack}]</li>
+   * <li> [{@code method: Page.goForward}]</li>
+   * <li> [{@code method: Page.goto}]</li>
+   * <li> [{@code method: Page.reload}]</li>
+   * <li> [{@code method: Page.setContent}]</li>
+   * <li> [{@code method: Page.waitForNavigation}]</li>
+   * </ul>
    *
    * <p> <strong>NOTE:</strong> [{@code method: Page.setDefaultNavigationTimeout}] and [{@code method: Page.setDefaultTimeout}] take priority over
    * [{@code method: BrowserContext.setDefaultNavigationTimeout}].
@@ -353,9 +555,12 @@ public interface BrowserContext extends AutoCloseable {
   void setExtraHTTPHeaders(Map<String, String> headers);
   /**
    * Sets the context's geolocation. Passing {@code null} or {@code undefined} emulates position unavailable.
+   * <pre>{@code
+   * browserContext.setGeolocation(new Geolocation(59.95, 30.31667));
+   * }</pre>
    *
-   * <p> <strong>NOTE:</strong> Consider using [{@code method: BrowserContext.grantPermissions}] to grant permissions for the browser context pages to
-   * read its geolocation.
+   * <p> <strong>NOTE:</strong> Consider using [{@code method: BrowserContext.grantPermissions}] to grant permissions for the browser context pages to read
+   * its geolocation.
    */
   void setGeolocation(Geolocation geolocation);
   /**

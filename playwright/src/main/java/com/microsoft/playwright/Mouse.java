@@ -23,6 +23,16 @@ import java.util.*;
  * The Mouse class operates in main-frame CSS pixels relative to the top-left corner of the viewport.
  *
  * <p> Every {@code page} object has its own Mouse, accessible with [{@code property: Page.mouse}].
+ * <pre>{@code
+ * // Using ‘page.mouse’ to trace a 100x100 square.
+ * page.mouse().move(0, 0);
+ * page.mouse().down();
+ * page.mouse().move(0, 100);
+ * page.mouse().move(100, 100);
+ * page.mouse().move(100, 0);
+ * page.mouse().move(0, 0);
+ * page.mouse().up();
+ * }</pre>
  */
 public interface Mouse {
   class ClickOptions {

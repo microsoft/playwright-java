@@ -26,7 +26,32 @@ import java.util.*;
  * <p> For finer control, you can use [{@code method: Keyboard.down}], [{@code method: Keyboard.up}], and [{@code method: Keyboard.insertText}]
  * to manually fire events as if they were generated from a real keyboard.
  *
+ * <p> An example of holding down {@code Shift} in order to select and delete some text:
+ * <pre>{@code
+ * page.keyboard().type("Hello World!");
+ * page.keyboard().press("ArrowLeft");
+ * page.keyboard().down("Shift");
+ * for (int i = 0; i < " World".length(); i++)
+ *   page.keyboard().press("ArrowLeft");
+ * page.keyboard().up("Shift");
+ * page.keyboard().press("Backspace");
+ * // Result text will end up saying "Hello!"
+ * }</pre>
+ *
+ * <p> An example of pressing uppercase {@code A}
+ * <pre>{@code
+ * page.keyboard().press("Shift+KeyA");
+ * // or
+ * page.keyboard().press("Shift+A");
+ * }</pre>
+ *
  * <p> An example to trigger select-all with the keyboard
+ * <pre>{@code
+ * // on Windows and Linux
+ * page.keyboard().press("Control+A");
+ * // on macOS
+ * page.keyboard().press("Meta+A");
+ * }</pre>
  */
 public interface Keyboard {
   class PressOptions {
@@ -82,6 +107,9 @@ public interface Keyboard {
   void down(String key);
   /**
    * Dispatches only {@code input} event, does not emit the {@code keydown}, {@code keyup} or {@code keypress} events.
+   * <pre>{@code
+   * page.keyboard().insertText("嗨");
+   * }</pre>
    *
    * <p> <strong>NOTE:</strong> Modifier keys DO NOT effect {@code keyboard.insertText}. Holding down {@code Shift} will not type the text in upper case.
    *
@@ -105,6 +133,17 @@ public interface Keyboard {
    *
    * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.navigate("https://keycode.info");
+   * page.keyboard().press("A");
+   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("A.png"));
+   * page.keyboard().press("ArrowLeft");
+   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("ArrowLeft.png")));
+   * page.keyboard().press("Shift+O");
+   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("O.png")));
+   * browser.close();
+   * }</pre>
    *
    * <p> Shortcut for [{@code method: Keyboard.down}] and [{@code method: Keyboard.up}].
    *
@@ -130,6 +169,17 @@ public interface Keyboard {
    *
    * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.navigate("https://keycode.info");
+   * page.keyboard().press("A");
+   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("A.png"));
+   * page.keyboard().press("ArrowLeft");
+   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("ArrowLeft.png")));
+   * page.keyboard().press("Shift+O");
+   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("O.png")));
+   * browser.close();
+   * }</pre>
    *
    * <p> Shortcut for [{@code method: Keyboard.down}] and [{@code method: Keyboard.up}].
    *
@@ -140,6 +190,12 @@ public interface Keyboard {
    * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: Keyboard.press}].
+   * <pre>{@code
+   * // Types instantly
+   * page.keyboard().type("Hello");
+   * // Types slower, like a user
+   * page.keyboard().type("World", new Keyboard.TypeOptions().withDelay(100));
+   * }</pre>
    *
    * <p> <strong>NOTE:</strong> Modifier keys DO NOT effect {@code keyboard.type}. Holding down {@code Shift} will not type the text in upper case.
    *
@@ -152,6 +208,12 @@ public interface Keyboard {
    * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: Keyboard.press}].
+   * <pre>{@code
+   * // Types instantly
+   * page.keyboard().type("Hello");
+   * // Types slower, like a user
+   * page.keyboard().type("World", new Keyboard.TypeOptions().withDelay(100));
+   * }</pre>
    *
    * <p> <strong>NOTE:</strong> Modifier keys DO NOT effect {@code keyboard.type}. Holding down {@code Shift} will not type the text in upper case.
    *

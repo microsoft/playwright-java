@@ -27,11 +27,37 @@ import java.util.regex.Pattern;
  * [{@code method: Frame.childFrames}] methods.
  *
  * <p> {@code Frame} object's lifecycle is controlled by three events, dispatched on the page object:
- * - [{@code event: Page.frameAttached}] - fired when the frame gets attached to the page. A Frame can be attached to the page
- *   only once.
- * - [{@code event: Page.frameNavigated}] - fired when the frame commits navigation to a different URL.
- * - [{@code event: Page.frameDetached}] - fired when the frame gets detached from the page.  A Frame can be detached from the
- *   page only once.
+ * <ul>
+ * <li> [{@code event: Page.frameAttached}] - fired when the frame gets attached to the page. A Frame can be attached to the page only
+ * once.</li>
+ * <li> [{@code event: Page.frameNavigated}] - fired when the frame commits navigation to a different URL.</li>
+ * <li> [{@code event: Page.frameDetached}] - fired when the frame gets detached from the page.  A Frame can be detached from the page
+ * only once.</li>
+ * </ul>
+ *
+ * <p> An example of dumping frame tree:
+ * <pre>{@code
+ * import com.microsoft.playwright.*;
+ *
+ * public class Example {
+ *   public static void main(String[] args) {
+ *     try (Playwright playwright = Playwright.create()) {
+ *       BrowserType firefox = playwright.firefox();
+ *       Browser browser = firefox.launch();
+ *       Page page = browser.newPage();
+ *       page.navigate("https://www.google.com/chrome/browser/canary.html");
+ *       dumpFrameTree(page.mainFrame(), "");
+ *       browser.close();
+ *     }
+ *   }
+ *   static void dumpFrameTree(Frame frame, String indent) {
+ *     System.out.println(indent + frame.url());
+ *     for (Frame child : frame.childFrames()) {
+ *       dumpFrameTree(child, indent + "  ");
+ *     }
+ *   }
+ * }
+ * }</pre>
  */
 public interface Frame {
   class AddScriptTagOptions {
@@ -344,9 +370,11 @@ public interface Frame {
     public Double timeout;
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
-     * - {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.
-     * - {@code 'load'} - consider operation to be finished when the {@code load} event is fired.
-     * - {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.
+     * <ul>
+     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
      */
     public WaitUntilState waitUntil;
 
@@ -562,9 +590,11 @@ public interface Frame {
     public Double timeout;
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
-     * - {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.
-     * - {@code 'load'} - consider operation to be finished when the {@code load} event is fired.
-     * - {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.
+     * <ul>
+     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
      */
     public WaitUntilState waitUntil;
 
@@ -771,9 +801,11 @@ public interface Frame {
     public Object url;
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
-     * - {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.
-     * - {@code 'load'} - consider operation to be finished when the {@code load} event is fired.
-     * - {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.
+     * <ul>
+     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
      */
     public WaitUntilState waitUntil;
 
@@ -801,12 +833,14 @@ public interface Frame {
   class WaitForSelectorOptions {
     /**
      * Defaults to {@code 'visible'}. Can be either:
-     * - {@code 'attached'} - wait for element to be present in DOM.
-     * - {@code 'detached'} - wait for element to not be present in DOM.
-     * - {@code 'visible'} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without
-     *   any content or with {@code display:none} has an empty bounding box and is not considered visible.
-     * - {@code 'hidden'} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}.
-     *   This is opposite to the {@code 'visible'} option.
+     * <ul>
+     * <li> {@code 'attached'} - wait for element to be present in DOM.</li>
+     * <li> {@code 'detached'} - wait for element to not be present in DOM.</li>
+     * <li> {@code 'visible'} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
+     * content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
+     * <li> {@code 'hidden'} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
+     * is opposite to the {@code 'visible'} option.</li>
+     * </ul>
      */
     public WaitForSelectorState state;
     /**
@@ -856,15 +890,17 @@ public interface Frame {
   ElementHandle addStyleTag(AddStyleTagOptions options);
   /**
    * This method checks an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
-   *    checked, this method returns immediately.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * 1. Ensure that the element is now checked. If not, this method rejects.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
+   * checked, this method returns immediately.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * <li> Ensure that the element is now checked. If not, this method rejects.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -877,15 +913,17 @@ public interface Frame {
   }
   /**
    * This method checks an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
-   *    checked, this method returns immediately.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * 1. Ensure that the element is now checked. If not, this method rejects.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
+   * checked, this method returns immediately.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * <li> Ensure that the element is now checked. If not, this method rejects.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -897,12 +935,14 @@ public interface Frame {
   List<Frame> childFrames();
   /**
    * This method clicks an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -915,12 +955,14 @@ public interface Frame {
   }
   /**
    * This method clicks an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -935,13 +977,15 @@ public interface Frame {
   String content();
   /**
    * This method double clicks an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
-   *    first click of the {@code dblclick()} triggers a navigation event, this method will reject.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
+   * click of the {@code dblclick()} triggers a navigation event, this method will reject.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -956,13 +1000,15 @@ public interface Frame {
   }
   /**
    * This method double clicks an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
-   *    first click of the {@code dblclick()} triggers a navigation event, this method will reject.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
+   * click of the {@code dblclick()} triggers a navigation event, this method will reject.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -977,21 +1023,32 @@ public interface Frame {
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
    * is dispatched. This is equivalend to calling
    * [element.click()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click).
+   * <pre>{@code
+   * frame.dispatchEvent("button#submit", "click");
+   * }</pre>
    *
    * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
    * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
-   * - [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)
-   * - [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)
-   * - [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)
-   * - [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)
-   * - [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)
-   * - [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)
-   * - [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)
+   * <ul>
+   * <li> [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)</li>
+   * <li> [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)</li>
+   * <li> [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)</li>
+   * <li> [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)</li>
+   * <li> [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)</li>
+   * <li> [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)</li>
+   * <li> [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)</li>
+   * </ul>
    *
    * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
-   *
+   * <pre>{@code
+   * // Note you can only create DataTransfer in Chromium and Firefox
+   * JSHandle dataTransfer = frame.evaluateHandle("() => new DataTransfer()");
+   * Map<String, Object> arg = new HashMap<>();
+   * arg.put("dataTransfer", dataTransfer);
+   * frame.dispatchEvent("#source", "dragstart", arg);
+   * }</pre>
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md) for more details.
@@ -1005,21 +1062,32 @@ public interface Frame {
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
    * is dispatched. This is equivalend to calling
    * [element.click()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click).
+   * <pre>{@code
+   * frame.dispatchEvent("button#submit", "click");
+   * }</pre>
    *
    * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
    * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
-   * - [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)
-   * - [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)
-   * - [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)
-   * - [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)
-   * - [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)
-   * - [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)
-   * - [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)
+   * <ul>
+   * <li> [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)</li>
+   * <li> [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)</li>
+   * <li> [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)</li>
+   * <li> [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)</li>
+   * <li> [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)</li>
+   * <li> [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)</li>
+   * <li> [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)</li>
+   * </ul>
    *
    * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
-   *
+   * <pre>{@code
+   * // Note you can only create DataTransfer in Chromium and Firefox
+   * JSHandle dataTransfer = frame.evaluateHandle("() => new DataTransfer()");
+   * Map<String, Object> arg = new HashMap<>();
+   * arg.put("dataTransfer", dataTransfer);
+   * frame.dispatchEvent("#source", "dragstart", arg);
+   * }</pre>
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md) for more details.
@@ -1032,21 +1100,32 @@ public interface Frame {
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
    * is dispatched. This is equivalend to calling
    * [element.click()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click).
+   * <pre>{@code
+   * frame.dispatchEvent("button#submit", "click");
+   * }</pre>
    *
    * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
    * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
-   * - [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)
-   * - [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)
-   * - [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)
-   * - [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)
-   * - [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)
-   * - [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)
-   * - [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)
+   * <ul>
+   * <li> [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)</li>
+   * <li> [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)</li>
+   * <li> [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)</li>
+   * <li> [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)</li>
+   * <li> [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)</li>
+   * <li> [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)</li>
+   * <li> [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)</li>
+   * </ul>
    *
    * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
-   *
+   * <pre>{@code
+   * // Note you can only create DataTransfer in Chromium and Firefox
+   * JSHandle dataTransfer = frame.evaluateHandle("() => new DataTransfer()");
+   * Map<String, Object> arg = new HashMap<>();
+   * arg.put("dataTransfer", dataTransfer);
+   * frame.dispatchEvent("#source", "dragstart", arg);
+   * }</pre>
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md) for more details.
@@ -1064,6 +1143,12 @@ public interface Frame {
    * <p> If {@code expression} returns a [Promise], then [{@code method: Frame.evalOnSelector}] would wait for the promise to resolve and
    * return its value.
    *
+   * <p> Examples:
+   * <pre>{@code
+   * String searchValue = (String) frame.evalOnSelector("#search", "el => el.value");
+   * String preloadHref = (String) frame.evalOnSelector("link[rel=preload]", "el => el.href");
+   * String html = (String) frame.evalOnSelector(".main-container", "(e, suffix) => e.outerHTML + suffix", "hello");
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
@@ -1082,6 +1167,12 @@ public interface Frame {
    * <p> If {@code expression} returns a [Promise], then [{@code method: Frame.evalOnSelector}] would wait for the promise to resolve and
    * return its value.
    *
+   * <p> Examples:
+   * <pre>{@code
+   * String searchValue = (String) frame.evalOnSelector("#search", "el => el.value");
+   * String preloadHref = (String) frame.evalOnSelector("link[rel=preload]", "el => el.href");
+   * String html = (String) frame.evalOnSelector(".main-container", "(e, suffix) => e.outerHTML + suffix", "hello");
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
@@ -1098,6 +1189,10 @@ public interface Frame {
    * <p> If {@code expression} returns a [Promise], then [{@code method: Frame.evalOnSelectorAll}] would wait for the promise to resolve and
    * return its value.
    *
+   * <p> Examples:
+   * <pre>{@code
+   * boolean divsCounts = (boolean) page.evalOnSelectorAll("div", "(divs, min) => divs.length >= min", 10);
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
@@ -1115,6 +1210,10 @@ public interface Frame {
    * <p> If {@code expression} returns a [Promise], then [{@code method: Frame.evalOnSelectorAll}] would wait for the promise to resolve and
    * return its value.
    *
+   * <p> Examples:
+   * <pre>{@code
+   * boolean divsCounts = (boolean) page.evalOnSelectorAll("div", "(divs, min) => divs.length >= min", 10);
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
@@ -1131,11 +1230,24 @@ public interface Frame {
    * <p> If the function passed to the [{@code method: Frame.evaluate}] returns a non-[Serializable] value, then
    * [{@code method: Frame.evaluate}] returns {@code undefined}. Playwright also supports transferring some additional values that are
    * not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
+   * <pre>{@code
+   * Object result = frame.evaluate("([x, y]) => {\n" +
+   *   "  return Promise.resolve(x * y);\n" +
+   *   "}", Arrays.asList(7, 8));
+   * System.out.println(result); // prints "56"
+   * }</pre>
    *
    * <p> A string can also be passed in instead of a function.
+   * <pre>{@code
+   * System.out.println(frame.evaluate("1 + 2")); // prints "3"
+   * }</pre>
    *
    * <p> {@code ElementHandle} instances can be passed as an argument to the [{@code method: Frame.evaluate}]:
-   *
+   * <pre>{@code
+   * ElementHandle bodyHandle = frame.querySelector("body");
+   * String html = (String) frame.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
+   * bodyHandle.dispose();
+   * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
@@ -1152,11 +1264,24 @@ public interface Frame {
    * <p> If the function passed to the [{@code method: Frame.evaluate}] returns a non-[Serializable] value, then
    * [{@code method: Frame.evaluate}] returns {@code undefined}. Playwright also supports transferring some additional values that are
    * not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
+   * <pre>{@code
+   * Object result = frame.evaluate("([x, y]) => {\n" +
+   *   "  return Promise.resolve(x * y);\n" +
+   *   "}", Arrays.asList(7, 8));
+   * System.out.println(result); // prints "56"
+   * }</pre>
    *
    * <p> A string can also be passed in instead of a function.
+   * <pre>{@code
+   * System.out.println(frame.evaluate("1 + 2")); // prints "3"
+   * }</pre>
    *
    * <p> {@code ElementHandle} instances can be passed as an argument to the [{@code method: Frame.evaluate}]:
-   *
+   * <pre>{@code
+   * ElementHandle bodyHandle = frame.querySelector("body");
+   * String html = (String) frame.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
+   * bodyHandle.dispose();
+   * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
@@ -1171,11 +1296,23 @@ public interface Frame {
    *
    * <p> If the function, passed to the [{@code method: Frame.evaluateHandle}], returns a [Promise], then
    * [{@code method: Frame.evaluateHandle}] would wait for the promise to resolve and return its value.
+   * <pre>{@code
+   * // Handle for the window object.
+   * JSHandle aWindowHandle = frame.evaluateHandle("() => Promise.resolve(window)");
+   * }</pre>
    *
    * <p> A string can also be passed in instead of a function.
+   * <pre>{@code
+   * JSHandle aHandle = frame.evaluateHandle("document"); // Handle for the "document".
+   * }</pre>
    *
    * <p> {@code JSHandle} instances can be passed as an argument to the [{@code method: Frame.evaluateHandle}]:
-   *
+   * <pre>{@code
+   * JSHandle aHandle = frame.evaluateHandle("() => document.body");
+   * JSHandle resultHandle = frame.evaluateHandle("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(aHandle, "hello"));
+   * System.out.println(resultHandle.jsonValue());
+   * resultHandle.dispose();
+   * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
@@ -1191,11 +1328,23 @@ public interface Frame {
    *
    * <p> If the function, passed to the [{@code method: Frame.evaluateHandle}], returns a [Promise], then
    * [{@code method: Frame.evaluateHandle}] would wait for the promise to resolve and return its value.
+   * <pre>{@code
+   * // Handle for the window object.
+   * JSHandle aWindowHandle = frame.evaluateHandle("() => Promise.resolve(window)");
+   * }</pre>
    *
    * <p> A string can also be passed in instead of a function.
+   * <pre>{@code
+   * JSHandle aHandle = frame.evaluateHandle("document"); // Handle for the "document".
+   * }</pre>
    *
    * <p> {@code JSHandle} instances can be passed as an argument to the [{@code method: Frame.evaluateHandle}]:
-   *
+   * <pre>{@code
+   * JSHandle aHandle = frame.evaluateHandle("() => document.body");
+   * JSHandle resultHandle = frame.evaluateHandle("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(aHandle, "hello"));
+   * System.out.println(resultHandle.jsonValue());
+   * resultHandle.dispose();
+   * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
@@ -1257,6 +1406,11 @@ public interface Frame {
    * frame.
    *
    * <p> This method throws an error if the frame has been detached before {@code frameElement()} returns.
+   * <pre>{@code
+   * ElementHandle frameElement = frame.frameElement();
+   * Frame contentFrame = frameElement.contentFrame();
+   * System.out.println(frame == contentFrame);  // -> true
+   * }</pre>
    */
   ElementHandle frameElement();
   /**
@@ -1282,11 +1436,13 @@ public interface Frame {
    * last redirect.
    *
    * <p> {@code frame.goto} will throw an error if:
-   * - there's an SSL error (e.g. in case of self-signed certificates).
-   * - target URL is invalid.
-   * - the {@code timeout} is exceeded during navigation.
-   * - the remote server does not respond or is unreachable.
-   * - the main resource failed to load.
+   * <ul>
+   * <li> there's an SSL error (e.g. in case of self-signed certificates).</li>
+   * <li> target URL is invalid.</li>
+   * <li> the {@code timeout} is exceeded during navigation.</li>
+   * <li> the remote server does not respond or is unreachable.</li>
+   * <li> the main resource failed to load.</li>
+   * </ul>
    *
    * <p> {@code frame.goto} will not throw an error when any valid HTTP status code is returned by the remote server, including 404
    * "Not Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling
@@ -1294,7 +1450,8 @@ public interface Frame {
    *
    * <p> <strong>NOTE:</strong> {@code frame.goto} either throws an error or returns a main resource response. The only exceptions are navigation to
    * {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
-   * <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the
+   *
+   * <p> <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the
    * [upstream issue](https://bugs.chromium.org/p/chromium/issues/detail?id=761295).
    *
    * @param url URL to navigate frame to. The url should include scheme, e.g. {@code https://}.
@@ -1307,11 +1464,13 @@ public interface Frame {
    * last redirect.
    *
    * <p> {@code frame.goto} will throw an error if:
-   * - there's an SSL error (e.g. in case of self-signed certificates).
-   * - target URL is invalid.
-   * - the {@code timeout} is exceeded during navigation.
-   * - the remote server does not respond or is unreachable.
-   * - the main resource failed to load.
+   * <ul>
+   * <li> there's an SSL error (e.g. in case of self-signed certificates).</li>
+   * <li> target URL is invalid.</li>
+   * <li> the {@code timeout} is exceeded during navigation.</li>
+   * <li> the remote server does not respond or is unreachable.</li>
+   * <li> the main resource failed to load.</li>
+   * </ul>
    *
    * <p> {@code frame.goto} will not throw an error when any valid HTTP status code is returned by the remote server, including 404
    * "Not Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling
@@ -1319,7 +1478,8 @@ public interface Frame {
    *
    * <p> <strong>NOTE:</strong> {@code frame.goto} either throws an error or returns a main resource response. The only exceptions are navigation to
    * {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
-   * <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the
+   *
+   * <p> <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the
    * [upstream issue](https://bugs.chromium.org/p/chromium/issues/detail?id=761295).
    *
    * @param url URL to navigate frame to. The url should include scheme, e.g. {@code https://}.
@@ -1327,12 +1487,14 @@ public interface Frame {
   Response navigate(String url, NavigateOptions options);
   /**
    * This method hovers over an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -1345,12 +1507,14 @@ public interface Frame {
   }
   /**
    * This method hovers over an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -1584,7 +1748,14 @@ public interface Frame {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * frame.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
@@ -1601,7 +1772,14 @@ public interface Frame {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * frame.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
@@ -1616,7 +1794,14 @@ public interface Frame {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * frame.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
@@ -1633,7 +1818,14 @@ public interface Frame {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * frame.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
@@ -1648,7 +1840,14 @@ public interface Frame {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * frame.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
@@ -1665,7 +1864,14 @@ public interface Frame {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * frame.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
@@ -1680,7 +1886,14 @@ public interface Frame {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * frame.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
@@ -1697,7 +1910,14 @@ public interface Frame {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * frame.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
@@ -1712,7 +1932,14 @@ public interface Frame {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * frame.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
@@ -1729,7 +1956,14 @@ public interface Frame {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * frame.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
@@ -1744,7 +1978,14 @@ public interface Frame {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * frame.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
@@ -1761,7 +2002,14 @@ public interface Frame {
    * matching {@code selector}, the method throws an error.
    *
    * <p> Will wait until all specified options are present in the {@code <select>} element.
-   *
+   * <pre>{@code
+   * // single selection matching the value
+   * frame.selectOption("select#colors", "blue");
+   * // single selection matching both the value and the label
+   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * // multiple selection
+   * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
@@ -1881,12 +2129,14 @@ public interface Frame {
   void setInputFiles(String selector, FilePayload[] files, SetInputFilesOptions options);
   /**
    * This method taps an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -1901,12 +2151,14 @@ public interface Frame {
   }
   /**
    * This method taps an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -1942,7 +2194,12 @@ public interface Frame {
    * send fine-grained keyboard events. To fill values in form fields, use [{@code method: Frame.fill}].
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: Keyboard.press}].
-   *
+   * <pre>{@code
+   * // Types instantly
+   * frame.type("#mytextarea", "Hello");
+   * // Types slower, like a user
+   * frame.type("#mytextarea", "World", new Frame.TypeOptions().withDelay(100)); 
+   * }</pre>
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md) for more details.
@@ -1956,7 +2213,12 @@ public interface Frame {
    * send fine-grained keyboard events. To fill values in form fields, use [{@code method: Frame.fill}].
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: Keyboard.press}].
-   *
+   * <pre>{@code
+   * // Types instantly
+   * frame.type("#mytextarea", "Hello");
+   * // Types slower, like a user
+   * frame.type("#mytextarea", "World", new Frame.TypeOptions().withDelay(100)); 
+   * }</pre>
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
    * [working with selectors](./selectors.md) for more details.
@@ -1965,15 +2227,17 @@ public interface Frame {
   void type(String selector, String text, TypeOptions options);
   /**
    * This method checks an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
-   *    unchecked, this method returns immediately.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * 1. Ensure that the element is now unchecked. If not, this method rejects.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
+   * unchecked, this method returns immediately.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * <li> Ensure that the element is now unchecked. If not, this method rejects.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -1986,15 +2250,17 @@ public interface Frame {
   }
   /**
    * This method checks an element matching {@code selector} by performing the following steps:
-   * 1. Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.
-   * 1. Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
-   *    unchecked, this method returns immediately.
-   * 1. Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the
-   *    element is detached during the checks, the whole action is retried.
-   * 1. Scroll the element into view if needed.
-   * 1. Use [{@code property: Page.mouse}] to click in the center of the element.
-   * 1. Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.
-   * 1. Ensure that the element is now unchecked. If not, this method rejects.
+   * <ol>
+   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
+   * unchecked, this method returns immediately.</li>
+   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
+   * is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * <li> Ensure that the element is now unchecked. If not, this method rejects.</li>
+   * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
@@ -2011,9 +2277,28 @@ public interface Frame {
    * Returns when the {@code expression} returns a truthy value, returns that value.
    *
    * <p> The [{@code method: Frame.waitForFunction}] can be used to observe viewport size change:
+   * <pre>{@code
+   * import com.microsoft.playwright.*;
+   *
+   * public class Example {
+   *   public static void main(String[] args) {
+   *     try (Playwright playwright = Playwright.create()) {
+   *       BrowserType firefox = playwright.firefox();
+   *       Browser browser = firefox.launch();
+   *       Page page = browser.newPage();
+   *       page.setViewportSize(50, 50);
+   *       page.mainFrame().waitForFunction("window.innerWidth < 100");
+   *       browser.close();
+   *     }
+   *   }
+   * }
+   * }</pre>
    *
    * <p> To pass an argument to the predicate of {@code frame.waitForFunction} function:
-   *
+   * <pre>{@code
+   * String selector = ".foo";
+   * frame.waitForFunction("selector => !!document.querySelector(selector)", selector);
+   * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
@@ -2026,9 +2311,28 @@ public interface Frame {
    * Returns when the {@code expression} returns a truthy value, returns that value.
    *
    * <p> The [{@code method: Frame.waitForFunction}] can be used to observe viewport size change:
+   * <pre>{@code
+   * import com.microsoft.playwright.*;
+   *
+   * public class Example {
+   *   public static void main(String[] args) {
+   *     try (Playwright playwright = Playwright.create()) {
+   *       BrowserType firefox = playwright.firefox();
+   *       Browser browser = firefox.launch();
+   *       Page page = browser.newPage();
+   *       page.setViewportSize(50, 50);
+   *       page.mainFrame().waitForFunction("window.innerWidth < 100");
+   *       browser.close();
+   *     }
+   *   }
+   * }
+   * }</pre>
    *
    * <p> To pass an argument to the predicate of {@code frame.waitForFunction} function:
-   *
+   * <pre>{@code
+   * String selector = ".foo";
+   * frame.waitForFunction("selector => !!document.querySelector(selector)", selector);
+   * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
@@ -2040,9 +2344,28 @@ public interface Frame {
    * Returns when the {@code expression} returns a truthy value, returns that value.
    *
    * <p> The [{@code method: Frame.waitForFunction}] can be used to observe viewport size change:
+   * <pre>{@code
+   * import com.microsoft.playwright.*;
+   *
+   * public class Example {
+   *   public static void main(String[] args) {
+   *     try (Playwright playwright = Playwright.create()) {
+   *       BrowserType firefox = playwright.firefox();
+   *       Browser browser = firefox.launch();
+   *       Page page = browser.newPage();
+   *       page.setViewportSize(50, 50);
+   *       page.mainFrame().waitForFunction("window.innerWidth < 100");
+   *       browser.close();
+   *     }
+   *   }
+   * }
+   * }</pre>
    *
    * <p> To pass an argument to the predicate of {@code frame.waitForFunction} function:
-   *
+   * <pre>{@code
+   * String selector = ".foo";
+   * frame.waitForFunction("selector => !!document.querySelector(selector)", selector);
+   * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
@@ -2054,13 +2377,18 @@ public interface Frame {
    *
    * <p> This returns when the frame reaches a required load state, {@code load} by default. The navigation must have been committed
    * when this method is called. If current document has already reached the required state, resolves immediately.
-   *
+   * <pre>{@code
+   * frame.click("button"); // Click triggers navigation.
+   * frame.waitForLoadState(); // Waits for "load" state by default.
+   * }</pre>
    *
    * @param state Optional load state to wait for, defaults to {@code load}. If the state has been already reached while loading current
    * document, the method resolves immediately. Can be one of:
-   * - {@code 'load'} - wait for the {@code load} event to be fired.
-   * - {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.
-   * - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
+   * <ul>
+   * <li> {@code 'load'} - wait for the {@code load} event to be fired.</li>
+   * <li> {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.</li>
+   * <li> {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.</li>
+   * </ul>
    */
   default void waitForLoadState(LoadState state) {
     waitForLoadState(state, null);
@@ -2070,6 +2398,10 @@ public interface Frame {
    *
    * <p> This returns when the frame reaches a required load state, {@code load} by default. The navigation must have been committed
    * when this method is called. If current document has already reached the required state, resolves immediately.
+   * <pre>{@code
+   * frame.click("button"); // Click triggers navigation.
+   * frame.waitForLoadState(); // Waits for "load" state by default.
+   * }</pre>
    */
   default void waitForLoadState() {
     waitForLoadState(null);
@@ -2079,13 +2411,18 @@ public interface Frame {
    *
    * <p> This returns when the frame reaches a required load state, {@code load} by default. The navigation must have been committed
    * when this method is called. If current document has already reached the required state, resolves immediately.
-   *
+   * <pre>{@code
+   * frame.click("button"); // Click triggers navigation.
+   * frame.waitForLoadState(); // Waits for "load" state by default.
+   * }</pre>
    *
    * @param state Optional load state to wait for, defaults to {@code load}. If the state has been already reached while loading current
    * document, the method resolves immediately. Can be one of:
-   * - {@code 'load'} - wait for the {@code load} event to be fired.
-   * - {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.
-   * - {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.
+   * <ul>
+   * <li> {@code 'load'} - wait for the {@code load} event to be fired.</li>
+   * <li> {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.</li>
+   * <li> {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.</li>
+   * </ul>
    */
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
   /**
@@ -2095,9 +2432,16 @@ public interface Frame {
    *
    * <p> This method waits for the frame to navigate to a new URL. It is useful for when you run code which will indirectly cause
    * the frame to navigate. Consider this example:
+   * <pre>{@code
+   * // The method returns after navigation has finished
+   * Response response = frame.waitForNavigation(() -> {
+   *   // Clicking the link will indirectly cause a navigation
+   *   frame.click("a.delayed-navigation");
+   * });
+   * }</pre>
    *
-   * <p> <strong>NOTE:</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is
-   * considered a navigation.
+   * <p> <strong>NOTE:</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is considered
+   * a navigation.
    *
    * @param callback Callback that performs the action triggering the event.
    */
@@ -2111,9 +2455,16 @@ public interface Frame {
    *
    * <p> This method waits for the frame to navigate to a new URL. It is useful for when you run code which will indirectly cause
    * the frame to navigate. Consider this example:
+   * <pre>{@code
+   * // The method returns after navigation has finished
+   * Response response = frame.waitForNavigation(() -> {
+   *   // Clicking the link will indirectly cause a navigation
+   *   frame.click("a.delayed-navigation");
+   * });
+   * }</pre>
    *
-   * <p> <strong>NOTE:</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is
-   * considered a navigation.
+   * <p> <strong>NOTE:</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is considered
+   * a navigation.
    *
    * @param callback Callback that performs the action triggering the event.
    */
@@ -2127,7 +2478,25 @@ public interface Frame {
    * selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
    *
    * <p> This method works across navigations:
+   * <pre>{@code
+   * import com.microsoft.playwright.*;
    *
+   * public class Example {
+   *   public static void main(String[] args) {
+   *     try (Playwright playwright = Playwright.create()) {
+   *       BrowserType chromium = playwright.chromium();
+   *       Browser browser = chromium.launch();
+   *       Page page = browser.newPage();
+   *       for (String currentURL : Arrays.asList("https://google.com", "https://bbc.com")) {
+   *         page.navigate(currentURL);
+   *         ElementHandle element = page.mainFrame().waitForSelector("img");
+   *         System.out.println("Loaded image: " + element.getAttribute("src"));
+   *       }
+   *       browser.close();
+   *     }
+   *   }
+   * }
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    */
@@ -2143,7 +2512,25 @@ public interface Frame {
    * selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
    *
    * <p> This method works across navigations:
+   * <pre>{@code
+   * import com.microsoft.playwright.*;
    *
+   * public class Example {
+   *   public static void main(String[] args) {
+   *     try (Playwright playwright = Playwright.create()) {
+   *       BrowserType chromium = playwright.chromium();
+   *       Browser browser = chromium.launch();
+   *       Page page = browser.newPage();
+   *       for (String currentURL : Arrays.asList("https://google.com", "https://bbc.com")) {
+   *         page.navigate(currentURL);
+   *         ElementHandle element = page.mainFrame().waitForSelector("img");
+   *         System.out.println("Loaded image: " + element.getAttribute("src"));
+   *       }
+   *       browser.close();
+   *     }
+   *   }
+   * }
+   * }</pre>
    *
    * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
    */

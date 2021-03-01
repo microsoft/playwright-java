@@ -21,6 +21,10 @@ import java.util.*;
 /**
  * JSHandle represents an in-page JavaScript object. JSHandles can be created with the [{@code method: Page.evaluateHandle}]
  * method.
+ * <pre>{@code
+ * JSHandle windowHandle = page.evaluateHandle("() => window");
+ * // ...
+ * }</pre>
  *
  * <p> JSHandle prevents the referenced JavaScript object being garbage collected unless the handle is exposed with
  * [{@code method: JSHandle.dispose}]. JSHandles are auto-disposed when their origin frame gets navigated or the parent context
@@ -45,6 +49,11 @@ public interface JSHandle {
    *
    * <p> If {@code expression} returns a [Promise], then {@code handle.evaluate} would wait for the promise to resolve and return its value.
    *
+   * <p> Examples:
+   * <pre>{@code
+   * ElementHandle tweetHandle = page.querySelector(".tweet .retweets");
+   * assertEquals("10 retweets", tweetHandle.evaluate("node => node.innerText"));
+   * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
@@ -59,6 +68,11 @@ public interface JSHandle {
    *
    * <p> If {@code expression} returns a [Promise], then {@code handle.evaluate} would wait for the promise to resolve and return its value.
    *
+   * <p> Examples:
+   * <pre>{@code
+   * ElementHandle tweetHandle = page.querySelector(".tweet .retweets");
+   * assertEquals("10 retweets", tweetHandle.evaluate("node => node.innerText"));
+   * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
@@ -104,6 +118,13 @@ public interface JSHandle {
   JSHandle evaluateHandle(String expression, Object arg);
   /**
    * The method returns a map with **own property names** as keys and JSHandle instances for the property values.
+   * <pre>{@code
+   * JSHandle handle = page.evaluateHandle("() => ({window, document}"););
+   * Map<String, JSHandle> properties = handle.getProperties();
+   * JSHandle windowHandle = properties.get("window");
+   * JSHandle documentHandle = properties.get("document");
+   * handle.dispose();
+   * }</pre>
    */
   Map<String, JSHandle> getProperties();
   /**
@@ -115,8 +136,8 @@ public interface JSHandle {
   /**
    * Returns a JSON representation of the object. If the object has a {@code toJSON} function, it **will not be called**.
    *
-   * <p> <strong>NOTE:</strong> The method will return an empty JSON object if the referenced object is not stringifiable. It will throw an
-   * error if the object has circular references.
+   * <p> <strong>NOTE:</strong> The method will return an empty JSON object if the referenced object is not stringifiable. It will throw an error if the
+   * object has circular references.
    */
   Object jsonValue();
 }
