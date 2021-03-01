@@ -766,7 +766,7 @@ public interface Frame {
      */
     public Double timeout;
     /**
-     * URL string, URL regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
      */
     public Object url;
     /**
