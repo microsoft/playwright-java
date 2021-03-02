@@ -68,61 +68,241 @@ import java.util.regex.Pattern;
  */
 public interface Page extends AutoCloseable {
 
+  /**
+   * Emitted when the page closes.
+   */
   void onClose(Consumer<Page> handler);
+  /**
+   * Removes handler that was previously added with {@link #onClose onClose(handler)}.
+   */
   void offClose(Consumer<Page> handler);
 
+  /**
+   * Emitted when JavaScript within the page calls one of console API methods, e.g. {@code console.log} or {@code console.dir}. Also
+   * emitted if the page throws an error or a warning.
+   *
+   * <p> The arguments passed into {@code console.log} appear as arguments on the event handler.
+   *
+   * <p> An example of handling {@code console} event:
+   * <pre>{@code
+   * page.onConsole(msg -> {
+   *   for (int i = 0; i < msg.args().size(); ++i)
+   *     System.out.println(i + ": " + msg.args().get(i).jsonValue());
+   * });
+   * page.evaluate("() => console.log('hello', 5, {foo: 'bar'})");
+   * }</pre>
+   */
   void onConsole(Consumer<ConsoleMessage> handler);
+  /**
+   * Removes handler that was previously added with {@link #onConsole onConsole(handler)}.
+   */
   void offConsole(Consumer<ConsoleMessage> handler);
 
+  /**
+   * Emitted when the page crashes. Browser pages might crash if they try to allocate too much memory. When the page crashes,
+   * ongoing and subsequent operations will throw.
+   *
+   * <p> The most common way to deal with crashes is to catch an exception:
+   * <pre>{@code
+   * try {
+   *   // Crash might happen during a click.
+   *   page.click("button");
+   *   // Or while waiting for an event.
+   *   page.waitForPopup(() -> {});
+   * } catch (PlaywrightException e) {
+   *   // When the page crashes, exception message contains "crash".
+   * }
+   * }</pre>
+   */
   void onCrash(Consumer<Page> handler);
+  /**
+   * Removes handler that was previously added with {@link #onCrash onCrash(handler)}.
+   */
   void offCrash(Consumer<Page> handler);
 
+  /**
+   * Emitted when a JavaScript dialog appears, such as {@code alert}, {@code prompt}, {@code confirm} or {@code beforeunload}. Listener **must**
+   * either {@link Dialog#accept Dialog.accept()} or {@link Dialog#dismiss Dialog.dismiss()} the dialog - otherwise the page
+   * will <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop#never_blocking">freeze</a> waiting for
+   * the dialog, and actions like click will never finish.
+   *
+   * <p> <strong>NOTE:</strong> When no {@link Page#onDialog Page.onDialog()} listeners are present, all dialogs are automatically dismissed.
+   */
   void onDialog(Consumer<Dialog> handler);
+  /**
+   * Removes handler that was previously added with {@link #onDialog onDialog(handler)}.
+   */
   void offDialog(Consumer<Dialog> handler);
 
+  /**
+   * Emitted when the JavaScript <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded">{@code DOMContentLoaded}</a> event is dispatched.
+   */
   void onDOMContentLoaded(Consumer<Page> handler);
+  /**
+   * Removes handler that was previously added with {@link #onDOMContentLoaded onDOMContentLoaded(handler)}.
+   */
   void offDOMContentLoaded(Consumer<Page> handler);
 
+  /**
+   * Emitted when attachment download started. User can access basic file operations on downloaded content via the passed
+   * {@code Download} instance.
+   *
+   * <p> <strong>NOTE:</strong> Browser context **must** be created with the {@code acceptDownloads} set to {@code true} when user needs access to the downloaded
+   * content. If {@code acceptDownloads} is not set, download events are emitted, but the actual download is not performed and user
+   * has no access to the downloaded files.
+   */
   void onDownload(Consumer<Download> handler);
+  /**
+   * Removes handler that was previously added with {@link #onDownload onDownload(handler)}.
+   */
   void offDownload(Consumer<Download> handler);
 
+  /**
+   * Emitted when a file chooser is supposed to appear, such as after clicking the  {@code <input type=file>}. Playwright can
+   * respond to it via setting the input files using {@link FileChooser#setFiles FileChooser.setFiles()} that can be uploaded
+   * after that.
+   * <pre>{@code
+   * page.onFileChooser(fileChooser -> {
+   *   fileChooser.setFiles(Paths.get("/tmp/myfile.pdf"));
+   * });
+   * }</pre>
+   */
   void onFileChooser(Consumer<FileChooser> handler);
+  /**
+   * Removes handler that was previously added with {@link #onFileChooser onFileChooser(handler)}.
+   */
   void offFileChooser(Consumer<FileChooser> handler);
 
+  /**
+   * Emitted when a frame is attached.
+   */
   void onFrameAttached(Consumer<Frame> handler);
+  /**
+   * Removes handler that was previously added with {@link #onFrameAttached onFrameAttached(handler)}.
+   */
   void offFrameAttached(Consumer<Frame> handler);
 
+  /**
+   * Emitted when a frame is detached.
+   */
   void onFrameDetached(Consumer<Frame> handler);
+  /**
+   * Removes handler that was previously added with {@link #onFrameDetached onFrameDetached(handler)}.
+   */
   void offFrameDetached(Consumer<Frame> handler);
 
+  /**
+   * Emitted when a frame is navigated to a new url.
+   */
   void onFrameNavigated(Consumer<Frame> handler);
+  /**
+   * Removes handler that was previously added with {@link #onFrameNavigated onFrameNavigated(handler)}.
+   */
   void offFrameNavigated(Consumer<Frame> handler);
 
+  /**
+   * Emitted when the JavaScript <a href="https://developer.mozilla.org/en-US/docs/Web/Events/load">{@code load}</a> event is
+   * dispatched.
+   */
   void onLoad(Consumer<Page> handler);
+  /**
+   * Removes handler that was previously added with {@link #onLoad onLoad(handler)}.
+   */
   void offLoad(Consumer<Page> handler);
 
+  /**
+   * Emitted when an uncaught exception happens within the page.
+   */
   void onPageError(Consumer<String> handler);
+  /**
+   * Removes handler that was previously added with {@link #onPageError onPageError(handler)}.
+   */
   void offPageError(Consumer<String> handler);
 
+  /**
+   * Emitted when the page opens a new tab or window. This event is emitted in addition to the {@link BrowserContext#onPage
+   * BrowserContext.onPage()}, but only for popups relevant to this page.
+   *
+   * <p> The earliest moment that page is available is when it has navigated to the initial url. For example, when opening a
+   * popup with {@code window.open('http://example.com')}, this event will fire when the network request to "http://example.com" is
+   * done and its response has started loading in the popup.
+   * <pre>{@code
+   * Page popup = page.waitForPopup(() -> {
+   *   page.evaluate("() => window.open('https://example.com')");
+   * });
+   * System.out.println(popup.evaluate("location.href"));
+   * }</pre>
+   *
+   * <p> <strong>NOTE:</strong> Use {@link Page#waitForLoadState Page.waitForLoadState()} to wait until the page gets to a particular state (you should
+   * not need it in most cases).
+   */
   void onPopup(Consumer<Page> handler);
+  /**
+   * Removes handler that was previously added with {@link #onPopup onPopup(handler)}.
+   */
   void offPopup(Consumer<Page> handler);
 
+  /**
+   * Emitted when a page issues a request. The [request] object is read-only. In order to intercept and mutate requests, see
+   * {@link Page#route Page.route()} or {@link BrowserContext#route BrowserContext.route()}.
+   */
   void onRequest(Consumer<Request> handler);
+  /**
+   * Removes handler that was previously added with {@link #onRequest onRequest(handler)}.
+   */
   void offRequest(Consumer<Request> handler);
 
+  /**
+   * Emitted when a request fails, for example by timing out.
+   *
+   * <p> <strong>NOTE:</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will complete
+   * with {@link Page#onRequestFinished Page.onRequestFinished()} event and not with {@link Page#onRequestFailed
+   * Page.onRequestFailed()}.
+   */
   void onRequestFailed(Consumer<Request> handler);
+  /**
+   * Removes handler that was previously added with {@link #onRequestFailed onRequestFailed(handler)}.
+   */
   void offRequestFailed(Consumer<Request> handler);
 
+  /**
+   * Emitted when a request finishes successfully after downloading the response body. For a successful response, the
+   * sequence of events is {@code request}, {@code response} and {@code requestfinished}.
+   */
   void onRequestFinished(Consumer<Request> handler);
+  /**
+   * Removes handler that was previously added with {@link #onRequestFinished onRequestFinished(handler)}.
+   */
   void offRequestFinished(Consumer<Request> handler);
 
+  /**
+   * Emitted when [response] status and headers are received for a request. For a successful response, the sequence of events
+   * is {@code request}, {@code response} and {@code requestfinished}.
+   */
   void onResponse(Consumer<Response> handler);
+  /**
+   * Removes handler that was previously added with {@link #onResponse onResponse(handler)}.
+   */
   void offResponse(Consumer<Response> handler);
 
+  /**
+   * Emitted when {@code WebSocket} request is sent.
+   */
   void onWebSocket(Consumer<WebSocket> handler);
+  /**
+   * Removes handler that was previously added with {@link #onWebSocket onWebSocket(handler)}.
+   */
   void offWebSocket(Consumer<WebSocket> handler);
 
+  /**
+   * Emitted when a dedicated <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API">WebWorker</a> is
+   * spawned by the page.
+   */
   void onWorker(Consumer<Worker> handler);
+  /**
+   * Removes handler that was previously added with {@link #onWorker onWorker(handler)}.
+   */
   void offWorker(Consumer<Worker> handler);
 
   class AddScriptTagOptions {

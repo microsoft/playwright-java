@@ -25,16 +25,40 @@ import java.util.function.Predicate;
  */
 public interface WebSocket {
 
+  /**
+   * Fired when the websocket closes.
+   */
   void onClose(Consumer<WebSocket> handler);
+  /**
+   * Removes handler that was previously added with {@link #onClose onClose(handler)}.
+   */
   void offClose(Consumer<WebSocket> handler);
 
+  /**
+   * Fired when the websocket recieves a frame.
+   */
   void onFrameReceived(Consumer<WebSocketFrame> handler);
+  /**
+   * Removes handler that was previously added with {@link #onFrameReceived onFrameReceived(handler)}.
+   */
   void offFrameReceived(Consumer<WebSocketFrame> handler);
 
+  /**
+   * Fired when the websocket sends a frame.
+   */
   void onFrameSent(Consumer<WebSocketFrame> handler);
+  /**
+   * Removes handler that was previously added with {@link #onFrameSent onFrameSent(handler)}.
+   */
   void offFrameSent(Consumer<WebSocketFrame> handler);
 
+  /**
+   * Fired when the websocket has an error.
+   */
   void onSocketError(Consumer<String> handler);
+  /**
+   * Removes handler that was previously added with {@link #onSocketError onSocketError(handler)}.
+   */
   void offSocketError(Consumer<String> handler);
 
   class WaitForFrameReceivedOptions {
