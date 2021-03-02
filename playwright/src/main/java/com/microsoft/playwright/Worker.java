@@ -60,8 +60,9 @@ public interface Worker {
   /**
    * Returns the return value of {@code expression}.
    *
-   * <p> If the function passed to the {@link Worker#evaluate Worker.evaluate()} returns a [Promise], then {@link Worker#evaluate
-   * Worker.evaluate()} would wait for the promise to resolve and return its value.
+   * <p> If the function passed to the {@link Worker#evaluate Worker.evaluate()} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Worker#evaluate Worker.evaluate()} would wait for the promise to resolve and return its value.
    *
    * <p> If the function passed to the {@link Worker#evaluate Worker.evaluate()} returns a non-[Serializable] value, then {@link
    * Worker#evaluate Worker.evaluate()} returns {@code undefined}. Playwright also supports transferring some  additional values
@@ -76,8 +77,9 @@ public interface Worker {
   /**
    * Returns the return value of {@code expression}.
    *
-   * <p> If the function passed to the {@link Worker#evaluate Worker.evaluate()} returns a [Promise], then {@link Worker#evaluate
-   * Worker.evaluate()} would wait for the promise to resolve and return its value.
+   * <p> If the function passed to the {@link Worker#evaluate Worker.evaluate()} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Worker#evaluate Worker.evaluate()} would wait for the promise to resolve and return its value.
    *
    * <p> If the function passed to the {@link Worker#evaluate Worker.evaluate()} returns a non-[Serializable] value, then {@link
    * Worker#evaluate Worker.evaluate()} returns {@code undefined}. Playwright also supports transferring some  additional values
@@ -94,7 +96,8 @@ public interface Worker {
    * <p> The only difference between {@link Worker#evaluate Worker.evaluate()} and {@link Worker#evaluateHandle
    * Worker.evaluateHandle()} is that {@link Worker#evaluateHandle Worker.evaluateHandle()} returns {@code JSHandle}.
    *
-   * <p> If the function passed to the {@link Worker#evaluateHandle Worker.evaluateHandle()} returns a [Promise], then {@link
+   * <p> If the function passed to the {@link Worker#evaluateHandle Worker.evaluateHandle()} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
    * Worker#evaluateHandle Worker.evaluateHandle()} would wait for the promise to resolve and return its value.
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
@@ -109,7 +112,8 @@ public interface Worker {
    * <p> The only difference between {@link Worker#evaluate Worker.evaluate()} and {@link Worker#evaluateHandle
    * Worker.evaluateHandle()} is that {@link Worker#evaluateHandle Worker.evaluateHandle()} returns {@code JSHandle}.
    *
-   * <p> If the function passed to the {@link Worker#evaluateHandle Worker.evaluateHandle()} returns a [Promise], then {@link
+   * <p> If the function passed to the {@link Worker#evaluateHandle Worker.evaluateHandle()} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
    * Worker#evaluateHandle Worker.evaluateHandle()} would wait for the promise to resolve and return its value.
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted

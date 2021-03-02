@@ -381,9 +381,9 @@ public interface Frame {
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
      * <ul>
-     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
-     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -613,9 +613,9 @@ public interface Frame {
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
      * <ul>
-     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
-     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -831,9 +831,9 @@ public interface Frame {
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
      * <ul>
-     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
-     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -861,14 +861,14 @@ public interface Frame {
   }
   class WaitForSelectorOptions {
     /**
-     * Defaults to {@code 'visible'}. Can be either:
+     * Defaults to {@code "visible"}. Can be either:
      * <ul>
-     * <li> {@code 'attached'} - wait for element to be present in DOM.</li>
-     * <li> {@code 'detached'} - wait for element to not be present in DOM.</li>
-     * <li> {@code 'visible'} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
+     * <li> {@code "attached"} - wait for element to be present in DOM.</li>
+     * <li> {@code "detached"} - wait for element to not be present in DOM.</li>
+     * <li> {@code "visible"} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
      * content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
-     * <li> {@code 'hidden'} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
-     * is opposite to the {@code 'visible'} option.</li>
+     * <li> {@code "hidden"} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
+     * is opposite to the {@code "visible"} option.</li>
      * </ul>
      */
     public WaitForSelectorState state;
@@ -1170,8 +1170,9 @@ public interface Frame {
    * {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If
    * no elements match the selector, the method throws an error.
    *
-   * <p> If {@code expression} returns a [Promise], then {@link Frame#evalOnSelector Frame.evalOnSelector()} would wait for the promise
-   * to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Frame#evalOnSelector Frame.evalOnSelector()} would wait for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -1195,8 +1196,9 @@ public interface Frame {
    * {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If
    * no elements match the selector, the method throws an error.
    *
-   * <p> If {@code expression} returns a [Promise], then {@link Frame#evalOnSelector Frame.evalOnSelector()} would wait for the promise
-   * to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Frame#evalOnSelector Frame.evalOnSelector()} would wait for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -1219,8 +1221,9 @@ public interface Frame {
    * as a first argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with
    * selectors</a> for more details.
    *
-   * <p> If {@code expression} returns a [Promise], then {@link Frame#evalOnSelectorAll Frame.evalOnSelectorAll()} would wait for the
-   * promise to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Frame#evalOnSelectorAll Frame.evalOnSelectorAll()} would wait for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -1242,8 +1245,9 @@ public interface Frame {
    * as a first argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with
    * selectors</a> for more details.
    *
-   * <p> If {@code expression} returns a [Promise], then {@link Frame#evalOnSelectorAll Frame.evalOnSelectorAll()} would wait for the
-   * promise to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Frame#evalOnSelectorAll Frame.evalOnSelectorAll()} would wait for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -1260,8 +1264,9 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression}.
    *
-   * <p> If the function passed to the {@link Frame#evaluate Frame.evaluate()} returns a [Promise], then {@link Frame#evaluate
-   * Frame.evaluate()} would wait for the promise to resolve and return its value.
+   * <p> If the function passed to the {@link Frame#evaluate Frame.evaluate()} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Frame#evaluate Frame.evaluate()} would wait for the promise to resolve and return its value.
    *
    * <p> If the function passed to the {@link Frame#evaluate Frame.evaluate()} returns a non-[Serializable] value, then {@link
    * Frame#evaluate Frame.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values that
@@ -1294,8 +1299,9 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression}.
    *
-   * <p> If the function passed to the {@link Frame#evaluate Frame.evaluate()} returns a [Promise], then {@link Frame#evaluate
-   * Frame.evaluate()} would wait for the promise to resolve and return its value.
+   * <p> If the function passed to the {@link Frame#evaluate Frame.evaluate()} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Frame#evaluate Frame.evaluate()} would wait for the promise to resolve and return its value.
    *
    * <p> If the function passed to the {@link Frame#evaluate Frame.evaluate()} returns a non-[Serializable] value, then {@link
    * Frame#evaluate Frame.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values that
@@ -1330,7 +1336,8 @@ public interface Frame {
    * <p> The only difference between {@link Frame#evaluate Frame.evaluate()} and {@link Frame#evaluateHandle
    * Frame.evaluateHandle()} is that [method: Frame.evaluateHandle{@code ] returns }JSHandle`.
    *
-   * <p> If the function, passed to the {@link Frame#evaluateHandle Frame.evaluateHandle()}, returns a [Promise], then {@link
+   * <p> If the function, passed to the {@link Frame#evaluateHandle Frame.evaluateHandle()}, returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
    * Frame#evaluateHandle Frame.evaluateHandle()} would wait for the promise to resolve and return its value.
    * <pre>{@code
    * // Handle for the window object.
@@ -1362,7 +1369,8 @@ public interface Frame {
    * <p> The only difference between {@link Frame#evaluate Frame.evaluate()} and {@link Frame#evaluateHandle
    * Frame.evaluateHandle()} is that [method: Frame.evaluateHandle{@code ] returns }JSHandle`.
    *
-   * <p> If the function, passed to the {@link Frame#evaluateHandle Frame.evaluateHandle()}, returns a [Promise], then {@link
+   * <p> If the function, passed to the {@link Frame#evaluateHandle Frame.evaluateHandle()}, returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
    * Frame#evaluateHandle Frame.evaluateHandle()} would wait for the promise to resolve and return its value.
    * <pre>{@code
    * // Handle for the window object.
@@ -2445,9 +2453,9 @@ public interface Frame {
    * @param state Optional load state to wait for, defaults to {@code load}. If the state has been already reached while loading current
    * document, the method resolves immediately. Can be one of:
    * <ul>
-   * <li> {@code 'load'} - wait for the {@code load} event to be fired.</li>
-   * <li> {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.</li>
-   * <li> {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.</li>
+   * <li> {@code "load"} - wait for the {@code load} event to be fired.</li>
+   * <li> {@code "domcontentloaded"} - wait for the {@code DOMContentLoaded} event to be fired.</li>
+   * <li> {@code "networkidle"} - wait until there are no network connections for at least {@code 500} ms.</li>
    * </ul>
    */
   default void waitForLoadState(LoadState state) {
@@ -2479,9 +2487,9 @@ public interface Frame {
    * @param state Optional load state to wait for, defaults to {@code load}. If the state has been already reached while loading current
    * document, the method resolves immediately. Can be one of:
    * <ul>
-   * <li> {@code 'load'} - wait for the {@code load} event to be fired.</li>
-   * <li> {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.</li>
-   * <li> {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.</li>
+   * <li> {@code "load"} - wait for the {@code load} event to be fired.</li>
+   * <li> {@code "domcontentloaded"} - wait for the {@code DOMContentLoaded} event to be fired.</li>
+   * <li> {@code "networkidle"} - wait until there are no network connections for at least {@code 500} ms.</li>
    * </ul>
    */
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);

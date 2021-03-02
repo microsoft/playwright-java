@@ -28,11 +28,11 @@ import java.util.*;
  * complete.</li>
  * </ul>
  *
- * <p> If request fails at some point, then instead of {@code 'requestfinished'} event (and possibly instead of 'response' event),
+ * <p> If request fails at some point, then instead of {@code "requestfinished"} event (and possibly instead of 'response' event),
  * the  {@link Page#onRequestFailed Page.onRequestFailed()} event is emitted.
  *
  * <p> <strong>NOTE:</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will complete
- * with {@code 'requestfinished'} event.
+ * with {@code "requestfinished"} event.
  *
  * <p> If request gets a 'redirect' response, the request is successfully finished with the 'requestfinished' event, and a new
  * request is  issued to a redirected url.

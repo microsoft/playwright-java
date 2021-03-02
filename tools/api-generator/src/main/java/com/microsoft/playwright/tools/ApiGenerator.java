@@ -149,6 +149,7 @@ abstract class Element {
     String linkified = linkifyMemberRefs(paragraph);
     linkified = updateExternalLinks(linkified);
     return wrapText(linkified, 120, "")
+      .replaceAll("`'([^`]+)'`", "{@code \"$1\"}")
       .replaceAll("`([^`]+)`", "{@code $1}");
   }
 
@@ -187,6 +188,8 @@ abstract class Element {
       start = matcher.end();
     }
     linkified += paragraph.substring(start);
+    linkified = linkified.replaceAll("\\[Promise\\]",
+      "<a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>");
     return linkified;
   }
 

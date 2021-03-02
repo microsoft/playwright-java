@@ -237,8 +237,11 @@ public interface BrowserContext extends AutoCloseable {
   List<Cookie> cookies(List<String> urls);
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context. When
-   * called, the function executes {@code callback} and returns a [Promise] which resolves to the return value of {@code callback}. If
-   * the {@code callback} returns a [Promise], it will be awaited.
+   * called, the function executes {@code callback} and returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a> which
+   * resolves to the return value of {@code callback}. If the {@code callback} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, it will be
+   * awaited.
    *
    * <p> The first argument of the {@code callback} function contains information about the caller: {@code { browserContext: BrowserContext,
    * page: Page, frame: Frame }}.
@@ -293,8 +296,11 @@ public interface BrowserContext extends AutoCloseable {
   }
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context. When
-   * called, the function executes {@code callback} and returns a [Promise] which resolves to the return value of {@code callback}. If
-   * the {@code callback} returns a [Promise], it will be awaited.
+   * called, the function executes {@code callback} and returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a> which
+   * resolves to the return value of {@code callback}. If the {@code callback} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, it will be
+   * awaited.
    *
    * <p> The first argument of the {@code callback} function contains information about the caller: {@code { browserContext: BrowserContext,
    * page: Page, frame: Frame }}.
@@ -347,9 +353,13 @@ public interface BrowserContext extends AutoCloseable {
   void exposeBinding(String name, BindingCallback callback, ExposeBindingOptions options);
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context. When
-   * called, the function executes {@code callback} and returns a [Promise] which resolves to the return value of {@code callback}.
+   * called, the function executes {@code callback} and returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a> which
+   * resolves to the return value of {@code callback}.
    *
-   * <p> If the {@code callback} returns a [Promise], it will be awaited.
+   * <p> If the {@code callback} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, it will be
+   * awaited.
    *
    * <p> See {@link Page#exposeFunction Page.exposeFunction()} for page-only version.
    *
@@ -402,22 +412,22 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @param permissions A permission or an array of permissions to grant. Permissions can be one of the following values:
    * <ul>
-   * <li> {@code 'geolocation'}</li>
-   * <li> {@code 'midi'}</li>
-   * <li> {@code 'midi-sysex'} (system-exclusive midi)</li>
-   * <li> {@code 'notifications'}</li>
-   * <li> {@code 'push'}</li>
-   * <li> {@code 'camera'}</li>
-   * <li> {@code 'microphone'}</li>
-   * <li> {@code 'background-sync'}</li>
-   * <li> {@code 'ambient-light-sensor'}</li>
-   * <li> {@code 'accelerometer'}</li>
-   * <li> {@code 'gyroscope'}</li>
-   * <li> {@code 'magnetometer'}</li>
-   * <li> {@code 'accessibility-events'}</li>
-   * <li> {@code 'clipboard-read'}</li>
-   * <li> {@code 'clipboard-write'}</li>
-   * <li> {@code 'payment-handler'}</li>
+   * <li> {@code "geolocation"}</li>
+   * <li> {@code "midi"}</li>
+   * <li> {@code "midi-sysex"} (system-exclusive midi)</li>
+   * <li> {@code "notifications"}</li>
+   * <li> {@code "push"}</li>
+   * <li> {@code "camera"}</li>
+   * <li> {@code "microphone"}</li>
+   * <li> {@code "background-sync"}</li>
+   * <li> {@code "ambient-light-sensor"}</li>
+   * <li> {@code "accelerometer"}</li>
+   * <li> {@code "gyroscope"}</li>
+   * <li> {@code "magnetometer"}</li>
+   * <li> {@code "accessibility-events"}</li>
+   * <li> {@code "clipboard-read"}</li>
+   * <li> {@code "clipboard-write"}</li>
+   * <li> {@code "payment-handler"}</li>
    * </ul>
    */
   default void grantPermissions(List<String> permissions) {
@@ -429,22 +439,22 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @param permissions A permission or an array of permissions to grant. Permissions can be one of the following values:
    * <ul>
-   * <li> {@code 'geolocation'}</li>
-   * <li> {@code 'midi'}</li>
-   * <li> {@code 'midi-sysex'} (system-exclusive midi)</li>
-   * <li> {@code 'notifications'}</li>
-   * <li> {@code 'push'}</li>
-   * <li> {@code 'camera'}</li>
-   * <li> {@code 'microphone'}</li>
-   * <li> {@code 'background-sync'}</li>
-   * <li> {@code 'ambient-light-sensor'}</li>
-   * <li> {@code 'accelerometer'}</li>
-   * <li> {@code 'gyroscope'}</li>
-   * <li> {@code 'magnetometer'}</li>
-   * <li> {@code 'accessibility-events'}</li>
-   * <li> {@code 'clipboard-read'}</li>
-   * <li> {@code 'clipboard-write'}</li>
-   * <li> {@code 'payment-handler'}</li>
+   * <li> {@code "geolocation"}</li>
+   * <li> {@code "midi"}</li>
+   * <li> {@code "midi-sysex"} (system-exclusive midi)</li>
+   * <li> {@code "notifications"}</li>
+   * <li> {@code "push"}</li>
+   * <li> {@code "camera"}</li>
+   * <li> {@code "microphone"}</li>
+   * <li> {@code "background-sync"}</li>
+   * <li> {@code "ambient-light-sensor"}</li>
+   * <li> {@code "accelerometer"}</li>
+   * <li> {@code "gyroscope"}</li>
+   * <li> {@code "magnetometer"}</li>
+   * <li> {@code "accessibility-events"}</li>
+   * <li> {@code "clipboard-read"}</li>
+   * <li> {@code "clipboard-write"}</li>
+   * <li> {@code "payment-handler"}</li>
    * </ul>
    */
   void grantPermissions(List<String> permissions, GrantPermissionsOptions options);

@@ -575,12 +575,12 @@ public interface Page extends AutoCloseable {
   }
   class EmulateMediaOptions {
     /**
-     * Emulates {@code 'prefers-colors-scheme'} media feature, supported values are {@code 'light'}, {@code 'dark'}, {@code 'no-preference'}. Passing
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. Passing
      * {@code null} disables color scheme emulation.
      */
     public Optional<ColorScheme> colorScheme;
     /**
-     * Changes the CSS media type of the page. The only allowed values are {@code 'screen'}, {@code 'print'} and {@code null}. Passing {@code null}
+     * Changes the CSS media type of the page. The only allowed values are {@code "screen"}, {@code "print"} and {@code null}. Passing {@code null}
      * disables CSS media emulation.
      */
     public Optional<Media> media;
@@ -666,9 +666,9 @@ public interface Page extends AutoCloseable {
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
      * <ul>
-     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
-     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -693,9 +693,9 @@ public interface Page extends AutoCloseable {
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
      * <ul>
-     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
-     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -725,9 +725,9 @@ public interface Page extends AutoCloseable {
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
      * <ul>
-     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
-     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -909,11 +909,11 @@ public interface Page extends AutoCloseable {
      * HTML template for the print header. Should be valid HTML markup with following classes used to inject printing values
      * into them:
      * <ul>
-     * <li> {@code 'date'} formatted print date</li>
-     * <li> {@code 'title'} document title</li>
-     * <li> {@code 'url'} document location</li>
-     * <li> {@code 'pageNumber'} current page number</li>
-     * <li> {@code 'totalPages'} total pages in the document</li>
+     * <li> {@code "date"} formatted print date</li>
+     * <li> {@code "title"} document title</li>
+     * <li> {@code "url"} document location</li>
+     * <li> {@code "pageNumber"} current page number</li>
+     * <li> {@code "totalPages"} total pages in the document</li>
      * </ul>
      */
     public String headerTemplate;
@@ -1051,9 +1051,9 @@ public interface Page extends AutoCloseable {
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
      * <ul>
-     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
-     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -1169,9 +1169,9 @@ public interface Page extends AutoCloseable {
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
      * <ul>
-     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
-     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -1459,9 +1459,9 @@ public interface Page extends AutoCloseable {
     /**
      * When to consider operation succeeded, defaults to {@code load}. Events can be either:
      * <ul>
-     * <li> {@code 'domcontentloaded'} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
-     * <li> {@code 'load'} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code 'networkidle'} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -1534,14 +1534,14 @@ public interface Page extends AutoCloseable {
   }
   class WaitForSelectorOptions {
     /**
-     * Defaults to {@code 'visible'}. Can be either:
+     * Defaults to {@code "visible"}. Can be either:
      * <ul>
-     * <li> {@code 'attached'} - wait for element to be present in DOM.</li>
-     * <li> {@code 'detached'} - wait for element to not be present in DOM.</li>
-     * <li> {@code 'visible'} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
+     * <li> {@code "attached"} - wait for element to be present in DOM.</li>
+     * <li> {@code "detached"} - wait for element to not be present in DOM.</li>
+     * <li> {@code "visible"} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
      * content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
-     * <li> {@code 'hidden'} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
-     * is opposite to the {@code 'visible'} option.</li>
+     * <li> {@code "hidden"} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
+     * is opposite to the {@code "visible"} option.</li>
      * </ul>
      */
     public WaitForSelectorState state;
@@ -2032,8 +2032,9 @@ public interface Page extends AutoCloseable {
    * The method finds an element matching the specified selector within the page and passes it as a first argument to
    * {@code expression}. If no elements match the selector, the method throws an error. Returns the value of {@code expression}.
    *
-   * <p> If {@code expression} returns a [Promise], then {@link Page#evalOnSelector Page.evalOnSelector()} would wait for the promise
-   * to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Page#evalOnSelector Page.evalOnSelector()} would wait for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -2056,8 +2057,9 @@ public interface Page extends AutoCloseable {
    * The method finds an element matching the specified selector within the page and passes it as a first argument to
    * {@code expression}. If no elements match the selector, the method throws an error. Returns the value of {@code expression}.
    *
-   * <p> If {@code expression} returns a [Promise], then {@link Page#evalOnSelector Page.evalOnSelector()} would wait for the promise
-   * to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Page#evalOnSelector Page.evalOnSelector()} would wait for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -2079,8 +2081,9 @@ public interface Page extends AutoCloseable {
    * The method finds all elements matching the specified selector within the page and passes an array of matched elements as
    * a first argument to {@code expression}. Returns the result of {@code expression} invocation.
    *
-   * <p> If {@code expression} returns a [Promise], then {@link Page#evalOnSelectorAll Page.evalOnSelectorAll()} would wait for the
-   * promise to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Page#evalOnSelectorAll Page.evalOnSelectorAll()} would wait for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -2099,8 +2102,9 @@ public interface Page extends AutoCloseable {
    * The method finds all elements matching the specified selector within the page and passes an array of matched elements as
    * a first argument to {@code expression}. Returns the result of {@code expression} invocation.
    *
-   * <p> If {@code expression} returns a [Promise], then {@link Page#evalOnSelectorAll Page.evalOnSelectorAll()} would wait for the
-   * promise to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Page#evalOnSelectorAll Page.evalOnSelectorAll()} would wait for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -2117,8 +2121,9 @@ public interface Page extends AutoCloseable {
   /**
    * Returns the value of the {@code expression} invocation.
    *
-   * <p> If the function passed to the {@link Page#evaluate Page.evaluate()} returns a [Promise], then {@link Page#evaluate
-   * Page.evaluate()} would wait for the promise to resolve and return its value.
+   * <p> If the function passed to the {@link Page#evaluate Page.evaluate()} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Page#evaluate Page.evaluate()} would wait for the promise to resolve and return its value.
    *
    * <p> If the function passed to the {@link Page#evaluate Page.evaluate()} returns a non-[Serializable] value, then {@link
    * Page#evaluate Page.evaluate()} resolves to {@code undefined}. Playwright also supports transferring some additional values
@@ -2155,8 +2160,9 @@ public interface Page extends AutoCloseable {
   /**
    * Returns the value of the {@code expression} invocation.
    *
-   * <p> If the function passed to the {@link Page#evaluate Page.evaluate()} returns a [Promise], then {@link Page#evaluate
-   * Page.evaluate()} would wait for the promise to resolve and return its value.
+   * <p> If the function passed to the {@link Page#evaluate Page.evaluate()} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Page#evaluate Page.evaluate()} would wait for the promise to resolve and return its value.
    *
    * <p> If the function passed to the {@link Page#evaluate Page.evaluate()} returns a non-[Serializable] value, then {@link
    * Page#evaluate Page.evaluate()} resolves to {@code undefined}. Playwright also supports transferring some additional values
@@ -2195,7 +2201,8 @@ public interface Page extends AutoCloseable {
    * <p> The only difference between {@link Page#evaluate Page.evaluate()} and {@link Page#evaluateHandle Page.evaluateHandle()}
    * is that {@link Page#evaluateHandle Page.evaluateHandle()} returns {@code JSHandle}.
    *
-   * <p> If the function passed to the {@link Page#evaluateHandle Page.evaluateHandle()} returns a [Promise], then {@link
+   * <p> If the function passed to the {@link Page#evaluateHandle Page.evaluateHandle()} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
    * Page#evaluateHandle Page.evaluateHandle()} would wait for the promise to resolve and return its value.
    * <pre>{@code
    * // Handle for the window object.
@@ -2227,7 +2234,8 @@ public interface Page extends AutoCloseable {
    * <p> The only difference between {@link Page#evaluate Page.evaluate()} and {@link Page#evaluateHandle Page.evaluateHandle()}
    * is that {@link Page#evaluateHandle Page.evaluateHandle()} returns {@code JSHandle}.
    *
-   * <p> If the function passed to the {@link Page#evaluateHandle Page.evaluateHandle()} returns a [Promise], then {@link
+   * <p> If the function passed to the {@link Page#evaluateHandle Page.evaluateHandle()} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
    * Page#evaluateHandle Page.evaluateHandle()} would wait for the promise to resolve and return its value.
    * <pre>{@code
    * // Handle for the window object.
@@ -2254,8 +2262,11 @@ public interface Page extends AutoCloseable {
   JSHandle evaluateHandle(String expression, Object arg);
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in this page. When called, the function
-   * executes {@code callback} and returns a [Promise] which resolves to the return value of {@code callback}. If the {@code callback} returns
-   * a [Promise], it will be awaited.
+   * executes {@code callback} and returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a> which
+   * resolves to the return value of {@code callback}. If the {@code callback} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, it will be
+   * awaited.
    *
    * <p> The first argument of the {@code callback} function contains information about the caller: {@code { browserContext: BrowserContext,
    * page: Page, frame: Frame }}.
@@ -2312,8 +2323,11 @@ public interface Page extends AutoCloseable {
   }
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in this page. When called, the function
-   * executes {@code callback} and returns a [Promise] which resolves to the return value of {@code callback}. If the {@code callback} returns
-   * a [Promise], it will be awaited.
+   * executes {@code callback} and returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a> which
+   * resolves to the return value of {@code callback}. If the {@code callback} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, it will be
+   * awaited.
    *
    * <p> The first argument of the {@code callback} function contains information about the caller: {@code { browserContext: BrowserContext,
    * page: Page, frame: Frame }}.
@@ -2368,9 +2382,13 @@ public interface Page extends AutoCloseable {
   void exposeBinding(String name, BindingCallback callback, ExposeBindingOptions options);
   /**
    * The method adds a function called {@code name} on the {@code window} object of every frame in the page. When called, the function
-   * executes {@code callback} and returns a [Promise] which resolves to the return value of {@code callback}.
+   * executes {@code callback} and returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a> which
+   * resolves to the return value of {@code callback}.
    *
-   * <p> If the {@code callback} returns a [Promise], it will be awaited.
+   * <p> If the {@code callback} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, it will be
+   * awaited.
    *
    * <p> See {@link BrowserContext#exposeFunction BrowserContext.exposeFunction()} for context-wide exposed function.
    *
@@ -4028,9 +4046,9 @@ public interface Page extends AutoCloseable {
    * @param state Optional load state to wait for, defaults to {@code load}. If the state has been already reached while loading current
    * document, the method resolves immediately. Can be one of:
    * <ul>
-   * <li> {@code 'load'} - wait for the {@code load} event to be fired.</li>
-   * <li> {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.</li>
-   * <li> {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.</li>
+   * <li> {@code "load"} - wait for the {@code load} event to be fired.</li>
+   * <li> {@code "domcontentloaded"} - wait for the {@code DOMContentLoaded} event to be fired.</li>
+   * <li> {@code "networkidle"} - wait until there are no network connections for at least {@code 500} ms.</li>
    * </ul>
    */
   default void waitForLoadState(LoadState state) {
@@ -4080,9 +4098,9 @@ public interface Page extends AutoCloseable {
    * @param state Optional load state to wait for, defaults to {@code load}. If the state has been already reached while loading current
    * document, the method resolves immediately. Can be one of:
    * <ul>
-   * <li> {@code 'load'} - wait for the {@code load} event to be fired.</li>
-   * <li> {@code 'domcontentloaded'} - wait for the {@code DOMContentLoaded} event to be fired.</li>
-   * <li> {@code 'networkidle'} - wait until there are no network connections for at least {@code 500} ms.</li>
+   * <li> {@code "load"} - wait for the {@code load} event to be fired.</li>
+   * <li> {@code "domcontentloaded"} - wait for the {@code DOMContentLoaded} event to be fired.</li>
+   * <li> {@code "networkidle"} - wait until there are no network connections for at least {@code 500} ms.</li>
    * </ul>
    */
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
