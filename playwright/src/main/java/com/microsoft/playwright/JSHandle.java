@@ -47,7 +47,9 @@ public interface JSHandle {
    *
    * <p> This method passes this handle as the first argument to {@code expression}.
    *
-   * <p> If {@code expression} returns a [Promise], then {@code handle.evaluate} would wait for the promise to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
+   * {@code handle.evaluate} would wait for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -66,7 +68,9 @@ public interface JSHandle {
    *
    * <p> This method passes this handle as the first argument to {@code expression}.
    *
-   * <p> If {@code expression} returns a [Promise], then {@code handle.evaluate} would wait for the promise to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
+   * {@code handle.evaluate} would wait for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -87,8 +91,9 @@ public interface JSHandle {
    * <p> The only difference between {@code jsHandle.evaluate} and {@code jsHandle.evaluateHandle} is that {@code jsHandle.evaluateHandle} returns
    * {@code JSHandle}.
    *
-   * <p> If the function passed to the {@code jsHandle.evaluateHandle} returns a [Promise], then {@code jsHandle.evaluateHandle} would wait
-   * for the promise to resolve and return its value.
+   * <p> If the function passed to the {@code jsHandle.evaluateHandle} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
+   * {@code jsHandle.evaluateHandle} would wait for the promise to resolve and return its value.
    *
    * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
@@ -106,8 +111,9 @@ public interface JSHandle {
    * <p> The only difference between {@code jsHandle.evaluate} and {@code jsHandle.evaluateHandle} is that {@code jsHandle.evaluateHandle} returns
    * {@code JSHandle}.
    *
-   * <p> If the function passed to the {@code jsHandle.evaluateHandle} returns a [Promise], then {@code jsHandle.evaluateHandle} would wait
-   * for the promise to resolve and return its value.
+   * <p> If the function passed to the {@code jsHandle.evaluateHandle} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
+   * {@code jsHandle.evaluateHandle} would wait for the promise to resolve and return its value.
    *
    * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
    *

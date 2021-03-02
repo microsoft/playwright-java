@@ -29,9 +29,9 @@ public interface ConsoleMessage {
   String location();
   String text();
   /**
-   * One of the following values: {@code 'log'}, {@code 'debug'}, {@code 'info'}, {@code 'error'}, {@code 'warning'}, {@code 'dir'}, {@code 'dirxml'}, {@code 'table'},
-   * {@code 'trace'}, {@code 'clear'}, {@code 'startGroup'}, {@code 'startGroupCollapsed'}, {@code 'endGroup'}, {@code 'assert'}, {@code 'profile'}, {@code 'profileEnd'},
-   * {@code 'count'}, {@code 'timeEnd'}.
+   * One of the following values: {@code "log"}, {@code "debug"}, {@code "info"}, {@code "error"}, {@code "warning"}, {@code "dir"}, {@code "dirxml"}, {@code "table"},
+   * {@code "trace"}, {@code "clear"}, {@code "startGroup"}, {@code "startGroupCollapsed"}, {@code "endGroup"}, {@code "assert"}, {@code "profile"}, {@code "profileEnd"},
+   * {@code "count"}, {@code "timeEnd"}.
    */
   String type();
 }

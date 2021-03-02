@@ -574,14 +574,14 @@ public interface ElementHandle extends JSHandle {
   }
   class WaitForSelectorOptions {
     /**
-     * Defaults to {@code 'visible'}. Can be either:
+     * Defaults to {@code "visible"}. Can be either:
      * <ul>
-     * <li> {@code 'attached'} - wait for element to be present in DOM.</li>
-     * <li> {@code 'detached'} - wait for element to not be present in DOM.</li>
-     * <li> {@code 'visible'} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
+     * <li> {@code "attached"} - wait for element to be present in DOM.</li>
+     * <li> {@code "detached"} - wait for element to not be present in DOM.</li>
+     * <li> {@code "visible"} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
      * content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
-     * <li> {@code 'hidden'} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
-     * is opposite to the {@code 'visible'} option.</li>
+     * <li> {@code "hidden"} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
+     * is opposite to the {@code "visible"} option.</li>
      * </ul>
      */
     public WaitForSelectorState state;
@@ -816,8 +816,9 @@ public interface ElementHandle extends JSHandle {
    * argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more
    * details. If no elements match the selector, the method throws an error.
    *
-   * <p> If {@code expression} returns a [Promise], then {@link ElementHandle#evalOnSelector ElementHandle.evalOnSelector()} would wait
-   * for the promise to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * ElementHandle#evalOnSelector ElementHandle.evalOnSelector()} would wait for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -841,8 +842,9 @@ public interface ElementHandle extends JSHandle {
    * argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more
    * details. If no elements match the selector, the method throws an error.
    *
-   * <p> If {@code expression} returns a [Promise], then {@link ElementHandle#evalOnSelector ElementHandle.evalOnSelector()} would wait
-   * for the promise to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * ElementHandle#evalOnSelector ElementHandle.evalOnSelector()} would wait for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -865,8 +867,10 @@ public interface ElementHandle extends JSHandle {
    * matched elements as a first argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working
    * with selectors</a> for more details.
    *
-   * <p> If {@code expression} returns a [Promise], then {@link ElementHandle#evalOnSelectorAll ElementHandle.evalOnSelectorAll()}
-   * would wait for the promise to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * ElementHandle#evalOnSelectorAll ElementHandle.evalOnSelectorAll()} would wait for the promise to resolve and return its
+   * value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -889,8 +893,10 @@ public interface ElementHandle extends JSHandle {
    * matched elements as a first argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working
    * with selectors</a> for more details.
    *
-   * <p> If {@code expression} returns a [Promise], then {@link ElementHandle#evalOnSelectorAll ElementHandle.evalOnSelectorAll()}
-   * would wait for the promise to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * ElementHandle#evalOnSelectorAll ElementHandle.evalOnSelectorAll()} would wait for the promise to resolve and return its
+   * value.
    *
    * <p> Examples:
    * <pre>{@code
