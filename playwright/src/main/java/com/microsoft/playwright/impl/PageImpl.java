@@ -262,12 +262,12 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void onConsole(Consumer<ConsoleMessage> handler) {
+  public void onConsoleMessage(Consumer<ConsoleMessage> handler) {
     listeners.add(EventType.CONSOLE, handler);
   }
 
   @Override
-  public void offConsole(Consumer<ConsoleMessage> handler) {
+  public void offConsoleMessage(Consumer<ConsoleMessage> handler) {
     listeners.remove(EventType.CONSOLE, handler);
   }
 

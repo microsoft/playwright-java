@@ -140,7 +140,7 @@ public class TestClick extends TestBase {
   void shouldClickOffscreenButtons() {
     page.navigate(server.PREFIX + "/offscreenbuttons.html");
     List<String> messages = new ArrayList<>();
-    page.onConsole(message -> messages.add(message.text()));
+    page.onConsoleMessage(message -> messages.add(message.text()));
     for (int i = 0; i < 11; ++i) {
       // We might've scrolled to click a button - reset to (0, 0).
       page.evaluate("() => window.scrollTo(0, 0)");

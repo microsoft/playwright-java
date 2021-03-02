@@ -264,7 +264,7 @@ public class TestPageBasic extends TestBase {
   void pagePressShouldWorkForEnter() {
     page.setContent("<input onkeypress='console.log(\"press\")'></input>");
     List<ConsoleMessage> messages = new ArrayList<>();
-    page.onConsole(message ->  messages.add(message));
+    page.onConsoleMessage(message ->  messages.add(message));
     page.press("input", "Enter");
     assertEquals("press", messages.get(0).text());
   }
