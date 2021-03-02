@@ -586,7 +586,6 @@ class Method extends Element {
 
   private static Map<String, String[]> customSignature = new HashMap<>();
   static {
-    customSignature.put("Page.setViewportSize", new String[]{"void setViewportSize(int width, int height);"});
     customSignature.put("Playwright.create", new String[]{
       "static Playwright create() {",
       "  return PlaywrightImpl.create();",
@@ -610,11 +609,11 @@ class Method extends Element {
   }
 
   void writeTo(List<String> output, String offset) {
-    if (customSignature.containsKey(jsonPath)) {
+    if ("Playwright.create".equals(jsonPath)) {
       writeJavadoc(params, output, offset);
-      for (String line : customSignature.get(jsonPath)) {
-        output.add(offset + line);
-      }
+      output.add(offset + "static Playwright create() {");
+      output.add(offset + "  return PlaywrightImpl.create();");
+      output.add(offset + "}");
       return;
     }
     int numOverloads = 1;
@@ -899,12 +898,6 @@ class Interface extends TypeDefinition {
     super.writeTo(output, offset);
     for (Method m : methods) {
       m.writeTo(output, offset);
-    }
-    if ("Playwright".equals(jsonName)) {
-      output.add("");
-      output.add(offset + "static Playwright create() {");
-      output.add(offset + "  return PlaywrightImpl.create();");
-      output.add(offset + "}");
     }
     output.add("}");
     output.add("\n");
