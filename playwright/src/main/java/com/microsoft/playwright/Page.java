@@ -92,11 +92,11 @@ public interface Page extends AutoCloseable {
    * page.evaluate("() => console.log('hello', 5, {foo: 'bar'})");
    * }</pre>
    */
-  void onConsole(Consumer<ConsoleMessage> handler);
+  void onConsoleMessage(Consumer<ConsoleMessage> handler);
   /**
-   * Removes handler that was previously added with {@link #onConsole onConsole(handler)}.
+   * Removes handler that was previously added with {@link #onConsoleMessage onConsoleMessage(handler)}.
    */
-  void offConsole(Consumer<ConsoleMessage> handler);
+  void offConsoleMessage(Consumer<ConsoleMessage> handler);
 
   /**
    * Emitted when the page crashes. Browser pages might crash if they try to allocate too much memory. When the page crashes,

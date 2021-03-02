@@ -72,7 +72,7 @@ public class TestWaitForFunction extends TestBase {
   @Test
   void shouldAvoidSideEffectsAfterTimeout() {
     int[] counter = { 0 };
-    page.onConsole(message -> ++counter[0]);
+    page.onConsoleMessage(message -> ++counter[0]);
 
     try {
       JSHandle result = page.waitForFunction("() => {\n" +
@@ -238,7 +238,7 @@ public class TestWaitForFunction extends TestBase {
     void shouldNotBeCalledAfterFinishingSuccessfully() {
       page.navigate(server.EMPTY_PAGE);
       List<String> messages = new ArrayList<>();
-      page.onConsole(msg -> {
+      page.onConsoleMessage(msg -> {
         if (msg.text().startsWith("waitForFunction")) {
           messages.add(msg.text());
         }
@@ -264,7 +264,7 @@ public class TestWaitForFunction extends TestBase {
   void shouldNotBeCalledAfterFinishingUnsuccessfully() {
     page.navigate(server.EMPTY_PAGE);
     List<String> messages = new ArrayList<>();
-    page.onConsole(msg -> {
+    page.onConsoleMessage(msg -> {
       if (msg.text().startsWith("waitForFunction")) {
         messages.add(msg.text());
       }
