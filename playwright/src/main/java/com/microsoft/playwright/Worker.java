@@ -35,7 +35,14 @@ import java.util.function.Consumer;
  */
 public interface Worker {
 
+  /**
+   * Emitted when this dedicated <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API">WebWorker</a> is
+   * terminated.
+   */
   void onClose(Consumer<Worker> handler);
+  /**
+   * Removes handler that was previously added with {@link #onClose onClose(handler)}.
+   */
   void offClose(Consumer<Worker> handler);
 
   class WaitForCloseOptions {

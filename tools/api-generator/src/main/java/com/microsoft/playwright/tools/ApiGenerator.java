@@ -570,10 +570,12 @@ class Event extends Element {
   }
 
   void writeListenerMethods(List<String> output, String offset) {
+    writeJavadoc(output, offset, comment());
     String name = toTitle(jsonName);
     String paramType = type.toJava();
     String listenerType = "Consumer<" + paramType + ">";
     output.add(offset + "void on" + name + "(" + listenerType + " handler);");
+    writeJavadoc(output, offset, "Removes handler that was previously added with {@link #on" + name + " on" + name + "(handler)}.");
     output.add(offset + "void off" + name + "(" + listenerType + " handler);");
   }
 }

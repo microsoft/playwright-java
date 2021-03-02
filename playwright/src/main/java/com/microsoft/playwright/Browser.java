@@ -42,7 +42,17 @@ import java.util.function.Consumer;
  */
 public interface Browser extends AutoCloseable {
 
+  /**
+   * Emitted when Browser gets disconnected from the browser application. This might happen because of one of the following:
+   * <ul>
+   * <li> Browser application is closed or crashed.</li>
+   * <li> The {@link Browser#close Browser.close()} method was called.</li>
+   * </ul>
+   */
   void onDisconnected(Consumer<Browser> handler);
+  /**
+   * Removes handler that was previously added with {@link #onDisconnected onDisconnected(handler)}.
+   */
   void offDisconnected(Consumer<Browser> handler);
 
   class NewContextOptions {
