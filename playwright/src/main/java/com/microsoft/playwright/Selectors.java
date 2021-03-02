@@ -20,8 +20,8 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * Selectors can be used to install custom selector engines. See [Working with selectors](./selectors.md) for more
- * information.
+ * Selectors can be used to install custom selector engines. See <a
+ * href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more information.
  */
 public interface Selectors {
   class RegisterOptions {

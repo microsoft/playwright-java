@@ -146,9 +146,50 @@ abstract class Element {
   }
 
   private static String beautify(String paragraph) {
-    return wrapText(paragraph, 120, "")
+    String linkified = linkifyMemberRefs(paragraph);
+    linkified = updateExternalLinks(linkified);
+    return wrapText(linkified, 120, "")
       .replaceAll("`([^`]+)`", "{@code $1}");
   }
+
+  private static String linkifyMemberRefs(String paragraph) {
+    Matcher matcher = Pattern.compile("\\[`(event|property|method): ([^`]+)`]").matcher(paragraph);
+    String linkified = "";
+    int start = 0;
+    while (matcher.find()) {
+      linkified += paragraph.substring(start, matcher.start());
+      String name = matcher.group(2);
+      if ("event".equals(matcher.group(1))) {
+        String[] parts = name.split("\\.");
+        name = parts[0] + ".on" + toTitle(parts[1]);
+      }
+      linkified += "{@link " + name.replace(".", "#") + " " + name + "()}";
+      start = matcher.end();
+    }
+    linkified += paragraph.substring(start);
+    return linkified;
+  }
+
+  private static String updateExternalLinks(String paragraph) {
+    Matcher matcher = Pattern.compile("\\[([^\\]]+)\\]\\(([^\\)]+)\\)").matcher(paragraph);
+    String linkified = "";
+    int start = 0;
+    while (matcher.find()) {
+      String url = matcher.group(2);
+      if (url.startsWith("./")) {
+        // ./actionability.md#editable => https://playwright.dev/java/docs/actionability/#editable
+        url = url.replace(".md", "/");
+        url = url.replace("./", "https://playwright.dev/java/docs/");
+      }
+      String link = "<a href=\"" + url + "\">" + matcher.group(1) + "</a>";
+      linkified += paragraph.substring(start, matcher.start());
+      linkified += link;
+      start = matcher.end();
+    }
+    linkified += paragraph.substring(start);
+    return linkified;
+  }
+
 
   private static List<String> tokenizeNoBreakLinks(String text) {
      List<String> links = new ArrayList<>();

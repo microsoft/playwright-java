@@ -19,19 +19,19 @@ package com.microsoft.playwright;
 import java.util.*;
 
 /**
- * JSHandle represents an in-page JavaScript object. JSHandles can be created with the [{@code method: Page.evaluateHandle}]
- * method.
+ * JSHandle represents an in-page JavaScript object. JSHandles can be created with the {@link Page#evaluateHandle
+ * Page.evaluateHandle()} method.
  * <pre>{@code
  * JSHandle windowHandle = page.evaluateHandle("() => window");
  * // ...
  * }</pre>
  *
- * <p> JSHandle prevents the referenced JavaScript object being garbage collected unless the handle is exposed with
- * [{@code method: JSHandle.dispose}]. JSHandles are auto-disposed when their origin frame gets navigated or the parent context
- * gets destroyed.
+ * <p> JSHandle prevents the referenced JavaScript object being garbage collected unless the handle is exposed with {@link
+ * JSHandle#dispose JSHandle.dispose()}. JSHandles are auto-disposed when their origin frame gets navigated or the parent
+ * context gets destroyed.
  *
- * <p> JSHandle instances can be used as an argument in [{@code method: Page.evalOnSelector}], [{@code method: Page.evaluate}] and
- * [{@code method: Page.evaluateHandle}] methods.
+ * <p> JSHandle instances can be used as an argument in {@link Page#evalOnSelector Page.evalOnSelector()}, {@link Page#evaluate
+ * Page.evaluate()} and {@link Page#evaluateHandle Page.evaluateHandle()} methods.
  */
 public interface JSHandle {
   /**
@@ -90,7 +90,7 @@ public interface JSHandle {
    * <p> If the function passed to the {@code jsHandle.evaluateHandle} returns a [Promise], then {@code jsHandle.evaluateHandle} would wait
    * for the promise to resolve and return its value.
    *
-   * <p> See [{@code method: Page.evaluateHandle}] for more details.
+   * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
@@ -109,7 +109,7 @@ public interface JSHandle {
    * <p> If the function passed to the {@code jsHandle.evaluateHandle} returns a [Promise], then {@code jsHandle.evaluateHandle} would wait
    * for the promise to resolve and return its value.
    *
-   * <p> See [{@code method: Page.evaluateHandle}] for more details.
+   * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.

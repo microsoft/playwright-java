@@ -22,7 +22,7 @@ import java.util.*;
 /**
  * The Mouse class operates in main-frame CSS pixels relative to the top-left corner of the viewport.
  *
- * <p> Every {@code page} object has its own Mouse, accessible with [{@code property: Page.mouse}].
+ * <p> Every {@code page} object has its own Mouse, accessible with {@link Page#mouse Page.mouse()}.
  * <pre>{@code
  * // Using ‘page.mouse’ to trace a 100x100 square.
  * page.mouse().move(0, 0);
@@ -131,25 +131,25 @@ public interface Mouse {
     }
   }
   /**
-   * Shortcut for [{@code method: Mouse.move}], [{@code method: Mouse.down}], [{@code method: Mouse.up}].
+   * Shortcut for {@link Mouse#move Mouse.move()}, {@link Mouse#down Mouse.down()}, {@link Mouse#up Mouse.up()}.
    */
   default void click(double x, double y) {
     click(x, y, null);
   }
   /**
-   * Shortcut for [{@code method: Mouse.move}], [{@code method: Mouse.down}], [{@code method: Mouse.up}].
+   * Shortcut for {@link Mouse#move Mouse.move()}, {@link Mouse#down Mouse.down()}, {@link Mouse#up Mouse.up()}.
    */
   void click(double x, double y, ClickOptions options);
   /**
-   * Shortcut for [{@code method: Mouse.move}], [{@code method: Mouse.down}], [{@code method: Mouse.up}], [{@code method: Mouse.down}] and
-   * [{@code method: Mouse.up}].
+   * Shortcut for {@link Mouse#move Mouse.move()}, {@link Mouse#down Mouse.down()}, {@link Mouse#up Mouse.up()}, {@link
+   * Mouse#down Mouse.down()} and {@link Mouse#up Mouse.up()}.
    */
   default void dblclick(double x, double y) {
     dblclick(x, y, null);
   }
   /**
-   * Shortcut for [{@code method: Mouse.move}], [{@code method: Mouse.down}], [{@code method: Mouse.up}], [{@code method: Mouse.down}] and
-   * [{@code method: Mouse.up}].
+   * Shortcut for {@link Mouse#move Mouse.move()}, {@link Mouse#down Mouse.down()}, {@link Mouse#up Mouse.up()}, {@link
+   * Mouse#down Mouse.down()} and {@link Mouse#up Mouse.up()}.
    */
   void dblclick(double x, double y, DblclickOptions options);
   /**

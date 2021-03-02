@@ -21,7 +21,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * {@code Download} objects are dispatched by page via the [{@code event: Page.download}] event.
+ * {@code Download} objects are dispatched by page via the {@link Page#onDownload Page.onDownload()} event.
  *
  * <p> All the downloaded files belonging to the browser context are deleted when the browser context is closed. All downloaded
  * files are deleted when the browser closes.
@@ -70,10 +70,11 @@ public interface Download {
    */
   void saveAs(Path path);
   /**
-   * Returns suggested filename for this download. It is typically computed by the browser from the
-   * [{@code Content-Disposition}](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition) response header
-   * or the {@code download} attribute. See the spec on [whatwg](https://html.spec.whatwg.org/#downloading-resources). Different
-   * browsers can use different logic for computing it.
+   * Returns suggested filename for this download. It is typically computed by the browser from the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition">{@code Content-Disposition}</a> response
+   * header or the {@code download} attribute. See the spec on <a
+   * href="https://html.spec.whatwg.org/#downloading-resources">whatwg</a>. Different browsers can use different logic for
+   * computing it.
    */
   String suggestedFilename();
   /**

@@ -23,16 +23,16 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
- * At every point of time, page exposes its current frame tree via the [{@code method: Page.mainFrame}] and
- * [{@code method: Frame.childFrames}] methods.
+ * At every point of time, page exposes its current frame tree via the {@link Page#mainFrame Page.mainFrame()} and {@link
+ * Frame#childFrames Frame.childFrames()} methods.
  *
  * <p> {@code Frame} object's lifecycle is controlled by three events, dispatched on the page object:
  * <ul>
- * <li> [{@code event: Page.frameAttached}] - fired when the frame gets attached to the page. A Frame can be attached to the page only
- * once.</li>
- * <li> [{@code event: Page.frameNavigated}] - fired when the frame commits navigation to a different URL.</li>
- * <li> [{@code event: Page.frameDetached}] - fired when the frame gets detached from the page.  A Frame can be detached from the page
- * only once.</li>
+ * <li> {@link Page#onFrameAttached Page.onFrameAttached()} - fired when the frame gets attached to the page. A Frame can be
+ * attached to the page only once.</li>
+ * <li> {@link Page#onFrameNavigated Page.onFrameNavigated()} - fired when the frame commits navigation to a different URL.</li>
+ * <li> {@link Page#onFrameDetached Page.onFrameDetached()} - fired when the frame gets detached from the page.  A Frame can be
+ * detached from the page only once.</li>
  * </ul>
  *
  * <p> An example of dumping frame tree:
@@ -71,8 +71,8 @@ public interface Frame {
      */
     public Path path;
     /**
-     * Script type. Use 'module' in order to load a Javascript ES6 module. See
-     * [script](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script) for more details.
+     * Script type. Use 'module' in order to load a Javascript ES6 module. See <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script">script</a> for more details.
      */
     public String type;
     /**
@@ -127,7 +127,8 @@ public interface Frame {
   }
   class CheckOptions {
     /**
-     * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
      */
     public Boolean force;
     /**
@@ -138,7 +139,8 @@ public interface Frame {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -169,7 +171,8 @@ public interface Frame {
      */
     public Double delay;
     /**
-     * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
      */
     public Boolean force;
     /**
@@ -190,7 +193,8 @@ public interface Frame {
     public Position position;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -240,7 +244,8 @@ public interface Frame {
      */
     public Double delay;
     /**
-     * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
      */
     public Boolean force;
     /**
@@ -261,7 +266,8 @@ public interface Frame {
     public Position position;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -300,7 +306,8 @@ public interface Frame {
   class DispatchEventOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -318,7 +325,8 @@ public interface Frame {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -334,7 +342,8 @@ public interface Frame {
   class FocusOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -346,7 +355,8 @@ public interface Frame {
   class GetAttributeOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -357,15 +367,15 @@ public interface Frame {
   }
   class NavigateOptions {
     /**
-     * Referer header value. If provided it will take preference over the referer header value set by
-     * [{@code method: Page.setExtraHTTPHeaders}].
+     * Referer header value. If provided it will take preference over the referer header value set by {@link
+     * Page#setExtraHTTPHeaders Page.setExtraHTTPHeaders()}.
      */
     public String referer;
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the [{@code method: BrowserContext.setDefaultNavigationTimeout}],
-     * [{@code method: BrowserContext.setDefaultTimeout}], [{@code method: Page.setDefaultNavigationTimeout}] or
-     * [{@code method: Page.setDefaultTimeout}] methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -393,7 +403,8 @@ public interface Frame {
   }
   class HoverOptions {
     /**
-     * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
      */
     public Boolean force;
     /**
@@ -408,7 +419,8 @@ public interface Frame {
     public Position position;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -435,7 +447,8 @@ public interface Frame {
   class InnerHTMLOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -447,7 +460,8 @@ public interface Frame {
   class InnerTextOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -459,7 +473,8 @@ public interface Frame {
   class IsCheckedOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -471,7 +486,8 @@ public interface Frame {
   class IsDisabledOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -483,7 +499,8 @@ public interface Frame {
   class IsEditableOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -495,7 +512,8 @@ public interface Frame {
   class IsEnabledOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -507,7 +525,8 @@ public interface Frame {
   class IsHiddenOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -519,7 +538,8 @@ public interface Frame {
   class IsVisibleOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -541,7 +561,8 @@ public interface Frame {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -567,7 +588,8 @@ public interface Frame {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -583,9 +605,9 @@ public interface Frame {
   class SetContentOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the [{@code method: BrowserContext.setDefaultNavigationTimeout}],
-     * [{@code method: BrowserContext.setDefaultTimeout}], [{@code method: Page.setDefaultNavigationTimeout}] or
-     * [{@code method: Page.setDefaultTimeout}] methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -616,7 +638,8 @@ public interface Frame {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -631,7 +654,8 @@ public interface Frame {
   }
   class TapOptions {
     /**
-     * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
      */
     public Boolean force;
     /**
@@ -652,7 +676,8 @@ public interface Frame {
     public Position position;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -683,7 +708,8 @@ public interface Frame {
   class TextContentOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -705,7 +731,8 @@ public interface Frame {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -724,7 +751,8 @@ public interface Frame {
   }
   class UncheckOptions {
     /**
-     * Whether to bypass the [actionability](./actionability.md) checks. Defaults to {@code false}.
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
      */
     public Boolean force;
     /**
@@ -735,7 +763,8 @@ public interface Frame {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -760,7 +789,7 @@ public interface Frame {
     public Double pollingInterval;
     /**
      * maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the [{@code method: BrowserContext.setDefaultTimeout}].
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
      */
     public Double timeout;
 
@@ -776,9 +805,9 @@ public interface Frame {
   class WaitForLoadStateOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the [{@code method: BrowserContext.setDefaultNavigationTimeout}],
-     * [{@code method: BrowserContext.setDefaultTimeout}], [{@code method: Page.setDefaultNavigationTimeout}] or
-     * [{@code method: Page.setDefaultTimeout}] methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -790,9 +819,9 @@ public interface Frame {
   class WaitForNavigationOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the [{@code method: BrowserContext.setDefaultNavigationTimeout}],
-     * [{@code method: BrowserContext.setDefaultTimeout}], [{@code method: Page.setDefaultNavigationTimeout}] or
-     * [{@code method: Page.setDefaultTimeout}] methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -845,7 +874,8 @@ public interface Frame {
     public WaitForSelectorState state;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the [{@code method: BrowserContext.setDefaultTimeout}] or [{@code method: Page.setDefaultTimeout}] methods.
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -894,10 +924,10 @@ public interface Frame {
    * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
    * <li> Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
    * checked, this method returns immediately.</li>
-   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
-   * is detached during the checks, the whole action is retried.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now checked. If not, this method rejects.</li>
    * </ol>
@@ -905,8 +935,8 @@ public interface Frame {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void check(String selector) {
     check(selector, null);
@@ -917,10 +947,10 @@ public interface Frame {
    * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
    * <li> Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
    * checked, this method returns immediately.</li>
-   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
-   * is detached during the checks, the whole action is retried.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now checked. If not, this method rejects.</li>
    * </ol>
@@ -928,8 +958,8 @@ public interface Frame {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void check(String selector, CheckOptions options);
   List<Frame> childFrames();
@@ -937,18 +967,18 @@ public interface Frame {
    * This method clicks an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
-   * is detached during the checks, the whole action is retried.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void click(String selector) {
     click(selector, null);
@@ -957,18 +987,18 @@ public interface Frame {
    * This method clicks an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
-   * is detached during the checks, the whole action is retried.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to click in the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void click(String selector, ClickOptions options);
   /**
@@ -979,10 +1009,10 @@ public interface Frame {
    * This method double clicks an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
-   * is detached during the checks, the whole action is retried.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
    * click of the {@code dblclick()} triggers a navigation event, this method will reject.</li>
    * </ol>
@@ -992,8 +1022,8 @@ public interface Frame {
    *
    * <p> <strong>NOTE:</strong> {@code frame.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void dblclick(String selector) {
     dblclick(selector, null);
@@ -1002,10 +1032,10 @@ public interface Frame {
    * This method double clicks an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
-   * is detached during the checks, the whole action is retried.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to double click in the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
    * click of the {@code dblclick()} triggers a navigation event, this method will reject.</li>
    * </ol>
@@ -1015,14 +1045,14 @@ public interface Frame {
    *
    * <p> <strong>NOTE:</strong> {@code frame.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void dblclick(String selector, DblclickOptions options);
   /**
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
-   * is dispatched. This is equivalend to calling
-   * [element.click()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click).
+   * is dispatched. This is equivalend to calling <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    * <pre>{@code
    * frame.dispatchEvent("button#submit", "click");
    * }</pre>
@@ -1032,13 +1062,13 @@ public interface Frame {
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
    * <ul>
-   * <li> [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)</li>
-   * <li> [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)</li>
-   * <li> [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)</li>
-   * <li> [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)</li>
-   * <li> [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)</li>
-   * <li> [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)</li>
-   * <li> [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)</li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent">DragEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent">FocusEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent">KeyboardEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent">MouseEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent">PointerEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent">TouchEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/Event/Event">Event</a></li>
    * </ul>
    *
    * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
@@ -1050,8 +1080,8 @@ public interface Frame {
    * frame.dispatchEvent("#source", "dragstart", arg);
    * }</pre>
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    * @param eventInit Optional event-specific initialization properties.
    */
@@ -1060,8 +1090,8 @@ public interface Frame {
   }
   /**
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
-   * is dispatched. This is equivalend to calling
-   * [element.click()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click).
+   * is dispatched. This is equivalend to calling <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    * <pre>{@code
    * frame.dispatchEvent("button#submit", "click");
    * }</pre>
@@ -1071,13 +1101,13 @@ public interface Frame {
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
    * <ul>
-   * <li> [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)</li>
-   * <li> [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)</li>
-   * <li> [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)</li>
-   * <li> [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)</li>
-   * <li> [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)</li>
-   * <li> [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)</li>
-   * <li> [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)</li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent">DragEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent">FocusEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent">KeyboardEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent">MouseEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent">PointerEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent">TouchEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/Event/Event">Event</a></li>
    * </ul>
    *
    * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
@@ -1089,8 +1119,8 @@ public interface Frame {
    * frame.dispatchEvent("#source", "dragstart", arg);
    * }</pre>
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    */
   default void dispatchEvent(String selector, String type) {
@@ -1098,8 +1128,8 @@ public interface Frame {
   }
   /**
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
-   * is dispatched. This is equivalend to calling
-   * [element.click()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click).
+   * is dispatched. This is equivalend to calling <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    * <pre>{@code
    * frame.dispatchEvent("button#submit", "click");
    * }</pre>
@@ -1109,13 +1139,13 @@ public interface Frame {
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
    * <ul>
-   * <li> [DragEvent](https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent)</li>
-   * <li> [FocusEvent](https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent)</li>
-   * <li> [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent)</li>
-   * <li> [MouseEvent](https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent)</li>
-   * <li> [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent)</li>
-   * <li> [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent)</li>
-   * <li> [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event/Event)</li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/DragEvent/DragEvent">DragEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/FocusEvent">FocusEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/KeyboardEvent">KeyboardEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/MouseEvent">MouseEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/PointerEvent">PointerEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent/TouchEvent">TouchEvent</a></li>
+   * <li> <a href="https://developer.mozilla.org/en-US/docs/Web/API/Event/Event">Event</a></li>
    * </ul>
    *
    * <p> You can also specify {@code JSHandle} as the property value if you want live objects to be passed into the event:
@@ -1127,8 +1157,8 @@ public interface Frame {
    * frame.dispatchEvent("#source", "dragstart", arg);
    * }</pre>
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    * @param eventInit Optional event-specific initialization properties.
    */
@@ -1137,11 +1167,11 @@ public interface Frame {
    * Returns the return value of {@code expression}.
    *
    * <p> The method finds an element matching the specified selector within the frame and passes it as a first argument to
-   * {@code expression}. See [Working with selectors](./selectors.md) for more details. If no elements match the selector, the
-   * method throws an error.
+   * {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If
+   * no elements match the selector, the method throws an error.
    *
-   * <p> If {@code expression} returns a [Promise], then [{@code method: Frame.evalOnSelector}] would wait for the promise to resolve and
-   * return its value.
+   * <p> If {@code expression} returns a [Promise], then {@link Frame#evalOnSelector Frame.evalOnSelector()} would wait for the promise
+   * to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -1150,7 +1180,8 @@ public interface Frame {
    * String html = (String) frame.evalOnSelector(".main-container", "(e, suffix) => e.outerHTML + suffix", "hello");
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
    */
@@ -1161,11 +1192,11 @@ public interface Frame {
    * Returns the return value of {@code expression}.
    *
    * <p> The method finds an element matching the specified selector within the frame and passes it as a first argument to
-   * {@code expression}. See [Working with selectors](./selectors.md) for more details. If no elements match the selector, the
-   * method throws an error.
+   * {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If
+   * no elements match the selector, the method throws an error.
    *
-   * <p> If {@code expression} returns a [Promise], then [{@code method: Frame.evalOnSelector}] would wait for the promise to resolve and
-   * return its value.
+   * <p> If {@code expression} returns a [Promise], then {@link Frame#evalOnSelector Frame.evalOnSelector()} would wait for the promise
+   * to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -1174,7 +1205,8 @@ public interface Frame {
    * String html = (String) frame.evalOnSelector(".main-container", "(e, suffix) => e.outerHTML + suffix", "hello");
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
    * @param arg Optional argument to pass to {@code expression}.
@@ -1184,17 +1216,19 @@ public interface Frame {
    * Returns the return value of {@code expression}.
    *
    * <p> The method finds all elements matching the specified selector within the frame and passes an array of matched elements
-   * as a first argument to {@code expression}. See [Working with selectors](./selectors.md) for more details.
+   * as a first argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with
+   * selectors</a> for more details.
    *
-   * <p> If {@code expression} returns a [Promise], then [{@code method: Frame.evalOnSelectorAll}] would wait for the promise to resolve and
-   * return its value.
+   * <p> If {@code expression} returns a [Promise], then {@link Frame#evalOnSelectorAll Frame.evalOnSelectorAll()} would wait for the
+   * promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
    * boolean divsCounts = (boolean) page.evalOnSelectorAll("div", "(divs, min) => divs.length >= min", 10);
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
    */
@@ -1205,17 +1239,19 @@ public interface Frame {
    * Returns the return value of {@code expression}.
    *
    * <p> The method finds all elements matching the specified selector within the frame and passes an array of matched elements
-   * as a first argument to {@code expression}. See [Working with selectors](./selectors.md) for more details.
+   * as a first argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with
+   * selectors</a> for more details.
    *
-   * <p> If {@code expression} returns a [Promise], then [{@code method: Frame.evalOnSelectorAll}] would wait for the promise to resolve and
-   * return its value.
+   * <p> If {@code expression} returns a [Promise], then {@link Frame#evalOnSelectorAll Frame.evalOnSelectorAll()} would wait for the
+   * promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
    * boolean divsCounts = (boolean) page.evalOnSelectorAll("div", "(divs, min) => divs.length >= min", 10);
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
    * @param arg Optional argument to pass to {@code expression}.
@@ -1224,12 +1260,12 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression}.
    *
-   * <p> If the function passed to the [{@code method: Frame.evaluate}] returns a [Promise], then [{@code method: Frame.evaluate}] would wait
-   * for the promise to resolve and return its value.
+   * <p> If the function passed to the {@link Frame#evaluate Frame.evaluate()} returns a [Promise], then {@link Frame#evaluate
+   * Frame.evaluate()} would wait for the promise to resolve and return its value.
    *
-   * <p> If the function passed to the [{@code method: Frame.evaluate}] returns a non-[Serializable] value, then
-   * [{@code method: Frame.evaluate}] returns {@code undefined}. Playwright also supports transferring some additional values that are
-   * not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
+   * <p> If the function passed to the {@link Frame#evaluate Frame.evaluate()} returns a non-[Serializable] value, then {@link
+   * Frame#evaluate Frame.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values that
+   * are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    * <pre>{@code
    * Object result = frame.evaluate("([x, y]) => {\n" +
    *   "  return Promise.resolve(x * y);\n" +
@@ -1242,7 +1278,7 @@ public interface Frame {
    * System.out.println(frame.evaluate("1 + 2")); // prints "3"
    * }</pre>
    *
-   * <p> {@code ElementHandle} instances can be passed as an argument to the [{@code method: Frame.evaluate}]:
+   * <p> {@code ElementHandle} instances can be passed as an argument to the {@link Frame#evaluate Frame.evaluate()}:
    * <pre>{@code
    * ElementHandle bodyHandle = frame.querySelector("body");
    * String html = (String) frame.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
@@ -1258,12 +1294,12 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression}.
    *
-   * <p> If the function passed to the [{@code method: Frame.evaluate}] returns a [Promise], then [{@code method: Frame.evaluate}] would wait
-   * for the promise to resolve and return its value.
+   * <p> If the function passed to the {@link Frame#evaluate Frame.evaluate()} returns a [Promise], then {@link Frame#evaluate
+   * Frame.evaluate()} would wait for the promise to resolve and return its value.
    *
-   * <p> If the function passed to the [{@code method: Frame.evaluate}] returns a non-[Serializable] value, then
-   * [{@code method: Frame.evaluate}] returns {@code undefined}. Playwright also supports transferring some additional values that are
-   * not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
+   * <p> If the function passed to the {@link Frame#evaluate Frame.evaluate()} returns a non-[Serializable] value, then {@link
+   * Frame#evaluate Frame.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values that
+   * are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    * <pre>{@code
    * Object result = frame.evaluate("([x, y]) => {\n" +
    *   "  return Promise.resolve(x * y);\n" +
@@ -1276,7 +1312,7 @@ public interface Frame {
    * System.out.println(frame.evaluate("1 + 2")); // prints "3"
    * }</pre>
    *
-   * <p> {@code ElementHandle} instances can be passed as an argument to the [{@code method: Frame.evaluate}]:
+   * <p> {@code ElementHandle} instances can be passed as an argument to the {@link Frame#evaluate Frame.evaluate()}:
    * <pre>{@code
    * ElementHandle bodyHandle = frame.querySelector("body");
    * String html = (String) frame.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
@@ -1291,11 +1327,11 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression} as a {@code JSHandle}.
    *
-   * <p> The only difference between [{@code method: Frame.evaluate}] and [{@code method: Frame.evaluateHandle}] is that
-   * [method: Frame.evaluateHandle{@code ] returns }JSHandle`.
+   * <p> The only difference between {@link Frame#evaluate Frame.evaluate()} and {@link Frame#evaluateHandle
+   * Frame.evaluateHandle()} is that [method: Frame.evaluateHandle{@code ] returns }JSHandle`.
    *
-   * <p> If the function, passed to the [{@code method: Frame.evaluateHandle}], returns a [Promise], then
-   * [{@code method: Frame.evaluateHandle}] would wait for the promise to resolve and return its value.
+   * <p> If the function, passed to the {@link Frame#evaluateHandle Frame.evaluateHandle()}, returns a [Promise], then {@link
+   * Frame#evaluateHandle Frame.evaluateHandle()} would wait for the promise to resolve and return its value.
    * <pre>{@code
    * // Handle for the window object.
    * JSHandle aWindowHandle = frame.evaluateHandle("() => Promise.resolve(window)");
@@ -1306,7 +1342,7 @@ public interface Frame {
    * JSHandle aHandle = frame.evaluateHandle("document"); // Handle for the "document".
    * }</pre>
    *
-   * <p> {@code JSHandle} instances can be passed as an argument to the [{@code method: Frame.evaluateHandle}]:
+   * <p> {@code JSHandle} instances can be passed as an argument to the {@link Frame#evaluateHandle Frame.evaluateHandle()}:
    * <pre>{@code
    * JSHandle aHandle = frame.evaluateHandle("() => document.body");
    * JSHandle resultHandle = frame.evaluateHandle("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(aHandle, "hello"));
@@ -1323,11 +1359,11 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression} as a {@code JSHandle}.
    *
-   * <p> The only difference between [{@code method: Frame.evaluate}] and [{@code method: Frame.evaluateHandle}] is that
-   * [method: Frame.evaluateHandle{@code ] returns }JSHandle`.
+   * <p> The only difference between {@link Frame#evaluate Frame.evaluate()} and {@link Frame#evaluateHandle
+   * Frame.evaluateHandle()} is that [method: Frame.evaluateHandle{@code ] returns }JSHandle`.
    *
-   * <p> If the function, passed to the [{@code method: Frame.evaluateHandle}], returns a [Promise], then
-   * [{@code method: Frame.evaluateHandle}] would wait for the promise to resolve and return its value.
+   * <p> If the function, passed to the {@link Frame#evaluateHandle Frame.evaluateHandle()}, returns a [Promise], then {@link
+   * Frame#evaluateHandle Frame.evaluateHandle()} would wait for the promise to resolve and return its value.
    * <pre>{@code
    * // Handle for the window object.
    * JSHandle aWindowHandle = frame.evaluateHandle("() => Promise.resolve(window)");
@@ -1338,7 +1374,7 @@ public interface Frame {
    * JSHandle aHandle = frame.evaluateHandle("document"); // Handle for the "document".
    * }</pre>
    *
-   * <p> {@code JSHandle} instances can be passed as an argument to the [{@code method: Frame.evaluateHandle}]:
+   * <p> {@code JSHandle} instances can be passed as an argument to the {@link Frame#evaluateHandle Frame.evaluateHandle()}:
    * <pre>{@code
    * JSHandle aHandle = frame.evaluateHandle("() => document.body");
    * JSHandle resultHandle = frame.evaluateHandle("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(aHandle, "hello"));
@@ -1352,32 +1388,34 @@ public interface Frame {
    */
   JSHandle evaluateHandle(String expression, Object arg);
   /**
-   * This method waits for an element matching {@code selector}, waits for [actionability](./actionability.md) checks, focuses the
-   * element, fills it and triggers an {@code input} event after filling. If the element is inside the {@code <label>} element that has
-   * associated [control](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control), that control will be
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, focuses the element, fills it and
+   * triggers an {@code input} event after filling. If the element is inside the {@code <label>} element that has associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, that control will be
    * filled instead. If the element to be filled is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this
    * method throws an error. Note that you can pass an empty string to clear the input field.
    *
-   * <p> To send fine-grained keyboard events, use [{@code method: Frame.type}].
+   * <p> To send fine-grained keyboard events, use {@link Frame#type Frame.type()}.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
   default void fill(String selector, String value) {
     fill(selector, value, null);
   }
   /**
-   * This method waits for an element matching {@code selector}, waits for [actionability](./actionability.md) checks, focuses the
-   * element, fills it and triggers an {@code input} event after filling. If the element is inside the {@code <label>} element that has
-   * associated [control](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control), that control will be
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, focuses the element, fills it and
+   * triggers an {@code input} event after filling. If the element is inside the {@code <label>} element that has associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, that control will be
    * filled instead. If the element to be filled is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this
    * method throws an error. Note that you can pass an empty string to clear the input field.
    *
-   * <p> To send fine-grained keyboard events, use [{@code method: Frame.type}].
+   * <p> To send fine-grained keyboard events, use {@link Frame#type Frame.type()}.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
   void fill(String selector, String value, FillOptions options);
@@ -1385,8 +1423,8 @@ public interface Frame {
    * This method fetches an element with {@code selector} and focuses it. If there's no element matching {@code selector}, the method
    * waits until a matching element appears in the DOM.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void focus(String selector) {
     focus(selector, null);
@@ -1395,15 +1433,15 @@ public interface Frame {
    * This method fetches an element with {@code selector} and focuses it. If there's no element matching {@code selector}, the method
    * waits until a matching element appears in the DOM.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void focus(String selector, FocusOptions options);
   /**
    * Returns the {@code frame} or {@code iframe} element handle which corresponds to this frame.
    *
-   * <p> This is an inverse of [{@code method: ElementHandle.contentFrame}]. Note that returned handle actually belongs to the parent
-   * frame.
+   * <p> This is an inverse of {@link ElementHandle#contentFrame ElementHandle.contentFrame()}. Note that returned handle
+   * actually belongs to the parent frame.
    *
    * <p> This method throws an error if the frame has been detached before {@code frameElement()} returns.
    * <pre>{@code
@@ -1416,8 +1454,8 @@ public interface Frame {
   /**
    * Returns element attribute value.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param name Attribute name to get the value for.
    */
   default String getAttribute(String selector, String name) {
@@ -1426,8 +1464,8 @@ public interface Frame {
   /**
    * Returns element attribute value.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param name Attribute name to get the value for.
    */
   String getAttribute(String selector, String name, GetAttributeOptions options);
@@ -1445,14 +1483,14 @@ public interface Frame {
    * </ul>
    *
    * <p> {@code frame.goto} will not throw an error when any valid HTTP status code is returned by the remote server, including 404
-   * "Not Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling
-   * [{@code method: Response.status}].
+   * "Not Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling {@link
+   * Response#status Response.status()}.
    *
    * <p> <strong>NOTE:</strong> {@code frame.goto} either throws an error or returns a main resource response. The only exceptions are navigation to
    * {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
    *
-   * <p> <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the
-   * [upstream issue](https://bugs.chromium.org/p/chromium/issues/detail?id=761295).
+   * <p> <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the <a
+   * href="https://bugs.chromium.org/p/chromium/issues/detail?id=761295">upstream issue</a>.
    *
    * @param url URL to navigate frame to. The url should include scheme, e.g. {@code https://}.
    */
@@ -1473,14 +1511,14 @@ public interface Frame {
    * </ul>
    *
    * <p> {@code frame.goto} will not throw an error when any valid HTTP status code is returned by the remote server, including 404
-   * "Not Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling
-   * [{@code method: Response.status}].
+   * "Not Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling {@link
+   * Response#status Response.status()}.
    *
    * <p> <strong>NOTE:</strong> {@code frame.goto} either throws an error or returns a main resource response. The only exceptions are navigation to
    * {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
    *
-   * <p> <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the
-   * [upstream issue](https://bugs.chromium.org/p/chromium/issues/detail?id=761295).
+   * <p> <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the <a
+   * href="https://bugs.chromium.org/p/chromium/issues/detail?id=761295">upstream issue</a>.
    *
    * @param url URL to navigate frame to. The url should include scheme, e.g. {@code https://}.
    */
@@ -1489,18 +1527,18 @@ public interface Frame {
    * This method hovers over an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
-   * is detached during the checks, the whole action is retried.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to hover over the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void hover(String selector) {
     hover(selector, null);
@@ -1509,25 +1547,25 @@ public interface Frame {
    * This method hovers over an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
-   * is detached during the checks, the whole action is retried.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to hover over the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to hover over the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void hover(String selector, HoverOptions options);
   /**
    * Returns {@code element.innerHTML}.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default String innerHTML(String selector) {
     return innerHTML(selector, null);
@@ -1535,15 +1573,15 @@ public interface Frame {
   /**
    * Returns {@code element.innerHTML}.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   String innerHTML(String selector, InnerHTMLOptions options);
   /**
    * Returns {@code element.innerText}.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default String innerText(String selector) {
     return innerText(selector, null);
@@ -1551,15 +1589,15 @@ public interface Frame {
   /**
    * Returns {@code element.innerText}.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   String innerText(String selector, InnerTextOptions options);
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default boolean isChecked(String selector) {
     return isChecked(selector, null);
@@ -1567,8 +1605,8 @@ public interface Frame {
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   boolean isChecked(String selector, IsCheckedOptions options);
   /**
@@ -1576,87 +1614,91 @@ public interface Frame {
    */
   boolean isDetached();
   /**
-   * Returns whether the element is disabled, the opposite of [enabled](./actionability.md#enabled).
+   * Returns whether the element is disabled, the opposite of <a
+   * href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default boolean isDisabled(String selector) {
     return isDisabled(selector, null);
   }
   /**
-   * Returns whether the element is disabled, the opposite of [enabled](./actionability.md#enabled).
+   * Returns whether the element is disabled, the opposite of <a
+   * href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   boolean isDisabled(String selector, IsDisabledOptions options);
   /**
-   * Returns whether the element is [editable](./actionability.md#editable).
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#editable">editable</a>.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default boolean isEditable(String selector) {
     return isEditable(selector, null);
   }
   /**
-   * Returns whether the element is [editable](./actionability.md#editable).
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#editable">editable</a>.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   boolean isEditable(String selector, IsEditableOptions options);
   /**
-   * Returns whether the element is [enabled](./actionability.md#enabled).
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default boolean isEnabled(String selector) {
     return isEnabled(selector, null);
   }
   /**
-   * Returns whether the element is [enabled](./actionability.md#enabled).
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   boolean isEnabled(String selector, IsEnabledOptions options);
   /**
-   * Returns whether the element is hidden, the opposite of [visible](./actionability.md#visible).  {@code selector} that does not
-   * match any elements is considered hidden.
+   * Returns whether the element is hidden, the opposite of <a
+   * href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.  {@code selector} that does not match any elements
+   * is considered hidden.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default boolean isHidden(String selector) {
     return isHidden(selector, null);
   }
   /**
-   * Returns whether the element is hidden, the opposite of [visible](./actionability.md#visible).  {@code selector} that does not
-   * match any elements is considered hidden.
+   * Returns whether the element is hidden, the opposite of <a
+   * href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.  {@code selector} that does not match any elements
+   * is considered hidden.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   boolean isHidden(String selector, IsHiddenOptions options);
   /**
-   * Returns whether the element is [visible](./actionability.md#visible). {@code selector} that does not match any elements is
-   * considered not visible.
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>. {@code selector}
+   * that does not match any elements is considered not visible.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default boolean isVisible(String selector) {
     return isVisible(selector, null);
   }
   /**
-   * Returns whether the element is [visible](./actionability.md#visible). {@code selector} that does not match any elements is
-   * considered not visible.
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>. {@code selector}
+   * that does not match any elements is considered not visible.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   boolean isVisible(String selector, IsVisibleOptions options);
   /**
@@ -1676,9 +1718,10 @@ public interface Frame {
    */
   Frame parentFrame();
   /**
-   * {@code key} can specify the intended [keyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
-   * value or a single character to generate the text for. A superset of the {@code key} values can be found
-   * [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values). Examples of the keys are:
+   * {@code key} can specify the intended <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key">keyboardEvent.key</a> value or a single
+   * character to generate the text for. A superset of the {@code key} values can be found <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
    *
    * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
    * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
@@ -1693,17 +1736,18 @@ public interface Frame {
    * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
   default void press(String selector, String key) {
     press(selector, key, null);
   }
   /**
-   * {@code key} can specify the intended [keyboardEvent.key](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key)
-   * value or a single character to generate the text for. A superset of the {@code key} values can be found
-   * [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values). Examples of the keys are:
+   * {@code key} can specify the intended <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key">keyboardEvent.key</a> value or a single
+   * character to generate the text for. A superset of the {@code key} values can be found <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
    *
    * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
    * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
@@ -1718,27 +1762,31 @@ public interface Frame {
    * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
   void press(String selector, String key, PressOptions options);
   /**
    * Returns the ElementHandle pointing to the frame element.
    *
-   * <p> The method finds an element matching the specified selector within the frame. See
-   * [Working with selectors](./selectors.md) for more details. If no elements match the selector, returns {@code null}.
+   * <p> The method finds an element matching the specified selector within the frame. See <a
+   * href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If no elements match the
+   * selector, returns {@code null}.
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    */
   ElementHandle querySelector(String selector);
   /**
    * Returns the ElementHandles pointing to the frame elements.
    *
-   * <p> The method finds all elements matching the specified selector within the frame. See
-   * [Working with selectors](./selectors.md) for more details. If no elements match the selector, returns empty array.
+   * <p> The method finds all elements matching the specified selector within the frame. See <a
+   * href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If no elements match the
+   * selector, returns empty array.
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    */
   List<ElementHandle> querySelectorAll(String selector);
   /**
@@ -1757,7 +1805,8 @@ public interface Frame {
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
    * is considered matching if all specified properties match.
@@ -1781,7 +1830,8 @@ public interface Frame {
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
    * is considered matching if all specified properties match.
@@ -1803,7 +1853,8 @@ public interface Frame {
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
    * is considered matching if all specified properties match.
@@ -1827,7 +1878,8 @@ public interface Frame {
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
    * is considered matching if all specified properties match.
@@ -1849,7 +1901,8 @@ public interface Frame {
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
    * is considered matching if all specified properties match.
@@ -1873,7 +1926,8 @@ public interface Frame {
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
    * is considered matching if all specified properties match.
@@ -1895,7 +1949,8 @@ public interface Frame {
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
    * is considered matching if all specified properties match.
@@ -1919,7 +1974,8 @@ public interface Frame {
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
    * is considered matching if all specified properties match.
@@ -1941,7 +1997,8 @@ public interface Frame {
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
    * is considered matching if all specified properties match.
@@ -1965,7 +2022,8 @@ public interface Frame {
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
    * is considered matching if all specified properties match.
@@ -1987,7 +2045,8 @@ public interface Frame {
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
    * is considered matching if all specified properties match.
@@ -2011,7 +2070,8 @@ public interface Frame {
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
    * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
    * is considered matching if all specified properties match.
@@ -2032,109 +2092,109 @@ public interface Frame {
    */
   void setContent(String html, SetContentOptions options);
   /**
-   * This method expects {@code selector} to point to an
-   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   * This method expects {@code selector} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void setInputFiles(String selector, Path files) {
     setInputFiles(selector, files, null);
   }
   /**
-   * This method expects {@code selector} to point to an
-   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   * This method expects {@code selector} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void setInputFiles(String selector, Path files, SetInputFilesOptions options);
   /**
-   * This method expects {@code selector} to point to an
-   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   * This method expects {@code selector} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void setInputFiles(String selector, Path[] files) {
     setInputFiles(selector, files, null);
   }
   /**
-   * This method expects {@code selector} to point to an
-   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   * This method expects {@code selector} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void setInputFiles(String selector, Path[] files, SetInputFilesOptions options);
   /**
-   * This method expects {@code selector} to point to an
-   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   * This method expects {@code selector} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void setInputFiles(String selector, FilePayload files) {
     setInputFiles(selector, files, null);
   }
   /**
-   * This method expects {@code selector} to point to an
-   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   * This method expects {@code selector} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void setInputFiles(String selector, FilePayload files, SetInputFilesOptions options);
   /**
-   * This method expects {@code selector} to point to an
-   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   * This method expects {@code selector} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void setInputFiles(String selector, FilePayload[] files) {
     setInputFiles(selector, files, null);
   }
   /**
-   * This method expects {@code selector} to point to an
-   * [input element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input).
+   * This method expects {@code selector} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void setInputFiles(String selector, FilePayload[] files, SetInputFilesOptions options);
   /**
    * This method taps an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
-   * is detached during the checks, the whole action is retried.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link Page#touchscreen Page.touchscreen()} to tap the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -2143,8 +2203,8 @@ public interface Frame {
    *
    * <p> <strong>NOTE:</strong> {@code frame.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void tap(String selector) {
     tap(selector, null);
@@ -2153,10 +2213,10 @@ public interface Frame {
    * This method taps an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
-   * is detached during the checks, the whole action is retried.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.touchscreen}] to tap the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link Page#touchscreen Page.touchscreen()} to tap the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -2165,15 +2225,15 @@ public interface Frame {
    *
    * <p> <strong>NOTE:</strong> {@code frame.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void tap(String selector, TapOptions options);
   /**
    * Returns {@code element.textContent}.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default String textContent(String selector) {
     return textContent(selector, null);
@@ -2181,8 +2241,8 @@ public interface Frame {
   /**
    * Returns {@code element.textContent}.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   String textContent(String selector, TextContentOptions options);
   /**
@@ -2191,9 +2251,9 @@ public interface Frame {
   String title();
   /**
    * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code frame.type} can be used to
-   * send fine-grained keyboard events. To fill values in form fields, use [{@code method: Frame.fill}].
+   * send fine-grained keyboard events. To fill values in form fields, use {@link Frame#fill Frame.fill()}.
    *
-   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: Keyboard.press}].
+   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Keyboard#press Keyboard.press()}.
    * <pre>{@code
    * // Types instantly
    * frame.type("#mytextarea", "Hello");
@@ -2201,8 +2261,8 @@ public interface Frame {
    * frame.type("#mytextarea", "World", new Frame.TypeOptions().withDelay(100)); 
    * }</pre>
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param text A text to type into a focused element.
    */
   default void type(String selector, String text) {
@@ -2210,9 +2270,9 @@ public interface Frame {
   }
   /**
    * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code frame.type} can be used to
-   * send fine-grained keyboard events. To fill values in form fields, use [{@code method: Frame.fill}].
+   * send fine-grained keyboard events. To fill values in form fields, use {@link Frame#fill Frame.fill()}.
    *
-   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use [{@code method: Keyboard.press}].
+   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Keyboard#press Keyboard.press()}.
    * <pre>{@code
    * // Types instantly
    * frame.type("#mytextarea", "Hello");
@@ -2220,8 +2280,8 @@ public interface Frame {
    * frame.type("#mytextarea", "World", new Frame.TypeOptions().withDelay(100)); 
    * }</pre>
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param text A text to type into a focused element.
    */
   void type(String selector, String text, TypeOptions options);
@@ -2231,10 +2291,10 @@ public interface Frame {
    * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
    * <li> Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
    * unchecked, this method returns immediately.</li>
-   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
-   * is detached during the checks, the whole action is retried.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now unchecked. If not, this method rejects.</li>
    * </ol>
@@ -2242,8 +2302,8 @@ public interface Frame {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void uncheck(String selector) {
     uncheck(selector, null);
@@ -2254,10 +2314,10 @@ public interface Frame {
    * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
    * <li> Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
    * unchecked, this method returns immediately.</li>
-   * <li> Wait for [actionability](./actionability.md) checks on the matched element, unless {@code force} option is set. If the element
-   * is detached during the checks, the whole action is retried.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use [{@code property: Page.mouse}] to click in the center of the element.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now unchecked. If not, this method rejects.</li>
    * </ol>
@@ -2265,8 +2325,8 @@ public interface Frame {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
    * Passing zero timeout disables this.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See
-   * [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void uncheck(String selector, UncheckOptions options);
   /**
@@ -2276,7 +2336,7 @@ public interface Frame {
   /**
    * Returns when the {@code expression} returns a truthy value, returns that value.
    *
-   * <p> The [{@code method: Frame.waitForFunction}] can be used to observe viewport size change:
+   * <p> The {@link Frame#waitForFunction Frame.waitForFunction()} can be used to observe viewport size change:
    * <pre>{@code
    * import com.microsoft.playwright.*;
    *
@@ -2310,7 +2370,7 @@ public interface Frame {
   /**
    * Returns when the {@code expression} returns a truthy value, returns that value.
    *
-   * <p> The [{@code method: Frame.waitForFunction}] can be used to observe viewport size change:
+   * <p> The {@link Frame#waitForFunction Frame.waitForFunction()} can be used to observe viewport size change:
    * <pre>{@code
    * import com.microsoft.playwright.*;
    *
@@ -2343,7 +2403,7 @@ public interface Frame {
   /**
    * Returns when the {@code expression} returns a truthy value, returns that value.
    *
-   * <p> The [{@code method: Frame.waitForFunction}] can be used to observe viewport size change:
+   * <p> The {@link Frame#waitForFunction Frame.waitForFunction()} can be used to observe viewport size change:
    * <pre>{@code
    * import com.microsoft.playwright.*;
    *
@@ -2440,8 +2500,8 @@ public interface Frame {
    * });
    * }</pre>
    *
-   * <p> <strong>NOTE:</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is considered
-   * a navigation.
+   * <p> <strong>NOTE:</strong> Usage of the <a href="https://developer.mozilla.org/en-US/docs/Web/API/History_API">History API</a> to change the URL is
+   * considered a navigation.
    *
    * @param callback Callback that performs the action triggering the event.
    */
@@ -2463,8 +2523,8 @@ public interface Frame {
    * });
    * }</pre>
    *
-   * <p> <strong>NOTE:</strong> Usage of the [History API](https://developer.mozilla.org/en-US/docs/Web/API/History_API) to change the URL is considered
-   * a navigation.
+   * <p> <strong>NOTE:</strong> Usage of the <a href="https://developer.mozilla.org/en-US/docs/Web/API/History_API">History API</a> to change the URL is
+   * considered a navigation.
    *
    * @param callback Callback that performs the action triggering the event.
    */
@@ -2498,7 +2558,8 @@ public interface Frame {
    * }
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    */
   default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
@@ -2532,7 +2593,8 @@ public interface Frame {
    * }
    * }</pre>
    *
-   * @param selector A selector to query for. See [working with selectors](./selectors.md) for more details.
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
    */
   ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
   /**

@@ -21,8 +21,8 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * Whenever a network route is set up with [{@code method: Page.route}] or [{@code method: BrowserContext.route}], the {@code Route} object
- * allows to handle the route.
+ * Whenever a network route is set up with {@link Page#route Page.route()} or {@link BrowserContext#route
+ * BrowserContext.route()}, the {@code Route} object allows to handle the route.
  */
 public interface Route {
   class ResumeOptions {

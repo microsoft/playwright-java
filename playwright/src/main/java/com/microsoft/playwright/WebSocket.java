@@ -44,7 +44,7 @@ public interface WebSocket {
     public Predicate<WebSocketFrame> predicate;
     /**
      * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the [{@code method: BrowserContext.setDefaultTimeout}].
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
      */
     public Double timeout;
 
@@ -64,7 +64,7 @@ public interface WebSocket {
     public Predicate<WebSocketFrame> predicate;
     /**
      * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the [{@code method: BrowserContext.setDefaultTimeout}].
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
      */
     public Double timeout;
 

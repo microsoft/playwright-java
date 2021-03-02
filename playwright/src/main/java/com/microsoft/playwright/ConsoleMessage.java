@@ -19,7 +19,7 @@ package com.microsoft.playwright;
 import java.util.*;
 
 /**
- * {@code ConsoleMessage} objects are dispatched by page via the [{@code event: Page.console}] event.
+ * {@code ConsoleMessage} objects are dispatched by page via the {@link Page#onConsole Page.onConsole()} event.
  */
 public interface ConsoleMessage {
   List<JSHandle> args();

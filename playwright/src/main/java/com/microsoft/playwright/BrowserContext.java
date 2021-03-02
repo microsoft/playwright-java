@@ -91,7 +91,7 @@ public interface BrowserContext extends AutoCloseable {
     public Predicate<Page> predicate;
     /**
      * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the [{@code method: BrowserContext.setDefaultTimeout}].
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
      */
     public Double timeout;
 
@@ -106,7 +106,7 @@ public interface BrowserContext extends AutoCloseable {
   }
   /**
    * Adds cookies into this browser context. All pages within this context will have these cookies installed. Cookies can be
-   * obtained via [{@code method: BrowserContext.cookies}].
+   * obtained via {@link BrowserContext#cookies BrowserContext.cookies()}.
    * <pre>{@code
    * browserContext.addCookies(Arrays.asList(cookieObject1, cookieObject2));
    * }</pre>
@@ -129,8 +129,8 @@ public interface BrowserContext extends AutoCloseable {
    * browserContext.addInitScript(Paths.get("preload.js"));
    * }</pre>
    *
-   * <p> <strong>NOTE:</strong> The order of evaluation of multiple scripts installed via [{@code method: BrowserContext.addInitScript}] and
-   * [{@code method: Page.addInitScript}] is not defined.
+   * <p> <strong>NOTE:</strong> The order of evaluation of multiple scripts installed via {@link BrowserContext#addInitScript
+   * BrowserContext.addInitScript()} and {@link Page#addInitScript Page.addInitScript()} is not defined.
    *
    * @param script Script to be evaluated in all pages in the browser context.
    */
@@ -152,8 +152,8 @@ public interface BrowserContext extends AutoCloseable {
    * browserContext.addInitScript(Paths.get("preload.js"));
    * }</pre>
    *
-   * <p> <strong>NOTE:</strong> The order of evaluation of multiple scripts installed via [{@code method: BrowserContext.addInitScript}] and
-   * [{@code method: Page.addInitScript}] is not defined.
+   * <p> <strong>NOTE:</strong> The order of evaluation of multiple scripts installed via {@link BrowserContext#addInitScript
+   * BrowserContext.addInitScript()} and {@link Page#addInitScript Page.addInitScript()} is not defined.
    *
    * @param script Script to be evaluated in all pages in the browser context.
    */
@@ -211,7 +211,7 @@ public interface BrowserContext extends AutoCloseable {
    * <p> The first argument of the {@code callback} function contains information about the caller: {@code { browserContext: BrowserContext,
    * page: Page, frame: Frame }}.
    *
-   * <p> See [{@code method: Page.exposeBinding}] for page-only version.
+   * <p> See {@link Page#exposeBinding Page.exposeBinding()} for page-only version.
    *
    * <p> An example of exposing page URL to all frames in all pages in the context:
    * <pre>{@code
@@ -267,7 +267,7 @@ public interface BrowserContext extends AutoCloseable {
    * <p> The first argument of the {@code callback} function contains information about the caller: {@code { browserContext: BrowserContext,
    * page: Page, frame: Frame }}.
    *
-   * <p> See [{@code method: Page.exposeBinding}] for page-only version.
+   * <p> See {@link Page#exposeBinding Page.exposeBinding()} for page-only version.
    *
    * <p> An example of exposing page URL to all frames in all pages in the context:
    * <pre>{@code
@@ -319,7 +319,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> If the {@code callback} returns a [Promise], it will be awaited.
    *
-   * <p> See [{@code method: Page.exposeFunction}] for page-only version.
+   * <p> See {@link Page#exposeFunction Page.exposeFunction()} for page-only version.
    *
    * <p> An example of adding an {@code md5} function to all pages in the context:
    * <pre>{@code
@@ -446,8 +446,8 @@ public interface BrowserContext extends AutoCloseable {
    * browser.close();
    * }</pre>
    *
-   * <p> Page routes (set up with [{@code method: Page.route}]) take precedence over browser context routes when request matches both
-   * handlers.
+   * <p> Page routes (set up with {@link Page#route Page.route()}) take precedence over browser context routes when request
+   * matches both handlers.
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
@@ -477,8 +477,8 @@ public interface BrowserContext extends AutoCloseable {
    * browser.close();
    * }</pre>
    *
-   * <p> Page routes (set up with [{@code method: Page.route}]) take precedence over browser context routes when request matches both
-   * handlers.
+   * <p> Page routes (set up with {@link Page#route Page.route()}) take precedence over browser context routes when request
+   * matches both handlers.
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
@@ -508,8 +508,8 @@ public interface BrowserContext extends AutoCloseable {
    * browser.close();
    * }</pre>
    *
-   * <p> Page routes (set up with [{@code method: Page.route}]) take precedence over browser context routes when request matches both
-   * handlers.
+   * <p> Page routes (set up with {@link Page#route Page.route()}) take precedence over browser context routes when request
+   * matches both handlers.
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
@@ -520,16 +520,17 @@ public interface BrowserContext extends AutoCloseable {
   /**
    * This setting will change the default maximum navigation time for the following methods and related shortcuts:
    * <ul>
-   * <li> [{@code method: Page.goBack}]</li>
-   * <li> [{@code method: Page.goForward}]</li>
-   * <li> [{@code method: Page.goto}]</li>
-   * <li> [{@code method: Page.reload}]</li>
-   * <li> [{@code method: Page.setContent}]</li>
-   * <li> [{@code method: Page.waitForNavigation}]</li>
+   * <li> {@link Page#goBack Page.goBack()}</li>
+   * <li> {@link Page#goForward Page.goForward()}</li>
+   * <li> {@link Page#goto Page.goto()}</li>
+   * <li> {@link Page#reload Page.reload()}</li>
+   * <li> {@link Page#setContent Page.setContent()}</li>
+   * <li> {@link Page#waitForNavigation Page.waitForNavigation()}</li>
    * </ul>
    *
-   * <p> <strong>NOTE:</strong> [{@code method: Page.setDefaultNavigationTimeout}] and [{@code method: Page.setDefaultTimeout}] take priority over
-   * [{@code method: BrowserContext.setDefaultNavigationTimeout}].
+   * <p> <strong>NOTE:</strong> {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()} and {@link Page#setDefaultTimeout
+   * Page.setDefaultTimeout()} take priority over {@link BrowserContext#setDefaultNavigationTimeout
+   * BrowserContext.setDefaultNavigationTimeout()}.
    *
    * @param timeout Maximum navigation time in milliseconds
    */
@@ -537,18 +538,21 @@ public interface BrowserContext extends AutoCloseable {
   /**
    * This setting will change the default maximum time for all the methods accepting {@code timeout} option.
    *
-   * <p> <strong>NOTE:</strong> [{@code method: Page.setDefaultNavigationTimeout}], [{@code method: Page.setDefaultTimeout}] and
-   * [{@code method: BrowserContext.setDefaultNavigationTimeout}] take priority over [{@code method: BrowserContext.setDefaultTimeout}].
+   * <p> <strong>NOTE:</strong> {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}, {@link Page#setDefaultTimeout
+   * Page.setDefaultTimeout()} and {@link BrowserContext#setDefaultNavigationTimeout
+   * BrowserContext.setDefaultNavigationTimeout()} take priority over {@link BrowserContext#setDefaultTimeout
+   * BrowserContext.setDefaultTimeout()}.
    *
    * @param timeout Maximum time in milliseconds
    */
   void setDefaultTimeout(double timeout);
   /**
    * The extra HTTP headers will be sent with every request initiated by any page in the context. These headers are merged
-   * with page-specific extra HTTP headers set with [{@code method: Page.setExtraHTTPHeaders}]. If page overrides a particular
-   * header, page-specific header value will be used instead of the browser context header value.
+   * with page-specific extra HTTP headers set with {@link Page#setExtraHTTPHeaders Page.setExtraHTTPHeaders()}. If page
+   * overrides a particular header, page-specific header value will be used instead of the browser context header value.
    *
-   * <p> <strong>NOTE:</strong> [{@code method: BrowserContext.setExtraHTTPHeaders}] does not guarantee the order of headers in the outgoing requests.
+   * <p> <strong>NOTE:</strong> {@link BrowserContext#setExtraHTTPHeaders BrowserContext.setExtraHTTPHeaders()} does not guarantee the order of headers
+   * in the outgoing requests.
    *
    * @param headers An object containing additional HTTP headers to be sent with every request. All header values must be strings.
    */
@@ -559,8 +563,8 @@ public interface BrowserContext extends AutoCloseable {
    * browserContext.setGeolocation(new Geolocation(59.95, 30.31667));
    * }</pre>
    *
-   * <p> <strong>NOTE:</strong> Consider using [{@code method: BrowserContext.grantPermissions}] to grant permissions for the browser context pages to read
-   * its geolocation.
+   * <p> <strong>NOTE:</strong> Consider using {@link BrowserContext#grantPermissions BrowserContext.grantPermissions()} to grant permissions for the
+   * browser context pages to read its geolocation.
    */
   void setGeolocation(Geolocation geolocation);
   /**
@@ -580,60 +584,60 @@ public interface BrowserContext extends AutoCloseable {
    */
   String storageState(StorageStateOptions options);
   /**
-   * Removes a route created with [{@code method: BrowserContext.route}]. When {@code handler} is not specified, removes all routes for
-   * the {@code url}.
+   * Removes a route created with {@link BrowserContext#route BrowserContext.route()}. When {@code handler} is not specified,
+   * removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with
-   * [{@code method: BrowserContext.route}].
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link BrowserContext#route
+   * BrowserContext.route()}.
    */
   default void unroute(String url) {
     unroute(url, null);
   }
   /**
-   * Removes a route created with [{@code method: BrowserContext.route}]. When {@code handler} is not specified, removes all routes for
-   * the {@code url}.
+   * Removes a route created with {@link BrowserContext#route BrowserContext.route()}. When {@code handler} is not specified,
+   * removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with
-   * [{@code method: BrowserContext.route}].
-   * @param handler Optional handler function used to register a routing with [{@code method: BrowserContext.route}].
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link BrowserContext#route
+   * BrowserContext.route()}.
+   * @param handler Optional handler function used to register a routing with {@link BrowserContext#route BrowserContext.route()}.
    */
   void unroute(String url, Consumer<Route> handler);
   /**
-   * Removes a route created with [{@code method: BrowserContext.route}]. When {@code handler} is not specified, removes all routes for
-   * the {@code url}.
+   * Removes a route created with {@link BrowserContext#route BrowserContext.route()}. When {@code handler} is not specified,
+   * removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with
-   * [{@code method: BrowserContext.route}].
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link BrowserContext#route
+   * BrowserContext.route()}.
    */
   default void unroute(Pattern url) {
     unroute(url, null);
   }
   /**
-   * Removes a route created with [{@code method: BrowserContext.route}]. When {@code handler} is not specified, removes all routes for
-   * the {@code url}.
+   * Removes a route created with {@link BrowserContext#route BrowserContext.route()}. When {@code handler} is not specified,
+   * removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with
-   * [{@code method: BrowserContext.route}].
-   * @param handler Optional handler function used to register a routing with [{@code method: BrowserContext.route}].
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link BrowserContext#route
+   * BrowserContext.route()}.
+   * @param handler Optional handler function used to register a routing with {@link BrowserContext#route BrowserContext.route()}.
    */
   void unroute(Pattern url, Consumer<Route> handler);
   /**
-   * Removes a route created with [{@code method: BrowserContext.route}]. When {@code handler} is not specified, removes all routes for
-   * the {@code url}.
+   * Removes a route created with {@link BrowserContext#route BrowserContext.route()}. When {@code handler} is not specified,
+   * removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with
-   * [{@code method: BrowserContext.route}].
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link BrowserContext#route
+   * BrowserContext.route()}.
    */
   default void unroute(Predicate<String> url) {
     unroute(url, null);
   }
   /**
-   * Removes a route created with [{@code method: BrowserContext.route}]. When {@code handler} is not specified, removes all routes for
-   * the {@code url}.
+   * Removes a route created with {@link BrowserContext#route BrowserContext.route()}. When {@code handler} is not specified,
+   * removes all routes for the {@code url}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with
-   * [{@code method: BrowserContext.route}].
-   * @param handler Optional handler function used to register a routing with [{@code method: BrowserContext.route}].
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link BrowserContext#route
+   * BrowserContext.route()}.
+   * @param handler Optional handler function used to register a routing with {@link BrowserContext#route BrowserContext.route()}.
    */
   void unroute(Predicate<String> url, Consumer<Route> handler);
   /**

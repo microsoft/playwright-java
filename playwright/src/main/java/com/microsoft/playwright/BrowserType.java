@@ -43,8 +43,8 @@ import java.util.*;
 public interface BrowserType {
   class LaunchOptions {
     /**
-     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found
-     * [here](http://peter.sh/experiments/chromium-command-line-switches/).
+     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
+     * href="http://peter.sh/experiments/chromium-command-line-switches/">here</a>.
      */
     public List<String> args;
     /**
@@ -72,8 +72,8 @@ public interface BrowserType {
      */
     public Path executablePath;
     /**
-     * Firefox user preferences. Learn more about the Firefox user preferences at
-     * [{@code about:config}](https://support.mozilla.org/en-US/kb/about-config-editor-firefox).
+     * Firefox user preferences. Learn more about the Firefox user preferences at <a
+     * href="https://support.mozilla.org/en-US/kb/about-config-editor-firefox">{@code about:config}</a>.
      */
     public Map<String, Object> firefoxUserPrefs;
     /**
@@ -89,9 +89,9 @@ public interface BrowserType {
      */
     public Boolean handleSIGTERM;
     /**
-     * Whether to run browser in headless mode. More details for
-     * [Chromium](https://developers.google.com/web/updates/2017/04/headless-chrome) and
-     * [Firefox](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode). Defaults to {@code true} unless the
+     * Whether to run browser in headless mode. More details for <a
+     * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
+     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless the
      * {@code devtools} option is {@code true}.
      */
     public Boolean headless;
@@ -193,8 +193,8 @@ public interface BrowserType {
      */
     public Boolean acceptDownloads;
     /**
-     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found
-     * [here](http://peter.sh/experiments/chromium-command-line-switches/).
+     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
+     * href="http://peter.sh/experiments/chromium-command-line-switches/">here</a>.
      */
     public List<String> args;
     /**
@@ -207,7 +207,7 @@ public interface BrowserType {
     public Boolean chromiumSandbox;
     /**
      * Emulates {@code 'prefers-colors-scheme'} media feature, supported values are {@code 'light'}, {@code 'dark'}, {@code 'no-preference'}. See
-     * [{@code method: Page.emulateMedia}] for more details. Defaults to '{@code light}'.
+     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to '{@code light}'.
      */
     public ColorScheme colorScheme;
     /**
@@ -256,14 +256,14 @@ public interface BrowserType {
      */
     public Boolean hasTouch;
     /**
-     * Whether to run browser in headless mode. More details for
-     * [Chromium](https://developers.google.com/web/updates/2017/04/headless-chrome) and
-     * [Firefox](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode). Defaults to {@code true} unless the
+     * Whether to run browser in headless mode. More details for <a
+     * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
+     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless the
      * {@code devtools} option is {@code true}.
      */
     public Boolean headless;
     /**
-     * Credentials for [HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication).
+     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>.
      */
     public HttpCredentials httpCredentials;
     /**
@@ -299,8 +299,8 @@ public interface BrowserType {
      */
     public Boolean offline;
     /**
-     * A list of permissions to grant to all pages in this context. See [{@code method: BrowserContext.grantPermissions}] for more
-     * details.
+     * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
+     * BrowserContext.grantPermissions()} for more details.
      */
     public List<String> permissions;
     /**
@@ -336,9 +336,9 @@ public interface BrowserType {
      */
     public Double timeout;
     /**
-     * Changes the timezone of the context. See
-     * [ICU's metaZones.txt](https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1)
-     * for a list of supported timezone IDs.
+     * Changes the timezone of the context. See <a
+     * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
+     * metaZones.txt</a> for a list of supported timezone IDs.
      */
     public String timezoneId;
     /**
@@ -530,17 +530,17 @@ public interface BrowserType {
    *
    * <p> >
    *
-   * <p> > If Google Chrome (rather than Chromium) is preferred, a
-   * [Chrome Canary](https://www.google.com/chrome/browser/canary.html) or
-   * [Dev Channel](https://www.chromium.org/getting-involved/dev-channel) build is suggested.
+   * <p> > If Google Chrome (rather than Chromium) is preferred, a <a
+   * href="https://www.google.com/chrome/browser/canary.html">Chrome Canary</a> or <a
+   * href="https://www.chromium.org/getting-involved/dev-channel">Dev Channel</a> build is suggested.
    *
    * <p> >
    *
    * <p> > Stock browsers like Google Chrome and Microsoft Edge are suitable for tests that require proprietary media codecs for
-   * video playback. See
-   * [this article](https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/) for other
-   * differences between Chromium and Chrome.
-   * [This article](https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md)
+   * video playback. See <a
+   * href="https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/">this article</a> for
+   * other differences between Chromium and Chrome. <a
+   * href="https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md">This article</a>
    * describes some differences for Linux users.
    */
   default Browser launch() {
@@ -562,17 +562,17 @@ public interface BrowserType {
    *
    * <p> >
    *
-   * <p> > If Google Chrome (rather than Chromium) is preferred, a
-   * [Chrome Canary](https://www.google.com/chrome/browser/canary.html) or
-   * [Dev Channel](https://www.chromium.org/getting-involved/dev-channel) build is suggested.
+   * <p> > If Google Chrome (rather than Chromium) is preferred, a <a
+   * href="https://www.google.com/chrome/browser/canary.html">Chrome Canary</a> or <a
+   * href="https://www.chromium.org/getting-involved/dev-channel">Dev Channel</a> build is suggested.
    *
    * <p> >
    *
    * <p> > Stock browsers like Google Chrome and Microsoft Edge are suitable for tests that require proprietary media codecs for
-   * video playback. See
-   * [this article](https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/) for other
-   * differences between Chromium and Chrome.
-   * [This article](https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md)
+   * video playback. See <a
+   * href="https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/">this article</a> for
+   * other differences between Chromium and Chrome. <a
+   * href="https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md">This article</a>
    * describes some differences for Linux users.
    */
   Browser launch(LaunchOptions options);
@@ -582,10 +582,10 @@ public interface BrowserType {
    * <p> Launches browser that uses persistent storage located at {@code userDataDir} and returns the only context. Closing this
    * context will automatically close the browser.
    *
-   * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for
-   * [Chromium](https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md#introduction) and
-   * [Firefox](https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile). Note that Chromium's user
-   * data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}.
+   * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for <a
+   * href="https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md#introduction">Chromium</a> and <a
+   * href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile">Firefox</a>. Note that
+   * Chromium's user data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}.
    */
   default BrowserContext launchPersistentContext(Path userDataDir) {
     return launchPersistentContext(userDataDir, null);
@@ -596,10 +596,10 @@ public interface BrowserType {
    * <p> Launches browser that uses persistent storage located at {@code userDataDir} and returns the only context. Closing this
    * context will automatically close the browser.
    *
-   * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for
-   * [Chromium](https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md#introduction) and
-   * [Firefox](https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile). Note that Chromium's user
-   * data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}.
+   * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for <a
+   * href="https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md#introduction">Chromium</a> and <a
+   * href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile">Firefox</a>. Note that
+   * Chromium's user data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}.
    */
   BrowserContext launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options);
   /**
