@@ -27,34 +27,18 @@ import java.nio.file.Path;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-class SelectorsImpl extends ChannelOwner implements Selectors {
+class SelectorsImpl extends ChannelOwner {
   SelectorsImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 
-  @Override
-  public void register(String name, String script, RegisterOptions options) {
-    withLogging("Selectors.register", () -> registerImpl(name, script, options));
-  }
-
-  private void registerImpl(String name, String script, RegisterOptions options) {
+  void registerImpl(String name, String script, Selectors.RegisterOptions options) {
     if (options == null) {
-      options = new RegisterOptions();
+      options = new Selectors.RegisterOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("name", name);
     params.addProperty("source", script);
     sendMessage("register", params);
-  }
-
-  @Override
-  public void register(String name, Path path, RegisterOptions options) {
-    byte[] buffer;
-    try {
-      buffer = Files.readAllBytes(path);
-    } catch (IOException e) {
-      throw new PlaywrightException("Failed to read selector from file: " + path, e);
-    }
-    register(name, new String(buffer, UTF_8), options);
   }
 }

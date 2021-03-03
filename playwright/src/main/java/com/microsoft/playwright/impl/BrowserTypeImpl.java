@@ -18,10 +18,15 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.PlaywrightException;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.time.Duration;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
@@ -42,6 +47,38 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     JsonElement result = sendMessage("launch", params);
     return connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("browser").get("guid").getAsString());
+  }
+
+  @Override
+  public Browser connect(String wsEndpoint, ConnectOptions options) {
+    return withLogging("BrowserType.connect", () -> connectImpl(wsEndpoint, options));
+  }
+
+  private Browser connectImpl(String wsEndpoint, ConnectOptions options) {
+    try {
+      Duration timeout = Duration.ofDays(1);
+      if (options != null && options.timeout != null) {
+        timeout = Duration.ofMillis(Math.round(options.timeout));
+      }
+      Connection connection = new Connection(new WebSocketTransport(new URI(wsEndpoint), timeout));
+      RemoteBrowser remoteBrowser = (RemoteBrowser) connection.waitForObjectWithKnownName("remoteBrowser");
+      PlaywrightImpl playwright = this.connection.getExistingObject("Playwright");
+      SelectorsImpl selectors = remoteBrowser.selectors();
+      playwright.sharedSelectors.addChannel(selectors);
+      BrowserImpl browser = remoteBrowser.browser();
+      browser.isRemote = true;
+      browser.onDisconnected(b -> {
+        playwright.sharedSelectors.removeChannel(selectors);
+        try {
+          connection.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      });
+      return browser;
+    } catch (URISyntaxException e) {
+      throw new PlaywrightException("Failed to connect", e);
+    }
   }
 
   public String executablePath() {

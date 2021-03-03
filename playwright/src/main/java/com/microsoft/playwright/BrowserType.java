@@ -41,6 +41,27 @@ import java.util.*;
  * }</pre>
  */
 public interface BrowserType {
+  class ConnectOptions {
+    /**
+     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
+     * Defaults to 0.
+     */
+    public Double slowMo;
+    /**
+     * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
+     * disable timeout.
+     */
+    public Double timeout;
+
+    public ConnectOptions withSlowMo(double slowMo) {
+      this.slowMo = slowMo;
+      return this;
+    }
+    public ConnectOptions withTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class LaunchOptions {
     /**
      * Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
@@ -510,6 +531,20 @@ public interface BrowserType {
       return this;
     }
   }
+  /**
+   * This methods attaches Playwright to an existing browser instance.
+   *
+   * @param wsEndpoint A browser websocket endpoint to connect to.
+   */
+  default Browser connect(String wsEndpoint) {
+    return connect(wsEndpoint, null);
+  }
+  /**
+   * This methods attaches Playwright to an existing browser instance.
+   *
+   * @param wsEndpoint A browser websocket endpoint to connect to.
+   */
+  Browser connect(String wsEndpoint, ConnectOptions options);
   /**
    * A path where Playwright expects to find a bundled browser executable.
    */

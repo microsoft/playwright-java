@@ -16,16 +16,27 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Download;
+import com.microsoft.playwright.PlaywrightException;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
+import static com.microsoft.playwright.impl.Utils.writeToFile;
+
 public class DownloadImpl extends ChannelOwner implements Download {
+  private final BrowserImpl browser;
+
   public DownloadImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    browser = ((BrowserContextImpl) parent).browser();
   }
 
   @Override
@@ -71,6 +82,9 @@ public class DownloadImpl extends ChannelOwner implements Download {
   @Override
   public Path path() {
     return withLogging("Download.path", () -> {
+      if (browser != null && browser.isRemote) {
+        throw new PlaywrightException("Path is not available when using browserType.connect(). Use download.saveAs() to save a local copy.");
+      }
       JsonObject json = sendMessage("path").getAsJsonObject();
       return FileSystems.getDefault().getPath(json.get("value").getAsString());
     });
@@ -79,6 +93,13 @@ public class DownloadImpl extends ChannelOwner implements Download {
   @Override
   public void saveAs(Path path) {
     withLogging("Download.saveAs", () -> {
+      if (browser != null && browser.isRemote) {
+        JsonObject jsonObject = sendMessage("saveAsStream").getAsJsonObject();
+        Stream stream = connection.getExistingObject(jsonObject.getAsJsonObject("stream").get("guid").getAsString());
+        writeToFile(stream.stream(), path);
+        return;
+      }
+
       JsonObject params = new JsonObject();
       params.addProperty("path", path.toString());
       sendMessage("saveAs", params);

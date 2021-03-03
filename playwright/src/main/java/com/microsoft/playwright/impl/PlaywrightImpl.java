@@ -35,7 +35,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       pb.redirectError(ProcessBuilder.Redirect.INHERIT);
 //      pb.environment().put("DEBUG", "pw:pro*");
       Process p = pb.start();
-      Connection connection = new Connection(p.getInputStream(), p.getOutputStream());
+      Connection connection = new Connection(new PipeTransport(p.getInputStream(), p.getOutputStream()));
       PlaywrightImpl result = (PlaywrightImpl) connection.waitForObjectWithKnownName("Playwright");
       result.driverProcess = p;
       return result;
@@ -47,14 +47,15 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private final BrowserTypeImpl chromium;
   private final BrowserTypeImpl firefox;
   private final BrowserTypeImpl webkit;
-  private final Selectors selectors;
+  final SharedSelectors sharedSelectors = new SharedSelectors();;
 
   PlaywrightImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     chromium = parent.connection.getExistingObject(initializer.getAsJsonObject("chromium").get("guid").getAsString());
     firefox = parent.connection.getExistingObject(initializer.getAsJsonObject("firefox").get("guid").getAsString());
     webkit = parent.connection.getExistingObject(initializer.getAsJsonObject("webkit").get("guid").getAsString());
-    selectors = parent.connection.getExistingObject(initializer.getAsJsonObject("selectors").get("guid").getAsString());
+    SelectorsImpl channel = parent.connection.getExistingObject(initializer.getAsJsonObject("selectors").get("guid").getAsString());
+    sharedSelectors.addChannel(channel);
   }
 
   @Override
@@ -74,7 +75,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
 
   @Override
   public Selectors selectors() {
-    return selectors;
+    return sharedSelectors;
   }
 
   @Override

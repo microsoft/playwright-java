@@ -64,8 +64,8 @@ public class Connection {
     }
   }
 
-  public Connection(InputStream in, OutputStream out) {
-    transport = new Transport(in, out);
+  Connection(Transport transport) {
+    this.transport = transport;
     root = new Root(this);
   }
 
@@ -231,6 +231,9 @@ public class Connection {
         break;
       case "Request":
         result = new RequestImpl(parent, type, guid, initializer);
+        break;
+      case "RemoteBrowser":
+        result = new RemoteBrowser(parent, type, guid, initializer);
         break;
       case "Response":
         result = new ResponseImpl(parent, type, guid, initializer);
