@@ -61,8 +61,13 @@ public class DriverJar extends Driver {
     // Create zip filesystem if loading from jar.
     try (FileSystem fileSystem = "jar".equals(uri.getScheme()) ? FileSystems.newFileSystem(uri, Collections.emptyMap()) : null) {
       Path srcRoot = Paths.get(uri);
+      // jar file system's .relativize gives wrong results when used with
+      // spring-boot-maven-plugin, convert to the default filesystem to
+      // have predictable results.
+      // See https://github.com/microsoft/playwright-java/issues/306
+      Path srcRootDefaultFs = Paths.get(srcRoot.toString());
       Files.walk(srcRoot).forEach(fromPath -> {
-        Path relative = srcRoot.relativize(fromPath);
+        Path relative = srcRootDefaultFs.relativize(Paths.get(fromPath.toString()));
         Path toPath = driverTempDir.resolve(relative.toString());
         try {
           if (Files.isDirectory(fromPath)) {
