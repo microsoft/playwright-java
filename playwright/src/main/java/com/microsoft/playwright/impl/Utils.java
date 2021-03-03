@@ -21,8 +21,10 @@ import com.microsoft.playwright.FileChooser;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.FilePayload;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -126,8 +128,8 @@ class Utils {
     return payloads.toArray(new FilePayload[0]);
   }
 
-  static void writeToFile(byte[] buffer, Path path) {
-    Path dir = path.getParent();
+  static void mkParentDirs(Path file) {
+    Path dir = file.getParent();
     if (dir != null) {
       if (!Files.exists(dir)) {
         try {
@@ -137,8 +139,25 @@ class Utils {
         }
       }
     }
+  }
+
+  static void writeToFile(byte[] buffer, Path path) {
+    mkParentDirs(path);
     try (FileOutputStream out = new FileOutputStream(path.toFile())) {
       out.write(buffer);
+    } catch (IOException e) {
+      throw new PlaywrightException("Failed to write to file", e);
+    }
+  }
+
+  static void writeToFile(InputStream inputStream, Path path) {
+    mkParentDirs(path);
+    try (FileOutputStream out = new FileOutputStream(path.toFile())) {
+      byte[] buf = new byte[8192];
+      int length;
+      while ((length = inputStream.read(buf)) > 0) {
+        out.write(buf, 0, length);
+      }
     } catch (IOException e) {
       throw new PlaywrightException("Failed to write to file", e);
     }

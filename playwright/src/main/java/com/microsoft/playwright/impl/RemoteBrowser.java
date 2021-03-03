@@ -16,11 +16,18 @@
 
 package com.microsoft.playwright.impl;
 
-import java.io.IOException;
-import java.time.Duration;
+import com.google.gson.JsonObject;
 
-public interface Transport {
-  void send(String message);
-  String poll(Duration timeout);
-  void close() throws IOException;
+public class RemoteBrowser extends ChannelOwner {
+  RemoteBrowser(ChannelOwner parent, String type, String guid, JsonObject initializer) {
+    super(parent, type, guid, initializer);
+  }
+
+  BrowserImpl browser() {
+    return connection.getExistingObject(initializer.getAsJsonObject("browser").get("guid").getAsString());
+  }
+
+  SelectorsImpl selectors() {
+    return connection.getExistingObject(initializer.getAsJsonObject("selectors").get("guid").getAsString());
+  }
 }

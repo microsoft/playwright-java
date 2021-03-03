@@ -40,6 +40,7 @@ import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 class BrowserImpl extends ChannelOwner implements Browser {
   final Set<BrowserContext> contexts = new HashSet<>();
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
+  public boolean isRemote;
   private boolean isConnected = true;
 
   enum EventType {
