@@ -16,13 +16,21 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,6 +64,7 @@ public class Connection {
   private final Map<String, ChannelOwner> objects = new HashMap<>();
   private final Root root;
   private int lastId = 0;
+  private final Path srcDir;
   private final Map<Integer, WaitableResult<JsonElement>> callbacks = new HashMap<>();
 
   class Root extends ChannelOwner {
@@ -67,6 +76,15 @@ public class Connection {
   Connection(Transport transport) {
     this.transport = transport;
     root = new Root(this);
+    String srcRoot = System.getenv("PLAYWRIGHT_JAVA_SRC");
+    if (srcRoot == null) {
+      srcDir = null;
+    } else {
+      srcDir = Paths.get(srcRoot);
+      if (!Files.exists(srcDir)) {
+        throw new PlaywrightException("PLAYWRIGHT_JAVA_SRC environment variable points to non-existing location: '" + srcRoot + "'");
+      }
+    }
   }
 
   void close() throws IOException {
@@ -81,6 +99,45 @@ public class Connection {
     return internalSendMessage(guid, method, params);
   }
 
+  private String sourceFile(StackTraceElement frame) {
+    String pkg = frame.getClassName();
+    int lastDot = pkg.lastIndexOf('.');
+    if (lastDot == -1) {
+      pkg = "";
+    } else {
+      pkg = frame.getClassName().substring(0, lastDot + 1);
+    }
+    pkg = pkg.replace('.', File.separatorChar);
+    return srcDir.resolve(pkg).resolve(frame.getFileName()).toString();
+  }
+
+  private JsonArray currentStackTrace() {
+    StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+
+    int index = 0;
+    while (index < stack.length && !stack[index].getClassName().equals(getClass().getName())) {
+      index++;
+    };
+    // Find Playwright API call
+    while (index < stack.length && stack[index].getClassName().startsWith("com.microsoft.playwright.")) {
+      // hack for tests
+      if (stack[index].getClassName().startsWith("com.microsoft.playwright.Test")) {
+        break;
+      }
+      index++;
+    }
+    JsonArray jsonStack = new JsonArray();
+    for (; index < stack.length; index++) {
+      StackTraceElement frame = stack[index];
+      JsonObject jsonFrame = new JsonObject();
+      jsonFrame.addProperty("file", sourceFile(frame));
+      jsonFrame.addProperty("line", frame.getLineNumber());
+      jsonFrame.addProperty("function", frame.getClassName() + "." + frame.getMethodName());
+      jsonStack.add(jsonFrame);
+    }
+    return jsonStack;
+  }
+
   private WaitableResult<JsonElement> internalSendMessage(String guid, String method, JsonObject params) {
     int id = ++lastId;
     WaitableResult<JsonElement> result = new WaitableResult<>();
@@ -90,6 +147,11 @@ public class Connection {
     message.addProperty("guid", guid);
     message.addProperty("method", method);
     message.add("params", params);
+    if (srcDir != null) {
+      JsonObject metadata = new JsonObject();
+      metadata.add("stack", currentStackTrace());
+      message.add("metadata", metadata);
+    }
     transport.send(gson().toJson(message));
     return result;
   }
