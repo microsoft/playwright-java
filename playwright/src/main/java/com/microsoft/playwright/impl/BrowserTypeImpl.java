@@ -27,6 +27,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
@@ -60,19 +61,28 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       if (options != null && options.timeout != null) {
         timeout = Duration.ofMillis(Math.round(options.timeout));
       }
-      Connection connection = new Connection(new WebSocketTransport(new URI(wsEndpoint), timeout));
+      WebSocketTransport transport = new WebSocketTransport(new URI(wsEndpoint), timeout);
+      Connection connection = new Connection(transport);
       RemoteBrowser remoteBrowser = (RemoteBrowser) connection.waitForObjectWithKnownName("remoteBrowser");
       PlaywrightImpl playwright = this.connection.getExistingObject("Playwright");
       SelectorsImpl selectors = remoteBrowser.selectors();
       playwright.sharedSelectors.addChannel(selectors);
       BrowserImpl browser = remoteBrowser.browser();
       browser.isRemote = true;
+      Consumer<WebSocketTransport> connectionCloseListener = new Consumer<WebSocketTransport>() {
+        @Override
+        public void accept(WebSocketTransport t) {
+          browser.notifyRemoteClosed();
+        }
+      };
+      transport.onClose(connectionCloseListener);
       browser.onDisconnected(b -> {
         playwright.sharedSelectors.removeChannel(selectors);
+        transport.offClose(connectionCloseListener);
         try {
           connection.close();
         } catch (IOException e) {
-          e.printStackTrace();
+          e.printStackTrace(System.err);
         }
       });
       return browser;

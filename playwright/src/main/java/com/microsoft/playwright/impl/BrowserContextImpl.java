@@ -404,11 +404,15 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         bindingCall.call(binding);
       }
     } else if ("close".equals(event)) {
-      isClosedOrClosing = true;
-      if (browser != null) {
-        browser.contexts.remove(this);
-      }
-      listeners.notify(EventType.CLOSE, this);
+      didClose();
     }
+  }
+
+  void didClose() {
+    isClosedOrClosing = true;
+    if (browser != null) {
+      browser.contexts.remove(this);
+    }
+    listeners.notify(EventType.CLOSE, this);
   }
 }
