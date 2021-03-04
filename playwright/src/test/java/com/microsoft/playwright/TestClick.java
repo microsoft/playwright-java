@@ -16,14 +16,10 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.impl.Driver;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.condition.EnabledIf;
 
-import java.io.OutputStreamWriter;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,43 +30,6 @@ import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestClick extends TestBase {
-
-  @BeforeEach
-  void addRoutes() {
-    server.setRoute("/download", exchange -> {
-      exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
-      exchange.getResponseHeaders().add("Content-Disposition", "attachment");
-      exchange.sendResponseHeaders(200, 0);
-      try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
-        writer.write("Hello world");
-      }
-    });
-    server.setRoute("/downloadWithFilename", exchange -> {
-      exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
-      exchange.getResponseHeaders().add("Content-Disposition", "attachment; filename=file.txt");
-      exchange.sendResponseHeaders(200, 0);
-      try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
-        writer.write("Hello world");
-      }
-    });
-  }
-
-
-  @Test
-  void shouldConnect() {
-    String wsEndpoint = "ws://127.0.0.1:41309/cfe3451d1934878bf750d1e15cc7d773";
-    Browser browser = browserType.connect(wsEndpoint);
-    BrowserContext browserContext = browser.newContext();
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
-    System.out.println(page.evaluate("11 * 11"));
-
-    page.setContent("<a href='" + server.PREFIX + "/downloadWithFilename'>download</a>");
-    Download download = page.waitForDownload(() -> page.click("a"));
-    assertEquals(server.PREFIX + "/downloadWithFilename", download.url());
-    assertEquals("file.txt", download.suggestedFilename());
-    download.saveAs(Paths.get("/tmp/dl.txt"));
-    page.waitForTimeout(1000);
-  }
 
   @Test
   void shouldClickTheButton() {
