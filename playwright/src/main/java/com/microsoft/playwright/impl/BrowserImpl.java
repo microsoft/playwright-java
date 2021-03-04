@@ -38,7 +38,7 @@ import static com.microsoft.playwright.impl.Utils.convertViaJson;
 import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 
 class BrowserImpl extends ChannelOwner implements Browser {
-  final Set<BrowserContext> contexts = new HashSet<>();
+  final Set<BrowserContextImpl> contexts = new HashSet<>();
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   public boolean isRemote;
   private boolean isConnected = true;
@@ -65,7 +65,17 @@ class BrowserImpl extends ChannelOwner implements Browser {
   public void close() {
     withLogging("Browser.close", () -> closeImpl());
   }
+
   private void closeImpl() {
+    if (isRemote) {
+      try {
+        connection.close();
+      } catch (IOException e) {
+        throw new PlaywrightException("Failed to close browser connection", e);
+      }
+      notifyRemoteClosed();
+      return;
+    }
     try {
       sendMessage("close");
     } catch (PlaywrightException e) {
@@ -73,6 +83,17 @@ class BrowserImpl extends ChannelOwner implements Browser {
         throw e;
       }
     }
+  }
+
+  void notifyRemoteClosed() {
+    // Emulate all pages, contexts and the browser closing upon disconnect.
+    for (BrowserContextImpl context : new ArrayList<>(contexts)) {
+      for (PageImpl page : new ArrayList<>(context.pages)) {
+        page.didClose();
+      }
+      context.didClose();
+    }
+    didClose();
   }
 
   @Override
@@ -185,8 +206,12 @@ class BrowserImpl extends ChannelOwner implements Browser {
   @Override
   void handleEvent(String event, JsonObject parameters) {
     if ("close".equals(event)) {
-      isConnected = false;
-      listeners.notify(EventType.DISCONNECTED, this);
+      didClose();
     }
+  }
+
+  private void didClose() {
+    isConnected = false;
+    listeners.notify(EventType.DISCONNECTED, this);
   }
 }

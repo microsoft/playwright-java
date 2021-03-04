@@ -60,11 +60,13 @@ public class TestBase {
     return options;
   }
 
-  static void launchBrowser(BrowserType.LaunchOptions launchOptions) {
+  static void initBrowserType() {
     playwright = Playwright.create();
-
     browserType = Utils.getBrowserTypeFromEnv(playwright);
+  }
 
+  static void launchBrowser(BrowserType.LaunchOptions launchOptions) {
+    initBrowserType();
     browser = browserType.launch(launchOptions);
   }
 

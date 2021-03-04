@@ -26,6 +26,7 @@ import java.time.Duration;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 
 class WebSocketTransport implements Transport {
@@ -33,6 +34,9 @@ class WebSocketTransport implements Transport {
   private final ClientConnection clientConnection;
   private boolean isClosed;
   private volatile Exception lastError;
+  ListenerCollection<EventType> listeners = new ListenerCollection<>();
+
+  private enum EventType { CLOSE }
 
   private class ClientConnection extends WebSocketClient {
     ClientConnection(URI serverUri) {
@@ -71,17 +75,13 @@ class WebSocketTransport implements Transport {
 
   @Override
   public void send(String message) {
-    if (clientConnection.isClosed()) {
-      throw new PlaywrightException("Playwright connection closed");
-    }
+    checkIfClosed();
     clientConnection.send(message);
   }
 
   @Override
   public String poll(Duration timeout) {
-    if (isClosed || clientConnection.isClosed()) {
-      throw new PlaywrightException("Playwright connection closed");
-    }
+    checkIfClosed();
     try {
       return incoming.poll(timeout.toMillis(), TimeUnit.MILLISECONDS);
     } catch (InterruptedException e) {
@@ -96,5 +96,24 @@ class WebSocketTransport implements Transport {
     }
     isClosed = true;
     clientConnection.close();
+  }
+
+  void onClose(Consumer<WebSocketTransport> handler) {
+    listeners.add(EventType.CLOSE, handler);
+  }
+
+  void offClose(Consumer<WebSocketTransport> handler) {
+    listeners.remove(EventType.CLOSE, handler);
+  }
+
+  private void checkIfClosed() {
+    if (isClosed) {
+      throw new PlaywrightException("Playwright connection closed");
+    }
+    if (clientConnection.isClosed()) {
+      isClosed = true;
+      listeners.notify(EventType.CLOSE, this);
+      throw new PlaywrightException("Playwright connection closed");
+    }
   }
 }

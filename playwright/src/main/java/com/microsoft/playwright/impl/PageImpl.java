@@ -225,10 +225,14 @@ public class PageImpl extends ChannelOwner implements Page {
     } else if ("crash".equals(event)) {
       listeners.notify(EventType.CRASH, this);
     } else if ("close".equals(event)) {
-      isClosed = true;
-      browserContext.pages.remove(this);
-      listeners.notify(EventType.CLOSE, this);
+      didClose();
     }
+  }
+
+  void didClose() {
+    isClosed = true;
+    browserContext.pages.remove(this);
+    listeners.notify(EventType.CLOSE, this);
   }
 
   private void willAddFileChooserListener() {
