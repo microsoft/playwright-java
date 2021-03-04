@@ -43,7 +43,6 @@ public class PageImpl extends ChannelOwner implements Page {
   private final FrameImpl mainFrame;
   private final KeyboardImpl keyboard;
   private final MouseImpl mouse;
-  private final AccessibilityImpl accessibility;
   private final TouchscreenImpl touchscreen;
   private ViewportSize viewport;
   private final Router routes = new Router();
@@ -106,7 +105,6 @@ public class PageImpl extends ChannelOwner implements Page {
     keyboard = new KeyboardImpl(this);
     mouse = new MouseImpl(this);
     touchscreen = new TouchscreenImpl(this);
-    accessibility = new AccessibilityImpl(this);
     frames.add(mainFrame);
     timeoutSettings = new TimeoutSettings(browserContext.timeoutSettings);
   }
@@ -542,11 +540,6 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public Object evalOnSelectorAll(String selector, String pageFunction, Object arg) {
     return withLogging("Page.evalOnSelectorAll", () -> mainFrame.evalOnSelectorAllImpl(selector, pageFunction, arg));
-  }
-
-  @Override
-  public Accessibility accessibility() {
-    return accessibility;
   }
 
   @Override
@@ -1326,5 +1319,19 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public List<Worker> workers() {
     return new ArrayList<>(workers);
+  }
+
+  @Override
+  public void onceDialog(Consumer<Dialog> handler) {
+    onDialog(new Consumer<Dialog>() {
+      @Override
+      public void accept(Dialog dialog) {
+        try {
+          handler.accept(dialog);
+        } finally {
+          offDialog(this);
+        }
+      }
+    });
   }
 }

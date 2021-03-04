@@ -50,6 +50,20 @@ public class TestDialog extends TestBase {
   }
 
   @Test
+  void shouldAcceptPromptOnce() {
+    int[] callCounter = {0};
+    page.onceDialog(dialog -> {
+      ++callCounter[0];
+      assertEquals("prompt", dialog.type());
+      assertEquals("question?", dialog.message());
+      dialog.accept("answer!");
+    });
+    assertEquals("answer!", page.evaluate("prompt('question?')"));
+    assertNull(page.evaluate("prompt('question?')"));
+    assertEquals(1, callCounter[0]);
+  }
+
+  @Test
   void shouldDismissThePrompt() {
     page.onDialog(dialog -> {
       dialog.dismiss();

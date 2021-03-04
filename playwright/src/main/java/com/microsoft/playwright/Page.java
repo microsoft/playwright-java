@@ -1601,7 +1601,6 @@ public interface Page extends AutoCloseable {
       return this;
     }
   }
-  Accessibility accessibility();
   /**
    * Adds a script which would be evaluated in one of the following scenarios:
    * <ul>
@@ -4458,5 +4457,43 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> This does not contain ServiceWorkers
    */
   List<Worker> workers();
+  /**
+   * Adds one-off {@code Dialog} handler. The handler will be removed immediately after next {@code Dialog} is created.
+   * <pre>{@code
+   * page.onceDialog(dialog -> {
+   *   dialog.accept("foo");
+   * });
+   *
+   * // prints 'foo'
+   * System.out.println(page.evaluate("prompt('Enter string:')"));
+   *
+   * // prints 'null' as the dialog will be auto-dismissed because there are no handlers.
+   * System.out.println(page.evaluate("prompt('Enter string:')"));
+   * }</pre>
+   *
+   * <p> This code above is equivalent to:
+   * <pre>{@code
+   * Consumer<Dialog> handler = new Consumer<Dialog>() {
+   *   @Override
+   *   public void accept(Dialog dialog) {
+   *     dialog.accept("foo");
+   *     page.offDialog(this);
+   *   }
+   * };
+   * page.onDialog(handler);
+   *
+   * // prints 'foo'
+   * System.out.println(page.evaluate("prompt('Enter string:')"));
+   *
+   * // prints 'null' as the dialog will be auto-dismissed because there are no handlers.
+   * System.out.println(page.evaluate("prompt('Enter string:')"));
+   * }</pre>
+   *
+   * @param handler Receives the {@code Dialog} object, it **must** either {@link Dialog#accept Dialog.accept()} or {@link Dialog#dismiss
+   * Dialog.dismiss()} the dialog - otherwise the page will <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop#never_blocking">freeze</a> waiting for the
+   * dialog, and actions like click will never finish.
+   */
+  void onceDialog(Consumer<Dialog> handler);
 }
 
