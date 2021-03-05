@@ -25,7 +25,7 @@ public class WebKitScreenshot {
       Browser browser = playwright.webkit().launch();
       Page page = browser.newPage();
       page.navigate("http://whatsmyuseragent.org/");
-      page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("example.png")));
+      page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("example.png")));
     }
   }
 }
