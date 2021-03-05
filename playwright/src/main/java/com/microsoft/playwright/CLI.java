@@ -31,6 +31,9 @@ public class CLI {
     Path driver = Driver.ensureDriverInstalled();
     ProcessBuilder pb = new ProcessBuilder(driver.toString());
     pb.command().addAll(asList(args));
+    if (!pb.environment().containsKey("PW_CLI_TARGET_LANG")) {
+      pb.environment().put("PW_CLI_TARGET_LANG", "java");
+    }
     pb.inheritIO();
     Process process = pb.start();
     System.exit(process.waitFor());
