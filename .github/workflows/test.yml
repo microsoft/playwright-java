@@ -39,3 +39,6 @@ jobs:
       run: mvn test --no-transfer-progress
       env:
         BROWSER: ${{ matrix.browser }}
+    - name: Test CLI
+      shell: bash
+      run: scripts/test_cli.sh
