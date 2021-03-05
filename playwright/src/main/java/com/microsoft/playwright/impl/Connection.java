@@ -20,6 +20,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.TimeoutError;
 
 import java.io.File;
 import java.io.IOException;
@@ -200,10 +201,12 @@ public class Connection {
       if (message.error == null) {
         callback.complete(message.result);
       } else {
-        if (message.error.error != null) {
-          callback.completeExceptionally(new DriverException(message.error.error));
-        } else {
+        if (message.error.error == null) {
           callback.completeExceptionally(new PlaywrightException(message.error.toString()));
+        } else if ("TimeoutError".equals(message.error.error.name)) {
+          callback.completeExceptionally(new TimeoutError(message.error.error.toString()));
+        } else {
+          callback.completeExceptionally(new DriverException(message.error.error));
         }
       }
       return;

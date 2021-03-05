@@ -54,7 +54,7 @@ public class TestElementHandleWaitForElementState extends TestBase {
     try {
       div.waitForElementState(VISIBLE, new ElementHandle.WaitForElementStateOptions().withTimeout(1000));
       fail("did not throw");
-    } catch (PlaywrightException e) {
+    } catch (TimeoutError e) {
       assertTrue(e.getMessage().contains("Timeout 1000ms exceeded"));
     }
   }

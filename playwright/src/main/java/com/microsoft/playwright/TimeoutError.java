@@ -16,12 +16,17 @@
 
 package com.microsoft.playwright;
 
-import java.util.*;
-
 /**
  * TimeoutError is emitted whenever certain operations are terminated due to timeout, e.g. {@link Page#waitForSelector
  * Page.waitForSelector()} or {@link BrowserType#launch BrowserType.launch()}.
  */
-public interface TimeoutError {
+public class TimeoutError extends PlaywrightException {
+  public TimeoutError(String message) {
+    super(message);
+  }
+
+  public TimeoutError(String message, Throwable exception) {
+    super(message, exception);
+  }
 }
 
