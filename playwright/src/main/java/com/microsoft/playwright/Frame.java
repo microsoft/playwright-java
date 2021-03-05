@@ -1808,7 +1808,7 @@ public interface Frame {
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
-   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
    * // multiple selection
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1833,7 +1833,7 @@ public interface Frame {
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
-   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
    * // multiple selection
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1856,7 +1856,7 @@ public interface Frame {
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
-   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
    * // multiple selection
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1881,7 +1881,7 @@ public interface Frame {
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
-   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
    * // multiple selection
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1904,7 +1904,7 @@ public interface Frame {
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
-   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
    * // multiple selection
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1929,7 +1929,7 @@ public interface Frame {
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
-   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
    * // multiple selection
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1952,7 +1952,7 @@ public interface Frame {
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
-   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
    * // multiple selection
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1977,7 +1977,7 @@ public interface Frame {
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
-   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
    * // multiple selection
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
@@ -2000,7 +2000,7 @@ public interface Frame {
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
-   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
    * // multiple selection
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
@@ -2025,7 +2025,7 @@ public interface Frame {
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
-   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
    * // multiple selection
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
@@ -2048,7 +2048,7 @@ public interface Frame {
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
-   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
    * // multiple selection
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
@@ -2073,7 +2073,7 @@ public interface Frame {
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
-   * frame.selectOption("select#colors", new SelectOption().withLabel("Blue"));
+   * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
    * // multiple selection
    * frame.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
@@ -2266,7 +2266,7 @@ public interface Frame {
    * // Types instantly
    * frame.type("#mytextarea", "Hello");
    * // Types slower, like a user
-   * frame.type("#mytextarea", "World", new Frame.TypeOptions().withDelay(100)); 
+   * frame.type("#mytextarea", "World", new Frame.TypeOptions().setDelay(100)); 
    * }</pre>
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
@@ -2285,7 +2285,7 @@ public interface Frame {
    * // Types instantly
    * frame.type("#mytextarea", "Hello");
    * // Types slower, like a user
-   * frame.type("#mytextarea", "World", new Frame.TypeOptions().withDelay(100)); 
+   * frame.type("#mytextarea", "World", new Frame.TypeOptions().setDelay(100)); 
    * }</pre>
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
