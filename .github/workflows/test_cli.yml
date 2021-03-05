@@ -1,0 +1,32 @@
+name: Test CLI
+on:
+  push:
+    branches:
+      - master
+      - release-*
+  pull_request:
+    branches:
+      - master
+      - release-*
+jobs:
+  verify:
+    timeout-minutes: 30
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Download drivers
+        run: scripts/download_driver_for_all_platforms.sh
+      - name: Intall Playwright
+        run: mvn install -D skipTests --no-transfer-progress
+      - name: Test CLI
+        run: mvn exec:java -e -Dexec.mainClass=com.microsoft.playwright.CLI -f playwright/pom.xml  -Dexec.args=-V
