@@ -556,7 +556,7 @@ public interface BrowserType {
    * <pre>{@code
    * // Or "firefox" or "webkit".
    * Browser browser = chromium.launch(new BrowserType.LaunchOptions()
-   *   .withIgnoreDefaultArgs(Arrays.asList("--mute-audio")));
+   *   .setIgnoreDefaultArgs(Arrays.asList("--mute-audio")));
    * }</pre>
    *
    * <p> > **Chromium-only** Playwright can also be used to control the Google Chrome or Microsoft Edge browsers, but it works
@@ -588,7 +588,7 @@ public interface BrowserType {
    * <pre>{@code
    * // Or "firefox" or "webkit".
    * Browser browser = chromium.launch(new BrowserType.LaunchOptions()
-   *   .withIgnoreDefaultArgs(Arrays.asList("--mute-audio")));
+   *   .setIgnoreDefaultArgs(Arrays.asList("--mute-audio")));
    * }</pre>
    *
    * <p> > **Chromium-only** Playwright can also be used to control the Google Chrome or Microsoft Edge browsers, but it works

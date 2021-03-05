@@ -154,7 +154,7 @@ public interface Route {
    *   Map<String, String> headers = new HashMap<>(route.request().headers());
    *   headers.put("foo", "bar"); // set "foo" header
    *   headers.remove("origin"); // remove "origin" header
-   *   route.resume(new Route.ResumeOptions().withHeaders(headers));
+   *   route.resume(new Route.ResumeOptions().setHeaders(headers));
    * });
    * }</pre>
    */
@@ -169,7 +169,7 @@ public interface Route {
    *   Map<String, String> headers = new HashMap<>(route.request().headers());
    *   headers.put("foo", "bar"); // set "foo" header
    *   headers.remove("origin"); // remove "origin" header
-   *   route.resume(new Route.ResumeOptions().withHeaders(headers));
+   *   route.resume(new Route.ResumeOptions().setHeaders(headers));
    * });
    * }</pre>
    */
@@ -181,16 +181,16 @@ public interface Route {
    * <pre>{@code
    * page.route("**\/*", route -> {
    *   route.fulfill(new Route.FulfillOptions()
-   *     .withStatus(404)
-   *     .withContentType("text/plain")
-   *     .withBody("Not Found!"));
+   *     .setStatus(404)
+   *     .setContentType("text/plain")
+   *     .setBody("Not Found!"));
    * });
    * }</pre>
    *
    * <p> An example of serving static file:
    * <pre>{@code
    * page.route("**\/xhr_endpoint", route -> route.fulfill(
-   *   new Route.FulfillOptions().withPath(Paths.get("mock_data.json")));
+   *   new Route.FulfillOptions().setPath(Paths.get("mock_data.json")));
    * }</pre>
    */
   default void fulfill() {
@@ -203,16 +203,16 @@ public interface Route {
    * <pre>{@code
    * page.route("**\/*", route -> {
    *   route.fulfill(new Route.FulfillOptions()
-   *     .withStatus(404)
-   *     .withContentType("text/plain")
-   *     .withBody("Not Found!"));
+   *     .setStatus(404)
+   *     .setContentType("text/plain")
+   *     .setBody("Not Found!"));
    * });
    * }</pre>
    *
    * <p> An example of serving static file:
    * <pre>{@code
    * page.route("**\/xhr_endpoint", route -> route.fulfill(
-   *   new Route.FulfillOptions().withPath(Paths.get("mock_data.json")));
+   *   new Route.FulfillOptions().setPath(Paths.get("mock_data.json")));
    * }</pre>
    */
   void fulfill(FulfillOptions options);

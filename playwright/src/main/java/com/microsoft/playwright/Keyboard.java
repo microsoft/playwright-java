@@ -139,11 +139,11 @@ public interface Keyboard {
    * Page page = browser.newPage();
    * page.navigate("https://keycode.info");
    * page.keyboard().press("A");
-   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("A.png"));
+   * page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("A.png"));
    * page.keyboard().press("ArrowLeft");
-   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("ArrowLeft.png")));
+   * page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("ArrowLeft.png")));
    * page.keyboard().press("Shift+O");
-   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("O.png")));
+   * page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("O.png")));
    * browser.close();
    * }</pre>
    *
@@ -176,11 +176,11 @@ public interface Keyboard {
    * Page page = browser.newPage();
    * page.navigate("https://keycode.info");
    * page.keyboard().press("A");
-   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("A.png"));
+   * page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("A.png"));
    * page.keyboard().press("ArrowLeft");
-   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("ArrowLeft.png")));
+   * page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("ArrowLeft.png")));
    * page.keyboard().press("Shift+O");
-   * page.screenshot(new Page.ScreenshotOptions().withPath(Paths.get("O.png")));
+   * page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("O.png")));
    * browser.close();
    * }</pre>
    *
@@ -197,7 +197,7 @@ public interface Keyboard {
    * // Types instantly
    * page.keyboard().type("Hello");
    * // Types slower, like a user
-   * page.keyboard().type("World", new Keyboard.TypeOptions().withDelay(100));
+   * page.keyboard().type("World", new Keyboard.TypeOptions().setDelay(100));
    * }</pre>
    *
    * <p> <strong>NOTE:</strong> Modifier keys DO NOT effect {@code keyboard.type}. Holding down {@code Shift} will not type the text in upper case.
@@ -215,7 +215,7 @@ public interface Keyboard {
    * // Types instantly
    * page.keyboard().type("Hello");
    * // Types slower, like a user
-   * page.keyboard().type("World", new Keyboard.TypeOptions().withDelay(100));
+   * page.keyboard().type("World", new Keyboard.TypeOptions().setDelay(100));
    * }</pre>
    *
    * <p> <strong>NOTE:</strong> Modifier keys DO NOT effect {@code keyboard.type}. Holding down {@code Shift} will not type the text in upper case.

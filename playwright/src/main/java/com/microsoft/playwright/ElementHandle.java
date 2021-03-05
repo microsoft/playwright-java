@@ -1130,7 +1130,7 @@ public interface ElementHandle extends JSHandle {
    * // single selection matching the value
    * handle.selectOption("blue");
    * // single selection matching the label
-   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * handle.selectOption(new SelectOption().setLabel("Blue"));
    * // multiple selection
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1153,7 +1153,7 @@ public interface ElementHandle extends JSHandle {
    * // single selection matching the value
    * handle.selectOption("blue");
    * // single selection matching the label
-   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * handle.selectOption(new SelectOption().setLabel("Blue"));
    * // multiple selection
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1174,7 +1174,7 @@ public interface ElementHandle extends JSHandle {
    * // single selection matching the value
    * handle.selectOption("blue");
    * // single selection matching the label
-   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * handle.selectOption(new SelectOption().setLabel("Blue"));
    * // multiple selection
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1197,7 +1197,7 @@ public interface ElementHandle extends JSHandle {
    * // single selection matching the value
    * handle.selectOption("blue");
    * // single selection matching the label
-   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * handle.selectOption(new SelectOption().setLabel("Blue"));
    * // multiple selection
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1218,7 +1218,7 @@ public interface ElementHandle extends JSHandle {
    * // single selection matching the value
    * handle.selectOption("blue");
    * // single selection matching the label
-   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * handle.selectOption(new SelectOption().setLabel("Blue"));
    * // multiple selection
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1241,7 +1241,7 @@ public interface ElementHandle extends JSHandle {
    * // single selection matching the value
    * handle.selectOption("blue");
    * // single selection matching the label
-   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * handle.selectOption(new SelectOption().setLabel("Blue"));
    * // multiple selection
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1262,7 +1262,7 @@ public interface ElementHandle extends JSHandle {
    * // single selection matching the value
    * handle.selectOption("blue");
    * // single selection matching the label
-   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * handle.selectOption(new SelectOption().setLabel("Blue"));
    * // multiple selection
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1285,7 +1285,7 @@ public interface ElementHandle extends JSHandle {
    * // single selection matching the value
    * handle.selectOption("blue");
    * // single selection matching the label
-   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * handle.selectOption(new SelectOption().setLabel("Blue"));
    * // multiple selection
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1306,7 +1306,7 @@ public interface ElementHandle extends JSHandle {
    * // single selection matching the value
    * handle.selectOption("blue");
    * // single selection matching the label
-   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * handle.selectOption(new SelectOption().setLabel("Blue"));
    * // multiple selection
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1329,7 +1329,7 @@ public interface ElementHandle extends JSHandle {
    * // single selection matching the value
    * handle.selectOption("blue");
    * // single selection matching the label
-   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * handle.selectOption(new SelectOption().setLabel("Blue"));
    * // multiple selection
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1350,7 +1350,7 @@ public interface ElementHandle extends JSHandle {
    * // single selection matching the value
    * handle.selectOption("blue");
    * // single selection matching the label
-   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * handle.selectOption(new SelectOption().setLabel("Blue"));
    * // multiple selection
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1373,7 +1373,7 @@ public interface ElementHandle extends JSHandle {
    * // single selection matching the value
    * handle.selectOption("blue");
    * // single selection matching the label
-   * handle.selectOption(new SelectOption().withLabel("Blue"));
+   * handle.selectOption(new SelectOption().setLabel("Blue"));
    * // multiple selection
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
@@ -1515,7 +1515,7 @@ public interface ElementHandle extends JSHandle {
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link ElementHandle#press ElementHandle.press()}.
    * <pre>{@code
    * elementHandle.type("Hello"); // Types instantly
-   * elementHandle.type("World", new ElementHandle.TypeOptions().withDelay(100)); // Types slower, like a user
+   * elementHandle.type("World", new ElementHandle.TypeOptions().setDelay(100)); // Types slower, like a user
    * }</pre>
    *
    * <p> An example of typing into a text field and then submitting the form:
@@ -1536,7 +1536,7 @@ public interface ElementHandle extends JSHandle {
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link ElementHandle#press ElementHandle.press()}.
    * <pre>{@code
    * elementHandle.type("Hello"); // Types instantly
-   * elementHandle.type("World", new ElementHandle.TypeOptions().withDelay(100)); // Types slower, like a user
+   * elementHandle.type("World", new ElementHandle.TypeOptions().setDelay(100)); // Types slower, like a user
    * }</pre>
    *
    * <p> An example of typing into a text field and then submitting the form:
@@ -1652,7 +1652,7 @@ public interface ElementHandle extends JSHandle {
    * ElementHandle div = page.querySelector("div");
    * // Waiting for the "span" selector relative to the div.
    * ElementHandle span = div.waitForSelector("span", new ElementHandle.WaitForSelectorOptions()
-   *   .withState(WaitForSelectorState.ATTACHED));
+   *   .setState(WaitForSelectorState.ATTACHED));
    * }</pre>
    *
    * <p> <strong>NOTE:</strong> This method does not work across navigations, use {@link Page#waitForSelector Page.waitForSelector()} instead.
@@ -1676,7 +1676,7 @@ public interface ElementHandle extends JSHandle {
    * ElementHandle div = page.querySelector("div");
    * // Waiting for the "span" selector relative to the div.
    * ElementHandle span = div.waitForSelector("span", new ElementHandle.WaitForSelectorOptions()
-   *   .withState(WaitForSelectorState.ATTACHED));
+   *   .setState(WaitForSelectorState.ATTACHED));
    * }</pre>
    *
    * <p> <strong>NOTE:</strong> This method does not work across navigations, use {@link Page#waitForSelector Page.waitForSelector()} instead.
