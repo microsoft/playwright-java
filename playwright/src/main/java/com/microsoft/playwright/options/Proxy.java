@@ -38,15 +38,15 @@ public class Proxy {
   public Proxy(String server) {
     this.server = server;
   }
-  public Proxy withBypass(String bypass) {
+  public Proxy setBypass(String bypass) {
     this.bypass = bypass;
     return this;
   }
-  public Proxy withUsername(String username) {
+  public Proxy setUsername(String username) {
     this.username = username;
     return this;
   }
-  public Proxy withPassword(String password) {
+  public Proxy setPassword(String password) {
     this.password = password;
     return this;
   }

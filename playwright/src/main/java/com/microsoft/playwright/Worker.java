@@ -52,7 +52,7 @@ public interface Worker {
      */
     public Double timeout;
 
-    public WaitForCloseOptions withTimeout(double timeout) {
+    public WaitForCloseOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }

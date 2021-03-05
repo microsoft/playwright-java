@@ -99,7 +99,7 @@ public class TestElementHandleBoundingBox extends TestBase {
   @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
   void shouldWorkWithPageScale() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withViewportSize(400, 400).withIsMobile(true));
+      .setViewportSize(400, 400).setIsMobile(true));
     Page page = context.newPage();
     page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");

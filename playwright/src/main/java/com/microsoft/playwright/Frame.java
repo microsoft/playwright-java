@@ -80,19 +80,19 @@ public interface Frame {
      */
     public String url;
 
-    public AddScriptTagOptions withContent(String content) {
+    public AddScriptTagOptions setContent(String content) {
       this.content = content;
       return this;
     }
-    public AddScriptTagOptions withPath(Path path) {
+    public AddScriptTagOptions setPath(Path path) {
       this.path = path;
       return this;
     }
-    public AddScriptTagOptions withType(String type) {
+    public AddScriptTagOptions setType(String type) {
       this.type = type;
       return this;
     }
-    public AddScriptTagOptions withUrl(String url) {
+    public AddScriptTagOptions setUrl(String url) {
       this.url = url;
       return this;
     }
@@ -112,15 +112,15 @@ public interface Frame {
      */
     public String url;
 
-    public AddStyleTagOptions withContent(String content) {
+    public AddStyleTagOptions setContent(String content) {
       this.content = content;
       return this;
     }
-    public AddStyleTagOptions withPath(Path path) {
+    public AddStyleTagOptions setPath(Path path) {
       this.path = path;
       return this;
     }
-    public AddStyleTagOptions withUrl(String url) {
+    public AddStyleTagOptions setUrl(String url) {
       this.url = url;
       return this;
     }
@@ -144,15 +144,15 @@ public interface Frame {
      */
     public Double timeout;
 
-    public CheckOptions withForce(boolean force) {
+    public CheckOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public CheckOptions withNoWaitAfter(boolean noWaitAfter) {
+    public CheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public CheckOptions withTimeout(double timeout) {
+    public CheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -198,38 +198,38 @@ public interface Frame {
      */
     public Double timeout;
 
-    public ClickOptions withButton(MouseButton button) {
+    public ClickOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
-    public ClickOptions withClickCount(int clickCount) {
+    public ClickOptions setClickCount(int clickCount) {
       this.clickCount = clickCount;
       return this;
     }
-    public ClickOptions withDelay(double delay) {
+    public ClickOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public ClickOptions withForce(boolean force) {
+    public ClickOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public ClickOptions withModifiers(List<KeyboardModifier> modifiers) {
+    public ClickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
-    public ClickOptions withNoWaitAfter(boolean noWaitAfter) {
+    public ClickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public ClickOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
+    public ClickOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
     }
-    public ClickOptions withPosition(Position position) {
+    public ClickOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
-    public ClickOptions withTimeout(double timeout) {
+    public ClickOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -271,34 +271,34 @@ public interface Frame {
      */
     public Double timeout;
 
-    public DblclickOptions withButton(MouseButton button) {
+    public DblclickOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
-    public DblclickOptions withDelay(double delay) {
+    public DblclickOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public DblclickOptions withForce(boolean force) {
+    public DblclickOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public DblclickOptions withModifiers(List<KeyboardModifier> modifiers) {
+    public DblclickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
-    public DblclickOptions withNoWaitAfter(boolean noWaitAfter) {
+    public DblclickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public DblclickOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
+    public DblclickOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
     }
-    public DblclickOptions withPosition(Position position) {
+    public DblclickOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
-    public DblclickOptions withTimeout(double timeout) {
+    public DblclickOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -311,7 +311,7 @@ public interface Frame {
      */
     public Double timeout;
 
-    public DispatchEventOptions withTimeout(double timeout) {
+    public DispatchEventOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -330,11 +330,11 @@ public interface Frame {
      */
     public Double timeout;
 
-    public FillOptions withNoWaitAfter(boolean noWaitAfter) {
+    public FillOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public FillOptions withTimeout(double timeout) {
+    public FillOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -347,7 +347,7 @@ public interface Frame {
      */
     public Double timeout;
 
-    public FocusOptions withTimeout(double timeout) {
+    public FocusOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -360,7 +360,7 @@ public interface Frame {
      */
     public Double timeout;
 
-    public GetAttributeOptions withTimeout(double timeout) {
+    public GetAttributeOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -388,15 +388,15 @@ public interface Frame {
      */
     public WaitUntilState waitUntil;
 
-    public NavigateOptions withReferer(String referer) {
+    public NavigateOptions setReferer(String referer) {
       this.referer = referer;
       return this;
     }
-    public NavigateOptions withTimeout(double timeout) {
+    public NavigateOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
-    public NavigateOptions withWaitUntil(WaitUntilState waitUntil) {
+    public NavigateOptions setWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -424,22 +424,22 @@ public interface Frame {
      */
     public Double timeout;
 
-    public HoverOptions withForce(boolean force) {
+    public HoverOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public HoverOptions withModifiers(List<KeyboardModifier> modifiers) {
+    public HoverOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
-    public HoverOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
+    public HoverOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
     }
-    public HoverOptions withPosition(Position position) {
+    public HoverOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
-    public HoverOptions withTimeout(double timeout) {
+    public HoverOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -452,7 +452,7 @@ public interface Frame {
      */
     public Double timeout;
 
-    public InnerHTMLOptions withTimeout(double timeout) {
+    public InnerHTMLOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -465,7 +465,7 @@ public interface Frame {
      */
     public Double timeout;
 
-    public InnerTextOptions withTimeout(double timeout) {
+    public InnerTextOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -478,7 +478,7 @@ public interface Frame {
      */
     public Double timeout;
 
-    public IsCheckedOptions withTimeout(double timeout) {
+    public IsCheckedOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -491,7 +491,7 @@ public interface Frame {
      */
     public Double timeout;
 
-    public IsDisabledOptions withTimeout(double timeout) {
+    public IsDisabledOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -504,7 +504,7 @@ public interface Frame {
      */
     public Double timeout;
 
-    public IsEditableOptions withTimeout(double timeout) {
+    public IsEditableOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -517,7 +517,7 @@ public interface Frame {
      */
     public Double timeout;
 
-    public IsEnabledOptions withTimeout(double timeout) {
+    public IsEnabledOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -530,7 +530,7 @@ public interface Frame {
      */
     public Double timeout;
 
-    public IsHiddenOptions withTimeout(double timeout) {
+    public IsHiddenOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -543,7 +543,7 @@ public interface Frame {
      */
     public Double timeout;
 
-    public IsVisibleOptions withTimeout(double timeout) {
+    public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -566,15 +566,15 @@ public interface Frame {
      */
     public Double timeout;
 
-    public PressOptions withDelay(double delay) {
+    public PressOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public PressOptions withNoWaitAfter(boolean noWaitAfter) {
+    public PressOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public PressOptions withTimeout(double timeout) {
+    public PressOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -593,11 +593,11 @@ public interface Frame {
      */
     public Double timeout;
 
-    public SelectOptionOptions withNoWaitAfter(boolean noWaitAfter) {
+    public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public SelectOptionOptions withTimeout(double timeout) {
+    public SelectOptionOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -620,11 +620,11 @@ public interface Frame {
      */
     public WaitUntilState waitUntil;
 
-    public SetContentOptions withTimeout(double timeout) {
+    public SetContentOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
-    public SetContentOptions withWaitUntil(WaitUntilState waitUntil) {
+    public SetContentOptions setWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -643,11 +643,11 @@ public interface Frame {
      */
     public Double timeout;
 
-    public SetInputFilesOptions withNoWaitAfter(boolean noWaitAfter) {
+    public SetInputFilesOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public SetInputFilesOptions withTimeout(double timeout) {
+    public SetInputFilesOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -681,26 +681,26 @@ public interface Frame {
      */
     public Double timeout;
 
-    public TapOptions withForce(boolean force) {
+    public TapOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public TapOptions withModifiers(List<KeyboardModifier> modifiers) {
+    public TapOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
-    public TapOptions withNoWaitAfter(boolean noWaitAfter) {
+    public TapOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public TapOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
+    public TapOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
     }
-    public TapOptions withPosition(Position position) {
+    public TapOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
-    public TapOptions withTimeout(double timeout) {
+    public TapOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -713,7 +713,7 @@ public interface Frame {
      */
     public Double timeout;
 
-    public TextContentOptions withTimeout(double timeout) {
+    public TextContentOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -736,15 +736,15 @@ public interface Frame {
      */
     public Double timeout;
 
-    public TypeOptions withDelay(double delay) {
+    public TypeOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public TypeOptions withNoWaitAfter(boolean noWaitAfter) {
+    public TypeOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public TypeOptions withTimeout(double timeout) {
+    public TypeOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -768,15 +768,15 @@ public interface Frame {
      */
     public Double timeout;
 
-    public UncheckOptions withForce(boolean force) {
+    public UncheckOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public UncheckOptions withNoWaitAfter(boolean noWaitAfter) {
+    public UncheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public UncheckOptions withTimeout(double timeout) {
+    public UncheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -793,11 +793,11 @@ public interface Frame {
      */
     public Double timeout;
 
-    public WaitForFunctionOptions withPollingInterval(double pollingInterval) {
+    public WaitForFunctionOptions setPollingInterval(double pollingInterval) {
       this.pollingInterval = pollingInterval;
       return this;
     }
-    public WaitForFunctionOptions withTimeout(double timeout) {
+    public WaitForFunctionOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -811,7 +811,7 @@ public interface Frame {
      */
     public Double timeout;
 
-    public WaitForLoadStateOptions withTimeout(double timeout) {
+    public WaitForLoadStateOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -838,23 +838,23 @@ public interface Frame {
      */
     public WaitUntilState waitUntil;
 
-    public WaitForNavigationOptions withTimeout(double timeout) {
+    public WaitForNavigationOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
-    public WaitForNavigationOptions withUrl(String url) {
+    public WaitForNavigationOptions setUrl(String url) {
       this.url = url;
       return this;
     }
-    public WaitForNavigationOptions withUrl(Pattern url) {
+    public WaitForNavigationOptions setUrl(Pattern url) {
       this.url = url;
       return this;
     }
-    public WaitForNavigationOptions withUrl(Predicate<String> url) {
+    public WaitForNavigationOptions setUrl(Predicate<String> url) {
       this.url = url;
       return this;
     }
-    public WaitForNavigationOptions withWaitUntil(WaitUntilState waitUntil) {
+    public WaitForNavigationOptions setWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -879,11 +879,11 @@ public interface Frame {
      */
     public Double timeout;
 
-    public WaitForSelectorOptions withState(WaitForSelectorState state) {
+    public WaitForSelectorOptions setState(WaitForSelectorState state) {
       this.state = state;
       return this;
     }
-    public WaitForSelectorOptions withTimeout(double timeout) {
+    public WaitForSelectorOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }

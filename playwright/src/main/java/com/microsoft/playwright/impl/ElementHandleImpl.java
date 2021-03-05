@@ -359,7 +359,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
       return selectOption(new SelectOption[0], options);
     }
     return selectOption(Arrays.asList(values).stream().map(
-      v -> new SelectOption().withValue(v)).toArray(SelectOption[]::new), options);
+      v -> new SelectOption().setValue(v)).toArray(SelectOption[]::new), options);
   }
 
   @Override

@@ -28,7 +28,7 @@ public class TestBrowserContextClearCookies extends TestBase {
   void shouldClearCookies() {
     page.navigate(server.EMPTY_PAGE);
     context.addCookies(asList(
-      new Cookie("cookie1", "1").withUrl(server.EMPTY_PAGE)));
+      new Cookie("cookie1", "1").setUrl(server.EMPTY_PAGE)));
     assertEquals("cookie1=1", page.evaluate("document.cookie"));
     context.clearCookies();
     assertEquals(emptyList(), context.cookies());
@@ -40,9 +40,9 @@ public class TestBrowserContextClearCookies extends TestBase {
   void shouldIsolateCookiesWhenClearing() {
     BrowserContext anotherContext = browser.newContext();
     context.addCookies(asList(
-      new Cookie("page1cookie", "page1value").withUrl(server.EMPTY_PAGE)));
+      new Cookie("page1cookie", "page1value").setUrl(server.EMPTY_PAGE)));
     anotherContext.addCookies(asList(
-      new Cookie("page2cookie", "page2value").withUrl(server.EMPTY_PAGE)));
+      new Cookie("page2cookie", "page2value").setUrl(server.EMPTY_PAGE)));
 
     assertEquals(1, (context.cookies()).size());
     assertEquals(1, (anotherContext.cookies()).size());

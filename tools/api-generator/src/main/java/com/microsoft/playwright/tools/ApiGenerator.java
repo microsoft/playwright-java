@@ -785,8 +785,8 @@ class Field extends Element {
           args.add(f.name);
         }
         if (!params.isEmpty()) {
-          output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + String.join(", ", params) + ") {");
-          output.add(offset + "  return with" + toTitle(name) + "(new " + type.toJava() + "(" + String.join(", ", args) + "));");
+          output.add(offset + "public " + parentClass + " set" + toTitle(name) + "(" + String.join(", ", params) + ") {");
+          output.add(offset + "  return set" + toTitle(name) + "(new " + type.toJava() + "(" + String.join(", ", args) + "));");
           output.add(offset + "}");
         }
       }
@@ -795,7 +795,7 @@ class Field extends Element {
   }
 
   private void writeGenericBuilderMethod(List<String> output, String offset, String parentClass, String paramType) {
-    output.add(offset + "public " + parentClass + " with" + toTitle(name) + "(" + paramType + " " + name + ") {");
+    output.add(offset + "public " + parentClass + " set" + toTitle(name) + "(" + paramType + " " + name + ") {");
     String rvalue = type.isNullable() ? "Optional.ofNullable(" + name + ")" : name;
     output.add(offset + "  this." + name + " = " + rvalue + ";");
     output.add(offset + "  return this;");

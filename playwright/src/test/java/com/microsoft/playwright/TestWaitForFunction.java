@@ -64,7 +64,7 @@ public class TestWaitForFunction extends TestBase {
       "    return false;\n" +
       "  }\n" +
       "  return Date.now() - window[\"__startTime\"];\n" +
-      "}", null, new Page.WaitForFunctionOptions().withPollingInterval(polling));
+      "}", null, new Page.WaitForFunctionOptions().setPollingInterval(polling));
     int delta = (int) timeDelta.evaluate("h => h");
     assertTrue(delta >= polling);
   }
@@ -78,7 +78,7 @@ public class TestWaitForFunction extends TestBase {
       JSHandle result = page.waitForFunction("() => {\n" +
         "  window['counter'] = (window['counter'] || 0) + 1;\n" +
         "  console.log(window['counter']);\n" +
-        "}", null, new Page.WaitForFunctionOptions().withPollingInterval(1).withTimeout(1000));
+        "}", null, new Page.WaitForFunctionOptions().setPollingInterval(1).setTimeout(1000));
       fail("did not throw");
     } catch (TimeoutError e) {
       assertTrue(e.getMessage().contains("Timeout 1000ms exceeded"));
@@ -150,7 +150,7 @@ public class TestWaitForFunction extends TestBase {
   @Test
   void shouldThrowNegativePollingInterval() {
     try {
-      page.waitForFunction("() => !!document.body", null, new Page.WaitForFunctionOptions().withPollingInterval(-10));
+      page.waitForFunction("() => !!document.body", null, new Page.WaitForFunctionOptions().setPollingInterval(-10));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Cannot poll with non-positive interval"));
@@ -178,7 +178,7 @@ public class TestWaitForFunction extends TestBase {
   @Test
   void shouldRespectTimeout() {
     try {
-      page.waitForFunction("false", null, new Page.WaitForFunctionOptions().withTimeout(10));
+      page.waitForFunction("false", null, new Page.WaitForFunctionOptions().setTimeout(10));
       fail("did not throw");
     } catch (TimeoutError e) {
       assertTrue(e.getMessage().contains("Timeout 10ms exceeded"));
@@ -201,7 +201,7 @@ public class TestWaitForFunction extends TestBase {
     page.waitForFunction("() => {\n" +
       "  window['__counter'] = (window['__counter'] || 0) + 1;\n" +
       "  return window['__counter'] > 10;\n" +
-      "}", null, new Page.WaitForFunctionOptions().withTimeout(0).withPollingInterval(10));
+      "}", null, new Page.WaitForFunctionOptions().setTimeout(0).setPollingInterval(10));
   }
 
   @Test

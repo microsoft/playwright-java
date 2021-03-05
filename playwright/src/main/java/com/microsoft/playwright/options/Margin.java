@@ -34,19 +34,19 @@ public class Margin {
    */
   public String left;
 
-  public Margin withTop(String top) {
+  public Margin setTop(String top) {
     this.top = top;
     return this;
   }
-  public Margin withRight(String right) {
+  public Margin setRight(String right) {
     this.right = right;
     return this;
   }
-  public Margin withBottom(String bottom) {
+  public Margin setBottom(String bottom) {
     this.bottom = bottom;
     return this;
   }
-  public Margin withLeft(String left) {
+  public Margin setLeft(String left) {
     this.left = left;
     return this;
   }

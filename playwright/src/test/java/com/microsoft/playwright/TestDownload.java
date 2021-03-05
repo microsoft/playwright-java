@@ -76,7 +76,7 @@ public class TestDownload extends TestBase {
   }
   @Test
   void shouldReportDownloadsWithAcceptDownloadsTrue() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
     Path path = download.path();
@@ -88,7 +88,7 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldSaveToUserSpecifiedPath() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
 
@@ -102,7 +102,7 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldSaveToUserSpecifiedPathWithoutUpdatingOriginalPath() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
 
@@ -125,7 +125,7 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldSaveToTwoDifferentPathsWithMultipleSaveAsCalls() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
     {
@@ -147,7 +147,7 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldSaveToOverwrittenFilepath() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
     Path userFile = Files.createTempFile("download-", ".txt");
@@ -168,7 +168,7 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldCreateSubdirectoriesWhenSavingToNonExistentUserSpecifiedPath() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
 
@@ -187,7 +187,7 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldErrorWhenSavingWithDownloadsDisabled() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(false));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(false));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
 
@@ -203,7 +203,7 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldErrorWhenSavingAfterDeletion() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
 
@@ -233,7 +233,7 @@ public class TestDownload extends TestBase {
       }
     });
 
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a download='file.txt' href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
@@ -248,7 +248,7 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldReportDownloadPathWithinPageOnDownloadHandlerForFiles() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     @SuppressWarnings("unchecked")
     Download[] download = {null};
@@ -268,7 +268,7 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldReportDownloadPathWithinPageOnDownloadHandlerForBlobs() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     @SuppressWarnings("unchecked")
     Download[] download = {null};
     page.onDownload(d -> download[0] = d);
@@ -298,9 +298,9 @@ public class TestDownload extends TestBase {
         writer.write("Hello world");
       }
     });
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
-    Download download = page.waitForDownload(() -> page.click("a", new Page.ClickOptions().withModifiers(asList(ALT))));
+    Download download = page.waitForDownload(() -> page.click("a", new Page.ClickOptions().setModifiers(asList(ALT))));
     Path path = download.path();
     assertTrue(Files.exists(path));
     byte[] bytes = readAllBytes(path);
@@ -319,7 +319,7 @@ public class TestDownload extends TestBase {
     // TODO: - the test fails in headful Chromium as the popup page gets closed along
     // with the session before download completed event arrives.
     // - WebKit doesn't close the popup page
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a target=_blank href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
     Path path = download.path();
@@ -331,7 +331,7 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldDeleteFile() {
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
     Path path = download.path();
@@ -343,7 +343,7 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldExposeStream() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
 
@@ -356,7 +356,7 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldDeleteDownloadsOnContextDestruction() {
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download1 = page.waitForDownload(() -> page.click("a"));
     Download download2 = page.waitForDownload(() -> page.click("a"));
@@ -372,7 +372,7 @@ public class TestDownload extends TestBase {
   @Test
   void shouldDeleteDownloadsOnBrowserGone() {
     Browser browser = browserType.launch();
-    Page page = browser.newPage(new Browser.NewPageOptions().withAcceptDownloads(true));
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
     Download download1 = page.waitForDownload(() -> page.click("a"));
     Download download2 = page.waitForDownload(() -> page.click("a"));

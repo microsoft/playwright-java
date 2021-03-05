@@ -36,7 +36,7 @@ public class TestBrowserContextStorageState extends TestBase {
   @Test
   void shouldCaptureLocalStorage() {
     page.route("**/*", route -> {
-      route.fulfill(new Route.FulfillOptions().withBody("<html></html>"));
+      route.fulfill(new Route.FulfillOptions().setBody("<html></html>"));
     });
     page.navigate("https://www.example.com");
     page.evaluate("localStorage['name1'] = 'value1';");
@@ -73,10 +73,10 @@ public class TestBrowserContextStorageState extends TestBase {
       "    }\n" +
       "  ]\n" +
       "}";
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withStorageState(storageState));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setStorageState(storageState));
     Page page = context.newPage();
     page.route("**/*", route -> {
-      route.fulfill(new Route.FulfillOptions().withBody("<html></html>"));
+      route.fulfill(new Route.FulfillOptions().setBody("<html></html>"));
     });
     page.navigate("https://www.example.com");
     Object localStorage = page.evaluate("window.localStorage");
@@ -88,7 +88,7 @@ public class TestBrowserContextStorageState extends TestBase {
   void shouldRoundTripThroughTheFile(@TempDir Path tempDir) throws IOException {
     Page page1 = context.newPage();
     page1.route("**/*", route -> {
-      route.fulfill(new Route.FulfillOptions().withBody("<html></html>"));
+      route.fulfill(new Route.FulfillOptions().setBody("<html></html>"));
     });
     page1.navigate("https://www.example.com");
     page1.evaluate("() => {\n" +
@@ -97,7 +97,7 @@ public class TestBrowserContextStorageState extends TestBase {
       "  return document.cookie;\n" +
       "}");
     Path path = tempDir.resolve("storage-state.json");
-    context.storageState(new BrowserContext.StorageStateOptions().withPath(path));
+    context.storageState(new BrowserContext.StorageStateOptions().setPath(path));
     JsonObject expected = new Gson().fromJson(
       "{\n" +
       "  \"cookies\":[\n" +
@@ -124,10 +124,10 @@ public class TestBrowserContextStorageState extends TestBase {
     try (InputStreamReader reader = new InputStreamReader(new FileInputStream(path.toFile()), StandardCharsets.UTF_8)) {
       assertEquals(expected, new Gson().fromJson(reader, JsonObject.class));
     }
-    BrowserContext context2 = browser.newContext(new Browser.NewContextOptions().withStorageStatePath(path));
+    BrowserContext context2 = browser.newContext(new Browser.NewContextOptions().setStorageStatePath(path));
     Page page2 = context2.newPage();
     page2.route("**/*", route -> {
-      route.fulfill(new Route.FulfillOptions().withBody("<html></html>"));
+      route.fulfill(new Route.FulfillOptions().setBody("<html></html>"));
     });
     page2.navigate("https://www.example.com");
     Object localStorage = page2.evaluate("window.localStorage");

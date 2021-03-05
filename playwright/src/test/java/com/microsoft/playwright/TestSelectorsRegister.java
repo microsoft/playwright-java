@@ -82,7 +82,7 @@ public class TestSelectorsRegister extends TestBase {
       "  }\n" +
       "}";
     playwright.selectors().register("main", createDummySelector);
-    playwright.selectors().register("isolated", createDummySelector, new Selectors.RegisterOptions().withContentScript(true));
+    playwright.selectors().register("isolated", createDummySelector, new Selectors.RegisterOptions().setContentScript(true));
     page.setContent("<div><span><section></section></span></div>");
     page.evaluate("() => window['__answer'] = document.querySelector('span')");
     // Works in main if asked.

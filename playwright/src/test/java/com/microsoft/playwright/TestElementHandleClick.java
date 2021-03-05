@@ -74,7 +74,7 @@ public class TestElementHandleClick extends TestBase {
     ElementHandle button = page.querySelector("button");
     page.evaluate("button => button.style.display = 'none'", button);
     try {
-      button.click(new ElementHandle.ClickOptions().withForce(true));
+      button.click(new ElementHandle.ClickOptions().setForce(true));
       fail("click should throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Element is not visible"));
@@ -87,7 +87,7 @@ public class TestElementHandleClick extends TestBase {
     ElementHandle button = page.querySelector("button");
     page.evaluate("button => button.parentElement.style.display = 'none'", button);
     try {
-      button.click(new ElementHandle.ClickOptions().withForce(true));
+      button.click(new ElementHandle.ClickOptions().setForce(true));
       fail("click should throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Element is not visible"));
@@ -99,7 +99,7 @@ public class TestElementHandleClick extends TestBase {
     page.setContent("hello<br>goodbye");
     ElementHandle br = page.querySelector("br");
     try {
-      br.click(new ElementHandle.ClickOptions().withForce(true));
+      br.click(new ElementHandle.ClickOptions().setForce(true));
       fail("click should throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Element is outside of the viewport"));

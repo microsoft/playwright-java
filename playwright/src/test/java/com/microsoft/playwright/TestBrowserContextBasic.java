@@ -96,7 +96,7 @@ public class TestBrowserContextBasic extends TestBase {
 
   @Test
   void shouldPropagateDefaultViewportToThePage() {
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withViewportSize(456, 789));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(456, 789));
     Page page = context.newPage();
     verifyViewport(page, 456, 789);
     context.close();
@@ -108,7 +108,7 @@ public class TestBrowserContextBasic extends TestBase {
 
   @Test
   void shouldRespectDeviceScaleFactor() {
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withDeviceScaleFactor(3.0));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setDeviceScaleFactor(3.0));
     Page page = context.newPage();
     assertEquals(3, page.evaluate("window.devicePixelRatio"));
     context.close();
@@ -119,7 +119,7 @@ public class TestBrowserContextBasic extends TestBase {
   @Disabled("TODO: supported null viewport option")
   void shouldNotAllowDeviceScaleFactorWithNullViewport() {
     try {
-      browser.newContext(new Browser.NewContextOptions().withDeviceScaleFactor(1.0));
+      browser.newContext(new Browser.NewContextOptions().setDeviceScaleFactor(1.0));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("\"deviceScaleFactor\" option is not supported with null \"viewport\""));
@@ -130,7 +130,7 @@ public class TestBrowserContextBasic extends TestBase {
   @Disabled("TODO: supported null viewport option")
   void shouldNotAllowIsMobileWithNullViewport() {
     try {
-      browser.newContext(new Browser.NewContextOptions().withIsMobile(true));
+      browser.newContext(new Browser.NewContextOptions().setIsMobile(true));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("\"isMobile\" option is not supported with null \"viewport\""));
@@ -208,7 +208,7 @@ public class TestBrowserContextBasic extends TestBase {
   @Test
   void shouldDisableJavascript() {
     {
-      BrowserContext context = browser.newContext(new Browser.NewContextOptions().withJavaScriptEnabled(false));
+      BrowserContext context = browser.newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
       Page page = context.newPage();
       page.navigate("data:text/html, <script>var something = 'forbidden'</script>");
       try {
@@ -234,7 +234,7 @@ public class TestBrowserContextBasic extends TestBase {
 
   @Test
   void shouldBeAbleToNavigateAfterDisablingJavascript() {
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withJavaScriptEnabled(false));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     context.close();
@@ -242,7 +242,7 @@ public class TestBrowserContextBasic extends TestBase {
 
   @Test
   void shouldWorkWithOfflineOption() {
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withOffline(true));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setOffline(true));
     Page page = context.newPage();
     try {
       page.navigate(server.EMPTY_PAGE);

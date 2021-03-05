@@ -67,15 +67,15 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public CheckOptions withForce(boolean force) {
+    public CheckOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public CheckOptions withNoWaitAfter(boolean noWaitAfter) {
+    public CheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public CheckOptions withTimeout(double timeout) {
+    public CheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -121,38 +121,38 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public ClickOptions withButton(MouseButton button) {
+    public ClickOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
-    public ClickOptions withClickCount(int clickCount) {
+    public ClickOptions setClickCount(int clickCount) {
       this.clickCount = clickCount;
       return this;
     }
-    public ClickOptions withDelay(double delay) {
+    public ClickOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public ClickOptions withForce(boolean force) {
+    public ClickOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public ClickOptions withModifiers(List<KeyboardModifier> modifiers) {
+    public ClickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
-    public ClickOptions withNoWaitAfter(boolean noWaitAfter) {
+    public ClickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public ClickOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
+    public ClickOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
     }
-    public ClickOptions withPosition(Position position) {
+    public ClickOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
-    public ClickOptions withTimeout(double timeout) {
+    public ClickOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -194,34 +194,34 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public DblclickOptions withButton(MouseButton button) {
+    public DblclickOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
-    public DblclickOptions withDelay(double delay) {
+    public DblclickOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public DblclickOptions withForce(boolean force) {
+    public DblclickOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public DblclickOptions withModifiers(List<KeyboardModifier> modifiers) {
+    public DblclickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
-    public DblclickOptions withNoWaitAfter(boolean noWaitAfter) {
+    public DblclickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public DblclickOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
+    public DblclickOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
     }
-    public DblclickOptions withPosition(Position position) {
+    public DblclickOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
-    public DblclickOptions withTimeout(double timeout) {
+    public DblclickOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -240,11 +240,11 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public FillOptions withNoWaitAfter(boolean noWaitAfter) {
+    public FillOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public FillOptions withTimeout(double timeout) {
+    public FillOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -272,22 +272,22 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public HoverOptions withForce(boolean force) {
+    public HoverOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public HoverOptions withModifiers(List<KeyboardModifier> modifiers) {
+    public HoverOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
-    public HoverOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
+    public HoverOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
     }
-    public HoverOptions withPosition(Position position) {
+    public HoverOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
-    public HoverOptions withTimeout(double timeout) {
+    public HoverOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -310,15 +310,15 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public PressOptions withDelay(double delay) {
+    public PressOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public PressOptions withNoWaitAfter(boolean noWaitAfter) {
+    public PressOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public PressOptions withTimeout(double timeout) {
+    public PressOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -350,23 +350,23 @@ public interface ElementHandle extends JSHandle {
      */
     public ScreenshotType type;
 
-    public ScreenshotOptions withOmitBackground(boolean omitBackground) {
+    public ScreenshotOptions setOmitBackground(boolean omitBackground) {
       this.omitBackground = omitBackground;
       return this;
     }
-    public ScreenshotOptions withPath(Path path) {
+    public ScreenshotOptions setPath(Path path) {
       this.path = path;
       return this;
     }
-    public ScreenshotOptions withQuality(int quality) {
+    public ScreenshotOptions setQuality(int quality) {
       this.quality = quality;
       return this;
     }
-    public ScreenshotOptions withTimeout(double timeout) {
+    public ScreenshotOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
-    public ScreenshotOptions withType(ScreenshotType type) {
+    public ScreenshotOptions setType(ScreenshotType type) {
       this.type = type;
       return this;
     }
@@ -379,7 +379,7 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public ScrollIntoViewIfNeededOptions withTimeout(double timeout) {
+    public ScrollIntoViewIfNeededOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -398,11 +398,11 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public SelectOptionOptions withNoWaitAfter(boolean noWaitAfter) {
+    public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public SelectOptionOptions withTimeout(double timeout) {
+    public SelectOptionOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -415,7 +415,7 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public SelectTextOptions withTimeout(double timeout) {
+    public SelectTextOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -434,11 +434,11 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public SetInputFilesOptions withNoWaitAfter(boolean noWaitAfter) {
+    public SetInputFilesOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public SetInputFilesOptions withTimeout(double timeout) {
+    public SetInputFilesOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -472,26 +472,26 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public TapOptions withForce(boolean force) {
+    public TapOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public TapOptions withModifiers(List<KeyboardModifier> modifiers) {
+    public TapOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
-    public TapOptions withNoWaitAfter(boolean noWaitAfter) {
+    public TapOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public TapOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
+    public TapOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
     }
-    public TapOptions withPosition(Position position) {
+    public TapOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
-    public TapOptions withTimeout(double timeout) {
+    public TapOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -514,15 +514,15 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public TypeOptions withDelay(double delay) {
+    public TypeOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public TypeOptions withNoWaitAfter(boolean noWaitAfter) {
+    public TypeOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public TypeOptions withTimeout(double timeout) {
+    public TypeOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -546,15 +546,15 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public UncheckOptions withForce(boolean force) {
+    public UncheckOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public UncheckOptions withNoWaitAfter(boolean noWaitAfter) {
+    public UncheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public UncheckOptions withTimeout(double timeout) {
+    public UncheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -567,7 +567,7 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public WaitForElementStateOptions withTimeout(double timeout) {
+    public WaitForElementStateOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -592,11 +592,11 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
-    public WaitForSelectorOptions withState(WaitForSelectorState state) {
+    public WaitForSelectorOptions setState(WaitForSelectorState state) {
       this.state = state;
       return this;
     }
-    public WaitForSelectorOptions withTimeout(double timeout) {
+    public WaitForSelectorOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }

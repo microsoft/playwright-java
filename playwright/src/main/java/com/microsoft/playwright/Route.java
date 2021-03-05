@@ -43,23 +43,23 @@ public interface Route {
      */
     public String url;
 
-    public ResumeOptions withHeaders(Map<String, String> headers) {
+    public ResumeOptions setHeaders(Map<String, String> headers) {
       this.headers = headers;
       return this;
     }
-    public ResumeOptions withMethod(String method) {
+    public ResumeOptions setMethod(String method) {
       this.method = method;
       return this;
     }
-    public ResumeOptions withPostData(String postData) {
+    public ResumeOptions setPostData(String postData) {
       this.postData = postData;
       return this;
     }
-    public ResumeOptions withPostData(byte[] postData) {
+    public ResumeOptions setPostData(byte[] postData) {
       this.postData = postData;
       return this;
     }
-    public ResumeOptions withUrl(String url) {
+    public ResumeOptions setUrl(String url) {
       this.url = url;
       return this;
     }
@@ -91,27 +91,27 @@ public interface Route {
      */
     public Integer status;
 
-    public FulfillOptions withBody(String body) {
+    public FulfillOptions setBody(String body) {
       this.body = body;
       return this;
     }
-    public FulfillOptions withBodyBytes(byte[] bodyBytes) {
+    public FulfillOptions setBodyBytes(byte[] bodyBytes) {
       this.bodyBytes = bodyBytes;
       return this;
     }
-    public FulfillOptions withContentType(String contentType) {
+    public FulfillOptions setContentType(String contentType) {
       this.contentType = contentType;
       return this;
     }
-    public FulfillOptions withHeaders(Map<String, String> headers) {
+    public FulfillOptions setHeaders(Map<String, String> headers) {
       this.headers = headers;
       return this;
     }
-    public FulfillOptions withPath(Path path) {
+    public FulfillOptions setPath(Path path) {
       this.path = path;
       return this;
     }
-    public FulfillOptions withStatus(int status) {
+    public FulfillOptions setStatus(int status) {
       this.status = status;
       return this;
     }

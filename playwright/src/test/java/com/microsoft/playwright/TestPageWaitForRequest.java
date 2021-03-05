@@ -53,7 +53,7 @@ public class TestPageWaitForRequest extends TestBase {
   @Test
   void shouldRespectTimeout() {
     try {
-      page.waitForRequest(url -> false, new Page.WaitForRequestOptions().withTimeout(1), () -> {});
+      page.waitForRequest(url -> false, new Page.WaitForRequestOptions().setTimeout(1), () -> {});
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
@@ -76,7 +76,7 @@ public class TestPageWaitForRequest extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     Request request = page.waitForRequest(
       server.PREFIX + "/digits/2.png",
-      new Page.WaitForRequestOptions().withTimeout(0),() -> {
+      new Page.WaitForRequestOptions().setTimeout(0),() -> {
         page.evaluate("() => setTimeout(() => {\n" +
           "  fetch('/digits/1.png');\n" +
           "  fetch('/digits/2.png');\n" +

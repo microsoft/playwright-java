@@ -325,19 +325,19 @@ public interface Page extends AutoCloseable {
      */
     public String url;
 
-    public AddScriptTagOptions withContent(String content) {
+    public AddScriptTagOptions setContent(String content) {
       this.content = content;
       return this;
     }
-    public AddScriptTagOptions withPath(Path path) {
+    public AddScriptTagOptions setPath(Path path) {
       this.path = path;
       return this;
     }
-    public AddScriptTagOptions withType(String type) {
+    public AddScriptTagOptions setType(String type) {
       this.type = type;
       return this;
     }
-    public AddScriptTagOptions withUrl(String url) {
+    public AddScriptTagOptions setUrl(String url) {
       this.url = url;
       return this;
     }
@@ -357,15 +357,15 @@ public interface Page extends AutoCloseable {
      */
     public String url;
 
-    public AddStyleTagOptions withContent(String content) {
+    public AddStyleTagOptions setContent(String content) {
       this.content = content;
       return this;
     }
-    public AddStyleTagOptions withPath(Path path) {
+    public AddStyleTagOptions setPath(Path path) {
       this.path = path;
       return this;
     }
-    public AddStyleTagOptions withUrl(String url) {
+    public AddStyleTagOptions setUrl(String url) {
       this.url = url;
       return this;
     }
@@ -389,15 +389,15 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public CheckOptions withForce(boolean force) {
+    public CheckOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public CheckOptions withNoWaitAfter(boolean noWaitAfter) {
+    public CheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public CheckOptions withTimeout(double timeout) {
+    public CheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -443,38 +443,38 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public ClickOptions withButton(MouseButton button) {
+    public ClickOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
-    public ClickOptions withClickCount(int clickCount) {
+    public ClickOptions setClickCount(int clickCount) {
       this.clickCount = clickCount;
       return this;
     }
-    public ClickOptions withDelay(double delay) {
+    public ClickOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public ClickOptions withForce(boolean force) {
+    public ClickOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public ClickOptions withModifiers(List<KeyboardModifier> modifiers) {
+    public ClickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
-    public ClickOptions withNoWaitAfter(boolean noWaitAfter) {
+    public ClickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public ClickOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
+    public ClickOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
     }
-    public ClickOptions withPosition(Position position) {
+    public ClickOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
-    public ClickOptions withTimeout(double timeout) {
+    public ClickOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -486,7 +486,7 @@ public interface Page extends AutoCloseable {
      */
     public Boolean runBeforeUnload;
 
-    public CloseOptions withRunBeforeUnload(boolean runBeforeUnload) {
+    public CloseOptions setRunBeforeUnload(boolean runBeforeUnload) {
       this.runBeforeUnload = runBeforeUnload;
       return this;
     }
@@ -528,34 +528,34 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public DblclickOptions withButton(MouseButton button) {
+    public DblclickOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
-    public DblclickOptions withDelay(double delay) {
+    public DblclickOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public DblclickOptions withForce(boolean force) {
+    public DblclickOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public DblclickOptions withModifiers(List<KeyboardModifier> modifiers) {
+    public DblclickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
-    public DblclickOptions withNoWaitAfter(boolean noWaitAfter) {
+    public DblclickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public DblclickOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
+    public DblclickOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
     }
-    public DblclickOptions withPosition(Position position) {
+    public DblclickOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
-    public DblclickOptions withTimeout(double timeout) {
+    public DblclickOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -568,7 +568,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public DispatchEventOptions withTimeout(double timeout) {
+    public DispatchEventOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -585,11 +585,11 @@ public interface Page extends AutoCloseable {
      */
     public Optional<Media> media;
 
-    public EmulateMediaOptions withColorScheme(ColorScheme colorScheme) {
+    public EmulateMediaOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
       return this;
     }
-    public EmulateMediaOptions withMedia(Media media) {
+    public EmulateMediaOptions setMedia(Media media) {
       this.media = Optional.ofNullable(media);
       return this;
     }
@@ -601,7 +601,7 @@ public interface Page extends AutoCloseable {
      */
     public Boolean handle;
 
-    public ExposeBindingOptions withHandle(boolean handle) {
+    public ExposeBindingOptions setHandle(boolean handle) {
       this.handle = handle;
       return this;
     }
@@ -620,11 +620,11 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public FillOptions withNoWaitAfter(boolean noWaitAfter) {
+    public FillOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public FillOptions withTimeout(double timeout) {
+    public FillOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -637,7 +637,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public FocusOptions withTimeout(double timeout) {
+    public FocusOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -650,7 +650,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public GetAttributeOptions withTimeout(double timeout) {
+    public GetAttributeOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -673,11 +673,11 @@ public interface Page extends AutoCloseable {
      */
     public WaitUntilState waitUntil;
 
-    public GoBackOptions withTimeout(double timeout) {
+    public GoBackOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
-    public GoBackOptions withWaitUntil(WaitUntilState waitUntil) {
+    public GoBackOptions setWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -700,11 +700,11 @@ public interface Page extends AutoCloseable {
      */
     public WaitUntilState waitUntil;
 
-    public GoForwardOptions withTimeout(double timeout) {
+    public GoForwardOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
-    public GoForwardOptions withWaitUntil(WaitUntilState waitUntil) {
+    public GoForwardOptions setWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -732,15 +732,15 @@ public interface Page extends AutoCloseable {
      */
     public WaitUntilState waitUntil;
 
-    public NavigateOptions withReferer(String referer) {
+    public NavigateOptions setReferer(String referer) {
       this.referer = referer;
       return this;
     }
-    public NavigateOptions withTimeout(double timeout) {
+    public NavigateOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
-    public NavigateOptions withWaitUntil(WaitUntilState waitUntil) {
+    public NavigateOptions setWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -768,22 +768,22 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public HoverOptions withForce(boolean force) {
+    public HoverOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public HoverOptions withModifiers(List<KeyboardModifier> modifiers) {
+    public HoverOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
-    public HoverOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
+    public HoverOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
     }
-    public HoverOptions withPosition(Position position) {
+    public HoverOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
-    public HoverOptions withTimeout(double timeout) {
+    public HoverOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -796,7 +796,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public InnerHTMLOptions withTimeout(double timeout) {
+    public InnerHTMLOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -809,7 +809,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public InnerTextOptions withTimeout(double timeout) {
+    public InnerTextOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -822,7 +822,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public IsCheckedOptions withTimeout(double timeout) {
+    public IsCheckedOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -835,7 +835,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public IsDisabledOptions withTimeout(double timeout) {
+    public IsDisabledOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -848,7 +848,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public IsEditableOptions withTimeout(double timeout) {
+    public IsEditableOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -861,7 +861,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public IsEnabledOptions withTimeout(double timeout) {
+    public IsEnabledOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -874,7 +874,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public IsHiddenOptions withTimeout(double timeout) {
+    public IsHiddenOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -887,7 +887,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public IsVisibleOptions withTimeout(double timeout) {
+    public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -956,55 +956,55 @@ public interface Page extends AutoCloseable {
      */
     public String width;
 
-    public PdfOptions withDisplayHeaderFooter(boolean displayHeaderFooter) {
+    public PdfOptions setDisplayHeaderFooter(boolean displayHeaderFooter) {
       this.displayHeaderFooter = displayHeaderFooter;
       return this;
     }
-    public PdfOptions withFooterTemplate(String footerTemplate) {
+    public PdfOptions setFooterTemplate(String footerTemplate) {
       this.footerTemplate = footerTemplate;
       return this;
     }
-    public PdfOptions withFormat(String format) {
+    public PdfOptions setFormat(String format) {
       this.format = format;
       return this;
     }
-    public PdfOptions withHeaderTemplate(String headerTemplate) {
+    public PdfOptions setHeaderTemplate(String headerTemplate) {
       this.headerTemplate = headerTemplate;
       return this;
     }
-    public PdfOptions withHeight(String height) {
+    public PdfOptions setHeight(String height) {
       this.height = height;
       return this;
     }
-    public PdfOptions withLandscape(boolean landscape) {
+    public PdfOptions setLandscape(boolean landscape) {
       this.landscape = landscape;
       return this;
     }
-    public PdfOptions withMargin(Margin margin) {
+    public PdfOptions setMargin(Margin margin) {
       this.margin = margin;
       return this;
     }
-    public PdfOptions withPageRanges(String pageRanges) {
+    public PdfOptions setPageRanges(String pageRanges) {
       this.pageRanges = pageRanges;
       return this;
     }
-    public PdfOptions withPath(Path path) {
+    public PdfOptions setPath(Path path) {
       this.path = path;
       return this;
     }
-    public PdfOptions withPreferCSSPageSize(boolean preferCSSPageSize) {
+    public PdfOptions setPreferCSSPageSize(boolean preferCSSPageSize) {
       this.preferCSSPageSize = preferCSSPageSize;
       return this;
     }
-    public PdfOptions withPrintBackground(boolean printBackground) {
+    public PdfOptions setPrintBackground(boolean printBackground) {
       this.printBackground = printBackground;
       return this;
     }
-    public PdfOptions withScale(double scale) {
+    public PdfOptions setScale(double scale) {
       this.scale = scale;
       return this;
     }
-    public PdfOptions withWidth(String width) {
+    public PdfOptions setWidth(String width) {
       this.width = width;
       return this;
     }
@@ -1027,15 +1027,15 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public PressOptions withDelay(double delay) {
+    public PressOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public PressOptions withNoWaitAfter(boolean noWaitAfter) {
+    public PressOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public PressOptions withTimeout(double timeout) {
+    public PressOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1058,11 +1058,11 @@ public interface Page extends AutoCloseable {
      */
     public WaitUntilState waitUntil;
 
-    public ReloadOptions withTimeout(double timeout) {
+    public ReloadOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
-    public ReloadOptions withWaitUntil(WaitUntilState waitUntil) {
+    public ReloadOptions setWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -1103,34 +1103,34 @@ public interface Page extends AutoCloseable {
      */
     public ScreenshotType type;
 
-    public ScreenshotOptions withClip(double x, double y, double width, double height) {
-      return withClip(new Clip(x, y, width, height));
+    public ScreenshotOptions setClip(double x, double y, double width, double height) {
+      return setClip(new Clip(x, y, width, height));
     }
-    public ScreenshotOptions withClip(Clip clip) {
+    public ScreenshotOptions setClip(Clip clip) {
       this.clip = clip;
       return this;
     }
-    public ScreenshotOptions withFullPage(boolean fullPage) {
+    public ScreenshotOptions setFullPage(boolean fullPage) {
       this.fullPage = fullPage;
       return this;
     }
-    public ScreenshotOptions withOmitBackground(boolean omitBackground) {
+    public ScreenshotOptions setOmitBackground(boolean omitBackground) {
       this.omitBackground = omitBackground;
       return this;
     }
-    public ScreenshotOptions withPath(Path path) {
+    public ScreenshotOptions setPath(Path path) {
       this.path = path;
       return this;
     }
-    public ScreenshotOptions withQuality(int quality) {
+    public ScreenshotOptions setQuality(int quality) {
       this.quality = quality;
       return this;
     }
-    public ScreenshotOptions withTimeout(double timeout) {
+    public ScreenshotOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
-    public ScreenshotOptions withType(ScreenshotType type) {
+    public ScreenshotOptions setType(ScreenshotType type) {
       this.type = type;
       return this;
     }
@@ -1149,11 +1149,11 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public SelectOptionOptions withNoWaitAfter(boolean noWaitAfter) {
+    public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public SelectOptionOptions withTimeout(double timeout) {
+    public SelectOptionOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1176,11 +1176,11 @@ public interface Page extends AutoCloseable {
      */
     public WaitUntilState waitUntil;
 
-    public SetContentOptions withTimeout(double timeout) {
+    public SetContentOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
-    public SetContentOptions withWaitUntil(WaitUntilState waitUntil) {
+    public SetContentOptions setWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -1199,11 +1199,11 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public SetInputFilesOptions withNoWaitAfter(boolean noWaitAfter) {
+    public SetInputFilesOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public SetInputFilesOptions withTimeout(double timeout) {
+    public SetInputFilesOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1237,26 +1237,26 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public TapOptions withForce(boolean force) {
+    public TapOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public TapOptions withModifiers(List<KeyboardModifier> modifiers) {
+    public TapOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
-    public TapOptions withNoWaitAfter(boolean noWaitAfter) {
+    public TapOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public TapOptions withPosition(double x, double y) {
-      return withPosition(new Position(x, y));
+    public TapOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
     }
-    public TapOptions withPosition(Position position) {
+    public TapOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
-    public TapOptions withTimeout(double timeout) {
+    public TapOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1269,7 +1269,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public TextContentOptions withTimeout(double timeout) {
+    public TextContentOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1292,15 +1292,15 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public TypeOptions withDelay(double delay) {
+    public TypeOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
-    public TypeOptions withNoWaitAfter(boolean noWaitAfter) {
+    public TypeOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public TypeOptions withTimeout(double timeout) {
+    public TypeOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1324,15 +1324,15 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public UncheckOptions withForce(boolean force) {
+    public UncheckOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
-    public UncheckOptions withNoWaitAfter(boolean noWaitAfter) {
+    public UncheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
-    public UncheckOptions withTimeout(double timeout) {
+    public UncheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1344,7 +1344,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public WaitForCloseOptions withTimeout(double timeout) {
+    public WaitForCloseOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1360,11 +1360,11 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public WaitForConsoleMessageOptions withPredicate(Predicate<ConsoleMessage> predicate) {
+    public WaitForConsoleMessageOptions setPredicate(Predicate<ConsoleMessage> predicate) {
       this.predicate = predicate;
       return this;
     }
-    public WaitForConsoleMessageOptions withTimeout(double timeout) {
+    public WaitForConsoleMessageOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1380,11 +1380,11 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public WaitForDownloadOptions withPredicate(Predicate<Download> predicate) {
+    public WaitForDownloadOptions setPredicate(Predicate<Download> predicate) {
       this.predicate = predicate;
       return this;
     }
-    public WaitForDownloadOptions withTimeout(double timeout) {
+    public WaitForDownloadOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1400,11 +1400,11 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public WaitForFileChooserOptions withPredicate(Predicate<FileChooser> predicate) {
+    public WaitForFileChooserOptions setPredicate(Predicate<FileChooser> predicate) {
       this.predicate = predicate;
       return this;
     }
-    public WaitForFileChooserOptions withTimeout(double timeout) {
+    public WaitForFileChooserOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1421,11 +1421,11 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public WaitForFunctionOptions withPollingInterval(double pollingInterval) {
+    public WaitForFunctionOptions setPollingInterval(double pollingInterval) {
       this.pollingInterval = pollingInterval;
       return this;
     }
-    public WaitForFunctionOptions withTimeout(double timeout) {
+    public WaitForFunctionOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1439,7 +1439,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public WaitForLoadStateOptions withTimeout(double timeout) {
+    public WaitForLoadStateOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1466,23 +1466,23 @@ public interface Page extends AutoCloseable {
      */
     public WaitUntilState waitUntil;
 
-    public WaitForNavigationOptions withTimeout(double timeout) {
+    public WaitForNavigationOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
-    public WaitForNavigationOptions withUrl(String url) {
+    public WaitForNavigationOptions setUrl(String url) {
       this.url = url;
       return this;
     }
-    public WaitForNavigationOptions withUrl(Pattern url) {
+    public WaitForNavigationOptions setUrl(Pattern url) {
       this.url = url;
       return this;
     }
-    public WaitForNavigationOptions withUrl(Predicate<String> url) {
+    public WaitForNavigationOptions setUrl(Predicate<String> url) {
       this.url = url;
       return this;
     }
-    public WaitForNavigationOptions withWaitUntil(WaitUntilState waitUntil) {
+    public WaitForNavigationOptions setWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
     }
@@ -1498,11 +1498,11 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public WaitForPopupOptions withPredicate(Predicate<Page> predicate) {
+    public WaitForPopupOptions setPredicate(Predicate<Page> predicate) {
       this.predicate = predicate;
       return this;
     }
-    public WaitForPopupOptions withTimeout(double timeout) {
+    public WaitForPopupOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1514,7 +1514,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public WaitForRequestOptions withTimeout(double timeout) {
+    public WaitForRequestOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1527,7 +1527,7 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public WaitForResponseOptions withTimeout(double timeout) {
+    public WaitForResponseOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1552,11 +1552,11 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public WaitForSelectorOptions withState(WaitForSelectorState state) {
+    public WaitForSelectorOptions setState(WaitForSelectorState state) {
       this.state = state;
       return this;
     }
-    public WaitForSelectorOptions withTimeout(double timeout) {
+    public WaitForSelectorOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1572,11 +1572,11 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public WaitForWebSocketOptions withPredicate(Predicate<WebSocket> predicate) {
+    public WaitForWebSocketOptions setPredicate(Predicate<WebSocket> predicate) {
       this.predicate = predicate;
       return this;
     }
-    public WaitForWebSocketOptions withTimeout(double timeout) {
+    public WaitForWebSocketOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1592,11 +1592,11 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
-    public WaitForWorkerOptions withPredicate(Predicate<Worker> predicate) {
+    public WaitForWorkerOptions setPredicate(Predicate<Worker> predicate) {
       this.predicate = predicate;
       return this;
     }
-    public WaitForWorkerOptions withTimeout(double timeout) {
+    public WaitForWorkerOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }

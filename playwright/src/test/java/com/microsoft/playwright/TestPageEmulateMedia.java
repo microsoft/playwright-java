@@ -31,13 +31,13 @@ public class TestPageEmulateMedia extends TestBase {
   void shouldEmulateType() {
     assertEquals(true, page.evaluate("() => matchMedia('screen').matches"));
     assertEquals(false, page.evaluate("() => matchMedia('print').matches"));
-    page.emulateMedia(new Page.EmulateMediaOptions().withMedia(PRINT));
+    page.emulateMedia(new Page.EmulateMediaOptions().setMedia(PRINT));
     assertEquals(false, page.evaluate("() => matchMedia('screen').matches"));
     assertEquals(true, page.evaluate("() => matchMedia('print').matches"));
     page.emulateMedia(new Page.EmulateMediaOptions());
     assertEquals(false, page.evaluate("() => matchMedia('screen').matches"));
     assertEquals(true, page.evaluate("() => matchMedia('print').matches"));
-    page.emulateMedia(new Page.EmulateMediaOptions().withMedia(null));
+    page.emulateMedia(new Page.EmulateMediaOptions().setMedia(null));
     assertEquals(true, page.evaluate("() => matchMedia('screen').matches"));
     assertEquals(false, page.evaluate("() => matchMedia('print').matches"));
   }
@@ -48,10 +48,10 @@ public class TestPageEmulateMedia extends TestBase {
 
   @Test
   void shouldEmulateSchemeWork() {
-    page.emulateMedia(new Page.EmulateMediaOptions().withColorScheme(LIGHT));
+    page.emulateMedia(new Page.EmulateMediaOptions().setColorScheme(LIGHT));
     assertEquals(true, page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
     assertEquals(false, page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
-    page.emulateMedia(new Page.EmulateMediaOptions().withColorScheme(DARK));
+    page.emulateMedia(new Page.EmulateMediaOptions().setColorScheme(DARK));
     assertEquals(true, page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
     assertEquals(false, page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
   }
@@ -61,11 +61,11 @@ public class TestPageEmulateMedia extends TestBase {
     assertEquals(true, page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
     assertEquals(false, page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
 
-    page.emulateMedia(new Page.EmulateMediaOptions().withColorScheme(DARK));
+    page.emulateMedia(new Page.EmulateMediaOptions().setColorScheme(DARK));
     assertEquals(true, page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
     assertEquals(false, page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
 
-    page.emulateMedia(new Page.EmulateMediaOptions().withColorScheme(null));
+    page.emulateMedia(new Page.EmulateMediaOptions().setColorScheme(null));
     assertEquals(false, page.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
     assertEquals(true, page.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
   }
@@ -82,7 +82,7 @@ public class TestPageEmulateMedia extends TestBase {
   @Test
   void shouldWorkInPopup() {
     {
-      BrowserContext context = browser.newContext(new Browser.NewContextOptions().withColorScheme(DARK));
+      BrowserContext context = browser.newContext(new Browser.NewContextOptions().setColorScheme(DARK));
       Page page = context.newPage();
       page.navigate(server.EMPTY_PAGE);
       Page popup = page.waitForPopup(() ->
@@ -92,7 +92,7 @@ public class TestPageEmulateMedia extends TestBase {
       context.close();
     }
     {
-      Page page = browser.newPage(new Browser.NewPageOptions().withColorScheme(LIGHT));
+      Page page = browser.newPage(new Browser.NewPageOptions().setColorScheme(LIGHT));
       page.navigate(server.EMPTY_PAGE);
       Page popup = page.waitForPopup(() ->
         page.evaluate("url => { window.open(url); }", server.EMPTY_PAGE));
@@ -104,7 +104,7 @@ public class TestPageEmulateMedia extends TestBase {
 
   @Test
   void shouldWorkInCrossProcessIframe() {
-    Page page = browser.newPage(new Browser.NewPageOptions().withColorScheme(DARK));
+    Page page = browser.newPage(new Browser.NewPageOptions().setColorScheme(DARK));
     page.navigate(server.EMPTY_PAGE);
     attachFrame(page, "frame1", server.CROSS_PROCESS_PREFIX + "/empty.html");
     Frame frame = page.frames().get(1);
@@ -134,13 +134,13 @@ public class TestPageEmulateMedia extends TestBase {
       return page.evalOnSelector("div", "div => window.getComputedStyle(div).backgroundColor");
     };
 
-    page.emulateMedia(new Page.EmulateMediaOptions().withColorScheme(LIGHT));
+    page.emulateMedia(new Page.EmulateMediaOptions().setColorScheme(LIGHT));
     assertEquals("rgb(255, 255, 255)", backgroundColor.get());
 
-    page.emulateMedia(new Page.EmulateMediaOptions().withColorScheme(DARK));
+    page.emulateMedia(new Page.EmulateMediaOptions().setColorScheme(DARK));
     assertEquals("rgb(0, 0, 0)", backgroundColor.get());
 
-    page.emulateMedia(new Page.EmulateMediaOptions().withColorScheme(LIGHT));
+    page.emulateMedia(new Page.EmulateMediaOptions().setColorScheme(LIGHT));
     assertEquals("rgb(255, 255, 255)", backgroundColor.get());
   }
 }

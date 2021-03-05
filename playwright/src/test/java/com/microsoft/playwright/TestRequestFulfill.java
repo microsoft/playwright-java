@@ -31,10 +31,10 @@ public class TestRequestFulfill extends TestBase {
   void shouldWork() {
     page.route("**/*", route -> {
       route.fulfill(new Route.FulfillOptions()
-        .withStatus(201)
-        .withContentType("text/html")
-        .withHeaders(mapOf("foo", "bar"))
-        .withBody("Yo, page!"));
+        .setStatus(201)
+        .setContentType("text/html")
+        .setHeaders(mapOf("foo", "bar"))
+        .setBody("Yo, page!"));
     });
     Response response = page.navigate(server.EMPTY_PAGE);
     assertEquals(201, response.status());
@@ -46,8 +46,8 @@ public class TestRequestFulfill extends TestBase {
   void shouldWorkWithStatusCode422() {
     page.route("**/*", route -> {
       route.fulfill(new Route.FulfillOptions()
-        .withStatus(422)
-        .withBody("Yo, page!"));
+        .setStatus(422)
+        .setBody("Yo, page!"));
     });
     Response response = page.navigate(server.EMPTY_PAGE);
     assertEquals(422, response.status());
@@ -71,8 +71,8 @@ public class TestRequestFulfill extends TestBase {
         throw new RuntimeException(e);
       }
       route.fulfill(new Route.FulfillOptions()
-        .withContentType("image/png")
-        .withBodyBytes(imageBuffer));
+        .setContentType("image/png")
+        .setBodyBytes(imageBuffer));
     });
     page.evaluate("PREFIX => {\n" +
       "  const img = document.createElement('img');\n" +
@@ -90,8 +90,8 @@ public class TestRequestFulfill extends TestBase {
     // Firefox headful produces a different image.
     page.route("**/*", route -> {
       route.fulfill(new Route.FulfillOptions()
-        .withContentType("image/svg+xml ; charset=utf-8")
-        .withBody("<svg width=\"50\" height=\"50\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"10\" y=\"10\" width=\"30\" height=\"30\" stroke=\"black\" fill=\"transparent\" stroke-width=\"5\"/></svg>"));
+        .setContentType("image/svg+xml ; charset=utf-8")
+        .setBody("<svg width=\"50\" height=\"50\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"10\" y=\"10\" width=\"30\" height=\"30\" stroke=\"black\" fill=\"transparent\" stroke-width=\"5\"/></svg>"));
     });
     page.evaluate("PREFIX => {\n" +
       "  const img = document.createElement('img');\n" +

@@ -53,11 +53,11 @@ public interface BrowserType {
      */
     public Double timeout;
 
-    public ConnectOptions withSlowMo(double slowMo) {
+    public ConnectOptions setSlowMo(double slowMo) {
       this.slowMo = slowMo;
       return this;
     }
-    public ConnectOptions withTimeout(double timeout) {
+    public ConnectOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -140,70 +140,70 @@ public interface BrowserType {
      */
     public Double timeout;
 
-    public LaunchOptions withArgs(List<String> args) {
+    public LaunchOptions setArgs(List<String> args) {
       this.args = args;
       return this;
     }
-    public LaunchOptions withChromiumSandbox(boolean chromiumSandbox) {
+    public LaunchOptions setChromiumSandbox(boolean chromiumSandbox) {
       this.chromiumSandbox = chromiumSandbox;
       return this;
     }
-    public LaunchOptions withDevtools(boolean devtools) {
+    public LaunchOptions setDevtools(boolean devtools) {
       this.devtools = devtools;
       return this;
     }
-    public LaunchOptions withDownloadsPath(Path downloadsPath) {
+    public LaunchOptions setDownloadsPath(Path downloadsPath) {
       this.downloadsPath = downloadsPath;
       return this;
     }
-    public LaunchOptions withEnv(Map<String, String> env) {
+    public LaunchOptions setEnv(Map<String, String> env) {
       this.env = env;
       return this;
     }
-    public LaunchOptions withExecutablePath(Path executablePath) {
+    public LaunchOptions setExecutablePath(Path executablePath) {
       this.executablePath = executablePath;
       return this;
     }
-    public LaunchOptions withFirefoxUserPrefs(Map<String, Object> firefoxUserPrefs) {
+    public LaunchOptions setFirefoxUserPrefs(Map<String, Object> firefoxUserPrefs) {
       this.firefoxUserPrefs = firefoxUserPrefs;
       return this;
     }
-    public LaunchOptions withHandleSIGHUP(boolean handleSIGHUP) {
+    public LaunchOptions setHandleSIGHUP(boolean handleSIGHUP) {
       this.handleSIGHUP = handleSIGHUP;
       return this;
     }
-    public LaunchOptions withHandleSIGINT(boolean handleSIGINT) {
+    public LaunchOptions setHandleSIGINT(boolean handleSIGINT) {
       this.handleSIGINT = handleSIGINT;
       return this;
     }
-    public LaunchOptions withHandleSIGTERM(boolean handleSIGTERM) {
+    public LaunchOptions setHandleSIGTERM(boolean handleSIGTERM) {
       this.handleSIGTERM = handleSIGTERM;
       return this;
     }
-    public LaunchOptions withHeadless(boolean headless) {
+    public LaunchOptions setHeadless(boolean headless) {
       this.headless = headless;
       return this;
     }
-    public LaunchOptions withIgnoreAllDefaultArgs(boolean ignoreAllDefaultArgs) {
+    public LaunchOptions setIgnoreAllDefaultArgs(boolean ignoreAllDefaultArgs) {
       this.ignoreAllDefaultArgs = ignoreAllDefaultArgs;
       return this;
     }
-    public LaunchOptions withIgnoreDefaultArgs(List<String> ignoreDefaultArgs) {
+    public LaunchOptions setIgnoreDefaultArgs(List<String> ignoreDefaultArgs) {
       this.ignoreDefaultArgs = ignoreDefaultArgs;
       return this;
     }
-    public LaunchOptions withProxy(String server) {
-      return withProxy(new Proxy(server));
+    public LaunchOptions setProxy(String server) {
+      return setProxy(new Proxy(server));
     }
-    public LaunchOptions withProxy(Proxy proxy) {
+    public LaunchOptions setProxy(Proxy proxy) {
       this.proxy = proxy;
       return this;
     }
-    public LaunchOptions withSlowMo(double slowMo) {
+    public LaunchOptions setSlowMo(double slowMo) {
       this.slowMo = slowMo;
       return this;
     }
-    public LaunchOptions withTimeout(double timeout) {
+    public LaunchOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -371,162 +371,162 @@ public interface BrowserType {
      */
     public Optional<ViewportSize> viewportSize;
 
-    public LaunchPersistentContextOptions withAcceptDownloads(boolean acceptDownloads) {
+    public LaunchPersistentContextOptions setAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
       return this;
     }
-    public LaunchPersistentContextOptions withArgs(List<String> args) {
+    public LaunchPersistentContextOptions setArgs(List<String> args) {
       this.args = args;
       return this;
     }
-    public LaunchPersistentContextOptions withBypassCSP(boolean bypassCSP) {
+    public LaunchPersistentContextOptions setBypassCSP(boolean bypassCSP) {
       this.bypassCSP = bypassCSP;
       return this;
     }
-    public LaunchPersistentContextOptions withChromiumSandbox(boolean chromiumSandbox) {
+    public LaunchPersistentContextOptions setChromiumSandbox(boolean chromiumSandbox) {
       this.chromiumSandbox = chromiumSandbox;
       return this;
     }
-    public LaunchPersistentContextOptions withColorScheme(ColorScheme colorScheme) {
+    public LaunchPersistentContextOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = colorScheme;
       return this;
     }
-    public LaunchPersistentContextOptions withDeviceScaleFactor(double deviceScaleFactor) {
+    public LaunchPersistentContextOptions setDeviceScaleFactor(double deviceScaleFactor) {
       this.deviceScaleFactor = deviceScaleFactor;
       return this;
     }
-    public LaunchPersistentContextOptions withDevtools(boolean devtools) {
+    public LaunchPersistentContextOptions setDevtools(boolean devtools) {
       this.devtools = devtools;
       return this;
     }
-    public LaunchPersistentContextOptions withDownloadsPath(Path downloadsPath) {
+    public LaunchPersistentContextOptions setDownloadsPath(Path downloadsPath) {
       this.downloadsPath = downloadsPath;
       return this;
     }
-    public LaunchPersistentContextOptions withEnv(Map<String, String> env) {
+    public LaunchPersistentContextOptions setEnv(Map<String, String> env) {
       this.env = env;
       return this;
     }
-    public LaunchPersistentContextOptions withExecutablePath(Path executablePath) {
+    public LaunchPersistentContextOptions setExecutablePath(Path executablePath) {
       this.executablePath = executablePath;
       return this;
     }
-    public LaunchPersistentContextOptions withExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
+    public LaunchPersistentContextOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
       return this;
     }
-    public LaunchPersistentContextOptions withGeolocation(double latitude, double longitude) {
-      return withGeolocation(new Geolocation(latitude, longitude));
+    public LaunchPersistentContextOptions setGeolocation(double latitude, double longitude) {
+      return setGeolocation(new Geolocation(latitude, longitude));
     }
-    public LaunchPersistentContextOptions withGeolocation(Geolocation geolocation) {
+    public LaunchPersistentContextOptions setGeolocation(Geolocation geolocation) {
       this.geolocation = geolocation;
       return this;
     }
-    public LaunchPersistentContextOptions withHandleSIGHUP(boolean handleSIGHUP) {
+    public LaunchPersistentContextOptions setHandleSIGHUP(boolean handleSIGHUP) {
       this.handleSIGHUP = handleSIGHUP;
       return this;
     }
-    public LaunchPersistentContextOptions withHandleSIGINT(boolean handleSIGINT) {
+    public LaunchPersistentContextOptions setHandleSIGINT(boolean handleSIGINT) {
       this.handleSIGINT = handleSIGINT;
       return this;
     }
-    public LaunchPersistentContextOptions withHandleSIGTERM(boolean handleSIGTERM) {
+    public LaunchPersistentContextOptions setHandleSIGTERM(boolean handleSIGTERM) {
       this.handleSIGTERM = handleSIGTERM;
       return this;
     }
-    public LaunchPersistentContextOptions withHasTouch(boolean hasTouch) {
+    public LaunchPersistentContextOptions setHasTouch(boolean hasTouch) {
       this.hasTouch = hasTouch;
       return this;
     }
-    public LaunchPersistentContextOptions withHeadless(boolean headless) {
+    public LaunchPersistentContextOptions setHeadless(boolean headless) {
       this.headless = headless;
       return this;
     }
-    public LaunchPersistentContextOptions withHttpCredentials(String username, String password) {
-      return withHttpCredentials(new HttpCredentials(username, password));
+    public LaunchPersistentContextOptions setHttpCredentials(String username, String password) {
+      return setHttpCredentials(new HttpCredentials(username, password));
     }
-    public LaunchPersistentContextOptions withHttpCredentials(HttpCredentials httpCredentials) {
+    public LaunchPersistentContextOptions setHttpCredentials(HttpCredentials httpCredentials) {
       this.httpCredentials = httpCredentials;
       return this;
     }
-    public LaunchPersistentContextOptions withIgnoreAllDefaultArgs(boolean ignoreAllDefaultArgs) {
+    public LaunchPersistentContextOptions setIgnoreAllDefaultArgs(boolean ignoreAllDefaultArgs) {
       this.ignoreAllDefaultArgs = ignoreAllDefaultArgs;
       return this;
     }
-    public LaunchPersistentContextOptions withIgnoreDefaultArgs(List<String> ignoreDefaultArgs) {
+    public LaunchPersistentContextOptions setIgnoreDefaultArgs(List<String> ignoreDefaultArgs) {
       this.ignoreDefaultArgs = ignoreDefaultArgs;
       return this;
     }
-    public LaunchPersistentContextOptions withIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
+    public LaunchPersistentContextOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;
       return this;
     }
-    public LaunchPersistentContextOptions withIsMobile(boolean isMobile) {
+    public LaunchPersistentContextOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
       return this;
     }
-    public LaunchPersistentContextOptions withJavaScriptEnabled(boolean javaScriptEnabled) {
+    public LaunchPersistentContextOptions setJavaScriptEnabled(boolean javaScriptEnabled) {
       this.javaScriptEnabled = javaScriptEnabled;
       return this;
     }
-    public LaunchPersistentContextOptions withLocale(String locale) {
+    public LaunchPersistentContextOptions setLocale(String locale) {
       this.locale = locale;
       return this;
     }
-    public LaunchPersistentContextOptions withOffline(boolean offline) {
+    public LaunchPersistentContextOptions setOffline(boolean offline) {
       this.offline = offline;
       return this;
     }
-    public LaunchPersistentContextOptions withPermissions(List<String> permissions) {
+    public LaunchPersistentContextOptions setPermissions(List<String> permissions) {
       this.permissions = permissions;
       return this;
     }
-    public LaunchPersistentContextOptions withProxy(String server) {
-      return withProxy(new Proxy(server));
+    public LaunchPersistentContextOptions setProxy(String server) {
+      return setProxy(new Proxy(server));
     }
-    public LaunchPersistentContextOptions withProxy(Proxy proxy) {
+    public LaunchPersistentContextOptions setProxy(Proxy proxy) {
       this.proxy = proxy;
       return this;
     }
-    public LaunchPersistentContextOptions withRecordHarOmitContent(boolean recordHarOmitContent) {
+    public LaunchPersistentContextOptions setRecordHarOmitContent(boolean recordHarOmitContent) {
       this.recordHarOmitContent = recordHarOmitContent;
       return this;
     }
-    public LaunchPersistentContextOptions withRecordHarPath(Path recordHarPath) {
+    public LaunchPersistentContextOptions setRecordHarPath(Path recordHarPath) {
       this.recordHarPath = recordHarPath;
       return this;
     }
-    public LaunchPersistentContextOptions withRecordVideoDir(Path recordVideoDir) {
+    public LaunchPersistentContextOptions setRecordVideoDir(Path recordVideoDir) {
       this.recordVideoDir = recordVideoDir;
       return this;
     }
-    public LaunchPersistentContextOptions withRecordVideoSize(int width, int height) {
-      return withRecordVideoSize(new RecordVideoSize(width, height));
+    public LaunchPersistentContextOptions setRecordVideoSize(int width, int height) {
+      return setRecordVideoSize(new RecordVideoSize(width, height));
     }
-    public LaunchPersistentContextOptions withRecordVideoSize(RecordVideoSize recordVideoSize) {
+    public LaunchPersistentContextOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
       return this;
     }
-    public LaunchPersistentContextOptions withSlowMo(double slowMo) {
+    public LaunchPersistentContextOptions setSlowMo(double slowMo) {
       this.slowMo = slowMo;
       return this;
     }
-    public LaunchPersistentContextOptions withTimeout(double timeout) {
+    public LaunchPersistentContextOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
-    public LaunchPersistentContextOptions withTimezoneId(String timezoneId) {
+    public LaunchPersistentContextOptions setTimezoneId(String timezoneId) {
       this.timezoneId = timezoneId;
       return this;
     }
-    public LaunchPersistentContextOptions withUserAgent(String userAgent) {
+    public LaunchPersistentContextOptions setUserAgent(String userAgent) {
       this.userAgent = userAgent;
       return this;
     }
-    public LaunchPersistentContextOptions withViewportSize(int width, int height) {
-      return withViewportSize(new ViewportSize(width, height));
+    public LaunchPersistentContextOptions setViewportSize(int width, int height) {
+      return setViewportSize(new ViewportSize(width, height));
     }
-    public LaunchPersistentContextOptions withViewportSize(ViewportSize viewportSize) {
+    public LaunchPersistentContextOptions setViewportSize(ViewportSize viewportSize) {
       this.viewportSize = Optional.ofNullable(viewportSize);
       return this;
     }

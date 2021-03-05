@@ -48,7 +48,7 @@ public class TestElementHandleSelectText extends TestBase {
     ElementHandle textarea = page.querySelector("textarea");
     textarea.evaluate("e => e.style.display = 'none'");
     try {
-      textarea.selectText(new ElementHandle.SelectTextOptions().withTimeout(3000));
+      textarea.selectText(new ElementHandle.SelectTextOptions().setTimeout(3000));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("element is not visible"));

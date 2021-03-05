@@ -33,7 +33,7 @@ public class TestPdf extends TestBase {
   @DisabledIf(value="com.microsoft.playwright.TestBase#isHeadful", disabledReason="skip")
   void shouldBeAbleToSaveFile(@TempDir Path tempDir) throws IOException {
     Path path = tempDir.resolve("output.pdf");
-    page.pdf(new Page.PdfOptions().withPath(path));
+    page.pdf(new Page.PdfOptions().setPath(path));
     long size = Files.size(path);
     assertTrue(size > 0);
   }
@@ -43,7 +43,7 @@ public class TestPdf extends TestBase {
   @DisabledIf(value="com.microsoft.playwright.TestBase#isHeadful", disabledReason="skip")
   void shouldSupportFractionalScaleValue(@TempDir Path tempDir) throws IOException {
     Path path = tempDir.resolve("output.pdf");
-    page.pdf(new Page.PdfOptions().withPath(path).withScale(0.5));
+    page.pdf(new Page.PdfOptions().setPath(path).setScale(0.5));
     long size = Files.size(path);
     assertTrue(size > 0);
   }

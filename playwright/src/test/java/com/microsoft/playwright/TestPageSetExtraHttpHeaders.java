@@ -58,7 +58,7 @@ public class TestPageSetExtraHttpHeaders extends TestBase {
   @Test
   void shouldOverrideExtraHeadersFromBrowserContext() throws ExecutionException, InterruptedException {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withExtraHTTPHeaders(mapOf("fOo", "bAr", "baR", "foO")));
+      .setExtraHTTPHeaders(mapOf("fOo", "bAr", "baR", "foO")));
     Page page = context.newPage();
     page.setExtraHTTPHeaders(mapOf("Foo", "Bar"));
     Future<Server.Request> request = server.futureRequest("/empty.html");
@@ -71,7 +71,7 @@ public class TestPageSetExtraHttpHeaders extends TestBase {
   @Test
   void shouldThrowForNonStringHeaderValues() {
     try {
-      browser.newContext(new Browser.NewContextOptions().withExtraHTTPHeaders(mapOf("foo", null)));
+      browser.newContext(new Browser.NewContextOptions().setExtraHTTPHeaders(mapOf("foo", null)));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("expected string, got undefined"));

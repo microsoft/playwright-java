@@ -30,15 +30,15 @@ public class SelectOption {
    */
   public Integer index;
 
-  public SelectOption withValue(String value) {
+  public SelectOption setValue(String value) {
     this.value = value;
     return this;
   }
-  public SelectOption withLabel(String label) {
+  public SelectOption setLabel(String label) {
     this.label = label;
     return this;
   }
-  public SelectOption withIndex(int index) {
+  public SelectOption setIndex(int index) {
     this.index = index;
     return this;
   }

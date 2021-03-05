@@ -202,7 +202,7 @@ public class TestBrowserTypeConnect extends TestBase {
       server.setRoute("/one-style.css", r -> {});
       page.onRequest(r -> remote.close());
       try {
-        page.navigate(server.PREFIX + "/one-style.html", new Page.NavigateOptions().withTimeout(60000));
+        page.navigate(server.PREFIX + "/one-style.html", new Page.NavigateOptions().setTimeout(60000));
         fail("did not throw");
       } catch (PlaywrightException e) {
         assertTrue(e.getMessage().contains("Playwright connection closed"));

@@ -52,7 +52,7 @@ public class TestElementHandleWaitForElementState extends TestBase {
     page.setContent("<div style='display:none'>content</div>");
     ElementHandle div = page.querySelector("div");
     try {
-      div.waitForElementState(VISIBLE, new ElementHandle.WaitForElementStateOptions().withTimeout(1000));
+      div.waitForElementState(VISIBLE, new ElementHandle.WaitForElementStateOptions().setTimeout(1000));
       fail("did not throw");
     } catch (TimeoutError e) {
       assertTrue(e.getMessage().contains("Timeout 1000ms exceeded"));
