@@ -127,7 +127,7 @@ public class TestPageSetInputFiles extends TestBase {
   @Test
   void shouldRespectTimeout() {
     try {
-      page.waitForFileChooser(new Page.WaitForFileChooserOptions().withTimeout(1), () -> {});
+      page.waitForFileChooser(new Page.WaitForFileChooserOptions().setTimeout(1), () -> {});
       fail("did not throw");
     } catch (TimeoutError e) {
       assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
@@ -149,7 +149,7 @@ public class TestPageSetInputFiles extends TestBase {
   void shouldPrioritizeExactTimeoutOverDefaultTimeout() {
     page.setDefaultTimeout(0);
     try {
-      page.waitForFileChooser(new Page.WaitForFileChooserOptions().withTimeout(1), () -> {});
+      page.waitForFileChooser(new Page.WaitForFileChooserOptions().setTimeout(1), () -> {});
       fail("did not throw");
     } catch (TimeoutError e) {
       assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
@@ -158,7 +158,7 @@ public class TestPageSetInputFiles extends TestBase {
 
   @Test
   void shouldWorkWithNoTimeout() {
-    FileChooser fileChooser = page.waitForFileChooser(new Page.WaitForFileChooserOptions().withTimeout(0), () -> {
+    FileChooser fileChooser = page.waitForFileChooser(new Page.WaitForFileChooserOptions().setTimeout(0), () -> {
       page.evaluate("() => setTimeout(() => {\n" +
         "  const el = document.createElement('input');\n" +
         "  el.type = 'file';\n" +

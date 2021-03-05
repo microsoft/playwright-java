@@ -72,11 +72,11 @@ public interface WebSocket {
      */
     public Double timeout;
 
-    public WaitForFrameReceivedOptions withPredicate(Predicate<WebSocketFrame> predicate) {
+    public WaitForFrameReceivedOptions setPredicate(Predicate<WebSocketFrame> predicate) {
       this.predicate = predicate;
       return this;
     }
-    public WaitForFrameReceivedOptions withTimeout(double timeout) {
+    public WaitForFrameReceivedOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -92,11 +92,11 @@ public interface WebSocket {
      */
     public Double timeout;
 
-    public WaitForFrameSentOptions withPredicate(Predicate<WebSocketFrame> predicate) {
+    public WaitForFrameSentOptions setPredicate(Predicate<WebSocketFrame> predicate) {
       this.predicate = predicate;
       return this;
     }
-    public WaitForFrameSentOptions withTimeout(double timeout) {
+    public WaitForFrameSentOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }

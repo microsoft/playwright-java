@@ -88,7 +88,7 @@ public interface BrowserContext extends AutoCloseable {
      */
     public Boolean handle;
 
-    public ExposeBindingOptions withHandle(boolean handle) {
+    public ExposeBindingOptions setHandle(boolean handle) {
       this.handle = handle;
       return this;
     }
@@ -99,7 +99,7 @@ public interface BrowserContext extends AutoCloseable {
      */
     public String origin;
 
-    public GrantPermissionsOptions withOrigin(String origin) {
+    public GrantPermissionsOptions setOrigin(String origin) {
       this.origin = origin;
       return this;
     }
@@ -111,7 +111,7 @@ public interface BrowserContext extends AutoCloseable {
      */
     public Path path;
 
-    public StorageStateOptions withPath(Path path) {
+    public StorageStateOptions setPath(Path path) {
       this.path = path;
       return this;
     }
@@ -127,11 +127,11 @@ public interface BrowserContext extends AutoCloseable {
      */
     public Double timeout;
 
-    public WaitForPageOptions withPredicate(Predicate<Page> predicate) {
+    public WaitForPageOptions setPredicate(Predicate<Page> predicate) {
       this.predicate = predicate;
       return this;
     }
-    public WaitForPageOptions withTimeout(double timeout) {
+    public WaitForPageOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }

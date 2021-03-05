@@ -47,7 +47,7 @@ public class TestBrowserContextCredentials extends TestBase {
   void shouldWorkWithCorrectCredentials() {
     server.setAuth("/empty.html", "user", "pass");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withHttpCredentials("user", "pass"));
+      .setHttpCredentials("user", "pass"));
     Page page = context.newPage();
     Response response = page.navigate(server.EMPTY_PAGE);
     assertEquals(200, response.status());
@@ -57,7 +57,7 @@ public class TestBrowserContextCredentials extends TestBase {
   @Test
   void shouldFailWithWrongCredentials() {
     server.setAuth("/empty.html", "user", "pass");
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withHttpCredentials("foo", "bar"));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setHttpCredentials("foo", "bar"));
     Page page = context.newPage();
     Response response = page.navigate(server.EMPTY_PAGE);
     assertEquals(401, response.status());
@@ -68,7 +68,7 @@ public class TestBrowserContextCredentials extends TestBase {
   void shouldReturnResourceBody() {
     server.setAuth("/playground.html", "user", "pass");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withHttpCredentials("user", "pass"));
+      .setHttpCredentials("user", "pass"));
     Page page = context.newPage();
     Response response = page.navigate(server.PREFIX + "/playground.html");
     assertEquals(200, response.status());

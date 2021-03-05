@@ -32,7 +32,7 @@ public interface Selectors {
      */
     public Boolean contentScript;
 
-    public RegisterOptions withContentScript(boolean contentScript) {
+    public RegisterOptions setContentScript(boolean contentScript) {
       this.contentScript = contentScript;
       return this;
     }

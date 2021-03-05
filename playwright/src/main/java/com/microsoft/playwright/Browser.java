@@ -163,114 +163,114 @@ public interface Browser extends AutoCloseable {
      */
     public Optional<ViewportSize> viewportSize;
 
-    public NewContextOptions withAcceptDownloads(boolean acceptDownloads) {
+    public NewContextOptions setAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
       return this;
     }
-    public NewContextOptions withBypassCSP(boolean bypassCSP) {
+    public NewContextOptions setBypassCSP(boolean bypassCSP) {
       this.bypassCSP = bypassCSP;
       return this;
     }
-    public NewContextOptions withColorScheme(ColorScheme colorScheme) {
+    public NewContextOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = colorScheme;
       return this;
     }
-    public NewContextOptions withDeviceScaleFactor(double deviceScaleFactor) {
+    public NewContextOptions setDeviceScaleFactor(double deviceScaleFactor) {
       this.deviceScaleFactor = deviceScaleFactor;
       return this;
     }
-    public NewContextOptions withExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
+    public NewContextOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
       return this;
     }
-    public NewContextOptions withGeolocation(double latitude, double longitude) {
-      return withGeolocation(new Geolocation(latitude, longitude));
+    public NewContextOptions setGeolocation(double latitude, double longitude) {
+      return setGeolocation(new Geolocation(latitude, longitude));
     }
-    public NewContextOptions withGeolocation(Geolocation geolocation) {
+    public NewContextOptions setGeolocation(Geolocation geolocation) {
       this.geolocation = geolocation;
       return this;
     }
-    public NewContextOptions withHasTouch(boolean hasTouch) {
+    public NewContextOptions setHasTouch(boolean hasTouch) {
       this.hasTouch = hasTouch;
       return this;
     }
-    public NewContextOptions withHttpCredentials(String username, String password) {
-      return withHttpCredentials(new HttpCredentials(username, password));
+    public NewContextOptions setHttpCredentials(String username, String password) {
+      return setHttpCredentials(new HttpCredentials(username, password));
     }
-    public NewContextOptions withHttpCredentials(HttpCredentials httpCredentials) {
+    public NewContextOptions setHttpCredentials(HttpCredentials httpCredentials) {
       this.httpCredentials = httpCredentials;
       return this;
     }
-    public NewContextOptions withIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
+    public NewContextOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;
       return this;
     }
-    public NewContextOptions withIsMobile(boolean isMobile) {
+    public NewContextOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
       return this;
     }
-    public NewContextOptions withJavaScriptEnabled(boolean javaScriptEnabled) {
+    public NewContextOptions setJavaScriptEnabled(boolean javaScriptEnabled) {
       this.javaScriptEnabled = javaScriptEnabled;
       return this;
     }
-    public NewContextOptions withLocale(String locale) {
+    public NewContextOptions setLocale(String locale) {
       this.locale = locale;
       return this;
     }
-    public NewContextOptions withOffline(boolean offline) {
+    public NewContextOptions setOffline(boolean offline) {
       this.offline = offline;
       return this;
     }
-    public NewContextOptions withPermissions(List<String> permissions) {
+    public NewContextOptions setPermissions(List<String> permissions) {
       this.permissions = permissions;
       return this;
     }
-    public NewContextOptions withProxy(String server) {
-      return withProxy(new Proxy(server));
+    public NewContextOptions setProxy(String server) {
+      return setProxy(new Proxy(server));
     }
-    public NewContextOptions withProxy(Proxy proxy) {
+    public NewContextOptions setProxy(Proxy proxy) {
       this.proxy = proxy;
       return this;
     }
-    public NewContextOptions withRecordHarOmitContent(boolean recordHarOmitContent) {
+    public NewContextOptions setRecordHarOmitContent(boolean recordHarOmitContent) {
       this.recordHarOmitContent = recordHarOmitContent;
       return this;
     }
-    public NewContextOptions withRecordHarPath(Path recordHarPath) {
+    public NewContextOptions setRecordHarPath(Path recordHarPath) {
       this.recordHarPath = recordHarPath;
       return this;
     }
-    public NewContextOptions withRecordVideoDir(Path recordVideoDir) {
+    public NewContextOptions setRecordVideoDir(Path recordVideoDir) {
       this.recordVideoDir = recordVideoDir;
       return this;
     }
-    public NewContextOptions withRecordVideoSize(int width, int height) {
-      return withRecordVideoSize(new RecordVideoSize(width, height));
+    public NewContextOptions setRecordVideoSize(int width, int height) {
+      return setRecordVideoSize(new RecordVideoSize(width, height));
     }
-    public NewContextOptions withRecordVideoSize(RecordVideoSize recordVideoSize) {
+    public NewContextOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
       return this;
     }
-    public NewContextOptions withStorageState(String storageState) {
+    public NewContextOptions setStorageState(String storageState) {
       this.storageState = storageState;
       return this;
     }
-    public NewContextOptions withStorageStatePath(Path storageStatePath) {
+    public NewContextOptions setStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
       return this;
     }
-    public NewContextOptions withTimezoneId(String timezoneId) {
+    public NewContextOptions setTimezoneId(String timezoneId) {
       this.timezoneId = timezoneId;
       return this;
     }
-    public NewContextOptions withUserAgent(String userAgent) {
+    public NewContextOptions setUserAgent(String userAgent) {
       this.userAgent = userAgent;
       return this;
     }
-    public NewContextOptions withViewportSize(int width, int height) {
-      return withViewportSize(new ViewportSize(width, height));
+    public NewContextOptions setViewportSize(int width, int height) {
+      return setViewportSize(new ViewportSize(width, height));
     }
-    public NewContextOptions withViewportSize(ViewportSize viewportSize) {
+    public NewContextOptions setViewportSize(ViewportSize viewportSize) {
       this.viewportSize = Optional.ofNullable(viewportSize);
       return this;
     }
@@ -383,114 +383,114 @@ public interface Browser extends AutoCloseable {
      */
     public Optional<ViewportSize> viewportSize;
 
-    public NewPageOptions withAcceptDownloads(boolean acceptDownloads) {
+    public NewPageOptions setAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
       return this;
     }
-    public NewPageOptions withBypassCSP(boolean bypassCSP) {
+    public NewPageOptions setBypassCSP(boolean bypassCSP) {
       this.bypassCSP = bypassCSP;
       return this;
     }
-    public NewPageOptions withColorScheme(ColorScheme colorScheme) {
+    public NewPageOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = colorScheme;
       return this;
     }
-    public NewPageOptions withDeviceScaleFactor(double deviceScaleFactor) {
+    public NewPageOptions setDeviceScaleFactor(double deviceScaleFactor) {
       this.deviceScaleFactor = deviceScaleFactor;
       return this;
     }
-    public NewPageOptions withExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
+    public NewPageOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
       return this;
     }
-    public NewPageOptions withGeolocation(double latitude, double longitude) {
-      return withGeolocation(new Geolocation(latitude, longitude));
+    public NewPageOptions setGeolocation(double latitude, double longitude) {
+      return setGeolocation(new Geolocation(latitude, longitude));
     }
-    public NewPageOptions withGeolocation(Geolocation geolocation) {
+    public NewPageOptions setGeolocation(Geolocation geolocation) {
       this.geolocation = geolocation;
       return this;
     }
-    public NewPageOptions withHasTouch(boolean hasTouch) {
+    public NewPageOptions setHasTouch(boolean hasTouch) {
       this.hasTouch = hasTouch;
       return this;
     }
-    public NewPageOptions withHttpCredentials(String username, String password) {
-      return withHttpCredentials(new HttpCredentials(username, password));
+    public NewPageOptions setHttpCredentials(String username, String password) {
+      return setHttpCredentials(new HttpCredentials(username, password));
     }
-    public NewPageOptions withHttpCredentials(HttpCredentials httpCredentials) {
+    public NewPageOptions setHttpCredentials(HttpCredentials httpCredentials) {
       this.httpCredentials = httpCredentials;
       return this;
     }
-    public NewPageOptions withIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
+    public NewPageOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;
       return this;
     }
-    public NewPageOptions withIsMobile(boolean isMobile) {
+    public NewPageOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
       return this;
     }
-    public NewPageOptions withJavaScriptEnabled(boolean javaScriptEnabled) {
+    public NewPageOptions setJavaScriptEnabled(boolean javaScriptEnabled) {
       this.javaScriptEnabled = javaScriptEnabled;
       return this;
     }
-    public NewPageOptions withLocale(String locale) {
+    public NewPageOptions setLocale(String locale) {
       this.locale = locale;
       return this;
     }
-    public NewPageOptions withOffline(boolean offline) {
+    public NewPageOptions setOffline(boolean offline) {
       this.offline = offline;
       return this;
     }
-    public NewPageOptions withPermissions(List<String> permissions) {
+    public NewPageOptions setPermissions(List<String> permissions) {
       this.permissions = permissions;
       return this;
     }
-    public NewPageOptions withProxy(String server) {
-      return withProxy(new Proxy(server));
+    public NewPageOptions setProxy(String server) {
+      return setProxy(new Proxy(server));
     }
-    public NewPageOptions withProxy(Proxy proxy) {
+    public NewPageOptions setProxy(Proxy proxy) {
       this.proxy = proxy;
       return this;
     }
-    public NewPageOptions withRecordHarOmitContent(boolean recordHarOmitContent) {
+    public NewPageOptions setRecordHarOmitContent(boolean recordHarOmitContent) {
       this.recordHarOmitContent = recordHarOmitContent;
       return this;
     }
-    public NewPageOptions withRecordHarPath(Path recordHarPath) {
+    public NewPageOptions setRecordHarPath(Path recordHarPath) {
       this.recordHarPath = recordHarPath;
       return this;
     }
-    public NewPageOptions withRecordVideoDir(Path recordVideoDir) {
+    public NewPageOptions setRecordVideoDir(Path recordVideoDir) {
       this.recordVideoDir = recordVideoDir;
       return this;
     }
-    public NewPageOptions withRecordVideoSize(int width, int height) {
-      return withRecordVideoSize(new RecordVideoSize(width, height));
+    public NewPageOptions setRecordVideoSize(int width, int height) {
+      return setRecordVideoSize(new RecordVideoSize(width, height));
     }
-    public NewPageOptions withRecordVideoSize(RecordVideoSize recordVideoSize) {
+    public NewPageOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
       return this;
     }
-    public NewPageOptions withStorageState(String storageState) {
+    public NewPageOptions setStorageState(String storageState) {
       this.storageState = storageState;
       return this;
     }
-    public NewPageOptions withStorageStatePath(Path storageStatePath) {
+    public NewPageOptions setStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
       return this;
     }
-    public NewPageOptions withTimezoneId(String timezoneId) {
+    public NewPageOptions setTimezoneId(String timezoneId) {
       this.timezoneId = timezoneId;
       return this;
     }
-    public NewPageOptions withUserAgent(String userAgent) {
+    public NewPageOptions setUserAgent(String userAgent) {
       this.userAgent = userAgent;
       return this;
     }
-    public NewPageOptions withViewportSize(int width, int height) {
-      return withViewportSize(new ViewportSize(width, height));
+    public NewPageOptions setViewportSize(int width, int height) {
+      return setViewportSize(new ViewportSize(width, height));
     }
-    public NewPageOptions withViewportSize(ViewportSize viewportSize) {
+    public NewPageOptions setViewportSize(ViewportSize viewportSize) {
       this.viewportSize = Optional.ofNullable(viewportSize);
       return this;
     }

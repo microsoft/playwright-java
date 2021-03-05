@@ -97,7 +97,7 @@ public class TestBrowserContextViewport extends TestBase {
   @Test
   void shouldSupportTouchWithNullViewport() {
     Browser.NewContextOptions options = new Browser.NewContextOptions()
-      .withHasTouch(true).withViewportSize(null);
+      .setHasTouch(true).setViewportSize(null);
     BrowserContext context = browser.newContext(options);
     Page page = context.newPage();
     page.navigate(server.PREFIX + "/mobile.html");
@@ -107,7 +107,7 @@ public class TestBrowserContextViewport extends TestBase {
 
   @Test
   void shouldReportNullViewPortSizeWhenGivenNullViewport() {
-    Browser.NewContextOptions options = new Browser.NewContextOptions().withViewportSize(null);
+    Browser.NewContextOptions options = new Browser.NewContextOptions().setViewportSize(null);
     BrowserContext context = browser.newContext(options);
     Page page = context.newPage();
     assertNull(page.viewportSize());

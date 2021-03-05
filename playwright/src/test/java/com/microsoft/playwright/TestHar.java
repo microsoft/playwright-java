@@ -43,7 +43,7 @@ public class TestHar extends TestBase {
     PageWithHar() throws IOException {
       harFile = Files.createTempFile("test-", ".har");
       context = browser.newContext(new Browser.NewContextOptions()
-        .withRecordHarPath(harFile).withIgnoreHTTPSErrors(true));
+        .setRecordHarPath(harFile).setIgnoreHTTPSErrors(true));
       page = context.newPage();
     }
 
@@ -112,7 +112,7 @@ public class TestHar extends TestBase {
     Path userDataDir = Files.createTempDirectory("user-data-dir-");
     BrowserContext context = browserType.launchPersistentContext(userDataDir,
       new BrowserType.LaunchPersistentContextOptions()
-        .withRecordHarPath(harPath).withIgnoreHTTPSErrors(true));
+        .setRecordHarPath(harPath).setIgnoreHTTPSErrors(true));
     Page page = context.pages().get(0);
 
     page.navigate("data:text/html,<title>Hello</title>");

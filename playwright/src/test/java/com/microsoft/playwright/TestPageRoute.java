@@ -112,7 +112,7 @@ public class TestPageRoute extends TestBase {
     page.route("**/*", route -> {
       Map<String, String> headers = new HashMap<>(route.request().headers());
       headers.put("foo", "bar");
-      route.resume(new Route.ResumeOptions().withHeaders(headers));
+      route.resume(new Route.ResumeOptions().setHeaders(headers));
     });
     page.navigate(server.PREFIX + "/rrredirect");
   }
@@ -124,7 +124,7 @@ public class TestPageRoute extends TestBase {
     page.route("**/*", route -> {
       Map<String, String> headers = new HashMap<>(route.request().headers());
       headers.remove("foo");
-      route.resume(new Route.ResumeOptions().withHeaders(headers));
+      route.resume(new Route.ResumeOptions().setHeaders(headers));
     });
 
     Future<Server.Request> serverRequest = server.futureRequest("/title.html");
@@ -150,7 +150,7 @@ public class TestPageRoute extends TestBase {
     // Setup cookie.
     page.navigate(server.EMPTY_PAGE);
     context.addCookies(asList(new Cookie("foo", "bar")
-      .withUrl(server.EMPTY_PAGE)));
+      .setUrl(server.EMPTY_PAGE)));
     // Setup request interception.
     page.route("**/*", route -> route.resume());
     Response response = page.reload();
@@ -474,8 +474,8 @@ public class TestPageRoute extends TestBase {
         return;
       }
       route.fulfill(new Route.FulfillOptions()
-        .withStatus(301)
-        .withHeaders(mapOf("location", "/empty.html")));
+        .setStatus(301)
+        .setHeaders(mapOf("location", "/empty.html")));
     });
     Object text = page.evaluate("async url => {\n" +
       "  const data = await fetch(url);\n" +
@@ -493,10 +493,10 @@ public class TestPageRoute extends TestBase {
         headers.put("access-control-allow-origin", "*");
       }
       route.fulfill(new Route.FulfillOptions()
-        .withStatus(200)
-        .withContentType("application/json")
-        .withHeaders(headers)
-        .withBody("[\"electric\",\"gas\"]"));
+        .setStatus(200)
+        .setContentType("application/json")
+        .setHeaders(headers)
+        .setBody("[\"electric\",\"gas\"]"));
 
 
     });
@@ -527,10 +527,10 @@ public class TestPageRoute extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillOptions()
-        .withStatus(200)
-        .withContentType("application/json")
-        .withHeaders(mapOf("Access-Control-Allow-Origin", "*"))
-        .withBody("[\"electric\",\"gas\"]"));
+        .setStatus(200)
+        .setContentType("application/json")
+        .setHeaders(mapOf("Access-Control-Allow-Origin", "*"))
+        .setBody("[\"electric\",\"gas\"]"));
     });
     Object resp = page.evaluate("async () => {\n" +
       "  const response = await fetch('https://example.com/cars', {\n" +
@@ -549,11 +549,11 @@ public class TestPageRoute extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillOptions()
-        .withStatus(200)
-        .withContentType("application/json")
-        .withHeaders(mapOf("Access-Control-Allow-Origin", server.PREFIX,
+        .setStatus(200)
+        .setContentType("application/json")
+        .setHeaders(mapOf("Access-Control-Allow-Origin", server.PREFIX,
                                    "Access-Control-Allow-Credentials", "true"))
-        .withBody("[\"electric\",\"gas\"]"));
+        .setBody("[\"electric\",\"gas\"]"));
     });
     Object resp = page.evaluate("async () => {\n" +
       "  const response = await fetch('https://example.com/cars', {\n" +
@@ -573,12 +573,12 @@ public class TestPageRoute extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillOptions()
-        .withStatus(200)
-        .withContentType("application/json")
+        .setStatus(200)
+        .setContentType("application/json")
         // Should fail without this line below!
         // "Access-Control-Allow-Credentials": "true"
-        .withHeaders(mapOf("Access-Control-Allow-Origin", server.PREFIX))
-        .withBody("[\"electric\",\"gas\"]"));
+        .setHeaders(mapOf("Access-Control-Allow-Origin", server.PREFIX))
+        .setBody("[\"electric\",\"gas\"]"));
     });
     try {
       page.evaluate("async () => {\n" +
@@ -601,10 +601,10 @@ public class TestPageRoute extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillOptions()
-        .withStatus(200)
-        .withContentType("application/json")
-        .withHeaders(mapOf("Access-Control-Allow-Origin", "*"))
-        .withBody("[\"" + route.request().method() + "\",\"electric\",\"gas\"]"));
+        .setStatus(200)
+        .setContentType("application/json")
+        .setHeaders(mapOf("Access-Control-Allow-Origin", "*"))
+        .setBody("[\"" + route.request().method() + "\",\"electric\",\"gas\"]"));
     });
     // First POST
     {

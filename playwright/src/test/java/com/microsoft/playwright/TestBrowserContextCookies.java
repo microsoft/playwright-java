@@ -158,9 +158,9 @@ public class TestBrowserContextCookies extends TestBase {
   @Test
   void shouldGetCookiesFromMultipleUrls() {
     context.addCookies(asList(
-      new Cookie("doggo", "woofs").withUrl("https://foo.com"),
-      new Cookie("catto", "purrs").withUrl("https://bar.com"),
-      new Cookie("birdo", "tweets").withUrl("https://baz.com")));
+      new Cookie("doggo", "woofs").setUrl("https://foo.com"),
+      new Cookie("catto", "purrs").setUrl("https://bar.com"),
+      new Cookie("birdo", "tweets").setUrl("https://baz.com")));
     List<Cookie> cookies = context.cookies(asList("https://foo.com", "https://baz.com"));
     cookies.sort(Comparator.comparing(c -> c.name));
     assertJsonEquals("[{\n" +

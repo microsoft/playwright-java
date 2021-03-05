@@ -55,8 +55,8 @@ public class TestGeolocation extends TestBase {
     page.navigate(server.EMPTY_PAGE);
 
     BrowserContext context2 = browser.newContext(new Browser.NewContextOptions()
-      .withPermissions(asList("geolocation"))
-      .withGeolocation(new Geolocation(20, 20)));
+      .setPermissions(asList("geolocation"))
+      .setGeolocation(new Geolocation(20, 20)));
     Page page2 = context2.newPage();
     page2.navigate(server.EMPTY_PAGE);
 
@@ -79,7 +79,7 @@ public class TestGeolocation extends TestBase {
   @Test
   void shouldNotModifyPassedDefaultOptionsObject() {
     Geolocation geolocation = new Geolocation(10, 10);
-    Browser.NewContextOptions options = new Browser.NewContextOptions().withGeolocation(geolocation);
+    Browser.NewContextOptions options = new Browser.NewContextOptions().setGeolocation(geolocation);
     BrowserContext context = browser.newContext(options);
     context.setGeolocation(new Geolocation(20, 20));
     assertEquals(geolocation, options.geolocation);
@@ -93,8 +93,8 @@ public class TestGeolocation extends TestBase {
   @Test
   void shouldUseContextOptions() {
     Browser.NewContextOptions options = new Browser.NewContextOptions()
-      .withGeolocation(new Geolocation(10, 10))
-      .withPermissions(asList("geolocation"));
+      .setGeolocation(new Geolocation(10, 10))
+      .setPermissions(asList("geolocation"));
     BrowserContext context = browser.newContext(options);
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);

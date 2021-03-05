@@ -49,7 +49,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
 
   @Test
   void shouldSupportHasTouchOption() {
-    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().withHasTouch(true));
+    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().setHasTouch(true));
     page.navigate(server.PREFIX + "/mobile.html");
     assertEquals(true, page.evaluate("() => 'ontouchstart' in window"));
   }
@@ -59,14 +59,14 @@ public class TestDefaultBrowserContext2 extends TestBase {
   void shouldWorkInPersistentContext() {
     // Firefox does not support mobile.
     Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions()
-      .withViewportSize(320, 480).withIsMobile(true));
+      .setViewportSize(320, 480).setIsMobile(true));
     page.navigate(server.PREFIX + "/empty.html");
     assertEquals(980, page.evaluate("() => window.innerWidth"));
   }
 
   @Test
   void shouldSupportColorSchemeOption() {
-    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().withColorScheme(DARK));
+    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().setColorScheme(DARK));
     assertEquals(false, page.evaluate("matchMedia('(prefers-color-scheme: light)').matches"));
     assertEquals(true, page.evaluate("matchMedia('(prefers-color-scheme: dark)').matches"));
   }
@@ -74,7 +74,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
   @Test
   void shouldSupportTimezoneIdOption() {
     Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions()
-      .withLocale("en-US").withTimezoneId("America/Jamaica"));
+      .setLocale("en-US").setTimezoneId("America/Jamaica"));
     assertEquals("Sat Nov 19 2016 13:12:34 GMT-0500 (Eastern Standard Time)",
       page.evaluate("new Date(1479579154987).toString()"));
   }
@@ -82,15 +82,15 @@ public class TestDefaultBrowserContext2 extends TestBase {
   @Test
   void shouldSupportLocaleOption() {
     Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions()
-      .withLocale("fr-CH"));
+      .setLocale("fr-CH"));
     assertEquals("fr-CH", page.evaluate("navigator.language"));
   }
 
   @Test
   void shouldSupportGeolocationAndPermissionsOptions() {
     Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions()
-      .withGeolocation(new Geolocation(10, 10))
-      .withPermissions(asList("geolocation")));
+      .setGeolocation(new Geolocation(10, 10))
+      .setPermissions(asList("geolocation")));
     page.navigate(server.EMPTY_PAGE);
     Object geolocation = page.evaluate("() => new Promise(resolve => navigator.geolocation.getCurrentPosition(position => {\n" +
       "  resolve({latitude: position.coords.latitude, longitude: position.coords.longitude});\n" +
@@ -101,7 +101,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
   //  @Test
   void shouldSupportIgnoreHTTPSErrorsOption() {
     // TODO: net::ERR_EMPTY_RESPONSE at https://localhost:8908/empty.html
-//    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().withIgnoreHTTPSErrors(true));
+//    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().setIgnoreHTTPSErrors(true));
 //    Response response = page.navigate(httpsServer.EMPTY_PAGE);
 //    assertTrue(response.ok());
   }
@@ -109,7 +109,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
   @Test
   void shouldSupportExtraHTTPHeadersOption() throws ExecutionException, InterruptedException {
 //   TODO: test.flaky(browserName === "firefox" && headful && platform === "linux", "Intermittent timeout on bots");
-    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().withExtraHTTPHeaders(mapOf("foo", "bar")));
+    Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().setExtraHTTPHeaders(mapOf("foo", "bar")));
     Future<Server.Request> request = server.futureRequest("/empty.html");
     page.navigate(server.EMPTY_PAGE);
     assertEquals(asList("bar"), request.get().headers.get("foo"));
@@ -190,7 +190,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
   @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
   void shouldThrowIfPageArgumentIsPassed() throws IOException {
     BrowserType.LaunchPersistentContextOptions options = new BrowserType.LaunchPersistentContextOptions()
-      .withArgs(asList(server.EMPTY_PAGE));
+      .setArgs(asList(server.EMPTY_PAGE));
     Path userDataDir = Files.createTempDirectory("user-data-dir-");
     try {
       browserType.launchPersistentContext(userDataDir, options);
@@ -203,12 +203,12 @@ public class TestDefaultBrowserContext2 extends TestBase {
   @Test
   void shouldWorkWithIgnoreDefaultArgs() {
     // Ignore arguments by name.
-    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().withIgnoreDefaultArgs(asList("foo"));
+    BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().setIgnoreDefaultArgs(asList("foo"));
     Browser browser = browserType.launch(options);
     Page page = browser.newPage();
     browser.close();
     // Check that there is a way to ignore all arguments.
-    new BrowserType.LaunchOptions().withIgnoreAllDefaultArgs(true);
+    new BrowserType.LaunchOptions().setIgnoreAllDefaultArgs(true);
   }
 
   void shouldHavePassedURLWhenLaunchingWithIgnoreDefaultArgsTrue() {

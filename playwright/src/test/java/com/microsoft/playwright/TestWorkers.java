@@ -175,7 +175,7 @@ public class TestWorkers extends TestBase {
 
   @Test
   void shouldFormatNumberUsingContextLocale() {
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withLocale("ru-RU"));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("ru-RU"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     Worker worker = page.waitForWorker(() -> page.evaluate(

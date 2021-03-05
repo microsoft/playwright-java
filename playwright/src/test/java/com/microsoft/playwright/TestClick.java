@@ -100,7 +100,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickWithDisabledJavascript() {
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withJavaScriptEnabled(false));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
     Page page = context.newPage();
     page.navigate(server.PREFIX + "/wrappedlink.html");
 
@@ -129,7 +129,7 @@ public class TestClick extends TestBase {
     page.navigate(server.PREFIX + "/input/textarea.html");
     String text = "This is the text that we are going to try to select. Let's see how it goes.";
     page.fill("textarea", text);
-    page.click("textarea", new Page.ClickOptions().withClickCount(3));
+    page.click("textarea", new Page.ClickOptions().setClickCount(3));
     assertEquals(text, page.evaluate("() => {\n" +
       "  const textarea = document.querySelector('textarea');\n" +
       "  return textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);\n" +
@@ -174,7 +174,7 @@ public class TestClick extends TestBase {
     page.evalOnSelector("button", "b => b.style.display = 'none'");
     Exception exception = null;
     try {
-      page.click("button", new Page.ClickOptions().withForce(true));
+      page.click("button", new Page.ClickOptions().setForce(true));
     } catch (PlaywrightException e) {
       exception = e;
     }
@@ -241,8 +241,8 @@ public class TestClick extends TestBase {
   void shouldNotHangWithTouchEnabledViewports() {
     // @see https://github.com/GoogleChrome/puppeteer/issues/161
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withViewportSize(375, 667)
-      .withHasTouch(true));
+      .setViewportSize(375, 667)
+      .setHasTouch(true));
     Page page = context.newPage();
     page.mouse().down();
     page.mouse().move(100, 10);
@@ -297,7 +297,7 @@ public class TestClick extends TestBase {
   @Test
   void shouldFireContextmenuEventOnRightClick() {
     page.navigate(server.PREFIX + "/input/scrollable.html");
-    page.click("#button-8", new Page.ClickOptions().withButton(RIGHT));
+    page.click("#button-8", new Page.ClickOptions().setButton(RIGHT));
     assertEquals("context menu", page.evaluate("() => document.querySelector('#button-8').textContent"));
   }
 
@@ -340,8 +340,8 @@ public class TestClick extends TestBase {
   @Test
   void shouldClickTheButtonWithDeviceScaleFactorSet() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withViewportSize(400, 400)
-      .withDeviceScaleFactor(5.0));
+      .setViewportSize(400, 400)
+      .setDeviceScaleFactor(5.0));
     Page page = context.newPage();
     assertEquals(5, page.evaluate("() => window.devicePixelRatio"));
     page.setContent("<div style='width:100px;height:100px'>spacer</div>");
@@ -357,7 +357,7 @@ public class TestClick extends TestBase {
   void shouldClickTheButtonWithPxBorderWithOffset() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => button.style.borderWidth = '8px'");
-    page.click("button", new Page.ClickOptions().withPosition(20, 10));
+    page.click("button", new Page.ClickOptions().setPosition(20, 10));
     assertEquals(page.evaluate("result"), "Clicked");
     // Safari reports border-relative offsetX/offsetY.
     assertEquals(isWebKit() ? 20 + 8 : 20, page.evaluate("offsetX"));
@@ -369,7 +369,7 @@ public class TestClick extends TestBase {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => button.style.borderWidth = '2em'");
     page.evalOnSelector("button", "button => button.style.fontSize = '12px'");
-    page.click("button", new Page.ClickOptions().withPosition(20, 10));
+    page.click("button", new Page.ClickOptions().setPosition(20, 10));
     assertEquals("Clicked", page.evaluate("result"));
     // Safari reports border-relative offsetX/offsetY.
     assertEquals(isWebKit() ? 12 * 2 + 20 : 20, page.evaluate("offsetX"));
@@ -381,7 +381,7 @@ public class TestClick extends TestBase {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => button.style.borderWidth = '8px'");
     page.evalOnSelector("button", "button => button.style.height = button.style.width = '2000px'");
-    page.click("button", new Page.ClickOptions().withPosition(1900, 1910));
+    page.click("button", new Page.ClickOptions().setPosition(1900, 1910));
     assertEquals("Clicked", page.evaluate("() => window['result']"));
     // Safari reports border-relative offsetX/offsetY.
     assertEquals(isWebKit() ? 1900 + 8 : 1900, page.evaluate("offsetX"));
@@ -402,7 +402,7 @@ public class TestClick extends TestBase {
       "  button.style.width = '2000px';\n" +
       "  button.style.borderWidth = '8px';\n" +
       "}");
-    page.click("button", new Page.ClickOptions().withPosition(1900, 1910));
+    page.click("button", new Page.ClickOptions().setPosition(1900, 1910));
     assertEquals("Clicked", page.evaluate("() => window['result']"));
     // Safari reports border-relative offsetX/offsetY.
     assertEquals(isWebKit() ? 1900 + 8 : 1900, page.evaluate("offsetX"));
@@ -413,15 +413,15 @@ public class TestClick extends TestBase {
   @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
   void shouldClickTheButtonWithOffsetWithPageScale() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withViewportSize(400, 400)
-      .withIsMobile(true));
+      .setViewportSize(400, 400)
+      .setIsMobile(true));
     Page page = context.newPage();
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => {\n" +
       "  button.style.borderWidth = '8px';\n" +
       "  document.body.style.margin = '0';\n" +
       "}");
-    page.click("button", new Page.ClickOptions().withPosition(20, 10));
+    page.click("button", new Page.ClickOptions().setPosition(20, 10));
     assertEquals("Clicked", page.evaluate("result"));
     // 20;10 + 8px of border in each direction
     int expectedX = 28;
@@ -478,7 +478,7 @@ public class TestClick extends TestBase {
       "  blocker.style.top = '0';\n" +
       "  document.body.appendChild(blocker);\n" +
       "}");
-    button.click(new ElementHandle.ClickOptions().withForce(true));
+    button.click(new ElementHandle.ClickOptions().setForce(true));
     assertEquals("Was not clicked", page.evaluate("window['result']"));
   }
 
@@ -533,13 +533,13 @@ public class TestClick extends TestBase {
   @Test
   void shouldUpdateModifiersCorrectly() {
     page.navigate(server.PREFIX + "/input/button.html");
-    page.click("button", new Page.ClickOptions().withModifiers(asList(SHIFT)));
+    page.click("button", new Page.ClickOptions().setModifiers(asList(SHIFT)));
     assertEquals(true, page.evaluate("shiftKey"));
-    page.click("button", new Page.ClickOptions().withModifiers(emptyList()));
+    page.click("button", new Page.ClickOptions().setModifiers(emptyList()));
     assertEquals(false, page.evaluate("shiftKey"));
 
     page.keyboard().down("Shift");
-    page.click("button", new Page.ClickOptions().withModifiers(emptyList()));
+    page.click("button", new Page.ClickOptions().setModifiers(emptyList()));
     assertEquals(false, page.evaluate("shiftKey"));
     page.click("button");
     assertEquals(true, page.evaluate("shiftKey"));
@@ -565,7 +565,7 @@ public class TestClick extends TestBase {
     ElementHandle handle = page.querySelector("button");
     page.evaluate("stopButton(true)");
     try {
-      handle.click(new ElementHandle.ClickOptions().withForce(true));
+      handle.click(new ElementHandle.ClickOptions().setForce(true));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Element is not attached to the DOM"));

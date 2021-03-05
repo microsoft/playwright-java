@@ -33,7 +33,7 @@ public class TestBrowserContextProxy extends TestBase {
   // Hide base class method to provide extra option.
   static void launchBrowser() {
     BrowserType.LaunchOptions options = createLaunchOptions();
-    options.withProxy(new Proxy("per-context"));
+    options.setProxy(new Proxy("per-context"));
     launchBrowser(options);
   }
 
@@ -41,7 +41,7 @@ public class TestBrowserContextProxy extends TestBase {
   void shouldThrowForMissingGlobalProxy() {
     Browser browser = browserType.launch(createLaunchOptions());
     try {
-      browser.newContext(new Browser.NewContextOptions().withProxy("localhost:" + server.PORT));
+      browser.newContext(new Browser.NewContextOptions().setProxy("localhost:" + server.PORT));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Browser needs to be launched with the global proxy"));
@@ -62,7 +62,7 @@ public class TestBrowserContextProxy extends TestBase {
         writer.write("<html><title>Served by the proxy</title></html>");
       }
     });
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withProxy("localhost:" + server.PORT));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setProxy("localhost:" + server.PORT));
     Page page = context.newPage();
     page.navigate("http://non-existent.com/target.html");
     assertEquals("Served by the proxy", page.title());
@@ -77,7 +77,7 @@ public class TestBrowserContextProxy extends TestBase {
         writer.write("<html><title>Served by the proxy</title></html>");
       }
     });
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withProxy(
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setProxy(
       new Proxy("localhost:" + server.PORT)));
     Page page = context.newPage();
     page.navigate("http://non-existent.com/target.html");
@@ -94,7 +94,7 @@ public class TestBrowserContextProxy extends TestBase {
         writer.write("<html><title>Served by the proxy</title></html>");
       }
     });
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withProxy(
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setProxy(
       new Proxy("localhost:" + server.PORT)));
 
     Page page = context.newPage();
@@ -116,7 +116,7 @@ public class TestBrowserContextProxy extends TestBase {
         writer.write("<html><title>Served by the proxy</title></html>");
       }
     });
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withProxy(
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setProxy(
       new Proxy("127.0.0.1:" + server.PORT)));
 
     Page page = context.newPage();
@@ -140,10 +140,10 @@ public class TestBrowserContextProxy extends TestBase {
         writer.write("<html><title>" + auth.get(0) + "</title></html>");
       }
     });
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withProxy(
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setProxy(
       new Proxy("localhost:" + server.PORT)
-      .withUsername("user")
-      .withPassword("secret")));
+      .setUsername("user")
+      .setPassword("secret")));
     Page page = context.newPage();
     page.navigate("http://non-existent.com/target.html");
     assertEquals("Basic " + Base64.getEncoder().encodeToString("user:secret".getBytes()), page.title());
@@ -163,13 +163,13 @@ public class TestBrowserContextProxy extends TestBase {
         writer.write("<html><title>Served by the proxy</title></html>");
       }
     });
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withProxy(
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setProxy(
       new Proxy("127.0.0.1:" + server.PORT)
       // FYI: using long and weird domain names to avoid ATT DNS hijacking
       // that resolves everything to some weird search results page.
       //
       // @see https://gist.github.com/CollinChaffin/24f6c9652efb3d6d5ef2f5502720ef00
-      .withBypass("1.non.existent.domain.for.the.test, 2.non.existent.domain.for.the.test, .another.test")));
+      .setBypass("1.non.existent.domain.for.the.test, 2.non.existent.domain.for.the.test, .another.test")));
 
     Page page = context.newPage();
     page.navigate("http://0.non.existent.domain.for.the.test/target.html");
@@ -209,7 +209,7 @@ public class TestBrowserContextProxy extends TestBase {
 
   @Test
   void doesLaunchWithoutAPort() {
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withProxy(
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setProxy(
       new Proxy("http://localhost")));
     context.close();
   }

@@ -170,7 +170,7 @@ public class TestPageExposeFunction extends TestBase {
     page.exposeBinding("logme", (source, args) -> {
       target[0] = (JSHandle) args[0];
       return 17;
-    }, new Page.ExposeBindingOptions().withHandle(true));
+    }, new Page.ExposeBindingOptions().setHandle(true));
     Object result = page.evaluate("async function() {\n" +
       "  return window['logme']({ foo: 42 });\n" +
       "}");
@@ -182,10 +182,10 @@ public class TestPageExposeFunction extends TestBase {
   void exposeBindingHandleShouldNotThrowDuringNavigation() {
     page.exposeBinding("logme", (source, args) -> {
       return 17;
-    }, new Page.ExposeBindingOptions().withHandle(true));
+    }, new Page.ExposeBindingOptions().setHandle(true));
     page.navigate(server.EMPTY_PAGE);
 
-    page.waitForNavigation(new Page.WaitForNavigationOptions().withWaitUntil(LOAD), () -> {
+    page.waitForNavigation(new Page.WaitForNavigationOptions().setWaitUntil(LOAD), () -> {
       page.evaluate("async url => {\n" +
         "  window['logme']({ foo: 42 });\n" +
         "  window.location.href = url;\n" +
@@ -208,7 +208,7 @@ public class TestPageExposeFunction extends TestBase {
   void exposeBindingHandleShouldThrowForMultipleArguments() {
     page.exposeBinding("logme", (source, args) -> {
       return 17;
-    }, new Page.ExposeBindingOptions().withHandle(true));
+    }, new Page.ExposeBindingOptions().setHandle(true));
     assertEquals(17, page.evaluate("async function() {\n" +
       "  return window['logme']({ foo: 42 });\n" +
       "}"));

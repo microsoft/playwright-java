@@ -72,7 +72,7 @@ public class TestPageBasic extends TestBase {
       }
       dialog.accept();
     });
-    newPage.close(new Page.CloseOptions().withRunBeforeUnload(true));
+    newPage.close(new Page.CloseOptions().setRunBeforeUnload(true));
     for (int i = 0; i < 300; i++) {
       if (didShowDialog[0]) {
         break;

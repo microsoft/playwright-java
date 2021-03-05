@@ -32,7 +32,7 @@ public class TestPopup extends TestBase {
 
   @Test
   void shouldInheritUserAgentFromBrowserContext() throws ExecutionException, InterruptedException {
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().withUserAgent("hey"));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setUserAgent("hey"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a target=_blank rel=noopener href='/popup/popup.html'>link</a>");
@@ -67,7 +67,7 @@ public class TestPopup extends TestBase {
   void shouldInheritExtraHeadersFromBrowserContext() throws ExecutionException, InterruptedException {
     @SuppressWarnings("unchecked")
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withExtraHTTPHeaders(mapOf("foo", "bar")));
+      .setExtraHTTPHeaders(mapOf("foo", "bar")));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     Future<Server.Request> requestPromise = server.futureRequest("/dummy.html");
@@ -95,7 +95,7 @@ public class TestPopup extends TestBase {
   void shouldInheritHttpCredentialsFromBrowserContext() {
     server.setAuth("/title.html", "user", "pass");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withHttpCredentials("user", "pass"));
+      .setHttpCredentials("user", "pass"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     Page popup = page.waitForPopup(() -> page.evaluate(
@@ -108,8 +108,8 @@ public class TestPopup extends TestBase {
   @Test
   void shouldInheritTouchSupportFromBrowserContext() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withViewportSize(400, 500)
-      .withHasTouch(true));
+      .setViewportSize(400, 500)
+      .setHasTouch(true));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     Object hasTouch = page.evaluate("() => {\n" +
@@ -123,7 +123,7 @@ public class TestPopup extends TestBase {
   @Test
   void shouldInheritViewportSizeFromBrowserContext() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withViewportSize(400, 500));
+      .setViewportSize(400, 500));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     Object size = page.evaluate("() => {\n" +
@@ -137,7 +137,7 @@ public class TestPopup extends TestBase {
   @Test
   void shouldUseViewportSizeFromWindowFeatures() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .withViewportSize(700, 700));
+      .setViewportSize(700, 700));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     Object[] size = {null};

@@ -60,7 +60,7 @@ public interface Keyboard {
      */
     public Double delay;
 
-    public PressOptions withDelay(double delay) {
+    public PressOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
@@ -71,7 +71,7 @@ public interface Keyboard {
      */
     public Double delay;
 
-    public TypeOptions withDelay(double delay) {
+    public TypeOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }

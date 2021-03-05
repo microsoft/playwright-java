@@ -36,7 +36,7 @@ public class TestLaunch extends TestBase {
   @Test
   void passEnvVar() {
     BrowserType.LaunchOptions options = new BrowserType.LaunchOptions();
-    options.withEnv(mapOf("DEBUG", "pw:protocol"));
+    options.setEnv(mapOf("DEBUG", "pw:protocol"));
     launchBrowser(options);
   }
 }

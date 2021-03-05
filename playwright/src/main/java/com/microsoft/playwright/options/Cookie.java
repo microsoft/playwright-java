@@ -52,31 +52,31 @@ public class Cookie {
     this.name = name;
     this.value = value;
   }
-  public Cookie withUrl(String url) {
+  public Cookie setUrl(String url) {
     this.url = url;
     return this;
   }
-  public Cookie withDomain(String domain) {
+  public Cookie setDomain(String domain) {
     this.domain = domain;
     return this;
   }
-  public Cookie withPath(String path) {
+  public Cookie setPath(String path) {
     this.path = path;
     return this;
   }
-  public Cookie withExpires(double expires) {
+  public Cookie setExpires(double expires) {
     this.expires = expires;
     return this;
   }
-  public Cookie withHttpOnly(boolean httpOnly) {
+  public Cookie setHttpOnly(boolean httpOnly) {
     this.httpOnly = httpOnly;
     return this;
   }
-  public Cookie withSecure(boolean secure) {
+  public Cookie setSecure(boolean secure) {
     this.secure = secure;
     return this;
   }
-  public Cookie withSameSite(SameSiteAttribute sameSite) {
+  public Cookie setSameSite(SameSiteAttribute sameSite) {
     this.sameSite = sameSite;
     return this;
   }

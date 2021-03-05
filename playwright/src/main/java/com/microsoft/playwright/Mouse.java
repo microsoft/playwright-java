@@ -49,15 +49,15 @@ public interface Mouse {
      */
     public Double delay;
 
-    public ClickOptions withButton(MouseButton button) {
+    public ClickOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
-    public ClickOptions withClickCount(int clickCount) {
+    public ClickOptions setClickCount(int clickCount) {
       this.clickCount = clickCount;
       return this;
     }
-    public ClickOptions withDelay(double delay) {
+    public ClickOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
@@ -72,11 +72,11 @@ public interface Mouse {
      */
     public Double delay;
 
-    public DblclickOptions withButton(MouseButton button) {
+    public DblclickOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
-    public DblclickOptions withDelay(double delay) {
+    public DblclickOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
@@ -91,11 +91,11 @@ public interface Mouse {
      */
     public Integer clickCount;
 
-    public DownOptions withButton(MouseButton button) {
+    public DownOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
-    public DownOptions withClickCount(int clickCount) {
+    public DownOptions setClickCount(int clickCount) {
       this.clickCount = clickCount;
       return this;
     }
@@ -106,7 +106,7 @@ public interface Mouse {
      */
     public Integer steps;
 
-    public MoveOptions withSteps(int steps) {
+    public MoveOptions setSteps(int steps) {
       this.steps = steps;
       return this;
     }
@@ -121,11 +121,11 @@ public interface Mouse {
      */
     public Integer clickCount;
 
-    public UpOptions withButton(MouseButton button) {
+    public UpOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
-    public UpOptions withClickCount(int clickCount) {
+    public UpOptions setClickCount(int clickCount) {
       this.clickCount = clickCount;
       return this;
     }

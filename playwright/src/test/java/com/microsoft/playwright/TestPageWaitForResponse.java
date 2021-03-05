@@ -76,7 +76,7 @@ public class TestPageWaitForResponse extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     Response response = page.waitForResponse(
       server.PREFIX + "/digits/2.png",
-      new Page.WaitForResponseOptions().withTimeout(0),
+      new Page.WaitForResponseOptions().setTimeout(0),
       () -> {
         page.evaluate("() => setTimeout(() => {\n" +
           "  fetch('/digits/1.png');\n" +

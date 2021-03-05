@@ -33,7 +33,7 @@ public class TestTap extends TestBase {
 
   @Override
   BrowserContext createContext() {
-    return browser.newContext(new Browser.NewContextOptions().withHasTouch(true));
+    return browser.newContext(new Browser.NewContextOptions().setHasTouch(true));
   }
 
   private JSHandle trackEvents(ElementHandle target) {
@@ -132,7 +132,7 @@ public class TestTap extends TestBase {
       "    }, {passive: false});\n" +
       "  });\n" +
       "}");
-    page.tap("body", new Page.TapOptions().withModifiers(asList(ALT)));
+    page.tap("body", new Page.TapOptions().setModifiers(asList(ALT)));
     Object altKey = page.evaluate("() => window.touchPromise");
     assertEquals(true, altKey);
   }

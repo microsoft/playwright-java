@@ -38,7 +38,7 @@ public class TestPageSelectOption extends TestBase {
   @Test
   void shouldSelectSingleOptionByValue() {
     page.navigate(server.PREFIX + "/input/select.html");
-    page.selectOption("select", new SelectOption().withValue("blue"));
+    page.selectOption("select", new SelectOption().setValue("blue"));
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onChange"));
   }
@@ -46,7 +46,7 @@ public class TestPageSelectOption extends TestBase {
   @Test
   void shouldSelectSingleOptionByLabel() {
     page.navigate(server.PREFIX + "/input/select.html");
-    page.selectOption("select", new SelectOption().withLabel("Indigo"));
+    page.selectOption("select", new SelectOption().setLabel("Indigo"));
     assertEquals(asList("indigo"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("indigo"), page.evaluate("() => window['result'].onChange"));
   }
@@ -62,7 +62,7 @@ public class TestPageSelectOption extends TestBase {
   @Test
   void shouldSelectSingleOptionByIndex() {
     page.navigate(server.PREFIX + "/input/select.html");
-    page.selectOption("select", new SelectOption().withIndex(2));
+    page.selectOption("select", new SelectOption().setIndex(2));
     assertEquals(asList("brown"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("brown"), page.evaluate("() => window['result'].onChange"));
   }
@@ -70,7 +70,7 @@ public class TestPageSelectOption extends TestBase {
   @Test
   void shouldSelectSingleOptionByMultipleAttributes() {
     page.navigate(server.PREFIX + "/input/select.html");
-    page.selectOption("select", new SelectOption().withValue("green").withLabel("Green"));
+    page.selectOption("select", new SelectOption().setValue("green").setLabel("Green"));
     assertEquals(asList("green"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("green"), page.evaluate("() => window['result'].onChange"));
   }
@@ -81,7 +81,7 @@ public class TestPageSelectOption extends TestBase {
     page.evalOnSelector("select", "s => s.value = undefined");
     try {
       page.selectOption("select", new SelectOption()
-        .withValue("green").withLabel("Brown"), new Page.SelectOptionOptions().withTimeout(300));
+        .setValue("green").setLabel("Brown"), new Page.SelectOptionOptions().setTimeout(300));
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Timeout"));
     }
@@ -118,9 +118,9 @@ public class TestPageSelectOption extends TestBase {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");
     page.selectOption("select", new SelectOption[] {
-      new SelectOption().withValue("blue"),
-      new SelectOption().withLabel("Green"),
-      new SelectOption().withIndex(4),
+      new SelectOption().setValue("blue"),
+      new SelectOption().setLabel("Green"),
+      new SelectOption().setIndex(4),
     });
     assertEquals(asList("blue", "gray", "green"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("blue", "gray", "green"), page.evaluate("() => window['result'].onChange"));
