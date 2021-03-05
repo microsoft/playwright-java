@@ -129,7 +129,7 @@ public class TestPageSetInputFiles extends TestBase {
     try {
       page.waitForFileChooser(new Page.WaitForFileChooserOptions().withTimeout(1), () -> {});
       fail("did not throw");
-    } catch (PlaywrightException e) {
+    } catch (TimeoutError e) {
       assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
     }
   }
@@ -140,7 +140,7 @@ public class TestPageSetInputFiles extends TestBase {
     try {
       page.waitForFileChooser(() -> {});
       fail("did not throw");
-    } catch (PlaywrightException e) {
+    } catch (TimeoutError e) {
       assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
     }
   }
@@ -151,7 +151,7 @@ public class TestPageSetInputFiles extends TestBase {
     try {
       page.waitForFileChooser(new Page.WaitForFileChooserOptions().withTimeout(1), () -> {});
       fail("did not throw");
-    } catch (PlaywrightException e) {
+    } catch (TimeoutError e) {
       assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
     }
   }

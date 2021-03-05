@@ -45,7 +45,7 @@ public class TestPageWaitForNavigation extends TestBase {
         new Page.WaitForNavigationOptions().withUrl("**/frame.html").withTimeout(5000),
         () -> page.navigate(server.EMPTY_PAGE));
       fail("did not throw");
-    } catch (PlaywrightException e) {
+    } catch (TimeoutError e) {
       assertTrue(e.getMessage().contains("Timeout 5000ms exceeded"));
 //      assertTrue(e.getMessage().contains("waiting for navigation to '**/frame.html' until 'load'"));
 //      assertTrue(e.getMessage().contains("navigated to '${server.EMPTY_PAGE}'"));

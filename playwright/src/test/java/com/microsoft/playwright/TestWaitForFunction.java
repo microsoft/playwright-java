@@ -80,7 +80,7 @@ public class TestWaitForFunction extends TestBase {
         "  console.log(window['counter']);\n" +
         "}", null, new Page.WaitForFunctionOptions().withPollingInterval(1).withTimeout(1000));
       fail("did not throw");
-    } catch (PlaywrightException e) {
+    } catch (TimeoutError e) {
       assertTrue(e.getMessage().contains("Timeout 1000ms exceeded"));
     }
 
@@ -180,7 +180,7 @@ public class TestWaitForFunction extends TestBase {
     try {
       page.waitForFunction("false", null, new Page.WaitForFunctionOptions().withTimeout(10));
       fail("did not throw");
-    } catch (PlaywrightException e) {
+    } catch (TimeoutError e) {
       assertTrue(e.getMessage().contains("Timeout 10ms exceeded"));
     }
   }
@@ -191,7 +191,7 @@ public class TestWaitForFunction extends TestBase {
     try {
       page.waitForFunction("false");
       fail("did not throw");
-    } catch (PlaywrightException e) {
+    } catch (TimeoutError e) {
       assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
     }
   }

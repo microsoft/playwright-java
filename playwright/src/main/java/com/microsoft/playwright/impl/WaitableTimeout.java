@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.TimeoutError;
 
 class WaitableTimeout<T> implements Waitable<T> {
   private final long deadline;
@@ -38,7 +38,7 @@ class WaitableTimeout<T> implements Waitable<T> {
     if (timeoutStr.endsWith(".0")) {
       timeoutStr = timeoutStr.substring(0, timeoutStr.length() - 2);
     }
-    throw new PlaywrightException("Timeout " + timeoutStr + "ms exceeded");
+    throw new TimeoutError("Timeout " + timeoutStr + "ms exceeded");
   }
 
   @Override

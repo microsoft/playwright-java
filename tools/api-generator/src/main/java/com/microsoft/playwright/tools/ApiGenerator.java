@@ -1038,6 +1038,10 @@ public class ApiGenerator {
     Map<String, TypeDefinition> topLevelTypes = new HashMap<>();
     for (JsonElement entry: api) {
       String name = entry.getAsJsonObject().get("name").getAsString();
+      // We write this one manually.
+      if ("TimeoutError".equals(name)) {
+        continue;
+      }
       List<String> lines = new ArrayList<>();
       new Interface(entry.getAsJsonObject(), topLevelTypes).writeTo(lines, "");
       String text = String.join("\n", lines);
