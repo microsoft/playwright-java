@@ -24,5 +24,9 @@ public class TimeoutError extends PlaywrightException {
   public TimeoutError(String message) {
     super(message);
   }
+
+  public TimeoutError(String message, Throwable exception) {
+    super(message, exception);
+  }
 }
 

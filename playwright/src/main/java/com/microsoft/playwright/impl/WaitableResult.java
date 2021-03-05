@@ -17,6 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.TimeoutError;
 
 class WaitableResult<T> implements Waitable<T> {
   private T result;
@@ -47,6 +48,9 @@ class WaitableResult<T> implements Waitable<T> {
   @Override
   public T get() {
     if (exception != null) {
+      if (exception instanceof TimeoutError) {
+        throw new TimeoutError(exception.getMessage(), exception);
+      }
       throw new PlaywrightException(exception.getMessage(), exception);
     }
     return result;
