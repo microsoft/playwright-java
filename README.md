@@ -43,7 +43,7 @@ To run Playwright simply add following dependency to your Maven project:
 <dependency>
   <groupId>com.microsoft.playwright</groupId>
   <artifactId>playwright</artifactId>
-  <version>0.180.0</version>
+  <version>1.9.0-alpha-0</version>
 </dependency>
 ```
 
@@ -173,7 +173,9 @@ public class InterceptNetworkRequests {
 
 ## Documentation
 
-We are in the process of converting our documentation from the Node.js form to [Javadocs](https://www.javadoc.io/doc/com.microsoft.playwright/playwright/latest/index.html). You can go ahead and use the Node.js [documentation](https://playwright.dev/) since the API is pretty much the same.
+Check out our [new documentation site](https://playwright.dev/java)!.
+
+You can also browse [javadoc online](https://www.javadoc.io/doc/com.microsoft.playwright/playwright/latest/index.html).
 
 ## Contributing
 
