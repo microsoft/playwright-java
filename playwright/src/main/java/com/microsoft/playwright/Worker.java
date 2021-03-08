@@ -65,7 +65,7 @@ public interface Worker {
    * Worker#evaluate Worker.evaluate()} would wait for the promise to resolve and return its value.
    *
    * <p> If the function passed to the {@link Worker#evaluate Worker.evaluate()} returns a non-[Serializable] value, then {@link
-   * Worker#evaluate Worker.evaluate()} returns {@code undefined}. Playwright also supports transferring some  additional values
+   * Worker#evaluate Worker.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values
    * that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
@@ -82,7 +82,7 @@ public interface Worker {
    * Worker#evaluate Worker.evaluate()} would wait for the promise to resolve and return its value.
    *
    * <p> If the function passed to the {@link Worker#evaluate Worker.evaluate()} returns a non-[Serializable] value, then {@link
-   * Worker#evaluate Worker.evaluate()} returns {@code undefined}. Playwright also supports transferring some  additional values
+   * Worker#evaluate Worker.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values
    * that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted

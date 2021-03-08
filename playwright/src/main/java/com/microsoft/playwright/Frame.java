@@ -1334,7 +1334,7 @@ public interface Frame {
    * Returns the return value of {@code expression} as a {@code JSHandle}.
    *
    * <p> The only difference between {@link Frame#evaluate Frame.evaluate()} and {@link Frame#evaluateHandle
-   * Frame.evaluateHandle()} is that [method: Frame.evaluateHandle{@code ] returns }JSHandle`.
+   * Frame.evaluateHandle()} is that {@link Frame#evaluateHandle Frame.evaluateHandle()} returns {@code JSHandle}.
    *
    * <p> If the function, passed to the {@link Frame#evaluateHandle Frame.evaluateHandle()}, returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
@@ -1367,7 +1367,7 @@ public interface Frame {
    * Returns the return value of {@code expression} as a {@code JSHandle}.
    *
    * <p> The only difference between {@link Frame#evaluate Frame.evaluate()} and {@link Frame#evaluateHandle
-   * Frame.evaluateHandle()} is that [method: Frame.evaluateHandle{@code ] returns }JSHandle`.
+   * Frame.evaluateHandle()} is that {@link Frame#evaluateHandle Frame.evaluateHandle()} returns {@code JSHandle}.
    *
    * <p> If the function, passed to the {@link Frame#evaluateHandle Frame.evaluateHandle()}, returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link

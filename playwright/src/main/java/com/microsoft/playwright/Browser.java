@@ -66,7 +66,7 @@ public interface Browser extends AutoCloseable {
     public Boolean bypassCSP;
     /**
      * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to '{@code light}'.
+     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "light"}.
      */
     public ColorScheme colorScheme;
     /**
@@ -286,7 +286,7 @@ public interface Browser extends AutoCloseable {
     public Boolean bypassCSP;
     /**
      * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to '{@code light}'.
+     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "light"}.
      */
     public ColorScheme colorScheme;
     /**

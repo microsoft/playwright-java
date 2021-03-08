@@ -1039,7 +1039,7 @@ public class ApiGenerator {
     for (JsonElement entry: api) {
       String name = entry.getAsJsonObject().get("name").getAsString();
       // We write this one manually.
-      if ("TimeoutError".equals(name)) {
+      if (asList("PlaywrightException", "TimeoutError").contains(name)) {
         continue;
       }
       List<String> lines = new ArrayList<>();
