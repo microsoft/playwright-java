@@ -91,7 +91,8 @@ public class TestBrowserContextExposeFunction extends TestBase {
     page.addInitScript("window['woof']('page')");
     actualArgs.clear();
     page.reload();
-    assertEquals(asList("context", "page"), actualArgs);
+    assertTrue(actualArgs.contains("context"));
+    assertTrue(actualArgs.contains("page"));
   }
 
   @Test

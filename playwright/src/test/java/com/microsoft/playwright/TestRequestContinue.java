@@ -84,7 +84,7 @@ public class TestRequestContinue extends TestBase {
     });
     page.navigate(server.EMPTY_PAGE);
     assertNotNull(error[0]);
-    assertTrue(error[0].getMessage().contains("New URL must have same protocol as overriden URL"));
+    assertTrue(error[0].getMessage().contains("New URL must have same protocol as overridden URL"), error[0].getMessage());
   }
 
   @Test
