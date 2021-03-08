@@ -228,7 +228,7 @@ public interface BrowserType {
     public Boolean chromiumSandbox;
     /**
      * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to '{@code light}'.
+     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "light"}.
      */
     public ColorScheme colorScheme;
     /**

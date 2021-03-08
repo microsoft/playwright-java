@@ -16,6 +16,10 @@
 
 package com.microsoft.playwright;
 
+/**
+ * PlaywrightException is thrown whenever certain operations are terminated abnormally, e.g. browser closes while {@link
+ * Page#evaluate Page.evaluate()} is running. All Playwright exceptions inherit from this class.
+ */
 public class PlaywrightException extends RuntimeException {
   public PlaywrightException(String message) {
     super(message);

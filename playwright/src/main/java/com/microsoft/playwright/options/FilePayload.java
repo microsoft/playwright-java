@@ -18,11 +18,11 @@ package com.microsoft.playwright.options;
 
 public class FilePayload {
   /**
-   * [File] name
+   * File name
    */
   public String name;
   /**
-   * [File] type
+   * File type
    */
   public String mimeType;
   /**
