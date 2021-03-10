@@ -43,7 +43,7 @@ To run Playwright simply add following dependency to your Maven project:
 <dependency>
   <groupId>com.microsoft.playwright</groupId>
   <artifactId>playwright</artifactId>
-  <version>1.9.0-alpha-0</version>
+  <version>1.9.1-alpha-0</version>
 </dependency>
 ```
 
