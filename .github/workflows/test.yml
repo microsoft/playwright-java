@@ -39,3 +39,9 @@ jobs:
       run: mvn test --no-transfer-progress
       env:
         BROWSER: ${{ matrix.browser }}
+    - name: Test Spring Boot Starter
+      run: |
+        mvn -B install -D skipTests --no-transfer-progress
+        cd tools/test-spring-boot-starter
+        mvn package -D skipTests --no-transfer-progress
+        java -jar target/test-spring-boot*.jar | grep "SUCCESS: did evaluate in pageE"
