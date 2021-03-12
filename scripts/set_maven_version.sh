@@ -23,3 +23,7 @@ mvn versions:set -DnewVersion=$VERSION
 cd -
 cd tools/update-docs-version
 mvn versions:set -DnewVersion=$VERSION
+
+cd -
+cd tools/test-spring-boot-starter
+mvn versions:set -DnewVersion=$VERSION
