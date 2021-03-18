@@ -69,6 +69,20 @@ public interface BrowserType {
      */
     public List<String> args;
     /**
+     * Chromium distribution channel, one of
+     * <ul>
+     * <li> chrome</li>
+     * <li> chrome-beta</li>
+     * <li> chrome-dev</li>
+     * <li> chrome-canary</li>
+     * <li> msedge</li>
+     * <li> msedge-beta</li>
+     * <li> msedge-dev</li>
+     * <li> msedge-canary</li>
+     * </ul>
+     */
+    public String channel;
+    /**
      * Enable Chromium sandboxing. Defaults to {@code false}.
      */
     public Boolean chromiumSandbox;
@@ -142,6 +156,10 @@ public interface BrowserType {
 
     public LaunchOptions setArgs(List<String> args) {
       this.args = args;
+      return this;
+    }
+    public LaunchOptions setChannel(String channel) {
+      this.channel = channel;
       return this;
     }
     public LaunchOptions setChromiumSandbox(boolean chromiumSandbox) {
@@ -222,6 +240,20 @@ public interface BrowserType {
      * Toggles bypassing page's Content-Security-Policy.
      */
     public Boolean bypassCSP;
+    /**
+     * Chromium distribution channel, one of
+     * <ul>
+     * <li> chrome</li>
+     * <li> chrome-beta</li>
+     * <li> chrome-dev</li>
+     * <li> chrome-canary</li>
+     * <li> msedge</li>
+     * <li> msedge-beta</li>
+     * <li> msedge-dev</li>
+     * <li> msedge-canary</li>
+     * </ul>
+     */
+    public String channel;
     /**
      * Enable Chromium sandboxing. Defaults to {@code true}.
      */
@@ -381,6 +413,10 @@ public interface BrowserType {
     }
     public LaunchPersistentContextOptions setBypassCSP(boolean bypassCSP) {
       this.bypassCSP = bypassCSP;
+      return this;
+    }
+    public LaunchPersistentContextOptions setChannel(String channel) {
+      this.channel = channel;
       return this;
     }
     public LaunchPersistentContextOptions setChromiumSandbox(boolean chromiumSandbox) {

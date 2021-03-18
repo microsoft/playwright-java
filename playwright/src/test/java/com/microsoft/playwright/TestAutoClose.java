@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class TestAutoClose {
   @Test
-  void shouldAllowUsingTryWithResources() throws Exception {
+  void shouldAllowUsingTryWithResources() {
     try (Playwright playwright = Playwright.create();
          Browser browser = Utils.getBrowserTypeFromEnv(playwright).launch();
          BrowserContext context = browser.newContext();

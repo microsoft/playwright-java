@@ -88,11 +88,12 @@ public class TestBrowserContextExposeFunction extends TestBase {
     context.exposeFunction("woof", args -> actualArgs.add(args[0]));
     context.addInitScript("window['woof']('context')");
     Page page = context.newPage();
-    page.addInitScript("window['woof']('page')");
+    page.evaluate("undefined");
+    assertEquals(asList("context"), actualArgs);
     actualArgs.clear();
+    page.addInitScript("window['woof']('page')");
     page.reload();
-    assertTrue(actualArgs.contains("context"));
-    assertTrue(actualArgs.contains("page"));
+    assertEquals(asList("context", "page"), actualArgs);
   }
 
   @Test

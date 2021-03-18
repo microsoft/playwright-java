@@ -51,12 +51,17 @@ public class TestBase {
     return "firefox".equals(browserType.name());
   }
 
+  private static String getBrowserChannelFromEnv() {
+    return System.getenv("BROWSER_CHANNEL");
+  }
+
   static BrowserType.LaunchOptions createLaunchOptions() {
     String headfulEnv = System.getenv("HEADFUL");
     headful = headfulEnv != null && !"0".equals(headfulEnv) && !"false".equals(headfulEnv);
     BrowserType.LaunchOptions options;
     options = new BrowserType.LaunchOptions();
     options.headless = !headful;
+    options.channel = getBrowserChannelFromEnv();
     return options;
   }
 
