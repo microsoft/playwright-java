@@ -55,7 +55,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        browser: [chromium]
         browser-channel: [chrome]
         include:
           - os: windows-latest
@@ -88,5 +87,5 @@ jobs:
       - name: Run tests
         run: mvn test --no-transfer-progress
         env:
-          BROWSER: ${{ matrix.browser }}
+          BROWSER: chromium
           BROWSER_CHANNEL: ${{ matrix.browser-channel }}
