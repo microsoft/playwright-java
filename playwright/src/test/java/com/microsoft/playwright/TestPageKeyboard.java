@@ -368,6 +368,8 @@ public class TestPageKeyboard extends TestBase {
   void shouldSupportMacOSShortcuts() {
     // Test for MacOS only
     Assumptions.assumeTrue(isMac);
+    // @see https://github.com/microsoft/playwright/issues/5721
+    Assumptions.assumeFalse(isFirefox());
     page.navigate(server.PREFIX + "/input/textarea.html");
     ElementHandle textarea = page.querySelector("textarea");
     textarea.type("some text");

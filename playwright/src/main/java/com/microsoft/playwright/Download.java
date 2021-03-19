@@ -52,19 +52,20 @@ public interface Download {
    */
   InputStream createReadStream();
   /**
-   * Deletes the downloaded file.
+   * Deletes the downloaded file. Will wait for the download to finish if necessary.
    */
   void delete();
   /**
-   * Returns download error if any.
+   * Returns download error if any. Will wait for the download to finish if necessary.
    */
   String failure();
   /**
-   * Returns path to the downloaded file in case of successful download.
+   * Returns path to the downloaded file in case of successful download. The method will wait for the download to finish if
+   * necessary.
    */
   Path path();
   /**
-   * Saves the download to a user-specified path.
+   * Saves the download to a user-specified path. It is safe to call this method while the download is still in progress.
    *
    * @param path Path where the download should be saved.
    */
