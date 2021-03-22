@@ -56,7 +56,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # === INSTALL JDK and Maven ===
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    openjdk-8-jdk maven
+    openjdk-14-jdk maven
+
+ENV JAVA_HOME=/usr/lib/jvm/java-14-openjdk-amd64
 
 # Install utilities required for downloading driver
 RUN apt-get update && apt-get install -y --no-install-recommends \
