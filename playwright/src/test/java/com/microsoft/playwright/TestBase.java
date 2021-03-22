@@ -23,6 +23,8 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
 
+import static com.microsoft.playwright.Utils.getBrowserNameFromEnv;
+
 public class TestBase {
   static Server server;
   static Server httpsServer;
@@ -40,15 +42,15 @@ public class TestBase {
   }
 
   static boolean isChromium() {
-    return "chromium".equals(browserType.name());
+    return "chromium".equals(getBrowserNameFromEnv());
   }
 
   static boolean isWebKit() {
-    return "webkit".equals(browserType.name());
+    return "webkit".equals(getBrowserNameFromEnv());
   }
 
   static boolean isFirefox() {
-    return "firefox".equals(browserType.name());
+    return "firefox".equals(getBrowserNameFromEnv());
   }
 
   private static String getBrowserChannelFromEnv() {

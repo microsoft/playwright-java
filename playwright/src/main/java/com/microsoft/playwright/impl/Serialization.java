@@ -48,7 +48,8 @@ class Serialization {
         .registerTypeAdapter((new TypeToken<List<KeyboardModifier>>(){}).getType(), new KeyboardModifiersSerializer())
         .registerTypeAdapter(Optional.class, new OptionalSerializer())
         .registerTypeHierarchyAdapter(JSHandleImpl.class, new HandleSerializer())
-        .registerTypeHierarchyAdapter(Map.class, new StringMapSerializer())
+        .registerTypeAdapter((new TypeToken<Map<String, String>>(){}).getType(), new StringMapSerializer())
+        .registerTypeAdapter((new TypeToken<Map<String, Object>>(){}).getType(), new FirefoxUserPrefsSerializer())
         .registerTypeAdapter(Path.class, new PathSerializer()).create();
     }
     return gson;
@@ -271,6 +272,16 @@ class Serialization {
       JsonObject json = new JsonObject();
       json.addProperty("guid", src.guid);
       return json;
+    }
+  }
+
+  private static class FirefoxUserPrefsSerializer implements JsonSerializer<Map<String, Object>> {
+    @Override
+    public JsonElement serialize(Map<String, Object> src, Type typeOfSrc, JsonSerializationContext context) {
+      if (!"java.util.Map<java.lang.String, java.lang.Object>".equals(typeOfSrc.getTypeName())) {
+        throw new PlaywrightException("Unexpected map type: " + typeOfSrc);
+      }
+      return context.serialize(src, Map.class);
     }
   }
 
