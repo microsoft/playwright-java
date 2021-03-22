@@ -104,13 +104,16 @@ class Utils {
     }
   }
 
-  static BrowserType getBrowserTypeFromEnv(Playwright playwright) {
+  static String getBrowserNameFromEnv() {
     String browserName = System.getenv("BROWSER");
-
     if (browserName == null) {
       browserName = "chromium";
     }
+    return browserName;
+  }
 
+  static BrowserType getBrowserTypeFromEnv(Playwright playwright) {
+    String browserName = getBrowserNameFromEnv();
     switch (browserName) {
       case "webkit":
         return playwright.webkit();
