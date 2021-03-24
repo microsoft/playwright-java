@@ -57,8 +57,6 @@ public class DriverJar extends Driver {
 
   private void extractDriverToTempDir() throws URISyntaxException, IOException {
     ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-    System.err.println("extractDriverToTempDir() classloader = " + classloader);
-    System.err.println("extractDriverToTempDir() getResource = " + classloader.getResource("driver/" + platformDir()));
     URI originalUri = classloader.getResource("driver/" + platformDir()).toURI();
     URI uri = maybeExtractNestedJar(originalUri);
 
