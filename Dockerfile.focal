@@ -136,5 +136,6 @@ COPY . /tmp/pw-java
 RUN cd /tmp/pw-java && \
     ./scripts/download_driver_for_all_platforms.sh && \
     mvn install -D skipTests --no-transfer-progress && \
-    mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install" -f playwright/pom.xml && \
+    mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
+                     -D exec.args="install" -f playwright/pom.xml --no-transfer-progress && \
     rm -rf /tmp/pw-java
