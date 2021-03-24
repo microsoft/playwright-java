@@ -124,11 +124,14 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean recordHarOmitContent;
     /**
-     * Path on the filesystem to write the HAR file to.
+     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
+     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link BrowserContext#close
+     * BrowserContext.close()} for the HAR to be saved.
      */
     public Path recordHarPath;
     /**
-     * Path to the directory to put videos into.
+     * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
+     * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
     public Path recordVideoDir;
     /**
@@ -344,11 +347,14 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean recordHarOmitContent;
     /**
-     * Path on the filesystem to write the HAR file to.
+     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
+     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link BrowserContext#close
+     * BrowserContext.close()} for the HAR to be saved.
      */
     public Path recordHarPath;
     /**
-     * Path to the directory to put videos into.
+     * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
+     * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
     public Path recordVideoDir;
     /**
