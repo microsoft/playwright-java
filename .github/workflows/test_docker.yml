@@ -1,0 +1,28 @@
+name: Test Docker
+on:
+  push:
+    paths:
+      - '.github/workflows/test_docker.yml'
+      - 'Dockerfile*'
+    branches:
+      - master
+      - release-*
+  pull_request:
+    paths:
+      - '.github/workflows/test_docker.yml'
+      - 'Dockerfile*'
+    branches:
+      - master
+      - release-*
+jobs:
+  build:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Docker image
+        run: docker build -t playwright-java:localbuild-focal -f Dockerfile.focal .
+      - name: Test
+        run: |
+          CONTAINER_ID="$(docker run --rm -v $(pwd):/root/playwright --name playwright-docker-test -d -t playwright-java:localbuild-focal /bin/bash)"
+          docker exec --workdir /root/playwright/ "${CONTAINER_ID}" mvn test
