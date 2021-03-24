@@ -2,7 +2,16 @@
 
 ## How to Contribute
 
-### Getting Code
+### Installing Developer Tools
+
+Install git, Java JDK (version >= 8), Maven (tested with version 3.6.3), on Ubuntu 20.04
+just run the following command:
+
+```sh
+sudo apt-get install git openjdk-11-jdk maven
+```
+
+### Getting the Code
 
 1. Clone this repository
 
@@ -19,7 +28,7 @@ scripts/download_driver_for_all_platforms.sh
 
 Names of published driver archives can be found at https://github.com/microsoft/playwright-cli/actions
 
-### Compiling and running the tests with Maven
+### Building and running the tests with Maven
 
 ```bash
 mvn compile
