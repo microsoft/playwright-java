@@ -9,8 +9,10 @@ on:
       - release-*
   pull_request:
     paths:
-      - '.github/workflows/test_docker.yml'
-      - 'Dockerfile*'
+      - .github/workflows/test_docker.yml
+      - Dockerfile.*
+      - scripts/CLI_VERSION
+      - '**/pom.xml'
     branches:
       - master
       - release-*
