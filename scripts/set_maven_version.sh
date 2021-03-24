@@ -14,16 +14,15 @@ trap "cd $(pwd -P)" EXIT
 cd "$(dirname $0)/.."
 
 VERSION=$1
+POM_FILES=(
+  pom.xml
+  tools/api-generator/pom.xml
+  tools/update-docs-version/pom.xml
+  tools/test-spring-boot-starter/pom.xml
+  examples/pom.xml
+)
 
-mvn versions:set -DnewVersion=$VERSION
-
-cd tools/api-generator
-mvn versions:set -DnewVersion=$VERSION
-
-cd -
-cd tools/update-docs-version
-mvn versions:set -DnewVersion=$VERSION
-
-cd -
-cd tools/test-spring-boot-starter
-mvn versions:set -DnewVersion=$VERSION
+for name in ${POM_FILES[*]};
+do
+  mvn versions:set -D newVersion=$VERSION -f $name
+done
