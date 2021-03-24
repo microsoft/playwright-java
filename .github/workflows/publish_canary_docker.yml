@@ -4,12 +4,6 @@ on:
   push:
     branches:
       - master
-      - release-*
-    paths:
-      - .github/workflows/publish_canary_docker.yml
-      - Dockerfile.*
-      - scripts/CLI_VERSION
-      - **/pom.xml
 jobs:
   publish-canary-docker:
     name: "publish to DockerHub"
