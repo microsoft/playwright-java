@@ -69,19 +69,9 @@ public interface BrowserType {
      */
     public List<String> args;
     /**
-     * Chromium distribution channel, one of
-     * <ul>
-     * <li> chrome</li>
-     * <li> chrome-beta</li>
-     * <li> chrome-dev</li>
-     * <li> chrome-canary</li>
-     * <li> msedge</li>
-     * <li> msedge-beta</li>
-     * <li> msedge-dev</li>
-     * <li> msedge-canary</li>
-     * </ul>
+     * Browser distribution channel.
      */
-    public String channel;
+    public BrowserChannel channel;
     /**
      * Enable Chromium sandboxing. Defaults to {@code false}.
      */
@@ -158,7 +148,7 @@ public interface BrowserType {
       this.args = args;
       return this;
     }
-    public LaunchOptions setChannel(String channel) {
+    public LaunchOptions setChannel(BrowserChannel channel) {
       this.channel = channel;
       return this;
     }
@@ -241,19 +231,9 @@ public interface BrowserType {
      */
     public Boolean bypassCSP;
     /**
-     * Chromium distribution channel, one of
-     * <ul>
-     * <li> chrome</li>
-     * <li> chrome-beta</li>
-     * <li> chrome-dev</li>
-     * <li> chrome-canary</li>
-     * <li> msedge</li>
-     * <li> msedge-beta</li>
-     * <li> msedge-dev</li>
-     * <li> msedge-canary</li>
-     * </ul>
+     * Browser distribution channel.
      */
-    public String channel;
+    public BrowserChannel channel;
     /**
      * Enable Chromium sandboxing. Defaults to {@code true}.
      */
@@ -365,11 +345,14 @@ public interface BrowserType {
      */
     public Boolean recordHarOmitContent;
     /**
-     * Path on the filesystem to write the HAR file to.
+     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
+     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link BrowserContext#close
+     * BrowserContext.close()} for the HAR to be saved.
      */
     public Path recordHarPath;
     /**
-     * Path to the directory to put videos into.
+     * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
+     * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
     public Path recordVideoDir;
     /**
@@ -415,7 +398,7 @@ public interface BrowserType {
       this.bypassCSP = bypassCSP;
       return this;
     }
-    public LaunchPersistentContextOptions setChannel(String channel) {
+    public LaunchPersistentContextOptions setChannel(BrowserChannel channel) {
       this.channel = channel;
       return this;
     }

@@ -38,6 +38,7 @@ class Serialization {
     if (gson == null) {
       gson = new GsonBuilder()
         .registerTypeAdapter(SameSiteAttribute.class, new SameSiteAdapter().nullSafe())
+        .registerTypeAdapter(BrowserChannel.class, new BrowserChannelSerializer())
         .registerTypeAdapter(ColorScheme.class, new ColorSchemeAdapter().nullSafe())
         .registerTypeAdapter(Media.class, new MediaSerializer())
         .registerTypeAdapter(ScreenshotType.class, new ToLowerCaseSerializer<ScreenshotType>())
@@ -292,6 +293,13 @@ class Serialization {
         throw new PlaywrightException("Unexpected map type: " + typeOfSrc);
       }
       return toProtocol(src);
+    }
+  }
+
+  private static class BrowserChannelSerializer implements JsonSerializer<BrowserChannel> {
+    @Override
+    public JsonElement serialize(BrowserChannel src, Type typeOfSrc, JsonSerializationContext context) {
+      return new JsonPrimitive(src.toString().toLowerCase().replace('_', '-'));
     }
   }
 

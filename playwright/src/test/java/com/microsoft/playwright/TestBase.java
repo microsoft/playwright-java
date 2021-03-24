@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.BrowserChannel;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -53,8 +54,22 @@ public class TestBase {
     return "firefox".equals(getBrowserNameFromEnv());
   }
 
-  private static String getBrowserChannelFromEnv() {
-    return System.getenv("BROWSER_CHANNEL");
+  private static BrowserChannel getBrowserChannelFromEnv() {
+    String channel = System.getenv("BROWSER_CHANNEL");
+    if (channel == null) {
+      return null;
+    }
+    switch (channel) {
+      case "chrome": return BrowserChannel.CHROME;
+      case "chrome-beta": return BrowserChannel.CHROME_BETA;
+      case "chrome-dev": return BrowserChannel.CHROME_DEV;
+      case "chrome-canary": return BrowserChannel.CHROME_CANARY;
+      case "msedge": return BrowserChannel.MSEDGE;
+      case "msedge-beta": return BrowserChannel.MSEDGE_BETA;
+      case "msedge-dev": return BrowserChannel.MSEDGE_DEV;
+      case "msedge-canary": return BrowserChannel.MSEDGE_CANARY;
+      default: throw new IllegalArgumentException("Unknown BROWSER_CHANNEL " + channel);
+    }
   }
 
   static BrowserType.LaunchOptions createLaunchOptions() {
