@@ -25,4 +25,4 @@ jobs:
       - name: Test
         run: |
           CONTAINER_ID="$(docker run --rm -v $(pwd):/root/playwright --name playwright-docker-test -d -t playwright-java:localbuild-focal /bin/bash)"
-          docker exec --workdir /root/playwright/ "${CONTAINER_ID}" mvn test
+          docker exec --workdir /root/playwright/ "${CONTAINER_ID}" mvn test --no-transfer-progress
