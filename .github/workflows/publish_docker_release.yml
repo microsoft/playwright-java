@@ -26,6 +26,11 @@ jobs:
         # GITHUB_REF has a form of `refs/tags/v1.3.0`.
         # TAG_NAME would be `v1.3.0`
         TAG_NAME=${GITHUB_REF#refs/tags/}
+        if [[ -z "$TAG_NAME" ]];
+        then
+          echo "TAG_NAME is empty"
+          exit 1
+        fi
         ./scripts/tag_image_and_push.sh playwright-java:localbuild-focal playwright.azurecr.io/public/playwright/java:latest
         ./scripts/tag_image_and_push.sh playwright-java:localbuild-focal playwright.azurecr.io/public/playwright/java:focal
         ./scripts/tag_image_and_push.sh playwright-java:localbuild-focal playwright.azurecr.io/public/playwright/java:${TAG_NAME}
