@@ -11,9 +11,9 @@ Playwright is a Java library to automate [Chromium](https://www.chromium.org/Hom
 
 |          | Linux | macOS | Windows |
 |   :---   | :---: | :---: | :---:   |
-| Chromium <!-- GEN:chromium-version -->90.0.4421.0<!-- GEN:stop --> | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| WebKit <!-- GEN:webkit-version -->14.1<!-- GEN:stop --> | ✅ | ✅ | ✅ |
-| Firefox <!-- GEN:firefox-version -->86.0b10<!-- GEN:stop --> | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Chromium <!-- GEN:chromium-version -->90.0.4430.0<!-- GEN:stop --> | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| WebKit <!-- GEN:webkit-version -->14.2<!-- GEN:stop --> | ✅ | ✅ | ✅ |
+| Firefox <!-- GEN:firefox-version -->87.0b10<!-- GEN:stop --> | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 Headless execution is supported for all the browsers on all platforms. Check out [system requirements](https://playwright.dev/#?path=docs/intro.md&q=system-requirements) for details.
 
@@ -43,7 +43,7 @@ To run Playwright simply add following dependency to your Maven project:
 <dependency>
   <groupId>com.microsoft.playwright</groupId>
   <artifactId>playwright</artifactId>
-  <version>1.9.1-alpha-0</version>
+  <version>1.10.0</version>
 </dependency>
 ```
 
@@ -183,6 +183,4 @@ Follow [the instructions](https://github.com/microsoft/playwright-java/blob/mast
 
 ## Is Playwright for Java ready?
 
-Yes, Playwright for Java is ready. We are still not at the version v1.0, so breaking API changes could potentially happen. But a) this is unlikely and b) we will only do that if we know it improves your experience with the new library. We'd like to collect your feedback before we freeze the API for v1.0.
-
-> Note: We don't yet support some of the edge-cases of the vendor-specific APIs such as collecting Chromium trace, coverage report, etc.
+Yes, Playwright for Java is ready. v1.10.0 is the first stable release. Going forward we will adhere to [semantic versioning](https://semver.org/) of the API.
