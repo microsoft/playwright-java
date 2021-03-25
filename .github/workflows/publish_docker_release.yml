@@ -1,0 +1,37 @@
+name: Publish Release Docker
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    branches:
+      - release-*
+jobs:
+  publish-canary-docker:
+    name: publish to DockerHub
+    # We use `docker push --all-tags` to push all tags which is a newly addition to docker
+    runs-on: ubuntu-20.04
+    if: github.repository == 'microsoft/playwright-java'
+    steps:
+    - uses: actions/checkout@v2
+    - uses: azure/docker-login@v1
+      with:
+        login-server: playwright.azurecr.io
+        username: playwright
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    - uses: actions/checkout@v2
+    - name: Build Docker image
+      run: docker build -t playwright-java:localbuild-focal -f Dockerfile.focal .
+    - name: tag & publish
+      run: |
+        # GITHUB_REF has a form of `refs/tags/v1.3.0`.
+        # TAG_NAME would be `v1.3.0`
+        TAG_NAME=${GITHUB_REF#refs/tags/}
+        if [[ -z "$TAG_NAME" ]];
+        then
+          echo "TAG_NAME is empty"
+          exit 1
+        fi
+        ./scripts/tag_image_and_push.sh playwright-java:localbuild-focal playwright.azurecr.io/public/playwright/java:latest
+        ./scripts/tag_image_and_push.sh playwright-java:localbuild-focal playwright.azurecr.io/public/playwright/java:focal
+        ./scripts/tag_image_and_push.sh playwright-java:localbuild-focal playwright.azurecr.io/public/playwright/java:${TAG_NAME}
+        ./scripts/tag_image_and_push.sh playwright-java:localbuild-focal playwright.azurecr.io/public/playwright/java:focal-${TAG_NAME}
