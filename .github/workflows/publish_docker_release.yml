@@ -26,7 +26,6 @@ jobs:
         # GITHUB_REF has a form of `refs/tags/v1.3.0`.
         # TAG_NAME would be `v1.3.0`
         TAG_NAME=${GITHUB_REF#refs/tags/}
-        TAG_NAME=v1.10.0
         if [[ ! "$TAG_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]];
         then
           echo "Wrong TAG_NAME format: $TAG_NAME"
