@@ -470,7 +470,7 @@ public interface BrowserContext extends AutoCloseable {
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
-   * <p> An example of a naïve handler that aborts all image requests:
+   * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
    * BrowserContext context = browser.newContext();
    * context.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
@@ -501,7 +501,7 @@ public interface BrowserContext extends AutoCloseable {
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
-   * <p> An example of a naïve handler that aborts all image requests:
+   * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
    * BrowserContext context = browser.newContext();
    * context.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
@@ -532,7 +532,7 @@ public interface BrowserContext extends AutoCloseable {
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
-   * <p> An example of a naïve handler that aborts all image requests:
+   * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
    * BrowserContext context = browser.newContext();
    * context.route("**\/*.{png,jpg,jpeg}", route -> route.abort());

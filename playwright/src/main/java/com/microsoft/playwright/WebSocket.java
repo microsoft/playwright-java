@@ -35,7 +35,7 @@ public interface WebSocket {
   void offClose(Consumer<WebSocket> handler);
 
   /**
-   * Fired when the websocket recieves a frame.
+   * Fired when the websocket receives a frame.
    */
   void onFrameReceived(Consumer<WebSocketFrame> handler);
   /**

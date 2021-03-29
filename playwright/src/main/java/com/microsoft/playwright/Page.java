@@ -1852,8 +1852,8 @@ public interface Page extends AutoCloseable {
    */
   void dblclick(String selector, DblclickOptions options);
   /**
-   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
-   * is dispatched. This is equivalend to calling <a
+   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
+   * {@code click} is dispatched. This is equivalent to calling <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    * <pre>{@code
    * page.dispatchEvent("button#submit", "click");
@@ -1891,8 +1891,8 @@ public interface Page extends AutoCloseable {
     dispatchEvent(selector, type, eventInit, null);
   }
   /**
-   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
-   * is dispatched. This is equivalend to calling <a
+   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
+   * {@code click} is dispatched. This is equivalent to calling <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    * <pre>{@code
    * page.dispatchEvent("button#submit", "click");
@@ -1929,8 +1929,8 @@ public interface Page extends AutoCloseable {
     dispatchEvent(selector, type, null);
   }
   /**
-   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
-   * is dispatched. This is equivalend to calling <a
+   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
+   * {@code click} is dispatched. This is equivalent to calling <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    * <pre>{@code
    * page.dispatchEvent("button#submit", "click");
@@ -2965,7 +2965,7 @@ public interface Page extends AutoCloseable {
    * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
    * texts.
    *
-   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
+   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with the
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
    * <pre>{@code
    * Page page = browser.newPage();
@@ -3003,7 +3003,7 @@ public interface Page extends AutoCloseable {
    * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
    * texts.
    *
-   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
+   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with the
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
    * <pre>{@code
    * Page page = browser.newPage();
@@ -3060,7 +3060,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> The handler will only be called for the first url if the response is a redirect.
    *
-   * <p> An example of a naïve handler that aborts all image requests:
+   * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
    * Page page = browser.newPage();
    * page.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
@@ -3092,7 +3092,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> The handler will only be called for the first url if the response is a redirect.
    *
-   * <p> An example of a naïve handler that aborts all image requests:
+   * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
    * Page page = browser.newPage();
    * page.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
@@ -3124,7 +3124,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> The handler will only be called for the first url if the response is a redirect.
    *
-   * <p> An example of a naïve handler that aborts all image requests:
+   * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
    * Page page = browser.newPage();
    * page.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
@@ -3151,16 +3151,12 @@ public interface Page extends AutoCloseable {
   void route(Predicate<String> url, Consumer<Route> handler);
   /**
    * Returns the buffer with the captured screenshot.
-   *
-   * <p> <strong>NOTE:</strong> Screenshots take at least 1/6 second on Chromium OS X and Chromium Windows. See https://crbug.com/741689 for discussion.
    */
   default byte[] screenshot() {
     return screenshot(null);
   }
   /**
    * Returns the buffer with the captured screenshot.
-   *
-   * <p> <strong>NOTE:</strong> Screenshots take at least 1/6 second on Chromium OS X and Chromium Windows. See https://crbug.com/741689 for discussion.
    */
   byte[] screenshot(ScreenshotOptions options);
   /**
