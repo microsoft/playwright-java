@@ -1050,8 +1050,8 @@ public interface Frame {
    */
   void dblclick(String selector, DblclickOptions options);
   /**
-   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
-   * is dispatched. This is equivalend to calling <a
+   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
+   * {@code click} is dispatched. This is equivalent to calling <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    * <pre>{@code
    * frame.dispatchEvent("button#submit", "click");
@@ -1089,8 +1089,8 @@ public interface Frame {
     dispatchEvent(selector, type, eventInit, null);
   }
   /**
-   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
-   * is dispatched. This is equivalend to calling <a
+   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
+   * {@code click} is dispatched. This is equivalent to calling <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    * <pre>{@code
    * frame.dispatchEvent("button#submit", "click");
@@ -1127,8 +1127,8 @@ public interface Frame {
     dispatchEvent(selector, type, null);
   }
   /**
-   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the elment, {@code click}
-   * is dispatched. This is equivalend to calling <a
+   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
+   * {@code click} is dispatched. This is equivalent to calling <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    * <pre>{@code
    * frame.dispatchEvent("button#submit", "click");
@@ -1741,7 +1741,7 @@ public interface Frame {
    * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
    * texts.
    *
-   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
+   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with the
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
@@ -1767,7 +1767,7 @@ public interface Frame {
    * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
    * texts.
    *
-   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When speficied with the
+   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with the
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
@@ -2266,7 +2266,7 @@ public interface Frame {
    * // Types instantly
    * frame.type("#mytextarea", "Hello");
    * // Types slower, like a user
-   * frame.type("#mytextarea", "World", new Frame.TypeOptions().setDelay(100)); 
+   * frame.type("#mytextarea", "World", new Frame.TypeOptions().setDelay(100));
    * }</pre>
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
@@ -2285,7 +2285,7 @@ public interface Frame {
    * // Types instantly
    * frame.type("#mytextarea", "Hello");
    * // Types slower, like a user
-   * frame.type("#mytextarea", "World", new Frame.TypeOptions().setDelay(100)); 
+   * frame.type("#mytextarea", "World", new Frame.TypeOptions().setDelay(100));
    * }</pre>
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
