@@ -363,6 +363,11 @@ public interface BrowserType {
      */
     public RecordVideoSize recordVideoSize;
     /**
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
+     * is set.
+     */
+    public ScreenSize screenSize;
+    /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      * Defaults to 0.
      */
@@ -383,7 +388,7 @@ public interface BrowserType {
      */
     public String userAgent;
     /**
-     * Sets a consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
      */
     public Optional<ViewportSize> viewportSize;
 
@@ -525,6 +530,13 @@ public interface BrowserType {
     }
     public LaunchPersistentContextOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
+      return this;
+    }
+    public LaunchPersistentContextOptions setScreenSize(int width, int height) {
+      return setScreenSize(new ScreenSize(width, height));
+    }
+    public LaunchPersistentContextOptions setScreenSize(ScreenSize screenSize) {
+      this.screenSize = screenSize;
       return this;
     }
     public LaunchPersistentContextOptions setSlowMo(double slowMo) {
