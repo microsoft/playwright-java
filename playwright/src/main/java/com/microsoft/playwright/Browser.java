@@ -141,6 +141,11 @@ public interface Browser extends AutoCloseable {
      */
     public RecordVideoSize recordVideoSize;
     /**
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
+     * is set.
+     */
+    public ScreenSize screenSize;
+    /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
      * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
@@ -162,7 +167,7 @@ public interface Browser extends AutoCloseable {
      */
     public String userAgent;
     /**
-     * Sets a consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
      */
     public Optional<ViewportSize> viewportSize;
 
@@ -252,6 +257,13 @@ public interface Browser extends AutoCloseable {
     }
     public NewContextOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
+      return this;
+    }
+    public NewContextOptions setScreenSize(int width, int height) {
+      return setScreenSize(new ScreenSize(width, height));
+    }
+    public NewContextOptions setScreenSize(ScreenSize screenSize) {
+      this.screenSize = screenSize;
       return this;
     }
     public NewContextOptions setStorageState(String storageState) {
@@ -364,6 +376,11 @@ public interface Browser extends AutoCloseable {
      */
     public RecordVideoSize recordVideoSize;
     /**
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
+     * is set.
+     */
+    public ScreenSize screenSize;
+    /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
      * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
@@ -385,7 +402,7 @@ public interface Browser extends AutoCloseable {
      */
     public String userAgent;
     /**
-     * Sets a consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
      */
     public Optional<ViewportSize> viewportSize;
 
@@ -475,6 +492,13 @@ public interface Browser extends AutoCloseable {
     }
     public NewPageOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
+      return this;
+    }
+    public NewPageOptions setScreenSize(int width, int height) {
+      return setScreenSize(new ScreenSize(width, height));
+    }
+    public NewPageOptions setScreenSize(ScreenSize screenSize) {
+      this.screenSize = screenSize;
       return this;
     }
     public NewPageOptions setStorageState(String storageState) {
