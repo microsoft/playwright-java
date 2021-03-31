@@ -523,6 +523,7 @@ public class TestPageRoute extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="https://github.com/microsoft/playwright/issues/6016")
   void shouldSupportCorsWithPOST() {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars", route -> {
@@ -545,6 +546,7 @@ public class TestPageRoute extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="https://github.com/microsoft/playwright/issues/6016")
   void shouldSupportCorsWithCredentials() {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars", route -> {
@@ -597,6 +599,7 @@ public class TestPageRoute extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="https://github.com/microsoft/playwright/issues/6016")
   void shouldSupportCorsForDifferentMethods() {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars", route -> {
