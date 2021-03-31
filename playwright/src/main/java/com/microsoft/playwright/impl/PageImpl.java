@@ -44,6 +44,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private final KeyboardImpl keyboard;
   private final MouseImpl mouse;
   private final TouchscreenImpl touchscreen;
+  final Waitable<?> waitableClosedOrCrashed;
   private ViewportSize viewport;
   private final Router routes = new Router();
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
@@ -107,6 +108,7 @@ public class PageImpl extends ChannelOwner implements Page {
     touchscreen = new TouchscreenImpl(this);
     frames.add(mainFrame);
     timeoutSettings = new TimeoutSettings(browserContext.timeoutSettings);
+    waitableClosedOrCrashed = createWaitForCloseHelper();
   }
 
   @Override
@@ -140,6 +142,7 @@ public class PageImpl extends ChannelOwner implements Page {
     } else if ("download".equals(event)) {
       String artifactGuid = params.getAsJsonObject("artifact").get("guid").getAsString();
       ArtifactImpl artifact = connection.getExistingObject(artifactGuid);
+      artifact.isRemote = browserContext.browser() != null && browserContext.browser().isRemote;
       DownloadImpl download = new DownloadImpl(artifact, params);
       listeners.notify(EventType.DOWNLOAD, download);
     } else if ("fileChooser".equals(event)) {
@@ -212,7 +215,9 @@ public class PageImpl extends ChannelOwner implements Page {
         route.resume();
       }
     } else if ("video".equals(event)) {
-      video().setRelativePath(params.get("relativePath").getAsString());
+      String artifactGuid = params.getAsJsonObject("artifact").get("guid").getAsString();
+      ArtifactImpl artifact = connection.getExistingObject(artifactGuid);
+      forceVideo().setArtifact(artifact);
     } else if ("pageError".equals(event)) {
       SerializedError error = gson().fromJson(params.getAsJsonObject("error"), SerializedError.class);
       String errorStr = "";
@@ -1145,20 +1150,23 @@ public class PageImpl extends ChannelOwner implements Page {
     return mainFrame.url();
   }
 
+
+  private VideoImpl forceVideo() {
+    if (video == null) {
+      video = new VideoImpl(this);
+    }
+    return video;
+  }
+
   @Override
   public VideoImpl video() {
-    if (video != null) {
-      return video;
-    }
+    // Note: we are creating Video object lazily, because we do not know
+    // BrowserContextOptions when constructing the page - it is assigned
+    // too late during launchPersistentContext.
     if (browserContext.videosDir == null) {
       return null;
     }
-    video = new VideoImpl(this);
-    // In case of persistent profile, we already have it.
-    if (initializer.has("videoRelativePath")) {
-      video.setRelativePath(initializer.get("videoRelativePath").getAsString());
-    }
-    return video;
+    return forceVideo();
   }
 
   @Override
