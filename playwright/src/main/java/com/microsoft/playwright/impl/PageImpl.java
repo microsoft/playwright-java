@@ -138,8 +138,9 @@ public class PageImpl extends ChannelOwner implements Page {
       ConsoleMessageImpl message = connection.getExistingObject(guid);
       listeners.notify(EventType.CONSOLE, message);
     } else if ("download".equals(event)) {
-      String guid = params.getAsJsonObject("download").get("guid").getAsString();
-      DownloadImpl download = connection.getExistingObject(guid);
+      String artifactGuid = params.getAsJsonObject("artifact").get("guid").getAsString();
+      ArtifactImpl artifact = connection.getExistingObject(artifactGuid);
+      DownloadImpl download = new DownloadImpl(artifact, params);
       listeners.notify(EventType.DOWNLOAD, download);
     } else if ("fileChooser".equals(event)) {
       String guid = params.getAsJsonObject("element").get("guid").getAsString();
