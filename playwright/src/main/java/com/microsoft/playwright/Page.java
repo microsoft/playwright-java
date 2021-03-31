@@ -1561,6 +1561,33 @@ public interface Page extends AutoCloseable {
       return this;
     }
   }
+  class WaitForURLOptions {
+    /**
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     */
+    public Double timeout;
+    /**
+     * When to consider operation succeeded, defaults to {@code load}. Events can be either:
+     * <ul>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
+     */
+    public WaitUntilState waitUntil;
+
+    public WaitForURLOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+    public WaitForURLOptions setWaitUntil(WaitUntilState waitUntil) {
+      this.waitUntil = waitUntil;
+      return this;
+    }
+  }
   class WaitForWebSocketOptions {
     /**
      * Receives the {@code WebSocket} object and resolves to truthy value when the waiting should resolve.
@@ -3079,6 +3106,8 @@ public interface Page extends AutoCloseable {
    * <p> Page routes take precedence over browser context routes (set up with {@link BrowserContext#route
    * BrowserContext.route()}) when request matches both handlers.
    *
+   * <p> To remove a route with its handler you can use {@link Page#unroute Page.unroute()}.
+   *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
@@ -3111,6 +3140,8 @@ public interface Page extends AutoCloseable {
    * <p> Page routes take precedence over browser context routes (set up with {@link BrowserContext#route
    * BrowserContext.route()}) when request matches both handlers.
    *
+   * <p> To remove a route with its handler you can use {@link Page#unroute Page.unroute()}.
+   *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
@@ -3142,6 +3173,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> Page routes take precedence over browser context routes (set up with {@link BrowserContext#route
    * BrowserContext.route()}) when request matches both handlers.
+   *
+   * <p> To remove a route with its handler you can use {@link Page#unroute Page.unroute()}.
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
@@ -3494,6 +3527,7 @@ public interface Page extends AutoCloseable {
    * <li> {@link Page#reload Page.reload()}</li>
    * <li> {@link Page#setContent Page.setContent()}</li>
    * <li> {@link Page#waitForNavigation Page.waitForNavigation()}</li>
+   * <li> {@link Page#waitForURL Page.waitForURL()}</li>
    * </ul>
    *
    * <p> <strong>NOTE:</strong> {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()} takes priority over {@link
@@ -4410,6 +4444,84 @@ public interface Page extends AutoCloseable {
    * @param timeout A timeout to wait for
    */
   void waitForTimeout(double timeout);
+  /**
+   * Waits for the main frame to navigate to the given URL.
+   * <pre>{@code
+   * page.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
+   * page.waitForURL("**\/target.html");
+   * }</pre>
+   *
+   * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+   */
+  default void waitForURL(String url) {
+    waitForURL(url, null);
+  }
+  /**
+   * Waits for the main frame to navigate to the given URL.
+   * <pre>{@code
+   * page.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
+   * page.waitForURL("**\/target.html");
+   * }</pre>
+   *
+   * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+   */
+  void waitForURL(String url, WaitForURLOptions options);
+  /**
+   * Waits for the main frame to navigate to the given URL.
+   * <pre>{@code
+   * page.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
+   * page.waitForURL("**\/target.html");
+   * }</pre>
+   *
+   * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+   */
+  default void waitForURL(Pattern url) {
+    waitForURL(url, null);
+  }
+  /**
+   * Waits for the main frame to navigate to the given URL.
+   * <pre>{@code
+   * page.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
+   * page.waitForURL("**\/target.html");
+   * }</pre>
+   *
+   * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+   */
+  void waitForURL(Pattern url, WaitForURLOptions options);
+  /**
+   * Waits for the main frame to navigate to the given URL.
+   * <pre>{@code
+   * page.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
+   * page.waitForURL("**\/target.html");
+   * }</pre>
+   *
+   * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+   */
+  default void waitForURL(Predicate<String> url) {
+    waitForURL(url, null);
+  }
+  /**
+   * Waits for the main frame to navigate to the given URL.
+   * <pre>{@code
+   * page.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
+   * page.waitForURL("**\/target.html");
+   * }</pre>
+   *
+   * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+   */
+  void waitForURL(Predicate<String> url, WaitForURLOptions options);
   /**
    * Performs action and waits for a new {@code WebSocket}. If predicate is provided, it passes {@code WebSocket} value into the
    * {@code predicate} function and waits for {@code predicate(webSocket)} to return a truthy value. Will throw an error if the page is

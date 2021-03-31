@@ -20,16 +20,28 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * When browser context is created with the {@code videosPath} option, each page has a video object associated with it.
+ * When browser context is created with the {@code recordVideo} option, each page has a video object associated with it.
  * <pre>{@code
  * System.out.println(page.video().path());
  * }</pre>
  */
 public interface Video {
   /**
+   * Deletes the video file. Will wait for the video to finish if necessary.
+   */
+  void delete();
+  /**
    * Returns the file system path this video will be recorded to. The video is guaranteed to be written to the filesystem
-   * upon closing the browser context.
+   * upon closing the browser context. This method throws when connected remotely via {@link BrowserType#connect
+   * BrowserType.connect()}.
    */
   Path path();
+  /**
+   * Saves the video to a user-specified path. It is safe to call this method while the video is still in progress, or after
+   * the page has closed. This method waits until the page is closed and the video is fully saved.
+   *
+   * @param path Path where the video should be saved.
+   */
+  void saveAs(Path path);
 }
 

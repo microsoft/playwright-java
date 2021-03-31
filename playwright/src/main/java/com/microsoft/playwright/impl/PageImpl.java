@@ -1321,6 +1321,25 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public void waitForURL(String url, WaitForURLOptions options) {
+    waitForURL(new UrlMatcher(url), options);
+  }
+
+  @Override
+  public void waitForURL(Pattern url, WaitForURLOptions options) {
+    waitForURL(new UrlMatcher(url), options);
+  }
+
+  @Override
+  public void waitForURL(Predicate<String> url, WaitForURLOptions options) {
+    waitForURL(new UrlMatcher(url), options);
+  }
+
+  private void waitForURL(UrlMatcher matcher, WaitForURLOptions options) {
+    withLogging("Page.waitForURL", () -> mainFrame.waitForURLImpl(matcher, convertViaJson(options, Frame.WaitForURLOptions.class)));
+  }
+
+  @Override
   public List<Worker> workers() {
     return new ArrayList<>(workers);
   }

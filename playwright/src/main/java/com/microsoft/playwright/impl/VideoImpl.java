@@ -33,10 +33,20 @@ class VideoImpl implements Video {
   }
 
   @Override
+  public void delete() {
+
+  }
+
+  @Override
   public Path path() {
     while (fullPath == null) {
       page.connection.processOneMessage();
     }
     return fullPath;
+  }
+
+  @Override
+  public void saveAs(Path path) {
+
   }
 }
