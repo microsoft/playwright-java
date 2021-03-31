@@ -20,6 +20,7 @@ import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Video;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static java.util.Arrays.asList;
 
@@ -61,7 +62,7 @@ class VideoImpl extends LoggingSupport implements Video {
         throw new PlaywrightException("Path is not available when using browserType.connect(). Use saveAs() to save a local copy.");
       }
       try {
-        return waitForArtifact().pathAfterFinished();
+        return Paths.get(waitForArtifact().initializer.get("absolutePath").getAsString());
       } catch (PlaywrightException e) {
         throw new PlaywrightException("Page did not produce any video frames", e);
       }

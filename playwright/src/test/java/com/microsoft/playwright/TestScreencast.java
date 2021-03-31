@@ -32,10 +32,9 @@ public class TestScreencast extends TestBase {
       .setViewportSize(320, 240));
     Page page = context.newPage();
     page.evaluate("() => document.body.style.backgroundColor = 'red'");
-    Video video = page.video();
-    context.close();
-    Path path = video.path();
+    Path path = page.video().path();
     assertTrue(path.startsWith(videosDir));
+    context.close();
     assertTrue(Files.exists(path));
   }
 
@@ -76,7 +75,6 @@ public class TestScreencast extends TestBase {
     Path saveAsPath = videosDir.resolve("my-video.webm");
     try {
       popup.video().saveAs(saveAsPath);
-      fail("did not throw");
     } catch (PlaywrightException e) {
       // WebKit pauses renderer before win.close() and actually writes something.
       if (isWebKit()) {
