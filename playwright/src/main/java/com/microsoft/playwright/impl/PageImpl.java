@@ -71,6 +71,7 @@ public class PageImpl extends ChannelOwner implements Page {
   final Set<Worker> workers = new HashSet<>();
   private final TimeoutSettings timeoutSettings;
   private VideoImpl video;
+  private final PageImpl opener;
 
   enum EventType {
     CLOSE,
@@ -109,6 +110,11 @@ public class PageImpl extends ChannelOwner implements Page {
     frames.add(mainFrame);
     timeoutSettings = new TimeoutSettings(browserContext.timeoutSettings);
     waitableClosedOrCrashed = createWaitForCloseHelper();
+    if (initializer.has("opener")) {
+      opener = connection.getExistingObject(initializer.getAsJsonObject("opener").get("guid").getAsString());
+    } else {
+      opener = null;
+    }
   }
 
   @Override
@@ -121,10 +127,6 @@ public class PageImpl extends ChannelOwner implements Page {
       } else {
         dialog.dismiss();
       }
-    } else if ("popup".equals(event)) {
-      String guid = params.getAsJsonObject("page").get("guid").getAsString();
-      PageImpl popup = connection.getExistingObject(guid);
-      listeners.notify(EventType.POPUP, popup);
     } else if ("worker".equals(event)) {
       String guid = params.getAsJsonObject("worker").get("guid").getAsString();
       WorkerImpl worker = connection.getExistingObject(guid);
@@ -233,6 +235,10 @@ public class PageImpl extends ChannelOwner implements Page {
     } else if ("close".equals(event)) {
       didClose();
     }
+  }
+
+  void notifyPopup(PageImpl popup) {
+    listeners.notify(EventType.POPUP, popup);
   }
 
   void didClose() {
@@ -849,14 +855,11 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Page opener() {
-    return withLogging("Page.opener", () -> {
-      JsonObject result = sendMessage("opener").getAsJsonObject();
-      if (!result.has("page")) {
-        return null;
-      }
-      return connection.getExistingObject(result.getAsJsonObject("page").get("guid").getAsString());
-    });
+  public PageImpl opener() {
+    if (opener == null || opener.isClosed()) {
+      return null;
+    }
+    return opener;
   }
 
   @Override
