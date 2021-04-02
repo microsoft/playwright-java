@@ -395,8 +395,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       }
     } else if ("page".equals(event)) {
       PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
-      listeners.notify(EventType.PAGE, page);
       pages.add(page);
+      listeners.notify(EventType.PAGE, page);
+      if (page.opener() != null && !page.opener().isClosed()) {
+        page.opener().notifyPopup(page);
+      }
     } else if ("bindingCall".equals(event)) {
       BindingCall bindingCall = connection.getExistingObject(params.getAsJsonObject("binding").get("guid").getAsString());
       BindingCallback binding = bindings.get(bindingCall.name());
