@@ -16,27 +16,19 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Download;
-import com.microsoft.playwright.PlaywrightException;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
-import static com.microsoft.playwright.impl.Utils.writeToFile;
+class DownloadImpl extends LoggingSupport implements Download {
+  private final ArtifactImpl artifact;
+  private final JsonObject initializer;
 
-public class DownloadImpl extends ChannelOwner implements Download {
-  private final BrowserImpl browser;
-
-  public DownloadImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
-    super(parent, type, guid, initializer);
-    browser = ((BrowserContextImpl) parent).browser();
+  DownloadImpl(ArtifactImpl artifact, JsonObject initializer) {
+    this.artifact = artifact;
+    this.initializer = initializer;
   }
 
   @Override
@@ -51,58 +43,26 @@ public class DownloadImpl extends ChannelOwner implements Download {
 
   @Override
   public InputStream createReadStream() {
-    return withLogging("Download.createReadStream", () -> {
-      JsonObject result = sendMessage("stream").getAsJsonObject();
-      if (!result.has("stream")) {
-        return null;
-      }
-      Stream stream = connection.getExistingObject(result.getAsJsonObject("stream").get("guid").getAsString());
-      return stream.stream();
-    });
+    return withLogging("Download.createReadStream", () -> artifact.createReadStream());
   }
 
   @Override
   public void delete() {
-    withLogging("Download.delete", () -> {
-      sendMessage("delete");
-    });
+    withLogging("Download.delete", () -> artifact.delete());
   }
 
   @Override
   public String failure() {
-    return withLogging("Download.failure", () -> {
-      JsonObject result = sendMessage("failure").getAsJsonObject();
-      if (result.has("error")) {
-        return result.get("error").getAsString();
-      }
-      return null;
-    });
+    return withLogging("Download.failure", () -> artifact.failure());
   }
 
   @Override
   public Path path() {
-    return withLogging("Download.path", () -> {
-      if (browser != null && browser.isRemote) {
-        throw new PlaywrightException("Path is not available when using browserType.connect(). Use download.saveAs() to save a local copy.");
-      }
-      JsonObject json = sendMessage("path").getAsJsonObject();
-      return FileSystems.getDefault().getPath(json.get("value").getAsString());
-    });
+    return withLogging("Download.path", () -> artifact.pathAfterFinished());
   }
 
   @Override
   public void saveAs(Path path) {
-    withLogging("Download.saveAs", () -> {
-      if (browser != null && browser.isRemote) {
-        JsonObject jsonObject = sendMessage("saveAsStream").getAsJsonObject();
-        Stream stream = connection.getExistingObject(jsonObject.getAsJsonObject("stream").get("guid").getAsString());
-        writeToFile(stream.stream(), path);
-        return;
-      }
-
-      JsonObject params = new JsonObject();
-      params.addProperty("path", path.toString());
-      sendMessage("saveAs", params);
-    });
+    withLogging("Download.saveAs", () -> artifact.saveAs(path));
   }
 }

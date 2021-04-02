@@ -213,7 +213,7 @@ public class TestDownload extends TestBase {
       download.saveAs(userPath);
       fail("did not throw");
     } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Download already deleted. Save before deleting."));
+      assertTrue(e.getMessage().contains("File already deleted. Save before deleting."), e.getMessage());
     }
     page.close();
   }

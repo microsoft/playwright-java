@@ -491,6 +491,8 @@ public interface BrowserContext extends AutoCloseable {
    * <p> Page routes (set up with {@link Page#route Page.route()}) take precedence over browser context routes when request
    * matches both handlers.
    *
+   * <p> To remove a route with its handler you can use {@link BrowserContext#unroute BrowserContext.unroute()}.
+   *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
@@ -522,6 +524,8 @@ public interface BrowserContext extends AutoCloseable {
    * <p> Page routes (set up with {@link Page#route Page.route()}) take precedence over browser context routes when request
    * matches both handlers.
    *
+   * <p> To remove a route with its handler you can use {@link BrowserContext#unroute BrowserContext.unroute()}.
+   *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
@@ -552,6 +556,8 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> Page routes (set up with {@link Page#route Page.route()}) take precedence over browser context routes when request
    * matches both handlers.
+   *
+   * <p> To remove a route with its handler you can use {@link BrowserContext#unroute BrowserContext.unroute()}.
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *

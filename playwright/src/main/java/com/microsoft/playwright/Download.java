@@ -29,7 +29,7 @@ import java.util.*;
  * <p> Download event is emitted once the download starts. Download path becomes available once download completes:
  * <pre>{@code
  * // wait for download to start
- * Download download  = page.waitForDownload(() -> page.click("a")); 
+ * Download download  = page.waitForDownload(() -> page.click("a"));
  * // wait for download to complete
  * Path path = download.path();
  * }</pre>
@@ -61,7 +61,7 @@ public interface Download {
   String failure();
   /**
    * Returns path to the downloaded file in case of successful download. The method will wait for the download to finish if
-   * necessary.
+   * necessary. The method throws when connected remotely via {@link BrowserType#connect BrowserType.connect()}.
    */
   Path path();
   /**

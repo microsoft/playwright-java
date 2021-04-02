@@ -28,6 +28,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.options.LoadState.*;
 import static com.microsoft.playwright.impl.Serialization.*;
@@ -856,10 +858,14 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public Response waitForNavigation(WaitForNavigationOptions options, Runnable code) {
-    return withLogging("Frame.waitForNavigation", () -> waitForNavigationImpl(code, options));
+    return withLogging("Frame.waitForNavigation", () -> waitForNavigationImpl(code, options, null));
   }
 
   Response waitForNavigationImpl(Runnable code, WaitForNavigationOptions options) {
+    return waitForNavigationImpl(code, options, null);
+  }
+
+  private Response waitForNavigationImpl(Runnable code, WaitForNavigationOptions options, UrlMatcher matcher) {
     if (options == null) {
       options = new WaitForNavigationOptions();
     }
@@ -868,7 +874,9 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
 
     List<Waitable<Response>> waitables = new ArrayList<>();
-    UrlMatcher matcher = UrlMatcher.forOneOf(options.url);
+    if (matcher == null) {
+      matcher = UrlMatcher.forOneOf(options.url);
+    }
     waitables.add(new WaitForNavigationHelper(matcher, convertViaJson(options.waitUntil, LoadState.class)));
     waitables.add(page.createWaitForCloseHelper());
     waitables.add(page.createWaitableFrameDetach(this));
@@ -908,6 +916,37 @@ public class FrameImpl extends ChannelOwner implements Frame {
         return null;
       }
     });
+  }
+
+  @Override
+  public void waitForURL(String url, WaitForURLOptions options) {
+    waitForURL(new UrlMatcher(url), options);
+  }
+
+  @Override
+  public void waitForURL(Pattern url, WaitForURLOptions options) {
+    waitForURL(new UrlMatcher(url), options);
+  }
+
+  @Override
+  public void waitForURL(Predicate<String> url, WaitForURLOptions options) {
+    waitForURL(new UrlMatcher(url), options);
+  }
+
+  private void waitForURL(UrlMatcher matcher, WaitForURLOptions options) {
+    withLogging("Frame.waitForURL", () -> waitForURLImpl(matcher, options));
+  }
+
+  void waitForURLImpl(UrlMatcher matcher, WaitForURLOptions options) {
+    if (options == null) {
+      options = new WaitForURLOptions();
+    }
+    if (matcher.test(url())) {
+      waitForLoadStateImpl(convertViaJson(options.waitUntil, LoadState.class),
+        convertViaJson(options, WaitForLoadStateOptions.class));
+      return;
+    }
+    waitForNavigationImpl(() -> {}, convertViaJson(options, WaitForNavigationOptions.class), matcher);
   }
 
   protected void handleEvent(String event, JsonObject params) {

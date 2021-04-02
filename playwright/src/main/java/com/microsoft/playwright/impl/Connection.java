@@ -255,6 +255,9 @@ public class Connection {
       case "AndroidDevice":
 //        result = new AndroidDevice(parent, type, guid, initializer);
         break;
+      case "Artifact":
+        result = new ArtifactImpl(parent, type, guid, initializer);
+        break;
       case "BindingCall":
         result = new BindingCall(parent, type, guid, initializer);
         break;
@@ -272,9 +275,6 @@ public class Connection {
         break;
       case "Dialog":
         result = new DialogImpl(parent, type, guid, initializer);
-        break;
-      case "Download":
-        result = new DownloadImpl(parent, type, guid, initializer);
         break;
       case "Electron":
 //        result = new Playwright(parent, type, guid, initializer);

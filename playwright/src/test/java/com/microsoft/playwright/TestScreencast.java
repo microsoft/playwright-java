@@ -22,7 +22,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestScreencast extends TestBase {
   @Test
@@ -36,5 +36,69 @@ public class TestScreencast extends TestBase {
     assertTrue(path.startsWith(videosDir));
     context.close();
     assertTrue(Files.exists(path));
-  };
+  }
+
+  @Test
+  void shouldSaveAsVideo(@TempDir Path videosDir) {
+    BrowserContext context = browser.newContext(
+      new Browser.NewContextOptions()
+        .setRecordVideoDir(videosDir)
+        .setRecordVideoSize(320, 240)
+        .setViewportSize(320, 240));
+    Page page = context.newPage();
+    page.evaluate("() => document.body.style.backgroundColor = 'red'");
+    page.waitForTimeout(1000);
+    context.close();
+
+    Path saveAsPath = videosDir.resolve("my-video.webm");
+    page.video().saveAs(saveAsPath);
+    assertTrue(Files.exists(saveAsPath));
+  }
+
+  @Test
+  void saveAsShouldThrowWhenNoVideoFrames(@TempDir Path videosDir) {
+    BrowserContext context = browser.newContext(
+      new Browser.NewContextOptions()
+        .setRecordVideoDir(videosDir)
+        .setRecordVideoSize(320, 240)
+        .setViewportSize(320, 240));
+
+    Page page = context.newPage();
+    Page popup = context.waitForPage(() -> {
+      page.evaluate("() => {\n" +
+        "  const win = window.open('about:blank');\n" +
+        "  win.close();\n" +
+        "}");
+    });
+    page.close();
+
+    Path saveAsPath = videosDir.resolve("my-video.webm");
+    try {
+      popup.video().saveAs(saveAsPath);
+    } catch (PlaywrightException e) {
+      // WebKit pauses renderer before win.close() and actually writes something.
+      if (isWebKit()) {
+        assertTrue(Files.exists(saveAsPath));
+      } else {
+        assertTrue(e.getMessage().contains("Page did not produce any video frames"), e.getMessage());
+      }
+    }
+  }
+
+  @Test
+  void shouldDeleteVideo(@TempDir Path videosDir) {
+    BrowserContext context = browser.newContext(
+      new Browser.NewContextOptions()
+        .setRecordVideoDir(videosDir)
+        .setRecordVideoSize(320, 240)
+        .setViewportSize(320, 240));
+    Page page = context.newPage();
+    page.evaluate("() => document.body.style.backgroundColor = 'red'");
+    page.waitForTimeout(1000);
+    context.close();
+
+    page.video().delete();
+    Path videoPath = page.video().path();
+    assertFalse(Files.exists(videoPath));
+  }
 }
