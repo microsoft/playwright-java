@@ -61,7 +61,7 @@ public interface Download {
   String failure();
   /**
    * Returns path to the downloaded file in case of successful download. The method will wait for the download to finish if
-   * necessary. The method throws when connected remotely via {@link BrowserType#connect BrowserType.connect()}.
+   * necessary. The method throws when connected remotely.
    */
   Path path();
   /**

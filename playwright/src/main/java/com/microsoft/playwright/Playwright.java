@@ -41,11 +41,11 @@ import java.util.*;
  */
 public interface Playwright extends AutoCloseable {
   /**
-   * This object can be used to launch or connect to Chromium, returning instances of {@code ChromiumBrowser}.
+   * This object can be used to launch or connect to Chromium, returning instances of {@code Browser}.
    */
   BrowserType chromium();
   /**
-   * This object can be used to launch or connect to Firefox, returning instances of {@code FirefoxBrowser}.
+   * This object can be used to launch or connect to Firefox, returning instances of {@code Browser}.
    */
   BrowserType firefox();
   /**
@@ -54,7 +54,7 @@ public interface Playwright extends AutoCloseable {
    */
   Selectors selectors();
   /**
-   * This object can be used to launch or connect to WebKit, returning instances of {@code WebKitBrowser}.
+   * This object can be used to launch or connect to WebKit, returning instances of {@code Browser}.
    */
   BrowserType webkit();
   /**

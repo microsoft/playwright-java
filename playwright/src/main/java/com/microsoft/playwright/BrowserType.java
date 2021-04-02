@@ -70,7 +70,7 @@ public interface BrowserType {
     public List<String> args;
     /**
      * Browser distribution channel. Read more about using <a
-     * href="https://playwright.dev/java/docs/browsers#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
+     * href="https://playwright.dev/java/docs/browsers/#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
      */
     public BrowserChannel channel;
     /**
