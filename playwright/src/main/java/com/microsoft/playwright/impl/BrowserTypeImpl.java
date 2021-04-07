@@ -69,12 +69,8 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       playwright.sharedSelectors.addChannel(selectors);
       BrowserImpl browser = remoteBrowser.browser();
       browser.isRemote = true;
-      Consumer<WebSocketTransport> connectionCloseListener = new Consumer<WebSocketTransport>() {
-        @Override
-        public void accept(WebSocketTransport t) {
-          browser.notifyRemoteClosed();
-        }
-      };
+      browser.isConnectedOverWebSocket = true;
+      Consumer<WebSocketTransport> connectionCloseListener = t -> browser.notifyRemoteClosed();
       transport.onClose(connectionCloseListener);
       browser.onDisconnected(b -> {
         playwright.sharedSelectors.removeChannel(selectors);
@@ -89,6 +85,34 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     } catch (URISyntaxException e) {
       throw new PlaywrightException("Failed to connect", e);
     }
+  }
+
+  @Override
+  public Browser connectOverCDP(String wsEndpoint, ConnectOverCDPOptions options) {
+    if (!"chromium".equals(name())) {
+      throw new PlaywrightException("Connecting over CDP is only supported in Chromium.");
+    }
+    return withLogging("BrowserType.connectOverCDP", () -> connectOverCDPImpl(wsEndpoint, options));
+  }
+
+  private Browser connectOverCDPImpl(String wsEndpoint, ConnectOverCDPOptions options) {
+    if (options == null) {
+      options = new ConnectOverCDPOptions();
+    }
+
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("sdkLanguage", "java");
+    params.addProperty("wsEndpoint", wsEndpoint);
+    JsonObject json = sendMessage("connectOverCDP", params).getAsJsonObject();
+
+    BrowserImpl browser = connection.getExistingObject(json.getAsJsonObject("browser").get("guid").getAsString());
+    browser.isRemote = true;
+    if (json.has("defaultContext")) {
+      String contextId = json.getAsJsonObject("defaultContext").get("guid").getAsString();
+      BrowserContextImpl defaultContext = connection.getExistingObject(contextId);
+      browser.contexts.add(defaultContext);
+    }
+    return browser;
   }
 
   public String executablePath() {

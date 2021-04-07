@@ -62,6 +62,27 @@ public interface BrowserType {
       return this;
     }
   }
+  class ConnectOverCDPOptions {
+    /**
+     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
+     * Defaults to 0.
+     */
+    public Double slowMo;
+    /**
+     * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
+     * disable timeout.
+     */
+    public Double timeout;
+
+    public ConnectOverCDPOptions setSlowMo(double slowMo) {
+      this.slowMo = slowMo;
+      return this;
+    }
+    public ConnectOverCDPOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class LaunchOptions {
     /**
      * Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
@@ -577,6 +598,28 @@ public interface BrowserType {
    * @param wsEndpoint A browser websocket endpoint to connect to.
    */
   Browser connect(String wsEndpoint, ConnectOptions options);
+  /**
+   * This methods attaches Playwright to an existing browser instance using the Chrome DevTools Protocol.
+   *
+   * <p> The default browser context is accessible via {@link Browser#contexts Browser.contexts()}.
+   *
+   * <p> <strong>NOTE:</strong> Connecting over the Chrome DevTools Protocol is only supported for Chromium-based browsers.
+   *
+   * @param wsEndpoint A CDP websocket endpoint to connect to.
+   */
+  default Browser connectOverCDP(String wsEndpoint) {
+    return connectOverCDP(wsEndpoint, null);
+  }
+  /**
+   * This methods attaches Playwright to an existing browser instance using the Chrome DevTools Protocol.
+   *
+   * <p> The default browser context is accessible via {@link Browser#contexts Browser.contexts()}.
+   *
+   * <p> <strong>NOTE:</strong> Connecting over the Chrome DevTools Protocol is only supported for Chromium-based browsers.
+   *
+   * @param wsEndpoint A CDP websocket endpoint to connect to.
+   */
+  Browser connectOverCDP(String wsEndpoint, ConnectOverCDPOptions options);
   /**
    * A path where Playwright expects to find a bundled browser executable.
    */

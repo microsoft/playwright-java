@@ -54,7 +54,7 @@ public class TestBase {
     return "firefox".equals(getBrowserNameFromEnv());
   }
 
-  private static BrowserChannel getBrowserChannelFromEnv() {
+  static BrowserChannel getBrowserChannelFromEnv() {
     String channel = System.getenv("BROWSER_CHANNEL");
     if (channel == null) {
       return null;
