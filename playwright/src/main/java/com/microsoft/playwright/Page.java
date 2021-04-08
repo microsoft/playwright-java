@@ -1713,19 +1713,19 @@ public interface Page extends AutoCloseable {
   /**
    * This method checks an element matching {@code selector} by performing the following steps:
    * <ol>
-   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
+   * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is already
    * checked, this method returns immediately.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
-   * <li> Ensure that the element is now checked. If not, this method rejects.</li>
+   * <li> Ensure that the element is now checked. If not, this method throws.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    *
    * <p> Shortcut for main frame's {@link Frame#check Frame.check()}.
    *
@@ -1738,19 +1738,19 @@ public interface Page extends AutoCloseable {
   /**
    * This method checks an element matching {@code selector} by performing the following steps:
    * <ol>
-   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
+   * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is already
    * checked, this method returns immediately.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
-   * <li> Ensure that the element is now checked. If not, this method rejects.</li>
+   * <li> Ensure that the element is now checked. If not, this method throws.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    *
    * <p> Shortcut for main frame's {@link Frame#check Frame.check()}.
    *
@@ -1761,7 +1761,7 @@ public interface Page extends AutoCloseable {
   /**
    * This method clicks an element matching {@code selector} by performing the following steps:
    * <ol>
-   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
@@ -1769,8 +1769,8 @@ public interface Page extends AutoCloseable {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    *
    * <p> Shortcut for main frame's {@link Frame#click Frame.click()}.
    *
@@ -1783,7 +1783,7 @@ public interface Page extends AutoCloseable {
   /**
    * This method clicks an element matching {@code selector} by performing the following steps:
    * <ol>
-   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
@@ -1791,8 +1791,8 @@ public interface Page extends AutoCloseable {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    *
    * <p> Shortcut for main frame's {@link Frame#click Frame.click()}.
    *
@@ -1833,17 +1833,17 @@ public interface Page extends AutoCloseable {
   /**
    * This method double clicks an element matching {@code selector} by performing the following steps:
    * <ol>
-   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
-   * click of the {@code dblclick()} triggers a navigation event, this method will reject.</li>
+   * click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code page.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    *
@@ -1858,17 +1858,17 @@ public interface Page extends AutoCloseable {
   /**
    * This method double clicks an element matching {@code selector} by performing the following steps:
    * <ol>
-   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
-   * click of the {@code dblclick()} triggers a navigation event, this method will reject.</li>
+   * click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code page.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    *
@@ -2666,7 +2666,7 @@ public interface Page extends AutoCloseable {
   /**
    * This method hovers over an element matching {@code selector} by performing the following steps:
    * <ol>
-   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
@@ -2674,8 +2674,8 @@ public interface Page extends AutoCloseable {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    *
    * <p> Shortcut for main frame's {@link Frame#hover Frame.hover()}.
    *
@@ -2688,7 +2688,7 @@ public interface Page extends AutoCloseable {
   /**
    * This method hovers over an element matching {@code selector} by performing the following steps:
    * <ol>
-   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
@@ -2696,8 +2696,8 @@ public interface Page extends AutoCloseable {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    *
    * <p> Shortcut for main frame's {@link Frame#hover Frame.hover()}.
    *
@@ -3668,7 +3668,7 @@ public interface Page extends AutoCloseable {
   /**
    * This method taps an element matching {@code selector} by performing the following steps:
    * <ol>
-   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
@@ -3676,8 +3676,8 @@ public interface Page extends AutoCloseable {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@link Page#tap Page.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    *
@@ -3692,7 +3692,7 @@ public interface Page extends AutoCloseable {
   /**
    * This method taps an element matching {@code selector} by performing the following steps:
    * <ol>
-   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
@@ -3700,8 +3700,8 @@ public interface Page extends AutoCloseable {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@link Page#tap Page.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    *
@@ -3775,19 +3775,19 @@ public interface Page extends AutoCloseable {
   /**
    * This method unchecks an element matching {@code selector} by performing the following steps:
    * <ol>
-   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
+   * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is already
    * unchecked, this method returns immediately.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
-   * <li> Ensure that the element is now unchecked. If not, this method rejects.</li>
+   * <li> Ensure that the element is now unchecked. If not, this method throws.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    *
    * <p> Shortcut for main frame's {@link Frame#uncheck Frame.uncheck()}.
    *
@@ -3800,19 +3800,19 @@ public interface Page extends AutoCloseable {
   /**
    * This method unchecks an element matching {@code selector} by performing the following steps:
    * <ol>
-   * <li> Find an element match matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method rejects. If the element is already
+   * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is already
    * unchecked, this method returns immediately.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
-   * <li> Ensure that the element is now unchecked. If not, this method rejects.</li>
+   * <li> Ensure that the element is now unchecked. If not, this method throws.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    *
    * <p> Shortcut for main frame's {@link Frame#uncheck Frame.uncheck()}.
    *

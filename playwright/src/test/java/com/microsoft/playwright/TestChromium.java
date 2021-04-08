@@ -53,8 +53,7 @@ public class TestChromium extends TestBase {
     int port = 9339;
     try (Browser browserServer = browserType.launch(createLaunchOptions()
         .setArgs(asList("--remote-debugging-port=" + port)))) {
-      String wsEndpoint = wsEndpointFromUrl("http://localhost:" + port + "/json/version/");
-      Browser cdpBrowser = browserType.connectOverCDP(wsEndpoint);
+      Browser cdpBrowser = browserType.connectOverCDP("http://localhost:" + port);
       List<BrowserContext> contexts = cdpBrowser.contexts();
       assertEquals(1, contexts.size());
       cdpBrowser.close();
@@ -66,9 +65,9 @@ public class TestChromium extends TestBase {
     int port = 9339;
     try (Browser browserServer = browserType.launch(createLaunchOptions()
         .setArgs(asList("--remote-debugging-port=" + port)))) {
-      String wsEndpoint = wsEndpointFromUrl("http://localhost:" + port + "/json/version/");
-      Browser cdpBrowser1 = browserType.connectOverCDP(wsEndpoint);
-      Browser cdpBrowser2 = browserType.connectOverCDP(wsEndpoint);
+      String endpointUrl = "http://localhost:" + port;
+      Browser cdpBrowser1 = browserType.connectOverCDP(endpointUrl);
+      Browser cdpBrowser2 = browserType.connectOverCDP(endpointUrl);
       List<BrowserContext> contexts1 = cdpBrowser1.contexts();
       assertEquals(1, contexts1.size());
       Page page1 = contexts1.get(0).newPage();
@@ -83,6 +82,25 @@ public class TestChromium extends TestBase {
       assertEquals(2, contexts2.get(0).pages().size());
 
       cdpBrowser1.close();
+      cdpBrowser2.close();
+    }
+  }
+
+  @Test
+  void shouldConnectOverAWsEndpoint() throws IOException {
+    int port = 9339;
+    try (Browser browserServer = browserType.launch(createLaunchOptions()
+        .setArgs(asList("--remote-debugging-port=" + port)))) {
+      String wsEndpoint = wsEndpointFromUrl("http://localhost:" + port + "/json/version/");
+
+      Browser cdpBrowser1 = browserType.connectOverCDP(wsEndpoint);
+      List<BrowserContext> contexts1 = cdpBrowser1.contexts();
+      assertEquals(1, contexts1.size());
+      cdpBrowser1.close();
+
+      Browser cdpBrowser2 = browserType.connectOverCDP(wsEndpoint);
+      List<BrowserContext> contexts2 = cdpBrowser2.contexts();
+      assertEquals(1, contexts2.size());
       cdpBrowser2.close();
     }
   }
