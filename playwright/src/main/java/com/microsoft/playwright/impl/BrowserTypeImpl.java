@@ -88,21 +88,21 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
   }
 
   @Override
-  public Browser connectOverCDP(String wsEndpoint, ConnectOverCDPOptions options) {
+  public Browser connectOverCDP(String endpointURL, ConnectOverCDPOptions options) {
     if (!"chromium".equals(name())) {
       throw new PlaywrightException("Connecting over CDP is only supported in Chromium.");
     }
-    return withLogging("BrowserType.connectOverCDP", () -> connectOverCDPImpl(wsEndpoint, options));
+    return withLogging("BrowserType.connectOverCDP", () -> connectOverCDPImpl(endpointURL, options));
   }
 
-  private Browser connectOverCDPImpl(String wsEndpoint, ConnectOverCDPOptions options) {
+  private Browser connectOverCDPImpl(String endpointURL, ConnectOverCDPOptions options) {
     if (options == null) {
       options = new ConnectOverCDPOptions();
     }
 
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("sdkLanguage", "java");
-    params.addProperty("wsEndpoint", wsEndpoint);
+    params.addProperty("endpointURL", endpointURL);
     JsonObject json = sendMessage("connectOverCDP", params).getAsJsonObject();
 
     BrowserImpl browser = connection.getExistingObject(json.getAsJsonObject("browser").get("guid").getAsString());

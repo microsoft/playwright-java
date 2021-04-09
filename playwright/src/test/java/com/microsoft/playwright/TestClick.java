@@ -21,6 +21,7 @@ import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.microsoft.playwright.options.KeyboardModifier.SHIFT;

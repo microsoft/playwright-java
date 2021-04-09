@@ -623,20 +623,20 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method checks the element by performing the following steps:
    * <ol>
-   * <li> Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already checked, this
+   * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already checked, this
    * method returns immediately.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
-   * <li> Ensure that the element is now checked. If not, this method rejects.</li>
+   * <li> Ensure that the element is now checked. If not, this method throws.</li>
    * </ol>
    *
-   * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
+   * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    */
   default void check() {
     check(null);
@@ -644,20 +644,20 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method checks the element by performing the following steps:
    * <ol>
-   * <li> Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already checked, this
+   * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already checked, this
    * method returns immediately.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
-   * <li> Ensure that the element is now checked. If not, this method rejects.</li>
+   * <li> Ensure that the element is now checked. If not, this method throws.</li>
    * </ol>
    *
-   * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
+   * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    */
   void check(CheckOptions options);
   /**
@@ -670,10 +670,10 @@ public interface ElementHandle extends JSHandle {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
+   * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    */
   default void click() {
     click(null);
@@ -688,10 +688,10 @@ public interface ElementHandle extends JSHandle {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
+   * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    */
   void click(ClickOptions options);
   /**
@@ -706,13 +706,13 @@ public interface ElementHandle extends JSHandle {
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
-   * click of the {@code dblclick()} triggers a navigation event, this method will reject.</li>
+   * click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
    * </ol>
    *
-   * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
+   * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code elementHandle.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    */
@@ -727,13 +727,13 @@ public interface ElementHandle extends JSHandle {
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
-   * click of the {@code dblclick()} triggers a navigation event, this method will reject.</li>
+   * click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
    * </ol>
    *
-   * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
+   * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code elementHandle.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    */
@@ -953,10 +953,10 @@ public interface ElementHandle extends JSHandle {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
+   * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    */
   default void hover() {
     hover(null);
@@ -971,10 +971,10 @@ public interface ElementHandle extends JSHandle {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
+   * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    */
   void hover(HoverOptions options);
   /**
@@ -1477,10 +1477,10 @@ public interface ElementHandle extends JSHandle {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
+   * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code elementHandle.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    */
@@ -1497,10 +1497,10 @@ public interface ElementHandle extends JSHandle {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
+   * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code elementHandle.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    */
@@ -1552,20 +1552,20 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method checks the element by performing the following steps:
    * <ol>
-   * <li> Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already unchecked,
+   * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already unchecked,
    * this method returns immediately.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
-   * <li> Ensure that the element is now unchecked. If not, this method rejects.</li>
+   * <li> Ensure that the element is now unchecked. If not, this method throws.</li>
    * </ol>
    *
-   * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
+   * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    */
   default void uncheck() {
     uncheck(null);
@@ -1573,20 +1573,20 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method checks the element by performing the following steps:
    * <ol>
-   * <li> Ensure that element is a checkbox or a radio input. If not, this method rejects. If the element is already unchecked,
+   * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already unchecked,
    * this method returns immediately.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
-   * <li> Ensure that the element is now unchecked. If not, this method rejects.</li>
+   * <li> Ensure that the element is now unchecked. If not, this method throws.</li>
    * </ol>
    *
-   * <p> If the element is detached from the DOM at any moment during the action, this method rejects.
+   * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method rejects with a {@code TimeoutError}.
-   * Passing zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
    */
   void uncheck(UncheckOptions options);
   /**

@@ -605,10 +605,11 @@ public interface BrowserType {
    *
    * <p> <strong>NOTE:</strong> Connecting over the Chrome DevTools Protocol is only supported for Chromium-based browsers.
    *
-   * @param wsEndpoint A CDP websocket endpoint to connect to.
+   * @param endpointURL A CDP websocket endpoint or http url to connect to. For example {@code http://localhost:9222/} or
+   * {@code ws://127.0.0.1:9222/devtools/browser/387adf4c-243f-4051-a181-46798f4a46f4}.
    */
-  default Browser connectOverCDP(String wsEndpoint) {
-    return connectOverCDP(wsEndpoint, null);
+  default Browser connectOverCDP(String endpointURL) {
+    return connectOverCDP(endpointURL, null);
   }
   /**
    * This methods attaches Playwright to an existing browser instance using the Chrome DevTools Protocol.
@@ -617,9 +618,10 @@ public interface BrowserType {
    *
    * <p> <strong>NOTE:</strong> Connecting over the Chrome DevTools Protocol is only supported for Chromium-based browsers.
    *
-   * @param wsEndpoint A CDP websocket endpoint to connect to.
+   * @param endpointURL A CDP websocket endpoint or http url to connect to. For example {@code http://localhost:9222/} or
+   * {@code ws://127.0.0.1:9222/devtools/browser/387adf4c-243f-4051-a181-46798f4a46f4}.
    */
-  Browser connectOverCDP(String wsEndpoint, ConnectOverCDPOptions options);
+  Browser connectOverCDP(String endpointURL, ConnectOverCDPOptions options);
   /**
    * A path where Playwright expects to find a bundled browser executable.
    */
