@@ -61,6 +61,11 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean noWaitAfter;
     /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
+    public Position position;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
@@ -73,6 +78,13 @@ public interface ElementHandle extends JSHandle {
     }
     public CheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    public CheckOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
+    }
+    public CheckOptions setPosition(Position position) {
+      this.position = position;
       return this;
     }
     public CheckOptions setTimeout(double timeout) {
@@ -540,6 +552,11 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean noWaitAfter;
     /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
+    public Position position;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
@@ -552,6 +569,13 @@ public interface ElementHandle extends JSHandle {
     }
     public UncheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    public UncheckOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
+    }
+    public UncheckOptions setPosition(Position position) {
+      this.position = position;
       return this;
     }
     public UncheckOptions setTimeout(double timeout) {

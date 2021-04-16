@@ -297,9 +297,6 @@ public class Connection {
       case "Request":
         result = new RequestImpl(parent, type, guid, initializer);
         break;
-      case "RemoteBrowser":
-        result = new RemoteBrowser(parent, type, guid, initializer);
-        break;
       case "Response":
         result = new ResponseImpl(parent, type, guid, initializer);
         break;
