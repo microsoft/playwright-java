@@ -38,6 +38,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       Connection connection = new Connection(new PipeTransport(p.getInputStream(), p.getOutputStream()));
       PlaywrightImpl result = (PlaywrightImpl) connection.waitForObjectWithKnownName("Playwright");
       result.driverProcess = p;
+      result.initSharedSelectors(null);
       return result;
     } catch (IOException e) {
       throw new PlaywrightException("Failed to launch driver", e);
@@ -47,15 +48,30 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private final BrowserTypeImpl chromium;
   private final BrowserTypeImpl firefox;
   private final BrowserTypeImpl webkit;
-  final SharedSelectors sharedSelectors = new SharedSelectors();;
+  private final SelectorsImpl selectors;
+  private SharedSelectors sharedSelectors;;
 
   PlaywrightImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     chromium = parent.connection.getExistingObject(initializer.getAsJsonObject("chromium").get("guid").getAsString());
     firefox = parent.connection.getExistingObject(initializer.getAsJsonObject("firefox").get("guid").getAsString());
     webkit = parent.connection.getExistingObject(initializer.getAsJsonObject("webkit").get("guid").getAsString());
-    SelectorsImpl channel = parent.connection.getExistingObject(initializer.getAsJsonObject("selectors").get("guid").getAsString());
-    sharedSelectors.addChannel(channel);
+
+    selectors = connection.getExistingObject(initializer.getAsJsonObject("selectors").get("guid").getAsString());
+  }
+
+  void initSharedSelectors(PlaywrightImpl parent) {
+    assert sharedSelectors == null;
+    if (parent == null) {
+      sharedSelectors = new SharedSelectors();;
+    } else {
+      sharedSelectors = parent.sharedSelectors;
+    }
+    sharedSelectors.addChannel(selectors);
+  }
+
+  void unregisterSelectors() {
+    sharedSelectors.removeChannel(selectors);
   }
 
   @Override

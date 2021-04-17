@@ -383,6 +383,11 @@ public interface Page extends AutoCloseable {
      */
     public Boolean noWaitAfter;
     /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
+    public Position position;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
@@ -395,6 +400,13 @@ public interface Page extends AutoCloseable {
     }
     public CheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    public CheckOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
+    }
+    public CheckOptions setPosition(Position position) {
+      this.position = position;
       return this;
     }
     public CheckOptions setTimeout(double timeout) {
@@ -1318,6 +1330,11 @@ public interface Page extends AutoCloseable {
      */
     public Boolean noWaitAfter;
     /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
+    public Position position;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
@@ -1330,6 +1347,13 @@ public interface Page extends AutoCloseable {
     }
     public UncheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    public UncheckOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
+    }
+    public UncheckOptions setPosition(Position position) {
+      this.position = position;
       return this;
     }
     public UncheckOptions setTimeout(double timeout) {
@@ -3895,7 +3919,7 @@ public interface Page extends AutoCloseable {
    */
   Page waitForClose(WaitForCloseOptions options, Runnable callback);
   /**
-   * Performs action and waits for a [ConoleMessage] to be logged by in the page. If predicate is provided, it passes
+   * Performs action and waits for a {@code ConsoleMessage} to be logged by in the page. If predicate is provided, it passes
    * {@code ConsoleMessage} value into the {@code predicate} function and waits for {@code predicate(message)} to return a truthy value. Will
    * throw an error if the page is closed before the console event is fired.
    *
@@ -3905,7 +3929,7 @@ public interface Page extends AutoCloseable {
     return waitForConsoleMessage(null, callback);
   }
   /**
-   * Performs action and waits for a [ConoleMessage] to be logged by in the page. If predicate is provided, it passes
+   * Performs action and waits for a {@code ConsoleMessage} to be logged by in the page. If predicate is provided, it passes
    * {@code ConsoleMessage} value into the {@code predicate} function and waits for {@code predicate(message)} to return a truthy value. Will
    * throw an error if the page is closed before the console event is fired.
    *

@@ -63,17 +63,23 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       }
       WebSocketTransport transport = new WebSocketTransport(new URI(wsEndpoint), timeout);
       Connection connection = new Connection(transport);
-      RemoteBrowser remoteBrowser = (RemoteBrowser) connection.waitForObjectWithKnownName("remoteBrowser");
-      PlaywrightImpl playwright = this.connection.getExistingObject("Playwright");
-      SelectorsImpl selectors = remoteBrowser.selectors();
-      playwright.sharedSelectors.addChannel(selectors);
-      BrowserImpl browser = remoteBrowser.browser();
+      PlaywrightImpl playwright = (PlaywrightImpl) connection.waitForObjectWithKnownName("Playwright");
+      if (!playwright.initializer.has("preLaunchedBrowser")) {
+        try {
+          connection.close();
+        } catch (IOException e) {
+          e.printStackTrace(System.err);
+        }
+        throw new PlaywrightException("Malformed endpoint. Did you use launchServer method?");
+      }
+      playwright.initSharedSelectors(this.connection.getExistingObject("Playwright"));
+      BrowserImpl browser = connection.getExistingObject(playwright.initializer.getAsJsonObject("preLaunchedBrowser").get("guid").getAsString());
       browser.isRemote = true;
       browser.isConnectedOverWebSocket = true;
       Consumer<WebSocketTransport> connectionCloseListener = t -> browser.notifyRemoteClosed();
       transport.onClose(connectionCloseListener);
       browser.onDisconnected(b -> {
-        playwright.sharedSelectors.removeChannel(selectors);
+        playwright.unregisterSelectors();
         transport.offClose(connectionCloseListener);
         try {
           connection.close();
