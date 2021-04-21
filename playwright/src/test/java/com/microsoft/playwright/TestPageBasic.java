@@ -67,8 +67,10 @@ public class TestPageBasic extends TestBase {
         assertEquals("", dialog.message());
       } else if (isWebKit()) {
         assertEquals("Leave?", dialog.message());
-      } else {
+      } else if (isChromium()) {
         assertEquals("This page is asking you to confirm that you want to leave - data you have entered may not be saved.", dialog.message());
+      } else {
+        assertEquals("This page is asking you to confirm that you want to leave — information you’ve entered may not be saved.", dialog.message());
       }
       dialog.accept();
     });
