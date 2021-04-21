@@ -457,6 +457,10 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Page waitForClose(WaitForCloseOptions options, Runnable code) {
+    return withWaitLogging("Page.waitForClose", () -> waitForCloseImpl(options, code));
+  }
+
+  private Page waitForCloseImpl(WaitForCloseOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForCloseOptions();
     }
@@ -465,22 +469,22 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable code) {
+    return withWaitLogging("Page.waitForConsoleMessage", () -> waitForConsoleMessageImpl(options, code));
+  }
+
+  private ConsoleMessage waitForConsoleMessageImpl(WaitForConsoleMessageOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForConsoleMessageOptions();
     }
     return waitForEventWithTimeout(EventType.CONSOLE, code, options.timeout);
   }
 
-  private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Double timeout) {
-    List<Waitable<T>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, eventType));
-    waitables.add(createWaitForCloseHelper());
-    waitables.add(createWaitableTimeout(timeout));
-    return runUntil(code, new WaitableRace<>(waitables));
-  }
-
   @Override
   public Download waitForDownload(WaitForDownloadOptions options, Runnable code) {
+    return withWaitLogging("Page.waitForDownload", () -> waitForDownloadImpl(options, code));
+  }
+
+  private Download waitForDownloadImpl(WaitForDownloadOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForDownloadOptions();
     }
@@ -489,6 +493,10 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public FileChooser waitForFileChooser(WaitForFileChooserOptions options, Runnable code) {
+    return withWaitLogging("Page.waitForFileChooser", () -> waitForFileChooserImpl(options, code));
+  }
+
+  private FileChooser waitForFileChooserImpl(WaitForFileChooserOptions options, Runnable code) {
     // TODO: enable/disable file chooser interception
     if (options == null) {
       options = new WaitForFileChooserOptions();
@@ -498,6 +506,10 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Page waitForPopup(WaitForPopupOptions options, Runnable code) {
+    return withWaitLogging("Page.waitForPopup", () -> waitForPopupImpl(options, code));
+  }
+
+  private Page waitForPopupImpl(WaitForPopupOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForPopupOptions();
     }
@@ -506,6 +518,10 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public WebSocket waitForWebSocket(WaitForWebSocketOptions options, Runnable code) {
+    return withWaitLogging("Page.waitForWebSocket", () -> waitForWebSocketImpl(options, code));
+  }
+
+  private WebSocket waitForWebSocketImpl(WaitForWebSocketOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForWebSocketOptions();
     }
@@ -514,10 +530,22 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Worker waitForWorker(WaitForWorkerOptions options, Runnable code) {
+    return withWaitLogging("Page.waitForWorker", () -> waitForWorkerImpl(options, code));
+  }
+
+  private Worker waitForWorkerImpl(WaitForWorkerOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForWorkerOptions();
     }
     return waitForEventWithTimeout(EventType.WORKER, code, options.timeout);
+  }
+
+  private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Double timeout) {
+    List<Waitable<T>> waitables = new ArrayList<>();
+    waitables.add(new WaitableEvent<>(listeners, eventType));
+    waitables.add(createWaitForCloseHelper());
+    waitables.add(createWaitableTimeout(timeout));
+    return runUntil(code, new WaitableRace<>(waitables));
   }
 
   @Override
@@ -1271,7 +1299,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Request waitForRequest(Predicate<Request> predicate, WaitForRequestOptions options, Runnable code) {
-    return withLogging("Page.waitForRequest", () -> waitForRequestImpl(predicate, options, code));
+    return withWaitLogging("Page.waitForRequest", () -> waitForRequestImpl(predicate, options, code));
   }
 
   private static Predicate<Request> toRequestPredicate(UrlMatcher matcher) {

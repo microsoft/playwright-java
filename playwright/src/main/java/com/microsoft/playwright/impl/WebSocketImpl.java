@@ -86,6 +86,10 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
 
   @Override
   public WebSocketFrame waitForFrameReceived(WaitForFrameReceivedOptions options, Runnable code) {
+    return withWaitLogging("WebSocket.waitForFrameReceived", () -> waitForFrameReceivedImpl(options, code));
+  }
+
+  private WebSocketFrame waitForFrameReceivedImpl(WaitForFrameReceivedOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForFrameReceivedOptions();
     }
@@ -94,6 +98,10 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
 
   @Override
   public WebSocketFrame waitForFrameSent(WaitForFrameSentOptions options, Runnable code) {
+    return withWaitLogging("WebSocket.waitForFrameSent", () -> waitForFrameSentImpl(options, code));
+  }
+
+  private WebSocketFrame waitForFrameSentImpl(WaitForFrameSentOptions options, Runnable code) {
     if (options == null) {
       options = new WaitForFrameSentOptions();
     }
