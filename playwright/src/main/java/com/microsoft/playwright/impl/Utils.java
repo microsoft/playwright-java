@@ -17,11 +17,9 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
-import com.microsoft.playwright.FileChooser;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.FilePayload;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -171,4 +169,12 @@ class Utils {
     return error.endsWith("Browser has been closed") || error.endsWith("Target page, context or browser has been closed");
   }
 
+  static String createGuid() {
+    StringBuffer result = new StringBuffer();
+    Random random = new Random();
+    for (int i = 0; i < 4; i++) {
+      result.append(Integer.toHexString(random.nextInt()));
+    }
+    return result.toString();
+  }
 }

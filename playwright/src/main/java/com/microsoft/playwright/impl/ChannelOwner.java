@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 class ChannelOwner extends LoggingSupport {
   final Connection connection;
@@ -66,6 +67,11 @@ class ChannelOwner extends LoggingSupport {
     }
     objects.clear();
   }
+
+  <T> T withWaitLogging(String apiName, Supplier<T> code) {
+    return super.withLogging(apiName, new WaitForEventLogger<>(this, apiName, code));
+  }
+
 
   WaitableResult<JsonElement> sendMessageAsync(String method, JsonObject params) {
     return connection.sendMessageAsync(guid, method, params);
