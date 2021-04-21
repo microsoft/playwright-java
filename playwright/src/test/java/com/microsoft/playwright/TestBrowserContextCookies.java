@@ -23,6 +23,8 @@ import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.Utils.assertJsonEquals;
 import static com.microsoft.playwright.Utils.getOS;
@@ -182,5 +184,20 @@ public class TestBrowserContextCookies extends TestBase {
       "  secure: true,\n" +
       "  sameSite: 'NONE'\n" +
       "}]", cookies);
+  }
+
+  @Test
+  void shouldAcceptSameSiteAttribute() {
+    context.addCookies(asList(
+      new Cookie("one", "uno").setUrl(server.EMPTY_PAGE).setSameSite(SameSiteAttribute.LAX),
+      new Cookie("two", "dos").setUrl(server.EMPTY_PAGE).setSameSite(SameSiteAttribute.STRICT),
+      new Cookie("three", "tres").setUrl(server.EMPTY_PAGE).setSameSite(SameSiteAttribute.NONE)));
+
+    page.navigate(server.EMPTY_PAGE);
+    Object documentCookie = page.evaluate("document.cookie.split('; ').sort().join('; ')");
+    assertEquals("one=uno; three=tres; two=dos", documentCookie);
+
+    List<SameSiteAttribute> list = context.cookies().stream().map(c -> c.sameSite).sorted().collect(Collectors.toList());
+    assertEquals(asList( SameSiteAttribute.STRICT, SameSiteAttribute.LAX, SameSiteAttribute.NONE), list);
   }
 }
