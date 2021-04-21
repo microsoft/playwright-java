@@ -23,14 +23,14 @@ import org.java_websocket.handshake.ServerHandshake;
 import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 
 class WebSocketTransport implements Transport {
-  private final BlockingQueue<String> incoming = new ArrayBlockingQueue<>(1000);
+  private final BlockingQueue<String> incoming = new LinkedBlockingQueue<>();
   private final ClientConnection clientConnection;
   private boolean isClosed;
   private volatile Exception lastError;
