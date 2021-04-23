@@ -67,6 +67,7 @@ public class Connection {
   private int lastId = 0;
   private final Path srcDir;
   private final Map<Integer, WaitableResult<JsonElement>> callbacks = new HashMap<>();
+  private final boolean isLogging = "pw:channel".equals(System.getenv("DEBUG"));
 
   class Root extends ChannelOwner {
     Root(Connection connection) {
@@ -153,7 +154,11 @@ public class Connection {
       metadata.add("stack", currentStackTrace());
       message.add("metadata", metadata);
     }
-    transport.send(gson().toJson(message));
+    String messageString = gson().toJson(message);
+    if (isLogging) {
+      System.err.println("SEND ► " + messageString);
+    }
+    transport.send(messageString);
     return result;
   }
 
@@ -183,6 +188,9 @@ public class Connection {
     String messageString = transport.poll(Duration.ofMillis(10));
     if (messageString == null) {
       return;
+    }
+    if (isLogging) {
+      System.err.println("◀ RECV " + messageString);
     }
     Gson gson = gson();
     Message message = gson.fromJson(messageString, Message.class);
