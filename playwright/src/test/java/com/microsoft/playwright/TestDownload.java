@@ -213,7 +213,7 @@ public class TestDownload extends TestBase {
       download.saveAs(userPath);
       fail("did not throw");
     } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("File already deleted. Save before deleting."), e.getMessage());
+      assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
     }
     page.close();
   }
