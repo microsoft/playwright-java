@@ -43,6 +43,10 @@ import java.util.*;
 public interface BrowserType {
   class ConnectOptions {
     /**
+     * Additional HTTP headers to be sent with web socket connect request. Optional.
+     */
+    public Map<String, String> headers;
+    /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      * Defaults to 0.
      */
@@ -53,6 +57,10 @@ public interface BrowserType {
      */
     public Double timeout;
 
+    public ConnectOptions setHeaders(Map<String, String> headers) {
+      this.headers = headers;
+      return this;
+    }
     public ConnectOptions setSlowMo(double slowMo) {
       this.slowMo = slowMo;
       return this;
@@ -64,6 +72,10 @@ public interface BrowserType {
   }
   class ConnectOverCDPOptions {
     /**
+     * Additional HTTP headers to be sent with connect request. Optional.
+     */
+    public Map<String, String> headers;
+    /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      * Defaults to 0.
      */
@@ -74,6 +86,10 @@ public interface BrowserType {
      */
     public Double timeout;
 
+    public ConnectOverCDPOptions setHeaders(Map<String, String> headers) {
+      this.headers = headers;
+      return this;
+    }
     public ConnectOverCDPOptions setSlowMo(double slowMo) {
       this.slowMo = slowMo;
       return this;
@@ -253,7 +269,8 @@ public interface BrowserType {
      */
     public Boolean bypassCSP;
     /**
-     * Browser distribution channel.
+     * Browser distribution channel. Read more about using <a
+     * href="https://playwright.dev/java/docs/browsers/#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
      */
     public BrowserChannel channel;
     /**

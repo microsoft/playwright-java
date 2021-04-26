@@ -27,6 +27,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.Collections;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
@@ -58,10 +60,16 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
   private Browser connectImpl(String wsEndpoint, ConnectOptions options) {
     try {
       Duration timeout = Duration.ofDays(1);
-      if (options != null && options.timeout != null) {
-        timeout = Duration.ofMillis(Math.round(options.timeout));
+      Map<String, String> headers = Collections.emptyMap();
+      if (options != null) {
+        if (options.timeout != null) {
+          timeout = Duration.ofMillis(Math.round(options.timeout));
+        }
+        if (options.headers != null) {
+          headers = options.headers;
+        }
       }
-      WebSocketTransport transport = new WebSocketTransport(new URI(wsEndpoint), timeout);
+      WebSocketTransport transport = new WebSocketTransport(new URI(wsEndpoint), headers, timeout);
       Connection connection = new Connection(transport);
       PlaywrightImpl playwright = (PlaywrightImpl) connection.waitForObjectWithKnownName("Playwright");
       if (!playwright.initializer.has("preLaunchedBrowser")) {

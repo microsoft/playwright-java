@@ -18,14 +18,17 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.impl.Driver;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
 import java.nio.file.Path;
 
+import static com.microsoft.playwright.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBrowserTypeConnect extends TestBase {
@@ -131,6 +134,20 @@ public class TestBrowserTypeConnect extends TestBase {
     assertEquals(42, page2.evaluate("7 * 6")); // original browser should still work
 
     browser2.close();
+  }
+
+  @Test
+  void shouldSendExtraHeadersWithConnectRequest() throws Exception {
+    try (WebSocketServerImpl webSocketServer = WebSocketServerImpl.create()) {
+      try {
+        browserType.connect("ws://localhost:" + webSocketServer.getPort() + "/ws",
+          new BrowserType.ConnectOptions().setHeaders(mapOf("User-Agent", "Playwright", "foo", "bar")));
+      } catch (Exception e) {
+      }
+      assertNotNull(webSocketServer.lastClientHandshake);
+      assertEquals("Playwright", webSocketServer.lastClientHandshake.getFieldValue("User-Agent"));
+      assertEquals("bar", webSocketServer.lastClientHandshake.getFieldValue("foo"));
+    }
   }
 
   @Test

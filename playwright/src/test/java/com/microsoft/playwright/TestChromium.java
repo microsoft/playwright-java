@@ -29,8 +29,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 
+import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="Chromium-specific API")
 public class TestChromium extends TestBase {
@@ -102,6 +104,20 @@ public class TestChromium extends TestBase {
       List<BrowserContext> contexts2 = cdpBrowser2.contexts();
       assertEquals(1, contexts2.size());
       cdpBrowser2.close();
+    }
+  }
+
+  @Test
+  void shouldSendExtraHeadersWithConnectRequest() throws Exception {
+    try (WebSocketServerImpl webSocketServer = WebSocketServerImpl.create()) {
+      try {
+        browserType.connectOverCDP("ws://localhost:" + webSocketServer.getPort() + "/ws",
+          new BrowserType.ConnectOverCDPOptions().setHeaders(mapOf("User-Agent", "Playwright", "foo", "bar")));
+      } catch (Exception e) {
+      }
+      assertNotNull(webSocketServer.lastClientHandshake);
+      assertEquals("Playwright", webSocketServer.lastClientHandshake.getFieldValue("User-Agent"));
+      assertEquals("bar", webSocketServer.lastClientHandshake.getFieldValue("foo"));
     }
   }
 }
