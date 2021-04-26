@@ -16,9 +16,6 @@
 
 package com.microsoft.playwright;
 
-import org.java_websocket.WebSocket;
-import org.java_websocket.handshake.ClientHandshake;
-import org.java_websocket.server.WebSocketServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -35,35 +32,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestWebSocket extends TestBase {
   private static WebSocketServerImpl webSocketServer;
-  private static int WS_SERVER_PORT = 8910;
-
-  private static class WebSocketServerImpl extends WebSocketServer {
-    WebSocketServerImpl(InetSocketAddress address) {
-      super(address, 1);
-    }
-
-    @Override
-    public void onOpen(org.java_websocket.WebSocket webSocket, ClientHandshake clientHandshake) {
-      webSocket.send("incoming");
-    }
-
-    @Override
-    public void onClose(org.java_websocket.WebSocket webSocket, int i, String s, boolean b) { }
-
-    @Override
-    public void onMessage(org.java_websocket.WebSocket webSocket, String s) { }
-
-    @Override
-    public void onError(WebSocket webSocket, Exception e) { }
-
-    @Override
-    public void onStart() { }
-  }
 
   @BeforeAll
-  static void startWebSockerServer() {
-    webSocketServer = new WebSocketServerImpl(new InetSocketAddress("localhost", WS_SERVER_PORT));
-    new Thread(webSocketServer).start();
+  static void startWebSockerServer() throws InterruptedException {
+    webSocketServer = WebSocketServerImpl.create();
   }
 
   @AfterAll

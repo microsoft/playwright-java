@@ -488,6 +488,17 @@ public interface BrowserContext extends AutoCloseable {
    * browser.close();
    * }</pre>
    *
+   * <p> It is possible to examine the request to decide the route action. For example, mocking all requests that contain some
+   * post data, and leaving all other requests as is:
+   * <pre>{@code
+   * context.route("/api/**", route -> {
+   *   if (route.request().postData().contains("my-string"))
+   *     route.fulfill(new Route.FulfillOptions().setBody("mocked-data"));
+   *   else
+   *     route.resume();
+   * });
+   * }</pre>
+   *
    * <p> Page routes (set up with {@link Page#route Page.route()}) take precedence over browser context routes when request
    * matches both handlers.
    *
@@ -521,6 +532,17 @@ public interface BrowserContext extends AutoCloseable {
    * browser.close();
    * }</pre>
    *
+   * <p> It is possible to examine the request to decide the route action. For example, mocking all requests that contain some
+   * post data, and leaving all other requests as is:
+   * <pre>{@code
+   * context.route("/api/**", route -> {
+   *   if (route.request().postData().contains("my-string"))
+   *     route.fulfill(new Route.FulfillOptions().setBody("mocked-data"));
+   *   else
+   *     route.resume();
+   * });
+   * }</pre>
+   *
    * <p> Page routes (set up with {@link Page#route Page.route()}) take precedence over browser context routes when request
    * matches both handlers.
    *
@@ -552,6 +574,17 @@ public interface BrowserContext extends AutoCloseable {
    * Page page = context.newPage();
    * page.navigate("https://example.com");
    * browser.close();
+   * }</pre>
+   *
+   * <p> It is possible to examine the request to decide the route action. For example, mocking all requests that contain some
+   * post data, and leaving all other requests as is:
+   * <pre>{@code
+   * context.route("/api/**", route -> {
+   *   if (route.request().postData().contains("my-string"))
+   *     route.fulfill(new Route.FulfillOptions().setBody("mocked-data"));
+   *   else
+   *     route.resume();
+   * });
    * }</pre>
    *
    * <p> Page routes (set up with {@link Page#route Page.route()}) take precedence over browser context routes when request

@@ -71,6 +71,12 @@ public interface ElementHandle extends JSHandle {
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public Boolean trial;
 
     public CheckOptions setForce(boolean force) {
       this.force = force;
@@ -89,6 +95,10 @@ public interface ElementHandle extends JSHandle {
     }
     public CheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+    public CheckOptions setTrial(boolean trial) {
+      this.trial = trial;
       return this;
     }
   }
@@ -132,6 +142,12 @@ public interface ElementHandle extends JSHandle {
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public Boolean trial;
 
     public ClickOptions setButton(MouseButton button) {
       this.button = button;
@@ -166,6 +182,10 @@ public interface ElementHandle extends JSHandle {
     }
     public ClickOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+    public ClickOptions setTrial(boolean trial) {
+      this.trial = trial;
       return this;
     }
   }
@@ -205,6 +225,12 @@ public interface ElementHandle extends JSHandle {
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public Boolean trial;
 
     public DblclickOptions setButton(MouseButton button) {
       this.button = button;
@@ -235,6 +261,10 @@ public interface ElementHandle extends JSHandle {
     }
     public DblclickOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+    public DblclickOptions setTrial(boolean trial) {
+      this.trial = trial;
       return this;
     }
   }
@@ -283,6 +313,12 @@ public interface ElementHandle extends JSHandle {
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public Boolean trial;
 
     public HoverOptions setForce(boolean force) {
       this.force = force;
@@ -301,6 +337,10 @@ public interface ElementHandle extends JSHandle {
     }
     public HoverOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+    public HoverOptions setTrial(boolean trial) {
+      this.trial = trial;
       return this;
     }
   }
@@ -483,6 +523,12 @@ public interface ElementHandle extends JSHandle {
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public Boolean trial;
 
     public TapOptions setForce(boolean force) {
       this.force = force;
@@ -505,6 +551,10 @@ public interface ElementHandle extends JSHandle {
     }
     public TapOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+    public TapOptions setTrial(boolean trial) {
+      this.trial = trial;
       return this;
     }
   }
@@ -562,6 +612,12 @@ public interface ElementHandle extends JSHandle {
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public Boolean trial;
 
     public UncheckOptions setForce(boolean force) {
       this.force = force;
@@ -580,6 +636,10 @@ public interface ElementHandle extends JSHandle {
     }
     public UncheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+    public UncheckOptions setTrial(boolean trial) {
+      this.trial = trial;
       return this;
     }
   }

@@ -393,6 +393,12 @@ public interface Page extends AutoCloseable {
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public Boolean trial;
 
     public CheckOptions setForce(boolean force) {
       this.force = force;
@@ -411,6 +417,10 @@ public interface Page extends AutoCloseable {
     }
     public CheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+    public CheckOptions setTrial(boolean trial) {
+      this.trial = trial;
       return this;
     }
   }
@@ -454,6 +464,12 @@ public interface Page extends AutoCloseable {
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public Boolean trial;
 
     public ClickOptions setButton(MouseButton button) {
       this.button = button;
@@ -488,6 +504,10 @@ public interface Page extends AutoCloseable {
     }
     public ClickOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+    public ClickOptions setTrial(boolean trial) {
+      this.trial = trial;
       return this;
     }
   }
@@ -539,6 +559,12 @@ public interface Page extends AutoCloseable {
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public Boolean trial;
 
     public DblclickOptions setButton(MouseButton button) {
       this.button = button;
@@ -569,6 +595,10 @@ public interface Page extends AutoCloseable {
     }
     public DblclickOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+    public DblclickOptions setTrial(boolean trial) {
+      this.trial = trial;
       return this;
     }
   }
@@ -779,6 +809,12 @@ public interface Page extends AutoCloseable {
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public Boolean trial;
 
     public HoverOptions setForce(boolean force) {
       this.force = force;
@@ -797,6 +833,10 @@ public interface Page extends AutoCloseable {
     }
     public HoverOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+    public HoverOptions setTrial(boolean trial) {
+      this.trial = trial;
       return this;
     }
   }
@@ -1248,6 +1288,12 @@ public interface Page extends AutoCloseable {
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public Boolean trial;
 
     public TapOptions setForce(boolean force) {
       this.force = force;
@@ -1270,6 +1316,10 @@ public interface Page extends AutoCloseable {
     }
     public TapOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+    public TapOptions setTrial(boolean trial) {
+      this.trial = trial;
       return this;
     }
   }
@@ -1340,6 +1390,12 @@ public interface Page extends AutoCloseable {
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public Boolean trial;
 
     public UncheckOptions setForce(boolean force) {
       this.force = force;
@@ -1358,6 +1414,10 @@ public interface Page extends AutoCloseable {
     }
     public UncheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+    public UncheckOptions setTrial(boolean trial) {
+      this.trial = trial;
       return this;
     }
   }
@@ -3127,6 +3187,17 @@ public interface Page extends AutoCloseable {
    * browser.close();
    * }</pre>
    *
+   * <p> It is possible to examine the request to decide the route action. For example, mocking all requests that contain some
+   * post data, and leaving all other requests as is:
+   * <pre>{@code
+   * page.route("/api/**", route -> {
+   *   if (route.request().postData().contains("my-string"))
+   *     route.fulfill(new Route.FulfillOptions().setBody("mocked-data"));
+   *   else
+   *     route.resume();
+   * });
+   * }</pre>
+   *
    * <p> Page routes take precedence over browser context routes (set up with {@link BrowserContext#route
    * BrowserContext.route()}) when request matches both handlers.
    *
@@ -3161,6 +3232,17 @@ public interface Page extends AutoCloseable {
    * browser.close();
    * }</pre>
    *
+   * <p> It is possible to examine the request to decide the route action. For example, mocking all requests that contain some
+   * post data, and leaving all other requests as is:
+   * <pre>{@code
+   * page.route("/api/**", route -> {
+   *   if (route.request().postData().contains("my-string"))
+   *     route.fulfill(new Route.FulfillOptions().setBody("mocked-data"));
+   *   else
+   *     route.resume();
+   * });
+   * }</pre>
+   *
    * <p> Page routes take precedence over browser context routes (set up with {@link BrowserContext#route
    * BrowserContext.route()}) when request matches both handlers.
    *
@@ -3193,6 +3275,17 @@ public interface Page extends AutoCloseable {
    * page.route(Pattern.compile("(\\.png$)|(\\.jpg$)"),route -> route.abort());
    * page.navigate("https://example.com");
    * browser.close();
+   * }</pre>
+   *
+   * <p> It is possible to examine the request to decide the route action. For example, mocking all requests that contain some
+   * post data, and leaving all other requests as is:
+   * <pre>{@code
+   * page.route("/api/**", route -> {
+   *   if (route.request().postData().contains("my-string"))
+   *     route.fulfill(new Route.FulfillOptions().setBody("mocked-data"));
+   *   else
+   *     route.resume();
+   * });
    * }</pre>
    *
    * <p> Page routes take precedence over browser context routes (set up with {@link BrowserContext#route
@@ -4224,12 +4317,20 @@ public interface Page extends AutoCloseable {
    */
   Page waitForPopup(WaitForPopupOptions options, Runnable callback);
   /**
-   * Waits for the matching request and returns it.
+   * Waits for the matching request and returns it.  See <a
+   * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
-   * Request firstRequest = page.waitForRequest("http://example.com/resource");
-   * Object finalRequest = page.waitForRequest(
-   *   request -> "http://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {});
-   * return firstRequest.url();
+   * // Waits for the next response with the specified url
+   * Request request = page.waitForRequest("https://example.com/resource", () -> {
+   *   // Triggers the request
+   *   page.click("button.triggers-request");
+   * });
+   *
+   * // Waits for the next request matching some conditions
+   * Request request = page.waitForRequest(request -> "https://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {
+   *   // Triggers the request
+   *   page.click("button.triggers-request");
+   * });
    * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
@@ -4239,12 +4340,20 @@ public interface Page extends AutoCloseable {
     return waitForRequest(urlOrPredicate, null, callback);
   }
   /**
-   * Waits for the matching request and returns it.
+   * Waits for the matching request and returns it.  See <a
+   * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
-   * Request firstRequest = page.waitForRequest("http://example.com/resource");
-   * Object finalRequest = page.waitForRequest(
-   *   request -> "http://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {});
-   * return firstRequest.url();
+   * // Waits for the next response with the specified url
+   * Request request = page.waitForRequest("https://example.com/resource", () -> {
+   *   // Triggers the request
+   *   page.click("button.triggers-request");
+   * });
+   *
+   * // Waits for the next request matching some conditions
+   * Request request = page.waitForRequest(request -> "https://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {
+   *   // Triggers the request
+   *   page.click("button.triggers-request");
+   * });
    * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
@@ -4252,12 +4361,20 @@ public interface Page extends AutoCloseable {
    */
   Request waitForRequest(String urlOrPredicate, WaitForRequestOptions options, Runnable callback);
   /**
-   * Waits for the matching request and returns it.
+   * Waits for the matching request and returns it.  See <a
+   * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
-   * Request firstRequest = page.waitForRequest("http://example.com/resource");
-   * Object finalRequest = page.waitForRequest(
-   *   request -> "http://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {});
-   * return firstRequest.url();
+   * // Waits for the next response with the specified url
+   * Request request = page.waitForRequest("https://example.com/resource", () -> {
+   *   // Triggers the request
+   *   page.click("button.triggers-request");
+   * });
+   *
+   * // Waits for the next request matching some conditions
+   * Request request = page.waitForRequest(request -> "https://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {
+   *   // Triggers the request
+   *   page.click("button.triggers-request");
+   * });
    * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
@@ -4267,12 +4384,20 @@ public interface Page extends AutoCloseable {
     return waitForRequest(urlOrPredicate, null, callback);
   }
   /**
-   * Waits for the matching request and returns it.
+   * Waits for the matching request and returns it.  See <a
+   * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
-   * Request firstRequest = page.waitForRequest("http://example.com/resource");
-   * Object finalRequest = page.waitForRequest(
-   *   request -> "http://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {});
-   * return firstRequest.url();
+   * // Waits for the next response with the specified url
+   * Request request = page.waitForRequest("https://example.com/resource", () -> {
+   *   // Triggers the request
+   *   page.click("button.triggers-request");
+   * });
+   *
+   * // Waits for the next request matching some conditions
+   * Request request = page.waitForRequest(request -> "https://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {
+   *   // Triggers the request
+   *   page.click("button.triggers-request");
+   * });
    * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
@@ -4280,12 +4405,20 @@ public interface Page extends AutoCloseable {
    */
   Request waitForRequest(Pattern urlOrPredicate, WaitForRequestOptions options, Runnable callback);
   /**
-   * Waits for the matching request and returns it.
+   * Waits for the matching request and returns it.  See <a
+   * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
-   * Request firstRequest = page.waitForRequest("http://example.com/resource");
-   * Object finalRequest = page.waitForRequest(
-   *   request -> "http://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {});
-   * return firstRequest.url();
+   * // Waits for the next response with the specified url
+   * Request request = page.waitForRequest("https://example.com/resource", () -> {
+   *   // Triggers the request
+   *   page.click("button.triggers-request");
+   * });
+   *
+   * // Waits for the next request matching some conditions
+   * Request request = page.waitForRequest(request -> "https://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {
+   *   // Triggers the request
+   *   page.click("button.triggers-request");
+   * });
    * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
@@ -4295,12 +4428,20 @@ public interface Page extends AutoCloseable {
     return waitForRequest(urlOrPredicate, null, callback);
   }
   /**
-   * Waits for the matching request and returns it.
+   * Waits for the matching request and returns it.  See <a
+   * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
-   * Request firstRequest = page.waitForRequest("http://example.com/resource");
-   * Object finalRequest = page.waitForRequest(
-   *   request -> "http://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {});
-   * return firstRequest.url();
+   * // Waits for the next response with the specified url
+   * Request request = page.waitForRequest("https://example.com/resource", () -> {
+   *   // Triggers the request
+   *   page.click("button.triggers-request");
+   * });
+   *
+   * // Waits for the next request matching some conditions
+   * Request request = page.waitForRequest(request -> "https://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {
+   *   // Triggers the request
+   *   page.click("button.triggers-request");
+   * });
    * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
@@ -4308,11 +4449,20 @@ public interface Page extends AutoCloseable {
    */
   Request waitForRequest(Predicate<Request> urlOrPredicate, WaitForRequestOptions options, Runnable callback);
   /**
-   * Returns the matched response.
+   * Returns the matched response. See <a href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for
+   * event</a> for more details about events.
    * <pre>{@code
-   * Response firstResponse = page.waitForResponse("https://example.com/resource", () -> {});
-   * Response finalResponse = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {});
-   * return finalResponse.ok();
+   * // Waits for the next response with the specified url
+   * Response response = page.waitForResponse("https://example.com/resource", () -> {
+   *   // Triggers the response
+   *   page.click("button.triggers-response");
+   * });
+   *
+   * // Waits for the next response matching some conditions
+   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
+   *   // Triggers the response
+   *   page.click("button.triggers-response");
+   * });
    * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
@@ -4322,11 +4472,20 @@ public interface Page extends AutoCloseable {
     return waitForResponse(urlOrPredicate, null, callback);
   }
   /**
-   * Returns the matched response.
+   * Returns the matched response. See <a href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for
+   * event</a> for more details about events.
    * <pre>{@code
-   * Response firstResponse = page.waitForResponse("https://example.com/resource", () -> {});
-   * Response finalResponse = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {});
-   * return finalResponse.ok();
+   * // Waits for the next response with the specified url
+   * Response response = page.waitForResponse("https://example.com/resource", () -> {
+   *   // Triggers the response
+   *   page.click("button.triggers-response");
+   * });
+   *
+   * // Waits for the next response matching some conditions
+   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
+   *   // Triggers the response
+   *   page.click("button.triggers-response");
+   * });
    * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
@@ -4334,11 +4493,20 @@ public interface Page extends AutoCloseable {
    */
   Response waitForResponse(String urlOrPredicate, WaitForResponseOptions options, Runnable callback);
   /**
-   * Returns the matched response.
+   * Returns the matched response. See <a href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for
+   * event</a> for more details about events.
    * <pre>{@code
-   * Response firstResponse = page.waitForResponse("https://example.com/resource", () -> {});
-   * Response finalResponse = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {});
-   * return finalResponse.ok();
+   * // Waits for the next response with the specified url
+   * Response response = page.waitForResponse("https://example.com/resource", () -> {
+   *   // Triggers the response
+   *   page.click("button.triggers-response");
+   * });
+   *
+   * // Waits for the next response matching some conditions
+   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
+   *   // Triggers the response
+   *   page.click("button.triggers-response");
+   * });
    * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
@@ -4348,11 +4516,20 @@ public interface Page extends AutoCloseable {
     return waitForResponse(urlOrPredicate, null, callback);
   }
   /**
-   * Returns the matched response.
+   * Returns the matched response. See <a href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for
+   * event</a> for more details about events.
    * <pre>{@code
-   * Response firstResponse = page.waitForResponse("https://example.com/resource", () -> {});
-   * Response finalResponse = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {});
-   * return finalResponse.ok();
+   * // Waits for the next response with the specified url
+   * Response response = page.waitForResponse("https://example.com/resource", () -> {
+   *   // Triggers the response
+   *   page.click("button.triggers-response");
+   * });
+   *
+   * // Waits for the next response matching some conditions
+   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
+   *   // Triggers the response
+   *   page.click("button.triggers-response");
+   * });
    * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
@@ -4360,11 +4537,20 @@ public interface Page extends AutoCloseable {
    */
   Response waitForResponse(Pattern urlOrPredicate, WaitForResponseOptions options, Runnable callback);
   /**
-   * Returns the matched response.
+   * Returns the matched response. See <a href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for
+   * event</a> for more details about events.
    * <pre>{@code
-   * Response firstResponse = page.waitForResponse("https://example.com/resource", () -> {});
-   * Response finalResponse = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {});
-   * return finalResponse.ok();
+   * // Waits for the next response with the specified url
+   * Response response = page.waitForResponse("https://example.com/resource", () -> {
+   *   // Triggers the response
+   *   page.click("button.triggers-response");
+   * });
+   *
+   * // Waits for the next response matching some conditions
+   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
+   *   // Triggers the response
+   *   page.click("button.triggers-response");
+   * });
    * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
@@ -4374,11 +4560,20 @@ public interface Page extends AutoCloseable {
     return waitForResponse(urlOrPredicate, null, callback);
   }
   /**
-   * Returns the matched response.
+   * Returns the matched response. See <a href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for
+   * event</a> for more details about events.
    * <pre>{@code
-   * Response firstResponse = page.waitForResponse("https://example.com/resource", () -> {});
-   * Response finalResponse = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {});
-   * return finalResponse.ok();
+   * // Waits for the next response with the specified url
+   * Response response = page.waitForResponse("https://example.com/resource", () -> {
+   *   // Triggers the response
+   *   page.click("button.triggers-response");
+   * });
+   *
+   * // Waits for the next response matching some conditions
+   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
+   *   // Triggers the response
+   *   page.click("button.triggers-response");
+   * });
    * }</pre>
    *
    * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.

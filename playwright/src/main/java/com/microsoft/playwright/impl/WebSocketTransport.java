@@ -23,6 +23,7 @@ import org.java_websocket.handshake.ServerHandshake;
 import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -62,8 +63,11 @@ class WebSocketTransport implements Transport {
     }
   }
 
-  WebSocketTransport(URI uri, Duration timeout) {
+  WebSocketTransport(URI uri, Map<String, String> headers, Duration timeout) {
     clientConnection = new ClientConnection(uri);
+    for (Map.Entry<String, String> entry : headers.entrySet()) {
+      clientConnection.addHeader(entry.getKey(), entry.getValue());
+    }
     try {
       if (!clientConnection.connectBlocking(timeout.toMillis(), TimeUnit.MILLISECONDS)) {
         throw new PlaywrightException("Failed to connect", lastError);
