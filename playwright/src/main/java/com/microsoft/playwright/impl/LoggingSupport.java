@@ -54,9 +54,14 @@ class LoggingSupport {
     }
   }
 
-  private void logApi(String message) {
+  static void logWithTimestamp(String message) {
     // This matches log format produced by the server.
     String timestamp = ZonedDateTime.now().format(timestampFormat);
-    System.err.println(timestamp + " pw:api " + message);
+    System.err.println(timestamp + " " + message);
+  }
+
+  private void logApi(String message) {
+    // This matches log format produced by the server.
+    System.err.println("pw:api " + message);
   }
 }

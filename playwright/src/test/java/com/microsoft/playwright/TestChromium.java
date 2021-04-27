@@ -41,6 +41,8 @@ public class TestChromium extends TestBase {
     // Do not create anything.
   }
 
+  private static int nextPort = 9339;
+
   private static String wsEndpointFromUrl(String urlString) throws IOException {
     URL url = new URL(urlString);
     URLConnection request = url.openConnection();
@@ -52,7 +54,7 @@ public class TestChromium extends TestBase {
 
   @Test
   void shouldConnectToAnExistingCdpSession() throws IOException {
-    int port = 9339;
+    int port = nextPort++;
     try (Browser browserServer = browserType.launch(createLaunchOptions()
         .setArgs(asList("--remote-debugging-port=" + port)))) {
       Browser cdpBrowser = browserType.connectOverCDP("http://localhost:" + port);
@@ -64,7 +66,7 @@ public class TestChromium extends TestBase {
 
   @Test
   void shouldConnectToAnExistingCdpSessionTwice() throws IOException {
-    int port = 9339;
+    int port = nextPort++;
     try (Browser browserServer = browserType.launch(createLaunchOptions()
         .setArgs(asList("--remote-debugging-port=" + port)))) {
       String endpointUrl = "http://localhost:" + port;
@@ -90,7 +92,7 @@ public class TestChromium extends TestBase {
 
   @Test
   void shouldConnectOverAWsEndpoint() throws IOException {
-    int port = 9339;
+    int port = nextPort++;
     try (Browser browserServer = browserType.launch(createLaunchOptions()
         .setArgs(asList("--remote-debugging-port=" + port)))) {
       String wsEndpoint = wsEndpointFromUrl("http://localhost:" + port + "/json/version/");

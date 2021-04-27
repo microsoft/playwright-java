@@ -36,6 +36,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.microsoft.playwright.impl.LoggingSupport.logWithTimestamp;
 import static com.microsoft.playwright.impl.Serialization.gson;
 
 class Message {
@@ -67,7 +68,11 @@ public class Connection {
   private int lastId = 0;
   private final Path srcDir;
   private final Map<Integer, WaitableResult<JsonElement>> callbacks = new HashMap<>();
-  private final boolean isLogging = "pw:channel".equals(System.getenv("DEBUG"));
+  private static final boolean isLogging;
+  static {
+    String debug = System.getenv("DEBUG");
+    isLogging = (debug != null) && debug.contains("pw:channel");
+  }
 
   class Root extends ChannelOwner {
     Root(Connection connection) {
@@ -156,7 +161,7 @@ public class Connection {
     }
     String messageString = gson().toJson(message);
     if (isLogging) {
-      System.err.println("SEND ► " + messageString);
+      logWithTimestamp("SEND ► " + messageString);
     }
     transport.send(messageString);
     return result;
@@ -190,7 +195,7 @@ public class Connection {
       return;
     }
     if (isLogging) {
-      System.err.println("◀ RECV " + messageString);
+      logWithTimestamp("◀ RECV " + messageString);
     }
     Gson gson = gson();
     Message message = gson.fromJson(messageString, Message.class);
