@@ -62,6 +62,6 @@ class LoggingSupport {
 
   private void logApi(String message) {
     // This matches log format produced by the server.
-    System.err.println("pw:api " + message);
+    logWithTimestamp("pw:api " + message);
   }
 }
