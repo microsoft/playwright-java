@@ -22,15 +22,19 @@ import org.java_websocket.server.WebSocketServer;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 
 class WebSocketServerImpl extends WebSocketServer implements AutoCloseable {
   volatile ClientHandshake lastClientHandshake;
   private final Semaphore startSemaphore = new Semaphore(0);
 
-  static final int WS_SERVER_PORT = 8910;
+  private static final AtomicInteger nextWsServerPort = new AtomicInteger(8910);
 
   static WebSocketServerImpl create() throws InterruptedException {
-    WebSocketServerImpl result = new WebSocketServerImpl(new InetSocketAddress("localhost", WebSocketServerImpl.WS_SERVER_PORT));
+    // FIXME: WebSocketServer.stop() doesn't release socket immediately and starting another server
+    // fails with "Address already in use", so we just allocate new port.
+    int port = nextWsServerPort.getAndIncrement();
+    WebSocketServerImpl result = new WebSocketServerImpl(new InetSocketAddress("localhost", port));
     result.start();
     result.startSemaphore.acquire();
     return result;
@@ -61,6 +65,8 @@ class WebSocketServerImpl extends WebSocketServer implements AutoCloseable {
 
   @Override
   public void onError(WebSocket webSocket, Exception e) {
+    e.printStackTrace();
+    startSemaphore.release();
   }
 
   @Override
