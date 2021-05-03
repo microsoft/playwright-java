@@ -18,6 +18,7 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Paths;
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,6 +31,7 @@ public class TestBrowser extends TestBase {
 
   @Test
   void shouldCreateNewPage() {
+    browser.startTracing(null, new Browser.StartTracingOptions().setPath(Paths.get("trace.json")));
     Page page1 = browser.newPage();
     assertEquals(1, browser.contexts().size());
 
