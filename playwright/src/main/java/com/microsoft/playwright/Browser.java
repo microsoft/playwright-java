@@ -114,9 +114,11 @@ public interface Browser extends AutoCloseable {
      */
     public List<String> permissions;
     /**
-     * Network proxy settings to use with this context. Note that browser needs to be launched with the global proxy for this
-     * option to work. If all contexts override the proxy, global proxy will be never used and can be any string, for example
-     * {@code launch({ proxy: { server: 'per-context' } })}.
+     * Network proxy settings to use with this context.
+     *
+     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
+     * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
+     * 'http://per-context' } })}.
      */
     public Proxy proxy;
     /**
@@ -349,9 +351,11 @@ public interface Browser extends AutoCloseable {
      */
     public List<String> permissions;
     /**
-     * Network proxy settings to use with this context. Note that browser needs to be launched with the global proxy for this
-     * option to work. If all contexts override the proxy, global proxy will be never used and can be any string, for example
-     * {@code launch({ proxy: { server: 'per-context' } })}.
+     * Network proxy settings to use with this context.
+     *
+     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
+     * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
+     * 'http://per-context' } })}.
      */
     public Proxy proxy;
     /**
@@ -525,6 +529,33 @@ public interface Browser extends AutoCloseable {
       return this;
     }
   }
+  class StartTracingOptions {
+    /**
+     * specify custom categories to use instead of default.
+     */
+    public List<String> categories;
+    /**
+     * A path to write the trace file to.
+     */
+    public Path path;
+    /**
+     * captures screenshots in the trace.
+     */
+    public Boolean screenshots;
+
+    public StartTracingOptions setCategories(List<String> categories) {
+      this.categories = categories;
+      return this;
+    }
+    public StartTracingOptions setPath(Path path) {
+      this.path = path;
+      return this;
+    }
+    public StartTracingOptions setScreenshots(boolean screenshots) {
+      this.screenshots = screenshots;
+      return this;
+    }
+  }
   /**
    * In case this browser is obtained using {@link BrowserType#launch BrowserType.launch()}, closes the browser and all of
    * its pages (if any were opened).
@@ -593,6 +624,59 @@ public interface Browser extends AutoCloseable {
    * BrowserContext#newPage BrowserContext.newPage()} to control their exact life times.
    */
   Page newPage(NewPageOptions options);
+  /**
+   * <strong>NOTE:</strong> Tracing is only supported on Chromium-based browsers.
+   *
+   * <p> You can use {@link Browser#startTracing Browser.startTracing()} and {@link Browser#stopTracing Browser.stopTracing()} to
+   * create a trace file that can be opened in Chrome DevTools performance panel.
+   * <pre>{@code
+   * browser.startTracing(page, new Browser.StartTracingOptions()
+   *   .setPath(Paths.get("trace.json")));
+   * page.goto('https://www.google.com');
+   * browser.stopTracing();
+   * }</pre>
+   *
+   * @param page Optional, if specified, tracing includes screenshots of the given page.
+   */
+  default void startTracing(Page page) {
+    startTracing(page, null);
+  }
+  /**
+   * <strong>NOTE:</strong> Tracing is only supported on Chromium-based browsers.
+   *
+   * <p> You can use {@link Browser#startTracing Browser.startTracing()} and {@link Browser#stopTracing Browser.stopTracing()} to
+   * create a trace file that can be opened in Chrome DevTools performance panel.
+   * <pre>{@code
+   * browser.startTracing(page, new Browser.StartTracingOptions()
+   *   .setPath(Paths.get("trace.json")));
+   * page.goto('https://www.google.com');
+   * browser.stopTracing();
+   * }</pre>
+   */
+  default void startTracing() {
+    startTracing(null);
+  }
+  /**
+   * <strong>NOTE:</strong> Tracing is only supported on Chromium-based browsers.
+   *
+   * <p> You can use {@link Browser#startTracing Browser.startTracing()} and {@link Browser#stopTracing Browser.stopTracing()} to
+   * create a trace file that can be opened in Chrome DevTools performance panel.
+   * <pre>{@code
+   * browser.startTracing(page, new Browser.StartTracingOptions()
+   *   .setPath(Paths.get("trace.json")));
+   * page.goto('https://www.google.com');
+   * browser.stopTracing();
+   * }</pre>
+   *
+   * @param page Optional, if specified, tracing includes screenshots of the given page.
+   */
+  void startTracing(Page page, StartTracingOptions options);
+  /**
+   * <strong>NOTE:</strong> Tracing is only supported on Chromium-based browsers.
+   *
+   * <p> Returns the buffer with trace data.
+   */
+  byte[] stopTracing();
   /**
    * Returns the browser version.
    */

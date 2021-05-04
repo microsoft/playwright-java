@@ -27,10 +27,7 @@ import com.microsoft.playwright.PlaywrightException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
@@ -181,6 +178,34 @@ class BrowserImpl extends ChannelOwner implements Browser {
   @Override
   public Page newPage(NewPageOptions options) {
     return withLogging("Browser.newPage", () -> newPageImpl(options));
+  }
+
+  @Override
+  public void startTracing(Page page, StartTracingOptions options) {
+    withLogging("Browser.startTracing", () -> startTracingImpl(page, options));
+  }
+
+  private void startTracingImpl(Page page, StartTracingOptions options) {
+    if (options == null) {
+      options = new StartTracingOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    if (page != null) {
+      JsonObject jsonPage = new JsonObject();
+      jsonPage.addProperty("guid", ((PageImpl) page).guid);
+      params.add("page", jsonPage);
+    }
+    sendMessage("startTracing", params);
+  }
+
+  @Override
+  public byte[] stopTracing() {
+    return withLogging("Browser.stopTracing", () -> stopTracingImpl());
+  }
+
+  private byte[] stopTracingImpl() {
+    JsonObject json = sendMessage("stopTracing").getAsJsonObject();
+    return Base64.getDecoder().decode(json.get("binary").getAsString());
   }
 
   private Page newPageImpl(NewPageOptions options) {

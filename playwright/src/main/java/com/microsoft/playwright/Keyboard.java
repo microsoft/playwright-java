@@ -202,6 +202,8 @@ public interface Keyboard {
    *
    * <p> <strong>NOTE:</strong> Modifier keys DO NOT effect {@code keyboard.type}. Holding down {@code Shift} will not type the text in upper case.
    *
+   * <p> <strong>NOTE:</strong> For characters that are not on a US keyboard, only an {@code input} event will be sent.
+   *
    * @param text A text to type into a focused element.
    */
   default void type(String text) {
@@ -219,6 +221,8 @@ public interface Keyboard {
    * }</pre>
    *
    * <p> <strong>NOTE:</strong> Modifier keys DO NOT effect {@code keyboard.type}. Holding down {@code Shift} will not type the text in upper case.
+   *
+   * <p> <strong>NOTE:</strong> For characters that are not on a US keyboard, only an {@code input} event will be sent.
    *
    * @param text A text to type into a focused element.
    */

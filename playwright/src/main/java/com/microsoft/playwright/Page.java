@@ -2077,6 +2077,8 @@ public interface Page extends AutoCloseable {
    */
   void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options);
   /**
+   * This method changes the {@code CSS media type} through the {@code media} argument, and/or the {@code "prefers-colors-scheme"} media
+   * feature, using the {@code colorScheme} argument.
    * <pre>{@code
    * page.evaluate("() => matchMedia('screen').matches");
    * // → true
@@ -2109,6 +2111,8 @@ public interface Page extends AutoCloseable {
     emulateMedia(null);
   }
   /**
+   * This method changes the {@code CSS media type} through the {@code media} argument, and/or the {@code "prefers-colors-scheme"} media
+   * feature, using the {@code colorScheme} argument.
    * <pre>{@code
    * page.evaluate("() => matchMedia('screen').matches");
    * // → true
