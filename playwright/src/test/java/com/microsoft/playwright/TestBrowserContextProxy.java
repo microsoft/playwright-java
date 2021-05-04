@@ -17,9 +17,11 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.options.Proxy;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.io.OutputStreamWriter;
 import java.util.Base64;
@@ -37,16 +39,18 @@ public class TestBrowserContextProxy extends TestBase {
     launchBrowser(options);
   }
 
+  static boolean isChromiumWindows() {
+    return isChromium() && isWindows;
+  }
+
   @Test
-  void shouldThrowForMissingGlobalProxy() {
-    Browser browser = browserType.launch(createLaunchOptions());
-    try {
+  @EnabledIf(value="isChromiumWindows", disabledReason="Platform-specific")
+  void shouldThrowForMissingGlobalProxyOnChromiumWindows() {
+    try (Browser browser = browserType.launch(createLaunchOptions())) {
       browser.newContext(new Browser.NewContextOptions().setProxy("localhost:" + server.PORT));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Browser needs to be launched with the global proxy"));
-    } finally {
-      browser.close();
     }
   }
 
