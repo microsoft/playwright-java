@@ -38,6 +38,10 @@ public class StreamRedirectThread extends Thread {
     byte[] buffer = new byte[1<<14];
     try {
       while (true) {
+        try {
+          Thread.sleep(100);
+        } catch (InterruptedException e) {
+        }
         while (from.available() != 0) {
           int len = from.read(buffer);
           if (len != -1) {
