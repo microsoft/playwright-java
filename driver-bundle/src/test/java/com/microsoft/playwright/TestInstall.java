@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.impl.Driver;
+import com.microsoft.playwright.impl.StreamRedirectThread;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
@@ -36,11 +37,13 @@ public class TestInstall {
       assertTrue(Files.exists(cli));
 
       ProcessBuilder pb = new ProcessBuilder(cli.toString(), "install");
-      pb.redirectError(ProcessBuilder.Redirect.INHERIT);
-      pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
       Process p = pb.start();
+      StreamRedirectThread stdoutThread = new StreamRedirectThread(p.getInputStream(), System.out);
+      StreamRedirectThread stderrThread = new StreamRedirectThread(p.getErrorStream(), System.err);
       boolean result = p.waitFor(1, TimeUnit.MINUTES);
       assertTrue(result, "Timed out waiting for browsers to install");
+      stderrThread.interruptAndJoin();
+      stdoutThread.interruptAndJoin();
     } catch (Exception e) {
       e.printStackTrace();
       assertNull(e);

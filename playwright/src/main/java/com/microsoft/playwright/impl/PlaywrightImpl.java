@@ -27,21 +27,29 @@ import java.util.concurrent.TimeUnit;
 
 public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private Process driverProcess;
+  private StreamRedirectThread stderrThread;
 
   public static PlaywrightImpl create() {
+    StreamRedirectThread stderrThread = null;
     try {
       Path driver = Driver.ensureDriverInstalled();
       ProcessBuilder pb = new ProcessBuilder(driver.toString(), "run-driver");
-      pb.redirectError(ProcessBuilder.Redirect.INHERIT);
 //      pb.environment().put("DEBUG", "pw:pro*");
       Process p = pb.start();
+      stderrThread = new StreamRedirectThread(p.getErrorStream(), System.err);
       Connection connection = new Connection(new PipeTransport(p.getInputStream(), p.getOutputStream()));
       PlaywrightImpl result = (PlaywrightImpl) connection.waitForObjectWithKnownName("Playwright");
       result.driverProcess = p;
+      result.stderrThread = stderrThread;
+      stderrThread = null;
       result.initSharedSelectors(null);
       return result;
     } catch (IOException e) {
       throw new PlaywrightException("Failed to launch driver", e);
+    } finally {
+      if (stderrThread != null) {
+        stderrThread.interruptAndJoin();
+      }
     }
   }
 
@@ -103,6 +111,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       if (!didClose) {
         System.err.println("WARNING: Timed out while waiting for driver process to exit");
       }
+      stderrThread.interruptAndJoin();
     } catch (IOException e) {
       throw new PlaywrightException("Failed to terminate", e);
     } catch (InterruptedException e) {
