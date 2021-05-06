@@ -22,11 +22,17 @@ import java.util.*;
  * {@code ConsoleMessage} objects are dispatched by page via the {@link Page#onConsole Page.onConsole()} event.
  */
 public interface ConsoleMessage {
+  /**
+   * List of arguments passed to a {@code console} function call. See also {@link Page#onConsole Page.onConsole()}.
+   */
   List<JSHandle> args();
   /**
    * URL of the resource followed by 0-based line and column numbers in the resource formatted as {@code URL:line:column}.
    */
   String location();
+  /**
+   * The text of the console message.
+   */
   String text();
   /**
    * One of the following values: {@code "log"}, {@code "debug"}, {@code "info"}, {@code "error"}, {@code "warning"}, {@code "dir"}, {@code "dirxml"}, {@code "table"},

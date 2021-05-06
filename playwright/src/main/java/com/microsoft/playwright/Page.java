@@ -85,7 +85,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> An example of handling {@code console} event:
    * <pre>{@code
-   * page.onConsole(msg -> {
+   * page.onConsoleMessage(msg -> {
    *   for (int i = 0; i < msg.args().size(); ++i)
    *     System.out.println(i + ": " + msg.args().get(i).jsonValue());
    * });
@@ -2554,14 +2554,16 @@ public interface Page extends AutoCloseable {
   /**
    * This method waits for an element matching {@code selector}, waits for <a
    * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, focuses the element, fills it and
-   * triggers an {@code input} event after filling. If the element is inside the {@code <label>} element that has associated <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, that control will be
-   * filled instead. If the element to be filled is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this
-   * method throws an error. Note that you can pass an empty string to clear the input field.
+   * triggers an {@code input} event after filling. Note that you can pass an empty string to clear the input field.
+   *
+   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
+   * However, if the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
+   * instead.
    *
    * <p> To send fine-grained keyboard events, use {@link Page#type Page.type()}.
    *
-   * <p> Shortcut for main frame's {@link Frame#fill Frame.fill()}
+   * <p> Shortcut for main frame's {@link Frame#fill Frame.fill()}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
@@ -2573,14 +2575,16 @@ public interface Page extends AutoCloseable {
   /**
    * This method waits for an element matching {@code selector}, waits for <a
    * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, focuses the element, fills it and
-   * triggers an {@code input} event after filling. If the element is inside the {@code <label>} element that has associated <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, that control will be
-   * filled instead. If the element to be filled is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this
-   * method throws an error. Note that you can pass an empty string to clear the input field.
+   * triggers an {@code input} event after filling. Note that you can pass an empty string to clear the input field.
+   *
+   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
+   * However, if the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
+   * instead.
    *
    * <p> To send fine-grained keyboard events, use {@link Page#type Page.type()}.
    *
-   * <p> Shortcut for main frame's {@link Frame#fill Frame.fill()}
+   * <p> Shortcut for main frame's {@link Frame#fill Frame.fill()}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
@@ -3314,12 +3318,18 @@ public interface Page extends AutoCloseable {
    */
   byte[] screenshot(ScreenshotOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -3329,7 +3339,7 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}
+   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
@@ -3341,12 +3351,18 @@ public interface Page extends AutoCloseable {
     return selectOption(selector, values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -3356,7 +3372,7 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}
+   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
@@ -3366,12 +3382,18 @@ public interface Page extends AutoCloseable {
    */
   List<String> selectOption(String selector, String values, SelectOptionOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -3381,7 +3403,7 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}
+   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
@@ -3393,12 +3415,18 @@ public interface Page extends AutoCloseable {
     return selectOption(selector, values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -3408,7 +3436,7 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}
+   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
@@ -3418,12 +3446,18 @@ public interface Page extends AutoCloseable {
    */
   List<String> selectOption(String selector, ElementHandle values, SelectOptionOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -3433,7 +3467,7 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}
+   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
@@ -3445,12 +3479,18 @@ public interface Page extends AutoCloseable {
     return selectOption(selector, values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -3460,7 +3500,7 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}
+   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
@@ -3470,12 +3510,18 @@ public interface Page extends AutoCloseable {
    */
   List<String> selectOption(String selector, String[] values, SelectOptionOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -3485,7 +3531,7 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}
+   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
@@ -3497,12 +3543,18 @@ public interface Page extends AutoCloseable {
     return selectOption(selector, values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -3512,7 +3564,7 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}
+   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
@@ -3522,12 +3574,18 @@ public interface Page extends AutoCloseable {
    */
   List<String> selectOption(String selector, SelectOption values, SelectOptionOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -3537,7 +3595,7 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}
+   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
@@ -3549,12 +3607,18 @@ public interface Page extends AutoCloseable {
     return selectOption(selector, values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -3564,7 +3628,7 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}
+   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
@@ -3574,12 +3638,18 @@ public interface Page extends AutoCloseable {
    */
   List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -3589,7 +3659,7 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}
+   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
@@ -3601,12 +3671,18 @@ public interface Page extends AutoCloseable {
     return selectOption(selector, values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -3616,7 +3692,7 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}
+   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
