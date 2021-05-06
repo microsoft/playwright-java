@@ -16,30 +16,41 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.FilePayload;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 class Utils {
   // TODO: generate converter.
   static <F, T> T convertViaJson(F f, Class<T> t) {
-    Gson gson = new Gson();
+    Gson gson = new GsonBuilder()
+      // Necessary to avoid access to private fields/classes,
+      // see https://github.com/microsoft/playwright-java/issues/423
+      .registerTypeAdapter(Optional.class, new OptionalSerializer())
+      .create();
     String json = gson.toJson(f);
+    System.err.println("json = " + json);
     return gson.fromJson(json, t);
   }
 
-  static boolean isFunctionBody(String expression) {
-    expression = expression.trim();
-    return expression.startsWith("function") ||
-      expression.startsWith("async ") ||
-      expression.contains("=>");
+  private static class OptionalSerializer implements JsonSerializer<Optional> {
+    @Override
+    public JsonElement serialize(Optional src, Type typeOfSrc, JsonSerializationContext context) {
+      JsonObject result = new JsonObject();
+      if (src.isPresent()) {
+        result.add("value", context.serialize(src.get()));
+      }
+      return result;
+    }
   }
 
   static Set<Character> escapeGlobChars = new HashSet<>(Arrays.asList('/', '$', '^', '+', '.', '(', ')', '=', '!', '|'));
