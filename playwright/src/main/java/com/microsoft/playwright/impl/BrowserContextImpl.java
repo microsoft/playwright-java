@@ -19,13 +19,22 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.*;
-import com.microsoft.playwright.options.*;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.Route;
+import com.microsoft.playwright.options.BindingCallback;
+import com.microsoft.playwright.options.Cookie;
+import com.microsoft.playwright.options.FunctionCallback;
+import com.microsoft.playwright.options.Geolocation;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -35,7 +44,6 @@ import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 
 class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private final BrowserImpl browser;
@@ -109,7 +117,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public List<Cookie> cookies(String url) {
-    return cookies(url == null ? emptyList() : asList(url));
+    return cookies(url == null ? new ArrayList<>() : asList(url));
   }
 
   private void closeImpl() {
@@ -181,7 +189,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private List<Cookie> cookiesImpl(List<String> urls) {
     JsonObject params = new JsonObject();
     if (urls == null) {
-      urls = emptyList();
+      urls = new ArrayList<>();
     }
     params.add("urls", gson().toJsonTree(urls));
     JsonObject json = sendMessage("cookies", params).getAsJsonObject();
@@ -229,7 +237,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       options = new GrantPermissionsOptions();
     }
     if (permissions == null) {
-      permissions = emptyList();
+      permissions = new ArrayList<>();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.add("permissions", gson().toJsonTree(permissions));

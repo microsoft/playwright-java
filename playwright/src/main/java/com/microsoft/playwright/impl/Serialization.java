@@ -20,8 +20,9 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.microsoft.playwright.ElementHandle;
+import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.*;
-import com.microsoft.playwright.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -51,7 +52,7 @@ class Serialization {
         .registerTypeHierarchyAdapter(JSHandleImpl.class, new HandleSerializer())
         .registerTypeAdapter((new TypeToken<Map<String, String>>(){}).getType(), new StringMapSerializer())
         .registerTypeAdapter((new TypeToken<Map<String, Object>>(){}).getType(), new FirefoxUserPrefsSerializer())
-        .registerTypeAdapter(Path.class, new PathSerializer()).create();
+        .registerTypeHierarchyAdapter(Path.class, new PathSerializer()).create();
     }
     return gson;
   }
