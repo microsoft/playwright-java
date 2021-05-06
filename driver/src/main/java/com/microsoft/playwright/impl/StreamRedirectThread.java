@@ -26,6 +26,7 @@ import java.io.OutputStream;
 public class StreamRedirectThread extends Thread {
   private final InputStream from;
   private final OutputStream to;
+  private volatile boolean terminated;
 
   public StreamRedirectThread(InputStream from, OutputStream to) {
     this.from = from;
@@ -38,18 +39,18 @@ public class StreamRedirectThread extends Thread {
     byte[] buffer = new byte[1<<14];
     try {
       while (true) {
-        try {
-          Thread.sleep(100);
-        } catch (InterruptedException e) {
-        }
         while (from.available() != 0) {
           int len = from.read(buffer);
           if (len != -1) {
             to.write(buffer);
           }
         }
-        if (isInterrupted()) {
+        if (terminated) {
           break;
+        }
+        try {
+          Thread.sleep(100);
+        } catch (InterruptedException e) {
         }
       }
     } catch (IOException e) {
@@ -57,8 +58,8 @@ public class StreamRedirectThread extends Thread {
     }
   }
 
-  public void interruptAndJoin() {
-    interrupt();
+  public void terminateAndJoin() {
+    terminated = true;
     try {
       join();
     } catch (InterruptedException e) {

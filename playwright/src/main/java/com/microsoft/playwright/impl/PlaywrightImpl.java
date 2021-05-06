@@ -48,7 +48,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       throw new PlaywrightException("Failed to launch driver", e);
     } finally {
       if (stderrThread != null) {
-        stderrThread.interruptAndJoin();
+        stderrThread.terminateAndJoin();
       }
     }
   }
@@ -111,7 +111,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       if (!didClose) {
         System.err.println("WARNING: Timed out while waiting for driver process to exit");
       }
-      stderrThread.interruptAndJoin();
+      stderrThread.terminateAndJoin();
     } catch (IOException e) {
       throw new PlaywrightException("Failed to terminate", e);
     } catch (InterruptedException e) {

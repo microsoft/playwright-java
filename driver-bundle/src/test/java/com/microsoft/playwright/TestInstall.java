@@ -42,8 +42,8 @@ public class TestInstall {
       StreamRedirectThread stderrThread = new StreamRedirectThread(p.getErrorStream(), System.err);
       boolean result = p.waitFor(1, TimeUnit.MINUTES);
       assertTrue(result, "Timed out waiting for browsers to install");
-      stderrThread.interruptAndJoin();
-      stdoutThread.interruptAndJoin();
+      stderrThread.terminateAndJoin();
+      stdoutThread.terminateAndJoin();
     } catch (Exception e) {
       e.printStackTrace();
       assertNull(e);
