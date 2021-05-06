@@ -48,6 +48,9 @@ public class DriverJar extends Driver {
       p.destroy();
       throw new RuntimeException("Timed out waiting for browsers to install");
     }
+    if (p.exitValue() != 0) {
+      throw new RuntimeException("Failed to install browsers, exit code: " + p.exitValue());
+    }
   }
 
   private static boolean isExecutable(Path filePath) {

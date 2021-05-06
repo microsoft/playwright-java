@@ -59,7 +59,16 @@ public class PipeTransport implements Transport {
       throw new PlaywrightException("Playwright connection closed");
     }
     try {
-      return incoming.poll(timeout.toMillis(), TimeUnit.MILLISECONDS);
+      String message = incoming.poll(timeout.toMillis(), TimeUnit.MILLISECONDS);
+      if (message == null && readerThread.exception != null) {
+        try {
+          close();
+        } catch (IOException e) {
+          e.printStackTrace(System.err);
+        }
+        throw new PlaywrightException("Failed to read message from driver, pipe closed.", readerThread.exception);
+      }
+      return message;
     } catch (InterruptedException e) {
       throw new PlaywrightException("Failed to read message", e);
     }
@@ -84,6 +93,7 @@ class ReaderThread extends Thread {
   private final DataInputStream in;
   private final BlockingQueue<String> queue;
   volatile boolean isClosing;
+  volatile Exception exception;
 
   private static int readIntLE(DataInputStream in) throws IOException {
     int ch1 = in.read();
@@ -109,7 +119,7 @@ class ReaderThread extends Thread {
         queue.put(readMessage());
       } catch (IOException e) {
         if (!isInterrupted() && !isClosing) {
-          e.printStackTrace();
+          exception = e;
         }
         break;
       } catch (InterruptedException e) {
