@@ -1509,10 +1509,12 @@ public interface Frame {
   /**
    * This method waits for an element matching {@code selector}, waits for <a
    * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, focuses the element, fills it and
-   * triggers an {@code input} event after filling. If the element is inside the {@code <label>} element that has associated <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, that control will be
-   * filled instead. If the element to be filled is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this
-   * method throws an error. Note that you can pass an empty string to clear the input field.
+   * triggers an {@code input} event after filling. Note that you can pass an empty string to clear the input field.
+   *
+   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
+   * However, if the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
+   * instead.
    *
    * <p> To send fine-grained keyboard events, use {@link Frame#type Frame.type()}.
    *
@@ -1526,10 +1528,12 @@ public interface Frame {
   /**
    * This method waits for an element matching {@code selector}, waits for <a
    * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, focuses the element, fills it and
-   * triggers an {@code input} event after filling. If the element is inside the {@code <label>} element that has associated <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, that control will be
-   * filled instead. If the element to be filled is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this
-   * method throws an error. Note that you can pass an empty string to clear the input field.
+   * triggers an {@code input} event after filling. Note that you can pass an empty string to clear the input field.
+   *
+   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
+   * However, if the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
+   * instead.
    *
    * <p> To send fine-grained keyboard events, use {@link Frame#type Frame.type()}.
    *
@@ -1909,12 +1913,18 @@ public interface Frame {
    */
   List<ElementHandle> querySelectorAll(String selector);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
@@ -1934,12 +1944,18 @@ public interface Frame {
     return selectOption(selector, values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
@@ -1957,12 +1973,18 @@ public interface Frame {
    */
   List<String> selectOption(String selector, String values, SelectOptionOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
@@ -1982,12 +2004,18 @@ public interface Frame {
     return selectOption(selector, values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
@@ -2005,12 +2033,18 @@ public interface Frame {
    */
   List<String> selectOption(String selector, ElementHandle values, SelectOptionOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
@@ -2030,12 +2064,18 @@ public interface Frame {
     return selectOption(selector, values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
@@ -2053,12 +2093,18 @@ public interface Frame {
    */
   List<String> selectOption(String selector, String[] values, SelectOptionOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
@@ -2078,12 +2124,18 @@ public interface Frame {
     return selectOption(selector, values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
@@ -2101,12 +2153,18 @@ public interface Frame {
    */
   List<String> selectOption(String selector, SelectOption values, SelectOptionOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
@@ -2126,12 +2184,18 @@ public interface Frame {
     return selectOption(selector, values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
@@ -2149,12 +2213,18 @@ public interface Frame {
    */
   List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");
@@ -2174,12 +2244,18 @@ public interface Frame {
     return selectOption(selector, values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until all specified options are
+   * present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If there's no {@code <select>} element
-   * matching {@code selector}, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * frame.selectOption("select#colors", "blue");

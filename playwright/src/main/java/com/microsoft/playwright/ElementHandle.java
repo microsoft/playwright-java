@@ -997,10 +997,15 @@ public interface ElementHandle extends JSHandle {
   Object evalOnSelectorAll(String selector, String expression, Object arg);
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, focuses the
-   * element, fills it and triggers an {@code input} event after filling. If the element is inside the {@code <label>} element that has
-   * associated <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, that control
-   * will be filled instead. If the element to be filled is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element,
-   * this method throws an error. Note that you can pass an empty string to clear the input field.
+   * element, fills it and triggers an {@code input} event after filling. Note that you can pass an empty string to clear the input
+   * field.
+   *
+   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
+   * However, if the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
+   * instead.
+   *
+   * <p> To send fine-grained keyboard events, use {@link ElementHandle#type ElementHandle.type()}.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
@@ -1009,10 +1014,15 @@ public interface ElementHandle extends JSHandle {
   }
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, focuses the
-   * element, fills it and triggers an {@code input} event after filling. If the element is inside the {@code <label>} element that has
-   * associated <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, that control
-   * will be filled instead. If the element to be filled is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element,
-   * this method throws an error. Note that you can pass an empty string to clear the input field.
+   * element, fills it and triggers an {@code input} event after filling. Note that you can pass an empty string to clear the input
+   * field.
+   *
+   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
+   * However, if the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
+   * instead.
+   *
+   * <p> To send fine-grained keyboard events, use {@link ElementHandle#type ElementHandle.type()}.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
@@ -1204,12 +1214,17 @@ public interface ElementHandle extends JSHandle {
    */
   void scrollIntoViewIfNeeded(ScrollIntoViewIfNeededOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
+   * all specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
-   * element, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * handle.selectOption("blue");
@@ -1227,12 +1242,17 @@ public interface ElementHandle extends JSHandle {
     return selectOption(values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
+   * all specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
-   * element, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * handle.selectOption("blue");
@@ -1248,12 +1268,17 @@ public interface ElementHandle extends JSHandle {
    */
   List<String> selectOption(String values, SelectOptionOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
+   * all specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
-   * element, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * handle.selectOption("blue");
@@ -1271,12 +1296,17 @@ public interface ElementHandle extends JSHandle {
     return selectOption(values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
+   * all specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
-   * element, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * handle.selectOption("blue");
@@ -1292,12 +1322,17 @@ public interface ElementHandle extends JSHandle {
    */
   List<String> selectOption(ElementHandle values, SelectOptionOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
+   * all specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
-   * element, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * handle.selectOption("blue");
@@ -1315,12 +1350,17 @@ public interface ElementHandle extends JSHandle {
     return selectOption(values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
+   * all specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
-   * element, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * handle.selectOption("blue");
@@ -1336,12 +1376,17 @@ public interface ElementHandle extends JSHandle {
    */
   List<String> selectOption(String[] values, SelectOptionOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
+   * all specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
-   * element, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * handle.selectOption("blue");
@@ -1359,12 +1404,17 @@ public interface ElementHandle extends JSHandle {
     return selectOption(values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
+   * all specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
-   * element, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * handle.selectOption("blue");
@@ -1380,12 +1430,17 @@ public interface ElementHandle extends JSHandle {
    */
   List<String> selectOption(SelectOption values, SelectOptionOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
+   * all specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
-   * element, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * handle.selectOption("blue");
@@ -1403,12 +1458,17 @@ public interface ElementHandle extends JSHandle {
     return selectOption(values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
+   * all specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
-   * element, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * handle.selectOption("blue");
@@ -1424,12 +1484,17 @@ public interface ElementHandle extends JSHandle {
    */
   List<String> selectOption(ElementHandle[] values, SelectOptionOptions options);
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
+   * all specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
-   * element, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * handle.selectOption("blue");
@@ -1447,12 +1512,17 @@ public interface ElementHandle extends JSHandle {
     return selectOption(values, null);
   }
   /**
-   * Returns the array of option values that have been successfully selected.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
+   * all specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected. If element is not a {@code <select>}
-   * element, the method throws an error.
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
+   * {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
+   * instead.
    *
-   * <p> Will wait until all specified options are present in the {@code <select>} element.
+   * <p> Returns the array of option values that have been successfully selected.
+   *
+   * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    * <pre>{@code
    * // single selection matching the value
    * handle.selectOption("blue");
