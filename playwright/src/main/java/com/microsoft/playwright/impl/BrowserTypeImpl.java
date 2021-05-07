@@ -61,6 +61,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     try {
       Duration timeout = Duration.ofDays(1);
       Map<String, String> headers = Collections.emptyMap();
+      Duration slowMo = null;
       if (options != null) {
         if (options.timeout != null) {
           timeout = Duration.ofMillis(Math.round(options.timeout));
@@ -68,8 +69,11 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
         if (options.headers != null) {
           headers = options.headers;
         }
+        if (options.slowMo != null) {
+          slowMo = Duration.ofMillis(options.slowMo.intValue());
+        }
       }
-      WebSocketTransport transport = new WebSocketTransport(new URI(wsEndpoint), headers, timeout);
+      WebSocketTransport transport = new WebSocketTransport(new URI(wsEndpoint), headers, timeout, slowMo);
       Connection connection = new Connection(transport);
       PlaywrightImpl playwright = (PlaywrightImpl) connection.waitForObjectWithKnownName("Playwright");
       if (!playwright.initializer.has("preLaunchedBrowser")) {
