@@ -38,7 +38,6 @@ class Utils {
       .registerTypeAdapter(Optional.class, new OptionalSerializer())
       .create();
     String json = gson.toJson(f);
-    System.err.println("json = " + json);
     return gson.fromJson(json, t);
   }
 
