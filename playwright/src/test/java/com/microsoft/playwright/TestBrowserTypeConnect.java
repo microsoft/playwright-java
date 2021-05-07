@@ -117,6 +117,17 @@ public class TestBrowserTypeConnect extends TestBase {
   }
 
   @Test
+  void shouldSupportSlowMo() {
+    Browser browser = browserType.connect(wsEndpoint,
+      new BrowserType.ConnectOptions().setSlowMo(1));
+    BrowserContext browserContext = browser.newContext();
+    Page page = browserContext.newPage();
+    assertEquals(121, page.evaluate("11 * 11"));
+    page.navigate(server.EMPTY_PAGE);
+    browser.close();
+  }
+
+  @Test
   void shouldBeAbleToConnectTwoBrowsersAtTheSameTime() {
     Browser browser1 = browserType.connect(wsEndpoint);
     assertEquals(0, browser1.contexts().size());

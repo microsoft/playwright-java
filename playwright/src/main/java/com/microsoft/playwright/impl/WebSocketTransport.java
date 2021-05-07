@@ -33,6 +33,7 @@ import java.util.function.Consumer;
 class WebSocketTransport implements Transport {
   private final BlockingQueue<String> incoming = new LinkedBlockingQueue<>();
   private final ClientConnection clientConnection;
+  private final Duration slowMo;
   private boolean isClosed;
   private volatile Exception lastError;
   ListenerCollection<EventType> listeners = new ListenerCollection<>();
@@ -63,7 +64,7 @@ class WebSocketTransport implements Transport {
     }
   }
 
-  WebSocketTransport(URI uri, Map<String, String> headers, Duration timeout) {
+  WebSocketTransport(URI uri, Map<String, String> headers, Duration timeout, Duration slowMo) {
     clientConnection = new ClientConnection(uri);
     for (Map.Entry<String, String> entry : headers.entrySet()) {
       clientConnection.addHeader(entry.getKey(), entry.getValue());
@@ -75,6 +76,7 @@ class WebSocketTransport implements Transport {
     } catch (InterruptedException e) {
       throw new PlaywrightException("Failed to connect", e);
     }
+    this.slowMo = slowMo;
   }
 
   @Override
@@ -87,7 +89,11 @@ class WebSocketTransport implements Transport {
   public String poll(Duration timeout) {
     checkIfClosed();
     try {
-      return incoming.poll(timeout.toMillis(), TimeUnit.MILLISECONDS);
+      String message = incoming.poll(timeout.toMillis(), TimeUnit.MILLISECONDS);
+      if (slowMo != null && message != null) {
+        Thread.sleep(slowMo.toMillis());
+      }
+      return message;
     } catch (InterruptedException e) {
       throw new PlaywrightException("Failed to read message", e);
     }
