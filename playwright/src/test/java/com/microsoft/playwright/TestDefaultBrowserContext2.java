@@ -43,14 +43,14 @@ public class TestDefaultBrowserContext2 extends TestBase {
       throw new RuntimeException(e);
     }
     assertNull(persistentContext);
-    persistentContext = browserType.launchPersistentContext(userDataDir, options);
+    persistentContext = getBrowserType().launchPersistentContext(userDataDir, options);
     return persistentContext.pages().get(0);
   }
 
   @Test
   void shouldSupportHasTouchOption() {
     Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().setHasTouch(true));
-    page.navigate(server.PREFIX + "/mobile.html");
+    page.navigate(getServer().PREFIX + "/mobile.html");
     assertEquals(true, page.evaluate("() => 'ontouchstart' in window"));
   }
 
@@ -60,7 +60,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
     // Firefox does not support mobile.
     Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions()
       .setViewportSize(320, 480).setIsMobile(true));
-    page.navigate(server.PREFIX + "/empty.html");
+    page.navigate(getServer().PREFIX + "/empty.html");
     assertEquals(980, page.evaluate("() => window.innerWidth"));
   }
 
@@ -91,7 +91,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
     Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions()
       .setGeolocation(new Geolocation(10, 10))
       .setPermissions(asList("geolocation")));
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     Object geolocation = page.evaluate("() => new Promise(resolve => navigator.geolocation.getCurrentPosition(position => {\n" +
       "  resolve({latitude: position.coords.latitude, longitude: position.coords.longitude});\n" +
       "}))");
@@ -110,8 +110,8 @@ public class TestDefaultBrowserContext2 extends TestBase {
   void shouldSupportExtraHTTPHeadersOption() throws ExecutionException, InterruptedException {
 //   TODO: test.flaky(browserName === "firefox" && headful && platform === "linux", "Intermittent timeout on bots");
     Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions().setExtraHTTPHeaders(mapOf("foo", "bar")));
-    Future<Server.Request> request = server.futureRequest("/empty.html");
-    page.navigate(server.EMPTY_PAGE);
+    Future<Server.Request> request = getServer().futureRequest("/empty.html");
+    page.navigate(getServer().EMPTY_PAGE);
     assertEquals(asList("bar"), request.get().headers.get("foo"));
   }
 
@@ -119,7 +119,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
   void shouldAcceptUserDataDir() throws IOException {
 // TODO:   test.flaky(browserName === "chromium");
     Path userDataDir = Files.createTempDirectory("user-data-dir-");
-    BrowserContext context = browserType.launchPersistentContext(userDataDir);
+    BrowserContext context = getBrowserType().launchPersistentContext(userDataDir);
     assertTrue(userDataDir.toFile().listFiles().length > 0);
     context.close();
     assertTrue(userDataDir.toFile().listFiles().length > 0);
@@ -130,22 +130,22 @@ public class TestDefaultBrowserContext2 extends TestBase {
 //  TODO:  test.slow();
     Path userDataDir = Files.createTempDirectory("user-data-dir-");
     BrowserType.LaunchPersistentContextOptions browserOptions = null;
-    BrowserContext browserContext = browserType.launchPersistentContext(userDataDir, browserOptions);
+    BrowserContext browserContext = getBrowserType().launchPersistentContext(userDataDir, browserOptions);
     Page page = browserContext.newPage();
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     page.evaluate("() => localStorage.hey = 'hello'");
     browserContext.close();
 
-    BrowserContext browserContext2 = browserType.launchPersistentContext(userDataDir, browserOptions);
+    BrowserContext browserContext2 = getBrowserType().launchPersistentContext(userDataDir, browserOptions);
     Page page2 = browserContext2.newPage();
-    page2.navigate(server.EMPTY_PAGE);
+    page2.navigate(getServer().EMPTY_PAGE);
     assertEquals("hello", page2.evaluate("localStorage.hey"));
     browserContext2.close();
 
     Path userDataDir2 = Files.createTempDirectory("user-data-dir-");
-    BrowserContext browserContext3 = browserType.launchPersistentContext(userDataDir2, browserOptions);
+    BrowserContext browserContext3 = getBrowserType().launchPersistentContext(userDataDir2, browserOptions);
     Page page3 = browserContext3.newPage();
-    page3.navigate(server.EMPTY_PAGE);
+    page3.navigate(getServer().EMPTY_PAGE);
     assertNotEquals("hello", page3.evaluate("localStorage.hey"));
     browserContext3.close();
   }
@@ -155,9 +155,9 @@ public class TestDefaultBrowserContext2 extends TestBase {
 // TODO:   test.flaky(browserName === "chromium");
     Path userDataDir = Files.createTempDirectory("user-data-dir-");
     BrowserType.LaunchPersistentContextOptions browserOptions = null;
-    BrowserContext browserContext = browserType.launchPersistentContext(userDataDir, browserOptions);
+    BrowserContext browserContext = getBrowserType().launchPersistentContext(userDataDir, browserOptions);
     Page page = browserContext.newPage();
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     Object documentCookie = page.evaluate("() => {\n" +
       "    document.cookie = 'doSomethingOnlyOnce=true; expires=Fri, 31 Dec 9999 23:59:59 GMT';\n" +
       "    return document.cookie;\n" +
@@ -165,16 +165,16 @@ public class TestDefaultBrowserContext2 extends TestBase {
     assertEquals("doSomethingOnlyOnce=true", documentCookie);
     browserContext.close();
 
-    BrowserContext browserContext2 = browserType.launchPersistentContext(userDataDir, browserOptions);
+    BrowserContext browserContext2 = getBrowserType().launchPersistentContext(userDataDir, browserOptions);
     Page page2 = browserContext2.newPage();
-    page2.navigate(server.EMPTY_PAGE);
+    page2.navigate(getServer().EMPTY_PAGE);
     assertEquals("doSomethingOnlyOnce=true", page2.evaluate("() => document.cookie"));
     browserContext2.close();
 
     Path userDataDir2 = Files.createTempDirectory("user-data-dir-");
-    BrowserContext browserContext3 = browserType.launchPersistentContext(userDataDir2, browserOptions);
+    BrowserContext browserContext3 = getBrowserType().launchPersistentContext(userDataDir2, browserOptions);
     Page page3 = browserContext3.newPage();
-    page3.navigate(server.EMPTY_PAGE);
+    page3.navigate(getServer().EMPTY_PAGE);
     assertNotEquals("doSomethingOnlyOnce=true", page3.evaluate("() => document.cookie"));
     browserContext3.close();
   }
@@ -190,10 +190,10 @@ public class TestDefaultBrowserContext2 extends TestBase {
   @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
   void shouldThrowIfPageArgumentIsPassed() throws IOException {
     BrowserType.LaunchPersistentContextOptions options = new BrowserType.LaunchPersistentContextOptions()
-      .setArgs(asList(server.EMPTY_PAGE));
+      .setArgs(asList(getServer().EMPTY_PAGE));
     Path userDataDir = Files.createTempDirectory("user-data-dir-");
     try {
-      browserType.launchPersistentContext(userDataDir, options);
+      getBrowserType().launchPersistentContext(userDataDir, options);
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("can not specify page"));
@@ -204,7 +204,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
   void shouldWorkWithIgnoreDefaultArgs() {
     // Ignore arguments by name.
     BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().setIgnoreDefaultArgs(asList("foo"));
-    Browser browser = browserType.launch(options);
+    Browser browser = getBrowserType().launch(options);
     Page page = browser.newPage();
     browser.close();
     // Check that there is a way to ignore all arguments.
@@ -249,7 +249,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
       "    return Array.from(root.querySelectorAll(selector));\n" +
       "  }\n" +
       "}";
-    playwright.selectors().register("defaultContextCSS", defaultContextCSS);
+    getPlaywright().selectors().register("defaultContextCSS", defaultContextCSS);
 
     page.setContent("<div>hello</div>");
     assertEquals("hello", page.innerHTML("css=div"));

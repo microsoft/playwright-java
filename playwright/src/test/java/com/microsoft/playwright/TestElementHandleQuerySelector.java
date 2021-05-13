@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestElementHandleQuerySelector extends TestBase {
   @Test
   void shouldQueryExistingElement() {
-    page.navigate(server.PREFIX + "/playground.html");
+    page.navigate(getServer().PREFIX + "/playground.html");
     page.setContent("<html><body><div class=\"second\"><div class=\"inner\">A</div></div></body></html>");
     ElementHandle html = page.querySelector("html");
     ElementHandle second = html.querySelector(".second");
@@ -31,9 +31,9 @@ public class TestElementHandleQuerySelector extends TestBase {
 
   @Test
   void shouldWorkForAdoptedElements() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     Page popup = page.waitForPopup(() -> page.evaluate(
-      "url => window['__popup'] = window.open(url)", server.EMPTY_PAGE));
+      "url => window['__popup'] = window.open(url)", getServer().EMPTY_PAGE));
     // Test JSHandle
     JSHandle divHandle = page.evaluateHandle("() => {\n" +
       "    const div = document.createElement('div');\n" +
@@ -78,7 +78,7 @@ public class TestElementHandleQuerySelector extends TestBase {
 
   @Test
   void xpathShouldQueryExistingElement() {
-    page.navigate(server.PREFIX + "/playground.html");
+    page.navigate(getServer().PREFIX + "/playground.html");
     page.setContent("<html><body><div class=\"second\"><div class=\"inner\">A</div></div></body></html>");
     ElementHandle html = page.querySelector("html");
     List<ElementHandle> second = html.querySelectorAll("xpath=./body/div[contains(@class, 'second')]");

@@ -37,24 +37,24 @@ public class TestNetworkRequest extends TestBase {
   void shouldWorkForMainFrameNavigationRequest() {
     List<Request> requests = new ArrayList<>();
     page.onRequest(request -> requests.add(request));
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     assertEquals(1, requests.size());
     assertEquals(page.mainFrame(), requests.get(0).frame());
   }
 
   @Test
   void shouldWorkForSubframeNavigationRequest() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     List<Request> requests = new ArrayList<>();
     page.onRequest(request -> requests.add(request));
-    attachFrame(page, "frame1", server.EMPTY_PAGE);
+    attachFrame(page, "frame1", getServer().EMPTY_PAGE);
     assertEquals(1, requests.size());
     assertEquals(page.frames().get(1), requests.get(0).frame());
   }
 
   @Test
   void shouldWorkForFetchRequests() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     List<Request> requests = new ArrayList<>();
     page.onRequest(request -> requests.add(request));
     page.evaluate("() => fetch('/digits/1.png')");
@@ -64,36 +64,36 @@ public class TestNetworkRequest extends TestBase {
 
   @Test
   void shouldWorkForARedirect() {
-    server.setRedirect("/foo.html", "/empty.html");
+    getServer().setRedirect("/foo.html", "/empty.html");
     List<Request> requests = new ArrayList<>();
     page.onRequest(request -> requests.add(request));
-    page.navigate(server.PREFIX + "/foo.html");
+    page.navigate(getServer().PREFIX + "/foo.html");
 
     assertEquals(2, requests.size());
-    assertEquals(server.PREFIX + "/foo.html", requests.get(0).url());
-    assertEquals(server.PREFIX + "/empty.html", requests.get(1).url());
+    assertEquals(getServer().PREFIX + "/foo.html", requests.get(0).url());
+    assertEquals(getServer().PREFIX + "/empty.html", requests.get(1).url());
   }
 
   // https://github.com/microsoft/playwright/issues/3993
   @Test
   void shouldNotWorkForARedirectAndInterception() {
-    server.setRedirect("/foo.html", "/empty.html");
+    getServer().setRedirect("/foo.html", "/empty.html");
     List<Request> requests = new ArrayList<>();
     page.route("**", route -> {
       requests.add(route.request());
       route.resume();
     });
-    page.navigate(server.PREFIX + "/foo.html");
+    page.navigate(getServer().PREFIX + "/foo.html");
 
-    assertEquals(server.PREFIX + "/empty.html", page.url());
+    assertEquals(getServer().PREFIX + "/empty.html", page.url());
 
     assertEquals(1, requests.size());
-    assertEquals(server.PREFIX + "/foo.html", requests.get(0).url());
+    assertEquals(getServer().PREFIX + "/foo.html", requests.get(0).url());
   }
 
   @Test
   void shouldReturnHeaders() {
-    Response response = page.navigate(server.EMPTY_PAGE);
+    Response response = page.navigate(getServer().EMPTY_PAGE);
     if (isChromium())
       assertTrue(response.request().headers().get("user-agent").contains("Chrome"));
     else if (isFirefox())
@@ -105,14 +105,14 @@ public class TestNetworkRequest extends TestBase {
   @Test
   @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fail")
   void shouldGetTheSameHeadersAsTheServer() throws ExecutionException, InterruptedException {
-    Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
-    server.setRoute("/empty.html", exchange -> {
+    Future<Server.Request> serverRequest = getServer().futureRequest("/empty.html");
+    getServer().setRoute("/empty.html", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
         writer.write("done");
       }
     });
-    Response response = page.navigate(server.PREFIX + "/empty.html");
+    Response response = page.navigate(getServer().PREFIX + "/empty.html");
     Map<String, String> expectedHeaders = serverRequest.get().headers.entrySet().stream().collect(
       Collectors.toMap(e -> e.getKey().toLowerCase(), e -> e.getValue().get(0)));
     assertEquals(expectedHeaders, response.request().headers());
@@ -121,9 +121,9 @@ public class TestNetworkRequest extends TestBase {
   @Test
   @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fail")
   void shouldGetTheSameHeadersAsTheServerCORP() throws ExecutionException, InterruptedException {
-    page.navigate(server.PREFIX + "/empty.html");
-    Future<Server.Request> serverRequest = server.futureRequest("/something");
-    server.setRoute("/something", exchange -> {
+    page.navigate(getServer().PREFIX + "/empty.html");
+    Future<Server.Request> serverRequest = getServer().futureRequest("/something");
+    getServer().setRoute("/something", exchange -> {
       exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
@@ -134,7 +134,7 @@ public class TestNetworkRequest extends TestBase {
         Object text = page.evaluate("async url => {\n" +
           "  const data = await fetch(url);\n" +
           "  return data.text();\n" +
-          "}", server.CROSS_PROCESS_PREFIX + "/something");
+          "}", getServer().CROSS_PROCESS_PREFIX + "/something");
         assertEquals("done", text);
       });
     Map<String, String> expectedHeaders = serverRequest.get().headers.entrySet().stream().collect(
@@ -144,8 +144,8 @@ public class TestNetworkRequest extends TestBase {
 
   @Test
   void shouldReturnPostData() {
-    page.navigate(server.EMPTY_PAGE);
-    server.setRoute("/post", exchange -> {
+    page.navigate(getServer().EMPTY_PAGE);
+    getServer().setRoute("/post", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       exchange.getResponseBody().close();
     });
@@ -158,8 +158,8 @@ public class TestNetworkRequest extends TestBase {
 
   @Test
   void shouldWorkWithBinaryPostData() {
-    page.navigate(server.EMPTY_PAGE);
-    server.setRoute("/post", exchange -> {
+    page.navigate(getServer().EMPTY_PAGE);
+    getServer().setRoute("/post", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       exchange.getResponseBody().close();
     });
@@ -178,8 +178,8 @@ public class TestNetworkRequest extends TestBase {
 
   @Test
   void shouldWorkWithBinaryPostDataAndInterception() {
-    page.navigate(server.EMPTY_PAGE);
-    server.setRoute("/post", exchange -> {
+    page.navigate(getServer().EMPTY_PAGE);
+    getServer().setRoute("/post", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       exchange.getResponseBody().close();
     });
@@ -199,7 +199,7 @@ public class TestNetworkRequest extends TestBase {
 
   @Test
   void shouldBeUndefinedWhenThereIsNoPostData() {
-    Response response = page.navigate(server.EMPTY_PAGE);
+    Response response = page.navigate(getServer().EMPTY_PAGE);
     assertNull(response.request().postData());
   }
 
@@ -214,7 +214,7 @@ public class TestNetworkRequest extends TestBase {
   @Test
   void shouldReturnEventSource() {
     // 1. Setup server-sent events on server that immediately sends a message to the client.
-    server.setRoute("/sse", exchange -> {
+    getServer().setRoute("/sse", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "text/event-stream");
       exchange.getResponseHeaders().add("Connection", "keep-alive");
       exchange.getResponseHeaders().add("Cache-Control", "no-cache");
@@ -224,7 +224,7 @@ public class TestNetworkRequest extends TestBase {
       }
     });
     // 2. Subscribe to page request events.
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     List<Request> requests = new ArrayList<>();
     page.onRequest(request -> requests.add(request));
     // 3. Connect to EventSource in browser and return first message.
@@ -249,8 +249,8 @@ public class TestNetworkRequest extends TestBase {
       }
       requests.put(name, request);
     });
-    server.setRedirect("/rrredirect", "/frames/one-frame.html");
-    page.navigate(server.PREFIX + "/rrredirect");
+    getServer().setRedirect("/rrredirect", "/frames/one-frame.html");
+    page.navigate(getServer().PREFIX + "/rrredirect");
     assertTrue(requests.get("rrredirect").isNavigationRequest());
     assertTrue(requests.get("one-frame.html").isNavigationRequest());
     assertTrue(requests.get("frame.html").isNavigationRequest());
@@ -262,7 +262,7 @@ public class TestNetworkRequest extends TestBase {
   void shouldReturnNavigationBitWhenNavigatingToImage() {
     List<Request> requests = new ArrayList<>();
     page.onRequest(request -> requests.add(request));
-    page.navigate(server.PREFIX + "/pptr.png");
+    page.navigate(getServer().PREFIX + "/pptr.png");
     assertTrue(requests.get(0).isNavigationRequest());
   }
 }

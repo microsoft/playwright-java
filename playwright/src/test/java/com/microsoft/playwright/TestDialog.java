@@ -97,7 +97,7 @@ public class TestDialog extends TestBase {
   @Test
   @DisabledIf(value="isWebKitMac", disabledReason="fixme")
   void shouldBeAbleToCloseContextWithOpenAlert() {
-    BrowserContext context = browser.newContext();
+    BrowserContext context = getBrowser().newContext();
     Page page = context.newPage();
     boolean[] didShowDialog = {false};
     page.onDialog(dialog -> didShowDialog[0] = true);

@@ -31,13 +31,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestNetworkResponse extends TestBase {
   @Test
   void shouldWork() {
-    server.setRoute("/empty.html", exchange -> {
+    getServer().setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().add("foo", "bar");
       exchange.getResponseHeaders().add("BaZ", "bAz");
       exchange.sendResponseHeaders(200, 0);
       exchange.getResponseBody().close();
     });
-    Response response = page.navigate(server.EMPTY_PAGE);
+    Response response = page.navigate(getServer().EMPTY_PAGE);
     assertEquals("bar", response.headers().get("foo"));
     assertEquals("bAz", response.headers().get("baz"));
     assertNull(response.headers().get("BaZ"));
@@ -45,22 +45,22 @@ public class TestNetworkResponse extends TestBase {
 
   @Test
   void shouldReturnText() {
-    Response response = page.navigate(server.PREFIX + "/simple.json");
+    Response response = page.navigate(getServer().PREFIX + "/simple.json");
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
   }
 
   @Test
   void shouldReturnUncompressedText() {
-    server.enableGzip("/simple.json");
-    Response response = page.navigate(server.PREFIX + "/simple.json");
+    getServer().enableGzip("/simple.json");
+    Response response = page.navigate(getServer().PREFIX + "/simple.json");
     assertEquals("gzip", response.headers().get("content-encoding"));
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
   }
 
   @Test
   void shouldThrowWhenRequestingBodyOfRedirectedResponse() {
-    server.setRedirect("/foo.html", "/empty.html");
-    Response response = page.navigate(server.PREFIX + "/foo.html");
+    getServer().setRedirect("/foo.html", "/empty.html");
+    Response response = page.navigate(getServer().PREFIX + "/foo.html");
     Request redirectedFrom = response.request().redirectedFrom();
     assertNotNull(redirectedFrom);
     Response redirected = redirectedFrom.response();
@@ -75,10 +75,10 @@ public class TestNetworkResponse extends TestBase {
 
   @Test
   void shouldWaitUntilResponseCompletes() throws ExecutionException, InterruptedException {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     Semaphore responseWritten = new Semaphore(0);
     Semaphore responseRead = new Semaphore(0);
-    server.setRoute("/get", exchange -> {
+    getServer().setRoute("/get", exchange -> {
       // In Firefox, |fetch| will be hanging until it receives |Content-Type| header
       // from server.
       exchange.getResponseHeaders().add("Content-Type", "text/plain; charset=utf-8");
@@ -119,26 +119,26 @@ public class TestNetworkResponse extends TestBase {
   }
   @Test
   void shouldReturnBody() throws IOException {
-    Response response = page.navigate(server.PREFIX + "/pptr.png");
+    Response response = page.navigate(getServer().PREFIX + "/pptr.png");
     byte[] expected = Files.readAllBytes(Paths.get("src/test/resources/pptr.png"));
     assertTrue(Arrays.equals(expected, response.body()));
   }
 
   @Test
   void shouldReturnBodyWithCompression() throws IOException {
-    server.enableGzip("/pptr.png");
-    Response response = page.navigate(server.PREFIX + "/pptr.png");
+    getServer().enableGzip("/pptr.png");
+    Response response = page.navigate(getServer().PREFIX + "/pptr.png");
     byte[] expected = Files.readAllBytes(Paths.get("src/test/resources/pptr.png"));
     assertTrue(Arrays.equals(expected, response.body()));
   }
 
   @Test
   void shouldReturnStatusText() {
-    server.setRoute("/cool", exchange -> {
+    getServer().setRoute("/cool", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       exchange.getResponseBody().close();
     });
-    Response response = page.navigate(server.PREFIX + "/cool");
+    Response response = page.navigate(getServer().PREFIX + "/cool");
     assertEquals("OK", response.statusText());
   }
 }

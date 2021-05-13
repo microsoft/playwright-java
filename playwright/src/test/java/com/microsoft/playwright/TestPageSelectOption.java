@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestPageSelectOption extends TestBase {
   @Test
   void shouldSelectSingleOption() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.selectOption("select", "blue");
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onChange"));
@@ -37,7 +37,7 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldSelectSingleOptionByValue() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.selectOption("select", new SelectOption().setValue("blue"));
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onChange"));
@@ -45,7 +45,7 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldSelectSingleOptionByLabel() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.selectOption("select", new SelectOption().setLabel("Indigo"));
     assertEquals(asList("indigo"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("indigo"), page.evaluate("() => window['result'].onChange"));
@@ -53,7 +53,7 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldSelectSingleOptionByHandle() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.selectOption("select", page.querySelector("[id=whiteOption]"));
     assertEquals(asList("white"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("white"), page.evaluate("() => window['result'].onChange"));
@@ -61,7 +61,7 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldSelectSingleOptionByIndex() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.selectOption("select", new SelectOption().setIndex(2));
     assertEquals(asList("brown"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("brown"), page.evaluate("() => window['result'].onChange"));
@@ -69,7 +69,7 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldSelectSingleOptionByMultipleAttributes() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.selectOption("select", new SelectOption().setValue("green").setLabel("Green"));
     assertEquals(asList("green"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("green"), page.evaluate("() => window['result'].onChange"));
@@ -77,7 +77,7 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldNotSelectSingleOptionWhenSomeAttributesDoNotMatch() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.evalOnSelector("select", "s => s.value = undefined");
     try {
       page.selectOption("select", new SelectOption()
@@ -90,7 +90,7 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldSelectOnlyFirstOption() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.selectOption("select", new String[]{"blue", "green", "red"});
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onInput"));
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onChange"));
@@ -98,7 +98,7 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldNotThrowWhenSelectCausesNavigation() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.evalOnSelector("select", "select => select.addEventListener('input', () => window.location.href = '/empty.html')");
     page.waitForNavigation(() -> page.selectOption("select", "blue"));
     assertTrue(page.url().contains("empty.html"));
@@ -106,7 +106,7 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldSelectMultipleOptions() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");
     page.selectOption("select", new String[]{"blue", "green", "red"});
     assertEquals(asList("blue", "green", "red"), page.evaluate("() => window['result'].onInput"));
@@ -115,7 +115,7 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldSelectMultipleOptionsWithAttributes() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");
     page.selectOption("select", new SelectOption[] {
       new SelectOption().setValue("blue"),
@@ -128,7 +128,7 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldRespectEventBubbling() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.selectOption("select", "blue");
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onBubblingInput"));
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onBubblingChange"));
@@ -136,7 +136,7 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldThrowWhenElementIsNotASelect() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     try {
       page.selectOption("body", "");
       fail("did not throw");
@@ -147,14 +147,14 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldReturnOnNoMatchedValues() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     List<String> result = page.selectOption("select", new String[]{});
     assertEquals(emptyList(), result);
   }
 
   @Test
   void shouldReturnAnArrayOfMatchedValues() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");
     List<String> result = page.selectOption("select", new String[]{"blue", "black", "magenta"});
     Collections.sort(result);
@@ -165,21 +165,21 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldReturnAnArrayOfOneElementWhenMultipleIsNotSet() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     List<String> result = page.selectOption("select", new String[]{"42", "blue", "black", "magenta"});
     assertEquals(1, result.size());
   }
 
   @Test
   void shouldReturnOnNoValues() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     Object result = page.selectOption("select", new String[0]);
     assertEquals(emptyList(), result);
   }
 
 //  @Test
   void shouldNotAllowNullItems() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");
     try {
       page.selectOption("select", new String[]{"blue", null, "black","magenta"});
@@ -191,7 +191,7 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldUnselectWithNull() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");
     List<String> result = page.selectOption("select", new String[]{"blue", "black", "magenta"});
     Collections.sort(result);
@@ -208,7 +208,7 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldDeselectAllOptionsWhenPassedNoValuesForAMultipleSelect() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");
     page.selectOption("select", new String[]{"blue", "black", "magenta"});
     page.selectOption("select", new String[0]);
@@ -217,7 +217,7 @@ public class TestPageSelectOption extends TestBase {
 
   @Test
   void shouldDeselectAllOptionsWhenPassedNoValuesForASelectWithoutMultiple() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.selectOption("select", new String[]{"blue", "black", "magenta"});
     page.selectOption("select", new String[0]);
     assertEquals(true, page.evalOnSelector("select", "select => Array.from(select.options).every(option => !option.selected)"));
@@ -230,7 +230,7 @@ public class TestPageSelectOption extends TestBase {
   // @see https://github.com/GoogleChrome/puppeteer/issues/3327
   @Test
   void shouldWorkWhenReDefiningTopLevelEventClass() {
-    page.navigate(server.PREFIX + "/input/select.html");
+    page.navigate(getServer().PREFIX + "/input/select.html");
     page.evaluate("() => window.Event = null");
     page.selectOption("select", "blue");
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onInput"));

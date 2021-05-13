@@ -24,16 +24,16 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.microsoft.playwright.Utils.nextFreePort;
+
 class WebSocketServerImpl extends WebSocketServer implements AutoCloseable {
   volatile ClientHandshake lastClientHandshake;
   private final Semaphore startSemaphore = new Semaphore(0);
 
-  private static final AtomicInteger nextWsServerPort = new AtomicInteger(8910);
-
   static WebSocketServerImpl create() throws InterruptedException {
     // FIXME: WebSocketServer.stop() doesn't release socket immediately and starting another server
     // fails with "Address already in use", so we just allocate new port.
-    int port = nextWsServerPort.getAndIncrement();
+    int port = nextFreePort();
     WebSocketServerImpl result = new WebSocketServerImpl(new InetSocketAddress("localhost", port));
     result.start();
     result.startSemaphore.acquire();

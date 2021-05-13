@@ -45,7 +45,7 @@ public class TestFirefoxLauncher extends TestBase {
         "network.proxy.http", "127.0.0.1",
         "network.proxy.http_port", 3333));
     launchBrowser(options);
-    Page page = browser.newPage();
+    Page page = getBrowser().newPage();
     try {
       page.navigate("http://example.com");
       fail("did not throw");

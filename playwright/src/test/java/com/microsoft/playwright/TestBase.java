@@ -23,18 +23,24 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.microsoft.playwright.Utils.getBrowserNameFromEnv;
+import static com.microsoft.playwright.Utils.nextFreePort;
 
 public class TestBase {
-  static Server server;
-  static Server httpsServer;
-  static BrowserType browserType;
-  static Playwright playwright;
-  static Browser browser;
-  static boolean isMac = Utils.getOS() == Utils.OS.MAC;
-  static boolean isWindows = Utils.getOS() == Utils.OS.WINDOWS;
-  static boolean headful;
+  private static final ThreadLocal<Server> server = new ThreadLocal<>();
+  private static final ThreadLocal<Server> httpsServer = new ThreadLocal<>();
+  private static final ThreadLocal<BrowserType> browserType = new ThreadLocal<>();
+  private static final ThreadLocal<Playwright> playwright = new ThreadLocal<>();
+  private static final ThreadLocal<Browser> browser = new ThreadLocal<>();
+  static final boolean isMac = Utils.getOS() == Utils.OS.MAC;
+  static final boolean isWindows = Utils.getOS() == Utils.OS.WINDOWS;
+  static final boolean headful;
+  static {
+    String headfulEnv = System.getenv("HEADFUL");
+    headful = headfulEnv != null && !"0".equals(headfulEnv) && !"false".equals(headfulEnv);
+  }
   Page page;
   BrowserContext context;
 
@@ -73,8 +79,6 @@ public class TestBase {
   }
 
   static BrowserType.LaunchOptions createLaunchOptions() {
-    String headfulEnv = System.getenv("HEADFUL");
-    headful = headfulEnv != null && !"0".equals(headfulEnv) && !"false".equals(headfulEnv);
     BrowserType.LaunchOptions options;
     options = new BrowserType.LaunchOptions();
     options.headless = !headful;
@@ -83,13 +87,13 @@ public class TestBase {
   }
 
   static void initBrowserType() {
-    playwright = Playwright.create();
-    browserType = Utils.getBrowserTypeFromEnv(playwright);
+    setPlaywright(Playwright.create());
+    setBrowserType(Utils.getBrowserTypeFromEnv(getPlaywright()));
   }
 
   static void launchBrowser(BrowserType.LaunchOptions launchOptions) {
     initBrowserType();
-    browser = browserType.launch(launchOptions);
+    setBrowser(getBrowserType().launch(launchOptions));
   }
 
   @BeforeAll
@@ -99,46 +103,86 @@ public class TestBase {
 
   @AfterAll
   static void closeBrowser() {
-    if (browser != null) {
-      browser.close();
-      browser = null;
+    if (getBrowser() != null) {
+      getBrowser().close();
+      setBrowser(null);
     }
   }
 
   @BeforeAll
   static void startServer() throws IOException {
-    server = Server.createHttp(8907);
-    httpsServer = Server.createHttps(8908);
+    setServer(Server.createHttp(nextFreePort()));
+    setHttpsServer(Server.createHttps(nextFreePort()));
   }
 
   @AfterAll
-  static void stopServer() throws IOException {
-    if (server != null) {
-      server.stop();
-      server = null;
+  static void stopServer() {
+    if (getServer() != null) {
+      getServer().stop();
+      setServer(null);
     }
-    if (httpsServer != null) {
-      httpsServer.stop();
-      httpsServer = null;
+    if (getHttpsServer() != null) {
+      getHttpsServer().stop();
+      setHttpsServer(null);
     }
   }
 
   @AfterAll
-  static void closePlaywright() throws Exception {
-    if (playwright != null) {
-      playwright.close();
-      playwright = null;
+  static void closePlaywright() {
+    if (getPlaywright() != null) {
+      getPlaywright().close();
+      setPlaywright(null);
     }
+  }
+
+  static Server getServer() {
+    return server.get();
+  }
+
+  static void setServer(Server server) {
+    TestBase.server.set(server);
+  }
+
+  static Server getHttpsServer() {
+    return httpsServer.get();
+  }
+
+  static void setHttpsServer(Server httpsServer) {
+    TestBase.httpsServer.set(httpsServer);
+  }
+
+  static BrowserType getBrowserType() {
+    return browserType.get();
+  }
+
+  static void setBrowserType(BrowserType browserType) {
+    TestBase.browserType.set(browserType);
+  }
+
+  static Playwright getPlaywright() {
+    return playwright.get();
+  }
+
+  static void setPlaywright(Playwright playwright) {
+    TestBase.playwright.set(playwright);
+  }
+
+  static Browser getBrowser() {
+    return browser.get();
+  }
+
+  static void setBrowser(Browser browser) {
+    TestBase.browser.set(browser);
   }
 
   BrowserContext createContext() {
-    return browser.newContext();
+    return getBrowser().newContext();
   }
 
   @BeforeEach
   void createContextAndPage() {
-    server.reset();
-    httpsServer.reset();
+    getServer().reset();
+    getHttpsServer().reset();
     context = createContext();
     page = context.newPage();
   }

@@ -25,8 +25,8 @@ public class TestElementHandleContentFrame extends TestBase {
 
   @Test
   void shouldWork() {
-    page.navigate(server.EMPTY_PAGE);
-    attachFrame(page, "frame1", server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
+    attachFrame(page, "frame1", getServer().EMPTY_PAGE);
     ElementHandle elementHandle = page.querySelector("#frame1");
     Frame frame = elementHandle.contentFrame();
     assertEquals(page.frames().get(1), frame);
@@ -34,8 +34,8 @@ public class TestElementHandleContentFrame extends TestBase {
 
   @Test
   void shouldWorkForCrossProcessIframes() {
-    page.navigate(server.EMPTY_PAGE);
-    attachFrame(page, "frame1", server.CROSS_PROCESS_PREFIX + "/empty.html");
+    page.navigate(getServer().EMPTY_PAGE);
+    attachFrame(page, "frame1", getServer().CROSS_PROCESS_PREFIX + "/empty.html");
     ElementHandle elementHandle = page.querySelector("#frame1");
     Frame frame = elementHandle.contentFrame();
     assertEquals(page.frames().get(1), frame);
@@ -43,8 +43,8 @@ public class TestElementHandleContentFrame extends TestBase {
 
   @Test
   void shouldWorkForCrossFrameEvaluations() {
-    page.navigate(server.EMPTY_PAGE);
-    attachFrame(page, "frame1", server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
+    attachFrame(page, "frame1", getServer().EMPTY_PAGE);
     Frame frame = page.frames().get(1);
     JSHandle jsHandle = frame.evaluateHandle("() => window.top.document.querySelector('#frame1')");
     ElementHandle elementHandle = jsHandle.asElement();
@@ -54,8 +54,8 @@ public class TestElementHandleContentFrame extends TestBase {
 
   @Test
   void shouldReturnNullForNonIframes() {
-    page.navigate(server.EMPTY_PAGE);
-    attachFrame(page, "frame1", server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
+    attachFrame(page, "frame1", getServer().EMPTY_PAGE);
     Frame frame = page.frames().get(1);
     JSHandle jsHandle = frame.evaluateHandle("() => document.body");
     ElementHandle elementHandle = jsHandle.asElement();
@@ -65,8 +65,8 @@ public class TestElementHandleContentFrame extends TestBase {
 
   @Test
   void shouldReturnNullForDocumentDocumentElement() {
-    page.navigate(server.EMPTY_PAGE);
-    attachFrame(page, "frame1", server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
+    attachFrame(page, "frame1", getServer().EMPTY_PAGE);
     Frame frame = page.frames().get(1);
     JSHandle jsHandle = frame.evaluateHandle("() => document.documentElement");
     ElementHandle elementHandle = jsHandle.asElement();

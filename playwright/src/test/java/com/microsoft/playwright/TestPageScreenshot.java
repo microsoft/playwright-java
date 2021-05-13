@@ -31,7 +31,7 @@ public class TestPageScreenshot extends TestBase {
   @Test
   void shouldWork() throws IOException {
     page.setViewportSize(500, 500);
-    page.navigate(server.PREFIX + "/grid.html");
+    page.navigate(getServer().PREFIX + "/grid.html");
     byte[] screenshot = page.screenshot();
     BufferedImage image = ImageIO.read(new ByteArrayInputStream(screenshot));
     assertEquals(500, image.getWidth());
@@ -42,7 +42,7 @@ public class TestPageScreenshot extends TestBase {
   @Test
   void shouldClipRect() throws IOException {
     page.setViewportSize(500, 500);
-    page.navigate(server.PREFIX + "/grid.html");
+    page.navigate(getServer().PREFIX + "/grid.html");
     byte[] screenshot = page.screenshot(new Page.ScreenshotOptions()
       .setClip(new Clip(50, 100, 150, 100)));
     BufferedImage image = ImageIO.read(new ByteArrayInputStream(screenshot));

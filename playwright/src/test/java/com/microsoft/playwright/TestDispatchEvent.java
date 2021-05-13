@@ -26,14 +26,14 @@ public class TestDispatchEvent extends TestBase {
 
   @Test
   void shouldDispatchClickEvent() {
-    page.navigate(server.PREFIX + "/input/button.html");
+    page.navigate(getServer().PREFIX + "/input/button.html");
     page.dispatchEvent("button", "click");
     assertEquals("Clicked", page.evaluate("() => window['result']"));
   }
 
   @Test
   void shouldDispatchClickEventProperties() {
-    page.navigate(server.PREFIX + "/input/button.html");
+    page.navigate(getServer().PREFIX + "/input/button.html");
     page.dispatchEvent("button", "click");
     assertNotNull(page.evaluate("bubbles"));
     assertNotNull(page.evaluate("cancelable"));
@@ -63,18 +63,18 @@ public class TestDispatchEvent extends TestBase {
 
   @Test
   void shouldDispatchClickAfterNavigation() {
-    page.navigate(server.PREFIX + "/input/button.html");
+    page.navigate(getServer().PREFIX + "/input/button.html");
     page.dispatchEvent("button", "click");
-    page.navigate(server.PREFIX + "/input/button.html");
+    page.navigate(getServer().PREFIX + "/input/button.html");
     page.dispatchEvent("button", "click");
     assertEquals("Clicked", page.evaluate("() => window['result']"));
   }
 
   @Test
   void shouldDispatchClickAfterACrossOriginNavigation() {
-    page.navigate(server.PREFIX + "/input/button.html");
+    page.navigate(getServer().PREFIX + "/input/button.html");
     page.dispatchEvent("button", "click");
-    page.navigate(server.CROSS_PROCESS_PREFIX + "/input/button.html");
+    page.navigate(getServer().CROSS_PROCESS_PREFIX + "/input/button.html");
     page.dispatchEvent("button", "click");
     assertEquals("Clicked", page.evaluate("() => window['result']"));
   }
@@ -97,7 +97,7 @@ public class TestDispatchEvent extends TestBase {
 
   @Test
   void shouldDispatchClickWhenNodeIsAddedInShadowDom() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     page.evaluate("() => {\n" +
       "  const div = document.createElement('div');\n" +
       "  div.attachShadow({mode: 'open'});\n" +
@@ -122,7 +122,7 @@ public class TestDispatchEvent extends TestBase {
 
   @Test
   void shouldDispatchDragDropEvents() {
-    page.navigate(server.PREFIX + "/drag-n-drop.html");
+    page.navigate(getServer().PREFIX + "/drag-n-drop.html");
     JSHandle dataTransfer = page.evaluateHandle("() => new DataTransfer()");
     page.dispatchEvent("#source", "dragstart", mapOf("dataTransfer", dataTransfer));
     page.dispatchEvent("#target", "drop", mapOf("dataTransfer", dataTransfer));
@@ -135,7 +135,7 @@ public class TestDispatchEvent extends TestBase {
 
   @Test
   void shouldDispatchDragDropEventsOnHandle() {
-    page.navigate(server.PREFIX + "/drag-n-drop.html");
+    page.navigate(getServer().PREFIX + "/drag-n-drop.html");
     JSHandle dataTransfer = page.evaluateHandle("() => new DataTransfer()");
     ElementHandle source = page.querySelector("#source");
     source.dispatchEvent("dragstart", mapOf("dataTransfer", dataTransfer));
@@ -148,7 +148,7 @@ public class TestDispatchEvent extends TestBase {
 
   @Test
   void shouldDispatchClickEventOnHandle() {
-    page.navigate(server.PREFIX + "/input/button.html");
+    page.navigate(getServer().PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     button.dispatchEvent("click");
     assertEquals("Clicked", page.evaluate("() => window['result']"));

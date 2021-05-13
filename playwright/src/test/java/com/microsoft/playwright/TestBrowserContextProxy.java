@@ -45,8 +45,8 @@ public class TestBrowserContextProxy extends TestBase {
   @Test
   @EnabledIf(value="isChromiumWindows", disabledReason="Platform-specific")
   void shouldThrowForMissingGlobalProxyOnChromiumWindows() {
-    try (Browser browser = browserType.launch(createLaunchOptions())) {
-      browser.newContext(new Browser.NewContextOptions().setProxy("localhost:" + server.PORT));
+    try (Browser browser = getBrowserType().launch(createLaunchOptions())) {
+      browser.newContext(new Browser.NewContextOptions().setProxy("localhost:" + getServer().PORT));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Browser needs to be launched with the global proxy"));
@@ -59,13 +59,13 @@ public class TestBrowserContextProxy extends TestBase {
 
   @Test
   void shouldUseProxy() {
-    server.setRoute("/target.html", exchange -> {
+    getServer().setRoute("/target.html", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
         writer.write("<html><title>Served by the proxy</title></html>");
       }
     });
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setProxy("localhost:" + server.PORT));
+    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setProxy("localhost:" + getServer().PORT));
     Page page = context.newPage();
     page.navigate("http://non-existent.com/target.html");
     assertEquals("Served by the proxy", page.title());
@@ -74,14 +74,14 @@ public class TestBrowserContextProxy extends TestBase {
 
   @Test
   void shouldUseProxyTwice() {
-    server.setRoute("/target.html", exchange -> {
+    getServer().setRoute("/target.html", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
         writer.write("<html><title>Served by the proxy</title></html>");
       }
     });
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setProxy(
-      new Proxy("localhost:" + server.PORT)));
+    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setProxy(
+      new Proxy("localhost:" + getServer().PORT)));
     Page page = context.newPage();
     page.navigate("http://non-existent.com/target.html");
     page.navigate("http://non-existent-2.com/target.html");
@@ -91,14 +91,14 @@ public class TestBrowserContextProxy extends TestBase {
 
   @Test
   void shouldUseProxyForSecondPage() {
-    server.setRoute("/target.html", exchange -> {
+    getServer().setRoute("/target.html", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
         writer.write("<html><title>Served by the proxy</title></html>");
       }
     });
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setProxy(
-      new Proxy("localhost:" + server.PORT)));
+    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setProxy(
+      new Proxy("localhost:" + getServer().PORT)));
 
     Page page = context.newPage();
     page.navigate("http://non-existent.com/target.html");
@@ -113,14 +113,14 @@ public class TestBrowserContextProxy extends TestBase {
 
   @Test
   void shouldWorkWithIPPORTNotion() {
-    server.setRoute("/target.html", exchange -> {
+    getServer().setRoute("/target.html", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
         writer.write("<html><title>Served by the proxy</title></html>");
       }
     });
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setProxy(
-      new Proxy("127.0.0.1:" + server.PORT)));
+    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setProxy(
+      new Proxy("127.0.0.1:" + getServer().PORT)));
 
     Page page = context.newPage();
     page.navigate("http://non-existent.com/target.html");
@@ -130,7 +130,7 @@ public class TestBrowserContextProxy extends TestBase {
 
   @Test
   void shouldAuthenticate() {
-    server.setRoute("/target.html", exchange -> {
+    getServer().setRoute("/target.html", exchange -> {
       List<String> auth = exchange.getRequestHeaders().get("proxy-authorization");
       if (auth == null) {
         exchange.getResponseHeaders().add("Proxy-Authenticate", "Basic realm='Access to internal site'");
@@ -143,8 +143,8 @@ public class TestBrowserContextProxy extends TestBase {
         writer.write("<html><title>" + auth.get(0) + "</title></html>");
       }
     });
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setProxy(
-      new Proxy("localhost:" + server.PORT)
+    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setProxy(
+      new Proxy("localhost:" + getServer().PORT)
       .setUsername("user")
       .setPassword("secret")));
     Page page = context.newPage();
@@ -160,14 +160,14 @@ public class TestBrowserContextProxy extends TestBase {
   @Test
   @DisabledIf(value="isChromiumHeadful", disabledReason="fixme")
   void shouldExcludePatterns() {
-    server.setRoute("/target.html", exchange -> {
+    getServer().setRoute("/target.html", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
         writer.write("<html><title>Served by the proxy</title></html>");
       }
     });
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setProxy(
-      new Proxy("127.0.0.1:" + server.PORT)
+    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setProxy(
+      new Proxy("127.0.0.1:" + getServer().PORT)
       // FYI: using long and weird domain names to avoid ATT DNS hijacking
       // that resolves everything to some weird search results page.
       //
@@ -212,7 +212,7 @@ public class TestBrowserContextProxy extends TestBase {
 
   @Test
   void doesLaunchWithoutAPort() {
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setProxy(
+    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setProxy(
       new Proxy("http://localhost")));
     context.close();
   }

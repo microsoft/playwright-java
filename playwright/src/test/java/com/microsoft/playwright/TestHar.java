@@ -42,7 +42,7 @@ public class TestHar extends TestBase {
 
     PageWithHar() throws IOException {
       harFile = Files.createTempFile("test-", ".har");
-      context = browser.newContext(new Browser.NewContextOptions()
+      context = getBrowser().newContext(new Browser.NewContextOptions()
         .setRecordHarPath(harFile).setIgnoreHTTPSErrors(true));
       page = context.newPage();
     }
@@ -76,7 +76,7 @@ public class TestHar extends TestBase {
 
   @Test
   void shouldHaveVersionAndCreator() throws IOException {
-    pageWithHar.page.navigate(server.EMPTY_PAGE);
+    pageWithHar.page.navigate(getServer().EMPTY_PAGE);
     JsonObject log = pageWithHar.log();
     assertEquals("1.2", log.get("version").getAsString());
     assertEquals("Playwright", log.getAsJsonObject("creator").get("name").getAsString());
@@ -84,10 +84,10 @@ public class TestHar extends TestBase {
 
   @Test
   void shouldHaveBrowser() throws IOException {
-    pageWithHar.page.navigate(server.EMPTY_PAGE);
+    pageWithHar.page.navigate(getServer().EMPTY_PAGE);
     JsonObject log = pageWithHar.log();
-    assertEquals(browserType.name(), log.getAsJsonObject("browser").get("name").getAsString().toLowerCase());
-    assertEquals(browser.version(), log.getAsJsonObject("browser").get("version").getAsString());
+    assertEquals(getBrowserType().name(), log.getAsJsonObject("browser").get("name").getAsString().toLowerCase());
+    assertEquals(getBrowser().version(), log.getAsJsonObject("browser").get("version").getAsString());
   }
 
   @Test
@@ -110,7 +110,7 @@ public class TestHar extends TestBase {
   void shouldHavePagesInPersistentContext() throws IOException {
     Path harPath = pageWithHar.harFile;
     Path userDataDir = Files.createTempDirectory("user-data-dir-");
-    BrowserContext context = browserType.launchPersistentContext(userDataDir,
+    BrowserContext context = getBrowserType().launchPersistentContext(userDataDir,
       new BrowserType.LaunchPersistentContextOptions()
         .setRecordHarPath(harPath).setIgnoreHTTPSErrors(true));
     Page page = context.pages().get(0);
@@ -131,12 +131,12 @@ public class TestHar extends TestBase {
 
   @Test
   void shouldIncludeRequest() throws IOException {
-    pageWithHar.page.navigate(server.EMPTY_PAGE);
+    pageWithHar.page.navigate(getServer().EMPTY_PAGE);
     JsonObject log = pageWithHar.log();
     assertEquals(1, log.getAsJsonArray("entries").size());
     JsonObject entry = log.getAsJsonArray("entries").get(0).getAsJsonObject();
     assertEquals("page_0", entry.get("pageref").getAsString());
-    assertEquals(server.EMPTY_PAGE, entry.getAsJsonObject("request").get("url").getAsString());
+    assertEquals(getServer().EMPTY_PAGE, entry.getAsJsonObject("request").get("url").getAsString());
     assertEquals("GET", entry.getAsJsonObject("request").get("method").getAsString());
     assertEquals("HTTP/1.1", entry.getAsJsonObject("request").get("httpVersion").getAsString());
     assertTrue(entry.getAsJsonObject("request").get("headers").getAsJsonArray().size() > 1);
@@ -152,7 +152,7 @@ public class TestHar extends TestBase {
 
   @Test
   void shouldIncludeResponse() throws IOException {
-    pageWithHar.page.navigate(server.EMPTY_PAGE);
+    pageWithHar.page.navigate(getServer().EMPTY_PAGE);
     JsonObject log = pageWithHar.log();
     JsonObject entry = log.getAsJsonArray("entries").get(0).getAsJsonObject();
     assertEquals(200, entry.getAsJsonObject("response").get("status").getAsInt());

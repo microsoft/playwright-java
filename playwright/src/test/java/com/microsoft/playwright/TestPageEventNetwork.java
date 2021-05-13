@@ -29,23 +29,23 @@ public class TestPageEventNetwork extends TestBase {
   void PageEventsRequest() {
     List<Request> requests = new ArrayList<>();
     page.onRequest(request -> requests.add(request));
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     assertEquals(1, requests.size());
-    assertEquals(server.EMPTY_PAGE, requests.get(0).url());
+    assertEquals(getServer().EMPTY_PAGE, requests.get(0).url());
     assertEquals("document", requests.get(0).resourceType());
     assertEquals("GET", requests.get(0).method());
     assertNotNull(requests.get(0).response());
     assertEquals(page.mainFrame(), requests.get(0).frame());
-    assertEquals(server.EMPTY_PAGE, requests.get(0).frame().url());
+    assertEquals(getServer().EMPTY_PAGE, requests.get(0).frame().url());
   }
 
   @Test
   void PageEventsResponse() {
     List<Response> responses = new ArrayList<>();
     page.onResponse(response -> responses.add(response));
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     assertEquals(1, responses.size());
-    assertEquals(server.EMPTY_PAGE, responses.get(0).url());
+    assertEquals(getServer().EMPTY_PAGE, responses.get(0).url());
     assertEquals(200, responses.get(0).status());
     assertTrue(responses.get(0).ok());
     assertNotNull(responses.get(0).request());
@@ -53,10 +53,10 @@ public class TestPageEventNetwork extends TestBase {
 
   @Test
   void PageEventsRequestFailed() {
-    server.setRoute("/one-style.css", exchange -> exchange.getResponseBody().close());
+    getServer().setRoute("/one-style.css", exchange -> exchange.getResponseBody().close());
     List<Request> failedRequests = new ArrayList<>();
     page.onRequestFailed(request -> failedRequests.add(request));
-    page.navigate(server.PREFIX + "/one-style.html");
+    page.navigate(getServer().PREFIX + "/one-style.html");
     assertEquals(1, failedRequests.size());
     assertTrue(failedRequests.get(0).url().contains("one-style.css"));
     assertNull(failedRequests.get(0).response());
@@ -80,15 +80,15 @@ public class TestPageEventNetwork extends TestBase {
   void PageEventsRequestFinished() {
     Request[] requestRef = {null};
     page.onRequestFinished(r -> requestRef[0] = r);
-    Response response = page.navigate(server.EMPTY_PAGE);
+    Response response = page.navigate(getServer().EMPTY_PAGE);
     assertNull(response.finished());
     assertNotNull(response);
     Request request = requestRef[0];
     assertEquals(response.request(), request);
-    assertEquals(server.EMPTY_PAGE, request.url());
+    assertEquals(getServer().EMPTY_PAGE, request.url());
     assertNotNull(request.response());
     assertEquals(page.mainFrame(), request.frame());
-    assertEquals(server.EMPTY_PAGE, request.frame().url());
+    assertEquals(getServer().EMPTY_PAGE, request.frame().url());
     assertNull(request.failure());
   }
 
@@ -97,7 +97,7 @@ public class TestPageEventNetwork extends TestBase {
     List<String> events = new ArrayList<>();
     page.onRequest(request -> events.add("request"));
     page.onResponse(response -> events.add("response"));
-    Response response = page.navigate(server.EMPTY_PAGE);
+    Response response = page.navigate(getServer().EMPTY_PAGE);
     assertNull(response.finished());
     events.add("requestfinished");
     assertEquals(asList("request", "response", "requestfinished"), events);
@@ -118,17 +118,17 @@ public class TestPageEventNetwork extends TestBase {
     page.onRequestFailed(request -> {
       events.add("FAIL " + request.url());
     });
-    server.setRedirect("/foo.html", "/empty.html");
-    String FOO_URL = server.PREFIX + "/foo.html";
+    getServer().setRedirect("/foo.html", "/empty.html");
+    String FOO_URL = getServer().PREFIX + "/foo.html";
     Response response = page.navigate(FOO_URL);
     response.finished();
     assertEquals(asList(
       "GET " + FOO_URL,
       "302 " + FOO_URL,
       "DONE " + FOO_URL,
-      "GET " + server.EMPTY_PAGE,
-      "200 " + server.EMPTY_PAGE,
-      "DONE " + server.EMPTY_PAGE), events);
+      "GET " + getServer().EMPTY_PAGE,
+      "200 " + getServer().EMPTY_PAGE,
+      "DONE " + getServer().EMPTY_PAGE), events);
     Request redirectedFrom = response.request().redirectedFrom();
     assertTrue(redirectedFrom.url().contains("/foo.html"));
     assertNull(redirectedFrom.redirectedFrom());

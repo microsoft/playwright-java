@@ -23,41 +23,41 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestPageWaitForResponse extends TestBase {
   @Test
   void shouldWork() {
-    page.navigate(server.EMPTY_PAGE);
-    Response response = page.waitForResponse(server.PREFIX + "/digits/2.png", () -> {
+    page.navigate(getServer().EMPTY_PAGE);
+    Response response = page.waitForResponse(getServer().PREFIX + "/digits/2.png", () -> {
       page.evaluate("() => {\n" +
         "  fetch('/digits/1.png');\n" +
         "  fetch('/digits/2.png');\n" +
         "  fetch('/digits/3.png');\n" +
         "}");
     });
-    assertEquals(server.PREFIX + "/digits/2.png", response.url());
+    assertEquals(getServer().PREFIX + "/digits/2.png", response.url());
   }
 
   @Test
   void shouldRespectTimeout() {
-    page.navigate(server.EMPTY_PAGE);
-    Response response = page.waitForResponse(r -> r.url().equals(server.PREFIX + "/digits/2.png"), () -> {
+    page.navigate(getServer().EMPTY_PAGE);
+    Response response = page.waitForResponse(r -> r.url().equals(getServer().PREFIX + "/digits/2.png"), () -> {
       page.evaluate("() => {\n" +
         "  fetch('/digits/1.png');\n" +
         "  fetch('/digits/2.png');\n" +
         "  fetch('/digits/3.png');\n" +
         "}");
     });
-    assertEquals(server.PREFIX + "/digits/2.png", response.url());
+    assertEquals(getServer().PREFIX + "/digits/2.png", response.url());
   }
 
   @Test
   void shouldWorkWithPredicate() {
-    page.navigate(server.EMPTY_PAGE);
-    Response response = page.waitForResponse(r -> r.url().equals(server.PREFIX + "/digits/2.png"), () -> {
+    page.navigate(getServer().EMPTY_PAGE);
+    Response response = page.waitForResponse(r -> r.url().equals(getServer().PREFIX + "/digits/2.png"), () -> {
       page.evaluate("() => {\n" +
         "  fetch('/digits/1.png');\n" +
         "  fetch('/digits/2.png');\n" +
         "  fetch('/digits/3.png');\n" +
         "}");
     });
-    assertEquals(server.PREFIX + "/digits/2.png", response.url());
+    assertEquals(getServer().PREFIX + "/digits/2.png", response.url());
   }
 
   @Test
@@ -73,9 +73,9 @@ public class TestPageWaitForResponse extends TestBase {
 
   @Test
   void shouldWorkWithNoTimeout() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     Response response = page.waitForResponse(
-      server.PREFIX + "/digits/2.png",
+      getServer().PREFIX + "/digits/2.png",
       new Page.WaitForResponseOptions().setTimeout(0),
       () -> {
         page.evaluate("() => setTimeout(() => {\n" +
@@ -85,6 +85,6 @@ public class TestPageWaitForResponse extends TestBase {
           "}, 50)");
 
       });
-    assertEquals(server.PREFIX + "/digits/2.png", response.url());
+    assertEquals(getServer().PREFIX + "/digits/2.png", response.url());
   }
 }

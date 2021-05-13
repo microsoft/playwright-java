@@ -21,7 +21,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -151,7 +150,7 @@ public class TestWebSocket extends TestBase {
     });
     page.evaluate("port => {\n" +
       "  new WebSocket('ws://localhost:' + port + '/bogus-ws');\n" +
-      "}", server.PORT);
+      "}", getServer().PORT);
     waitForCondition(socketError);
     if (isFirefox()) {
       assertEquals("CLOSE_ABNORMAL", error[0]);

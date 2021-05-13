@@ -23,14 +23,37 @@ import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Utils {
+  private static final AtomicInteger nextUnusedPort = new AtomicInteger(9000);
+
+  private static boolean available(int port) {
+    try (ServerSocket ignored = new ServerSocket(port)) {
+      return true;
+    } catch (IOException ignored) {
+      return false;
+    }
+  }
+
+  static int nextFreePort() {
+    for (int i = 0; i < 100; i++) {
+      int port = nextUnusedPort.getAndIncrement();
+      if (available(port)) {
+        return port;
+      }
+    }
+    throw new RuntimeException("Cannot find free port: " + nextUnusedPort.get());
+  }
+
   static void assertJsonEquals(String expected, Object actual) {
     JsonElement actualJson = JsonParser.parseString(new Gson().toJson(actual));
     assertEquals(JsonParser.parseString(expected), actualJson);
