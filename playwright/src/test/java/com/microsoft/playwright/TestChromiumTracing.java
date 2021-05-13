@@ -35,36 +35,36 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestChromiumTracing extends TestBase {
   @Test
   void shouldOutputATrace(@TempDir Path tempDir) {
-    Page page = browser.newPage();
+    Page page = getBrowser().newPage();
     Path outputTraceFile = tempDir.resolve("trace.json");
-    browser.startTracing(page, new Browser.StartTracingOptions()
+    getBrowser().startTracing(page, new Browser.StartTracingOptions()
       .setScreenshots(true).setPath(outputTraceFile));
-    page.navigate(server.PREFIX + "/grid.html");
-    browser.stopTracing();
+    page.navigate(getServer().PREFIX + "/grid.html");
+    getBrowser().stopTracing();
     assertTrue(Files.exists(outputTraceFile));
     page.close();
   }
 
   @Test
   void shouldCreateDirectoriesAsNeeded(@TempDir Path tempDir) {
-    Page page = browser.newPage();
+    Page page = getBrowser().newPage();
     Path filePath = tempDir.resolve("these/are/directories/trace.json");
-    browser.startTracing(page, new Browser.StartTracingOptions()
+    getBrowser().startTracing(page, new Browser.StartTracingOptions()
       .setScreenshots(true).setPath(filePath));
-    page.navigate(server.PREFIX + "/grid.html");
-    browser.stopTracing();
+    page.navigate(getServer().PREFIX + "/grid.html");
+    getBrowser().stopTracing();
     assertTrue(Files.exists(filePath));
     page.close();
   }
 
   @Test
   void shouldRunWithCustomCategoriesIfProvided(@TempDir Path tempDir) throws IOException {
-    Page page = browser.newPage();
+    Page page = getBrowser().newPage();
     Path outputTraceFile = tempDir.resolve("trace.json");
-    browser.startTracing(page, new Browser.StartTracingOptions()
+    getBrowser().startTracing(page, new Browser.StartTracingOptions()
       .setPath(outputTraceFile)
       .setCategories(asList("disabled-by-default-v8.cpu_profiler.hires")));
-    browser.stopTracing();
+    getBrowser().stopTracing();
     byte[] data = Files.readAllBytes(outputTraceFile);
     JsonObject traceJson = new Gson().fromJson(new FileReader(outputTraceFile.toFile()), JsonObject.class);
     assertTrue(traceJson.getAsJsonObject("metadata").get("trace-config")
@@ -74,30 +74,30 @@ public class TestChromiumTracing extends TestBase {
 
   @Test
   void shouldThrowIfTracingOnTwoPages(@TempDir Path tempDir) {
-    Page page = browser.newPage();
+    Page page = getBrowser().newPage();
     Path outputTraceFile = tempDir.resolve("trace.json");
-    browser.startTracing(page, new Browser.StartTracingOptions()
+    getBrowser().startTracing(page, new Browser.StartTracingOptions()
         .setPath(outputTraceFile));
-    Page newPage = browser.newPage();
+    Page newPage = getBrowser().newPage();
     try {
-      browser.startTracing(newPage, new Browser.StartTracingOptions()
+      getBrowser().startTracing(newPage, new Browser.StartTracingOptions()
         .setPath(outputTraceFile));
       fail("did not throw");
     } catch (PlaywrightException e) {
     }
     newPage.close();
-    browser.stopTracing();
+    getBrowser().stopTracing();
     page.close();
   }
 
   @Test
   void shouldReturnABuffer(@TempDir Path tempDir) throws IOException {
-    Page page = browser.newPage();
+    Page page = getBrowser().newPage();
     Path outputTraceFile = tempDir.resolve("trace.json");
-    browser.startTracing(page, new Browser.StartTracingOptions()
+    getBrowser().startTracing(page, new Browser.StartTracingOptions()
       .setScreenshots(true).setPath(outputTraceFile));
-    page.navigate(server.PREFIX + "/grid.html");
-    byte[] trace = browser.stopTracing();
+    page.navigate(getServer().PREFIX + "/grid.html");
+    byte[] trace = getBrowser().stopTracing();
     byte[] buf = Files.readAllBytes(outputTraceFile);
     assertArrayEquals(buf, trace);
     page.close();
@@ -105,20 +105,20 @@ public class TestChromiumTracing extends TestBase {
 
   @Test
   void shouldWorkWithoutOptions() {
-    Page page = browser.newPage();
-    browser.startTracing(page);
-    page.navigate(server.PREFIX + "/grid.html");
-    byte[] trace = browser.stopTracing();
+    Page page = getBrowser().newPage();
+    getBrowser().startTracing(page);
+    page.navigate(getServer().PREFIX + "/grid.html");
+    byte[] trace = getBrowser().stopTracing();
     assertNotNull(trace);
     page.close();
   }
 
   @Test
   void shouldSupportABufferWithoutAPath() {
-    Page page = browser.newPage();
-    browser.startTracing(page, new Browser.StartTracingOptions().setScreenshots(true));
-    page.navigate(server.PREFIX + "/grid.html");
-    byte[] trace = browser.stopTracing();
+    Page page = getBrowser().newPage();
+    getBrowser().startTracing(page, new Browser.StartTracingOptions().setScreenshots(true));
+    page.navigate(getServer().PREFIX + "/grid.html");
+    byte[] trace = getBrowser().stopTracing();
     assertTrue(new String(trace, StandardCharsets.UTF_8).contains("screenshot"));
     page.close();
   }

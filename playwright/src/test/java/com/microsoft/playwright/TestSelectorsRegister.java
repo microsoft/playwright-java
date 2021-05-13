@@ -37,11 +37,11 @@ public class TestSelectorsRegister extends TestBase {
       "  }\n" +
       "}";
     // Register one engine before creating context.
-    playwright.selectors().register("tag", selectorScript);
+    getPlaywright().selectors().register("tag", selectorScript);
 
-    BrowserContext context = browser.newContext();
+    BrowserContext context = getBrowser().newContext();
     // Register another engine after creating context.
-    playwright.selectors().register("tag2", selectorScript);
+    getPlaywright().selectors().register("tag2", selectorScript);
 
     Page page = context.newPage();
     page.setContent("<div><span></span></div><div></div>");
@@ -65,7 +65,7 @@ public class TestSelectorsRegister extends TestBase {
 
   @Test
   void shouldWorkWithPath() {
-    playwright.selectors().register("foo", Paths.get("src/test/resources/sectionselectorengine.js"));
+    getPlaywright().selectors().register("foo", Paths.get("src/test/resources/sectionselectorengine.js"));
     page.setContent("<section></section>");
     assertEquals("SECTION", page.evalOnSelector("foo=whatever", "e => e.nodeName"));
   }
@@ -81,8 +81,8 @@ public class TestSelectorsRegister extends TestBase {
       "    return window['__answer'] ? [window['__answer'], document.body, document.documentElement] : [];\n" +
       "  }\n" +
       "}";
-    playwright.selectors().register("main", createDummySelector);
-    playwright.selectors().register("isolated", createDummySelector, new Selectors.RegisterOptions().setContentScript(true));
+    getPlaywright().selectors().register("main", createDummySelector);
+    getPlaywright().selectors().register("isolated", createDummySelector, new Selectors.RegisterOptions().setContentScript(true));
     page.setContent("<div><span><section></section></span></div>");
     page.evaluate("() => window['__answer'] = document.querySelector('span')");
     // Works in main if asked.
@@ -123,22 +123,22 @@ public class TestSelectorsRegister extends TestBase {
       "  }\n" +
       "}";
     try {
-      playwright.selectors().register("$", createDummySelector);
+      getPlaywright().selectors().register("$", createDummySelector);
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Selector engine name may only contain [a-zA-Z0-9_] characters"));
     }
     // Selector names are case-sensitive.
-    playwright.selectors().register("dummy", createDummySelector);
-    playwright.selectors().register("duMMy", createDummySelector);
+    getPlaywright().selectors().register("dummy", createDummySelector);
+    getPlaywright().selectors().register("duMMy", createDummySelector);
     try {
-      playwright.selectors().register("dummy", createDummySelector);
+      getPlaywright().selectors().register("dummy", createDummySelector);
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("\"dummy\" selector engine has been already registered"));
     }
     try {
-      playwright.selectors().register("css", createDummySelector);
+      getPlaywright().selectors().register("css", createDummySelector);
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("\"css\" is a predefined selector engine"));

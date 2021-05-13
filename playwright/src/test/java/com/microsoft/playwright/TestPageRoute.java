@@ -54,7 +54,7 @@ public class TestPageRoute extends TestBase {
       route.resume();
       intercepted[0] = true;
     });
-    Response response = page.navigate(server.EMPTY_PAGE);
+    Response response = page.navigate(getServer().EMPTY_PAGE);
     assertTrue(response.ok());
     assertTrue(intercepted[0]);
   }
@@ -80,24 +80,24 @@ public class TestPageRoute extends TestBase {
       intercepted.add(4);
       route.resume();
     });
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     assertEquals(asList(1), intercepted);
 
     intercepted.clear();
     page.unroute("**/empty.html", handler1);
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     assertEquals(asList(2), intercepted);
 
     intercepted.clear();
     page.unroute("**/empty.html");
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     assertEquals(asList(4), intercepted);
   }
 
   @Test
   void shouldWorkWhenPOSTIsRedirectedWith302() {
-    server.setRedirect("/rredirect", "/empty.html");
-    page.navigate(server.EMPTY_PAGE);
+    getServer().setRedirect("/rredirect", "/empty.html");
+    page.navigate(getServer().EMPTY_PAGE);
     page.route("**/*", route -> route.resume());
     page.setContent("<form action='/rredirect' method='post'>\n" +
       "  <input type='hidden' id='foo' name='foo' value='FOOBAR'>\n" +
@@ -108,27 +108,27 @@ public class TestPageRoute extends TestBase {
   // @see https://github.com/GoogleChrome/puppeteer/issues/3973
   @Test
   void shouldWorkWhenHeaderManipulationHeadersWithRedirect() {
-    server.setRedirect("/rrredirect", "/empty.html");
+    getServer().setRedirect("/rrredirect", "/empty.html");
     page.route("**/*", route -> {
       Map<String, String> headers = new HashMap<>(route.request().headers());
       headers.put("foo", "bar");
       route.resume(new Route.ResumeOptions().setHeaders(headers));
     });
-    page.navigate(server.PREFIX + "/rrredirect");
+    page.navigate(getServer().PREFIX + "/rrredirect");
   }
 
   // @see https://github.com/GoogleChrome/puppeteer/issues/4743
   @Test
   void shouldBeAbleToRemoveHeaders() throws ExecutionException, InterruptedException {
-    page.navigate(server.PREFIX + "/empty.html");
+    page.navigate(getServer().PREFIX + "/empty.html");
     page.route("**/*", route -> {
       Map<String, String> headers = new HashMap<>(route.request().headers());
       headers.remove("foo");
       route.resume(new Route.ResumeOptions().setHeaders(headers));
     });
 
-    Future<Server.Request> serverRequest = server.futureRequest("/title.html");
-    page.evaluate("url => fetch(url, { headers: {foo: 'bar'} })", server.PREFIX + "/title.html");
+    Future<Server.Request> serverRequest = getServer().futureRequest("/title.html");
+    page.evaluate("url => fetch(url, { headers: {foo: 'bar'} })", getServer().PREFIX + "/title.html");
     assertFalse(serverRequest.get().headers.containsKey("foo"));
   }
 
@@ -139,7 +139,7 @@ public class TestPageRoute extends TestBase {
       requests.add(route.request());
       route.resume();
     });
-    page.navigate(server.PREFIX + "/one-style.html");
+    page.navigate(getServer().PREFIX + "/one-style.html");
     assertTrue(requests.get(1).url().contains("/one-style.css"));
     assertTrue(requests.get(1).headers().containsKey("referer"));
     assertTrue(requests.get(1).headers().get("referer").contains("/one-style.html"));
@@ -148,9 +148,9 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldProperlyReturnNavigationResponseWhenURLHasCookies() {
     // Setup cookie.
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     context.addCookies(asList(new Cookie("foo", "bar")
-      .setUrl(server.EMPTY_PAGE)));
+      .setUrl(getServer().EMPTY_PAGE)));
     // Setup request interception.
     page.route("**/*", route -> route.resume());
     Response response = page.reload();
@@ -164,7 +164,7 @@ public class TestPageRoute extends TestBase {
       assertEquals("bar", route.request().headers().get("foo"));
       route.resume();
     });
-    Response response = page.navigate(server.EMPTY_PAGE);
+    Response response = page.navigate(getServer().EMPTY_PAGE);
     assertTrue(response.ok());
   }
 
@@ -172,8 +172,8 @@ public class TestPageRoute extends TestBase {
   @Test
   @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fixme")
   void shouldWorkWithRedirectInsideSyncXHR() {
-    page.navigate(server.EMPTY_PAGE);
-    server.setRedirect("/logo.png", "/pptr.png");
+    page.navigate(getServer().EMPTY_PAGE);
+    getServer().setRedirect("/logo.png", "/pptr.png");
     page.route("**/*", route -> route.resume());
     Object status = page.evaluate("async () => {\n" +
       "  const request = new XMLHttpRequest();\n" +
@@ -186,12 +186,12 @@ public class TestPageRoute extends TestBase {
 
   @Test
   void shouldWorkWithCustomRefererHeaders() {
-    page.setExtraHTTPHeaders(mapOf("referer", server.EMPTY_PAGE));
+    page.setExtraHTTPHeaders(mapOf("referer", getServer().EMPTY_PAGE));
     page.route("**/*", route -> {
-      assertEquals(server.EMPTY_PAGE, route.request().headers().get("referer"));
+      assertEquals(getServer().EMPTY_PAGE, route.request().headers().get("referer"));
       route.resume();
     });
-    Response response = page.navigate(server.EMPTY_PAGE);
+    Response response = page.navigate(getServer().EMPTY_PAGE);
     assertTrue(response.ok());
   }
 
@@ -203,7 +203,7 @@ public class TestPageRoute extends TestBase {
       if (request.url().contains(".css"))
         failed[0] = true;
     });
-    Response response = page.navigate(server.PREFIX + "/one-style.html");
+    Response response = page.navigate(getServer().PREFIX + "/one-style.html");
     assertTrue(response.ok());
     assertNull(response.request().failure());
     assertTrue(failed[0]);
@@ -215,7 +215,7 @@ public class TestPageRoute extends TestBase {
     Request[] failedRequest = {null};
     page.onRequestFailed(r -> failedRequest[0] = r);
     try {
-      page.navigate(server.EMPTY_PAGE);
+      page.navigate(getServer().EMPTY_PAGE);
     } catch (PlaywrightException e) {
     }
     assertNotNull(failedRequest[0]);
@@ -232,8 +232,8 @@ public class TestPageRoute extends TestBase {
   void shouldSendReferer() throws ExecutionException, InterruptedException {
     page.setExtraHTTPHeaders(mapOf("referer", "http://google.com/"));
     page.route("**/*", route -> route.resume());
-    Future<Server.Request> request = server.futureRequest("/grid.html");
-    page.navigate(server.PREFIX + "/grid.html");
+    Future<Server.Request> request = getServer().futureRequest("/grid.html");
+    page.navigate(getServer().PREFIX + "/grid.html");
     assertEquals(asList("http://google.com/"), request.get().headers.get("referer"));
   }
 
@@ -241,7 +241,7 @@ public class TestPageRoute extends TestBase {
   void shouldFailNavigationWhenAbortingMainResource() {
     page.route("**/*", route -> route.abort());
     try {
-      page.navigate(server.EMPTY_PAGE);
+      page.navigate(getServer().EMPTY_PAGE);
       fail("did not throw");
     } catch (PlaywrightException e) {
       if (isWebKit())
@@ -261,12 +261,12 @@ public class TestPageRoute extends TestBase {
       route.resume();
       intercepted.add(route.request());
     });
-    server.setRedirect("/non-existing-page.html", "/non-existing-page-2.html");
-    server.setRedirect("/non-existing-page-2.html", "/non-existing-page-3.html");
-    server.setRedirect("/non-existing-page-3.html", "/non-existing-page-4.html");
-    server.setRedirect("/non-existing-page-4.html", "/empty.html");
+    getServer().setRedirect("/non-existing-page.html", "/non-existing-page-2.html");
+    getServer().setRedirect("/non-existing-page-2.html", "/non-existing-page-3.html");
+    getServer().setRedirect("/non-existing-page-3.html", "/non-existing-page-4.html");
+    getServer().setRedirect("/non-existing-page-4.html", "/empty.html");
 
-    Response response = page.navigate(server.PREFIX + "/non-existing-page.html");
+    Response response = page.navigate(getServer().PREFIX + "/non-existing-page.html");
     assertEquals(200, response.status());
     assertTrue(response.url().contains("empty.html"));
 
@@ -298,16 +298,16 @@ public class TestPageRoute extends TestBase {
       route.resume();
       intercepted.add(route.request());
     });
-    server.setRedirect("/one-style.css", "/two-style.css");
-    server.setRedirect("/two-style.css", "/three-style.css");
-    server.setRedirect("/three-style.css", "/four-style.css");
-    server.setRoute("/four-style.css", exchange -> {
+    getServer().setRedirect("/one-style.css", "/two-style.css");
+    getServer().setRedirect("/two-style.css", "/three-style.css");
+    getServer().setRedirect("/three-style.css", "/four-style.css");
+    getServer().setRoute("/four-style.css", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
         writer.write("body {box-sizing: border-box; } ");
       }
     });
-    Response response = page.navigate(server.PREFIX + "/one-style.html");
+    Response response = page.navigate(getServer().PREFIX + "/one-style.html");
     assertEquals(200, response.status());
     assertTrue(response.url().contains("one-style.html"));
 
@@ -326,9 +326,9 @@ public class TestPageRoute extends TestBase {
 
   @Test
   void shouldWorkWithEqualRequests() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     AtomicInteger responseCount = new AtomicInteger(1);
-    server.setRoute("/zzz", exchange -> {
+    getServer().setRoute("/zzz", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
         writer.write((responseCount.getAndIncrement()) * 11 + "");
@@ -367,7 +367,7 @@ public class TestPageRoute extends TestBase {
 
   @Test
   void shouldBeAbleToFetchDataURLAndNotFireDataURLRequests() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     List<Request> requests = new ArrayList<>();
     page.route("**/*", route -> {
       requests.add(route.request());
@@ -386,11 +386,11 @@ public class TestPageRoute extends TestBase {
       requests.add(route.request());
       route.resume();
     });
-    Response response = page.navigate(server.EMPTY_PAGE + "#hash");
+    Response response = page.navigate(getServer().EMPTY_PAGE + "#hash");
     assertEquals(200, response.status());
-    assertEquals(server.EMPTY_PAGE, response.url());
+    assertEquals(getServer().EMPTY_PAGE, response.url());
     assertEquals(1, requests.size());
-    assertEquals(server.EMPTY_PAGE, requests.get(0).url());
+    assertEquals(getServer().EMPTY_PAGE, requests.get(0).url());
   }
 
   @Test
@@ -398,18 +398,18 @@ public class TestPageRoute extends TestBase {
     // The requestWillBeSent will report encoded URL, whereas interception will
     // report URL as-is. @see crbug.com/759388
     page.route("**/*", route -> route.resume());
-    Response response = page.navigate(server.PREFIX + "/some nonexisting page");
+    Response response = page.navigate(getServer().PREFIX + "/some nonexisting page");
     assertEquals(404, response.status());
   }
 
   @Test
   void shouldWorkWithBadlyEncodedServer() {
-    server.setRoute("/malformed", exchange -> {
+    getServer().setRoute("/malformed", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       exchange.getResponseBody().close();
     });
     page.route("**/*", route -> route.resume());
-    Response response = page.navigate(server.PREFIX + "/malformed?rnd=%911");
+    Response response = page.navigate(getServer().PREFIX + "/malformed?rnd=%911");
     assertEquals(200, response.status());
   }
 
@@ -422,7 +422,7 @@ public class TestPageRoute extends TestBase {
       route.resume();
       requests.add(route.request());
     });
-    Response response = page.navigate("data:text/html,<link rel='stylesheet' href='" + server.PREFIX + "/fonts?helvetica|arial'/>");
+    Response response = page.navigate("data:text/html,<link rel='stylesheet' href='" + getServer().PREFIX + "/fonts?helvetica|arial'/>");
     assertNull(response);
     assertEquals(1, requests.size());
     assertEquals(400, (requests.get(0).response()).status());
@@ -435,7 +435,7 @@ public class TestPageRoute extends TestBase {
     page.route("**/*", r -> route[0] = r);
     // Wait for request interception.
     page.waitForRequest("**", () ->
-      page.evalOnSelector("iframe", "(frame, url) => frame.src = url", server.EMPTY_PAGE));
+      page.evalOnSelector("iframe", "(frame, url) => frame.src = url", getServer().EMPTY_PAGE));
     // Delete frame to cause request to be canceled.
     page.evalOnSelector("iframe", "frame => frame.remove()");
     try {
@@ -447,13 +447,13 @@ public class TestPageRoute extends TestBase {
 
   @Test
   void shouldInterceptMainResourceDuringCrossProcessNavigation() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     boolean[] intercepted = {false};
-    page.route(server.CROSS_PROCESS_PREFIX + "/empty.html", route -> {
+    page.route(getServer().CROSS_PROCESS_PREFIX + "/empty.html", route -> {
       intercepted[0] = true;
       route.resume();
     });
-    Response response = page.navigate(server.CROSS_PROCESS_PREFIX + "/empty.html");
+    Response response = page.navigate(getServer().CROSS_PROCESS_PREFIX + "/empty.html");
     assertTrue(response.ok());
     assertTrue(intercepted[0]);
   }
@@ -461,15 +461,15 @@ public class TestPageRoute extends TestBase {
   @Test
   @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fixme")
   void shouldFulfillWithRedirectStatus() {
-    page.navigate(server.PREFIX + "/title.html");
-    server.setRoute("/final", exchange -> {
+    page.navigate(getServer().PREFIX + "/title.html");
+    getServer().setRoute("/final", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
         writer.write("foo");
       }
     });
     page.route("**/*", route -> {
-      if (!route.request().url().equals(server.PREFIX + "/redirect_this")) {
+      if (!route.request().url().equals(getServer().PREFIX + "/redirect_this")) {
         route.resume();
         return;
       }
@@ -480,13 +480,13 @@ public class TestPageRoute extends TestBase {
     Object text = page.evaluate("async url => {\n" +
       "  const data = await fetch(url);\n" +
       "  return data.text();\n" +
-      "}", server.PREFIX + "/redirect_this");
+      "}", getServer().PREFIX + "/redirect_this");
     assertEquals("", text);
   }
 
   @Test
   void shouldSupportCorsWithGET() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     page.route("**/cars*", route -> {
       Map<String, String> headers = new HashMap<>();
       if (route.request().url().endsWith("allow")) {
@@ -525,7 +525,7 @@ public class TestPageRoute extends TestBase {
   @Test
   @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="https://github.com/microsoft/playwright/issues/6016")
   void shouldSupportCorsWithPOST() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillOptions()
         .setStatus(200)
@@ -548,12 +548,12 @@ public class TestPageRoute extends TestBase {
   @Test
   @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="https://github.com/microsoft/playwright/issues/6016")
   void shouldSupportCorsWithCredentials() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillOptions()
         .setStatus(200)
         .setContentType("application/json")
-        .setHeaders(mapOf("Access-Control-Allow-Origin", server.PREFIX,
+        .setHeaders(mapOf("Access-Control-Allow-Origin", getServer().PREFIX,
                                    "Access-Control-Allow-Credentials", "true"))
         .setBody("[\"electric\",\"gas\"]"));
     });
@@ -572,14 +572,14 @@ public class TestPageRoute extends TestBase {
 
   @Test
   void shouldRejectCorsWithDisallowedCredentials() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillOptions()
         .setStatus(200)
         .setContentType("application/json")
         // Should fail without this line below!
         // "Access-Control-Allow-Credentials": "true"
-        .setHeaders(mapOf("Access-Control-Allow-Origin", server.PREFIX))
+        .setHeaders(mapOf("Access-Control-Allow-Origin", getServer().PREFIX))
         .setBody("[\"electric\",\"gas\"]"));
     });
     try {
@@ -601,7 +601,7 @@ public class TestPageRoute extends TestBase {
   @Test
   @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="https://github.com/microsoft/playwright/issues/6016")
   void shouldSupportCorsForDifferentMethods() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     page.route("**/cars", route -> {
       route.fulfill(new Route.FulfillOptions()
         .setStatus(200)

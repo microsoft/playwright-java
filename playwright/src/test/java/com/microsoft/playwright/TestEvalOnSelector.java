@@ -143,7 +143,7 @@ public class TestEvalOnSelector extends TestBase {
 
   @Test
   void shouldSupportSpacesWithSyntax() {
-    page.navigate(server.PREFIX + "/deep-shadow.html");
+    page.navigate(getServer().PREFIX + "/deep-shadow.html");
     Object text = page.evalOnSelector(" css = div >>css=div>>css   = span  ", "e => e.textContent");
     assertEquals("Hello from root2", text);
   }

@@ -30,7 +30,7 @@ public class TestPageExposeFunction extends TestBase {
 
   @Test
   void exposeBindingShouldWork() {
-    BrowserContext context = browser.newContext();
+    BrowserContext context = getBrowser().newContext();
     Page page = context.newPage();
     BindingCallback.Source[] bindingSource = { null };
     page.exposeBinding("add", (source, args) -> {
@@ -109,7 +109,7 @@ public class TestPageExposeFunction extends TestBase {
     Object result = page.evaluate("async function() {\n" +
       "  return await window['compute'](9, 4);\n" +
       "}");
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     assertEquals(36, result);
   }
 
@@ -119,7 +119,7 @@ public class TestPageExposeFunction extends TestBase {
   @Test
   void shouldWorkOnFrames() {
     page.exposeFunction("compute", args -> (Integer) args[0] * (Integer) args[1]);
-    page.navigate(server.PREFIX + "/frames/nested-frames.html");
+    page.navigate(getServer().PREFIX + "/frames/nested-frames.html");
     Frame frame = page.frames().get(1);
     Object result = frame.evaluate("async function() {\n" +
       "  return window['compute'](3, 5);\n" +
@@ -129,7 +129,7 @@ public class TestPageExposeFunction extends TestBase {
 
   @Test
   void shouldWorkOnFramesBeforeNavigation() {
-    page.navigate(server.PREFIX + "/frames/nested-frames.html");
+    page.navigate(getServer().PREFIX + "/frames/nested-frames.html");
     page.exposeFunction("compute", args -> (Integer) args[0] * (Integer) args[1]);
 
     Frame frame = page.frames().get(1);
@@ -141,10 +141,10 @@ public class TestPageExposeFunction extends TestBase {
 
   @Test
   void shouldWorkAfterCrossOriginNavigation() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     page.exposeFunction("compute", args -> (Integer) args[0] * (Integer) args[1]);
 
-    page.navigate(server.CROSS_PROCESS_PREFIX + "/empty.html");
+    page.navigate(getServer().CROSS_PROCESS_PREFIX + "/empty.html");
     Object result = page.evaluate("window['compute'](9, 4)");
     assertEquals(36, result);
   }
@@ -183,13 +183,13 @@ public class TestPageExposeFunction extends TestBase {
     page.exposeBinding("logme", (source, args) -> {
       return 17;
     }, new Page.ExposeBindingOptions().setHandle(true));
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
 
     page.waitForNavigation(new Page.WaitForNavigationOptions().setWaitUntil(LOAD), () -> {
       page.evaluate("async url => {\n" +
         "  window['logme']({ foo: 42 });\n" +
         "  window.location.href = url;\n" +
-        "}", server.PREFIX + "/one-style.html");
+        "}", getServer().PREFIX + "/one-style.html");
     });
   }
 

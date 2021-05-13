@@ -179,5 +179,28 @@
         </plugins>
       </build>
     </profile>
+
+    <!-- Runs tests in parallel -->
+    <profile>
+      <id>parallel-tests</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <properties>
+                <configurationParameters>
+                  junit.jupiter.execution.parallel.enabled = true
+                  junit.jupiter.execution.parallel.mode.default = same_thread
+                  junit.jupiter.execution.parallel.mode.classes.default = concurrent
+                  junit.jupiter.execution.parallel.config.strategy=dynamic
+                  junit.jupiter.execution.parallel.config.dynamic.factor=0.5
+                </configurationParameters>
+              </properties>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 </project>

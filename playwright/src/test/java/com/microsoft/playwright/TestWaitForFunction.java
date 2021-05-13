@@ -136,8 +136,8 @@ public class TestWaitForFunction extends TestBase {
 
   @Test
   void shouldWorkWithStrictCSPPolicy() {
-    server.setCSP("/empty.html", "script-src " + server.PREFIX);
-    page.navigate(server.EMPTY_PAGE);
+    getServer().setCSP("/empty.html", "script-src " + getServer().PREFIX);
+    page.navigate(getServer().EMPTY_PAGE);
 
     page.evaluate("() => window['__FOO'] = 'hit'");
     page.waitForFunction("() => window['__FOO'] === 'hit'");
@@ -206,9 +206,9 @@ public class TestWaitForFunction extends TestBase {
 
   @Test
   void shouldSurviveCrossProcessNavigation() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     page.reload();
-    page.navigate(server.CROSS_PROCESS_PREFIX + "/grid.html");
+    page.navigate(getServer().CROSS_PROCESS_PREFIX + "/grid.html");
     page.evaluate("() => window['__FOO'] = 1");
     JSHandle result = page.waitForFunction("window.__FOO === 1");
     assertNotNull(result);
@@ -216,8 +216,8 @@ public class TestWaitForFunction extends TestBase {
 
   @Test
   void shouldSurviveNavigations() {
-    page.navigate(server.EMPTY_PAGE);
-    page.navigate(server.PREFIX + "/consolelog.html");
+    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(getServer().PREFIX + "/consolelog.html");
     page.evaluate("() => window['__done'] = true");
     page.waitForFunction("() => window['__done']");
   }
@@ -236,7 +236,7 @@ public class TestWaitForFunction extends TestBase {
 
     @Test
     void shouldNotBeCalledAfterFinishingSuccessfully() {
-      page.navigate(server.EMPTY_PAGE);
+      page.navigate(getServer().EMPTY_PAGE);
       List<String> messages = new ArrayList<>();
       page.onConsoleMessage(msg -> {
         if (msg.text().startsWith("waitForFunction")) {
@@ -262,7 +262,7 @@ public class TestWaitForFunction extends TestBase {
 
   @Test
   void shouldNotBeCalledAfterFinishingUnsuccessfully() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     List<String> messages = new ArrayList<>();
     page.onConsoleMessage(msg -> {
       if (msg.text().startsWith("waitForFunction")) {

@@ -42,7 +42,7 @@ public class TestDownload extends TestBase {
 
   @BeforeEach
   void addRoutes() {
-    server.setRoute("/download", exchange -> {
+    getServer().setRoute("/download", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
       exchange.getResponseHeaders().add("Content-Disposition", "attachment");
       exchange.sendResponseHeaders(200, 0);
@@ -50,7 +50,7 @@ public class TestDownload extends TestBase {
         writer.write("Hello world");
       }
     });
-    server.setRoute("/downloadWithFilename", exchange -> {
+    getServer().setRoute("/downloadWithFilename", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
       exchange.getResponseHeaders().add("Content-Disposition", "attachment; filename=file.txt");
       exchange.sendResponseHeaders(200, 0);
@@ -62,9 +62,9 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldReportDownloadsWithAcceptDownloadsFalse() {
-    page.setContent("<a href='" + server.PREFIX + "/downloadWithFilename'>download</a>");
+    page.setContent("<a href='" + getServer().PREFIX + "/downloadWithFilename'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
-    assertEquals(server.PREFIX + "/downloadWithFilename", download.url());
+    assertEquals(getServer().PREFIX + "/downloadWithFilename", download.url());
     assertEquals("file.txt", download.suggestedFilename());
     try {
       download.path();
@@ -76,8 +76,8 @@ public class TestDownload extends TestBase {
   }
   @Test
   void shouldReportDownloadsWithAcceptDownloadsTrue() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
-    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Page page = getBrowser().newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a href='" + getServer().PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
     Path path = download.path();
     assertTrue(Files.exists(path));
@@ -88,8 +88,8 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldSaveToUserSpecifiedPath() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
-    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Page page = getBrowser().newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a href='" + getServer().PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
 
     Path userFile = Files.createTempFile("download-", ".txt");
@@ -102,8 +102,8 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldSaveToUserSpecifiedPathWithoutUpdatingOriginalPath() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
-    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Page page = getBrowser().newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a href='" + getServer().PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
 
     Path userFile = Files.createTempFile("download-", ".txt");
@@ -125,8 +125,8 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldSaveToTwoDifferentPathsWithMultipleSaveAsCalls() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
-    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Page page = getBrowser().newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a href='" + getServer().PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
     {
       Path userFile = Files.createTempFile("download-", ".txt");
@@ -147,8 +147,8 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldSaveToOverwrittenFilepath() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
-    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Page page = getBrowser().newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a href='" + getServer().PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
     Path userFile = Files.createTempFile("download-", ".txt");
     {
@@ -168,8 +168,8 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldCreateSubdirectoriesWhenSavingToNonExistentUserSpecifiedPath() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
-    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Page page = getBrowser().newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a href='" + getServer().PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
 
     Path downloads = Files.createTempDirectory("downloads");
@@ -187,8 +187,8 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldErrorWhenSavingWithDownloadsDisabled() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(false));
-    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Page page = getBrowser().newPage(new Browser.NewPageOptions().setAcceptDownloads(false));
+    page.setContent("<a href='" + getServer().PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
 
     Path userPath = Files.createTempFile("download-", ".txt");
@@ -203,8 +203,8 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldErrorWhenSavingAfterDeletion() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
-    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Page page = getBrowser().newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a href='" + getServer().PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
 
     Path userPath = Files.createTempFile("download-", ".txt");
@@ -225,7 +225,7 @@ public class TestDownload extends TestBase {
   @Test
   void shouldReportNonNavigationDownloads() throws IOException {
     // Mac WebKit embedder does not download in this case, although Safari does.
-    server.setRoute("/download", exchange -> {
+    getServer().setRoute("/download", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
@@ -233,9 +233,9 @@ public class TestDownload extends TestBase {
       }
     });
 
-    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
-    page.navigate(server.EMPTY_PAGE);
-    page.setContent("<a download='file.txt' href='" + server.PREFIX + "/download'>download</a>");
+    Page page = getBrowser().newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.navigate(getServer().EMPTY_PAGE);
+    page.setContent("<a download='file.txt' href='" + getServer().PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
 
     assertEquals("file.txt", download.suggestedFilename());
@@ -248,8 +248,8 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldReportDownloadPathWithinPageOnDownloadHandlerForFiles() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
-    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Page page = getBrowser().newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a href='" + getServer().PREFIX + "/download'>download</a>");
     @SuppressWarnings("unchecked")
     Download[] download = {null};
     page.onDownload(d -> download[0] = d);
@@ -268,11 +268,11 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldReportDownloadPathWithinPageOnDownloadHandlerForBlobs() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    Page page = getBrowser().newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     @SuppressWarnings("unchecked")
     Download[] download = {null};
     page.onDownload(d -> download[0] = d);
-    page.navigate(server.PREFIX + "/download-blob.html");
+    page.navigate(getServer().PREFIX + "/download-blob.html");
     page.click("a");
     Instant start = Instant.now();
     while (download[0] == null) {
@@ -291,15 +291,15 @@ public class TestDownload extends TestBase {
   void shouldReportAltClickDownloads() throws IOException {
     // Firefox does not download on alt-click by default.
     // Our WebKit embedder does not download on alt-click, although Safari does.
-    server.setRoute("/download", exchange -> {
+    getServer().setRoute("/download", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
         writer.write("Hello world");
       }
     });
-    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
-    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Page page = getBrowser().newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a href='" + getServer().PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a", new Page.ClickOptions().setModifiers(asList(ALT))));
     Path path = download.path();
     assertTrue(Files.exists(path));
@@ -319,8 +319,8 @@ public class TestDownload extends TestBase {
     // TODO: - the test fails in headful Chromium as the popup page gets closed along
     // with the session before download completed event arrives.
     // - WebKit doesn't close the popup page
-    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
-    page.setContent("<a target=_blank href='" + server.PREFIX + "/download'>download</a>");
+    Page page = getBrowser().newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a target=_blank href='" + getServer().PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
     Path path = download.path();
     assertTrue(Files.exists(path));
@@ -331,8 +331,8 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldDeleteFile() {
-    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
-    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Page page = getBrowser().newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a href='" + getServer().PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
     Path path = download.path();
     assertTrue(Files.exists(path));
@@ -343,8 +343,8 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldExposeStream() throws IOException {
-    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
-    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Page page = getBrowser().newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a href='" + getServer().PREFIX + "/download'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
 
     InputStream stream = download.createReadStream();
@@ -356,8 +356,8 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldDeleteDownloadsOnContextDestruction() {
-    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
-    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Page page = getBrowser().newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a href='" + getServer().PREFIX + "/download'>download</a>");
     Download download1 = page.waitForDownload(() -> page.click("a"));
     Download download2 = page.waitForDownload(() -> page.click("a"));
     Path path1 = download1.path();
@@ -371,9 +371,9 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldDeleteDownloadsOnBrowserGone() {
-    Browser browser = browserType.launch();
+    Browser browser = getBrowserType().launch();
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
-    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    page.setContent("<a href='" + getServer().PREFIX + "/download'>download</a>");
     Download download1 = page.waitForDownload(() -> page.click("a"));
     Download download2 = page.waitForDownload(() -> page.click("a"));
     Path path1 = download1.path();

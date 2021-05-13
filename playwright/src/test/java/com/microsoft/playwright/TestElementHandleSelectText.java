@@ -8,7 +8,7 @@ public class TestElementHandleSelectText extends TestBase {
 
   @Test
   void shouldSelectTextarea() {
-    page.navigate(server.PREFIX + "/input/textarea.html");
+    page.navigate(getServer().PREFIX + "/input/textarea.html");
     ElementHandle textarea = page.querySelector("textarea");
     textarea.evaluate("textarea => textarea.value = 'some value'");
     textarea.selectText();
@@ -22,7 +22,7 @@ public class TestElementHandleSelectText extends TestBase {
 
   @Test
   void shouldSelectInput() {
-    page.navigate(server.PREFIX + "/input/textarea.html");
+    page.navigate(getServer().PREFIX + "/input/textarea.html");
     ElementHandle input = page.querySelector("input");
     input.evaluate("input => input.value = 'some value'");
     input.selectText();
@@ -36,7 +36,7 @@ public class TestElementHandleSelectText extends TestBase {
 
   @Test
   void shouldSelectPlainDiv() {
-    page.navigate(server.PREFIX + "/input/textarea.html");
+    page.navigate(getServer().PREFIX + "/input/textarea.html");
     ElementHandle div = page.querySelector("div.plain");
     div.selectText();
     assertEquals("Plain div", page.evaluate("() => window.getSelection().toString()"));
@@ -44,7 +44,7 @@ public class TestElementHandleSelectText extends TestBase {
 
   @Test
   void shouldTimeoutWaitingForInvisibleElement() {
-    page.navigate(server.PREFIX + "/input/textarea.html");
+    page.navigate(getServer().PREFIX + "/input/textarea.html");
     ElementHandle textarea = page.querySelector("textarea");
     textarea.evaluate("e => e.style.display = 'none'");
     try {

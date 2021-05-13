@@ -55,9 +55,9 @@ public class TestChromium extends TestBase {
   @Test
   void shouldConnectToAnExistingCdpSession() throws IOException {
     int port = nextPort++;
-    try (Browser browserServer = browserType.launch(createLaunchOptions()
+    try (Browser browserServer = getBrowserType().launch(createLaunchOptions()
         .setArgs(asList("--remote-debugging-port=" + port)))) {
-      Browser cdpBrowser = browserType.connectOverCDP("http://localhost:" + port);
+      Browser cdpBrowser = getBrowserType().connectOverCDP("http://localhost:" + port);
       List<BrowserContext> contexts = cdpBrowser.contexts();
       assertEquals(1, contexts.size());
       cdpBrowser.close();
@@ -67,20 +67,20 @@ public class TestChromium extends TestBase {
   @Test
   void shouldConnectToAnExistingCdpSessionTwice() throws IOException {
     int port = nextPort++;
-    try (Browser browserServer = browserType.launch(createLaunchOptions()
+    try (Browser browserServer = getBrowserType().launch(createLaunchOptions()
         .setArgs(asList("--remote-debugging-port=" + port)))) {
       String endpointUrl = "http://localhost:" + port;
-      Browser cdpBrowser1 = browserType.connectOverCDP(endpointUrl);
-      Browser cdpBrowser2 = browserType.connectOverCDP(endpointUrl);
+      Browser cdpBrowser1 = getBrowserType().connectOverCDP(endpointUrl);
+      Browser cdpBrowser2 = getBrowserType().connectOverCDP(endpointUrl);
       List<BrowserContext> contexts1 = cdpBrowser1.contexts();
       assertEquals(1, contexts1.size());
       Page page1 = contexts1.get(0).newPage();
-      page1.navigate(server.EMPTY_PAGE);
+      page1.navigate(getServer().EMPTY_PAGE);
 
       List<BrowserContext> contexts2 = cdpBrowser2.contexts();
       assertEquals(1, contexts2.size());
       Page page2 = contexts2.get(0).newPage();
-      page2.navigate(server.EMPTY_PAGE);
+      page2.navigate(getServer().EMPTY_PAGE);
 
       assertEquals(2, contexts1.get(0).pages().size());
       assertEquals(2, contexts2.get(0).pages().size());
@@ -93,16 +93,16 @@ public class TestChromium extends TestBase {
   @Test
   void shouldConnectOverAWsEndpoint() throws IOException {
     int port = nextPort++;
-    try (Browser browserServer = browserType.launch(createLaunchOptions()
+    try (Browser browserServer = getBrowserType().launch(createLaunchOptions()
         .setArgs(asList("--remote-debugging-port=" + port)))) {
       String wsEndpoint = wsEndpointFromUrl("http://localhost:" + port + "/json/version/");
 
-      Browser cdpBrowser1 = browserType.connectOverCDP(wsEndpoint);
+      Browser cdpBrowser1 = getBrowserType().connectOverCDP(wsEndpoint);
       List<BrowserContext> contexts1 = cdpBrowser1.contexts();
       assertEquals(1, contexts1.size());
       cdpBrowser1.close();
 
-      Browser cdpBrowser2 = browserType.connectOverCDP(wsEndpoint);
+      Browser cdpBrowser2 = getBrowserType().connectOverCDP(wsEndpoint);
       List<BrowserContext> contexts2 = cdpBrowser2.contexts();
       assertEquals(1, contexts2.size());
       cdpBrowser2.close();
@@ -113,7 +113,7 @@ public class TestChromium extends TestBase {
   void shouldSendExtraHeadersWithConnectRequest() throws Exception {
     try (WebSocketServerImpl webSocketServer = WebSocketServerImpl.create()) {
       try {
-        browserType.connectOverCDP("ws://localhost:" + webSocketServer.getPort() + "/ws",
+        getBrowserType().connectOverCDP("ws://localhost:" + webSocketServer.getPort() + "/ws",
           new BrowserType.ConnectOverCDPOptions().setHeaders(mapOf("User-Agent", "Playwright", "foo", "bar")));
       } catch (Exception e) {
       }

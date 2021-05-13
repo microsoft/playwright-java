@@ -72,7 +72,7 @@ public class TestSelectorsCss extends TestBase {
 
   @Test
   void shouldWorkForOpenShadowRoots() {
-    page.navigate(server.PREFIX + "/deep-shadow.html");
+    page.navigate(getServer().PREFIX + "/deep-shadow.html");
     assertEquals("Hello from root1", page.evalOnSelector("css=span", "e => e.textContent"));
     assertEquals("Hello from root3 #2", page.evalOnSelector("css=[attr=\"value\\ space\"]", "e => e.textContent"));
     assertEquals("Hello from root3 #2", page.evalOnSelector("css=[attr='value\\ \\space']", "e => e.textContent"));
@@ -121,7 +121,7 @@ public class TestSelectorsCss extends TestBase {
 
   @Test
   void shouldWorkWithCommaSeparatedList() {
-    page.navigate(server.PREFIX + "/deep-shadow.html");
+    page.navigate(getServer().PREFIX + "/deep-shadow.html");
     assertEquals(5, page.evalOnSelectorAll("css=span,section #root1", "els => els.length"));
     assertEquals(5, page.evalOnSelectorAll("css=section #root1, div span", "els => els.length"));
     assertEquals("root1", page.evalOnSelector("css=doesnotexist , section #root1", "e => e.id"));
@@ -260,7 +260,7 @@ public class TestSelectorsCss extends TestBase {
 
   @Test
   void shouldWorkWithColonNthChild(){
-    page.navigate(server.PREFIX + "/deep-shadow.html");
+    page.navigate(getServer().PREFIX + "/deep-shadow.html");
     assertEquals(3, page.evalOnSelectorAll("css=span:nth-child(odd)", "els => els.length"));
     assertEquals(1, page.evalOnSelectorAll("css=span:nth-child(even)", "els => els.length"));
     assertEquals(4, page.evalOnSelectorAll("css=span:nth-child(n+1)", "els => els.length"));
@@ -275,7 +275,7 @@ public class TestSelectorsCss extends TestBase {
 
   @Test
   void shouldWorkWithColonNot() {
-    page.navigate(server.PREFIX + "/deep-shadow.html");
+    page.navigate(getServer().PREFIX + "/deep-shadow.html");
     assertEquals(2, page.evalOnSelectorAll("css=div:not(#root1)", "els => els.length"));
     assertEquals(4, page.evalOnSelectorAll("css=body :not(span)", "els => els.length"));
     assertEquals(0, page.evalOnSelectorAll("css=div > :not(span):not(div)", "els => els.length"));
@@ -328,7 +328,7 @@ public class TestSelectorsCss extends TestBase {
 
   @Test
   void shouldWorkWithSpacesInColonNthChildAndColonNot() {
-    page.navigate(server.PREFIX + "/deep-shadow.html");
+    page.navigate(getServer().PREFIX + "/deep-shadow.html");
     assertEquals(1, page.evalOnSelectorAll("css=span:nth-child(23n +2)", "els => els.length"));
     assertEquals(1, page.evalOnSelectorAll("css=span:nth-child(23n+ 2)", "els => els.length"));
     assertEquals(1, page.evalOnSelectorAll("css=span:nth-child( 23n + 2 )", "els => els.length"));
@@ -343,7 +343,7 @@ public class TestSelectorsCss extends TestBase {
 
   @Test
   void shouldWorkWithColonIs() {
-    page.navigate(server.PREFIX + "/deep-shadow.html");
+    page.navigate(getServer().PREFIX + "/deep-shadow.html");
     assertEquals(1, page.evalOnSelectorAll("css=div:is(#root1)", "els => els.length"));
     assertEquals(1, page.evalOnSelectorAll("css=div:is(#root1, #target)", "els => els.length"));
     assertEquals(0, page.evalOnSelectorAll("css=div:is(span, #target)", "els => els.length"));
@@ -358,7 +358,7 @@ public class TestSelectorsCss extends TestBase {
 
   @Test
   void shouldWorkWithColonHas() {
-    page.navigate(server.PREFIX + "/deep-shadow.html");
+    page.navigate(getServer().PREFIX + "/deep-shadow.html");
     assertEquals(2, page.evalOnSelectorAll("css=div:has(#target)", "els => els.length"));
     assertEquals(3, page.evalOnSelectorAll("css=div:has([data-testid=foo])", "els => els.length"));
     assertEquals(2, page.evalOnSelectorAll("css=div:has([attr*=value])", "els => els.length"));
@@ -366,7 +366,7 @@ public class TestSelectorsCss extends TestBase {
 
   @Test
   void shouldWorkWithColonScope() {
-    page.navigate(server.PREFIX + "/deep-shadow.html");
+    page.navigate(getServer().PREFIX + "/deep-shadow.html");
     // 'is' does not change the scope, so it remains 'html'.
     assertEquals(0, page.evalOnSelectorAll("css=div:is(:scope#root1)", "els => els.length"));
     assertEquals(1, page.evalOnSelectorAll("css=div:is(:scope #root1)", "els => els.length"));

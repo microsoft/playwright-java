@@ -34,15 +34,15 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestBrowserContextAddCookies extends TestBase {
   @Test
   void shouldWork() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     context.addCookies(asList(
-      new Cookie("password", "123456").setUrl(server.EMPTY_PAGE)));
+      new Cookie("password", "123456").setUrl(getServer().EMPTY_PAGE)));
     assertEquals("password=123456", page.evaluate("document.cookie"));
   }
 
   @Test
   void shouldRoundtripCookie() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     // @see https://en.wikipedia.org/wiki/Year_2038_problem
     Object documentCookie = page.evaluate("() => {\n" +
       "  const date = new Date('1/1/2038');\n" +
@@ -63,22 +63,22 @@ public class TestBrowserContextAddCookies extends TestBase {
 
   @Test
   void shouldSendCookieHeader() throws ExecutionException, InterruptedException {
-    Future<Server.Request> request = server.futureRequest("/empty.html");
+    Future<Server.Request> request = getServer().futureRequest("/empty.html");
     context.addCookies(asList(
-      new Cookie("cookie", "value").setUrl(server.EMPTY_PAGE)));
+      new Cookie("cookie", "value").setUrl(getServer().EMPTY_PAGE)));
     Page page = context.newPage();
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     List<String> cookies = request.get().headers.get("cookie");
     assertEquals(singletonList("cookie=value"), cookies);
   }
 
   @Test
   void shouldIsolateCookiesInBrowserContexts() {
-    BrowserContext anotherContext = browser.newContext();
+    BrowserContext anotherContext = getBrowser().newContext();
     context.addCookies(asList(
-      new Cookie("isolatecookie", "page1value").setUrl(server.EMPTY_PAGE)));
+      new Cookie("isolatecookie", "page1value").setUrl(getServer().EMPTY_PAGE)));
     anotherContext.addCookies(asList(
-      new Cookie("isolatecookie", "page2value").setUrl(server.EMPTY_PAGE)));
+      new Cookie("isolatecookie", "page2value").setUrl(getServer().EMPTY_PAGE)));
     List<Cookie> cookies1 = context.cookies();
     List<Cookie> cookies2 = anotherContext.cookies();
     assertEquals(1, cookies1.size());
@@ -92,26 +92,26 @@ public class TestBrowserContextAddCookies extends TestBase {
 
   @Test
   void shouldIsolateSessionCookies() {
-    server.setRoute("/setcookie.html", exchange -> {
+    getServer().setRoute("/setcookie.html", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "session=value");
       exchange.sendResponseHeaders(200, 0);
       exchange.getResponseBody().close();
     });
     {
       Page page = context.newPage();
-      page.navigate(server.PREFIX + "/setcookie.html");
+      page.navigate(getServer().PREFIX + "/setcookie.html");
     }
     {
       Page page = context.newPage();
-      page.navigate(server.EMPTY_PAGE);
+      page.navigate(getServer().EMPTY_PAGE);
       List<Cookie> cookies = context.cookies();
       assertEquals(1, cookies.size());
       assertEquals("value", cookies.get(0).value);
     }
     {
-      BrowserContext context2 = browser.newContext();
+      BrowserContext context2 = getBrowser().newContext();
       Page page = context2.newPage();
-      page.navigate(server.EMPTY_PAGE);
+      page.navigate(getServer().EMPTY_PAGE);
       List<Cookie> cookies = context2.cookies();
       assertEquals(0, cookies.size());
       context2.close();
@@ -120,20 +120,20 @@ public class TestBrowserContextAddCookies extends TestBase {
 
   @Test
   void shouldIsolatePersistentCookies() {
-    server.setRoute("/setcookie.html", exchange -> {
+    getServer().setRoute("/setcookie.html", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "persistent=persistent-value; max-age=3600");
       exchange.sendResponseHeaders(200, 0);
       exchange.getResponseBody().close();
     });
     Page page = context.newPage();
-    page.navigate(server.PREFIX + "/setcookie.html");
+    page.navigate(getServer().PREFIX + "/setcookie.html");
 
     BrowserContext context1 = context;
-    BrowserContext context2 = browser.newContext();
+    BrowserContext context2 = getBrowser().newContext();
     Page page1 = context1.newPage();
     Page page2 = context2.newPage();
-    page1.navigate(server.EMPTY_PAGE);
-    page2.navigate(server.EMPTY_PAGE);
+    page1.navigate(getServer().EMPTY_PAGE);
+    page2.navigate(getServer().EMPTY_PAGE);
     List<Cookie> cookies1 = context1.cookies();
     List<Cookie> cookies2 = context2.cookies();
     assertEquals(1, cookies1.size());
@@ -146,19 +146,19 @@ public class TestBrowserContextAddCookies extends TestBase {
   @Test
   void shouldIsolateSendCookieHeader() throws ExecutionException, InterruptedException {
     context.addCookies(asList(
-      new Cookie("sendcookie", "value").setUrl(server.EMPTY_PAGE)));
+      new Cookie("sendcookie", "value").setUrl(getServer().EMPTY_PAGE)));
     {
       Page page = context.newPage();
-      Future<Server.Request> request = server.futureRequest("/empty.html");
-      page.navigate(server.EMPTY_PAGE);
+      Future<Server.Request> request = getServer().futureRequest("/empty.html");
+      page.navigate(getServer().EMPTY_PAGE);
       List<String> cookies = request.get().headers.get("cookie");
       assertEquals(asList("sendcookie=value"), cookies);
     }
     {
-      BrowserContext context = browser.newContext();
+      BrowserContext context = getBrowser().newContext();
       Page page = context.newPage();
-      Future<Server.Request> request = server.futureRequest("/empty.html");
-      page.navigate(server.EMPTY_PAGE);
+      Future<Server.Request> request = getServer().futureRequest("/empty.html");
+      page.navigate(getServer().EMPTY_PAGE);
       List<String> cookies = request.get().headers.get("cookie");
       assertNull(cookies);
       context.close();
@@ -168,15 +168,15 @@ public class TestBrowserContextAddCookies extends TestBase {
   void shouldIsolateCookiesBetweenLaunches() {
 //    test.slow();
 // TODO:  const browser1 = browserType.launch(browserOptions);
-    Browser browser1 = browserType.launch();
+    Browser browser1 = getBrowserType().launch();
     BrowserContext context1 = browser1.newContext();
     context1.addCookies(asList(new Cookie("cookie-in-context-1", "value")
-      .setUrl(server.EMPTY_PAGE)
+      .setUrl(getServer().EMPTY_PAGE)
       .setExpires(Instant.now().getEpochSecond() +  + 10000)));
     browser1.close();
 
 //  const browser2 = browserType.launch(browserOptions);
-    Browser browser2 = browserType.launch();
+    Browser browser2 = getBrowserType().launch();
     BrowserContext context2 = browser2.newContext();
     List<Cookie> cookies = context2.cookies();
     assertEquals(0, cookies.size());
@@ -185,10 +185,10 @@ public class TestBrowserContextAddCookies extends TestBase {
 
   @Test
   void shouldSetMultipleCookies() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     context.addCookies(asList(
-      new Cookie("multiple-1", "123456").setUrl(server.EMPTY_PAGE),
-      new Cookie("multiple-2", "bar").setUrl(server.EMPTY_PAGE)
+      new Cookie("multiple-1", "123456").setUrl(getServer().EMPTY_PAGE),
+      new Cookie("multiple-2", "bar").setUrl(getServer().EMPTY_PAGE)
     ));
     assertEquals(asList("multiple-1=123456", "multiple-2=bar"), page.evaluate("() => {\n" +
       "  const cookies = document.cookie.split(';');\n" +
@@ -199,7 +199,7 @@ public class TestBrowserContextAddCookies extends TestBase {
   @Test
   void shouldHaveExpiresSetTo1ForSessionCookies() {
     context.addCookies(asList(
-      new Cookie("expires", "123456").setUrl(server.EMPTY_PAGE)));
+      new Cookie("expires", "123456").setUrl(getServer().EMPTY_PAGE)));
     List<Cookie> cookies = context.cookies();
     assertEquals(-1, cookies.get(0).expires);
   }
@@ -207,7 +207,7 @@ public class TestBrowserContextAddCookies extends TestBase {
   @Test
   void shouldSetCookieWithReasonableDefaults() {
     context.addCookies(asList(
-      new Cookie("defaults", "123456").setUrl(server.EMPTY_PAGE)));
+      new Cookie("defaults", "123456").setUrl(getServer().EMPTY_PAGE)));
     List<Cookie> cookies = context.cookies();
     assertJsonEquals("[{\n" +
       "  name: 'defaults',\n" +
@@ -223,7 +223,7 @@ public class TestBrowserContextAddCookies extends TestBase {
 
   @Test
   void shouldSetACookieWithAPath() {
-    page.navigate(server.PREFIX + "/grid.html");
+    page.navigate(getServer().PREFIX + "/grid.html");
     context.addCookies(asList(new Cookie("gridcookie", "GRID")
       .setDomain("localhost")
       .setPath("/grid.html")));
@@ -239,9 +239,9 @@ public class TestBrowserContextAddCookies extends TestBase {
       "  sameSite: 'NONE'\n" +
       "}]", cookies);
     assertEquals("gridcookie=GRID", page.evaluate("document.cookie"));
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     assertEquals("", page.evaluate("document.cookie"));
-    page.navigate(server.PREFIX + "/grid.html");
+    page.navigate(getServer().PREFIX + "/grid.html");
     assertEquals("gridcookie=GRID", page.evaluate("document.cookie"));
   }
 
@@ -249,7 +249,7 @@ public class TestBrowserContextAddCookies extends TestBase {
   void shouldNotSetACookieWithBlankPageURL() {
     try {
       context.addCookies(asList(
-        new Cookie("example-cookie", "best").setUrl(server.EMPTY_PAGE),
+        new Cookie("example-cookie", "best").setUrl(getServer().EMPTY_PAGE),
         new Cookie("example-cookie-blank", "best").setUrl("about:blank")
       ));
       fail("did not throw");
@@ -272,7 +272,7 @@ public class TestBrowserContextAddCookies extends TestBase {
 
   @Test
   void shouldDefaultToSettingSecureCookieForHTTPSWebsites() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     String SECURE_URL = "https://example.com";
     context.addCookies(asList(
       new Cookie("foo", "bar").setUrl(SECURE_URL)
@@ -284,7 +284,7 @@ public class TestBrowserContextAddCookies extends TestBase {
 
   @Test
   void shouldBeAbleToSetUnsecureCookieForHTTPWebsite() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     String HTTP_URL = "http://example.com";
     context.addCookies(asList(
       new Cookie("foo", "bar").setUrl(HTTP_URL)
@@ -296,7 +296,7 @@ public class TestBrowserContextAddCookies extends TestBase {
 
   @Test
   void shouldSetACookieOnADifferentDomain() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     context.addCookies(asList(
       new Cookie("example-cookie", "best").setUrl("https://www.example.com")
     ));
@@ -315,9 +315,9 @@ public class TestBrowserContextAddCookies extends TestBase {
 
   @Test
   void shouldSetCookiesForAFrame() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     context.addCookies(asList(
-      new Cookie("frame-cookie", "value").setUrl(server.PREFIX)
+      new Cookie("frame-cookie", "value").setUrl(getServer().PREFIX)
     ));
     page.evaluate("src => {\n" +
       "  let fulfill;\n" +
@@ -327,13 +327,13 @@ public class TestBrowserContextAddCookies extends TestBase {
       "  iframe.onload = fulfill;\n" +
       "  iframe.src = src;\n" +
       "  return promise;\n" +
-      "}", server.PREFIX + "/grid.html");
+      "}", getServer().PREFIX + "/grid.html");
     assertEquals("frame-cookie=value", page.frames().get(1).evaluate("document.cookie"));
   }
 
   @Test
   void shouldNotBlockThirdPartyCookies() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     page.evaluate("src => {\n" +
       "  let fulfill;\n" +
       "  const promise = new Promise(x => fulfill = x);\n" +
@@ -342,11 +342,11 @@ public class TestBrowserContextAddCookies extends TestBase {
       "  iframe.onload = fulfill;\n" +
       "  iframe.src = src;\n" +
       "  return promise;\n" +
-      "}", server.CROSS_PROCESS_PREFIX + "/grid.html");
+      "}", getServer().CROSS_PROCESS_PREFIX + "/grid.html");
     page.frames().get(1).evaluate("document.cookie = 'username=John Doe'");
     page.waitForTimeout(2000);
     boolean allowsThirdParty = isChromium() || isFirefox();
-    List<Cookie> cookies = context.cookies(server.CROSS_PROCESS_PREFIX + "/grid.html");
+    List<Cookie> cookies = context.cookies(getServer().CROSS_PROCESS_PREFIX + "/grid.html");
     if (allowsThirdParty) {
       assertJsonEquals("[{\n" +
         "  'domain': '127.0.0.1',\n" +

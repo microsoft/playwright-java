@@ -113,7 +113,7 @@ public class TestQuerySelector extends TestBase {
 
   @Test
   void shouldReturnEmptyArrayIfNothingIsFound() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     List<ElementHandle> elements = page.querySelectorAll("div");
     assertEquals(0, elements.size());
   }

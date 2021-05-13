@@ -31,10 +31,10 @@ public class TestWorkers extends TestBase {
   @Test
   void pageWorkers() {
     Worker worker = page.waitForWorker(() ->
-      page.navigate(server.PREFIX + "/worker/worker.html"));
+      page.navigate(getServer().PREFIX + "/worker/worker.html"));
     assertTrue(worker.url().contains("worker.js"));
     assertEquals("worker function result", worker.evaluate("() => self['workerFunction']()"));
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     assertEquals(0, page.workers().size());
   }
 
@@ -101,24 +101,24 @@ public class TestWorkers extends TestBase {
   @Test
   @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="flaky upstream")
   void shouldClearUponNavigation() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     Worker worker = page.waitForWorker(() -> page.evaluate(
       "() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))"));
     assertEquals(1, page.workers().size());
-    Worker destroyed = worker.waitForClose(() -> page.navigate(server.PREFIX + "/one-style.html"));
+    Worker destroyed = worker.waitForClose(() -> page.navigate(getServer().PREFIX + "/one-style.html"));
     assertEquals(worker, destroyed);
     assertEquals(0, page.workers().size());
   }
 
   @Test
   void shouldClearUponCrossProcessNavigation() {
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     Worker worker = page.waitForWorker(() -> page.evaluate(
       "() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))"));
     assertEquals(1, page.workers().size());
     boolean[] destroyed = {false};
     worker.onClose(worker1 -> destroyed[0] = true);
-    page.navigate(server.CROSS_PROCESS_PREFIX + "/empty.html");
+    page.navigate(getServer().CROSS_PROCESS_PREFIX + "/empty.html");
     assertTrue(destroyed[0]);
     assertEquals(0, page.workers().size());
   }
@@ -126,13 +126,13 @@ public class TestWorkers extends TestBase {
   @Test
   @EnabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fixme")
   void shouldAttributeNetworkActivityForWorkerInsideIframeToTheIframe() {
-    page.navigate(server.PREFIX + "/empty.html");
+    page.navigate(getServer().PREFIX + "/empty.html");
     Frame[] frame = {null};
     Worker worker = page.waitForWorker(() -> {
-      frame[0] = attachFrame(page, "frame1", server.PREFIX + "/worker/worker.html");
+      frame[0] = attachFrame(page, "frame1", getServer().PREFIX + "/worker/worker.html");
     });
     assertNotNull(frame[0]);
-    String url = server.PREFIX + "/one-style.css";
+    String url = getServer().PREFIX + "/one-style.css";
     Request request = page.waitForRequest(url, () -> {
       worker.evaluate("url => fetch(url).then(response => response.text()).then(console.log)", url);
     });
@@ -142,8 +142,8 @@ public class TestWorkers extends TestBase {
 
   @Test
   void shouldReportNetworkActivity() {
-    Worker worker = page.waitForWorker(() -> page.navigate(server.PREFIX + "/worker/worker.html"));
-    String url = server.PREFIX + "/one-style.css";
+    Worker worker = page.waitForWorker(() -> page.navigate(getServer().PREFIX + "/worker/worker.html"));
+    String url = getServer().PREFIX + "/one-style.css";
     Request[] request = {null};
     Response response = page.waitForResponse(url, () -> {
       request[0] = page.waitForRequest(url, () -> {
@@ -158,8 +158,8 @@ public class TestWorkers extends TestBase {
   @Test
   void shouldReportNetworkActivityOnWorkerCreation() {
     // Chromium needs waitForDebugger enabled for this one.
-    page.navigate(server.EMPTY_PAGE);
-    String url = server.PREFIX + "/one-style.css";
+    page.navigate(getServer().EMPTY_PAGE);
+    String url = getServer().PREFIX + "/one-style.css";
     Request[] request = {null};
     Response response = page.waitForResponse(url, () -> {
       request[0] = page.waitForRequest(url, () -> {
@@ -175,9 +175,9 @@ public class TestWorkers extends TestBase {
 
   @Test
   void shouldFormatNumberUsingContextLocale() {
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("ru-RU"));
+    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setLocale("ru-RU"));
     Page page = context.newPage();
-    page.navigate(server.EMPTY_PAGE);
+    page.navigate(getServer().EMPTY_PAGE);
     Worker worker = page.waitForWorker(() -> page.evaluate(
       "() => new Worker(URL.createObjectURL(new Blob(['console.log(1)'], {type: 'application/javascript'})))"));
     assertEquals("10\u00A0000,2", worker.evaluate("() => (10000.20).toLocaleString()"));
