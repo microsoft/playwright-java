@@ -3142,7 +3142,8 @@ public interface Page extends AutoCloseable {
   void press(String selector, String key, PressOptions options);
   /**
    * The method finds an element matching the specified selector within the page. If no elements match the selector, the
-   * return value resolves to {@code null}.
+   * return value resolves to {@code null}. To wait for an element on the page, use {@link Page#waitForSelector
+   * Page.waitForSelector()}.
    *
    * <p> Shortcut for main frame's {@link Frame#querySelector Frame.querySelector()}.
    *

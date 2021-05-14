@@ -25,5 +25,5 @@ public enum BrowserChannel {
   MSEDGE_BETA,
   MSEDGE_DEV,
   MSEDGE_CANARY,
-  FIREFOX_STABLE
+  @Deprecated FIREFOX_STABLE
 }

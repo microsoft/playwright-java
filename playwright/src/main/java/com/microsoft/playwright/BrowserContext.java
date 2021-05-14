@@ -81,6 +81,55 @@ public interface BrowserContext extends AutoCloseable {
    */
   void offPage(Consumer<Page> handler);
 
+  /**
+   * Emitted when a request is issued from any pages created through this context. The [request] object is read-only. To only
+   * listen for requests from a particular page, use {@link Page#onRequest Page.onRequest()}.
+   *
+   * <p> In order to intercept and mutate requests, see {@link BrowserContext#route BrowserContext.route()} or {@link Page#route
+   * Page.route()}.
+   */
+  void onRequest(Consumer<Request> handler);
+  /**
+   * Removes handler that was previously added with {@link #onRequest onRequest(handler)}.
+   */
+  void offRequest(Consumer<Request> handler);
+
+  /**
+   * Emitted when a request fails, for example by timing out. To only listen for failed requests from a particular page, use
+   * {@link Page#onRequestFailed Page.onRequestFailed()}.
+   *
+   * <p> <strong>NOTE:</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will complete
+   * with {@link BrowserContext#onRequestFinished BrowserContext.onRequestFinished()} event and not with {@link
+   * BrowserContext#onRequestFailed BrowserContext.onRequestFailed()}.
+   */
+  void onRequestFailed(Consumer<Request> handler);
+  /**
+   * Removes handler that was previously added with {@link #onRequestFailed onRequestFailed(handler)}.
+   */
+  void offRequestFailed(Consumer<Request> handler);
+
+  /**
+   * Emitted when a request finishes successfully after downloading the response body. For a successful response, the
+   * sequence of events is {@code request}, {@code response} and {@code requestfinished}. To listen for successful requests from a particular
+   * page, use {@link Page#onRequestFinished Page.onRequestFinished()}.
+   */
+  void onRequestFinished(Consumer<Request> handler);
+  /**
+   * Removes handler that was previously added with {@link #onRequestFinished onRequestFinished(handler)}.
+   */
+  void offRequestFinished(Consumer<Request> handler);
+
+  /**
+   * Emitted when [response] status and headers are received for a request. For a successful response, the sequence of events
+   * is {@code request}, {@code response} and {@code requestfinished}. To listen for response events from a particular page, use {@link
+   * Page#onResponse Page.onResponse()}.
+   */
+  void onResponse(Consumer<Response> handler);
+  /**
+   * Removes handler that was previously added with {@link #onResponse onResponse(handler)}.
+   */
+  void offResponse(Consumer<Response> handler);
+
   class ExposeBindingOptions {
     /**
      * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument is
@@ -664,6 +713,7 @@ public interface BrowserContext extends AutoCloseable {
    * Returns storage state for this browser context, contains current cookies and local storage snapshot.
    */
   String storageState(StorageStateOptions options);
+  Tracing tracing();
   /**
    * Removes a route created with {@link BrowserContext#route BrowserContext.route()}. When {@code handler} is not specified,
    * removes all routes for the {@code url}.

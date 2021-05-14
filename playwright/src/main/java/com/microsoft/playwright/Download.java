@@ -23,8 +23,8 @@ import java.util.*;
 /**
  * {@code Download} objects are dispatched by page via the {@link Page#onDownload Page.onDownload()} event.
  *
- * <p> All the downloaded files belonging to the browser context are deleted when the browser context is closed. All downloaded
- * files are deleted when the browser closes.
+ * <p> If {@code downloadsPath} isn't specified, all the downloaded files belonging to the browser context are deleted when the
+ * browser context is closed. And all downloaded files are deleted when the browser closes.
  *
  * <p> Download event is emitted once the download starts. Download path becomes available once download completes:
  * <pre>{@code
@@ -60,14 +60,19 @@ public interface Download {
    */
   String failure();
   /**
+   * Get the page that the download belongs to.
+   */
+  Page page();
+  /**
    * Returns path to the downloaded file in case of successful download. The method will wait for the download to finish if
    * necessary. The method throws when connected remotely.
    */
   Path path();
   /**
-   * Saves the download to a user-specified path. It is safe to call this method while the download is still in progress.
+   * Copy the download to a user-specified path. It is safe to call this method while the download is still in progress. Will
+   * wait for the download to finish if necessary.
    *
-   * @param path Path where the download should be saved.
+   * @param path Path where the download should be copied.
    */
   void saveAs(Path path);
   /**
