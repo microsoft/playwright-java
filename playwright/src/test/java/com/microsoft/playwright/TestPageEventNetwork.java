@@ -97,9 +97,9 @@ public class TestPageEventNetwork extends TestBase {
     List<String> events = new ArrayList<>();
     page.onRequest(request -> events.add("request"));
     page.onResponse(response -> events.add("response"));
+    page.onRequestFinished(r -> events.add("requestfinished"));
     Response response = page.navigate(getServer().EMPTY_PAGE);
     assertNull(response.finished());
-    events.add("requestfinished");
     assertEquals(asList("request", "response", "requestfinished"), events);
   }
 

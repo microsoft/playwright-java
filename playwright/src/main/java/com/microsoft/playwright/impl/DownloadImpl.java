@@ -18,15 +18,18 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Download;
+import com.microsoft.playwright.Page;
 
 import java.io.InputStream;
 import java.nio.file.Path;
 
 class DownloadImpl extends LoggingSupport implements Download {
+  private final PageImpl page;
   private final ArtifactImpl artifact;
   private final JsonObject initializer;
 
-  DownloadImpl(ArtifactImpl artifact, JsonObject initializer) {
+  DownloadImpl(PageImpl page, ArtifactImpl artifact, JsonObject initializer) {
+    this.page = page;
     this.artifact = artifact;
     this.initializer = initializer;
   }
@@ -54,6 +57,11 @@ class DownloadImpl extends LoggingSupport implements Download {
   @Override
   public String failure() {
     return withLogging("Download.failure", () -> artifact.failure());
+  }
+
+  @Override
+  public Page page() {
+    return page;
   }
 
   @Override

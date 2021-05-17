@@ -867,7 +867,7 @@ class Interface extends TypeDefinition {
     if ("Download".equals(jsonName)) {
       output.add("import java.io.InputStream;");
     }
-    if (asList("Page", "Frame", "ElementHandle", "FileChooser", "Browser", "BrowserContext", "BrowserType", "Download", "Route", "Selectors", "Video").contains(jsonName)) {
+    if (asList("Page", "Frame", "ElementHandle", "FileChooser", "Browser", "BrowserContext", "BrowserType", "Download", "Route", "Selectors", "Tracing", "Video").contains(jsonName)) {
       output.add("import java.nio.file.Path;");
     }
     output.add("import java.util.*;");
@@ -1015,6 +1015,10 @@ class Enum extends TypeDefinition {
         throw new RuntimeException("Unexpected null: " + jsonObject);
       }
       enumValues.add(value.substring(1, value.length() - 1).replace("-", "_").toUpperCase());
+    }
+    if ("BrowserChannel".equals(jsonName)) {
+      // Firefox stable 'channel' was removed in 1.12.0
+      enumValues.add("@Deprecated FIREFOX_STABLE");
     }
   }
 

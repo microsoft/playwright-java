@@ -111,7 +111,7 @@ public interface BrowserType {
      */
     public BrowserChannel channel;
     /**
-     * Enable Chromium sandboxing. Defaults to {@code false}.
+     * Enable Chromium sandboxing. Defaults to {@code true}.
      */
     public Boolean chromiumSandbox;
     /**
@@ -181,6 +181,10 @@ public interface BrowserType {
      * disable timeout.
      */
     public Double timeout;
+    /**
+     * If specified, traces are saved into this directory.
+     */
+    public Path traceDir;
 
     public LaunchOptions setArgs(List<String> args) {
       this.args = args;
@@ -253,6 +257,10 @@ public interface BrowserType {
       this.timeout = timeout;
       return this;
     }
+    public LaunchOptions setTraceDir(Path traceDir) {
+      this.traceDir = traceDir;
+      return this;
+    }
   }
   class LaunchPersistentContextOptions {
     /**
@@ -302,8 +310,8 @@ public interface BrowserType {
     public Map<String, String> env;
     /**
      * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is
-     * resolved relative to the current working directory. **BEWARE**: Playwright is only guaranteed to work with the bundled
-     * Chromium, Firefox or WebKit, use at your own risk.
+     * resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium, Firefox
+     * or WebKit, use at your own risk.
      */
     public Path executablePath;
     /**
@@ -407,7 +415,6 @@ public interface BrowserType {
     public ScreenSize screenSize;
     /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
-     * Defaults to 0.
      */
     public Double slowMo;
     /**
@@ -421,6 +428,10 @@ public interface BrowserType {
      * metaZones.txt</a> for a list of supported timezone IDs.
      */
     public String timezoneId;
+    /**
+     * If specified, traces are saved into this directory.
+     */
+    public Path traceDir;
     /**
      * Specific user agent to use in this context.
      */
@@ -587,6 +598,10 @@ public interface BrowserType {
     }
     public LaunchPersistentContextOptions setTimezoneId(String timezoneId) {
       this.timezoneId = timezoneId;
+      return this;
+    }
+    public LaunchPersistentContextOptions setTraceDir(Path traceDir) {
+      this.traceDir = traceDir;
       return this;
     }
     public LaunchPersistentContextOptions setUserAgent(String userAgent) {

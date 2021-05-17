@@ -19,10 +19,7 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.PlaywrightException;
-import com.microsoft.playwright.Route;
+import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.BindingCallback;
 import com.microsoft.playwright.options.Cookie;
 import com.microsoft.playwright.options.FunctionCallback;
@@ -47,6 +44,7 @@ import static java.util.Arrays.asList;
 
 class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private final BrowserImpl browser;
+  private final TracingImpl tracing;
   final List<PageImpl> pages = new ArrayList<>();
   final Router routes = new Router();
   private boolean isClosedOrClosing;
@@ -59,6 +57,10 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   enum EventType {
     CLOSE,
     PAGE,
+    REQUEST,
+    REQUESTFAILED,
+    REQUESTFINISHED,
+    RESPONSE,
   }
 
   BrowserContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -68,6 +70,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     } else {
       browser = null;
     }
+    this.tracing = new TracingImpl(this);
   }
 
   @Override
@@ -88,6 +91,46 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   public void offPage(Consumer<Page> handler) {
     listeners.remove(EventType.PAGE, handler);
+  }
+
+  @Override
+  public void onRequest(Consumer<Request> handler) {
+    listeners.add(EventType.REQUEST, handler);
+  }
+
+  @Override
+  public void offRequest(Consumer<Request> handler) {
+    listeners.remove(EventType.REQUEST, handler);
+  }
+
+  @Override
+  public void onRequestFailed(Consumer<Request> handler) {
+    listeners.add(EventType.REQUESTFAILED, handler);
+  }
+
+  @Override
+  public void offRequestFailed(Consumer<Request> handler) {
+    listeners.remove(EventType.REQUESTFAILED, handler);
+  }
+
+  @Override
+  public void onRequestFinished(Consumer<Request> handler) {
+    listeners.add(EventType.REQUESTFINISHED, handler);
+  }
+
+  @Override
+  public void offRequestFinished(Consumer<Request> handler) {
+    listeners.remove(EventType.REQUESTFINISHED, handler);
+  }
+
+  @Override
+  public void onResponse(Consumer<Response> handler) {
+    listeners.add(EventType.RESPONSE, handler);
+  }
+
+  @Override
+  public void offResponse(Consumer<Response> handler) {
+    listeners.remove(EventType.RESPONSE, handler);
   }
 
   private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Double timeout) {
@@ -357,6 +400,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
+  public Tracing tracing() {
+    return tracing;
+  }
+
+  @Override
   public void unroute(String url, Consumer<Route> handler) {
     unroute(new UrlMatcher(url), handler);
   }
@@ -417,6 +465,47 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       BindingCallback binding = bindings.get(bindingCall.name());
       if (binding != null) {
         bindingCall.call(binding);
+      }
+    } else if ("request".equals(event)) {
+      String guid = params.getAsJsonObject("request").get("guid").getAsString();
+      RequestImpl request = connection.getExistingObject(guid);
+      listeners.notify(EventType.REQUEST, request);
+      if (params.has("page")) {
+        PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
+        page.listeners.notify(PageImpl.EventType.REQUEST, request);
+      }
+    } else if ("requestFailed".equals(event)) {
+      String guid = params.getAsJsonObject("request").get("guid").getAsString();
+      RequestImpl request = connection.getExistingObject(guid);
+      if (params.has("failureText")) {
+        request.failure = params.get("failureText").getAsString();
+      }
+      if (request.timing != null) {
+        request.timing.responseEnd = params.get("responseEndTiming").getAsDouble();
+      }
+      listeners.notify(EventType.REQUESTFAILED, request);
+      if (params.has("page")) {
+        PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
+        page.listeners.notify(PageImpl.EventType.REQUESTFAILED, request);
+      }
+    } else if ("requestFinished".equals(event)) {
+      String guid = params.getAsJsonObject("request").get("guid").getAsString();
+      RequestImpl request = connection.getExistingObject(guid);
+      if (request.timing != null) {
+        request.timing.responseEnd = params.get("responseEndTiming").getAsDouble();
+      }
+      listeners.notify(EventType.REQUESTFINISHED, request);
+      if (params.has("page")) {
+        PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
+        page.listeners.notify(PageImpl.EventType.REQUESTFINISHED, request);
+      }
+    } else if ("response".equals(event)) {
+      String guid = params.getAsJsonObject("response").get("guid").getAsString();
+      Response response = connection.getExistingObject(guid);
+      listeners.notify(EventType.RESPONSE, response);
+      if (params.has("page")) {
+        PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
+        page.listeners.notify(PageImpl.EventType.RESPONSE, response);
       }
     } else if ("close".equals(event)) {
       didClose();

@@ -48,7 +48,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private ViewportSize viewport;
   private final Router routes = new Router();
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
-  private final ListenerCollection<EventType> listeners = new ListenerCollection<EventType>() {
+  final ListenerCollection<EventType> listeners = new ListenerCollection<EventType>() {
     @Override
     void add(EventType eventType, Consumer<?> listener) {
       if (eventType == EventType.FILECHOOSER) {
@@ -145,7 +145,7 @@ public class PageImpl extends ChannelOwner implements Page {
       String artifactGuid = params.getAsJsonObject("artifact").get("guid").getAsString();
       ArtifactImpl artifact = connection.getExistingObject(artifactGuid);
       artifact.isRemote = browserContext.browser() != null && browserContext.browser().isRemote;
-      DownloadImpl download = new DownloadImpl(artifact, params);
+      DownloadImpl download = new DownloadImpl(this, artifact, params);
       listeners.notify(EventType.DOWNLOAD, download);
     } else if ("fileChooser".equals(event)) {
       String guid = params.getAsJsonObject("element").get("guid").getAsString();
@@ -170,25 +170,6 @@ public class PageImpl extends ChannelOwner implements Page {
       listeners.notify(EventType.LOAD, this);
     } else if ("domcontentloaded".equals(event)) {
       listeners.notify(EventType.DOMCONTENTLOADED, this);
-    } else if ("request".equals(event)) {
-      String guid = params.getAsJsonObject("request").get("guid").getAsString();
-      Request request = connection.getExistingObject(guid);
-      listeners.notify(EventType.REQUEST, request);
-    } else if ("requestFailed".equals(event)) {
-      String guid = params.getAsJsonObject("request").get("guid").getAsString();
-      RequestImpl request = connection.getExistingObject(guid);
-      if (params.has("failureText")) {
-        request.failure = params.get("failureText").getAsString();
-      }
-      listeners.notify(EventType.REQUESTFAILED, request);
-    } else if ("requestFinished".equals(event)) {
-      String guid = params.getAsJsonObject("request").get("guid").getAsString();
-      Request request = connection.getExistingObject(guid);
-      listeners.notify(EventType.REQUESTFINISHED, request);
-    } else if ("response".equals(event)) {
-      String guid = params.getAsJsonObject("response").get("guid").getAsString();
-      Response response = connection.getExistingObject(guid);
-      listeners.notify(EventType.RESPONSE, response);
     } else if ("frameAttached".equals(event)) {
       String guid = params.getAsJsonObject("frame").get("guid").getAsString();
       FrameImpl frame = connection.getExistingObject(guid);
