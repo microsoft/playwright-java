@@ -49,7 +49,7 @@ public class TestBrowserTypeConnect extends TestBase {
     }
   }
 
-  private static BrowserServer launchBrowserServer() {
+  private static BrowserServer launchBrowserServer(BrowserType browserType) {
     try {
       Path driver = Driver.ensureDriverInstalled();
       Path dir = driver.getParent();
@@ -57,7 +57,7 @@ public class TestBrowserTypeConnect extends TestBase {
       String cliJs = dir.resolve("package/lib/cli/cli.js").toString();
       // We launch node process directly instead of using playwright.sh script as killing the script
       // process will leave node process running and killing it would be more hassle.
-      ProcessBuilder pb = new ProcessBuilder(node, cliJs, "launch-server", getBrowserType().name());
+      ProcessBuilder pb = new ProcessBuilder(node, cliJs, "launch-server", browserType.name());
       pb.directory(dir.toFile());
       pb.redirectError(ProcessBuilder.Redirect.INHERIT);
       BrowserServer result = new BrowserServer();
@@ -73,20 +73,22 @@ public class TestBrowserTypeConnect extends TestBase {
     }
   }
 
+  @Override
   @BeforeAll
   // Hide base class method to launch browser server and connect to it.
-  static void launchBrowser() {
+  void launchBrowser() {
     initBrowserType();
-    BrowserServer r = launchBrowserServer();
+    BrowserServer r = launchBrowserServer(browserType);
     wsEndpoint = r.wsEndpoint;
     browserServer = r.process;
-    setBrowser(getBrowserType().connect(wsEndpoint));
+    browser = browserType.connect(wsEndpoint);
     // Do not actually connect to browser, the tests will do it manually.
   }
 
+  @Override
   @AfterAll
-  static void closeBrowser() {
-    TestBase.closeBrowser();
+  void closeBrowser() {
+    super.closeBrowser();
     if (browserServer != null) {
       browserServer.destroyForcibly();
       browserServer = null;
@@ -97,42 +99,42 @@ public class TestBrowserTypeConnect extends TestBase {
   @Test
   void shouldBeAbleToReconnectToABrowser() {
     {
-      Browser browser = getBrowserType().connect(wsEndpoint);
+      Browser browser = browserType.connect(wsEndpoint);
       BrowserContext browserContext = browser.newContext();
       assertEquals(0, browserContext.pages().size());
       Page page = browserContext.newPage();
       assertEquals(121, page.evaluate("11 * 11"));
-      page.navigate(getServer().EMPTY_PAGE);
+      page.navigate(server.EMPTY_PAGE);
       browser.close();
     }
     {
-      Browser browser = getBrowserType().connect(wsEndpoint);
+      Browser browser = browserType.connect(wsEndpoint);
       BrowserContext browserContext = browser.newContext();
       Page page = browserContext.newPage();
-      page.navigate(getServer().EMPTY_PAGE);
+      page.navigate(server.EMPTY_PAGE);
       browser.close();
     }
   }
 
   @Test
   void shouldSupportSlowMo() {
-    Browser browser = getBrowserType().connect(wsEndpoint,
+    Browser browser = browserType.connect(wsEndpoint,
       new BrowserType.ConnectOptions().setSlowMo(1));
     BrowserContext browserContext = browser.newContext();
     Page page = browserContext.newPage();
     assertEquals(121, page.evaluate("11 * 11"));
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     browser.close();
   }
 
   @Test
   void shouldBeAbleToConnectTwoBrowsersAtTheSameTime() {
-    Browser browser1 = getBrowserType().connect(wsEndpoint);
+    Browser browser1 = browserType.connect(wsEndpoint);
     assertEquals(0, browser1.contexts().size());
     browser1.newContext();
     assertEquals(1, browser1.contexts().size());
 
-    Browser browser2 = getBrowserType().connect(wsEndpoint);
+    Browser browser2 = browserType.connect(wsEndpoint);
     assertEquals(0, browser2.contexts().size());
     browser2.newContext();
     assertEquals(1, browser2.contexts().size());
@@ -149,7 +151,7 @@ public class TestBrowserTypeConnect extends TestBase {
   void shouldSendExtraHeadersWithConnectRequest() throws Exception {
     try (WebSocketServerImpl webSocketServer = WebSocketServerImpl.create()) {
       try {
-        getBrowserType().connect("ws://localhost:" + webSocketServer.getPort() + "/ws",
+        browserType.connect("ws://localhost:" + webSocketServer.getPort() + "/ws",
           new BrowserType.ConnectOptions().setHeaders(mapOf("User-Agent", "Playwright", "foo", "bar")));
       } catch (Exception e) {
       }
@@ -162,10 +164,10 @@ public class TestBrowserTypeConnect extends TestBase {
   @Test
   void disconnectedEventShouldBeEmittedWhenBrowserIsClosedOrServerIsClosed() throws InterruptedException {
     // Launch another server to not affect other tests.
-    BrowserServer remote = launchBrowserServer();
+    BrowserServer remote = launchBrowserServer(browserType);
 
-    Browser browser1 = getBrowserType().connect(remote.wsEndpoint);
-    Browser browser2 = getBrowserType().connect(remote.wsEndpoint);
+    Browser browser1 = browserType.connect(remote.wsEndpoint);
+    Browser browser2 = browserType.connect(remote.wsEndpoint);
 
     int[] disconnected1 = {0};
     int[] disconnected2 = {0};
@@ -191,7 +193,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void disconnectedEventShouldHaveBrowserAsArgument() {
-    Browser browser = getBrowserType().connect(wsEndpoint);
+    Browser browser = browserType.connect(wsEndpoint);
     Browser[] disconnected = {null};
     browser.onDisconnected(b -> disconnected[0] = b);
     browser.close();
@@ -204,7 +206,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldSetTheBrowserConnectedState() {
-    Browser remote = getBrowserType().connect(wsEndpoint);
+    Browser remote = browserType.connect(wsEndpoint);
     assertTrue(remote.isConnected());
     remote.close();
     assertFalse(remote.isConnected());
@@ -213,8 +215,8 @@ public class TestBrowserTypeConnect extends TestBase {
   @Test
   void shouldThrowWhenUsedAfterIsConnectedReturnsFalse() throws InterruptedException {
     // Launch another server to not affect other tests.
-    BrowserServer server = launchBrowserServer();
-    Browser remote = getBrowserType().connect(server.wsEndpoint);
+    BrowserServer server = launchBrowserServer(browserType);
+    Browser remote = browserType.connect(server.wsEndpoint);
     Page page = remote.newPage();
     server.kill();
     try {
@@ -227,13 +229,13 @@ public class TestBrowserTypeConnect extends TestBase {
 
     @Test
     void shouldRejectNavigationWhenBrowserCloses() {
-      Browser remote = getBrowserType().connect(wsEndpoint);
+      Browser remote = browserType.connect(wsEndpoint);
       Page page = remote.newPage();
 
-      getServer().setRoute("/one-style.css", r -> {});
+      server.setRoute("/one-style.css", r -> {});
       page.onRequest(r -> remote.close());
       try {
-        page.navigate(getServer().PREFIX + "/one-style.html", new Page.NavigateOptions().setTimeout(60000));
+        page.navigate(server.PREFIX + "/one-style.html", new Page.NavigateOptions().setTimeout(60000));
         fail("did not throw");
       } catch (PlaywrightException e) {
         assertTrue(e.getMessage().contains("Playwright connection closed"));

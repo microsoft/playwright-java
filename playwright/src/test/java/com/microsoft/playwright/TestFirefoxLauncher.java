@@ -26,9 +26,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestFirefoxLauncher extends TestBase {
 
+  @Override
   @BeforeAll
   // Hide base class method to not launch browser.
-  static void launchBrowser() {
+  void launchBrowser() {
   }
 
   @Override
@@ -45,7 +46,7 @@ public class TestFirefoxLauncher extends TestBase {
         "network.proxy.http", "127.0.0.1",
         "network.proxy.http_port", 3333));
     launchBrowser(options);
-    Page page = getBrowser().newPage();
+    Page page = browser.newPage();
     try {
       page.navigate("http://example.com");
       fail("did not throw");

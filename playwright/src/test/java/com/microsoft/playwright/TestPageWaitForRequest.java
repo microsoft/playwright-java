@@ -26,28 +26,28 @@ public class TestPageWaitForRequest extends TestBase {
 
   @Test
   void shouldWork() {
-    page.navigate(getServer().EMPTY_PAGE);
-    Request request = page.waitForRequest(getServer().PREFIX + "/digits/2.png", () -> {
+    page.navigate(server.EMPTY_PAGE);
+    Request request = page.waitForRequest(server.PREFIX + "/digits/2.png", () -> {
       page.evaluate("() => {\n" +
         "  fetch('/digits/1.png');\n" +
         "  fetch('/digits/2.png');\n" +
         "  fetch('/digits/3.png');\n" +
         "}");
     });
-    assertEquals(getServer().PREFIX + "/digits/2.png", request.url());
+    assertEquals(server.PREFIX + "/digits/2.png", request.url());
   }
 
   @Test
   void shouldWorkWithPredicate() {
-    page.navigate(getServer().EMPTY_PAGE);
-    Request request = page.waitForRequest(r -> r.url().equals(getServer().PREFIX + "/digits/2.png"), () -> {
+    page.navigate(server.EMPTY_PAGE);
+    Request request = page.waitForRequest(r -> r.url().equals(server.PREFIX + "/digits/2.png"), () -> {
       page.evaluate("() => {\n" +
         "  fetch('/digits/1.png');\n" +
         "  fetch('/digits/2.png');\n" +
         "  fetch('/digits/3.png');\n" +
         "}");
     });
-    assertEquals(getServer().PREFIX + "/digits/2.png", request.url());
+    assertEquals(server.PREFIX + "/digits/2.png", request.url());
   }
 
   @Test
@@ -73,9 +73,9 @@ public class TestPageWaitForRequest extends TestBase {
 
   @Test
   void shouldWorkWithNoTimeout() {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Request request = page.waitForRequest(
-      getServer().PREFIX + "/digits/2.png",
+      server.PREFIX + "/digits/2.png",
       new Page.WaitForRequestOptions().setTimeout(0),() -> {
         page.evaluate("() => setTimeout(() => {\n" +
           "  fetch('/digits/1.png');\n" +
@@ -83,18 +83,18 @@ public class TestPageWaitForRequest extends TestBase {
           "  fetch('/digits/3.png');\n" +
           "}, 50)");
       });
-    assertEquals(getServer().PREFIX + "/digits/2.png", request.url());
+    assertEquals(server.PREFIX + "/digits/2.png", request.url());
   }
 
   @Test
   void shouldWorkWithUrlMatch() {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Request request = page.waitForRequest(Pattern.compile(".*digits/\\d\\.png"), () -> {
       page.evaluate("() => {\n" +
         "  fetch('/digits/1.png');\n" +
         "}");
     });
-    assertEquals(getServer().PREFIX + "/digits/1.png", request.url());
+    assertEquals(server.PREFIX + "/digits/1.png", request.url());
   }
 
   void shouldWorkWithUrlMatchRegularExpressionFromADifferentContext() {

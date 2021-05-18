@@ -29,7 +29,7 @@ public class TestBrowserContextRoute extends TestBase {
 
   @Test
   void shouldIntercept() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     boolean[] intercepted = {false};
     Page page = context.newPage();
     context.route("**/empty.html", route -> {
@@ -45,7 +45,7 @@ public class TestBrowserContextRoute extends TestBase {
       assertEquals("about:blank", request.frame().url());
       route.resume();
     });
-    Response response = page.navigate(getServer().EMPTY_PAGE);
+    Response response = page.navigate(server.EMPTY_PAGE);
     assertTrue(response.ok());
     assertTrue(intercepted[0]);
     context.close();
@@ -53,7 +53,7 @@ public class TestBrowserContextRoute extends TestBase {
 
   @Test
   void shouldUnroute() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     Page page = context.newPage();
 
     List<Integer> intercepted = new ArrayList<>();
@@ -74,17 +74,17 @@ public class TestBrowserContextRoute extends TestBase {
       intercepted.add(4);
       route.resume();
     });
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     assertEquals(asList(1), intercepted);
 
     intercepted.clear();
     context.unroute("**/empty.html", handler1);
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     assertEquals(asList(2), intercepted);
 
     intercepted.clear();
     context.unroute("**/empty.html");
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     assertEquals(asList(4), intercepted);
 
     context.close();
@@ -92,7 +92,7 @@ public class TestBrowserContextRoute extends TestBase {
 
   @Test
   void shouldYieldToPageRoute() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     context.route("**/empty.html", route -> {
       route.fulfill(new Route.FulfillOptions().setStatus(200).setBody("context"));
     });
@@ -100,7 +100,7 @@ public class TestBrowserContextRoute extends TestBase {
     page.route("**/empty.html", route -> {
       route.fulfill(new Route.FulfillOptions().setStatus(200).setBody("page"));
     });
-    Response response = page.navigate(getServer().EMPTY_PAGE);
+    Response response = page.navigate(server.EMPTY_PAGE);
     assertTrue(response.ok());
     assertEquals("page", response.text());
     context.close();
@@ -108,7 +108,7 @@ public class TestBrowserContextRoute extends TestBase {
 
   @Test
   void shouldFallBackToContextRoute() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     context.route("**/empty.html", route -> {
       route.fulfill(new Route.FulfillOptions().setStatus(200).setBody("context"));
     });
@@ -116,7 +116,7 @@ public class TestBrowserContextRoute extends TestBase {
     page.route("**/non-empty.html", route -> {
       route.fulfill(new Route.FulfillOptions().setStatus(200).setBody("page"));
     });
-    Response response = page.navigate(getServer().EMPTY_PAGE);
+    Response response = page.navigate(server.EMPTY_PAGE);
     assertTrue(response.ok());
     assertEquals("context", response.text());
     context.close();

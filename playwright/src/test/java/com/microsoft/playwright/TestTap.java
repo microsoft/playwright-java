@@ -33,7 +33,7 @@ public class TestTap extends TestBase {
 
   @Override
   BrowserContext createContext() {
-    return getBrowser().newContext(new Browser.NewContextOptions().setHasTouch(true));
+    return browser.newContext(new Browser.NewContextOptions().setHasTouch(true));
   }
 
   private JSHandle trackEvents(ElementHandle target) {
@@ -97,11 +97,11 @@ public class TestTap extends TestBase {
 
   @Test
   void shouldWaitForANavigationCausedByATap() throws InterruptedException {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.setContent("<a href='/intercept-this.html'>link</a>;");
     Semaphore responseWritten = new Semaphore(0);
     List<String> events = Collections.synchronizedList(new ArrayList<>());
-    getServer().setRoute("/intercept-this.html", exchange -> {
+    server.setRoute("/intercept-this.html", exchange -> {
       // make sure the tap doesnt resolve too early
       try {
         Thread.sleep(100);

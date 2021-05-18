@@ -73,7 +73,7 @@ public class TestBrowserContextStorageState extends TestBase {
       "    }\n" +
       "  ]\n" +
       "}";
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setStorageState(storageState));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setStorageState(storageState));
     Page page = context.newPage();
     page.route("**/*", route -> {
       route.fulfill(new Route.FulfillOptions().setBody("<html></html>"));
@@ -124,7 +124,7 @@ public class TestBrowserContextStorageState extends TestBase {
     try (InputStreamReader reader = new InputStreamReader(new FileInputStream(path.toFile()), StandardCharsets.UTF_8)) {
       assertEquals(expected, new Gson().fromJson(reader, JsonObject.class));
     }
-    BrowserContext context2 = getBrowser().newContext(new Browser.NewContextOptions().setStorageStatePath(path));
+    BrowserContext context2 = browser.newContext(new Browser.NewContextOptions().setStorageStatePath(path));
     Page page2 = context2.newPage();
     page2.route("**/*", route -> {
       route.fulfill(new Route.FulfillOptions().setBody("<html></html>"));

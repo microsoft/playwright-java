@@ -54,7 +54,7 @@ public class TestPageBasic extends TestBase {
   @Test
   void shouldRunBeforeunloadIfAskedFor() {
     Page newPage = context.newPage();
-    newPage.navigate(getServer().PREFIX + "/beforeunload.html");
+    newPage.navigate(server.PREFIX + "/beforeunload.html");
     // We have to interact with a page so that "beforeunload" handlers
     // fire.
     newPage.click("body");
@@ -87,7 +87,7 @@ public class TestPageBasic extends TestBase {
   @Test
   void shouldNotRunBeforeunloadByDefault() {
     Page newPage = context.newPage();
-    newPage.navigate(getServer().PREFIX + "/beforeunload.html");
+    newPage.navigate(server.PREFIX + "/beforeunload.html");
     // We have to interact with a page so that "beforeunload" handlers
     // fire.
     newPage.click("body");
@@ -111,7 +111,7 @@ public class TestPageBasic extends TestBase {
     try {
       newPage.waitForResponse("**", () -> {
         try {
-          newPage.waitForRequest(getServer().EMPTY_PAGE, () -> newPage.close());
+          newPage.waitForRequest(server.EMPTY_PAGE, () -> newPage.close());
           fail("waitForRequest() should throw");
         } catch (PlaywrightException e) {
           assertTrue(e.getMessage().contains("Page closed"));
@@ -171,23 +171,23 @@ public class TestPageBasic extends TestBase {
   @Test
   void pageUrlShouldWork() {
     assertEquals("about:blank", page.url());
-    page.navigate(getServer().EMPTY_PAGE);
-    assertEquals(getServer().EMPTY_PAGE, page.url());
+    page.navigate(server.EMPTY_PAGE);
+    assertEquals(server.EMPTY_PAGE, page.url());
   }
 
   @Test
   void pageUrlShouldIncludeHashes() {
-    page.navigate(getServer().EMPTY_PAGE + "#hash");
-    assertEquals(getServer().EMPTY_PAGE + "#hash", page.url());
+    page.navigate(server.EMPTY_PAGE + "#hash");
+    assertEquals(server.EMPTY_PAGE + "#hash", page.url());
     page.evaluate("() => {\n" +
       "    window.location.hash = 'dynamic';\n" +
       "}");
-    assertEquals(getServer().EMPTY_PAGE + "#dynamic", page.url());
+    assertEquals(server.EMPTY_PAGE + "#dynamic", page.url());
   }
 
   @Test
   void pageTitleShouldReturnThePageTitle() {
-    page.navigate(getServer().PREFIX + "/title.html");
+    page.navigate(server.PREFIX + "/title.html");
     assertEquals("Woof-Woof", page.title());
   }
 
@@ -220,11 +220,11 @@ public class TestPageBasic extends TestBase {
 
   @Test
   void pageFrameShouldRespectUrl() {
-    page.setContent("<iframe src='" + getServer().EMPTY_PAGE + "'></iframe>");
+    page.setContent("<iframe src='" + server.EMPTY_PAGE + "'></iframe>");
     assertNull(page.frameByUrl(Pattern.compile("bogus")));
     Frame frame = page.frameByUrl(Pattern.compile(".*empty.*"));
     assertNotNull(frame);
-    assertEquals(getServer().EMPTY_PAGE, frame.url());
+    assertEquals(server.EMPTY_PAGE, frame.url());
   }
 
   @Test
@@ -257,7 +257,7 @@ public class TestPageBasic extends TestBase {
 
   @Test
   void pagePressShouldWork() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     page.press("textarea", "a");
     assertEquals("a", page.evaluate("() => document.querySelector('textarea').value"));
   }
@@ -273,7 +273,7 @@ public class TestPageBasic extends TestBase {
 
   @Test
   void framePressShouldWork() {
-    page.setContent("<iframe name=inner src='" + getServer().PREFIX + "/input/textarea.html'></iframe>");
+    page.setContent("<iframe name=inner src='" + server.PREFIX + "/input/textarea.html'></iframe>");
     Frame frame = page.frame("inner");
     frame.press("textarea", "a");
     assertEquals("a", frame.evaluate("() => document.querySelector('textarea').value"));

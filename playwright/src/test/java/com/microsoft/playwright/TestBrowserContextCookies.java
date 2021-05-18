@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestBrowserContextCookies extends TestBase {
   @Test
   void shouldGetACookie() {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Object documentCookie = page.evaluate("() => {\n" +
       "  document.cookie = 'username=John Doe';\n" +
       "  return document.cookie;\n" +
@@ -56,7 +56,7 @@ public class TestBrowserContextCookies extends TestBase {
 
   @Test
   void shouldGetANonSessionCookie() {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     // @see https://en.wikipedia.org/wiki/Year_2038_problem
     Object documentCookie = page.evaluate("() => {\n" +
       "    const date= new Date('1/1/2038');\n" +
@@ -78,12 +78,12 @@ public class TestBrowserContextCookies extends TestBase {
 
   @Test
   void shouldProperlyReportHttpOnlyCookie() {
-    getServer().setRoute("/empty.html", exchange -> {
+    server.setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "name=value;HttpOnly; Path=/");
       exchange.sendResponseHeaders(200, 0);
       exchange.getResponseBody().close();
     });
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     List<Cookie> cookies = context.cookies();
     assertEquals(1, cookies.size());
     assertTrue(cookies.get(0).httpOnly);
@@ -96,12 +96,12 @@ public class TestBrowserContextCookies extends TestBase {
   @Test
   @DisabledIf(value="isWebKitWindows", disabledReason="fail")
   void shouldProperlyReportStrictSameSiteCookie() {
-    getServer().setRoute("/empty.html", exchange -> {
+    server.setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "name=value;SameSite=Strict");
       exchange.sendResponseHeaders(200, 0);
       exchange.getResponseBody().close();
     });
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     List<Cookie> cookies = context.cookies();
     assertEquals(1, cookies.size());
     assertEquals(SameSiteAttribute.STRICT, cookies.get(0).sameSite);
@@ -110,12 +110,12 @@ public class TestBrowserContextCookies extends TestBase {
   @Test
   @DisabledIf(value="isWebKitWindows", disabledReason="fail")
   void shouldProperlyReportLaxSameSiteCookie() {
-    getServer().setRoute("/empty.html", exchange -> {
+    server.setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "name=value;SameSite=Lax");
       exchange.sendResponseHeaders(200, 0);
       exchange.getResponseBody().close();
     });
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     List<Cookie> cookies = context.cookies();
     assertEquals(1, cookies.size());
     assertEquals(SameSiteAttribute.LAX, cookies.get(0).sameSite);
@@ -123,7 +123,7 @@ public class TestBrowserContextCookies extends TestBase {
 
   @Test
   void shouldGetMultipleCookies() {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Object documentCookie = page.evaluate("() => {\n" +
       "  document.cookie = 'username=John Doe';\n" +
       "  document.cookie = 'password=1234';\n" +
@@ -188,11 +188,11 @@ public class TestBrowserContextCookies extends TestBase {
   @Test
   void shouldAcceptSameSiteAttribute() {
     context.addCookies(asList(
-      new Cookie("one", "uno").setUrl(getServer().EMPTY_PAGE).setSameSite(SameSiteAttribute.LAX),
-      new Cookie("two", "dos").setUrl(getServer().EMPTY_PAGE).setSameSite(SameSiteAttribute.STRICT),
-      new Cookie("three", "tres").setUrl(getServer().EMPTY_PAGE).setSameSite(SameSiteAttribute.NONE)));
+      new Cookie("one", "uno").setUrl(server.EMPTY_PAGE).setSameSite(SameSiteAttribute.LAX),
+      new Cookie("two", "dos").setUrl(server.EMPTY_PAGE).setSameSite(SameSiteAttribute.STRICT),
+      new Cookie("three", "tres").setUrl(server.EMPTY_PAGE).setSameSite(SameSiteAttribute.NONE)));
 
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Object documentCookie = page.evaluate("document.cookie.split('; ').sort().join('; ')");
     assertEquals("one=uno; three=tres; two=dos", documentCookie);
 

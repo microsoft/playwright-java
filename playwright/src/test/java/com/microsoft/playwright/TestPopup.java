@@ -32,11 +32,11 @@ public class TestPopup extends TestBase {
 
   @Test
   void shouldInheritUserAgentFromBrowserContext() throws ExecutionException, InterruptedException {
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setUserAgent("hey"));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setUserAgent("hey"));
     Page page = context.newPage();
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.setContent("<a target=_blank rel=noopener href='/popup/popup.html'>link</a>");
-    Future<Server.Request> requestPromise = getServer().futureRequest("/popup/popup.html");
+    Future<Server.Request> requestPromise = server.futureRequest("/popup/popup.html");
     Page popup = context.waitForPage(() -> page.click("a"));
     popup.waitForLoadState(DOMCONTENTLOADED);
     String userAgent = (String) popup.evaluate("() => window['initialUserAgent']");
@@ -48,9 +48,9 @@ public class TestPopup extends TestBase {
 
   @Test
   void shouldRespectRoutesFromBrowserContext() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     Page page = context.newPage();
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.setContent("<a target=_blank rel=noopener href='empty.html'>link</a>");
     boolean[] intercepted = {false};
     context.route("**/empty.html", route -> {
@@ -66,12 +66,12 @@ public class TestPopup extends TestBase {
   @Test
   void shouldInheritExtraHeadersFromBrowserContext() throws ExecutionException, InterruptedException {
     @SuppressWarnings("unchecked")
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions()
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setExtraHTTPHeaders(mapOf("foo", "bar")));
     Page page = context.newPage();
-    page.navigate(getServer().EMPTY_PAGE);
-    Future<Server.Request> requestPromise = getServer().futureRequest("/dummy.html");
-    page.evaluate("url => window['_popup'] = window.open(url)", getServer().PREFIX + "/dummy.html");
+    page.navigate(server.EMPTY_PAGE);
+    Future<Server.Request> requestPromise = server.futureRequest("/dummy.html");
+    page.evaluate("url => window['_popup'] = window.open(url)", server.PREFIX + "/dummy.html");
     Server.Request request = requestPromise.get();
     context.close();
     assertEquals(Arrays.asList("bar"), request.headers.get("foo"));
@@ -79,27 +79,27 @@ public class TestPopup extends TestBase {
 
   @Test
   void shouldInheritOfflineFromBrowserContext() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     Page page = context.newPage();
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     context.setOffline(true);
     boolean online = (boolean) page.evaluate("url => {\n" +
       "  const win = window.open(url);\n" +
       "  return win.navigator.onLine;\n" +
-      "}", getServer().PREFIX + "/dummy.html");
+      "}", server.PREFIX + "/dummy.html");
     context.close();
     assertFalse(online);
   }
 
   @Test
   void shouldInheritHttpCredentialsFromBrowserContext() {
-    getServer().setAuth("/title.html", "user", "pass");
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions()
+    server.setAuth("/title.html", "user", "pass");
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setHttpCredentials("user", "pass"));
     Page page = context.newPage();
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Page popup = page.waitForPopup(() -> page.evaluate(
-      "url => window['_popup'] = window.open(url)", getServer().PREFIX + "/title.html"));
+      "url => window['_popup'] = window.open(url)", server.PREFIX + "/title.html"));
     popup.waitForLoadState(DOMCONTENTLOADED);
     assertEquals("Woof-Woof", popup.title());
     context.close();
@@ -107,11 +107,11 @@ public class TestPopup extends TestBase {
 
   @Test
   void shouldInheritTouchSupportFromBrowserContext() {
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions()
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(400, 500)
       .setHasTouch(true));
     Page page = context.newPage();
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Object hasTouch = page.evaluate("() => {\n" +
       "  const win = window.open('');\n" +
       "  return 'ontouchstart' in win;\n" +
@@ -122,10 +122,10 @@ public class TestPopup extends TestBase {
 
   @Test
   void shouldInheritViewportSizeFromBrowserContext() {
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions()
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(400, 500));
     Page page = context.newPage();
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Object size = page.evaluate("() => {\n" +
       "  const win = window.open('about:blank');\n" +
       "  return { width: win.innerWidth, height: win.innerHeight };\n" +
@@ -136,10 +136,10 @@ public class TestPopup extends TestBase {
 
   @Test
   void shouldUseViewportSizeFromWindowFeatures() {
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions()
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(700, 700));
     Page page = context.newPage();
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Object[] size = {null};
     Page popup = page.waitForPopup(() -> {
       size[0] = page.evaluate("() => {\n" +
@@ -157,16 +157,16 @@ public class TestPopup extends TestBase {
 
   @Test
   void shouldRespectRoutesFromBrowserContextWithWindowOpen() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     Page page = context.newPage();
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     boolean[] intercepted = {false};
     context.route("**/empty.html", route -> {
       route.resume();
       intercepted[0] = true;
     });
     page.waitForPopup(() -> {
-      page.evaluate("url => window['__popup'] = window.open(url)", getServer().EMPTY_PAGE);
+      page.evaluate("url => window['__popup'] = window.open(url)", server.EMPTY_PAGE);
     });
     assertTrue(intercepted[0]);
     context.close();
@@ -174,10 +174,10 @@ public class TestPopup extends TestBase {
 
   @Test
   void BrowserContextAddInitScriptShouldApplyToAnInProcessPopup() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     context.addInitScript("window['injected'] = 123");
     Page page = context.newPage();
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Object injected = page.evaluate("() => {\n" +
       "  const win = window.open('about:blank');\n" +
       "  return win['injected'];\n" +
@@ -188,12 +188,12 @@ public class TestPopup extends TestBase {
 
   @Test
   void BrowserContextAddInitScriptShouldApplyToACrossProcessPopup() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     context.addInitScript("(() => window['injected'] = 123)()");
     Page page = context.newPage();
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Page popup = page.waitForPopup(() -> {
-      page.evaluate("url => window.open(url)", getServer().CROSS_PROCESS_PREFIX + "/title.html");
+      page.evaluate("url => window.open(url)", server.CROSS_PROCESS_PREFIX + "/title.html");
     });
     assertEquals(123, popup.evaluate("injected"));
 
@@ -205,7 +205,7 @@ public class TestPopup extends TestBase {
 
   @Test
   void shouldExposeFunctionFromBrowserContext() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     List<String> messages = new ArrayList<>();
     context.exposeFunction("add", args -> {
       messages.add("binding");
@@ -213,7 +213,7 @@ public class TestPopup extends TestBase {
     });
     Page page = context.newPage();
 //    context.on("page", () => messages.push('page'));
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Object added = page.evaluate("async () => {\n" +
       "  const win = window.open('about:blank');\n" +
       "  return win['add'](9, 4);\n" +

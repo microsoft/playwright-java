@@ -31,20 +31,20 @@ public class TestBrowserTypeBasic extends TestBase {
   void browserTypeExecutablePathShouldWork() {
     Assumptions.assumeTrue(getBrowserChannelFromEnv() == null);
     Assumptions.assumeTrue(createLaunchOptions().executablePath == null, "Skip with custom executable path");
-    String executablePath = getBrowserType().executablePath();
+    String executablePath = browserType.executablePath();
     assertTrue(Files.exists(Paths.get(executablePath)));
   }
 
   @Test
   void browserTypeNameShouldWork() {
-    assertEquals(getBrowserNameFromEnv(), getBrowserType().name());
+    assertEquals(getBrowserNameFromEnv(), browserType.name());
   }
 
   @Test
   @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="Non-chromium behavior")
   void shouldThrowWhenTryingToConnectWithNotChromium() {
     try {
-      getBrowserType().connectOverCDP("foo");
+      browserType.connectOverCDP("foo");
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Connecting over CDP is only supported in Chromium."));

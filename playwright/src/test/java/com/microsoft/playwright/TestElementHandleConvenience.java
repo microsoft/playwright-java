@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestElementHandleConvenience extends TestBase {
   @Test
   void shouldHaveANicePreview() {
-    page.navigate(getServer().PREFIX + "/dom.html");
+    page.navigate(server.PREFIX + "/dom.html");
     ElementHandle outer = page.querySelector("#outer");
     ElementHandle inner = page.querySelector("#inner");
     ElementHandle check = page.querySelector("#check");
@@ -37,7 +37,7 @@ public class TestElementHandleConvenience extends TestBase {
 
   @Test
   void getAttributeShouldWork() {
-    page.navigate(getServer().PREFIX + "/dom.html");
+    page.navigate(server.PREFIX + "/dom.html");
     ElementHandle handle = page.querySelector("#outer");
     assertEquals("value", handle.getAttribute("name"));
     assertNull(handle.getAttribute("foo"));
@@ -47,7 +47,7 @@ public class TestElementHandleConvenience extends TestBase {
 
   @Test
   void innerHTMLShouldWork() {
-    page.navigate(getServer().PREFIX + "/dom.html");
+    page.navigate(server.PREFIX + "/dom.html");
     ElementHandle handle = page.querySelector("#outer");
     assertEquals("<div id=\"inner\">Text,\nmore text</div>", handle.innerHTML());
     assertEquals("<div id=\"inner\">Text,\nmore text</div>", page.innerHTML("#outer"));
@@ -55,7 +55,7 @@ public class TestElementHandleConvenience extends TestBase {
 
   @Test
   void innerTextShouldWork() {
-    page.navigate(getServer().PREFIX + "/dom.html");
+    page.navigate(server.PREFIX + "/dom.html");
     ElementHandle handle = page.querySelector("#inner");
     assertEquals("Text, more text", handle.innerText());
     assertEquals("Text, more text", page.innerText("#inner"));
@@ -81,7 +81,7 @@ public class TestElementHandleConvenience extends TestBase {
 
   @Test
   void textContentShouldWork() {
-    page.navigate(getServer().PREFIX + "/dom.html");
+    page.navigate(server.PREFIX + "/dom.html");
     ElementHandle handle = page.querySelector("#inner");
     assertEquals("Text,\nmore text", handle.textContent());
     assertEquals("Text,\nmore text", page.textContent("#inner"));
@@ -103,7 +103,7 @@ public class TestElementHandleConvenience extends TestBase {
       "    return result;\n" +
       "  }\n" +
       "}\n";
-    getPlaywright().selectors().register("textContent", createDummySelector);
+    playwright.selectors().register("textContent", createDummySelector);
     page.setContent("<div>Hello</div>");
     String tc = page.textContent("textContent=div");
     assertEquals("Hello", tc);
@@ -126,7 +126,7 @@ public class TestElementHandleConvenience extends TestBase {
       "    return result;\n" +
       "  }\n" +
       "}\n";
-    getPlaywright().selectors().register("innerText", createDummySelector);
+    playwright.selectors().register("innerText", createDummySelector);
     page.setContent("<div>Hello</div>");
     String tc = page.innerText("innerText=div");
     assertEquals("Hello", tc);
@@ -149,7 +149,7 @@ public class TestElementHandleConvenience extends TestBase {
       "    return result;\n" +
       "  }\n" +
       "}\n";
-    getPlaywright().selectors().register("innerHTML", createDummySelector);
+    playwright.selectors().register("innerHTML", createDummySelector);
     page.setContent("<div>Hello<span>world</span></div>");
     String tc = page.innerHTML("innerHTML=div");
     assertEquals("Hello<span>world</span>", tc);
@@ -172,7 +172,7 @@ public class TestElementHandleConvenience extends TestBase {
       "    return result;\n" +
       "  }\n" +
       "}\n";
-    getPlaywright().selectors().register("getAttribute", createDummySelector);
+    playwright.selectors().register("getAttribute", createDummySelector);
     page.setContent("<div foo=hello></div>");
     String tc = page.getAttribute("getAttribute=div", "foo");
     assertEquals("hello", tc);

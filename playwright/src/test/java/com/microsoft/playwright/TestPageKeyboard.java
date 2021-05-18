@@ -27,7 +27,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldMoveWithTheArrowKeys() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     page.type("textarea", "Hello World!");
     assertEquals("Hello World!", page.evaluate("() => document.querySelector('textarea').value"));
     for (int i = 0; i < "World!".length(); i++) {
@@ -46,7 +46,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldSendACharacterWithElementHandlePress() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     ElementHandle textarea = page.querySelector("textarea");
     textarea.press("a");
     assertEquals("a", page.evaluate("() => document.querySelector('textarea').value"));
@@ -57,7 +57,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldSendACharacterWithInsertText() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     page.focus("textarea");
     page.keyboard().insertText("嗨");
     assertEquals("嗨", page.evaluate("() => document.querySelector('textarea').value"));
@@ -68,7 +68,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void insertTextShouldOnlyEmitInputEvent() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     page.focus("textarea");
     JSHandle events = page.evaluateHandle("() => {\n" +
       "  const events = [];\n" +
@@ -86,7 +86,7 @@ public class TestPageKeyboard extends TestBase {
   void shouldReportShiftKey() {
     // Do NOT test on MacOS Firefox
     Assumptions.assumeFalse( isFirefox() && isMac);
-    page.navigate(getServer().PREFIX + "/input/keyboard.html");
+    page.navigate(server.PREFIX + "/input/keyboard.html");
     Keyboard keyboard = page.keyboard();
     Map<String, Integer> codeForKey = new HashMap<>();
     codeForKey.put("Shift", 16);
@@ -110,7 +110,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldReportMultipleModifiers() {
-    page.navigate(getServer().PREFIX + "/input/keyboard.html");
+    page.navigate(server.PREFIX + "/input/keyboard.html");
     Keyboard keyboard = page.keyboard();
     keyboard.down("Control");
     assertEquals("Keydown: Control ControlLeft 17 [Control]", page.evaluate("getResult()"));
@@ -128,7 +128,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldSendProperCodesWhileTyping() {
-    page.navigate(getServer().PREFIX + "/input/keyboard.html");
+    page.navigate(server.PREFIX + "/input/keyboard.html");
     page.keyboard().type("!");
     assertEquals(String.join("\n",
       new String[] {"Keydown: ! Digit1 49 []",
@@ -145,7 +145,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldSendProperCodesWhileTypingWithShift() {
-    page.navigate(getServer().PREFIX + "/input/keyboard.html");
+    page.navigate(server.PREFIX + "/input/keyboard.html");
     Keyboard keyboard = page.keyboard();
     keyboard.down("Shift");
     page.keyboard().type("~");
@@ -160,7 +160,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldNotTypeCanceledEvents() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     page.focus("textarea");
     page.evaluate("() => {\n" +
       "  window.addEventListener('keydown', event => {\n" +
@@ -178,7 +178,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldPressPlus() {
-    page.navigate(getServer().PREFIX + "/input/keyboard.html");
+    page.navigate(server.PREFIX + "/input/keyboard.html");
     page.keyboard().press("+");
     assertEquals(String.join("\n",
       new String[] {"Keydown: + Equal 187 []", // 192 is ` keyCode
@@ -189,7 +189,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldPressShiftPlus() {
-    page.navigate(getServer().PREFIX + "/input/keyboard.html");
+    page.navigate(server.PREFIX + "/input/keyboard.html");
     page.keyboard().press("Shift++");
     assertEquals(String.join("\n",
       new String[] {"Keydown: Shift ShiftLeft 16 [Shift]",
@@ -202,7 +202,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldSupportPlusSeparatedModifier(){
-    page.navigate(getServer().PREFIX + "/input/keyboard.html");
+    page.navigate(server.PREFIX + "/input/keyboard.html");
     page.keyboard().press("Shift+~");
     assertEquals(String.join("\n",
       new String[] {"Keydown: Shift ShiftLeft 16 [Shift]",
@@ -215,7 +215,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldSupportMultiplePlusSeparatedModifier() {
-    page.navigate(getServer().PREFIX + "/input/keyboard.html");
+    page.navigate(server.PREFIX + "/input/keyboard.html");
     page.keyboard().press("Control+Shift+~");
     assertEquals(String.join("\n",
       new String[] {"Keydown: Control ControlLeft 17 [Control]",
@@ -229,7 +229,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldShiftRawCodes() {
-    page.navigate(getServer().PREFIX + "/input/keyboard.html");
+    page.navigate(server.PREFIX + "/input/keyboard.html");
     page.keyboard().press("Shift+Digit3");
     assertEquals(String.join("\n",
       new String[] {"Keydown: Shift ShiftLeft 16 [Shift]",
@@ -242,7 +242,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldSpecifyRepeatProperty() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     page.focus("textarea");
     JSHandle lastEvent = captureLastKeyDown();
     page.keyboard().down("a");
@@ -260,7 +260,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldTypeAllKindsOfCharacters() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     page.focus("textarea");
     final String text = "This text goes onto two lines.\\nThis character is 嗨.";
     page.keyboard().type(text);
@@ -269,7 +269,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldSpecifyLocation() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     JSHandle lastEvent = captureLastKeyDown();
     ElementHandle textarea = page.querySelector("textarea");
     textarea.press("Digit5");
@@ -317,15 +317,15 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldTypeEmoji() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     page.type("textarea", "👹 Tokyo street Japan 🇯🇵");
     assertEquals("👹 Tokyo street Japan 🇯🇵", page.evalOnSelector("textarea", "textarea => textarea.value"));
   }
 
   @Test
   void shouldTypeEmojiIntoAnIframe() {
-    page.navigate(getServer().EMPTY_PAGE);
-    attachFrame(page, "emoji-test", getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.EMPTY_PAGE);
+    attachFrame(page, "emoji-test", server.PREFIX + "/input/textarea.html");
     Frame frame = page.frames().get(1);
     ElementHandle textarea = frame.querySelector("textarea");
     textarea.type("👹 Tokyo street Japan 🇯🇵");
@@ -334,7 +334,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldHandleSelectAll() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     ElementHandle textarea = page.querySelector("textarea");
     textarea.type("some text");
     String modifier = isMac ? "Meta" : "Control";
@@ -347,7 +347,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldBeAbleToPreventSelectAll() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     ElementHandle textarea = page.querySelector("textarea");
     textarea.type("some text");
     page.evalOnSelector("textarea", "textarea => {\n" +
@@ -370,7 +370,7 @@ public class TestPageKeyboard extends TestBase {
     Assumptions.assumeTrue(isMac);
     // @see https://github.com/microsoft/playwright/issues/5721
     Assumptions.assumeFalse(isFirefox());
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     ElementHandle textarea = page.querySelector("textarea");
     textarea.type("some text");
     // select one word backwards
@@ -403,8 +403,8 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldWorkAfterACrossOriginNavigation() {
-    page.navigate(getServer().PREFIX + "/empty.html");
-    page.navigate(getServer().CROSS_PROCESS_PREFIX + "/empty.html");
+    page.navigate(server.PREFIX + "/empty.html");
+    page.navigate(server.CROSS_PROCESS_PREFIX + "/empty.html");
     JSHandle lastEvent = captureLastKeyDown();
     page.keyboard().press("a");
     assertEquals("a", lastEvent.evaluate("l => l.key"));
@@ -434,7 +434,7 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldScrollWithPageDown() {
-    page.navigate(getServer().PREFIX + "/input/scrollable.html");
+    page.navigate(server.PREFIX + "/input/scrollable.html");
     // A click is required for WebKit to send the event into the body.
     page.click("body");
     page.keyboard().press("PageDown");

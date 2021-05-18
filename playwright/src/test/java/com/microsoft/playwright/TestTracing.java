@@ -27,8 +27,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestTracing extends TestBase {
 
+  @Override
   @BeforeAll
-  static void launchBrowser(@TempDir Path tempDir) {
+  void launchBrowser() {
+    // The method is replaced by the method below (with temp dir as extra parameter,
+    // we cannot declare temp dir field as it would be initialized too late).
+  }
+
+  @BeforeAll
+  void launchBrowser(@TempDir Path tempDir) {
+    System.out.println("new launchBrowser(");
     BrowserType.LaunchOptions options = createLaunchOptions();
     options.setTraceDir(tempDir.resolve("trace-dir"));
     launchBrowser(options);
@@ -38,7 +46,7 @@ public class TestTracing extends TestBase {
   void shouldCollectTrace1(@TempDir Path tempDir) {
     context.tracing().start(new Tracing.StartOptions().setName("test")
       .setScreenshots(true).setSnapshots(true));
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.setContent("<button>Click</button>");
     page.click("'Click'");
     page.close();
@@ -53,7 +61,7 @@ public class TestTracing extends TestBase {
   void shouldCollectTwoTraces(@TempDir Path tempDir) {
     context.tracing().start(new Tracing.StartOptions().setName("test1")
       .setScreenshots(true).setSnapshots(true));
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.setContent("<button>Click</button>");
     page.click("'Click'");
     context.tracing().stop();

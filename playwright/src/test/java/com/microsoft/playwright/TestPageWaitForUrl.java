@@ -24,14 +24,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestPageWaitForUrl extends TestBase {
   @Test
   void shouldWork() {
-    page.navigate(getServer().EMPTY_PAGE);
-    page.evaluate("url => window.location.href = url", getServer().PREFIX + "/grid.html");
+    page.navigate(server.EMPTY_PAGE);
+    page.evaluate("url => window.location.href = url", server.PREFIX + "/grid.html");
     page.waitForURL("**/grid.html");
   }
 
   @Test
   void shouldRespectTimeout() {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     try {
       page.waitForURL("**/frame.html", new Page.WaitForURLOptions().setTimeout(2500));
       fail("did not throw");
@@ -42,14 +42,14 @@ public class TestPageWaitForUrl extends TestBase {
 
   @Test
   void shouldWorkWithBothDomcontentloadedAndLoad() {
-    page.navigate(getServer().PREFIX + "/one-style.html");
+    page.navigate(server.PREFIX + "/one-style.html");
     page.waitForURL("**/one-style.html", new Page.WaitForURLOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
     page.waitForURL("**/one-style.html", new Page.WaitForURLOptions().setWaitUntil(WaitUntilState.LOAD));
   }
 
   @Test
   void shouldWorkWithClickingOnAnchorLinks() {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.setContent("<a href='#foobar'>foobar</a>");
     page.click("a");
     page.waitForURL("**/*#foobar");
@@ -57,31 +57,31 @@ public class TestPageWaitForUrl extends TestBase {
 
   @Test
   void shouldWorkWithHistoryPushState() {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.setContent("<a onclick='javascript:pushState()'>SPA</a>\n" +
       "<script>\n" +
       "  function pushState() { history.pushState({}, '', 'wow.html') }\n" +
       "</script>");
     page.click("a");
     page.waitForURL("**/wow.html");
-    assertEquals(getServer().PREFIX + "/wow.html", page.url());
+    assertEquals(server.PREFIX + "/wow.html", page.url());
   }
 
   @Test
   void shouldWorkWithHistoryReplaceState() {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.setContent(" <a onclick='javascript:replaceState()'>SPA</a>\n" +
       "<script>\n" +
       "  function replaceState() { history.replaceState({}, '', '/replaced.html') }\n" +
       "</script>");
     page.click("a");
     page.waitForURL("**/replaced.html");
-    assertEquals(getServer().PREFIX + "/replaced.html", page.url());
+    assertEquals(server.PREFIX + "/replaced.html", page.url());
   }
 
   @Test
   void shouldWorkWithDOMHistoryBackHistoryForward() {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.setContent("<a id=back onclick='javascript:goBack()'>back</a>\n" +
       "<a id=forward onclick='javascript:goForward()'>forward</a>\n" +
       "<script>\n" +
@@ -90,22 +90,22 @@ public class TestPageWaitForUrl extends TestBase {
       "  history.pushState({}, '', '/first.html');\n" +
       "  history.pushState({}, '', '/second.html');\n" +
       "</script>");
-    assertEquals(getServer().PREFIX + "/second.html", page.url());
+    assertEquals(server.PREFIX + "/second.html", page.url());
 
     page.click("a#back");
     page.waitForURL("**/first.html");
-    assertEquals(getServer().PREFIX + "/first.html", page.url());
+    assertEquals(server.PREFIX + "/first.html", page.url());
 
     page.click("a#forward");
     page.waitForURL("**/second.html");
-    assertEquals(getServer().PREFIX + "/second.html", page.url());
+    assertEquals(server.PREFIX + "/second.html", page.url());
   }
 
   @Test
   void shouldWorkOnFrame() {
-    page.navigate(getServer().PREFIX + "/frames/one-frame.html");
+    page.navigate(server.PREFIX + "/frames/one-frame.html");
     Frame frame = page.frames().get(1);
-    frame.evaluate("url => window.location.href = url", getServer().PREFIX + "/grid.html");
+    frame.evaluate("url => window.location.href = url", server.PREFIX + "/grid.html");
     frame.waitForURL("**/grid.html");
   }
 }

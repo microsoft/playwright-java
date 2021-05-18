@@ -29,36 +29,36 @@ public class TestBrowserContextNetworkEvents extends TestBase {
   void BrowserContextEventsRequest() {
     List<String> requests = new ArrayList<>();
     context.onRequest(request -> requests.add(request.url()));
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.setContent("<a target=_blank rel=noopener href='/one-style.html'>yo</a>");
     Page page1 = context.waitForPage(() -> page.click("a"));
     page1.waitForLoadState();
     assertEquals(asList(
-      getServer().EMPTY_PAGE,
-      getServer().PREFIX + "/one-style.html",
-      getServer().PREFIX + "/one-style.css"), requests);
+      server.EMPTY_PAGE,
+      server.PREFIX + "/one-style.html",
+      server.PREFIX + "/one-style.css"), requests);
   }
 
   @Test
   void BrowserContextEventsResponse() {
     List<String> responses = new ArrayList<>();
     context.onResponse(response -> responses.add(response.url()));
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.setContent("<a target=_blank rel=noopener href='/one-style.html'>yo</a>");
     Page page1 = context.waitForPage(() -> page.click("a"));
     page1.waitForLoadState();
     assertEquals(asList(
-      getServer().EMPTY_PAGE,
-      getServer().PREFIX + "/one-style.html",
-      getServer().PREFIX + "/one-style.css"), responses);
+      server.EMPTY_PAGE,
+      server.PREFIX + "/one-style.html",
+      server.PREFIX + "/one-style.css"), responses);
   }
 
   @Test
   void BrowserContextEventsRequestFailed() {
-    getServer().setRoute("/one-style.css", exchange -> exchange.getResponseBody().close());
+    server.setRoute("/one-style.css", exchange -> exchange.getResponseBody().close());
     List<Request> failedRequests = new ArrayList<>();
     context.onRequestFailed(request -> failedRequests.add(request));
-    page.navigate(getServer().PREFIX + "/one-style.html");
+    page.navigate(server.PREFIX + "/one-style.html");
     assertEquals(1, failedRequests.size());
     assertTrue(failedRequests.get(0).url().contains("one-style.css"));
     assertNull(failedRequests.get(0).response());
@@ -71,12 +71,12 @@ public class TestBrowserContextNetworkEvents extends TestBase {
   void BrowserContextEventsRequestFinished() {
     Request[] requestRef = {null};
     context.onRequestFinished(r -> requestRef[0] = r);
-    Response response = page.navigate(getServer().EMPTY_PAGE);
+    Response response = page.navigate(server.EMPTY_PAGE);
     Request request = response.request();
-    assertEquals(getServer().EMPTY_PAGE, request.url());
+    assertEquals(server.EMPTY_PAGE, request.url());
     assertNotNull(request.response());
     assertEquals(request.frame(), page.mainFrame());
-    assertEquals(getServer().EMPTY_PAGE, request.frame().url());
+    assertEquals(server.EMPTY_PAGE, request.frame().url());
     assertNull(request.failure());
   }
 
@@ -86,7 +86,7 @@ public class TestBrowserContextNetworkEvents extends TestBase {
     context.onRequest(r -> events.add("request"));
     context.onResponse(r -> events.add("response"));
     context.onRequestFinished(r -> events.add("requestfinished"));
-    Response response = page.navigate(getServer().EMPTY_PAGE);
+    Response response = page.navigate(server.EMPTY_PAGE);
     assertNull(response.finished());
     assertEquals(asList("request", "response", "requestfinished"), events);
   }

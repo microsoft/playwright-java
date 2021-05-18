@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestNetworkPostData extends TestBase {
   @Test
   void shouldReturnCorrectPostDataBufferForUtf8Body() {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     String value = "baẞ";
     Request request = page.waitForRequest("**", () -> {
       page.evaluate("({url, value}) => {\n" +
@@ -39,7 +39,7 @@ public class TestNetworkPostData extends TestBase {
         "  });\n" +
         "  request.headers.set('content-type', 'application/json;charset=UTF-8');\n" +
         "  return fetch(request);\n" +
-        "}", mapOf("url", getServer().PREFIX + "/title.html", "value", value));
+        "}", mapOf("url", server.PREFIX + "/title.html", "value", value));
     });
     assertTrue(Arrays.equals(new Gson().toJson(value).getBytes(StandardCharsets.UTF_8), request.postDataBuffer()));
     assertEquals(new Gson().toJson(value), request.postData());
@@ -47,7 +47,7 @@ public class TestNetworkPostData extends TestBase {
 
   @Test
   void shouldReturnPostDataWOContentType() {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Request request = page.waitForRequest("**", () -> {
       page.evaluate("({url}) => {\n" +
         "  const request = new Request(url, {\n" +
@@ -56,7 +56,7 @@ public class TestNetworkPostData extends TestBase {
         "  });\n" +
         "  request.headers.set('content-type', '');\n" +
         "  return fetch(request);\n" +
-        "}", mapOf("url", getServer().PREFIX + "/title.html"));
+        "}", mapOf("url", server.PREFIX + "/title.html"));
     });
     assertEquals(new Gson().toJson(mapOf("value", 42)), request.postData());
   }
@@ -67,7 +67,7 @@ public class TestNetworkPostData extends TestBase {
 
   @Test
   void shouldReturnPostDataForPUTRequests() {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Request request = page.waitForRequest("**", () -> {
       page.evaluate("({url}) => {\n" +
         "  const request = new Request(url, {\n" +
@@ -75,7 +75,7 @@ public class TestNetworkPostData extends TestBase {
         "    body: JSON.stringify({ value: 42 }),\n" +
         "  });\n" +
         "  return fetch(request);\n" +
-        "}", mapOf("url", getServer().PREFIX + "/title.html"));
+        "}", mapOf("url", server.PREFIX + "/title.html"));
     });
     assertEquals(new Gson().toJson(mapOf("value", 42)), request.postData());
   }

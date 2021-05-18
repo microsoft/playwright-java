@@ -36,7 +36,7 @@ public class TestRequestFulfill extends TestBase {
         .setHeaders(mapOf("foo", "bar"))
         .setBody("Yo, page!"));
     });
-    Response response = page.navigate(getServer().EMPTY_PAGE);
+    Response response = page.navigate(server.EMPTY_PAGE);
     assertEquals(201, response.status());
     assertEquals("bar", response.headers().get("foo"));
     assertEquals("Yo, page!", page.evaluate("() => document.body.textContent"));
@@ -49,7 +49,7 @@ public class TestRequestFulfill extends TestBase {
         .setStatus(422)
         .setBody("Yo, page!"));
     });
-    Response response = page.navigate(getServer().EMPTY_PAGE);
+    Response response = page.navigate(server.EMPTY_PAGE);
     assertEquals(422, response.status());
     assertEquals("Unprocessable Entity", response.statusText());
     assertEquals("Yo, page!", page.evaluate("document.body.textContent"));
@@ -79,7 +79,7 @@ public class TestRequestFulfill extends TestBase {
       "  img.src = PREFIX + '/does-not-exist.png';\n" +
       "  document.body.appendChild(img);\n" +
       "  return new Promise(fulfill => img.onload = fulfill);\n" +
-      "}", getServer().PREFIX);
+      "}", server.PREFIX);
     ElementHandle img = page.querySelector("img");
 //    expect(img.screenshot()).toMatchSnapshot("mock-binary-response.png");
   }
@@ -98,7 +98,7 @@ public class TestRequestFulfill extends TestBase {
       "  img.src = PREFIX + '/does-not-exist.svg';\n" +
       "  document.body.appendChild(img);\n" +
       "  return new Promise((f, r) => { img.onload = f; img.onerror = r; });\n" +
-      "}", getServer().PREFIX);
+      "}", server.PREFIX);
     ElementHandle img = page.querySelector("img");
 //    expect(img.screenshot()).toMatchSnapshot("mock-svg.png");
   }

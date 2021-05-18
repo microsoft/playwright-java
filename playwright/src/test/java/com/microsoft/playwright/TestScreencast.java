@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestScreencast extends TestBase {
   @Test
   void shouldExposeVideoPath(@TempDir Path videosDir) {
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions()
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setRecordVideoDir(videosDir).setRecordVideoSize(320, 240)
       .setViewportSize(320, 240));
     Page page = context.newPage();
@@ -40,7 +40,7 @@ public class TestScreencast extends TestBase {
 
   @Test
   void shouldSaveAsVideo(@TempDir Path videosDir) {
-    BrowserContext context = getBrowser().newContext(
+    BrowserContext context = browser.newContext(
       new Browser.NewContextOptions()
         .setRecordVideoDir(videosDir)
         .setRecordVideoSize(320, 240)
@@ -57,7 +57,7 @@ public class TestScreencast extends TestBase {
 
   @Test
   void saveAsShouldThrowWhenNoVideoFrames(@TempDir Path videosDir) {
-    BrowserContext context = getBrowser().newContext(
+    BrowserContext context = browser.newContext(
       new Browser.NewContextOptions()
         .setRecordVideoDir(videosDir)
         .setRecordVideoSize(320, 240)
@@ -87,7 +87,7 @@ public class TestScreencast extends TestBase {
 
   @Test
   void shouldDeleteVideo(@TempDir Path videosDir) {
-    BrowserContext context = getBrowser().newContext(
+    BrowserContext context = browser.newContext(
       new Browser.NewContextOptions()
         .setRecordVideoDir(videosDir)
         .setRecordVideoSize(320, 240)

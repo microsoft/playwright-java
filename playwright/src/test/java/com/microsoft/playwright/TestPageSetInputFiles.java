@@ -37,7 +37,7 @@ public class TestPageSetInputFiles extends TestBase {
 
   @Test
   void shouldUploadTheFile() {
-    page.navigate(getServer().PREFIX + "/input/fileupload.html");
+    page.navigate(server.PREFIX + "/input/fileupload.html");
     ElementHandle input = page.querySelector("input");
     input.setInputFiles(FILE_TO_UPLOAD);
     assertEquals("file-to-upload.txt", page.evaluate("e => e.files[0].name", input));
@@ -116,8 +116,8 @@ public class TestPageSetInputFiles extends TestBase {
 
   @Test
   void shouldWorkWithCSP() {
-    getServer().setCSP("/empty.html", "default-src 'none'");
-    page.navigate(getServer().EMPTY_PAGE);
+    server.setCSP("/empty.html", "default-src 'none'");
+    page.navigate(server.EMPTY_PAGE);
     page.setContent("<input type=file>");
     page.setInputFiles("input", FILE_TO_UPLOAD);
     assertEquals(1, page.evalOnSelector("input", "input => input.files.length"));

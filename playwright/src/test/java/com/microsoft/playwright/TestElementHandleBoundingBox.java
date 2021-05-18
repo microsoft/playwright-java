@@ -34,7 +34,7 @@ public class TestElementHandleBoundingBox extends TestBase {
   @DisabledIf(value="isFirefoxHeadful", disabledReason="fail")
   void shouldWork() {
     page.setViewportSize(500, 500);
-    page.navigate(getServer().PREFIX + "/grid.html");
+    page.navigate(server.PREFIX + "/grid.html");
     ElementHandle elementHandle = page.querySelector(".box:nth-of-type(13)");
     BoundingBox box = elementHandle.boundingBox();
     assertEquals(100, box.x);
@@ -46,7 +46,7 @@ public class TestElementHandleBoundingBox extends TestBase {
   @Test
   void shouldHandleNestedFrames() {
     page.setViewportSize(500, 500);
-    page.navigate(getServer().PREFIX + "/frames/nested-frames.html");
+    page.navigate(server.PREFIX + "/frames/nested-frames.html");
     Frame nestedFrame = page.frame("dos");
     assertNotNull(nestedFrame);
     ElementHandle elementHandle = nestedFrame.querySelector("div");
@@ -98,10 +98,10 @@ public class TestElementHandleBoundingBox extends TestBase {
   @Test
   @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
   void shouldWorkWithPageScale() {
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions()
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(400, 400).setIsMobile(true));
     Page page = context.newPage();
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     button.evaluate("button => {\n" +
       "  document.body.style.margin = '0';\n" +

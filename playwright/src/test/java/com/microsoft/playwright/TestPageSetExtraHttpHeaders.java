@@ -29,40 +29,40 @@ public class TestPageSetExtraHttpHeaders extends TestBase {
   @Test
   void shouldWork() throws ExecutionException, InterruptedException {
     page.setExtraHTTPHeaders(mapOf("foo", "bar"));
-    Future<Server.Request> request = getServer().futureRequest("/empty.html");
-    page.navigate(getServer().EMPTY_PAGE);
+    Future<Server.Request> request = server.futureRequest("/empty.html");
+    page.navigate(server.EMPTY_PAGE);
     assertEquals(asList("bar"), request.get().headers.get("foo"));
     assertNull(request.get().headers.get("baz"));
   }
 
   @Test
   void shouldWorkWithRedirects() throws ExecutionException, InterruptedException {
-    getServer().setRedirect("/foo.html", "/empty.html");
+    server.setRedirect("/foo.html", "/empty.html");
     page.setExtraHTTPHeaders(mapOf("foo", "bar"));
-    Future<Server.Request> request = getServer().futureRequest("/empty.html");
-    page.navigate(getServer().PREFIX + "/foo.html");
+    Future<Server.Request> request = server.futureRequest("/empty.html");
+    page.navigate(server.PREFIX + "/foo.html");
     assertEquals(asList("bar"), request.get().headers.get("foo"));
   }
 
   @Test
   void shouldWorkWithExtraHeadersFromBrowserContext() throws ExecutionException, InterruptedException {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     context.setExtraHTTPHeaders(mapOf("foo", "bar"));
     Page page = context.newPage();
-    Future<Server.Request> request = getServer().futureRequest("/empty.html");
-    page.navigate(getServer().EMPTY_PAGE);
+    Future<Server.Request> request = server.futureRequest("/empty.html");
+    page.navigate(server.EMPTY_PAGE);
     context.close();
     assertEquals(asList("bar"), request.get().headers.get("foo"));
   }
 
   @Test
   void shouldOverrideExtraHeadersFromBrowserContext() throws ExecutionException, InterruptedException {
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions()
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setExtraHTTPHeaders(mapOf("fOo", "bAr", "baR", "foO")));
     Page page = context.newPage();
     page.setExtraHTTPHeaders(mapOf("Foo", "Bar"));
-    Future<Server.Request> request = getServer().futureRequest("/empty.html");
-    page.navigate(getServer().EMPTY_PAGE);
+    Future<Server.Request> request = server.futureRequest("/empty.html");
+    page.navigate(server.EMPTY_PAGE);
     context.close();
     assertEquals(asList("Bar"), request.get().headers.get("foo"));
     assertEquals(asList("foO"), request.get().headers.get("bar"));
@@ -71,7 +71,7 @@ public class TestPageSetExtraHttpHeaders extends TestBase {
   @Test
   void shouldThrowForNonStringHeaderValues() {
     try {
-      getBrowser().newContext(new Browser.NewContextOptions().setExtraHTTPHeaders(mapOf("foo", null)));
+      browser.newContext(new Browser.NewContextOptions().setExtraHTTPHeaders(mapOf("foo", null)));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("expected string, got undefined"));

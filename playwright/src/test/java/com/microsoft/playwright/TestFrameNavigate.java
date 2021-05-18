@@ -26,11 +26,11 @@ public class TestFrameNavigate extends TestBase {
 
   @Test
   void shouldNavigateSubframes() {
-    page.navigate(getServer().PREFIX + "/frames/one-frame.html");
+    page.navigate(server.PREFIX + "/frames/one-frame.html");
     assertTrue(page.frames().get(0).url().contains("/frames/one-frame.html"));
     assertTrue(page.frames().get(1).url().contains("/frames/frame.html"));
 
-    Response response = page.frames().get(1).navigate(getServer().EMPTY_PAGE);
+    Response response = page.frames().get(1).navigate(server.EMPTY_PAGE);
     assertTrue(response.ok());
     assertEquals(page.frames().get(1), response.frame());
   }
@@ -41,8 +41,8 @@ public class TestFrameNavigate extends TestBase {
 
   @Test
   void shouldContinueAfterClientRedirect() {
-    getServer().setRoute("/frames/script.js", (httpExchange) -> {});
-    String url = getServer().PREFIX + "/frames/child-redirect.html";
+    server.setRoute("/frames/script.js", (httpExchange) -> {});
+    String url = server.PREFIX + "/frames/child-redirect.html";
     try {
       page.navigate(url, new Page.NavigateOptions().setTimeout(5000).setWaitUntil(NETWORKIDLE));
     } catch (TimeoutError e) {

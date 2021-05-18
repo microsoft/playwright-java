@@ -24,7 +24,7 @@ public class TestElementHandleClick extends TestBase {
 
   @Test
   void shouldWork() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     button.click();
     assertEquals("Clicked", page.evaluate("() => window['result']"));
@@ -32,7 +32,7 @@ public class TestElementHandleClick extends TestBase {
 
   @Test
   void shouldWorkWithNodeRemoved() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => delete window['Node']");
     ElementHandle button  = page.querySelector("button");
     button.click();
@@ -41,7 +41,7 @@ public class TestElementHandleClick extends TestBase {
 
   @Test
   void shouldWorkForShadowDOMV1() {
-    page.navigate(getServer().PREFIX + "/shadow.html");
+    page.navigate(server.PREFIX + "/shadow.html");
     ElementHandle buttonHandle = page.evaluateHandle("() => window['button']").asElement();
     buttonHandle.click();
     assertEquals(true, page.evaluate("clicked"));
@@ -49,7 +49,7 @@ public class TestElementHandleClick extends TestBase {
 
   @Test
   void shouldWorkForTextNodes() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle buttonTextNode = page.evaluateHandle("() => document.querySelector('button').firstChild").asElement();
     buttonTextNode.click();
     assertEquals("Clicked", page.evaluate("() => window['result']"));
@@ -57,7 +57,7 @@ public class TestElementHandleClick extends TestBase {
 
   @Test
   void shouldThrowForDetachedNodes() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     page.evaluate("button => button.remove()", button);
     try {
@@ -70,7 +70,7 @@ public class TestElementHandleClick extends TestBase {
 
   @Test
   void shouldThrowForHiddenNodesWithForce() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     page.evaluate("button => button.style.display = 'none'", button);
     try {
@@ -83,7 +83,7 @@ public class TestElementHandleClick extends TestBase {
 
   @Test
   void shouldThrowForRecursivelyHiddenNodesWithForce() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     page.evaluate("button => button.parentElement.style.display = 'none'", button);
     try {
@@ -108,7 +108,7 @@ public class TestElementHandleClick extends TestBase {
 
   @Test
   void shouldDoubleClickTheButton() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => {\n" +
       "  window['double'] = false;\n" +
       "  const button = document.querySelector('button');\n" +
