@@ -134,7 +134,7 @@ public class TestElementHandleWaitForElementState extends TestBase {
   @Test
   @DisabledIf(value="isFirefoxLinux", disabledReason="fixme")
   void shouldWaitForStablePosition() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     page.evalOnSelector("button", "button => {\n" +
       "  button.style.transition = 'margin 10000ms linear 0s';\n" +

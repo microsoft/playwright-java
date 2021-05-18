@@ -31,7 +31,7 @@ public class TestGeolocation extends TestBase {
   @Test
   void shouldWork() {
     context.grantPermissions(asList("geolocation"));
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     context.setGeolocation(new Geolocation(10, 10));
     Object geolocation = page.evaluate("() => new Promise(resolve => navigator.geolocation.getCurrentPosition(position => {\n" +
       "  resolve({latitude: position.coords.latitude, longitude: position.coords.longitude});\n" +
@@ -52,13 +52,13 @@ public class TestGeolocation extends TestBase {
   void shouldIsolateContexts() {
     context.grantPermissions(asList("geolocation"));
     context.setGeolocation(new Geolocation(10, 10));
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
 
-    BrowserContext context2 = getBrowser().newContext(new Browser.NewContextOptions()
+    BrowserContext context2 = browser.newContext(new Browser.NewContextOptions()
       .setPermissions(asList("geolocation"))
       .setGeolocation(new Geolocation(20, 20)));
     Page page2 = context2.newPage();
-    page2.navigate(getServer().EMPTY_PAGE);
+    page2.navigate(server.EMPTY_PAGE);
 
     Object geolocation = page.evaluate("() => new Promise(resolve => navigator.geolocation.getCurrentPosition(position => {\n" +
       "  resolve({latitude: position.coords.latitude, longitude: position.coords.longitude});\n" +
@@ -80,7 +80,7 @@ public class TestGeolocation extends TestBase {
   void shouldNotModifyPassedDefaultOptionsObject() {
     Geolocation geolocation = new Geolocation(10, 10);
     Browser.NewContextOptions options = new Browser.NewContextOptions().setGeolocation(geolocation);
-    BrowserContext context = getBrowser().newContext(options);
+    BrowserContext context = browser.newContext(options);
     context.setGeolocation(new Geolocation(20, 20));
     assertEquals(geolocation, options.geolocation);
     context.close();
@@ -95,9 +95,9 @@ public class TestGeolocation extends TestBase {
     Browser.NewContextOptions options = new Browser.NewContextOptions()
       .setGeolocation(new Geolocation(10, 10))
       .setPermissions(asList("geolocation"));
-    BrowserContext context = getBrowser().newContext(options);
+    BrowserContext context = browser.newContext(options);
     Page page = context.newPage();
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Object geolocation = page.evaluate("() => new Promise(resolve => navigator.geolocation.getCurrentPosition(position => {\n" +
       "  resolve({latitude: position.coords.latitude, longitude: position.coords.longitude});\n" +
       "}))");
@@ -108,7 +108,7 @@ public class TestGeolocation extends TestBase {
   @Test
   void watchPositionShouldBeNotified() {
     context.grantPermissions(asList("geolocation"));
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     List<String> messages = new ArrayList<>();
     page.onConsoleMessage(message -> messages.add(message.text()));
     context.setGeolocation(new Geolocation(0, 0));
@@ -150,7 +150,7 @@ public class TestGeolocation extends TestBase {
     context.grantPermissions(asList("geolocation"));
     context.setGeolocation(new Geolocation(10, 10));
     Page popup = page.waitForPopup(() -> page.evaluate(
-      "url => window['_popup'] = window.open(url)", getServer().PREFIX + "/geolocation.html"));
+      "url => window['_popup'] = window.open(url)", server.PREFIX + "/geolocation.html"));
     popup.waitForLoadState();
     Object geolocation = popup.evaluate("window['geolocationPromise']");
     assertEquals(mapOf("longitude", 10, "latitude", 10), geolocation);

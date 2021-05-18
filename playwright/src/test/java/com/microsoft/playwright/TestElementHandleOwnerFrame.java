@@ -26,8 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class TestElementHandleOwnerFrame extends TestBase {
   @Test
   void shouldWork() {
-    page.navigate(getServer().EMPTY_PAGE);
-    attachFrame(page, "frame1", getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
+    attachFrame(page, "frame1", server.EMPTY_PAGE);
     Frame frame = page.frames().get(1);
     JSHandle jsHandle = frame.evaluateHandle("() => document.body");
     ElementHandle elementHandle = jsHandle.asElement();
@@ -37,8 +37,8 @@ public class TestElementHandleOwnerFrame extends TestBase {
 
   @Test
   void shouldWorkForCrossProcessIframes() {
-    page.navigate(getServer().EMPTY_PAGE);
-    attachFrame(page, "frame1", getServer().CROSS_PROCESS_PREFIX + "/empty.html");
+    page.navigate(server.EMPTY_PAGE);
+    attachFrame(page, "frame1", server.CROSS_PROCESS_PREFIX + "/empty.html");
     Frame frame = page.frames().get(1);
     JSHandle jsHandle = frame.evaluateHandle("() => document.body");
     ElementHandle elementHandle = jsHandle.asElement();
@@ -49,8 +49,8 @@ public class TestElementHandleOwnerFrame extends TestBase {
   @Test
   void shouldWorkForDocument() {
     // TODO: test.flaky(platform === "win32" && browserName === "webkit");
-    page.navigate(getServer().EMPTY_PAGE);
-    attachFrame(page, "frame1", getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
+    attachFrame(page, "frame1", server.EMPTY_PAGE);
     Frame frame = page.frames().get(1);
     JSHandle jsHandle = frame.evaluateHandle("document");
     ElementHandle elementHandle = jsHandle.asElement();
@@ -60,8 +60,8 @@ public class TestElementHandleOwnerFrame extends TestBase {
 
   @Test
   void shouldWorkForIframeElements() {
-    page.navigate(getServer().EMPTY_PAGE);
-    attachFrame(page, "frame1", getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
+    attachFrame(page, "frame1", server.EMPTY_PAGE);
     Frame frame = page.mainFrame();
     JSHandle jsHandle = frame.evaluateHandle("() => document.querySelector('#frame1')");
     ElementHandle elementHandle = jsHandle.asElement();
@@ -71,8 +71,8 @@ public class TestElementHandleOwnerFrame extends TestBase {
 
   @Test
   void shouldWorkForCrossFrameEvaluations() {
-    page.navigate(getServer().EMPTY_PAGE);
-    attachFrame(page, "frame1", getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
+    attachFrame(page, "frame1", server.EMPTY_PAGE);
     Frame frame = page.mainFrame();
     JSHandle elementHandle = frame.evaluateHandle(  "() => document.querySelector('iframe').contentWindow.document.body");
     assertEquals(frame.childFrames().get(0), elementHandle.asElement().ownerFrame());
@@ -80,7 +80,7 @@ public class TestElementHandleOwnerFrame extends TestBase {
 
   @Test
   void shouldWorkForDetachedElements() {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     JSHandle divHandle = page.evaluateHandle("() => {\n" +
       "  const div = document.createElement('div');\n" +
       "  document.body.appendChild(div);\n" +
@@ -96,9 +96,8 @@ public class TestElementHandleOwnerFrame extends TestBase {
 
   @Test
   void shouldWorkForAdoptedElements() {
-    page.navigate(getServer().EMPTY_PAGE);
-    Page popup = page.waitForPopup(() ->
-      page.evaluate("url => window['__popup'] = window.open(url)", getServer().EMPTY_PAGE));
+    page.navigate(server.EMPTY_PAGE);
+    Page popup = page.waitForPopup(() -> page.evaluate("url => window['__popup'] = window.open(url)", server.EMPTY_PAGE));
     JSHandle divHandle = page.evaluateHandle("() => {\n" +
      "  const div = document.createElement('div');\n" +
      "  document.body.appendChild(div);\n" +

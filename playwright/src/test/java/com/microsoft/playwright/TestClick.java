@@ -33,7 +33,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickTheButton() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
     assertEquals("Clicked", page.evaluate("result"));
   }
@@ -49,7 +49,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickTheButtonIfWindowNodeIsRemoved() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => delete window.Node");
     page.click("button");
     assertEquals("Clicked", page.evaluate("result"));
@@ -82,31 +82,31 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickTheButtonAfterNavigation() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
     assertEquals("Clicked", page.evaluate("result"));
   }
 
   @Test
   void shouldClickTheButtonAfterACrossOriginNavigation() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
-    page.navigate(getServer().CROSS_PROCESS_PREFIX + "/input/button.html");
+    page.navigate(server.CROSS_PROCESS_PREFIX + "/input/button.html");
     page.click("button");
     assertEquals("Clicked", page.evaluate("result"));
   }
 
   @Test
   void shouldClickWithDisabledJavascript() {
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
     Page page = context.newPage();
-    page.navigate(getServer().PREFIX + "/wrappedlink.html");
+    page.navigate(server.PREFIX + "/wrappedlink.html");
 
     page.waitForNavigation(() -> page.click("a"));
 
-    assertEquals(getServer().PREFIX + "/wrappedlink.html#clicked", page.url());
+    assertEquals(server.PREFIX + "/wrappedlink.html#clicked", page.url());
     context.close();
   }
 
@@ -126,7 +126,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldSelectTheTextByTripleClicking() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     String text = "This is the text that we are going to try to select. Let's see how it goes.";
     page.fill("textarea", text);
     page.click("textarea", new Page.ClickOptions().setClickCount(3));
@@ -138,7 +138,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickOffscreenButtons() {
-    page.navigate(getServer().PREFIX + "/offscreenbuttons.html");
+    page.navigate(server.PREFIX + "/offscreenbuttons.html");
     List<String> messages = new ArrayList<>();
     page.onConsoleMessage(message -> messages.add(message.text()));
     for (int i = 0; i < 11; ++i) {
@@ -163,14 +163,14 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldWaitForVisibleWhenAlreadyVisible() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
     assertEquals("Clicked", page.evaluate("result"));
   }
 
   @Test
   void shouldNotWaitWithForce() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "b => b.style.display = 'none'");
     Exception exception = null;
     try {
@@ -197,14 +197,14 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickWrappedLinks() {
-    page.navigate(getServer().PREFIX + "/wrappedlink.html");
+    page.navigate(server.PREFIX + "/wrappedlink.html");
     page.click("a");
     assertTrue((Boolean) page.evaluate("__clicked"));
   }
 
   @Test
   void shouldClickOnCheckboxInputAndToggle() {
-    page.navigate(getServer().PREFIX + "/input/checkbox.html");
+    page.navigate(server.PREFIX + "/input/checkbox.html");
     assertNull(page.evaluate("() => window['result'].check"));
     page.click("input#agree");
     assertTrue((Boolean) page.evaluate("() => window['result'].check"));
@@ -224,7 +224,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickOnCheckboxLabelAndToggle() {
-    page.navigate(getServer().PREFIX + "/input/checkbox.html");
+    page.navigate(server.PREFIX + "/input/checkbox.html");
     assertNull(page.evaluate("() => window['result'].check"));
     page.click("label[for='agree']");
     assertTrue((Boolean) page.evaluate("() => window['result'].check"));
@@ -240,7 +240,7 @@ public class TestClick extends TestBase {
   @Test
   void shouldNotHangWithTouchEnabledViewports() {
     // @see https://github.com/GoogleChrome/puppeteer/issues/161
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions()
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(375, 667)
       .setHasTouch(true));
     Page page = context.newPage();
@@ -252,7 +252,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldScrollAndClickTheButton() {
-    page.navigate(getServer().PREFIX + "/input/scrollable.html");
+    page.navigate(server.PREFIX + "/input/scrollable.html");
     page.click("#button-5");
     assertEquals("clicked", page.evaluate("() => document.querySelector('#button-5').textContent"));
     page.click("#button-80");
@@ -261,7 +261,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldDoubleClickTheButton() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => {\n" +
       "  window['double'] = false;\n" +
       "  const button = document.querySelector('button');\n" +
@@ -276,7 +276,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickAPartiallyObscuredButton() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => {\n" +
       "  const button = document.querySelector('button');\n" +
       "  button.textContent = 'Some really long text that will go offscreen';\n" +
@@ -289,14 +289,14 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickARotatedButton() {
-    page.navigate(getServer().PREFIX + "/input/rotatedButton.html");
+    page.navigate(server.PREFIX + "/input/rotatedButton.html");
     page.click("button");
     assertEquals("Clicked", page.evaluate("result"));
   }
 
   @Test
   void shouldFireContextmenuEventOnRightClick() {
-    page.navigate(getServer().PREFIX + "/input/scrollable.html");
+    page.navigate(server.PREFIX + "/input/scrollable.html");
     page.click("#button-8", new Page.ClickOptions().setButton(RIGHT));
     assertEquals("context menu", page.evaluate("() => document.querySelector('#button-8').textContent"));
   }
@@ -304,16 +304,16 @@ public class TestClick extends TestBase {
   @Test
   void shouldClickLinksWhichCauseNavigation() {
     // @see https://github.com/GoogleChrome/puppeteer/issues/206
-    page.setContent("<a href=" + getServer().EMPTY_PAGE + ">empty.html</a>");
+    page.setContent("<a href=" + server.EMPTY_PAGE + ">empty.html</a>");
     // This should not hang.
     page.click("a");
   }
 
   @Test
   void shouldClickTheButtonInsideAnIframe() {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.setContent("<div style='width:100px;height:100px'>spacer</div>");
-    Utils.attachFrame(page, "button-test", getServer().PREFIX + "/input/button.html");
+    Utils.attachFrame(page, "button-test", server.PREFIX + "/input/button.html");
     Frame frame = page.frames().get(1);
     ElementHandle button = frame.querySelector("button");
     button.click();
@@ -326,10 +326,10 @@ public class TestClick extends TestBase {
     // @see https://github.com/GoogleChrome/puppeteer/issues/4110
     // @see https://bugs.chromium.org/p/chromium/issues/detail?id=986390
     // @see https://chromium-review.googlesource.com/c/chromium/src/+/1742784
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.setViewportSize(500, 500);
     page.setContent("<div style='width:100px;height:2000px'>spacer</div>");
-    Utils.attachFrame(page, "button-test", getServer().CROSS_PROCESS_PREFIX + "/input/button.html");
+    Utils.attachFrame(page, "button-test", server.CROSS_PROCESS_PREFIX + "/input/button.html");
     Frame frame = page.frames().get(1);
     frame.evalOnSelector("button", "button => button.style.setProperty('position', 'fixed')");
     frame.click("button");
@@ -339,13 +339,13 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickTheButtonWithDeviceScaleFactorSet() {
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions()
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(400, 400)
       .setDeviceScaleFactor(5.0));
     Page page = context.newPage();
     assertEquals(5, page.evaluate("() => window.devicePixelRatio"));
     page.setContent("<div style='width:100px;height:100px'>spacer</div>");
-    Utils.attachFrame(page, "button-test", getServer().PREFIX + "/input/button.html");
+    Utils.attachFrame(page, "button-test", server.PREFIX + "/input/button.html");
     Frame frame = page.frames().get(1);
     ElementHandle button = frame.querySelector("button");
     button.click();
@@ -355,7 +355,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickTheButtonWithPxBorderWithOffset() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => button.style.borderWidth = '8px'");
     page.click("button", new Page.ClickOptions().setPosition(20, 10));
     assertEquals(page.evaluate("result"), "Clicked");
@@ -366,7 +366,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickTheButtonWithEmBorderWithOffset() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => button.style.borderWidth = '2em'");
     page.evalOnSelector("button", "button => button.style.fontSize = '12px'");
     page.click("button", new Page.ClickOptions().setPosition(20, 10));
@@ -378,7 +378,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickAVeryLargeButtonWithOffset() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => button.style.borderWidth = '8px'");
     page.evalOnSelector("button", "button => button.style.height = button.style.width = '2000px'");
     page.click("button", new Page.ClickOptions().setPosition(1900, 1910));
@@ -390,7 +390,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickAButtonInScrollingContainerWithOffset() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => {\n" +
       "  const container = document.createElement('div');\n" +
       "  container.style.overflow = 'auto';\n" +
@@ -412,11 +412,11 @@ public class TestClick extends TestBase {
   @Test
   @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
   void shouldClickTheButtonWithOffsetWithPageScale() {
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions()
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setViewportSize(400, 400)
       .setIsMobile(true));
     Page page = context.newPage();
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => {\n" +
       "  button.style.borderWidth = '8px';\n" +
       "  document.body.style.margin = '0';\n" +
@@ -442,7 +442,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldWaitForStablePosition() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "button => {\n" +
       "  button.style.transition = 'margin 500ms linear 0s';\n" +
       "  button.style.marginLeft = '200px';\n" +
@@ -466,7 +466,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldFailWhenObscuredAndNotWaitingForHitTarget() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     page.evaluate("() => {\n" +
       "  document.body.style.position = 'relative';\n" +
@@ -532,7 +532,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldUpdateModifiersCorrectly() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.click("button", new Page.ClickOptions().setModifiers(asList(SHIFT)));
     assertEquals(true, page.evaluate("shiftKey"));
     page.click("button", new Page.ClickOptions().setModifiers(emptyList()));
@@ -560,7 +560,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldReportNiceErrorWhenElementIsDetachedAndForceClicked() {
-    page.navigate(getServer().PREFIX + "/input/animating-button.html");
+    page.navigate(server.PREFIX + "/input/animating-button.html");
     page.evaluate("addButton()");
     ElementHandle handle = page.querySelector("button");
     page.evaluate("stopButton(true)");
@@ -610,7 +610,7 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickTheButtonWhenWindowInnerWidthIsCorrupted() {
-    page.navigate(getServer().PREFIX + "/input/button.html");
+    page.navigate(server.PREFIX + "/input/button.html");
     page.evaluate("() => Object.defineProperty(window, 'innerWidth', {value: 0})");
     page.click("button");
     assertEquals("Clicked", page.evaluate("result"));

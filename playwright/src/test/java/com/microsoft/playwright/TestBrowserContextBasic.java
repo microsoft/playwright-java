@@ -28,23 +28,22 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestBrowserContextBasic extends TestBase {
   @Test
   void shouldCreateNewContext() {
-    assertEquals(1, getBrowser().contexts().size());
-    BrowserContext context = getBrowser().newContext();
-    assertEquals(2, getBrowser().contexts().size());
-    assertTrue(getBrowser().contexts().indexOf(context) != -1);
-    assertEquals(context.browser(), getBrowser());
+    assertEquals(1, browser.contexts().size());
+    BrowserContext context = browser.newContext();
+    assertEquals(2, browser.contexts().size());
+    assertTrue(browser.contexts().indexOf(context) != -1);
+    assertEquals(context.browser(), browser);
     context.close();
-    assertEquals(1, getBrowser().contexts().size());
-    assertEquals(context.browser(), getBrowser());
+    assertEquals(1, browser.contexts().size());
+    assertEquals(context.browser(), browser);
   }
 
   @Test
   void windowOpenShouldUseParentTabContext() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     Page page = context.newPage();
-    page.navigate(getServer().EMPTY_PAGE);
-    Page popup = page.waitForPopup(() ->
-      page.evaluate("url => window.open(url)", getServer().EMPTY_PAGE));
+    page.navigate(server.EMPTY_PAGE);
+    Page popup = page.waitForPopup(() -> page.evaluate("url => window.open(url)", server.EMPTY_PAGE));
     assertEquals(context, popup.context());
     context.close();
   }
@@ -52,14 +51,14 @@ public class TestBrowserContextBasic extends TestBase {
   @Test
   void shouldIsolateLocalStorageAndCookies() {
     // Create two incognito contexts.
-    BrowserContext context1 = getBrowser().newContext();
-    BrowserContext context2 = getBrowser().newContext();
+    BrowserContext context1 = browser.newContext();
+    BrowserContext context2 = browser.newContext();
     assertEquals(0, context1.pages().size());
     assertEquals(0, context2.pages().size());
 
     // Create a page in first incognito context.
     Page page1 = context1.newPage();
-    page1.navigate(getServer().EMPTY_PAGE);
+    page1.navigate(server.EMPTY_PAGE);
     page1.evaluate("() => {\n" +
       "  localStorage.setItem('name', 'page1');\n" +
       "  document.cookie = 'name=page1';\n" +
@@ -70,7 +69,7 @@ public class TestBrowserContextBasic extends TestBase {
 
     // Create a page in second incognito context.
     Page page2 = context2.newPage();
-    page2.navigate(getServer().EMPTY_PAGE);
+    page2.navigate(server.EMPTY_PAGE);
     page2.evaluate("() => {\n" +
       "  localStorage.setItem('name', 'page2');\n" +
       "  document.cookie = 'name=page2';\n" +
@@ -91,12 +90,12 @@ public class TestBrowserContextBasic extends TestBase {
     context1.close();
     context2.close();
 
-    assertEquals(1, getBrowser().contexts().size());
+    assertEquals(1, browser.contexts().size());
   }
 
   @Test
   void shouldPropagateDefaultViewportToThePage() {
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setViewportSize(456, 789));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(456, 789));
     Page page = context.newPage();
     verifyViewport(page, 456, 789);
     context.close();
@@ -108,7 +107,7 @@ public class TestBrowserContextBasic extends TestBase {
 
   @Test
   void shouldRespectDeviceScaleFactor() {
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setDeviceScaleFactor(3.0));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setDeviceScaleFactor(3.0));
     Page page = context.newPage();
     assertEquals(3, page.evaluate("window.devicePixelRatio"));
     context.close();
@@ -119,7 +118,7 @@ public class TestBrowserContextBasic extends TestBase {
   @Disabled("TODO: supported null viewport option")
   void shouldNotAllowDeviceScaleFactorWithNullViewport() {
     try {
-      getBrowser().newContext(new Browser.NewContextOptions().setDeviceScaleFactor(1.0));
+      browser.newContext(new Browser.NewContextOptions().setDeviceScaleFactor(1.0));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("\"deviceScaleFactor\" option is not supported with null \"viewport\""));
@@ -130,7 +129,7 @@ public class TestBrowserContextBasic extends TestBase {
   @Disabled("TODO: supported null viewport option")
   void shouldNotAllowIsMobileWithNullViewport() {
     try {
-      getBrowser().newContext(new Browser.NewContextOptions().setIsMobile(true));
+      browser.newContext(new Browser.NewContextOptions().setIsMobile(true));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("\"isMobile\" option is not supported with null \"viewport\""));
@@ -139,13 +138,13 @@ public class TestBrowserContextBasic extends TestBase {
 
   @Test
   void closeShouldWorkForEmptyContext() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     context.close();
   }
 
   @Test
   void closeShouldAbortFutureEvent() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     try {
       context.waitForPage(() -> context.close());
       fail("did not throw");
@@ -156,7 +155,7 @@ public class TestBrowserContextBasic extends TestBase {
 
   @Test
   void closeShouldBeCallableTwice() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     context.close();
     context.close();
     context.close();
@@ -164,11 +163,8 @@ public class TestBrowserContextBasic extends TestBase {
 
   @Test
   void shouldNotReportFramelessPagesOnError() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     Page page = context.newPage();
-    // getServer() returns thread local and the handler is called on another
-    // thread, save the value to a local variable.
-    Server server = getServer();
     server.setRoute("/empty.html", exchange -> {
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
@@ -180,7 +176,7 @@ public class TestBrowserContextBasic extends TestBase {
     });
     Page[] popup = {null};
     context.onPage(page1 -> popup[0] = page1);
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.click("'Click me'");
     context.close();
     if (popup[0] != null) {
@@ -192,7 +188,7 @@ public class TestBrowserContextBasic extends TestBase {
 
   @Test
   void shouldReturnAllOfThePages() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     Page page = context.newPage();
     Page second = context.newPage();
     List<Page> allPages = context.pages();
@@ -204,7 +200,7 @@ public class TestBrowserContextBasic extends TestBase {
 
   @Test
   void shouldCloseAllBelongingPagesOnceClosingContext() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     context.newPage();
     assertEquals(1, context.pages().size());
     context.close();
@@ -214,7 +210,7 @@ public class TestBrowserContextBasic extends TestBase {
   @Test
   void shouldDisableJavascript() {
     {
-      BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
+      BrowserContext context = browser.newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
       Page page = context.newPage();
       page.navigate("data:text/html, <script>var something = 'forbidden'</script>");
       try {
@@ -230,7 +226,7 @@ public class TestBrowserContextBasic extends TestBase {
     }
 
     {
-      BrowserContext context = getBrowser().newContext();
+      BrowserContext context = browser.newContext();
       Page page = context.newPage();
       page.navigate("data:text/html, <script>var something = 'forbidden'</script>");
       assertEquals("forbidden", page.evaluate("something"));
@@ -240,31 +236,31 @@ public class TestBrowserContextBasic extends TestBase {
 
   @Test
   void shouldBeAbleToNavigateAfterDisablingJavascript() {
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
     Page page = context.newPage();
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     context.close();
   }
 
   @Test
   void shouldWorkWithOfflineOption() {
-    BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setOffline(true));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setOffline(true));
     Page page = context.newPage();
     try {
-      page.navigate(getServer().EMPTY_PAGE);
+      page.navigate(server.EMPTY_PAGE);
       fail("did not throw");
     } catch (PlaywrightException e) {
     }
 
     context.setOffline(false);
-    Response response = page.navigate(getServer().EMPTY_PAGE);
+    Response response = page.navigate(server.EMPTY_PAGE);
     assertEquals(200, response.status());
     context.close();
   }
 
   @Test
   void shouldEmulateNavigatorOnLine() {
-    BrowserContext context = getBrowser().newContext();
+    BrowserContext context = browser.newContext();
     Page page = context.newPage();
     assertEquals(true, page.evaluate("() => window.navigator.onLine"));
     context.setOffline(true);

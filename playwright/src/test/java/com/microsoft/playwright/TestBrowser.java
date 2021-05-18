@@ -30,22 +30,22 @@ public class TestBrowser extends TestBase {
 
   @Test
   void shouldCreateNewPage() {
-    Page page1 = getBrowser().newPage();
-    assertEquals(1, getBrowser().contexts().size());
+    Page page1 = browser.newPage();
+    assertEquals(1, browser.contexts().size());
 
-    Page page2 = getBrowser().newPage();
-    assertEquals(2, getBrowser().contexts().size());
+    Page page2 = browser.newPage();
+    assertEquals(2, browser.contexts().size());
 
     page1.close();
-    assertEquals(1, getBrowser().contexts().size());
+    assertEquals(1, browser.contexts().size());
 
     page2.close();
-    assertEquals(0, getBrowser().contexts().size());
+    assertEquals(0, browser.contexts().size());
   }
 
   @Test
   void shouldThrowUponSecondCreateNewPage() {
-    Page page = getBrowser().newPage();
+    Page page = browser.newPage();
     try {
       page.context().newPage();
       fail("newPage should throw");
@@ -58,12 +58,12 @@ public class TestBrowser extends TestBase {
   @Test
   void versionShouldWork() {
     if (isChromium()) {
-      assertTrue(Pattern.matches("^\\d+\\.\\d+\\.\\d+\\.\\d+$", getBrowser().version()));
+      assertTrue(Pattern.matches("^\\d+\\.\\d+\\.\\d+\\.\\d+$", browser.version()));
     } else if (isWebKit()) {
-      assertTrue(Pattern.matches("^\\d+\\.\\d+", getBrowser().version()));
+      assertTrue(Pattern.matches("^\\d+\\.\\d+", browser.version()));
     } else if (isFirefox()) {
       // It can be 85.0b1 in Firefox.
-      assertTrue(Pattern.matches("^\\d+\\.\\d+.*", getBrowser().version()));
+      assertTrue(Pattern.matches("^\\d+\\.\\d+.*", browser.version()));
     }
   }
 }

@@ -32,7 +32,7 @@ public class TestRequestContinue extends TestBase {
   @Test
   void shouldWork() {
     page.route("**/*", route -> route.resume());
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
   }
 
   @Test
@@ -42,18 +42,18 @@ public class TestRequestContinue extends TestBase {
       headers.put("FOO", "bar");
       route.resume(new Route.ResumeOptions().setHeaders(headers));
     });
-    page.navigate(getServer().EMPTY_PAGE);
-    Future<Server.Request> request = getServer().futureRequest("/sleep.zzz");
+    page.navigate(server.EMPTY_PAGE);
+    Future<Server.Request> request = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz')");
     assertEquals(Arrays.asList("bar"), request.get().headers.get("foo"));
   }
 
   @Test
   void shouldAmendMethod() throws ExecutionException, InterruptedException {
-    Future<Server.Request> sRequest = getServer().futureRequest("/sleep.zzz");
-    page.navigate(getServer().EMPTY_PAGE);
+    Future<Server.Request> sRequest = server.futureRequest("/sleep.zzz");
+    page.navigate(server.EMPTY_PAGE);
     page.route("**/*", route -> route.resume(new Route.ResumeOptions().setMethod("POST")));
-    Future<Server.Request> request = getServer().futureRequest("/sleep.zzz");
+    Future<Server.Request> request = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz')");
     assertEquals("POST", request.get().method);
     assertEquals("POST", sRequest.get().method);
@@ -61,12 +61,12 @@ public class TestRequestContinue extends TestBase {
 
   @Test
   void shouldOverrideRequestUrl() throws ExecutionException, InterruptedException {
-    Future<Server.Request> serverRequest = getServer().futureRequest("/global-var.html");
+    Future<Server.Request> serverRequest = server.futureRequest("/global-var.html");
     page.route("**/foo", route -> {
-      route.resume(new Route.ResumeOptions().setUrl(getServer().PREFIX + "/global-var.html"));
+      route.resume(new Route.ResumeOptions().setUrl(server.PREFIX + "/global-var.html"));
     });
-    Response response = page.navigate(getServer().PREFIX + "/foo");
-    assertEquals(getServer().PREFIX + "/foo", response.url());
+    Response response = page.navigate(server.PREFIX + "/foo");
+    assertEquals(server.PREFIX + "/foo", response.url());
     assertEquals(123, page.evaluate("window['globalVar']"));
     assertEquals("GET", serverRequest.get().method);
   }
@@ -82,47 +82,47 @@ public class TestRequestContinue extends TestBase {
         route.resume();
       }
     });
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     assertNotNull(error[0]);
     assertTrue(error[0].getMessage().contains("New URL must have same protocol as overridden URL"), error[0].getMessage());
   }
 
   @Test
   void shouldOverrideMethodAlongWithUrl() throws ExecutionException, InterruptedException {
-    Future<Server.Request> serverRequest = getServer().futureRequest("/empty.html");
+    Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
     page.route("**/foo", route -> {
-      route.resume(new Route.ResumeOptions().setUrl(getServer().EMPTY_PAGE).setMethod("POST"));
+      route.resume(new Route.ResumeOptions().setUrl(server.EMPTY_PAGE).setMethod("POST"));
     });
-    page.navigate(getServer().PREFIX + "/foo");
+    page.navigate(server.PREFIX + "/foo");
     assertEquals("POST", serverRequest.get().method);
   }
 
   @Test
   void shouldAmendMethodOnMainRequest() throws ExecutionException, InterruptedException {
-    Future<Server.Request> request = getServer().futureRequest("/empty.html");
+    Future<Server.Request> request = server.futureRequest("/empty.html");
     page.route("**/*", route -> route.resume(new Route.ResumeOptions().setMethod("POST")));
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     assertEquals("POST", request.get().method);
   }
 
   @Test
   void shouldAmendPostData() throws ExecutionException, InterruptedException {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.route("**/*", route -> {
       route.resume(new Route.ResumeOptions().setPostData("doggo"));
     });
-    Future<Server.Request> serverRequest = getServer().futureRequest("/sleep.zzz");
+    Future<Server.Request> serverRequest = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz', { method: 'POST', body: 'birdy' })");
     assertEquals("doggo", new String(serverRequest.get().postBody, UTF_8));
   }
 
   @Test
   void shouldAmendUtf8PostData() throws ExecutionException, InterruptedException {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.route("**/*", route -> {
       route.resume(new Route.ResumeOptions().setPostData("пушкин"));
     });
-    Future<Server.Request> serverRequest = getServer().futureRequest("/sleep.zzz");
+    Future<Server.Request> serverRequest = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz', { method: 'POST', body: 'birdy' })");
     assertEquals("POST", serverRequest.get().method);
     assertEquals("пушкин", new String(serverRequest.get().postBody, UTF_8));
@@ -130,11 +130,11 @@ public class TestRequestContinue extends TestBase {
 
   @Test
   void shouldAmendLongerPostData() throws ExecutionException, InterruptedException {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     page.route("**/*", route -> {
       route.resume(new Route.ResumeOptions().setPostData("doggo-is-longer-than-birdy"));
     });
-    Future<Server.Request> serverRequest = getServer().futureRequest("/sleep.zzz");
+    Future<Server.Request> serverRequest = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz', { method: 'POST', body: 'birdy' })");
     assertEquals("POST", serverRequest.get().method);
     assertEquals("doggo-is-longer-than-birdy", new String(serverRequest.get().postBody, UTF_8));
@@ -142,7 +142,7 @@ public class TestRequestContinue extends TestBase {
 
   @Test
   void shouldAmendBinaryPostData() throws ExecutionException, InterruptedException {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     byte[] arr = new byte[256];
     for (int i = 0; i < arr.length; i++) {
       arr[i] = (byte) i;
@@ -150,7 +150,7 @@ public class TestRequestContinue extends TestBase {
     page.route("**/*", route -> {
       route.resume(new Route.ResumeOptions().setPostData(arr));
     });
-    Future<Server.Request> serverRequest = getServer().futureRequest("/sleep.zzz");
+    Future<Server.Request> serverRequest = server.futureRequest("/sleep.zzz");
     page.evaluate("() => fetch('/sleep.zzz', { method: 'POST', body: 'birdy' })");
     assertEquals("POST", serverRequest.get().method);
     byte[] buffer = serverRequest.get().postBody;

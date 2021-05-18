@@ -88,9 +88,9 @@ public class TestBrowserContextViewport extends TestBase {
 
   @Test
   void shouldNotHaveTouchByDefault() {
-    page.navigate(getServer().PREFIX + "/mobile.html");
+    page.navigate(server.PREFIX + "/mobile.html");
     assertEquals(false, page.evaluate("() => 'ontouchstart' in window"));
-    page.navigate(getServer().PREFIX + "/detect-touch.html");
+    page.navigate(server.PREFIX + "/detect-touch.html");
     assertEquals("NO", page.evaluate("() => document.body.textContent.trim()"));
   }
 
@@ -98,9 +98,9 @@ public class TestBrowserContextViewport extends TestBase {
   void shouldSupportTouchWithNullViewport() {
     Browser.NewContextOptions options = new Browser.NewContextOptions()
       .setHasTouch(true).setViewportSize(null);
-    BrowserContext context = getBrowser().newContext(options);
+    BrowserContext context = browser.newContext(options);
     Page page = context.newPage();
-    page.navigate(getServer().PREFIX + "/mobile.html");
+    page.navigate(server.PREFIX + "/mobile.html");
     assertEquals(true, page.evaluate("() => 'ontouchstart' in window"));
     context.close();
   }
@@ -108,7 +108,7 @@ public class TestBrowserContextViewport extends TestBase {
   @Test
   void shouldReportNullViewPortSizeWhenGivenNullViewport() {
     Browser.NewContextOptions options = new Browser.NewContextOptions().setViewportSize(null);
-    BrowserContext context = getBrowser().newContext(options);
+    BrowserContext context = browser.newContext(options);
     Page page = context.newPage();
     assertNull(page.viewportSize());
     context.close();

@@ -26,21 +26,21 @@ public class TestPageFill extends TestBase {
 
   @Test
   void shouldFillTextarea() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     page.fill("textarea", "some value");
     assertEquals("some value", page.evaluate("() => window['result']"));
   }
 
   @Test
   void shouldFillInput() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     page.fill("input", "some value");
     assertEquals("some value", page.evaluate("() => window['result']"));
   }
 
   @Test
   void shouldThrowOnUnsupportedInputs() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     for (String type : new String[]{"button", "checkbox", "file", "image", "radio", "range", "reset", "submit"}) {
       page.evalOnSelector("input", "(input, type) => input.setAttribute('type', type)", type);
       try {
@@ -54,7 +54,7 @@ public class TestPageFill extends TestBase {
 
   @Test
   void shouldFillDifferentInputTypes() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     for (String type : new String[]{"password", "search", "tel", "text", "url"}) {
       page.evalOnSelector("input", "(input, type) => input.setAttribute('type', type)", type);
       page.fill("input", "text " + type);
@@ -122,14 +122,14 @@ public class TestPageFill extends TestBase {
 
   @Test
   void shouldFillContenteditable() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     page.fill("div[contenteditable]", "some value");
     assertEquals(page.evalOnSelector("div[contenteditable]", "div => div.textContent"), "some value");
   }
 
   @Test
   void shouldFillElementsWithExistingValueAndSelection() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
 
     page.evalOnSelector("input", "input => input.value = 'value one'");
     page.fill("input", "another value");
@@ -156,7 +156,7 @@ public class TestPageFill extends TestBase {
 
   @Test
   void shouldThrowWhenElementIsNotAnInputTextareaOrContenteditable() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     try {
       page.fill("body", "");
       fail("did not throw");
@@ -231,7 +231,7 @@ public class TestPageFill extends TestBase {
 
   @Test
   void shouldBeAbleToClear() {
-    page.navigate(getServer().PREFIX + "/input/textarea.html");
+    page.navigate(server.PREFIX + "/input/textarea.html");
     page.fill("input", "some value");
     assertEquals("some value", page.evaluate("() => window['result']"));
     page.fill("input", "");

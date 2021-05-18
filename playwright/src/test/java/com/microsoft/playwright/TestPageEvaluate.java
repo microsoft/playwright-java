@@ -123,7 +123,7 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldEvaluateInThePageContext() {
-    page.navigate(getServer().PREFIX + "/global-var.html");
+    page.navigate(server.PREFIX + "/global-var.html");
     assertEquals(123, page.evaluate("globalVar"));
   }
 
@@ -175,18 +175,18 @@ public class TestPageEvaluate extends TestBase {
     page.onFrameNavigated(frame -> {
       frameEvaluation[0] = frame.evaluate("() => 6 * 7");
     });
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     assertEquals(42, frameEvaluation[0]);
   }
 
   @Test
   void shouldWorkRightAfterACrossOriginNavigation() {
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Object[] frameEvaluation = {null};
     page.onFrameNavigated(frame -> {
       frameEvaluation[0] = frame.evaluate("() => 6 * 7");
     });
-    page.navigate(getServer().CROSS_PROCESS_PREFIX + "/empty.html");
+    page.navigate(server.CROSS_PROCESS_PREFIX + "/empty.html");
     assertEquals(42, frameEvaluation[0]);
   }
 
@@ -447,7 +447,7 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldNotThrowAnErrorWhenEvaluationDoesANavigation() {
-    page.navigate(getServer().PREFIX + "/one-style.html");
+    page.navigate(server.PREFIX + "/one-style.html");
     Object result = page.evaluate("() => {\n" +
       "  window.location.href = '/empty.html';\n" +
       "  return [42];\n" +
@@ -511,7 +511,7 @@ public class TestPageEvaluate extends TestBase {
   @Test
   void shouldAwaitPromiseFromPopup() {
     // Something is wrong about the way Firefox waits for the chained promise
-    page.navigate(getServer().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     Object result = page.evaluate("() => {\n" +
       "  const win = window.open('about:blank');\n" +
       "  return new win['Promise'](f => f(42));\n" +
@@ -521,8 +521,8 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldWorkWithNewFunctionAndCSP() {
-    getServer().setCSP("/empty.html", "script-src " + getServer().PREFIX);
-    page.navigate(getServer().PREFIX + "/empty.html");
+    server.setCSP("/empty.html", "script-src " + server.PREFIX);
+    page.navigate(server.PREFIX + "/empty.html");
     assertEquals(true, page.evaluate("() => new Function('return true')()"));
   }
 
@@ -567,8 +567,8 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldWorkWithCSP() {
-    getServer().setCSP("/empty.html", "script-src 'self'");
-    page.navigate(getServer().EMPTY_PAGE);
+    server.setCSP("/empty.html", "script-src 'self'");
+    page.navigate(server.EMPTY_PAGE);
     assertEquals(4, page.evaluate("() => 2 + 2"));
   }
 

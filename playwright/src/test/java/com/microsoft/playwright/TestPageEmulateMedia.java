@@ -82,20 +82,18 @@ public class TestPageEmulateMedia extends TestBase {
   @Test
   void shouldWorkInPopup() {
     {
-      BrowserContext context = getBrowser().newContext(new Browser.NewContextOptions().setColorScheme(DARK));
+      BrowserContext context = browser.newContext(new Browser.NewContextOptions().setColorScheme(DARK));
       Page page = context.newPage();
-      page.navigate(getServer().EMPTY_PAGE);
-      Page popup = page.waitForPopup(() ->
-        page.evaluate("url => { window.open(url); }", getServer().EMPTY_PAGE));
+      page.navigate(server.EMPTY_PAGE);
+      Page popup = page.waitForPopup(() -> page.evaluate("url => { window.open(url); }", server.EMPTY_PAGE));
       assertEquals(false, popup.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
       assertEquals(true, popup.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
       context.close();
     }
     {
-      Page page = getBrowser().newPage(new Browser.NewPageOptions().setColorScheme(LIGHT));
-      page.navigate(getServer().EMPTY_PAGE);
-      Page popup = page.waitForPopup(() ->
-        page.evaluate("url => { window.open(url); }", getServer().EMPTY_PAGE));
+      Page page = browser.newPage(new Browser.NewPageOptions().setColorScheme(LIGHT));
+      page.navigate(server.EMPTY_PAGE);
+      Page popup = page.waitForPopup(() -> page.evaluate("url => { window.open(url); }", server.EMPTY_PAGE));
       assertEquals(true, popup.evaluate("() => matchMedia('(prefers-color-scheme: light)').matches"));
       assertEquals(false, popup.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
       page.close();
@@ -104,9 +102,9 @@ public class TestPageEmulateMedia extends TestBase {
 
   @Test
   void shouldWorkInCrossProcessIframe() {
-    Page page = getBrowser().newPage(new Browser.NewPageOptions().setColorScheme(DARK));
-    page.navigate(getServer().EMPTY_PAGE);
-    attachFrame(page, "frame1", getServer().CROSS_PROCESS_PREFIX + "/empty.html");
+    Page page = browser.newPage(new Browser.NewPageOptions().setColorScheme(DARK));
+    page.navigate(server.EMPTY_PAGE);
+    attachFrame(page, "frame1", server.CROSS_PROCESS_PREFIX + "/empty.html");
     Frame frame = page.frames().get(1);
     assertEquals(true, frame.evaluate("() => matchMedia('(prefers-color-scheme: dark)').matches"));
     page.close();

@@ -23,9 +23,10 @@ import static com.microsoft.playwright.Utils.mapOf;
 
 public class TestLaunch extends TestBase {
 
+  @Override
   @BeforeAll
   // Hide base class method to not launch browser.
-  static void launchBrowser() {
+  void launchBrowser() {
   }
 
   @Override
