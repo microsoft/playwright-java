@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  * // Create a new page inside context.
  * Page page = context.newPage();
  * page.navigate("https://example.com");
- * // Dispose context once it"s no longer needed.
+ * // Dispose context once it is no longer needed.
  * context.close();
  * }</pre>
  */
