@@ -19,8 +19,11 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -100,5 +103,26 @@ public class TestScreencast extends TestBase {
     page.video().delete();
     Path videoPath = page.video().path();
     assertFalse(Files.exists(videoPath));
+  }
+
+  @Test
+  void shouldWaitForVideoFinishWhenPageIsClosed(@TempDir Path videosDir) throws IOException {
+    try (Browser browser = browserType.launch(createLaunchOptions())) {
+      BrowserContext context = browser.newContext(
+        new Browser.NewContextOptions()
+          .setRecordVideoDir(videosDir)
+          .setRecordVideoSize(320, 240)
+          .setViewportSize(320, 240));
+      Page page = context.newPage();
+      page.evaluate("() => document.body.style.backgroundColor = 'red'");
+      page.waitForTimeout(500);
+      // First close page manually.
+      page.close();
+      context.close();
+    }
+    List<Path> files = Files.list(videosDir).collect(Collectors.toList());
+    assertEquals(1, files.size());
+    assertTrue(Files.exists(files.get(0)));
+    assertTrue(Files.size(files.get(0)) > 0);
   }
 }
