@@ -20,6 +20,7 @@ import com.microsoft.playwright.options.Cookie;
 import com.microsoft.playwright.options.SameSiteAttribute;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.util.Comparator;
 import java.util.List;
@@ -185,7 +186,12 @@ public class TestBrowserContextCookies extends TestBase {
       "}]", cookies);
   }
 
+  static boolean isWebkitWindows() {
+    return isWebKit() && isWindows;
+  }
+
   @Test
+  @DisabledIf(value="isWebkitWindows", disabledReason="Same site is not implemented in curl")
   void shouldAcceptSameSiteAttribute() {
     context.addCookies(asList(
       new Cookie("one", "uno").setUrl(server.EMPTY_PAGE).setSameSite(SameSiteAttribute.LAX),
