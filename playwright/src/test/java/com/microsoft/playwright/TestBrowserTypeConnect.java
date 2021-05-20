@@ -17,21 +17,30 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.impl.Driver;
+import com.microsoft.playwright.options.WaitForSelectorState;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.microsoft.playwright.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBrowserTypeConnect extends TestBase {
-  private static Process browserServer;
-  private static String wsEndpoint;
+  private Process browserServer;
+  private String wsEndpoint;
 
   private static class BrowserServer {
     Process process;
@@ -227,18 +236,226 @@ public class TestBrowserTypeConnect extends TestBase {
     assertFalse(remote.isConnected());
   }
 
-    @Test
-    void shouldRejectNavigationWhenBrowserCloses() {
-      Browser remote = browserType.connect(wsEndpoint);
-      Page page = remote.newPage();
+  @Test
+  void shouldThrowWhenCallingWaitForNavigationAfterDisconnect() throws InterruptedException {
+    BrowserServer server = launchBrowserServer(browserType);
+    Browser browser = browserType.connect(server.wsEndpoint);
+    Page page = browser.newPage();
 
-      server.setRoute("/one-style.css", r -> {});
-      page.onRequest(r -> remote.close());
+    boolean[] disconnected = {false};
+    browser.onDisconnected(browser1 -> disconnected[0] = true);
+    server.kill();
+    while (!disconnected[0]) {
       try {
-        page.navigate(server.PREFIX + "/one-style.html", new Page.NavigateOptions().setTimeout(60000));
-        fail("did not throw");
+        page.waitForTimeout(10);
       } catch (PlaywrightException e) {
         assertTrue(e.getMessage().contains("Playwright connection closed"));
       }
     }
+    assertFalse(browser.isConnected());
+    try {
+      page.waitForNavigation(() -> {});
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Playwright connection closed"));
+    }
   }
+
+  @Test
+  void shouldRejectNavigationWhenBrowserCloses() {
+    Browser remote = browserType.connect(wsEndpoint);
+    Page page = remote.newPage();
+
+    server.setRoute("/one-style.css", r -> {});
+    page.onRequest(r -> remote.close());
+    try {
+      page.navigate(server.PREFIX + "/one-style.html", new Page.NavigateOptions().setTimeout(60000));
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Playwright connection closed"));
+    }
+  }
+
+  @Test
+  void shouldEmitCloseEventsOnPagesAndContexts() throws InterruptedException {
+    BrowserServer server = launchBrowserServer(browserType);
+    Browser browser = browserType.connect(server.wsEndpoint);
+    BrowserContext context = browser.newContext();
+    Page page = context.newPage();
+
+    List<String> events = new ArrayList<>();
+    page.onClose(p -> events.add("page"));
+    context.onClose(c -> events.add("context"));
+    server.kill();
+
+    while (!events.contains("context")) {
+      try {
+        page.waitForTimeout(10);
+      } catch (PlaywrightException e) {
+      }
+    }
+    assertEquals(Arrays.asList("page", "context"), events);
+  }
+
+  @Test
+  void shouldRespectSelectors() {
+    String mycss = "{\n" +
+      "    query(root, selector) {\n" +
+      "      return root.querySelector(selector);\n" +
+      "    },\n" +
+      "    queryAll(root, selector) {\n" +
+      "      return Array.from(root.querySelectorAll(selector));\n" +
+      "    }\n" +
+      "  }";
+    // Register one engine before connecting.
+    playwright.selectors().register("mycss1", mycss);
+
+    Browser browser1 = browserType.connect(wsEndpoint);
+    BrowserContext context1 = browser1.newContext();
+
+    // Register another engine after creating context.
+    playwright.selectors().register("mycss2", mycss);
+
+    Page page1 = context1.newPage();
+    page1.setContent("<div>hello</div>");
+    assertEquals("hello", page1.innerHTML("css=div"));
+    assertEquals("hello", page1.innerHTML("mycss1=div"));
+    assertEquals("hello", page1.innerHTML("mycss2=div"));
+
+    Browser browser2 = browserType.connect(wsEndpoint);
+
+    // Register third engine after second connect.
+    playwright.selectors().register("mycss3", mycss);
+
+    Page page2 = browser2.newPage();
+    page2.setContent("<div>hello</div>");
+    assertEquals("hello", page2.innerHTML("css=div"));
+    assertEquals("hello", page2.innerHTML("mycss1=div"));
+    assertEquals("hello", page2.innerHTML("mycss2=div"));
+    assertEquals("hello", page2.innerHTML("mycss3=div"));
+
+    browser1.close();
+    browser2.close();
+  }
+
+  @Test
+  void shouldNotThrowOnCloseAfterDisconnect() throws InterruptedException {
+    BrowserServer remoteServer = launchBrowserServer(browserType);
+    Browser browser = browserType.connect(remoteServer.wsEndpoint);
+    Page page = browser.newPage();
+
+    remoteServer.kill();
+    while (browser.isConnected()) {
+      try {
+        page.waitForTimeout(10);
+      } catch (PlaywrightException e) {
+      }
+    }
+    browser.close();
+  }
+
+  @Test
+  void shouldNotThrowOnContextCloseAfterDisconnect() throws InterruptedException {
+    BrowserServer remoteServer = launchBrowserServer(browserType);
+    Browser browser = browserType.connect(remoteServer.wsEndpoint);
+    BrowserContext context = browser.newContext();
+    Page page = context.newPage();
+
+    remoteServer.kill();
+    while (browser.isConnected()) {
+      try {
+        page.waitForTimeout(10);
+      } catch (PlaywrightException e) {
+      }
+    }
+    context.close();
+  }
+
+  @Test
+  void shouldNotThrowOnPageCloseAfterDisconnect() throws InterruptedException {
+    BrowserServer remoteServer = launchBrowserServer(browserType);
+    Browser browser = browserType.connect(remoteServer.wsEndpoint);
+    Page page = browser.newPage();
+
+    remoteServer.kill();
+    while (browser.isConnected()) {
+      try {
+        page.waitForTimeout(10);
+      } catch (PlaywrightException e) {
+      }
+    }
+    page.close();
+  }
+
+  @Test
+  void shouldSaveAsVideosFromRemoteBrowser(@TempDir Path tempDir) {
+    Path videosPath = tempDir.resolve("videosPath");
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setRecordVideoDir(videosPath).setRecordVideoSize(320,  240));
+    Page page = context.newPage();
+    page.evaluate("() => document.body.style.backgroundColor = 'red'");
+    page.waitForTimeout(1000);
+    context.close();
+    Path savedAsPath = tempDir.resolve("my-video.webm");
+    page.video().saveAs(savedAsPath);
+    assertTrue(Files.exists(savedAsPath));
+    try {
+      page.video().path();
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Path is not available when using browserType.connect(). Use saveAs() to save a local copy."));
+    }
+  }
+
+
+  @Test
+  void shouldSaveDownload(@TempDir Path tempDir) throws IOException {
+    server.setRoute("/download", exchange -> {
+      exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
+      exchange.getResponseHeaders().add("Content-Disposition", "attachment");
+      exchange.sendResponseHeaders(200, 0);
+      try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write("Hello world");
+      }
+    });
+
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Download download = page.waitForDownload(() -> page.click("a"));
+    Path nestedPath = tempDir.resolve(Paths.get("these", "are", "directories", "download.txt"));
+    download.saveAs(nestedPath);
+    assertTrue(Files.exists(nestedPath));
+    assertEquals("Hello world", new String(Files.readAllBytes(nestedPath), StandardCharsets.UTF_8));
+    try {
+      download.path();
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Path is not available when using browserType.connect(). Use download.saveAs() to save a local copy."));
+    }
+    page.close();
+  }
+
+  @Test
+  void shouldErrorWhenSavingDownloadAfterDeletion(@TempDir Path tempDir) {
+    server.setRoute("/download", exchange -> {
+      exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
+      exchange.getResponseHeaders().add("Content-Disposition", "attachment");
+      exchange.sendResponseHeaders(200, 0);
+      try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write("Hello world");
+      }
+    });
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Download download = page.waitForDownload(() -> page.click("a"));
+    Path userPath = tempDir.resolve("download.txt");
+    download.delete();
+    try {
+      download.saveAs(userPath);
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Target page, context or browser has been closed"));
+    }
+    page.close();
+  }
+}
