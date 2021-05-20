@@ -65,17 +65,11 @@ class BrowserImpl extends ChannelOwner implements Browser {
   }
 
   private void closeImpl() {
-    if (isConnectedOverWebSocket) {
-      try {
-        connection.close();
-      } catch (IOException e) {
-        throw new PlaywrightException("Failed to close browser connection", e);
-      }
-      notifyRemoteClosed();
-      return;
-    }
     try {
       sendMessage("close");
+      if (isConnectedOverWebSocket) {
+        notifyRemoteClosed();
+      }
     } catch (PlaywrightException e) {
       if (!isSafeCloseError(e)) {
         throw e;
@@ -92,6 +86,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
       context.didClose();
     }
     didClose();
+    listeners.notify(EventType.DISCONNECTED, this);
   }
 
   @Override
@@ -238,6 +233,11 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   private void didClose() {
     isConnected = false;
-    listeners.notify(EventType.DISCONNECTED, this);
+    // Avoid notifying the event because this also happens to the response of
+    // close event sent in the message and in case of remote connection it will
+    // lead to closing the websocket connection and later will throw exception.
+    if (!isConnectedOverWebSocket) {
+      listeners.notify(EventType.DISCONNECTED, this);
+    }
   }
 }
