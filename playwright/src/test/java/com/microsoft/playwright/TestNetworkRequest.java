@@ -103,7 +103,7 @@ public class TestNetworkRequest extends TestBase {
   }
 
   @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="fail")
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="Flaky, see https://github.com/microsoft/playwright/issues/6690")
   void shouldGetTheSameHeadersAsTheServer() throws ExecutionException, InterruptedException {
     Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
     server.setRoute("/empty.html", exchange -> {
