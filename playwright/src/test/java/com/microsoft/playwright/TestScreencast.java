@@ -60,49 +60,51 @@ public class TestScreencast extends TestBase {
 
   @Test
   void saveAsShouldThrowWhenNoVideoFrames(@TempDir Path videosDir) {
-    BrowserContext context = browser.newContext(
+    try (BrowserContext context = browser.newContext(
       new Browser.NewContextOptions()
         .setRecordVideoDir(videosDir)
         .setRecordVideoSize(320, 240)
-        .setViewportSize(320, 240));
+        .setViewportSize(320, 240))) {
 
-    Page page = context.newPage();
-    Page popup = context.waitForPage(() -> {
-      page.evaluate("() => {\n" +
-        "  const win = window.open('about:blank');\n" +
-        "  win.close();\n" +
-        "}");
-    });
-    page.close();
+      Page page = context.newPage();
+      Page popup = context.waitForPage(() -> {
+        page.evaluate("() => {\n" +
+          "  const win = window.open('about:blank');\n" +
+          "  win.close();\n" +
+          "}");
+      });
+      page.close();
 
-    Path saveAsPath = videosDir.resolve("my-video.webm");
-    try {
-      popup.video().saveAs(saveAsPath);
-    } catch (PlaywrightException e) {
-      // WebKit pauses renderer before win.close() and actually writes something.
-      if (isWebKit()) {
-        assertTrue(Files.exists(saveAsPath));
-      } else {
-        assertTrue(e.getMessage().contains("Page did not produce any video frames"), e.getMessage());
+      Path saveAsPath = videosDir.resolve("my-video.webm");
+      try {
+        popup.video().saveAs(saveAsPath);
+      } catch (PlaywrightException e) {
+        // WebKit pauses renderer before win.close() and actually writes something.
+        if (isWebKit()) {
+          assertTrue(Files.exists(saveAsPath));
+        } else {
+          assertTrue(e.getMessage().contains("Page did not produce any video frames"), e.getMessage());
+        }
       }
     }
   }
 
   @Test
   void shouldDeleteVideo(@TempDir Path videosDir) {
-    BrowserContext context = browser.newContext(
+    try (BrowserContext context = browser.newContext(
       new Browser.NewContextOptions()
         .setRecordVideoDir(videosDir)
         .setRecordVideoSize(320, 240)
-        .setViewportSize(320, 240));
-    Page page = context.newPage();
-    page.evaluate("() => document.body.style.backgroundColor = 'red'");
-    page.waitForTimeout(1000);
-    context.close();
+        .setViewportSize(320, 240))) {
+      Page page = context.newPage();
+      page.evaluate("() => document.body.style.backgroundColor = 'red'");
+      page.waitForTimeout(1000);
+      context.close();
 
-    page.video().delete();
-    Path videoPath = page.video().path();
-    assertFalse(Files.exists(videoPath));
+      page.video().delete();
+      Path videoPath = page.video().path();
+      assertFalse(Files.exists(videoPath));
+    }
   }
 
   @Test
