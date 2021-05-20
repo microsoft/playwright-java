@@ -28,8 +28,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-import static com.microsoft.playwright.Utils.attachFrame;
-import static com.microsoft.playwright.Utils.mapOf;
+import static com.microsoft.playwright.Utils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestNetworkRequest extends TestBase {
@@ -102,8 +101,13 @@ public class TestNetworkRequest extends TestBase {
       assertTrue(response.request().headers().get("user-agent").contains("WebKit"));
   }
 
+
+  static boolean isWebKitWindowsOrChromium() {
+    return (isWebKit() && getOS() == Utils.OS.WINDOWS) || isChromium();
+  }
+
   @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="Flaky, see https://github.com/microsoft/playwright/issues/6690")
+  @DisabledIf(value="isWebKitWindowsOrChromium", disabledReason="Flaky, see https://github.com/microsoft/playwright/issues/6690")
   void shouldGetTheSameHeadersAsTheServer() throws ExecutionException, InterruptedException {
     Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
     server.setRoute("/empty.html", exchange -> {
