@@ -299,7 +299,6 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldRespectSelectors() {
-    BrowserServer remoteServer = launchBrowserServer(browserType);
     String mycss = "{\n" +
       "    query(root, selector) {\n" +
       "      return root.querySelector(selector);\n" +
@@ -311,7 +310,7 @@ public class TestBrowserTypeConnect extends TestBase {
     // Register one engine before connecting.
     playwright.selectors().register("mycss1", mycss);
 
-    Browser browser1 = browserType.connect(remoteServer.wsEndpoint);
+    Browser browser1 = browserType.connect(wsEndpoint);
     BrowserContext context1 = browser1.newContext();
 
     // Register another engine after creating context.
@@ -323,7 +322,7 @@ public class TestBrowserTypeConnect extends TestBase {
     assertEquals("hello", page1.innerHTML("mycss1=div"));
     assertEquals("hello", page1.innerHTML("mycss2=div"));
 
-    Browser browser2 = browserType.connect(remoteServer.wsEndpoint);
+    Browser browser2 = browserType.connect(wsEndpoint);
 
     // Register third engine after second connect.
     playwright.selectors().register("mycss3", mycss);
@@ -336,6 +335,7 @@ public class TestBrowserTypeConnect extends TestBase {
     assertEquals("hello", page2.innerHTML("mycss3=div"));
 
     browser1.close();
+    browser2.close();
   }
 
   @Test
@@ -430,7 +430,6 @@ public class TestBrowserTypeConnect extends TestBase {
       download.path();
       fail("did not throw");
     } catch (PlaywrightException e) {
-      System.out.println(e);
       assertTrue(e.getMessage().contains("Path is not available when using browserType.connect(). Use download.saveAs() to save a local copy."));
     }
     page.close();
