@@ -433,7 +433,7 @@ public class TestBrowserTypeConnect extends TestBase {
       System.out.println(e);
       assertTrue(e.getMessage().contains("Path is not available when using browserType.connect(). Use download.saveAs() to save a local copy."));
     }
-    browser.close();
+    page.close();
   }
 
   @Test
@@ -457,6 +457,6 @@ public class TestBrowserTypeConnect extends TestBase {
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Target page, context or browser has been closed"));
     }
-    browser.close();
+    page.close();
   }
 }
