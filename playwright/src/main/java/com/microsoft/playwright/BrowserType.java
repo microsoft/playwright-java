@@ -111,7 +111,7 @@ public interface BrowserType {
      */
     public BrowserChannel channel;
     /**
-     * Enable Chromium sandboxing. Defaults to {@code true}.
+     * Enable Chromium sandboxing. Defaults to {@code false}.
      */
     public Boolean chromiumSandbox;
     /**
@@ -282,7 +282,7 @@ public interface BrowserType {
      */
     public BrowserChannel channel;
     /**
-     * Enable Chromium sandboxing. Defaults to {@code true}.
+     * Enable Chromium sandboxing. Defaults to {@code false}.
      */
     public Boolean chromiumSandbox;
     /**
