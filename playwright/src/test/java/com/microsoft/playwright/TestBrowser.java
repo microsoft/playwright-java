@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.BrowserChannel;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
@@ -65,5 +67,34 @@ public class TestBrowser extends TestBase {
       // It can be 85.0b1 in Firefox.
       assertTrue(Pattern.matches("^\\d+\\.\\d+.*", browser.version()));
     }
+  }
+
+  private static BrowserChannel getBrowserChannelEnumFromEnv() {
+    String channel = getBrowserChannelFromEnv();
+    if (channel == null) {
+      return null;
+    }
+    switch (channel) {
+      case "chrome": return BrowserChannel.CHROME;
+      case "chrome-beta": return BrowserChannel.CHROME_BETA;
+      case "chrome-dev": return BrowserChannel.CHROME_DEV;
+      case "chrome-canary": return BrowserChannel.CHROME_CANARY;
+      case "msedge": return BrowserChannel.MSEDGE;
+      case "msedge-beta": return BrowserChannel.MSEDGE_BETA;
+      case "msedge-dev": return BrowserChannel.MSEDGE_DEV;
+      case "msedge-canary": return BrowserChannel.MSEDGE_CANARY;
+      default: throw new IllegalArgumentException("Unknown BROWSER_CHANNEL " + channel);
+    }
+  }
+
+  @Test
+  void shouldSupportDeprecatedChannelEnum() {
+    BrowserChannel channel = getBrowserChannelEnumFromEnv();
+    Assumptions.assumeTrue(channel != null);
+    BrowserType.LaunchOptions options = createLaunchOptions();
+    options.setChannel(channel);
+    Browser browser = browserType.launch(options);
+    assertNotNull(browser);
+    browser.close();
   }
 }

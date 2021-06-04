@@ -61,22 +61,8 @@ public class TestBase {
     return "firefox".equals(getBrowserNameFromEnv());
   }
 
-  static BrowserChannel getBrowserChannelFromEnv() {
-    String channel = System.getenv("BROWSER_CHANNEL");
-    if (channel == null) {
-      return null;
-    }
-    switch (channel) {
-      case "chrome": return BrowserChannel.CHROME;
-      case "chrome-beta": return BrowserChannel.CHROME_BETA;
-      case "chrome-dev": return BrowserChannel.CHROME_DEV;
-      case "chrome-canary": return BrowserChannel.CHROME_CANARY;
-      case "msedge": return BrowserChannel.MSEDGE;
-      case "msedge-beta": return BrowserChannel.MSEDGE_BETA;
-      case "msedge-dev": return BrowserChannel.MSEDGE_DEV;
-      case "msedge-canary": return BrowserChannel.MSEDGE_CANARY;
-      default: throw new IllegalArgumentException("Unknown BROWSER_CHANNEL " + channel);
-    }
+  static String getBrowserChannelFromEnv() {
+    return System.getenv("BROWSER_CHANNEL");
   }
 
   static BrowserType.LaunchOptions createLaunchOptions() {
