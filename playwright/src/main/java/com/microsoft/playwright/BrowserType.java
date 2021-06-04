@@ -106,10 +106,11 @@ public interface BrowserType {
      */
     public List<String> args;
     /**
-     * Browser distribution channel. Read more about using <a
+     * Browser distribution channel.  Supported values are "chrome", "chrome-beta", "chrome-dev", "chrome-canary", "msedge",
+     * "msedge-beta", "msedge-dev", "msedge-canary". Read more about using <a
      * href="https://playwright.dev/java/docs/browsers/#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
      */
-    public BrowserChannel channel;
+    public Object channel;
     /**
      * Enable Chromium sandboxing. Defaults to {@code false}.
      */
@@ -184,13 +185,18 @@ public interface BrowserType {
     /**
      * If specified, traces are saved into this directory.
      */
-    public Path traceDir;
+    public Path tracesDir;
 
     public LaunchOptions setArgs(List<String> args) {
       this.args = args;
       return this;
     }
+    @Deprecated
     public LaunchOptions setChannel(BrowserChannel channel) {
+      this.channel = channel;
+      return this;
+    }
+    public LaunchOptions setChannel(String channel) {
       this.channel = channel;
       return this;
     }
@@ -257,8 +263,8 @@ public interface BrowserType {
       this.timeout = timeout;
       return this;
     }
-    public LaunchOptions setTraceDir(Path traceDir) {
-      this.traceDir = traceDir;
+    public LaunchOptions setTracesDir(Path tracesDir) {
+      this.tracesDir = tracesDir;
       return this;
     }
   }
@@ -277,10 +283,11 @@ public interface BrowserType {
      */
     public Boolean bypassCSP;
     /**
-     * Browser distribution channel. Read more about using <a
+     * Browser distribution channel.  Supported values are "chrome", "chrome-beta", "chrome-dev", "chrome-canary", "msedge",
+     * "msedge-beta", "msedge-dev", "msedge-canary". Read more about using <a
      * href="https://playwright.dev/java/docs/browsers/#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
      */
-    public BrowserChannel channel;
+    public Object channel;
     /**
      * Enable Chromium sandboxing. Defaults to {@code false}.
      */
@@ -409,6 +416,11 @@ public interface BrowserType {
      */
     public RecordVideoSize recordVideoSize;
     /**
+     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
+     * Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "no-preference"}.
+     */
+    public ReducedMotion reducedMotion;
+    /**
      * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
      * is set.
      */
@@ -431,7 +443,7 @@ public interface BrowserType {
     /**
      * If specified, traces are saved into this directory.
      */
-    public Path traceDir;
+    public Path tracesDir;
     /**
      * Specific user agent to use in this context.
      */
@@ -453,7 +465,12 @@ public interface BrowserType {
       this.bypassCSP = bypassCSP;
       return this;
     }
+    @Deprecated
     public LaunchPersistentContextOptions setChannel(BrowserChannel channel) {
+      this.channel = channel;
+      return this;
+    }
+    public LaunchPersistentContextOptions setChannel(String channel) {
       this.channel = channel;
       return this;
     }
@@ -581,6 +598,10 @@ public interface BrowserType {
       this.recordVideoSize = recordVideoSize;
       return this;
     }
+    public LaunchPersistentContextOptions setReducedMotion(ReducedMotion reducedMotion) {
+      this.reducedMotion = reducedMotion;
+      return this;
+    }
     public LaunchPersistentContextOptions setScreenSize(int width, int height) {
       return setScreenSize(new ScreenSize(width, height));
     }
@@ -600,8 +621,8 @@ public interface BrowserType {
       this.timezoneId = timezoneId;
       return this;
     }
-    public LaunchPersistentContextOptions setTraceDir(Path traceDir) {
-      this.traceDir = traceDir;
+    public LaunchPersistentContextOptions setTracesDir(Path tracesDir) {
+      this.tracesDir = tracesDir;
       return this;
     }
     public LaunchPersistentContextOptions setUserAgent(String userAgent) {

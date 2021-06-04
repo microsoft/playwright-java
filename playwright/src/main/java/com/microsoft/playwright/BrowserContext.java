@@ -412,7 +412,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> See {@link Page#exposeFunction Page.exposeFunction()} for page-only version.
    *
-   * <p> An example of adding an {@code md5} function to all pages in the context:
+   * <p> An example of adding a {@code sha256} function to all pages in the context:
    * <pre>{@code
    * import com.microsoft.playwright.*;
    *
@@ -426,11 +426,11 @@ public interface BrowserContext extends AutoCloseable {
    *     try (Playwright playwright = Playwright.create()) {
    *       BrowserType webkit = playwright.webkit()
    *       Browser browser = webkit.launch(new BrowserType.LaunchOptions().setHeadless(false));
-   *       context.exposeFunction("sha1", args -> {
+   *       context.exposeFunction("sha256", args -> {
    *         String text = (String) args[0];
    *         MessageDigest crypto;
    *         try {
-   *           crypto = MessageDigest.getInstance("SHA-1");
+   *           crypto = MessageDigest.getInstance("SHA-256");
    *         } catch (NoSuchAlgorithmException e) {
    *           return null;
    *         }
@@ -440,7 +440,7 @@ public interface BrowserContext extends AutoCloseable {
    *       Page page = context.newPage();
    *       page.setContent("<script>\n" +
    *         "  async function onClick() {\n" +
-   *         "    document.querySelector('div').textContent = await window.sha1('PLAYWRIGHT');\n" +
+   *         "    document.querySelector('div').textContent = await window.sha256('PLAYWRIGHT');\n" +
    *         "  }\n" +
    *         "</script>\n" +
    *         "<button onclick=\"onClick()\">Click me</button>\n" +

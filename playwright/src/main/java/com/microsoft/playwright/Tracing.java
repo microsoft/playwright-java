@@ -25,23 +25,22 @@ import java.util.*;
  *
  * <p> Start with specifying the folder traces will be stored in:
  * <pre>{@code
- * Browser browser = chromium.launch(new BrowserType.LaunchOptions().setTraceDir("trace"));
+ * Browser browser = chromium.launch();
  * BrowserContext context = browser.newContext();
- * context.tracing.start(page, new Tracing.StartOptions()
- *   .setName("trace")
+ * context.tracing.start(new Tracing.StartOptions()
  *   .setScreenshots(true)
  *   .setSnapshots(true);
  * Page page = context.newPage();
  * page.goto("https://playwright.dev");
- * context.tracing.stop();
- * context.tracing.export(Paths.get("trace.zip")))
+ * context.tracing.stop(new Tracing.StopOptions()
+ *   .setPath(Paths.get("trace.zip")));
  * }</pre>
  */
 public interface Tracing {
   class StartOptions {
     /**
-     * If specified, the trace is going to be saved into the file with the given name inside the {@code traceDir} folder specified in
-     * {@link BrowserType#launch BrowserType.launch()}.
+     * If specified, the trace is going to be saved into the file with the given name inside the {@code tracesDir} folder specified
+     * in {@link BrowserType#launch BrowserType.launch()}.
      */
     public String name;
     /**
@@ -66,23 +65,27 @@ public interface Tracing {
       return this;
     }
   }
-  /**
-   * Export trace into the file with the given name. Should be called after the tracing has stopped.
-   *
-   * @param path File to save the trace into.
-   */
-  void export(Path path);
+  class StopOptions {
+    /**
+     * Export trace into the file with the given name.
+     */
+    public Path path;
+
+    public StopOptions setPath(Path path) {
+      this.path = path;
+      return this;
+    }
+  }
   /**
    * Start tracing.
    * <pre>{@code
-   * context.tracing.start(page, new Tracing.StartOptions()
-   *   .setName("trace")
+   * context.tracing.start(new Tracing.StartOptions()
    *   .setScreenshots(true)
    *   .setSnapshots(true);
    * Page page = context.newPage();
    * page.goto('https://playwright.dev');
-   * context.tracing.stop();
-   * context.tracing.export(Paths.get("trace.zip")))
+   * context.tracing.stop(new Tracing.StopOptions()
+   *   .setPath(Paths.get("trace.zip")));
    * }</pre>
    */
   default void start() {
@@ -91,20 +94,25 @@ public interface Tracing {
   /**
    * Start tracing.
    * <pre>{@code
-   * context.tracing.start(page, new Tracing.StartOptions()
-   *   .setName("trace")
+   * context.tracing.start(new Tracing.StartOptions()
    *   .setScreenshots(true)
    *   .setSnapshots(true);
    * Page page = context.newPage();
    * page.goto('https://playwright.dev');
-   * context.tracing.stop();
-   * context.tracing.export(Paths.get("trace.zip")))
+   * context.tracing.stop(new Tracing.StopOptions()
+   *   .setPath(Paths.get("trace.zip")));
    * }</pre>
    */
   void start(StartOptions options);
   /**
    * Stop tracing.
    */
-  void stop();
+  default void stop() {
+    stop(null);
+  }
+  /**
+   * Stop tracing.
+   */
+  void stop(StopOptions options);
 }
 
