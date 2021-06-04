@@ -761,6 +761,9 @@ class Field extends Element {
         typeStr = "Boolean";
       }
     }
+    if (isBrowserChannelOption()) {
+      typeStr = "Object";
+    }
     output.add(offset + "public " + typeStr + " " + name + ";");
   }
 
@@ -791,6 +794,12 @@ class Field extends Element {
         }
       }
     }
+
+    if (isBrowserChannelOption()) {
+      output.add(offset + "@Deprecated");
+      writeGenericBuilderMethod(output, offset, parentClass, "BrowserChannel");
+    }
+
     writeGenericBuilderMethod(output, offset, parentClass, type.toJava());
   }
 
@@ -800,6 +809,10 @@ class Field extends Element {
     output.add(offset + "  this." + name + " = " + rvalue + ";");
     output.add(offset + "  return this;");
     output.add(offset + "}");
+  }
+
+  private boolean isBrowserChannelOption() {
+    return asList("BrowserType.launch.options.channel", "BrowserType.launchPersistentContext.options.channel").contains(jsonPath);
   }
 }
 

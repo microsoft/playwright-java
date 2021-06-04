@@ -31,12 +31,7 @@ class TracingImpl implements Tracing {
     this.context = context;
   }
 
-  @Override
-  public void export(Path path) {
-    context.withLogging("Tracing.export", () -> exportImpl(path));
-  }
-
-  private void exportImpl(Path path) {
+  private void export(Path path) {
     JsonObject json = context.sendMessage("tracingExport").getAsJsonObject();
     ArtifactImpl artifact = context.connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
     if (context.browser().isRemote) {
@@ -60,7 +55,12 @@ class TracingImpl implements Tracing {
   }
 
   @Override
-  public void stop() {
-    context.withLogging("Tracing.stop", () -> context.sendMessage("tracingStop"));
+  public void stop(StopOptions options) {
+    context.withLogging("Tracing.stop", () -> {
+      context.sendMessage("tracingStop");
+      if (options != null && options.path != null) {
+        export(options.path);
+      }
+    });
   }
 }

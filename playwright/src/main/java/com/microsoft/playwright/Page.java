@@ -258,7 +258,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will complete
    * with {@link Page#onRequestFinished Page.onRequestFinished()} event and not with {@link Page#onRequestFailed
-   * Page.onRequestFailed()}.
+   * Page.onRequestFailed()}. A request will only be considered failed when the client cannot get an HTTP response from the
+   * server, e.g. due to network error net::ERR_FAILED.
    */
   void onRequestFailed(Consumer<Request> handler);
   /**
@@ -626,6 +627,11 @@ public interface Page extends AutoCloseable {
      * disables CSS media emulation.
      */
     public Optional<Media> media;
+    /**
+     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. Passing {@code null}
+     * disables reduced motion emulation.
+     */
+    public Optional<ReducedMotion> reducedMotion;
 
     public EmulateMediaOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
@@ -633,6 +639,10 @@ public interface Page extends AutoCloseable {
     }
     public EmulateMediaOptions setMedia(Media media) {
       this.media = Optional.ofNullable(media);
+      return this;
+    }
+    public EmulateMediaOptions setReducedMotion(ReducedMotion reducedMotion) {
+      this.reducedMotion = Optional.ofNullable(reducedMotion);
       return this;
     }
   }
@@ -1603,6 +1613,26 @@ public interface Page extends AutoCloseable {
       return this;
     }
   }
+  class WaitForRequestFinishedOptions {
+    /**
+     * Receives the {@code Request} object and resolves to truthy value when the waiting should resolve.
+     */
+    public Predicate<Request> predicate;
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     */
+    public Double timeout;
+
+    public WaitForRequestFinishedOptions setPredicate(Predicate<Request> predicate) {
+      this.predicate = predicate;
+      return this;
+    }
+    public WaitForRequestFinishedOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class WaitForResponseOptions {
     /**
      * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be
@@ -2508,7 +2538,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Functions installed via {@link Page#exposeFunction Page.exposeFunction()} survive navigations.
    *
-   * <p> An example of adding an {@code sha1} function to the page:
+   * <p> An example of adding a {@code sha256} function to the page:
    * <pre>{@code
    * import com.microsoft.playwright.*;
    *
@@ -2523,11 +2553,11 @@ public interface Page extends AutoCloseable {
    *       BrowserType webkit = playwright.webkit();
    *       Browser browser = webkit.launch({ headless: false });
    *       Page page = browser.newPage();
-   *       page.exposeFunction("sha1", args -> {
+   *       page.exposeFunction("sha256", args -> {
    *         String text = (String) args[0];
    *         MessageDigest crypto;
    *         try {
-   *           crypto = MessageDigest.getInstance("SHA-1");
+   *           crypto = MessageDigest.getInstance("SHA-256");
    *         } catch (NoSuchAlgorithmException e) {
    *           return null;
    *         }
@@ -2536,7 +2566,7 @@ public interface Page extends AutoCloseable {
    *       });
    *       page.setContent("<script>\n" +
    *         "  async function onClick() {\n" +
-   *         "    document.querySelector('div').textContent = await window.sha1('PLAYWRIGHT');\n" +
+   *         "    document.querySelector('div').textContent = await window.sha256('PLAYWRIGHT');\n" +
    *         "  }\n" +
    *         "</script>\n" +
    *         "<button onclick=\"onClick()\">Click me</button>\n" +
@@ -4095,7 +4125,7 @@ public interface Page extends AutoCloseable {
   /**
    * Performs action and waits for a {@code ConsoleMessage} to be logged by in the page. If predicate is provided, it passes
    * {@code ConsoleMessage} value into the {@code predicate} function and waits for {@code predicate(message)} to return a truthy value. Will
-   * throw an error if the page is closed before the console event is fired.
+   * throw an error if the page is closed before the {@link Page#onConsole Page.onConsole()} event is fired.
    *
    * @param callback Callback that performs the action triggering the event.
    */
@@ -4105,7 +4135,7 @@ public interface Page extends AutoCloseable {
   /**
    * Performs action and waits for a {@code ConsoleMessage} to be logged by in the page. If predicate is provided, it passes
    * {@code ConsoleMessage} value into the {@code predicate} function and waits for {@code predicate(message)} to return a truthy value. Will
-   * throw an error if the page is closed before the console event is fired.
+   * throw an error if the page is closed before the {@link Page#onConsole Page.onConsole()} event is fired.
    *
    * @param callback Callback that performs the action triggering the event.
    */
@@ -4401,7 +4431,7 @@ public interface Page extends AutoCloseable {
    * Waits for the matching request and returns it.  See <a
    * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
-   * // Waits for the next response with the specified url
+   * // Waits for the next request with the specified url
    * Request request = page.waitForRequest("https://example.com/resource", () -> {
    *   // Triggers the request
    *   page.click("button.triggers-request");
@@ -4424,7 +4454,7 @@ public interface Page extends AutoCloseable {
    * Waits for the matching request and returns it.  See <a
    * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
-   * // Waits for the next response with the specified url
+   * // Waits for the next request with the specified url
    * Request request = page.waitForRequest("https://example.com/resource", () -> {
    *   // Triggers the request
    *   page.click("button.triggers-request");
@@ -4445,7 +4475,7 @@ public interface Page extends AutoCloseable {
    * Waits for the matching request and returns it.  See <a
    * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
-   * // Waits for the next response with the specified url
+   * // Waits for the next request with the specified url
    * Request request = page.waitForRequest("https://example.com/resource", () -> {
    *   // Triggers the request
    *   page.click("button.triggers-request");
@@ -4468,7 +4498,7 @@ public interface Page extends AutoCloseable {
    * Waits for the matching request and returns it.  See <a
    * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
-   * // Waits for the next response with the specified url
+   * // Waits for the next request with the specified url
    * Request request = page.waitForRequest("https://example.com/resource", () -> {
    *   // Triggers the request
    *   page.click("button.triggers-request");
@@ -4489,7 +4519,7 @@ public interface Page extends AutoCloseable {
    * Waits for the matching request and returns it.  See <a
    * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
-   * // Waits for the next response with the specified url
+   * // Waits for the next request with the specified url
    * Request request = page.waitForRequest("https://example.com/resource", () -> {
    *   // Triggers the request
    *   page.click("button.triggers-request");
@@ -4512,7 +4542,7 @@ public interface Page extends AutoCloseable {
    * Waits for the matching request and returns it.  See <a
    * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
-   * // Waits for the next response with the specified url
+   * // Waits for the next request with the specified url
    * Request request = page.waitForRequest("https://example.com/resource", () -> {
    *   // Triggers the request
    *   page.click("button.triggers-request");
@@ -4529,6 +4559,24 @@ public interface Page extends AutoCloseable {
    * @param callback Callback that performs the action triggering the event.
    */
   Request waitForRequest(Predicate<Request> urlOrPredicate, WaitForRequestOptions options, Runnable callback);
+  /**
+   * Performs action and waits for a {@code Request} to finish loading. If predicate is provided, it passes {@code Request} value into
+   * the {@code predicate} function and waits for {@code predicate(request)} to return a truthy value. Will throw an error if the page is
+   * closed before the {@link Page#onRequestFinished Page.onRequestFinished()} event is fired.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
+  default Request waitForRequestFinished(Runnable callback) {
+    return waitForRequestFinished(null, callback);
+  }
+  /**
+   * Performs action and waits for a {@code Request} to finish loading. If predicate is provided, it passes {@code Request} value into
+   * the {@code predicate} function and waits for {@code predicate(request)} to return a truthy value. Will throw an error if the page is
+   * closed before the {@link Page#onRequestFinished Page.onRequestFinished()} event is fired.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   */
+  Request waitForRequestFinished(WaitForRequestFinishedOptions options, Runnable callback);
   /**
    * Returns the matched response. See <a href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for
    * event</a> for more details about events.

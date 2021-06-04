@@ -38,7 +38,7 @@ public class TestTracing extends TestBase {
   void launchBrowser(@TempDir Path tempDir) {
     System.out.println("new launchBrowser(");
     BrowserType.LaunchOptions options = createLaunchOptions();
-    options.setTraceDir(tempDir.resolve("trace-dir"));
+    options.setTracesDir(tempDir.resolve("trace-dir"));
     launchBrowser(options);
   }
 
@@ -50,9 +50,8 @@ public class TestTracing extends TestBase {
     page.setContent("<button>Click</button>");
     page.click("'Click'");
     page.close();
-    context.tracing().stop();
     Path traceFile = tempDir.resolve("trace.zip");
-    context.tracing().export(traceFile);
+    context.tracing().stop(new Tracing.StopOptions().setPath(traceFile));
 
     assertTrue(Files.exists(traceFile));
   }
@@ -64,17 +63,15 @@ public class TestTracing extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<button>Click</button>");
     page.click("'Click'");
-    context.tracing().stop();
     Path traceFile1 = tempDir.resolve("trace1.zip");
-    context.tracing().export(traceFile1);
+    context.tracing().stop(new Tracing.StopOptions().setPath(traceFile1));
 
     context.tracing().start(new Tracing.StartOptions().setName("test2")
       .setScreenshots(true).setSnapshots(true));
     page.dblclick("'Click'");
     page.close();
-    context.tracing().stop();
     Path traceFile2 = tempDir.resolve("trace2.zip");
-    context.tracing().export(traceFile2);
+    context.tracing().stop(new Tracing.StopOptions().setPath(traceFile2));
 
     assertTrue(Files.exists(traceFile1));
     assertTrue(Files.exists(traceFile2));

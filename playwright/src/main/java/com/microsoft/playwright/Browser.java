@@ -143,6 +143,11 @@ public interface Browser extends AutoCloseable {
      */
     public RecordVideoSize recordVideoSize;
     /**
+     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
+     * Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "no-preference"}.
+     */
+    public ReducedMotion reducedMotion;
+    /**
      * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
      * is set.
      */
@@ -259,6 +264,10 @@ public interface Browser extends AutoCloseable {
     }
     public NewContextOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
+      return this;
+    }
+    public NewContextOptions setReducedMotion(ReducedMotion reducedMotion) {
+      this.reducedMotion = reducedMotion;
       return this;
     }
     public NewContextOptions setScreenSize(int width, int height) {
@@ -380,6 +389,11 @@ public interface Browser extends AutoCloseable {
      */
     public RecordVideoSize recordVideoSize;
     /**
+     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
+     * Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "no-preference"}.
+     */
+    public ReducedMotion reducedMotion;
+    /**
      * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
      * is set.
      */
@@ -496,6 +510,10 @@ public interface Browser extends AutoCloseable {
     }
     public NewPageOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
+      return this;
+    }
+    public NewPageOptions setReducedMotion(ReducedMotion reducedMotion) {
+      this.reducedMotion = reducedMotion;
       return this;
     }
     public NewPageOptions setScreenSize(int width, int height) {

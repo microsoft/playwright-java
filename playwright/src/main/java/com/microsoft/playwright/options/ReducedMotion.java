@@ -16,15 +16,7 @@
 
 package com.microsoft.playwright.options;
 
-@Deprecated
-public enum BrowserChannel {
-  CHROME,
-  CHROME_BETA,
-  CHROME_DEV,
-  CHROME_CANARY,
-  MSEDGE,
-  MSEDGE_BETA,
-  MSEDGE_DEV,
-  MSEDGE_CANARY,
-  @Deprecated FIREFOX_STABLE
+public enum ReducedMotion {
+  REDUCE,
+  NO_PREFERENCE
 }

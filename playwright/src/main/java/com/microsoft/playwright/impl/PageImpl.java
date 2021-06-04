@@ -1300,6 +1300,24 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public Request waitForRequestFinished(WaitForRequestFinishedOptions options, Runnable code) {
+    return withWaitLogging("Page.waitForRequestFinished", () -> waitForRequestFinishedImpl(options, code));
+  }
+
+  private Request waitForRequestFinishedImpl(WaitForRequestFinishedOptions options, Runnable code) {
+    if (options == null) {
+      options = new WaitForRequestFinishedOptions();
+    }
+    List<Waitable<Request>> waitables = new ArrayList<>();
+    Predicate<Request> predicate = options.predicate;
+    waitables.add(new WaitableEvent<>(listeners, EventType.REQUESTFINISHED,
+      request -> predicate == null || predicate.test(request)));
+    waitables.add(createWaitForCloseHelper());
+    waitables.add(createWaitableTimeout(options.timeout));
+    return runUntil(code, new WaitableRace<>(waitables));
+  }
+
+  @Override
   public Response waitForResponse(String urlGlob, WaitForResponseOptions options, Runnable code) {
     return waitForResponse(toResponsePredicate(new UrlMatcher(urlGlob)), options, code);
   }
