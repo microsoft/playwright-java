@@ -1165,7 +1165,7 @@ public class ApiGenerator {
   public static void main(String[] args) throws IOException {
     File cwd = FileSystems.getDefault().getPath(".").toFile();
     System.out.println(cwd.getCanonicalPath());
-    File file = new File("/home/yurys/playwright/api.json");
+    File file = new File(cwd, "tools/api-generator/src/main/resources/api.json");
     System.out.println("Reading from: " + file.getCanonicalPath());
     new ApiGenerator(new FileReader(file));
   }
