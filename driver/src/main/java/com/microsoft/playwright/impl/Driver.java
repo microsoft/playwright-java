@@ -18,6 +18,7 @@ package com.microsoft.playwright.impl;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 /**
  * This class provides access to playwright-cli. It can be either preinstalled
@@ -32,16 +33,23 @@ public abstract class Driver {
     PreinstalledDriver(Path driverDir) {
       this.driverDir = driverDir;
     }
+
+    @Override
+    protected void initialize(Map<String, String> env) {
+      // no-op
+    }
+
     @Override
     Path driverDir() {
       return driverDir;
     }
   }
 
-  public static synchronized Path ensureDriverInstalled() {
+  public static synchronized Path ensureDriverInstalled(Map<String, String> env) {
     if (instance == null) {
       try {
         instance = createDriver();
+        instance.initialize(env);
       } catch (Exception exception) {
         throw new RuntimeException("Failed to create driver", exception);
       }
@@ -49,6 +57,8 @@ public abstract class Driver {
     String name = instance.cliFileName();
     return instance.driverDir().resolve(name);
   }
+
+  protected abstract void initialize(Map<String, String> env) throws Exception;
 
   protected String cliFileName() {
     return System.getProperty("os.name").toLowerCase().contains("windows") ?

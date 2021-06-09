@@ -40,6 +40,18 @@ import java.util.*;
  * }</pre>
  */
 public interface Playwright extends AutoCloseable {
+  class CreateOptions {
+    /**
+     * Specify environment variables that will be passed to the driver process. By default driver process inherits environment
+     * variables of the Playwright process.
+     */
+    public Map<String, String> env;
+
+    public CreateOptions setEnv(Map<String, String> env) {
+      this.env = env;
+      return this;
+    }
+  }
   /**
    * This object can be used to launch or connect to Chromium, returning instances of {@code Browser}.
    */
@@ -72,8 +84,12 @@ public interface Playwright extends AutoCloseable {
    * playwright.close();
    * }</pre>
    */
+  static Playwright create(CreateOptions options) {
+    return PlaywrightImpl.create(options);
+  }
+
   static Playwright create() {
-    return PlaywrightImpl.create();
+    return create(null);
   }
 }
 

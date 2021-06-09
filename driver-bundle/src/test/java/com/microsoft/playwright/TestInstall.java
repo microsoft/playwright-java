@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -31,7 +32,7 @@ public class TestInstall {
   void playwrightCliInstalled() throws Exception {
     // Clear system property to ensure that the driver is loaded from jar.
     System.clearProperty("playwright.cli.dir");
-    Path cli = Driver.ensureDriverInstalled();
+    Path cli = Driver.ensureDriverInstalled(Collections.emptyMap());
     assertTrue(Files.exists(cli));
 
     ProcessBuilder pb = new ProcessBuilder(cli.toString(), "install");

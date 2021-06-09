@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.options.BrowserChannel;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;

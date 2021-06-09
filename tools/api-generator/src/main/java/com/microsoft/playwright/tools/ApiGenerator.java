@@ -587,15 +587,6 @@ class Method extends Element {
   final TypeRef returnType;
   final List<Param> params = new ArrayList<>();
 
-  private static Map<String, String[]> customSignature = new HashMap<>();
-  static {
-    customSignature.put("Playwright.create", new String[]{
-      "static Playwright create() {",
-      "  return PlaywrightImpl.create();",
-      "}"
-    });
-  }
-
   Method(TypeDefinition parent, JsonObject jsonElement) {
     super(parent, jsonElement);
     returnType = new TypeRef(this, jsonElement.get("type"));
@@ -614,8 +605,12 @@ class Method extends Element {
   void writeTo(List<String> output, String offset) {
     if ("Playwright.create".equals(jsonPath)) {
       writeJavadoc(params, output, offset);
+      output.add(offset + "static Playwright create(CreateOptions options) {");
+      output.add(offset + "  return PlaywrightImpl.create(options);");
+      output.add(offset + "}");
+      output.add("");
       output.add(offset + "static Playwright create() {");
-      output.add(offset + "  return PlaywrightImpl.create();");
+      output.add(offset + "  return create(null);");
       output.add(offset + "}");
       return;
     }

@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class DriverJar extends Driver {
@@ -29,17 +30,22 @@ public class DriverJar extends Driver {
   DriverJar() throws IOException, URISyntaxException, InterruptedException {
     driverTempDir = Files.createTempDirectory("playwright-java-");
     driverTempDir.toFile().deleteOnExit();
-    extractDriverToTempDir();
-    installBrowsers();
   }
 
-  private void installBrowsers() throws IOException, InterruptedException {
+  @Override
+  protected void initialize(Map<String, String> env) throws Exception {
+    extractDriverToTempDir();
+    installBrowsers(env);
+  }
+
+  private void installBrowsers(Map<String, String> env) throws IOException, InterruptedException {
     String cliFileName = super.cliFileName();
     Path driver = driverTempDir.resolve(cliFileName);
     if (!Files.exists(driver)) {
       throw new RuntimeException("Failed to find " + cliFileName + " at " + driver);
     }
     ProcessBuilder pb = new ProcessBuilder(driver.toString(), "install");
+    pb.environment().putAll(env);
     pb.redirectError(ProcessBuilder.Redirect.INHERIT);
     pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
     Process p = pb.start();

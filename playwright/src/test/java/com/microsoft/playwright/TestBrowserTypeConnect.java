@@ -31,9 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static com.microsoft.playwright.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,7 +58,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   private static BrowserServer launchBrowserServer(BrowserType browserType) {
     try {
-      Path driver = Driver.ensureDriverInstalled();
+      Path driver = Driver.ensureDriverInstalled(Collections.emptyMap());
       Path dir = driver.getParent();
       String node = dir.resolve(isWindows ? "node.exe" : "node").toString();
       String cliJs = dir.resolve("package/lib/cli/cli.js").toString();
