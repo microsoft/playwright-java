@@ -23,17 +23,23 @@ import com.microsoft.playwright.Selectors;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private Process driverProcess;
 
-  public static PlaywrightImpl create() {
+  public static PlaywrightImpl create(CreateOptions options) {
     try {
-      Path driver = Driver.ensureDriverInstalled();
+      Map<String, String> env = Collections.emptyMap();
+      if (options != null && options.env != null) {
+        env = options.env;
+      }
+      Path driver = Driver.ensureDriverInstalled(env);
       ProcessBuilder pb = new ProcessBuilder(driver.toString(), "run-driver");
       pb.redirectError(ProcessBuilder.Redirect.INHERIT);
-//      pb.environment().put("DEBUG", "pw:pro*");
+      pb.environment().putAll(env);
       Process p = pb.start();
       Connection connection = new Connection(new PipeTransport(p.getInputStream(), p.getOutputStream()));
       PlaywrightImpl result = (PlaywrightImpl) connection.waitForObjectWithKnownName("Playwright");

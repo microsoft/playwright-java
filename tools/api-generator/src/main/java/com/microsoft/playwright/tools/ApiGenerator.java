@@ -587,15 +587,6 @@ class Method extends Element {
   final TypeRef returnType;
   final List<Param> params = new ArrayList<>();
 
-  private static Map<String, String[]> customSignature = new HashMap<>();
-  static {
-    customSignature.put("Playwright.create", new String[]{
-      "static Playwright create() {",
-      "  return PlaywrightImpl.create();",
-      "}"
-    });
-  }
-
   Method(TypeDefinition parent, JsonObject jsonElement) {
     super(parent, jsonElement);
     returnType = new TypeRef(this, jsonElement.get("type"));
@@ -614,8 +605,12 @@ class Method extends Element {
   void writeTo(List<String> output, String offset) {
     if ("Playwright.create".equals(jsonPath)) {
       writeJavadoc(params, output, offset);
+      output.add(offset + "static Playwright create(CreateOptions options) {");
+      output.add(offset + "  return PlaywrightImpl.create(options);");
+      output.add(offset + "}");
+      output.add("");
       output.add(offset + "static Playwright create() {");
-      output.add(offset + "  return PlaywrightImpl.create();");
+      output.add(offset + "  return create(null);");
       output.add(offset + "}");
       return;
     }
@@ -1170,7 +1165,7 @@ public class ApiGenerator {
   public static void main(String[] args) throws IOException {
     File cwd = FileSystems.getDefault().getPath(".").toFile();
     System.out.println(cwd.getCanonicalPath());
-    File file = new File(cwd, "tools/api-generator/src/main/resources/api.json");
+    File file = new File("/home/yurys/playwright/api.json");
     System.out.println("Reading from: " + file.getCanonicalPath());
     new ApiGenerator(new FileReader(file));
   }

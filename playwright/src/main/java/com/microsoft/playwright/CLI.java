@@ -20,6 +20,7 @@ import com.microsoft.playwright.impl.Driver;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
 
 import static java.util.Arrays.asList;
 
@@ -28,7 +29,7 @@ import static java.util.Arrays.asList;
  */
 public class CLI {
   public static void main(String[] args) throws IOException, InterruptedException {
-    Path driver = Driver.ensureDriverInstalled();
+    Path driver = Driver.ensureDriverInstalled(Collections.emptyMap());
     ProcessBuilder pb = new ProcessBuilder(driver.toString());
     pb.command().addAll(asList(args));
     if (!pb.environment().containsKey("PW_CLI_TARGET_LANG")) {
