@@ -45,6 +45,11 @@ class DownloadImpl extends LoggingSupport implements Download {
   }
 
   @Override
+  public void _cancel() {
+    throw new UnsupportedOperationException("Not implemented");
+  }
+
+  @Override
   public InputStream createReadStream() {
     return withLogging("Download.createReadStream", () -> artifact.createReadStream());
   }
