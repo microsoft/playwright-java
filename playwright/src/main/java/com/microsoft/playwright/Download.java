@@ -48,6 +48,13 @@ import java.util.*;
  */
 public interface Download {
   /**
+   * **Chromium-only** Cancels a download. Will not fail if the download is already finished or canceled. Upon successful
+   * cancellations, {@code download.failure()} would resolve to {@code "canceled"}.
+   *
+   * <p> Currently **experimental** and may subject to further changes.
+   */
+  void _cancel();
+  /**
    * Returns readable stream for current download or {@code null} if download failed.
    */
   InputStream createReadStream();

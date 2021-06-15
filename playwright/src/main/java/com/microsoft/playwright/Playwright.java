@@ -42,8 +42,8 @@ import java.util.*;
 public interface Playwright extends AutoCloseable {
   class CreateOptions {
     /**
-     * Specify environment variables that will be passed to the driver process. By default driver process inherits environment
-     * variables of the Playwright process.
+     * Additional environment variables that will be passed to the driver process. By default driver process inherits
+     * environment variables of the Playwright process.
      */
     public Map<String, String> env;
 
