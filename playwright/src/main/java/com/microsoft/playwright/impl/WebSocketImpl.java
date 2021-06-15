@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 class WebSocketImpl extends ChannelOwner implements WebSocket {
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
@@ -93,7 +94,7 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
     if (options == null) {
       options = new WaitForFrameReceivedOptions();
     }
-    return waitForEventWithTimeout(EventType.FRAMERECEIVED, code, options.timeout);
+    return waitForEventWithTimeout(EventType.FRAMERECEIVED, code, options.predicate, options.timeout);
   }
 
   @Override
@@ -105,7 +106,7 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
     if (options == null) {
       options = new WaitForFrameSentOptions();
     }
-    return waitForEventWithTimeout(EventType.FRAMESENT, code, options.timeout);
+    return waitForEventWithTimeout(EventType.FRAMESENT, code, options.predicate, options.timeout);
   }
 
   @Override
@@ -140,9 +141,10 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
     }
   }
 
-  private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Double timeout) {
-    List<Waitable<T>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, eventType));
+  private WebSocketFrame waitForEventWithTimeout(EventType eventType, Runnable code, Predicate<WebSocketFrame> predicate, Double timeout) {
+    List<Waitable<WebSocketFrame>> waitables = new ArrayList<>();
+    waitables.add(new WaitableEvent<>(listeners, eventType,
+      frame -> predicate == null || predicate.test(frame)));
     waitables.add(new WaitableWebSocketClose<>());
     waitables.add(new WaitableWebSocketError<>());
     waitables.add(page.createWaitForCloseHelper());
