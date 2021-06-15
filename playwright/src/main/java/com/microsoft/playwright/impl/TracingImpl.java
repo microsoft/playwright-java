@@ -34,7 +34,9 @@ class TracingImpl implements Tracing {
   private void export(Path path) {
     JsonObject json = context.sendMessage("tracingExport").getAsJsonObject();
     ArtifactImpl artifact = context.connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
-    if (context.browser().isRemote) {
+    // In case of CDP connection browser is null but since the connection is established by
+    // the driver it is safe to consider the artifact local.
+    if (context.browser() != null && context.browser().isRemote) {
       artifact.isRemote = true;
     }
     artifact.saveAs(path);
