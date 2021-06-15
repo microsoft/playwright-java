@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,12 +28,13 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="Chromium-specific API")
 public class TestChromium extends TestBase {
@@ -41,7 +43,7 @@ public class TestChromium extends TestBase {
     // Do not create anything.
   }
 
-  private static int nextPort = 9339;
+  private int nextPort = 9339;
 
   private static String wsEndpointFromUrl(String urlString) throws IOException {
     URL url = new URL(urlString);
@@ -120,6 +122,32 @@ public class TestChromium extends TestBase {
       assertNotNull(webSocketServer.lastClientHandshake);
       assertEquals("Playwright", webSocketServer.lastClientHandshake.getFieldValue("User-Agent"));
       assertEquals("bar", webSocketServer.lastClientHandshake.getFieldValue("foo"));
+    }
+  }
+
+  @Test
+  void shouldSupportTracingOverCDP(@TempDir Path tempDir) throws IOException {
+    int port = nextPort++;
+    try (Browser browserServer = browserType.launch(createLaunchOptions()
+      .setArgs(asList("--remote-debugging-port=" + port)))) {
+      try (Browser cdpBrowser = browserType.connectOverCDP("http://localhost:" + port)) {
+        List<BrowserContext> contexts = cdpBrowser.contexts();
+        assertEquals(1, contexts.size());
+        BrowserContext context = contexts.get(0);
+
+        Page page = context.newPage();
+        context.tracing().start(new Tracing.StartOptions().setName("test")
+          .setScreenshots(true).setSnapshots(true));
+        page.navigate(server.EMPTY_PAGE);
+        page.setContent("<button>Click</button>");
+        page.click("'Click'");
+        page.close();
+        Path traceFile = tempDir.resolve("trace.zip");
+        context.tracing().stop(new Tracing.StopOptions().setPath(traceFile));
+
+        assertTrue(Files.exists(traceFile));
+        assertTrue(Files.size(traceFile) > 0);
+      }
     }
   }
 }

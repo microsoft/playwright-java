@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.microsoft.playwright.Utils.mapOf;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBrowserTypeConnect extends TestBase {
@@ -457,5 +458,25 @@ public class TestBrowserTypeConnect extends TestBase {
       assertTrue(e.getMessage().contains("Target page, context or browser has been closed"));
     }
     page.close();
+  }
+
+  @Test
+  void shouldSupportTracingOverWebSocket(@TempDir Path tempDir) throws IOException {
+    List<BrowserContext> contexts = browser.contexts();
+    assertEquals(1, contexts.size());
+    BrowserContext context = contexts.get(0);
+
+    Page page = context.newPage();
+    context.tracing().start(new Tracing.StartOptions().setName("test")
+      .setScreenshots(true).setSnapshots(true));
+    page.navigate(server.EMPTY_PAGE);
+    page.setContent("<button>Click</button>");
+    page.click("'Click'");
+    page.close();
+    Path traceFile = tempDir.resolve("trace.zip");
+    context.tracing().stop(new Tracing.StopOptions().setPath(traceFile));
+
+    assertTrue(Files.exists(traceFile));
+    assertTrue(Files.size(traceFile) > 0);
   }
 }
