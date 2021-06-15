@@ -204,4 +204,83 @@ public class TestWebSocket extends TestBase {
       assertTrue(exception.getMessage().contains("Page closed"));
     }
   }
+
+  @Test
+  void shouldCallFrameReceivedPredicate() {
+    com.microsoft.playwright.WebSocket ws = page.waitForWebSocket(() -> {
+      page.evaluate("port => {\n" +
+        "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
+        "}", webSocketServer.getPort());
+    });
+
+    String[] text = {null};
+    WebSocketFrame frame = ws.waitForFrameReceived(new WebSocket.WaitForFrameReceivedOptions()
+        .setPredicate(webSocketFrame -> {
+          if (!"incoming".equals(webSocketFrame.text())) {
+            return false;
+          }
+          text[0] = webSocketFrame.text();
+          return true;
+        }), () -> {});
+    assertEquals("incoming", text[0]);
+    assertEquals("incoming", frame.text());
+  }
+
+  @Test
+  void shouldCallFrameSentPredicate() {
+    com.microsoft.playwright.WebSocket ws = page.waitForWebSocket(() -> {
+      page.evaluate("port => {\n" +
+        "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
+        "  return new Promise(f => ws.addEventListener('open', f));\n" +
+        "}", webSocketServer.getPort());
+    });
+
+    String[] text = {null};
+    WebSocketFrame frame = ws.waitForFrameSent(new WebSocket.WaitForFrameSentOptions()
+      .setPredicate(webSocketFrame -> {
+        if (!"outgoing".equals(webSocketFrame.text())) {
+          return false;
+        }
+        text[0] = webSocketFrame.text();
+        return true;
+      }), () -> page.evaluate("ws.send('outgoing');"));
+    assertEquals("outgoing", text[0]);
+    assertEquals("outgoing", frame.text());
+  }
+
+  @Test
+  void shouldRespectFrameReceivedTimeout() {
+    com.microsoft.playwright.WebSocket ws = page.waitForWebSocket(() -> {
+      page.evaluate("port => {\n" +
+        "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
+        "  return new Promise(f => ws.addEventListener('open', f))\n" +
+        "}", webSocketServer.getPort());
+    });
+
+    try {
+      ws.waitForFrameReceived(new WebSocket.WaitForFrameReceivedOptions()
+        .setPredicate(webSocketFrame -> false).setTimeout(1), () -> {});
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
+    }
+  }
+
+  @Test
+  void shouldRespectFrameSentTimeout() {
+    com.microsoft.playwright.WebSocket ws = page.waitForWebSocket(() -> {
+      page.evaluate("port => {\n" +
+        "  window.ws = new WebSocket('ws://localhost:' + port + '/ws');\n" +
+        "  return new Promise(f => ws.addEventListener('open', f));\n" +
+        "}", webSocketServer.getPort());
+    });
+
+    try {
+      ws.waitForFrameSent(new WebSocket.WaitForFrameSentOptions()
+        .setPredicate(webSocketFrame -> false).setTimeout(1), () -> page.evaluate("ws.send('outgoing');"));
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
+    }
+  }
 }
