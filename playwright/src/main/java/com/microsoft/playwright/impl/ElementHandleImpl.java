@@ -209,10 +209,15 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void hover(HoverOptions options) {
-    withLogging("ElementHandle.hover", () -> {
-      JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-      sendMessage("hover", params);
-    });
+    withLogging("ElementHandle.hover", () -> hoverImpl(options));
+  }
+
+  private void hoverImpl(HoverOptions options) {
+    if (options == null) {
+      options = new HoverOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    sendMessage("hover", params);
   }
 
   @Override
