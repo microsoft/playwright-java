@@ -21,12 +21,16 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Response;
+import com.microsoft.playwright.options.SecurityDetails;
+import com.microsoft.playwright.options.ServerAddr;
 import com.microsoft.playwright.options.Timing;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.microsoft.playwright.impl.Serialization.gson;
 
 public class ResponseImpl extends ChannelOwner implements Response {
   private final Map<String, String> headers = new HashMap<>();
@@ -46,7 +50,7 @@ public class ResponseImpl extends ChannelOwner implements Response {
       JsonObject item = e.getAsJsonObject();
       request.headers.put(item.get("name").getAsString().toLowerCase(), item.get("value").getAsString());
     }
-    request.timing = Serialization.gson().fromJson(initializer.get("timing"), Timing.class);
+    request.timing = gson().fromJson(initializer.get("timing"), Timing.class);
   }
 
   @Override
@@ -86,6 +90,28 @@ public class ResponseImpl extends ChannelOwner implements Response {
   @Override
   public RequestImpl request() {
     return request;
+  }
+
+  @Override
+  public SecurityDetails securityDetails() {
+    return withLogging("Response.securityDetails", () -> {
+      JsonObject json = sendMessage("securityDetails").getAsJsonObject();
+      if (json.has("value")) {
+        return gson().fromJson(json.get("value"), SecurityDetails.class);
+      }
+      return null;
+    });
+  }
+
+  @Override
+  public ServerAddr serverAddr() {
+    return withLogging("Response.serverAddr", () -> {
+      JsonObject json = sendMessage("serverAddr").getAsJsonObject();
+      if (json.has("value")) {
+        return gson().fromJson(json.get("value"), ServerAddr.class);
+      }
+      return null;
+    });
   }
 
   @Override

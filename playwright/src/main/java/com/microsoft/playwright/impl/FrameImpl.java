@@ -41,6 +41,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
   FrameImpl parentFrame;
   Set<FrameImpl> childFrames = new LinkedHashSet<>();
   private final Set<LoadState> loadStates = new HashSet<>();
+
   enum InternalEventType { NAVIGATED, LOADSTATE }
   private final ListenerCollection<InternalEventType> internalListeners = new ListenerCollection<>();
   PageImpl page;
@@ -438,6 +439,21 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
+  public String inputValue(String selector, InputValueOptions options) {
+    return withLogging("Frame.inputValue", () -> inputValueImpl(selector, options));
+  }
+
+  String inputValueImpl(String selector, InputValueOptions options) {
+    if (options == null) {
+      options = new InputValueOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    JsonObject json = sendMessage("inputValue", params).getAsJsonObject();
+    return json.get("value").getAsString();
+  }
+
+  @Override
   public boolean isChecked(String selector, IsCheckedOptions options) {
     return withLogging("Page.isChecked", () -> isCheckedImpl(selector, options));
   }
@@ -503,30 +519,24 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public boolean isHidden(String selector, IsHiddenOptions options) {
-    return withLogging("Page.isHidden", () -> isHiddenImpl(selector, options));
+  public boolean isHidden(String selector) {
+    return withLogging("Page.isHidden", () -> isHiddenImpl(selector));
   }
 
-  boolean isHiddenImpl(String selector, IsHiddenOptions options) {
-    if (options == null) {
-      options = new IsHiddenOptions();
-    }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+  boolean isHiddenImpl(String selector) {
+    JsonObject params = new JsonObject();
     params.addProperty("selector", selector);
     JsonObject json = sendMessage("isHidden", params).getAsJsonObject();
     return json.get("value").getAsBoolean();
   }
 
   @Override
-  public boolean isVisible(String selector, IsVisibleOptions options) {
-    return withLogging("Page.isVisible", () -> isVisibleImpl(selector, options));
+  public boolean isVisible(String selector) {
+    return withLogging("Page.isVisible", () -> isVisibleImpl(selector));
   }
 
-  boolean isVisibleImpl(String selector, IsVisibleOptions options) {
-    if (options == null) {
-      options = new IsVisibleOptions();
-    }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+  boolean isVisibleImpl(String selector) {
+    JsonObject params = new JsonObject();
     params.addProperty("selector", selector);
     JsonObject json = sendMessage("isVisible", params).getAsJsonObject();
     return json.get("value").getAsBoolean();

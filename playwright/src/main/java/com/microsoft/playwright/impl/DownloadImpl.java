@@ -45,8 +45,8 @@ class DownloadImpl extends LoggingSupport implements Download {
   }
 
   @Override
-  public void _cancel() {
-    throw new UnsupportedOperationException("Not implemented");
+  public void cancel() {
+    withLogging("Download.cancel", () -> artifact.cancel());
   }
 
   @Override

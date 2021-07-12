@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 
 import static com.microsoft.playwright.options.KeyboardModifier.ALT;
 import static com.microsoft.playwright.Utils.copy;
@@ -58,6 +59,18 @@ public class TestDownload extends TestBase {
         writer.write("Hello world");
       }
     });
+
+    server.setRoute("/downloadWithDelay", exchange -> {
+      exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
+      exchange.getResponseHeaders().add("Content-Disposition", "attachment; filename=file.txt");
+      exchange.sendResponseHeaders(200, 0);
+      // Chromium requires a large enough payload to trigger the download event soon enough
+      OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
+      writer.write(String.join("", Collections.nCopies(4096, "a")));
+      writer.write("foo");
+      writer.flush();
+    });
+
   }
 
   @Test
@@ -384,5 +397,31 @@ public class TestDownload extends TestBase {
     assertFalse(Files.exists(path1));
     assertFalse(Files.exists(path2));
     assertFalse(Files.exists(path1.resolve("..")));
+  }
+
+  @Test
+  void shouldBeAbleToCancelPendingDownloads() {
+    try (Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true))) {
+      page.setContent("<a href='" + server.PREFIX + "/downloadWithDelay'>download</a>");
+      Download download = page.waitForDownload(() -> page.click("a"));
+      download.cancel();
+      String failure = download.failure();
+      assertEquals("canceled", failure);
+    }
+  }
+
+  @Test
+  void shouldNotFailExplicitlyToCancelADownloadEvenIfThatIsAlreadyFinished() throws IOException {
+    try (Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true))) {
+      page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+      Download download = page.waitForDownload(() -> page.click("a"));
+
+      Path path = download.path();
+      assertTrue(Files.exists(path));
+      byte[] bytes = readAllBytes(path);
+      assertEquals("Hello world", new String(bytes, UTF_8));
+      download.cancel();
+      assertNull(download.failure());
+    }
   }
 }

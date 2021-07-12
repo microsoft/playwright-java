@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.ServerAddr;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestNetworkResponse extends TestBase {
@@ -140,5 +142,14 @@ public class TestNetworkResponse extends TestBase {
     });
     Response response = page.navigate(server.PREFIX + "/cool");
     assertEquals("OK", response.statusText());
+  }
+
+  @Test
+  void shouldReturnServerAddress() {
+    Response response = page.navigate(server.EMPTY_PAGE);
+    ServerAddr address = response.serverAddr();
+    assertNotNull(address);
+    assertEquals(server.PORT, address.port);
+    assertTrue(asList("127.0.0.1", "::1").contains(address.ipAddress), address.ipAddress);
   }
 }

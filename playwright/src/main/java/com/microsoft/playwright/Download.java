@@ -48,12 +48,10 @@ import java.util.*;
  */
 public interface Download {
   /**
-   * **Chromium-only** Cancels a download. Will not fail if the download is already finished or canceled. Upon successful
-   * cancellations, {@code download.failure()} would resolve to {@code "canceled"}.
-   *
-   * <p> Currently **experimental** and may subject to further changes.
+   * Cancels a download. Will not fail if the download is already finished or canceled. Upon successful cancellations,
+   * {@code download.failure()} would resolve to {@code "canceled"}.
    */
-  void _cancel();
+  void cancel();
   /**
    * Returns readable stream for current download or {@code null} if download failed.
    */
@@ -73,6 +71,9 @@ public interface Download {
   /**
    * Returns path to the downloaded file in case of successful download. The method will wait for the download to finish if
    * necessary. The method throws when connected remotely.
+   *
+   * <p> Note that the download's file name is a random GUID, use {@link Download#suggestedFilename Download.suggestedFilename()}
+   * to get suggested file name.
    */
   Path path();
   /**

@@ -237,6 +237,20 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   }
 
   @Override
+  public String inputValue(InputValueOptions options) {
+    return withLogging("ElementHandle.inputValue", () -> inputValueImpl(options));
+  }
+
+  private String inputValueImpl(InputValueOptions options) {
+    if (options == null) {
+      options = new InputValueOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    JsonObject json = sendMessage("inputValue", params).getAsJsonObject();
+    return json.get("value").getAsString();
+  }
+
+  @Override
   public boolean isChecked() {
     return withLogging("ElementHandle.isChecked", () -> {
       JsonObject json = sendMessage("isChecked").getAsJsonObject();

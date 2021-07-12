@@ -279,6 +279,17 @@ public interface BrowserType {
      */
     public List<String> args;
     /**
+     * When using {@link Page#goto Page.goto()}, {@link Page#route Page.route()}, {@link Page#waitForURL Page.waitForURL()},
+     * {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse Page.waitForResponse()} it takes the
+     * base URL in consideration by using the <a href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a>
+     * constructor for building the corresponding URL. Examples:
+     * <ul>
+     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code http://localhost:3000/foo/bar.html}</li>
+     * </ul>
+     */
+    public String baseURL;
+    /**
      * Toggles bypassing page's Content-Security-Policy.
      */
     public Boolean bypassCSP;
@@ -459,6 +470,10 @@ public interface BrowserType {
     }
     public LaunchPersistentContextOptions setArgs(List<String> args) {
       this.args = args;
+      return this;
+    }
+    public LaunchPersistentContextOptions setBaseURL(String baseURL) {
+      this.baseURL = baseURL;
       return this;
     }
     public LaunchPersistentContextOptions setBypassCSP(boolean bypassCSP) {
