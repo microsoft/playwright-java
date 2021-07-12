@@ -237,4 +237,13 @@ public class TestPageFill extends TestBase {
     page.fill("input", "");
     assertEquals("", page.evaluate("() => window['result']"));
   }
+
+  @Test
+  void inputValueShouldWork() {
+    page.navigate(server.PREFIX + "/input/textarea.html");
+    page.fill("input", "my-text-content");
+    assertEquals("my-text-content", page.inputValue("input"));
+    page.fill("input", "");
+    assertEquals("", page.inputValue("input"));
+  }
 }

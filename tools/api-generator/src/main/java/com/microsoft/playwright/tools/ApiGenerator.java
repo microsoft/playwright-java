@@ -866,7 +866,7 @@ class Interface extends TypeDefinition {
     if ("Playwright".equals(jsonName)) {
       output.add("import com.microsoft.playwright.impl.PlaywrightImpl;");
     }
-    if (asList("Page", "Request", "FileChooser", "Frame", "ElementHandle", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard").contains(jsonName)) {
+    if (asList("Page", "Request", "Response", "FileChooser", "Frame", "ElementHandle", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard").contains(jsonName)) {
       output.add("import com.microsoft.playwright.options.*;");
     }
     if (jsonName.equals("Route")) {

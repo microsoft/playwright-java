@@ -360,6 +360,11 @@ public interface Frame {
   }
   class FillOptions {
     /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
+    public Boolean force;
+    /**
      * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
      * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
      * inaccessible pages. Defaults to {@code false}.
@@ -372,6 +377,10 @@ public interface Frame {
      */
     public Double timeout;
 
+    public FillOptions setForce(boolean force) {
+      this.force = force;
+      return this;
+    }
     public FillOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
@@ -522,6 +531,19 @@ public interface Frame {
       return this;
     }
   }
+  class InputValueOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public Double timeout;
+
+    public InputValueOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class IsCheckedOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
@@ -574,32 +596,6 @@ public interface Frame {
       return this;
     }
   }
-  class IsHiddenOptions {
-    /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
-     */
-    public Double timeout;
-
-    public IsHiddenOptions setTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  class IsVisibleOptions {
-    /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
-     */
-    public Double timeout;
-
-    public IsVisibleOptions setTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
   class PressOptions {
     /**
      * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
@@ -633,6 +629,11 @@ public interface Frame {
   }
   class SelectOptionOptions {
     /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
+    public Boolean force;
+    /**
      * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
      * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
      * inaccessible pages. Defaults to {@code false}.
@@ -645,6 +646,10 @@ public interface Frame {
      */
     public Double timeout;
 
+    public SelectOptionOptions setForce(boolean force) {
+      this.force = force;
+      return this;
+    }
     public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
@@ -1717,6 +1722,22 @@ public interface Frame {
    */
   String innerText(String selector, InnerTextOptions options);
   /**
+   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} element. Throws for non-input elements.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   */
+  default String inputValue(String selector) {
+    return inputValue(selector, null);
+  }
+  /**
+   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} element. Throws for non-input elements.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   */
+  String inputValue(String selector, InputValueOptions options);
+  /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
@@ -1794,18 +1815,7 @@ public interface Frame {
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
-  default boolean isHidden(String selector) {
-    return isHidden(selector, null);
-  }
-  /**
-   * Returns whether the element is hidden, the opposite of <a
-   * href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.  {@code selector} that does not match any elements
-   * is considered hidden.
-   *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
-   */
-  boolean isHidden(String selector, IsHiddenOptions options);
+  boolean isHidden(String selector);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>. {@code selector}
    * that does not match any elements is considered not visible.
@@ -1813,17 +1823,7 @@ public interface Frame {
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
-  default boolean isVisible(String selector) {
-    return isVisible(selector, null);
-  }
-  /**
-   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>. {@code selector}
-   * that does not match any elements is considered not visible.
-   *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
-   */
-  boolean isVisible(String selector, IsVisibleOptions options);
+  boolean isVisible(String selector);
   /**
    * Returns frame's name attribute as specified in the tag.
    *

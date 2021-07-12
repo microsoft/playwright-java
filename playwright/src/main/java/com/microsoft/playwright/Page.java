@@ -660,6 +660,11 @@ public interface Page extends AutoCloseable {
   }
   class FillOptions {
     /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
+    public Boolean force;
+    /**
      * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
      * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
      * inaccessible pages. Defaults to {@code false}.
@@ -672,6 +677,10 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    public FillOptions setForce(boolean force) {
+      this.force = force;
+      return this;
+    }
     public FillOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
@@ -876,6 +885,19 @@ public interface Page extends AutoCloseable {
       return this;
     }
   }
+  class InputValueOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public Double timeout;
+
+    public InputValueOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class IsCheckedOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
@@ -924,32 +946,6 @@ public interface Page extends AutoCloseable {
     public Double timeout;
 
     public IsEnabledOptions setTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  class IsHiddenOptions {
-    /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
-     */
-    public Double timeout;
-
-    public IsHiddenOptions setTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  class IsVisibleOptions {
-    /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
-     */
-    public Double timeout;
-
-    public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1199,6 +1195,11 @@ public interface Page extends AutoCloseable {
   }
   class SelectOptionOptions {
     /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
+    public Boolean force;
+    /**
      * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
      * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
      * inaccessible pages. Defaults to {@code false}.
@@ -1211,6 +1212,10 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    public SelectOptionOptions setForce(boolean force) {
+      this.force = force;
+      return this;
+    }
     public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
@@ -2752,7 +2757,9 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#goto Frame.goto()}
    *
-   * @param url URL to navigate page to. The url should include scheme, e.g. {@code https://}.
+   * @param url URL to navigate page to. The url should include scheme, e.g. {@code https://}. When a {@code baseURL} via the context options was
+   * provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    */
   default Response navigate(String url) {
     return navigate(url, null);
@@ -2782,7 +2789,9 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#goto Frame.goto()}
    *
-   * @param url URL to navigate page to. The url should include scheme, e.g. {@code https://}.
+   * @param url URL to navigate page to. The url should include scheme, e.g. {@code https://}. When a {@code baseURL} via the context options was
+   * provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    */
   Response navigate(String url, NavigateOptions options);
   /**
@@ -2859,6 +2868,22 @@ public interface Page extends AutoCloseable {
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   String innerText(String selector, InnerTextOptions options);
+  /**
+   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} element. Throws for non-input elements.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   */
+  default String inputValue(String selector) {
+    return inputValue(selector, null);
+  }
+  /**
+   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} element. Throws for non-input elements.
+   *
+   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
+   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   */
+  String inputValue(String selector, InputValueOptions options);
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
@@ -2937,18 +2962,7 @@ public interface Page extends AutoCloseable {
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
-  default boolean isHidden(String selector) {
-    return isHidden(selector, null);
-  }
-  /**
-   * Returns whether the element is hidden, the opposite of <a
-   * href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.  {@code selector} that does not match any elements
-   * is considered hidden.
-   *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
-   */
-  boolean isHidden(String selector, IsHiddenOptions options);
+  boolean isHidden(String selector);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>. {@code selector}
    * that does not match any elements is considered not visible.
@@ -2956,17 +2970,7 @@ public interface Page extends AutoCloseable {
    * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
    * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
-  default boolean isVisible(String selector) {
-    return isVisible(selector, null);
-  }
-  /**
-   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>. {@code selector}
-   * that does not match any elements is considered not visible.
-   *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
-   */
-  boolean isVisible(String selector, IsVisibleOptions options);
+  boolean isVisible(String selector);
   Keyboard keyboard();
   /**
    * The page's main frame. Page is guaranteed to have a main frame which persists during navigations.
@@ -3244,7 +3248,9 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the context
+   * options was provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    */
   void route(String url, Consumer<Route> handler);
@@ -3289,7 +3295,9 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the context
+   * options was provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    */
   void route(Pattern url, Consumer<Route> handler);
@@ -3334,7 +3342,9 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the context
+   * options was provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    */
   void route(Predicate<String> url, Consumer<Route> handler);
@@ -4428,7 +4438,7 @@ public interface Page extends AutoCloseable {
    */
   Page waitForPopup(WaitForPopupOptions options, Runnable callback);
   /**
-   * Waits for the matching request and returns it.  See <a
+   * Waits for the matching request and returns it. See <a
    * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
    * // Waits for the next request with the specified url
@@ -4444,14 +4454,16 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
-   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object. When a {@code baseURL} via the context options was provided
+   * and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
    */
   default Request waitForRequest(String urlOrPredicate, Runnable callback) {
     return waitForRequest(urlOrPredicate, null, callback);
   }
   /**
-   * Waits for the matching request and returns it.  See <a
+   * Waits for the matching request and returns it. See <a
    * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
    * // Waits for the next request with the specified url
@@ -4467,12 +4479,14 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
-   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object. When a {@code baseURL} via the context options was provided
+   * and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
    */
   Request waitForRequest(String urlOrPredicate, WaitForRequestOptions options, Runnable callback);
   /**
-   * Waits for the matching request and returns it.  See <a
+   * Waits for the matching request and returns it. See <a
    * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
    * // Waits for the next request with the specified url
@@ -4488,14 +4502,16 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
-   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object. When a {@code baseURL} via the context options was provided
+   * and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
    */
   default Request waitForRequest(Pattern urlOrPredicate, Runnable callback) {
     return waitForRequest(urlOrPredicate, null, callback);
   }
   /**
-   * Waits for the matching request and returns it.  See <a
+   * Waits for the matching request and returns it. See <a
    * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
    * // Waits for the next request with the specified url
@@ -4511,12 +4527,14 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
-   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object. When a {@code baseURL} via the context options was provided
+   * and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
    */
   Request waitForRequest(Pattern urlOrPredicate, WaitForRequestOptions options, Runnable callback);
   /**
-   * Waits for the matching request and returns it.  See <a
+   * Waits for the matching request and returns it. See <a
    * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
    * // Waits for the next request with the specified url
@@ -4532,14 +4550,16 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
-   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object. When a {@code baseURL} via the context options was provided
+   * and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
    */
   default Request waitForRequest(Predicate<Request> urlOrPredicate, Runnable callback) {
     return waitForRequest(urlOrPredicate, null, callback);
   }
   /**
-   * Waits for the matching request and returns it.  See <a
+   * Waits for the matching request and returns it. See <a
    * href="https://playwright.dev/java/docs/events/#waiting-for-event">waiting for event</a> for more details about events.
    * <pre>{@code
    * // Waits for the next request with the specified url
@@ -4555,7 +4575,9 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
-   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object.
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Request} object. When a {@code baseURL} via the context options was provided
+   * and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
    */
   Request waitForRequest(Predicate<Request> urlOrPredicate, WaitForRequestOptions options, Runnable callback);
@@ -4594,7 +4616,9 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
-   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object. When a {@code baseURL} via the context options was
+   * provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
    */
   default Response waitForResponse(String urlOrPredicate, Runnable callback) {
@@ -4617,7 +4641,9 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
-   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object. When a {@code baseURL} via the context options was
+   * provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
    */
   Response waitForResponse(String urlOrPredicate, WaitForResponseOptions options, Runnable callback);
@@ -4638,7 +4664,9 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
-   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object. When a {@code baseURL} via the context options was
+   * provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
    */
   default Response waitForResponse(Pattern urlOrPredicate, Runnable callback) {
@@ -4661,7 +4689,9 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
-   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object. When a {@code baseURL} via the context options was
+   * provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
    */
   Response waitForResponse(Pattern urlOrPredicate, WaitForResponseOptions options, Runnable callback);
@@ -4682,7 +4712,9 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
-   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object. When a {@code baseURL} via the context options was
+   * provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
    */
   default Response waitForResponse(Predicate<Response> urlOrPredicate, Runnable callback) {
@@ -4705,7 +4737,9 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
-   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object.
+   * @param urlOrPredicate Request URL string, regex or predicate receiving {@code Response} object. When a {@code baseURL} via the context options was
+   * provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
    */
   Response waitForResponse(Predicate<Response> urlOrPredicate, WaitForResponseOptions options, Runnable callback);

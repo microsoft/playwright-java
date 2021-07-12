@@ -61,6 +61,17 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean acceptDownloads;
     /**
+     * When using {@link Page#goto Page.goto()}, {@link Page#route Page.route()}, {@link Page#waitForURL Page.waitForURL()},
+     * {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse Page.waitForResponse()} it takes the
+     * base URL in consideration by using the <a href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a>
+     * constructor for building the corresponding URL. Examples:
+     * <ul>
+     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code http://localhost:3000/foo/bar.html}</li>
+     * </ul>
+     */
+    public String baseURL;
+    /**
      * Toggles bypassing page's Content-Security-Policy.
      */
     public Boolean bypassCSP;
@@ -180,6 +191,10 @@ public interface Browser extends AutoCloseable {
 
     public NewContextOptions setAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
+      return this;
+    }
+    public NewContextOptions setBaseURL(String baseURL) {
+      this.baseURL = baseURL;
       return this;
     }
     public NewContextOptions setBypassCSP(boolean bypassCSP) {
@@ -307,6 +322,17 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean acceptDownloads;
     /**
+     * When using {@link Page#goto Page.goto()}, {@link Page#route Page.route()}, {@link Page#waitForURL Page.waitForURL()},
+     * {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse Page.waitForResponse()} it takes the
+     * base URL in consideration by using the <a href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a>
+     * constructor for building the corresponding URL. Examples:
+     * <ul>
+     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code http://localhost:3000/foo/bar.html}</li>
+     * </ul>
+     */
+    public String baseURL;
+    /**
      * Toggles bypassing page's Content-Security-Policy.
      */
     public Boolean bypassCSP;
@@ -426,6 +452,10 @@ public interface Browser extends AutoCloseable {
 
     public NewPageOptions setAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
+      return this;
+    }
+    public NewPageOptions setBaseURL(String baseURL) {
+      this.baseURL = baseURL;
       return this;
     }
     public NewPageOptions setBypassCSP(boolean bypassCSP) {

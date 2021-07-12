@@ -46,6 +46,33 @@ public class TestElementHandleConvenience extends TestBase {
   }
 
   @Test
+  void inputValueShouldWork() {
+    page.navigate(server.PREFIX + "/dom.html");
+
+    page.fill("#textarea", "text value");
+    assertEquals("text value", page.inputValue("#textarea"));
+
+    page.fill("#input", "input value");
+    assertEquals("input value", page.inputValue("#input"));
+    ElementHandle handle = page.querySelector("#input");
+    assertEquals("input value", handle.inputValue());
+
+    try {
+      page.inputValue("#inner");
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Node is not an HTMLInputElement or HTMLTextAreaElement"), e.getMessage());
+    }
+    ElementHandle handle2 = page.querySelector("#inner");
+    try {
+      handle2.inputValue();
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Node is not an HTMLInputElement or HTMLTextAreaElement"), e.getMessage());
+    }
+  }
+
+  @Test
   void innerHTMLShouldWork() {
     page.navigate(server.PREFIX + "/dom.html");
     ElementHandle handle = page.querySelector("#outer");

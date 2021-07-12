@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.*;
 import java.util.*;
 
 /**
@@ -46,6 +47,14 @@ public interface Response {
    * Returns the matching {@code Request} object.
    */
   Request request();
+  /**
+   * Returns SSL and other security information.
+   */
+  SecurityDetails securityDetails();
+  /**
+   * Returns the IP address and port of the server.
+   */
+  ServerAddr serverAddr();
   /**
    * Contains the status code of the response (e.g., 200 for a success).
    */

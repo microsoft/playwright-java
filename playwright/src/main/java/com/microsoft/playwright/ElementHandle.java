@@ -270,6 +270,11 @@ public interface ElementHandle extends JSHandle {
   }
   class FillOptions {
     /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
+    public Boolean force;
+    /**
      * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
      * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
      * inaccessible pages. Defaults to {@code false}.
@@ -282,6 +287,10 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
+    public FillOptions setForce(boolean force) {
+      this.force = force;
+      return this;
+    }
     public FillOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
@@ -341,6 +350,19 @@ public interface ElementHandle extends JSHandle {
     }
     public HoverOptions setTrial(boolean trial) {
       this.trial = trial;
+      return this;
+    }
+  }
+  class InputValueOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public Double timeout;
+
+    public InputValueOptions setTimeout(double timeout) {
+      this.timeout = timeout;
       return this;
     }
   }
@@ -438,6 +460,11 @@ public interface ElementHandle extends JSHandle {
   }
   class SelectOptionOptions {
     /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
+    public Boolean force;
+    /**
      * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
      * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
      * inaccessible pages. Defaults to {@code false}.
@@ -450,6 +477,10 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
+    public SelectOptionOptions setForce(boolean force) {
+      this.force = force;
+      return this;
+    }
     public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
@@ -461,12 +492,21 @@ public interface ElementHandle extends JSHandle {
   }
   class SelectTextOptions {
     /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
+    public Boolean force;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
+    public SelectTextOptions setForce(boolean force) {
+      this.force = force;
+      return this;
+    }
     public SelectTextOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1079,6 +1119,16 @@ public interface ElementHandle extends JSHandle {
    * Returns the {@code element.innerText}.
    */
   String innerText();
+  /**
+   * Returns {@code input.value} for {@code <input>} or {@code <textarea>} element. Throws for non-input elements.
+   */
+  default String inputValue() {
+    return inputValue(null);
+  }
+  /**
+   * Returns {@code input.value} for {@code <input>} or {@code <textarea>} element. Throws for non-input elements.
+   */
+  String inputValue(InputValueOptions options);
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    */

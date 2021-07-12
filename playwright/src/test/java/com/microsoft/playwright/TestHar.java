@@ -20,8 +20,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -29,6 +32,7 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static com.microsoft.playwright.Utils.getOS;
 import static com.microsoft.playwright.options.LoadState.DOMCONTENTLOADED;
 import static org.junit.jupiter.api.Assertions.*;
 

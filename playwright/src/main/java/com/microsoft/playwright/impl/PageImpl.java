@@ -808,6 +808,12 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public String inputValue(String selector, InputValueOptions options) {
+    return withLogging("Page.inputValue",
+      () -> mainFrame.inputValueImpl(selector, convertViaJson(options, Frame.InputValueOptions.class)));
+  }
+
+  @Override
   public boolean isChecked(String selector, IsCheckedOptions options) {
     return withLogging("Page.isChecked",
       () -> mainFrame.isCheckedImpl(selector, convertViaJson(options, Frame.IsCheckedOptions.class)));
@@ -837,15 +843,15 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public boolean isHidden(String selector, IsHiddenOptions options) {
+  public boolean isHidden(String selector) {
     return withLogging("Page.isHidden",
-      () -> mainFrame.isHiddenImpl(selector, convertViaJson(options, Frame.IsHiddenOptions.class)));
+      () -> mainFrame.isHiddenImpl(selector));
   }
 
   @Override
-  public boolean isVisible(String selector, IsVisibleOptions options) {
+  public boolean isVisible(String selector) {
     return withLogging("Page.isVisible",
-      () -> mainFrame.isVisibleImpl(selector, convertViaJson(options, Frame.IsVisibleOptions.class)));
+      () -> mainFrame.isVisibleImpl(selector));
   }
 
   @Override

@@ -40,6 +40,10 @@ class ArtifactImpl extends ChannelOwner {
     return stream.stream();
   }
 
+  public void cancel() {
+    sendMessage("cancel");
+  }
+
   public void delete() {
     sendMessage("delete");
   }
