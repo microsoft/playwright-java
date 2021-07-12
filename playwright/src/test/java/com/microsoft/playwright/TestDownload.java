@@ -65,10 +65,10 @@ public class TestDownload extends TestBase {
       exchange.getResponseHeaders().add("Content-Disposition", "attachment; filename=file.txt");
       exchange.sendResponseHeaders(200, 0);
       // Chromium requires a large enough payload to trigger the download event soon enough
-      try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
-        writer.write(String.join("", Collections.nCopies(4096, "a")));
-        writer.write("foo");
-      }
+      OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
+      writer.write(String.join("", Collections.nCopies(4096, "a")));
+      writer.write("foo");
+      writer.flush();
     });
 
   }
@@ -401,7 +401,6 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldBeAbleToCancelPendingDownloads() {
-    System.out.println(browser.version());
     try (Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true))) {
       page.setContent("<a href='" + server.PREFIX + "/downloadWithDelay'>download</a>");
       Download download = page.waitForDownload(() -> page.click("a"));
