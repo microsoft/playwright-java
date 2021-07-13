@@ -63,11 +63,11 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldUnroute() {
     List<Integer> intercepted = new ArrayList<>();
-    Consumer<Route> handler1 = route -> {
+    page.route("**/*", route -> {
       intercepted.add(1);
       route.resume();
-    };
-    page.route("**/empty.html", handler1);
+    });
+
     page.route("**/empty.html", route -> {
       intercepted.add(2);
       route.resume();
@@ -76,22 +76,23 @@ public class TestPageRoute extends TestBase {
       intercepted.add(3);
       route.resume();
     });
-    page.route("**/*", route -> {
+    Consumer<Route> handler4 = route -> {
       intercepted.add(4);
       route.resume();
-    });
+    };
+    page.route("**/empty.html", handler4);
     page.navigate(server.EMPTY_PAGE);
-    assertEquals(asList(1), intercepted);
+    assertEquals(asList(4), intercepted);
 
     intercepted.clear();
-    page.unroute("**/empty.html", handler1);
+    page.unroute("**/empty.html", handler4);
     page.navigate(server.EMPTY_PAGE);
-    assertEquals(asList(2), intercepted);
+    assertEquals(asList(3), intercepted);
 
     intercepted.clear();
     page.unroute("**/empty.html");
     page.navigate(server.EMPTY_PAGE);
-    assertEquals(asList(4), intercepted);
+    assertEquals(asList(1), intercepted);
   }
 
   @Test

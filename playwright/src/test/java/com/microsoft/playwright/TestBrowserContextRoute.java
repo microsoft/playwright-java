@@ -57,11 +57,10 @@ public class TestBrowserContextRoute extends TestBase {
     Page page = context.newPage();
 
     List<Integer> intercepted = new ArrayList<>();
-    Consumer<Route> handler1 = route -> {
+    context.route("**/*", route -> {
       intercepted.add(1);
       route.resume();
-    };
-    context.route("**/empty.html", handler1);
+    });
     context.route("**/empty.html", route -> {
       intercepted.add(2);
       route.resume();
@@ -70,22 +69,23 @@ public class TestBrowserContextRoute extends TestBase {
       intercepted.add(3);
       route.resume();
     });
-    context.route("**/*", route -> {
+    Consumer<Route> handler4 = route -> {
       intercepted.add(4);
       route.resume();
-    });
+    };
+    context.route("**/empty.html", handler4);
     page.navigate(server.EMPTY_PAGE);
-    assertEquals(asList(1), intercepted);
+    assertEquals(asList(4), intercepted);
 
     intercepted.clear();
-    context.unroute("**/empty.html", handler1);
+    context.unroute("**/empty.html", handler4);
     page.navigate(server.EMPTY_PAGE);
-    assertEquals(asList(2), intercepted);
+    assertEquals(asList(3), intercepted);
 
     intercepted.clear();
     context.unroute("**/empty.html");
     page.navigate(server.EMPTY_PAGE);
-    assertEquals(asList(4), intercepted);
+    assertEquals(asList(1), intercepted);
 
     context.close();
   }
