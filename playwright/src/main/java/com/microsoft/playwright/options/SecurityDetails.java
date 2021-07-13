@@ -34,10 +34,10 @@ public class SecurityDetails {
   /**
    * Unix timestamp (in seconds) specifying when this cert becomes valid. Optional.
    */
-  public Integer validFrom;
+  public Double validFrom;
   /**
    * Unix timestamp (in seconds) specifying when this cert becomes invalid. Optional.
    */
-  public Integer validTo;
+  public Double validTo;
 
 }
