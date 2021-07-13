@@ -18,6 +18,8 @@ package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.PlaywrightException;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -33,15 +35,15 @@ class UrlMatcher {
   }
 
   static UrlMatcher any() {
-    return new UrlMatcher(null, null);
+    return new UrlMatcher((Object) null, null);
   }
 
-  static UrlMatcher forOneOf(Object object) {
+  static UrlMatcher forOneOf(URL baseUrl, Object object) {
     if (object == null) {
       return UrlMatcher.any();
     }
     if (object instanceof String) {
-      return new UrlMatcher((String) object);
+      return new UrlMatcher(baseUrl, (String) object);
     }
     if (object instanceof Pattern) {
       return new UrlMatcher((Pattern) object);
@@ -52,8 +54,19 @@ class UrlMatcher {
     throw new PlaywrightException("Url must be String, Pattern or Predicate<String>, found: " + object.getClass().getTypeName());
   }
 
-  UrlMatcher(String url) {
-    this(url, toPredicate(Pattern.compile(globToRegex(url))).or(s -> url == null || url.equals(s)));
+  private static String resolveUrl(URL baseUrl, String spec) {
+    if (baseUrl == null) {
+      return spec;
+    }
+    try {
+      return new URL(baseUrl, spec).toString();
+    } catch (MalformedURLException e) {
+      return spec;
+    }
+  }
+
+  UrlMatcher(URL base, String url) {
+    this(url, toPredicate(Pattern.compile(globToRegex(resolveUrl(base, url)))).or(s -> url == null || url.equals(s)));
   }
 
   UrlMatcher(Pattern pattern) {

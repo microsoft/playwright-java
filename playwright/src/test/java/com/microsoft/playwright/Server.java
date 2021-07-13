@@ -189,6 +189,9 @@ public class Server implements HttpHandler {
     if (csp.containsKey(path)) {
       exchange.getResponseHeaders().add("Content-Security-Policy", csp.get(path));
     }
+    if ("/".equals(path)) {
+      path = "/index.html";
+    }
     File file = new File(resourcesDir, path.substring(1));
     if (!file.exists()) {
       exchange.sendResponseHeaders(404, 0);

@@ -716,7 +716,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Frame frameByUrl(String glob) {
-    return frameFor(new UrlMatcher(glob));
+    return frameFor(new UrlMatcher(browserContext.baseUrl, glob));
   }
 
   @Override
@@ -931,7 +931,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void route(String url, Consumer<Route> handler) {
-    route(new UrlMatcher(url), handler);
+    route(new UrlMatcher(browserContext.baseUrl, url), handler);
   }
 
   @Override
@@ -1139,7 +1139,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void unroute(String url, Consumer<Route> handler) {
-    unroute(new UrlMatcher(url), handler);
+    unroute(new UrlMatcher(browserContext.baseUrl, url), handler);
   }
 
   @Override
@@ -1276,7 +1276,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Request waitForRequest(String urlGlob, WaitForRequestOptions options, Runnable code) {
-    return waitForRequest(toRequestPredicate(new UrlMatcher(urlGlob)), options, code);
+    return waitForRequest(toRequestPredicate(new UrlMatcher(browserContext.baseUrl, urlGlob)), options, code);
   }
 
   @Override
@@ -1325,7 +1325,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Response waitForResponse(String urlGlob, WaitForResponseOptions options, Runnable code) {
-    return waitForResponse(toResponsePredicate(new UrlMatcher(urlGlob)), options, code);
+    return waitForResponse(toResponsePredicate(new UrlMatcher(browserContext.baseUrl, urlGlob)), options, code);
   }
 
   @Override
@@ -1367,7 +1367,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void waitForURL(String url, WaitForURLOptions options) {
-    waitForURL(new UrlMatcher(url), options);
+    waitForURL(new UrlMatcher(browserContext.baseUrl, url), options);
   }
 
   @Override
