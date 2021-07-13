@@ -885,7 +885,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
     List<Waitable<Response>> waitables = new ArrayList<>();
     if (matcher == null) {
-      matcher = UrlMatcher.forOneOf(options.url);
+      matcher = UrlMatcher.forOneOf(page.context().baseUrl, options.url);
     }
     waitables.add(new WaitForNavigationHelper(matcher, convertViaJson(options.waitUntil, LoadState.class)));
     waitables.add(page.createWaitForCloseHelper());
@@ -930,7 +930,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void waitForURL(String url, WaitForURLOptions options) {
-    waitForURL(new UrlMatcher(url), options);
+    waitForURL(new UrlMatcher(page.context().baseUrl, url), options);
   }
 
   @Override

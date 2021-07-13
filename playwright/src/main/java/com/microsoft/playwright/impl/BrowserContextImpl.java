@@ -26,6 +26,8 @@ import com.microsoft.playwright.options.FunctionCallback;
 import com.microsoft.playwright.options.Geolocation;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -53,6 +55,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
   final TimeoutSettings timeoutSettings = new TimeoutSettings();
   Path videosDir;
+  URL baseUrl;
 
   enum EventType {
     CLOSE,
@@ -71,6 +74,14 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       browser = null;
     }
     this.tracing = new TracingImpl(this);
+  }
+
+  void setBaseUrl(String spec) {
+    try {
+      this.baseUrl = new URL(spec);
+    } catch (MalformedURLException e) {
+      this.baseUrl = null;
+    }
   }
 
   @Override
@@ -307,7 +318,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void route(String url, Consumer<Route> handler) {
-    route(new UrlMatcher(url), handler);
+    route(new UrlMatcher(this.baseUrl, url), handler);
   }
 
   @Override
@@ -406,7 +417,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void unroute(String url, Consumer<Route> handler) {
-    unroute(new UrlMatcher(url), handler);
+    unroute(new UrlMatcher(this.baseUrl, url), handler);
   }
 
   @Override

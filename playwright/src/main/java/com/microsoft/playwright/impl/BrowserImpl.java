@@ -171,6 +171,9 @@ class BrowserImpl extends ChannelOwner implements Browser {
     if (options.recordVideoDir != null) {
       context.videosDir = options.recordVideoDir;
     }
+    if (options.baseURL != null) {
+      context.setBaseUrl(options.baseURL);
+    }
     contexts.add(context);
     return context;
   }
