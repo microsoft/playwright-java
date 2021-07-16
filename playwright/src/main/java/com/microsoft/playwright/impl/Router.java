@@ -37,7 +37,7 @@ class Router {
   }
 
   void add(UrlMatcher matcher, Consumer<Route> handler) {
-    routes.add(new RouteInfo(matcher, handler));
+    routes.add(0, new RouteInfo(matcher, handler));
   }
 
   void remove(UrlMatcher matcher, Consumer<Route> handler) {
