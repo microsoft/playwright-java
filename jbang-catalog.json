@@ -1,0 +1,10 @@
+{
+  "catalogs": {},
+  "aliases": {
+    "playwright": {
+      "script-ref": "scripts/playwright.java",
+      "description": "Playwright lets you automate Chromium, Firefox and Webkit with a single API. \nWith this cli you can install, trace, generate pdf and screenshots and more.\nExample on how to record and run a script:\n```\n  jbang playwright@microsoft/playwright-java codegen -o Example.java`\n  jbang --deps com.microsoft.playwright:playwright:RELEASE Example.java\n```"
+    }
+  },
+  "templates": {}
+}
