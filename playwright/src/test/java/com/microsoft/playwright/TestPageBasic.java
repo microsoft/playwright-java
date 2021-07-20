@@ -291,4 +291,10 @@ public class TestPageBasic extends TestBase {
     }
   }
 
+  @Test
+  void frameDragAndDropShouldWork() {
+    page.navigate(server.PREFIX + "/drag-n-drop.html");
+    page.dragAndDrop("#source", "#target");
+    assertEquals(true, page.evalOnSelector("#target", "target => target.contains(document.querySelector('#source'))"));
+  }
 }

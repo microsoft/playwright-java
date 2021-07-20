@@ -409,6 +409,21 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
+  public void dragAndDrop(String source, String target, DragAndDropOptions options) {
+    withLogging("Frame.dragAndDrop", () -> dragAndDropImpl(source, target, options));
+  }
+
+  void dragAndDropImpl(String source, String target, DragAndDropOptions options) {
+    if (options == null) {
+      options = new DragAndDropOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("source", source);
+    params.addProperty("target", target);
+    sendMessage("dragAndDrop", params);
+  }
+
+  @Override
   public String innerHTML(String selector, InnerHTMLOptions options) {
     return withLogging("Frame.innerHTML", () -> innerHTMLImpl(selector, options));
   }
@@ -519,24 +534,30 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public boolean isHidden(String selector) {
-    return withLogging("Page.isHidden", () -> isHiddenImpl(selector));
+  public boolean isHidden(String selector, IsHiddenOptions options) {
+    return withLogging("Page.isHidden", () -> isHiddenImpl(selector, options));
   }
 
-  boolean isHiddenImpl(String selector) {
-    JsonObject params = new JsonObject();
+  boolean isHiddenImpl(String selector, IsHiddenOptions options) {
+    if (options == null) {
+      options = new IsHiddenOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonObject json = sendMessage("isHidden", params).getAsJsonObject();
     return json.get("value").getAsBoolean();
   }
 
   @Override
-  public boolean isVisible(String selector) {
-    return withLogging("Page.isVisible", () -> isVisibleImpl(selector));
+  public boolean isVisible(String selector, IsVisibleOptions options) {
+    return withLogging("Page.isVisible", () -> isVisibleImpl(selector, options));
   }
 
-  boolean isVisibleImpl(String selector) {
-    JsonObject params = new JsonObject();
+  boolean isVisibleImpl(String selector, IsVisibleOptions options) {
+    if (options == null) {
+      options = new IsVisibleOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonObject json = sendMessage("isVisible", params).getAsJsonObject();
     return json.get("value").getAsBoolean();
