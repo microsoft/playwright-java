@@ -358,6 +358,48 @@ public interface Frame {
       return this;
     }
   }
+  class DragAndDropOptions {
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
+    public Boolean force;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
+    public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public Double timeout;
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public Boolean trial;
+
+    public DragAndDropOptions setForce(boolean force) {
+      this.force = force;
+      return this;
+    }
+    public DragAndDropOptions setNoWaitAfter(boolean noWaitAfter) {
+      this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    public DragAndDropOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+    public DragAndDropOptions setTrial(boolean trial) {
+      this.trial = trial;
+      return this;
+    }
+  }
   class FillOptions {
     /**
      * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
@@ -592,6 +634,32 @@ public interface Frame {
     public Double timeout;
 
     public IsEnabledOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsHiddenOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public Double timeout;
+
+    public IsHiddenOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsVisibleOptions {
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public Double timeout;
+
+    public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1051,8 +1119,8 @@ public interface Frame {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void check(String selector) {
     check(selector, null);
@@ -1074,8 +1142,8 @@ public interface Frame {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void check(String selector, CheckOptions options);
   List<Frame> childFrames();
@@ -1093,8 +1161,8 @@ public interface Frame {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void click(String selector) {
     click(selector, null);
@@ -1113,8 +1181,8 @@ public interface Frame {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void click(String selector, ClickOptions options);
   /**
@@ -1138,8 +1206,8 @@ public interface Frame {
    *
    * <p> <strong>NOTE:</strong> {@code frame.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void dblclick(String selector) {
     dblclick(selector, null);
@@ -1161,8 +1229,8 @@ public interface Frame {
    *
    * <p> <strong>NOTE:</strong> {@code frame.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void dblclick(String selector, DblclickOptions options);
   /**
@@ -1196,8 +1264,8 @@ public interface Frame {
    * frame.dispatchEvent("#source", "dragstart", arg);
    * }</pre>
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    * @param eventInit Optional event-specific initialization properties.
    */
@@ -1235,8 +1303,8 @@ public interface Frame {
    * frame.dispatchEvent("#source", "dragstart", arg);
    * }</pre>
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    */
   default void dispatchEvent(String selector, String type) {
@@ -1273,12 +1341,16 @@ public interface Frame {
    * frame.dispatchEvent("#source", "dragstart", arg);
    * }</pre>
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    * @param eventInit Optional event-specific initialization properties.
    */
   void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options);
+  default void dragAndDrop(String source, String target) {
+    dragAndDrop(source, target, null);
+  }
+  void dragAndDrop(String source, String target, DragAndDropOptions options);
   /**
    * Returns the return value of {@code expression}.
    *
@@ -1523,8 +1595,8 @@ public interface Frame {
    *
    * <p> To send fine-grained keyboard events, use {@link Frame#type Frame.type()}.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
   default void fill(String selector, String value) {
@@ -1542,8 +1614,8 @@ public interface Frame {
    *
    * <p> To send fine-grained keyboard events, use {@link Frame#type Frame.type()}.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
   void fill(String selector, String value, FillOptions options);
@@ -1551,8 +1623,8 @@ public interface Frame {
    * This method fetches an element with {@code selector} and focuses it. If there's no element matching {@code selector}, the method
    * waits until a matching element appears in the DOM.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void focus(String selector) {
     focus(selector, null);
@@ -1561,8 +1633,8 @@ public interface Frame {
    * This method fetches an element with {@code selector} and focuses it. If there's no element matching {@code selector}, the method
    * waits until a matching element appears in the DOM.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void focus(String selector, FocusOptions options);
   /**
@@ -1582,8 +1654,8 @@ public interface Frame {
   /**
    * Returns element attribute value.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param name Attribute name to get the value for.
    */
   default String getAttribute(String selector, String name) {
@@ -1592,8 +1664,8 @@ public interface Frame {
   /**
    * Returns element attribute value.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param name Attribute name to get the value for.
    */
   String getAttribute(String selector, String name, GetAttributeOptions options);
@@ -1665,8 +1737,8 @@ public interface Frame {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void hover(String selector) {
     hover(selector, null);
@@ -1685,15 +1757,15 @@ public interface Frame {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void hover(String selector, HoverOptions options);
   /**
    * Returns {@code element.innerHTML}.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default String innerHTML(String selector) {
     return innerHTML(selector, null);
@@ -1701,15 +1773,15 @@ public interface Frame {
   /**
    * Returns {@code element.innerHTML}.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   String innerHTML(String selector, InnerHTMLOptions options);
   /**
    * Returns {@code element.innerText}.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default String innerText(String selector) {
     return innerText(selector, null);
@@ -1717,15 +1789,15 @@ public interface Frame {
   /**
    * Returns {@code element.innerText}.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   String innerText(String selector, InnerTextOptions options);
   /**
    * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} element. Throws for non-input elements.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default String inputValue(String selector) {
     return inputValue(selector, null);
@@ -1733,15 +1805,15 @@ public interface Frame {
   /**
    * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} element. Throws for non-input elements.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   String inputValue(String selector, InputValueOptions options);
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default boolean isChecked(String selector) {
     return isChecked(selector, null);
@@ -1749,8 +1821,8 @@ public interface Frame {
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   boolean isChecked(String selector, IsCheckedOptions options);
   /**
@@ -1761,8 +1833,8 @@ public interface Frame {
    * Returns whether the element is disabled, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default boolean isDisabled(String selector) {
     return isDisabled(selector, null);
@@ -1771,15 +1843,15 @@ public interface Frame {
    * Returns whether the element is disabled, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   boolean isDisabled(String selector, IsDisabledOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#editable">editable</a>.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default boolean isEditable(String selector) {
     return isEditable(selector, null);
@@ -1787,15 +1859,15 @@ public interface Frame {
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#editable">editable</a>.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   boolean isEditable(String selector, IsEditableOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default boolean isEnabled(String selector) {
     return isEnabled(selector, null);
@@ -1803,8 +1875,8 @@ public interface Frame {
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   boolean isEnabled(String selector, IsEnabledOptions options);
   /**
@@ -1812,18 +1884,39 @@ public interface Frame {
    * href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.  {@code selector} that does not match any elements
    * is considered hidden.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
-  boolean isHidden(String selector);
+  default boolean isHidden(String selector) {
+    return isHidden(selector, null);
+  }
+  /**
+   * Returns whether the element is hidden, the opposite of <a
+   * href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.  {@code selector} that does not match any elements
+   * is considered hidden.
+   *
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   */
+  boolean isHidden(String selector, IsHiddenOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>. {@code selector}
    * that does not match any elements is considered not visible.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
-  boolean isVisible(String selector);
+  default boolean isVisible(String selector) {
+    return isVisible(selector, null);
+  }
+  /**
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>. {@code selector}
+   * that does not match any elements is considered not visible.
+   *
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   */
+  boolean isVisible(String selector, IsVisibleOptions options);
   /**
    * Returns frame's name attribute as specified in the tag.
    *
@@ -1859,8 +1952,8 @@ public interface Frame {
    * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with the
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
   default void press(String selector, String key) {
@@ -1885,8 +1978,8 @@ public interface Frame {
    * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with the
    * modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
   void press(String selector, String key, PressOptions options);
@@ -2293,8 +2386,8 @@ public interface Frame {
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void setInputFiles(String selector, Path files) {
     setInputFiles(selector, files, null);
@@ -2306,8 +2399,8 @@ public interface Frame {
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void setInputFiles(String selector, Path files, SetInputFilesOptions options);
   /**
@@ -2317,8 +2410,8 @@ public interface Frame {
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void setInputFiles(String selector, Path[] files) {
     setInputFiles(selector, files, null);
@@ -2330,8 +2423,8 @@ public interface Frame {
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void setInputFiles(String selector, Path[] files, SetInputFilesOptions options);
   /**
@@ -2341,8 +2434,8 @@ public interface Frame {
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void setInputFiles(String selector, FilePayload files) {
     setInputFiles(selector, files, null);
@@ -2354,8 +2447,8 @@ public interface Frame {
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void setInputFiles(String selector, FilePayload files, SetInputFilesOptions options);
   /**
@@ -2365,8 +2458,8 @@ public interface Frame {
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void setInputFiles(String selector, FilePayload[] files) {
     setInputFiles(selector, files, null);
@@ -2378,8 +2471,8 @@ public interface Frame {
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
    * are resolved relative to the the current working directory. For empty array, clears the selected files.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void setInputFiles(String selector, FilePayload[] files, SetInputFilesOptions options);
   /**
@@ -2398,8 +2491,8 @@ public interface Frame {
    *
    * <p> <strong>NOTE:</strong> {@code frame.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void tap(String selector) {
     tap(selector, null);
@@ -2420,15 +2513,15 @@ public interface Frame {
    *
    * <p> <strong>NOTE:</strong> {@code frame.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void tap(String selector, TapOptions options);
   /**
    * Returns {@code element.textContent}.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default String textContent(String selector) {
     return textContent(selector, null);
@@ -2436,8 +2529,8 @@ public interface Frame {
   /**
    * Returns {@code element.textContent}.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   String textContent(String selector, TextContentOptions options);
   /**
@@ -2456,8 +2549,8 @@ public interface Frame {
    * frame.type("#mytextarea", "World", new Frame.TypeOptions().setDelay(100));
    * }</pre>
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param text A text to type into a focused element.
    */
   default void type(String selector, String text) {
@@ -2475,8 +2568,8 @@ public interface Frame {
    * frame.type("#mytextarea", "World", new Frame.TypeOptions().setDelay(100));
    * }</pre>
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    * @param text A text to type into a focused element.
    */
   void type(String selector, String text, TypeOptions options);
@@ -2497,8 +2590,8 @@ public interface Frame {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   default void uncheck(String selector) {
     uncheck(selector, null);
@@ -2520,8 +2613,8 @@ public interface Frame {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * @param selector A selector to search for element. If there are multiple elements satisfying the selector, the first will be used. See <a
-   * href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
    */
   void uncheck(String selector, UncheckOptions options);
   /**

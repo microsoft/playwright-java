@@ -23,8 +23,7 @@ import java.util.*;
 /**
  * {@code Download} objects are dispatched by page via the {@link Page#onDownload Page.onDownload()} event.
  *
- * <p> If {@code downloadsPath} isn't specified, all the downloaded files belonging to the browser context are deleted when the
- * browser context is closed. And all downloaded files are deleted when the browser closes.
+ * <p> All the downloaded files belonging to the browser context are deleted when the browser context is closed.
  *
  * <p> Download event is emitted once the download starts. Download path becomes available once download completes:
  * <pre>{@code

@@ -796,6 +796,12 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public void dragAndDrop(String source, String target, DragAndDropOptions options) {
+    withLogging("Page.dragAndDrop", () ->
+      mainFrame.dragAndDropImpl(source, target, convertViaJson(options, Frame.DragAndDropOptions.class)));
+  }
+
+  @Override
   public String innerHTML(String selector, InnerHTMLOptions options) {
     return withLogging("Page.innerHTML",
       () -> mainFrame.innerHTMLImpl(selector, convertViaJson(options, Frame.InnerHTMLOptions.class)));
@@ -843,15 +849,15 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public boolean isHidden(String selector) {
+  public boolean isHidden(String selector, IsHiddenOptions options) {
     return withLogging("Page.isHidden",
-      () -> mainFrame.isHiddenImpl(selector));
+      () -> mainFrame.isHiddenImpl(selector, convertViaJson(options, Frame.IsHiddenOptions.class)));
   }
 
   @Override
-  public boolean isVisible(String selector) {
+  public boolean isVisible(String selector, IsVisibleOptions options) {
     return withLogging("Page.isVisible",
-      () -> mainFrame.isVisibleImpl(selector));
+      () -> mainFrame.isVisibleImpl(selector, convertViaJson(options, Frame.IsVisibleOptions.class)));
   }
 
   @Override
