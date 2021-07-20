@@ -102,10 +102,6 @@ public class TestWebSocket extends TestBase {
       "    ws.addEventListener('message', () => { ws.close(); });\n" +
       "  }", webSocketServer.getPort());
     waitForCondition(socketClosed);
-    if (isWebKit()) {
-      // TODO: there is intermittent <received<A+g=> message in WebKit.
-      log.remove("received<A+g=>");
-    }
     assertEquals("open", log.get(0), "Events: " + log);
     assertEquals("close", log.get(3), "Events: " + log);
     log.sort(String::compareTo);

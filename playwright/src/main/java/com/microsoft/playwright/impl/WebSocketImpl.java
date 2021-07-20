@@ -178,14 +178,22 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
   void handleEvent(String event, JsonObject parameters) {
     switch (event) {
       case "frameSent": {
+        int opCode = parameters.get("opcode").getAsInt();
+        if (opCode != 1 && opCode != 2) {
+          break;
+        }
         WebSocketFrameImpl WebSocketFrame = new WebSocketFrameImpl(
-          parameters.get("data").getAsString(), parameters.get("opcode").getAsInt() == 2);
+          parameters.get("data").getAsString(), opCode == 2);
         listeners.notify(EventType.FRAMESENT, WebSocketFrame);
         break;
       }
       case "frameReceived": {
+        int opCode = parameters.get("opcode").getAsInt();
+        if (opCode != 1 && opCode != 2) {
+          break;
+        }
         WebSocketFrameImpl WebSocketFrame = new WebSocketFrameImpl(
-          parameters.get("data").getAsString(), parameters.get("opcode").getAsInt() == 2);
+          parameters.get("data").getAsString(), opCode == 2);
         listeners.notify(EventType.FRAMERECEIVED, WebSocketFrame);
         break;
       }
