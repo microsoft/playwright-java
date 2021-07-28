@@ -143,6 +143,11 @@ public interface Frame {
      */
     public Position position;
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
@@ -168,6 +173,10 @@ public interface Frame {
     }
     public CheckOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    public CheckOptions setStrict(boolean strict) {
+      this.strict = strict;
       return this;
     }
     public CheckOptions setTimeout(double timeout) {
@@ -214,6 +223,11 @@ public interface Frame {
      */
     public Position position;
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
@@ -257,6 +271,10 @@ public interface Frame {
       this.position = position;
       return this;
     }
+    public ClickOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public ClickOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -297,6 +315,11 @@ public interface Frame {
      */
     public Position position;
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
@@ -336,6 +359,10 @@ public interface Frame {
       this.position = position;
       return this;
     }
+    public DblclickOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public DblclickOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -347,12 +374,21 @@ public interface Frame {
   }
   class DispatchEventOptions {
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
+    public DispatchEventOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public DispatchEventOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -370,6 +406,11 @@ public interface Frame {
      * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
@@ -391,12 +432,28 @@ public interface Frame {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    public DragAndDropOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public DragAndDropOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
     public DragAndDropOptions setTrial(boolean trial) {
       this.trial = trial;
+      return this;
+    }
+  }
+  class EvalOnSelectorOptions {
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+
+    public EvalOnSelectorOptions setStrict(boolean strict) {
+      this.strict = strict;
       return this;
     }
   }
@@ -413,6 +470,11 @@ public interface Frame {
      */
     public Boolean noWaitAfter;
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
@@ -427,6 +489,10 @@ public interface Frame {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    public FillOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public FillOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -434,18 +500,10 @@ public interface Frame {
   }
   class FocusOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
      */
-    public Double timeout;
-
-    public FocusOptions setTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  class GetAttributeOptions {
+    public Boolean strict;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
@@ -453,6 +511,32 @@ public interface Frame {
      */
     public Double timeout;
 
+    public FocusOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
+    public FocusOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class GetAttributeOptions {
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public Double timeout;
+
+    public GetAttributeOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public GetAttributeOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -511,6 +595,11 @@ public interface Frame {
      */
     public Position position;
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
@@ -538,6 +627,10 @@ public interface Frame {
       this.position = position;
       return this;
     }
+    public HoverOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public HoverOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -549,12 +642,21 @@ public interface Frame {
   }
   class InnerHTMLOptions {
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
+    public InnerHTMLOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public InnerHTMLOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -562,12 +664,21 @@ public interface Frame {
   }
   class InnerTextOptions {
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
+    public InnerTextOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public InnerTextOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -575,12 +686,21 @@ public interface Frame {
   }
   class InputValueOptions {
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
+    public InputValueOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public InputValueOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -588,12 +708,21 @@ public interface Frame {
   }
   class IsCheckedOptions {
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
+    public IsCheckedOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public IsCheckedOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -601,12 +730,21 @@ public interface Frame {
   }
   class IsDisabledOptions {
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
+    public IsDisabledOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public IsDisabledOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -614,12 +752,21 @@ public interface Frame {
   }
   class IsEditableOptions {
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
+    public IsEditableOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public IsEditableOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -627,12 +774,21 @@ public interface Frame {
   }
   class IsEnabledOptions {
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
+    public IsEnabledOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public IsEnabledOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -640,18 +796,10 @@ public interface Frame {
   }
   class IsHiddenOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
      */
-    public Double timeout;
-
-    public IsHiddenOptions setTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
-  class IsVisibleOptions {
+    public Boolean strict;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
@@ -659,6 +807,32 @@ public interface Frame {
      */
     public Double timeout;
 
+    public IsHiddenOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
+    public IsHiddenOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsVisibleOptions {
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public Double timeout;
+
+    public IsVisibleOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -676,6 +850,11 @@ public interface Frame {
      */
     public Boolean noWaitAfter;
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
@@ -690,8 +869,24 @@ public interface Frame {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    public PressOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public PressOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+  }
+  class QuerySelectorOptions {
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+
+    public QuerySelectorOptions setStrict(boolean strict) {
+      this.strict = strict;
       return this;
     }
   }
@@ -708,6 +903,11 @@ public interface Frame {
      */
     public Boolean noWaitAfter;
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
@@ -720,6 +920,10 @@ public interface Frame {
     }
     public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    public SelectOptionOptions setStrict(boolean strict) {
+      this.strict = strict;
       return this;
     }
     public SelectOptionOptions setTimeout(double timeout) {
@@ -762,6 +966,11 @@ public interface Frame {
      */
     public Boolean noWaitAfter;
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
@@ -770,6 +979,10 @@ public interface Frame {
 
     public SetInputFilesOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    public SetInputFilesOptions setStrict(boolean strict) {
+      this.strict = strict;
       return this;
     }
     public SetInputFilesOptions setTimeout(double timeout) {
@@ -799,6 +1012,11 @@ public interface Frame {
      * element.
      */
     public Position position;
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
@@ -831,6 +1049,10 @@ public interface Frame {
       this.position = position;
       return this;
     }
+    public TapOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public TapOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -842,12 +1064,21 @@ public interface Frame {
   }
   class TextContentOptions {
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
+    public TextContentOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
     public TextContentOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -865,6 +1096,11 @@ public interface Frame {
      */
     public Boolean noWaitAfter;
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
@@ -877,6 +1113,10 @@ public interface Frame {
     }
     public TypeOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    public TypeOptions setStrict(boolean strict) {
+      this.strict = strict;
       return this;
     }
     public TypeOptions setTimeout(double timeout) {
@@ -901,6 +1141,11 @@ public interface Frame {
      * element.
      */
     public Position position;
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
@@ -927,6 +1172,10 @@ public interface Frame {
     }
     public UncheckOptions setPosition(Position position) {
       this.position = position;
+      return this;
+    }
+    public UncheckOptions setStrict(boolean strict) {
+      this.strict = strict;
       return this;
     }
     public UncheckOptions setTimeout(double timeout) {
@@ -1030,6 +1279,11 @@ public interface Frame {
      */
     public WaitForSelectorState state;
     /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
      * Page.setDefaultTimeout()} methods.
@@ -1038,6 +1292,10 @@ public interface Frame {
 
     public WaitForSelectorOptions setState(WaitForSelectorState state) {
       this.state = state;
+      return this;
+    }
+    public WaitForSelectorOptions setStrict(boolean strict) {
+      this.strict = strict;
       return this;
     }
     public WaitForSelectorOptions setTimeout(double timeout) {
@@ -1373,6 +1631,33 @@ public interface Frame {
    * details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
+   * @param arg Optional argument to pass to {@code expression}.
+   */
+  default Object evalOnSelector(String selector, String expression, Object arg) {
+    return evalOnSelector(selector, expression, arg, null);
+  }
+  /**
+   * Returns the return value of {@code expression}.
+   *
+   * <p> The method finds an element matching the specified selector within the frame and passes it as a first argument to
+   * {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If
+   * no elements match the selector, the method throws an error.
+   *
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Frame#evalOnSelector Frame.evalOnSelector()} would wait for the promise to resolve and return its value.
+   *
+   * <p> Examples:
+   * <pre>{@code
+   * String searchValue = (String) frame.evalOnSelector("#search", "el => el.value");
+   * String preloadHref = (String) frame.evalOnSelector("link[rel=preload]", "el => el.href");
+   * String html = (String) frame.evalOnSelector(".main-container", "(e, suffix) => e.outerHTML + suffix", "hello");
+   * }</pre>
+   *
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
+   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
+   * as a function. Otherwise, evaluated as an expression.
    */
   default Object evalOnSelector(String selector, String expression) {
     return evalOnSelector(selector, expression, null);
@@ -1401,7 +1686,7 @@ public interface Frame {
    * as a function. Otherwise, evaluated as an expression.
    * @param arg Optional argument to pass to {@code expression}.
    */
-  Object evalOnSelector(String selector, String expression, Object arg);
+  Object evalOnSelector(String selector, String expression, Object arg, EvalOnSelectorOptions options);
   /**
    * Returns the return value of {@code expression}.
    *
@@ -1918,6 +2203,17 @@ public interface Frame {
    */
   boolean isVisible(String selector, IsVisibleOptions options);
   /**
+   * The method returns an element locator that can be used to perform actions in the frame. Locator is resolved to the
+   * element immediately before performing an action, so a series of actions on the same locator can in fact be performed on
+   * different DOM elements. That would happen if the DOM structure between those actions has changed.
+   *
+   * <p> Note that locator always implies visibility, so it will always be locating visible elements.
+   *
+   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
+   * selectors</a> for more details.
+   */
+  Locator locator(String selector);
+  /**
    * Returns frame's name attribute as specified in the tag.
    *
    * <p> If the name is empty, returns the id attribute instead.
@@ -1993,7 +2289,20 @@ public interface Frame {
    * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
    * details.
    */
-  ElementHandle querySelector(String selector);
+  default ElementHandle querySelector(String selector) {
+    return querySelector(selector, null);
+  }
+  /**
+   * Returns the ElementHandle pointing to the frame element.
+   *
+   * <p> The method finds an element matching the specified selector within the frame. See <a
+   * href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If no elements match the
+   * selector, returns {@code null}.
+   *
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * details.
+   */
+  ElementHandle querySelector(String selector, QuerySelectorOptions options);
   /**
    * Returns the ElementHandles pointing to the frame elements.
    *

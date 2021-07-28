@@ -548,8 +548,9 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public ElementHandle querySelector(String selector) {
-    return withLogging("Page.querySelector", () -> mainFrame.querySelectorImpl(selector));
+  public ElementHandle querySelector(String selector, QuerySelectorOptions options) {
+    return withLogging("Page.querySelector", () -> mainFrame.querySelectorImpl(
+      selector, convertViaJson(options, Frame.QuerySelectorOptions.class)));
   }
 
   @Override
@@ -558,8 +559,9 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Object evalOnSelector(String selector, String pageFunction, Object arg) {
-    return withLogging("Page.evalOnSelector", () -> mainFrame.evalOnSelectorImpl(selector, pageFunction, arg));
+  public Object evalOnSelector(String selector, String pageFunction, Object arg, EvalOnSelectorOptions options) {
+    return withLogging("Page.evalOnSelector", () -> mainFrame.evalOnSelectorImpl(
+      selector, pageFunction, arg, convertViaJson(options, Frame.EvalOnSelectorOptions.class)));
   }
 
   @Override
@@ -863,6 +865,11 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public Keyboard keyboard() {
     return keyboard;
+  }
+
+  @Override
+  public Locator locator(String selector) {
+    return mainFrame.locator(selector);
   }
 
   @Override
