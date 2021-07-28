@@ -71,12 +71,15 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public ElementHandle querySelector(String selector) {
-    return withLogging("Frame.querySelector", () -> querySelectorImpl(selector));
+  public ElementHandle querySelector(String selector, QuerySelectorOptions options) {
+    return withLogging("Frame.querySelector", () -> querySelectorImpl(selector, options));
   }
 
-  ElementHandleImpl querySelectorImpl(String selector) {
-    JsonObject params = new JsonObject();
+  ElementHandleImpl querySelectorImpl(String selector, QuerySelectorOptions options) {
+    if (options == null) {
+      options = new QuerySelectorOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     JsonElement json = sendMessage("querySelector", params);
     JsonObject element = json.getAsJsonObject().getAsJsonObject("element");
@@ -134,12 +137,15 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public Object evalOnSelector(String selector, String pageFunction, Object arg) {
-    return withLogging("Frame.evalOnSelector", () -> evalOnSelectorImpl(selector, pageFunction, arg));
+  public Object evalOnSelector(String selector, String pageFunction, Object arg, EvalOnSelectorOptions options) {
+    return withLogging("Frame.evalOnSelector", () -> evalOnSelectorImpl(selector, pageFunction, arg, options));
   }
 
-  Object evalOnSelectorImpl(String selector, String pageFunction, Object arg) {
-    JsonObject params = new JsonObject();
+  Object evalOnSelectorImpl(String selector, String pageFunction, Object arg, EvalOnSelectorOptions options) {
+    if (options == null) {
+      options = new EvalOnSelectorOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     params.addProperty("expression", pageFunction);
     params.add("arg", gson().toJsonTree(serializeArgument(arg)));
@@ -551,6 +557,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
   @Override
   public boolean isVisible(String selector, IsVisibleOptions options) {
     return withLogging("Page.isVisible", () -> isVisibleImpl(selector, options));
+  }
+
+  @Override
+  public Locator locator(String selector) {
+    return new LoccatorImpl(this, selector);
   }
 
   boolean isVisibleImpl(String selector, IsVisibleOptions options) {
