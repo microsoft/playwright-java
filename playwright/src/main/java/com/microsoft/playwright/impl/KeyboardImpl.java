@@ -21,7 +21,7 @@ import com.microsoft.playwright.Keyboard;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
-class KeyboardImpl extends LoggingSupport implements Keyboard {
+class KeyboardImpl implements Keyboard {
   private final ChannelOwner page;
 
   KeyboardImpl(ChannelOwner page) {
@@ -30,7 +30,7 @@ class KeyboardImpl extends LoggingSupport implements Keyboard {
 
   @Override
   public void down(String key) {
-    withLogging("Keyboard.down", () -> {
+    page.withLogging("Keyboard.down", () -> {
       JsonObject params = new JsonObject();
       params.addProperty("key", key);
       page.sendMessage("keyboardDown", params);
@@ -39,7 +39,7 @@ class KeyboardImpl extends LoggingSupport implements Keyboard {
 
   @Override
   public void insertText(String text) {
-    withLogging("Keyboard.insertText", () -> {
+    page.withLogging("Keyboard.insertText", () -> {
       JsonObject params = new JsonObject();
       params.addProperty("text", text);
       page.sendMessage("keyboardInsertText", params);
@@ -48,7 +48,7 @@ class KeyboardImpl extends LoggingSupport implements Keyboard {
 
   @Override
   public void press(String key, PressOptions options) {
-    withLogging("Keyboard.press", () -> pressImpl(key, options));
+    page.withLogging("Keyboard.press", () -> pressImpl(key, options));
   }
 
   private void pressImpl(String key, PressOptions options) {
@@ -62,7 +62,7 @@ class KeyboardImpl extends LoggingSupport implements Keyboard {
 
     @Override
   public void type(String text, TypeOptions options) {
-    withLogging("Keyboard.type", () -> typeImpl(text, options));
+    page.withLogging("Keyboard.type", () -> typeImpl(text, options));
   }
 
   private void typeImpl(String text, TypeOptions options) {
@@ -76,7 +76,7 @@ class KeyboardImpl extends LoggingSupport implements Keyboard {
 
   @Override
   public void up(String key) {
-    withLogging("Keyboard.up", () -> {
+    page.withLogging("Keyboard.up", () -> {
       JsonObject params = new JsonObject();
       params.addProperty("key", key);
       page.sendMessage("keyboardUp", params);

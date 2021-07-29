@@ -24,7 +24,7 @@ import java.nio.file.Paths;
 
 import static java.util.Arrays.asList;
 
-class VideoImpl extends LoggingSupport implements Video {
+class VideoImpl implements Video {
   private final PageImpl page;
   private final WaitableResult<ArtifactImpl> waitableArtifact = new WaitableResult<>();
   private final boolean isRemote;
@@ -47,7 +47,7 @@ class VideoImpl extends LoggingSupport implements Video {
 
   @Override
   public void delete() {
-    withLogging("Video.delete", () -> {
+    page.withLogging("Video.delete", () -> {
       try {
         waitForArtifact().delete();
       } catch (PlaywrightException e) {
@@ -57,7 +57,7 @@ class VideoImpl extends LoggingSupport implements Video {
 
   @Override
   public Path path() {
-    return withLogging("Video.path", () -> {
+    return page.withLogging("Video.path", () -> {
       if (isRemote) {
         throw new PlaywrightException("Path is not available when using browserType.connect(). Use saveAs() to save a local copy.");
       }
@@ -71,7 +71,7 @@ class VideoImpl extends LoggingSupport implements Video {
 
   @Override
   public void saveAs(Path path) {
-    withLogging("Video.saveAs", () -> {
+    page.withLogging("Video.saveAs", () -> {
       try {
         waitForArtifact().saveAs(path);
       } catch (PlaywrightException e) {
