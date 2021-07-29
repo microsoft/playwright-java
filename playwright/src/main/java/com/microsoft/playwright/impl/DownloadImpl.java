@@ -23,7 +23,7 @@ import com.microsoft.playwright.Page;
 import java.io.InputStream;
 import java.nio.file.Path;
 
-class DownloadImpl extends LoggingSupport implements Download {
+class DownloadImpl implements Download {
   private final PageImpl page;
   private final ArtifactImpl artifact;
   private final JsonObject initializer;
@@ -46,22 +46,22 @@ class DownloadImpl extends LoggingSupport implements Download {
 
   @Override
   public void cancel() {
-    withLogging("Download.cancel", () -> artifact.cancel());
+    page.withLogging("Download.cancel", () -> artifact.cancel());
   }
 
   @Override
   public InputStream createReadStream() {
-    return withLogging("Download.createReadStream", () -> artifact.createReadStream());
+    return page.withLogging("Download.createReadStream", () -> artifact.createReadStream());
   }
 
   @Override
   public void delete() {
-    withLogging("Download.delete", () -> artifact.delete());
+    page.withLogging("Download.delete", () -> artifact.delete());
   }
 
   @Override
   public String failure() {
-    return withLogging("Download.failure", () -> artifact.failure());
+    return page.withLogging("Download.failure", () -> artifact.failure());
   }
 
   @Override
@@ -71,11 +71,11 @@ class DownloadImpl extends LoggingSupport implements Download {
 
   @Override
   public Path path() {
-    return withLogging("Download.path", () -> artifact.pathAfterFinished());
+    return page.withLogging("Download.path", () -> artifact.pathAfterFinished());
   }
 
   @Override
   public void saveAs(Path path) {
-    withLogging("Download.saveAs", () -> artifact.saveAs(path));
+    page.withLogging("Download.saveAs", () -> artifact.saveAs(path));
   }
 }

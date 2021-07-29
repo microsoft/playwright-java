@@ -68,6 +68,7 @@ public class Connection {
   private int lastId = 0;
   private final Path srcDir;
   private final Map<Integer, WaitableResult<JsonElement>> callbacks = new HashMap<>();
+  private String apiName;
   private static final boolean isLogging;
   static {
     String debug = System.getenv("DEBUG");
@@ -92,6 +93,12 @@ public class Connection {
         throw new PlaywrightException("PLAYWRIGHT_JAVA_SRC environment variable points to non-existing location: '" + srcRoot + "'");
       }
     }
+  }
+
+  String setApiName(String name) {
+    String previous = apiName;
+    apiName = name;
+    return previous;
   }
 
   void close() throws IOException {
@@ -154,11 +161,14 @@ public class Connection {
     message.addProperty("guid", guid);
     message.addProperty("method", method);
     message.add("params", params);
+    JsonObject metadata = new JsonObject();
     if (srcDir != null) {
-      JsonObject metadata = new JsonObject();
       metadata.add("stack", currentStackTrace());
-      message.add("metadata", metadata);
     }
+    if (apiName != null) {
+      metadata.addProperty("apiName", apiName);
+    }
+    message.add("metadata", metadata);
     String messageString = gson().toJson(message);
     if (isLogging) {
       logWithTimestamp("SEND ► " + messageString);

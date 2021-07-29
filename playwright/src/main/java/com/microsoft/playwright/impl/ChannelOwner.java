@@ -69,9 +69,18 @@ class ChannelOwner extends LoggingSupport {
   }
 
   <T> T withWaitLogging(String apiName, Supplier<T> code) {
-    return super.withLogging(apiName, new WaitForEventLogger<>(this, apiName, code));
+    return withLogging(apiName, new WaitForEventLogger<>(this, apiName, code));
   }
 
+  @Override
+  <T> T withLogging(String apiName, Supplier<T> code) {
+    String previousApiName = connection.setApiName(apiName);
+    try {
+      return super.withLogging(apiName, code);
+    } finally {
+      connection.setApiName(previousApiName);
+    }
+  }
 
   WaitableResult<JsonElement> sendMessageAsync(String method, JsonObject params) {
     return connection.sendMessageAsync(guid, method, params);
