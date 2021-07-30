@@ -69,7 +69,7 @@ class ChannelOwner extends LoggingSupport {
   }
 
   <T> T withWaitLogging(String apiName, Supplier<T> code) {
-    return withLogging(apiName, new WaitForEventLogger<>(this, apiName, code));
+    return new WaitForEventLogger<>(this, apiName, code).get();
   }
 
   @Override
