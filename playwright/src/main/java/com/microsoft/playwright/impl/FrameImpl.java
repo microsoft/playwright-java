@@ -781,7 +781,10 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
-    withLogging("Frame.waitForLoadState", () -> waitForLoadStateImpl(state, options));
+    withWaitLogging("Frame.waitForLoadState", () -> {
+      waitForLoadStateImpl(state, options);
+      return null;
+    });
   }
 
   void waitForLoadStateImpl(LoadState state, WaitForLoadStateOptions options) {

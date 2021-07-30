@@ -53,10 +53,10 @@ public class WaitForEventLogger<T> implements Supplier<T> {
   }
 
   private void sendWaitForEventInfo(JsonObject info) {
-    info.addProperty("apiName", apiName);
+    info.addProperty("event", "");
     info.addProperty("waitId", waitId);
     JsonObject params = new JsonObject();
     params.add("info", info);
-    channel.sendMessageAsync("waitForEventInfo", params);
+    channel.withLogging(apiName, () -> channel.sendMessageAsync("waitForEventInfo", params));
   }
 }
