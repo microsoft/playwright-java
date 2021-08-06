@@ -24,21 +24,8 @@ import java.util.*;
  * ElementHandle represents an in-page DOM element. ElementHandles can be created with the {@link Page#querySelector
  * Page.querySelector()} method.
  * <pre>{@code
- * import com.microsoft.playwright.*;
- *
- * public class Example {
- *   public static void main(String[] args) {
- *     try (Playwright playwright = Playwright.create()) {
- *       BrowserType chromium = playwright.chromium();
- *       Browser browser = chromium.launch();
- *       Page page = browser.newPage();
- *       page.navigate("https://example.com");
- *       ElementHandle hrefElement = page.querySelector("a");
- *       hrefElement.click();
- *       // ...
- *     }
- *   }
- * }
+ * ElementHandle hrefElement = page.querySelector("a");
+ * hrefElement.click();
  * }</pre>
  *
  * <p> ElementHandle prevents DOM element from garbage collection unless the handle is disposed with {@link JSHandle#dispose
@@ -46,6 +33,30 @@ import java.util.*;
  *
  * <p> ElementHandle instances can be used as an argument in {@link Page#evalOnSelector Page.evalOnSelector()} and {@link
  * Page#evaluate Page.evaluate()} methods.
+ *
+ * <p> <strong>NOTE:</strong> In most cases, you would want to use the {@code Locator} object instead. You should only use {@code ElementHandle} if you want to
+ * retain a handle to a particular DOM Node that you intend to pass into {@link Page#evaluate Page.evaluate()} as an
+ * argument.
+ *
+ * <p> The difference between the {@code Locator} and ElementHandle is that the ElementHandle points to a particular element, while
+ * {@code Locator} captures the logic of how to retrieve an element.
+ *
+ * <p> In the example below, handle points to a particular DOM element on page. If that element changes text or is used by
+ * React to render an entirely different component, handle is still pointing to that very DOM element. This can lead to
+ * unexpected behaviors.
+ * <pre>{@code
+ * ElementHandle handle = page.querySelector("text=Submit");
+ * handle.hover();
+ * handle.click();
+ * }</pre>
+ *
+ * <p> With the locator, every time the {@code element} is used, up-to-date DOM element is located in the page using the selector. So
+ * in the snippet below, underlying DOM element is going to be located twice.
+ * <pre>{@code
+ * Locator locator = page.locator("text=Submit");
+ * locator.hover();
+ * locator.click();
+ * }</pre>
  */
 public interface ElementHandle extends JSHandle {
   class CheckOptions {
@@ -1120,13 +1131,13 @@ public interface ElementHandle extends JSHandle {
    */
   String innerText();
   /**
-   * Returns {@code input.value} for {@code <input>} or {@code <textarea>} element. Throws for non-input elements.
+   * Returns {@code input.value} for {@code <input>} or {@code <textarea>} or {@code <select>} element. Throws for non-input elements.
    */
   default String inputValue() {
     return inputValue(null);
   }
   /**
-   * Returns {@code input.value} for {@code <input>} or {@code <textarea>} element. Throws for non-input elements.
+   * Returns {@code input.value} for {@code <input>} or {@code <textarea>} or {@code <select>} element. Throws for non-input elements.
    */
   String inputValue(InputValueOptions options);
   /**

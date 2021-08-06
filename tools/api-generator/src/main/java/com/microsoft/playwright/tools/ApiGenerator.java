@@ -259,6 +259,11 @@ class TypeRef extends Element {
     customTypeNames.put("FileChooser.setFiles.files", "FilePayload");
     customTypeNames.put("Frame.setInputFiles.files", "FilePayload");
     customTypeNames.put("Page.setInputFiles.files", "FilePayload");
+
+    customTypeNames.put("Page.dragAndDrop.options.sourcePosition", "Position");
+    customTypeNames.put("Frame.dragAndDrop.options.sourcePosition", "Position");
+    customTypeNames.put("Page.dragAndDrop.options.targetPosition", "Position");
+    customTypeNames.put("Frame.dragAndDrop.options.targetPosition", "Position");
   }
 
   TypeRef(Element parent, JsonElement jsonElement) {

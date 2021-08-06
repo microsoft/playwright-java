@@ -23,24 +23,29 @@ import java.util.*;
 /**
  * Locator represents a view to the element(s) on the page. It captures the logic sufficient to retrieve the element at any
  * given moment. Locator can be created with the {@link Page#locator Page.locator()} method.
+ * <pre>{@code
+ * Locator locator = page.locator("text=Submit");
+ * locator.click();
+ * }</pre>
  *
  * <p> The difference between the Locator and {@code ElementHandle} is that the latter points to a particular element, while Locator
- * only captures the logic of how to retrieve an element at any given moment.
+ * captures the logic of how to retrieve that element.
  *
  * <p> In the example below, handle points to a particular DOM element on page. If that element changes text or is used by
- * React to render an entirely different component, handle is still pointing to that very DOM element.
+ * React to render an entirely different component, handle is still pointing to that very DOM element. This can lead to
+ * unexpected behaviors.
  * <pre>{@code
  * ElementHandle handle = page.querySelector("text=Submit");
  * handle.hover();
  * handle.click();
  * }</pre>
  *
- * <p> With the locator, every time the {@code element} is used, corresponding DOM element is located in the page using given
- * selector. So in the snippet below, underlying DOM element is going to be located twice, using the given selector.
+ * <p> With the locator, every time the {@code element} is used, up-to-date DOM element is located in the page using the selector. So
+ * in the snippet below, underlying DOM element is going to be located twice.
  * <pre>{@code
- * Locator element = page.locator("text=Submit");
- * element.hover();
- * element.click();
+ * Locator locator = page.locator("text=Submit");
+ * locator.hover();
+ * locator.click();
  * }</pre>
  */
 public interface Locator {
@@ -888,6 +893,14 @@ public interface Locator {
     }
   }
   /**
+   * Returns an array of {@code node.innerText} values for all matching nodes.
+   */
+  List<String> allInnerTexts();
+  /**
+   * Returns an array of {@code node.textContent} values for all matching nodes.
+   */
+  List<String> allTextContents();
+  /**
    * This method returns the bounding box of the element, or {@code null} if the element is not visible. The bounding box is
    * calculated relative to the main frame viewport - which is usually the same as the browser window.
    *
@@ -1446,13 +1459,13 @@ public interface Locator {
    */
   String innerText(InnerTextOptions options);
   /**
-   * Returns {@code input.value} for {@code <input>} or {@code <textarea>} element. Throws for non-input elements.
+   * Returns {@code input.value} for {@code <input>} or {@code <textarea>} or {@code <select>} element. Throws for non-input elements.
    */
   default String inputValue() {
     return inputValue(null);
   }
   /**
-   * Returns {@code input.value} for {@code <input>} or {@code <textarea>} element. Throws for non-input elements.
+   * Returns {@code input.value} for {@code <input>} or {@code <textarea>} or {@code <select>} element. Throws for non-input elements.
    */
   String inputValue(InputValueOptions options);
   /**

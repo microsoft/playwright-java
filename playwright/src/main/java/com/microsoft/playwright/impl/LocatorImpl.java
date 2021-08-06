@@ -15,12 +15,12 @@ import java.util.function.BiFunction;
 
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 
-class LoccatorImpl implements Locator {
+class LocatorImpl implements Locator {
   private final FrameImpl frame;
   private final String selector;
   private final String visibleSelector;
 
-  public LoccatorImpl(FrameImpl frame, String selector) {
+  public LocatorImpl(FrameImpl frame, String selector) {
     this.frame = frame;
     this.selector = selector;
     this.visibleSelector = selector + " >> _visible=true";
@@ -43,6 +43,16 @@ class LoccatorImpl implements Locator {
         handle.dispose();
       }
     }
+  }
+
+  @Override
+  public List<String> allInnerTexts() {
+    return (List<String>) frame.evalOnSelectorAll(selector, "ee => ee.map(e => e.innerText)");
+  }
+
+  @Override
+  public List<String> allTextContents() {
+    return (List<String>) frame.evalOnSelectorAll(selector, "ee => ee.map(e => e.textContent || '')");
   }
 
   @Override
@@ -128,7 +138,7 @@ class LoccatorImpl implements Locator {
 
   @Override
   public Locator first() {
-    return new LoccatorImpl(frame, selector + " >> _nth=first");
+    return new LocatorImpl(frame, selector + " >> _nth=first");
   }
 
   @Override
@@ -229,17 +239,17 @@ class LoccatorImpl implements Locator {
 
   @Override
   public Locator last() {
-    return new LoccatorImpl(frame, selector + " >> _nth=last");
+    return new LocatorImpl(frame, selector + " >> _nth=last");
   }
 
   @Override
   public Locator locator(String selector) {
-    return new LoccatorImpl(frame, this.selector + " >> " + selector);
+    return new LocatorImpl(frame, this.selector + " >> " + selector);
   }
 
   @Override
   public Locator nth(int index) {
-    return new LoccatorImpl(frame, selector + " >> _nth=" + index);
+    return new LocatorImpl(frame, selector + " >> _nth=" + index);
   }
 
   @Override
@@ -385,6 +395,6 @@ class LoccatorImpl implements Locator {
 
   @Override
   public String toString() {
-    return "Loccator@" + selector;
+    return "Locator@" + selector;
   }
 }

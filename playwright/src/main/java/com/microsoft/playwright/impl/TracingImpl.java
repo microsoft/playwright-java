@@ -59,10 +59,10 @@ class TracingImpl implements Tracing {
   @Override
   public void stop(StopOptions options) {
     context.withLogging("Tracing.stop", () -> {
-      context.sendMessage("tracingStop");
       if (options != null && options.path != null) {
         export(options.path);
       }
+      context.sendMessage("tracingStop");
     });
   }
 }
