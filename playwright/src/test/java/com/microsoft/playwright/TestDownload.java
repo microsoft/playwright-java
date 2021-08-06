@@ -368,6 +368,19 @@ public class TestDownload extends TestBase {
   }
 
   @Test
+  void streamShouldSupportZeroSizeRead() throws IOException {
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+    page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
+    Download download = page.waitForDownload(() -> page.click("a"));
+
+    InputStream stream = download.createReadStream();
+    byte[] b = new byte[1];
+    int read = stream.read(b, 0, 0);
+    assertEquals(0, read);
+    page.close();
+  }
+
+  @Test
   void shouldDeleteDownloadsOnContextDestruction() {
     Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
     page.setContent("<a href='" + server.PREFIX + "/download'>download</a>");
