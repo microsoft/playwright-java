@@ -66,7 +66,7 @@ public class TestWorkers extends TestBase {
   void shouldHaveJSHandlesForConsoleLogs() {
     ConsoleMessage log = page.waitForConsoleMessage(() -> page.evaluate(
       "() => new Worker(URL.createObjectURL(new Blob(['console.log(1,2,3,this)'], {type: 'application/javascript'})))"));
-    assertEquals("1 2 3 JSHandle@object", log.text());
+    assertEquals("1 2 3 DedicatedWorkerGlobalScope", log.text());
     assertEquals(4, log.args().size());
     assertEquals("null", (log.args().get(3).getProperty("origin")).jsonValue());
   }
