@@ -561,7 +561,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public Locator locator(String selector) {
-    return new LoccatorImpl(this, selector);
+    return new LocatorImpl(this, selector);
   }
 
   boolean isVisibleImpl(String selector, IsVisibleOptions options) {

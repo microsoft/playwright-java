@@ -665,10 +665,20 @@ public interface Page extends AutoCloseable {
      */
     public Boolean noWaitAfter;
     /**
+     * Clicks on the source element at this point relative to the top-left corner of the element's padding box. If not
+     * specified, some visible point of the element is used.
+     */
+    public Position sourcePosition;
+    /**
      * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
      * element, the call throws an exception.
      */
     public Boolean strict;
+    /**
+     * Drops on the target element at this point relative to the top-left corner of the element's padding box. If not
+     * specified, some visible point of the element is used.
+     */
+    public Position targetPosition;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
      * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
@@ -690,8 +700,22 @@ public interface Page extends AutoCloseable {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    public DragAndDropOptions setSourcePosition(double x, double y) {
+      return setSourcePosition(new Position(x, y));
+    }
+    public DragAndDropOptions setSourcePosition(Position sourcePosition) {
+      this.sourcePosition = sourcePosition;
+      return this;
+    }
     public DragAndDropOptions setStrict(boolean strict) {
       this.strict = strict;
+      return this;
+    }
+    public DragAndDropOptions setTargetPosition(double x, double y) {
+      return setTargetPosition(new Position(x, y));
+    }
+    public DragAndDropOptions setTargetPosition(Position targetPosition) {
+      this.targetPosition = targetPosition;
       return this;
     }
     public DragAndDropOptions setTimeout(double timeout) {
@@ -3225,7 +3249,7 @@ public interface Page extends AutoCloseable {
    */
   String innerText(String selector, InnerTextOptions options);
   /**
-   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} element. Throws for non-input elements.
+   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} or {@code <select>} element. Throws for non-input elements.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
    * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
@@ -3234,7 +3258,7 @@ public interface Page extends AutoCloseable {
     return inputValue(selector, null);
   }
   /**
-   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} element. Throws for non-input elements.
+   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} or {@code <select>} element. Throws for non-input elements.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
    * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
