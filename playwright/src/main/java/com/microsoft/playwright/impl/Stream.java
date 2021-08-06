@@ -45,6 +45,9 @@ public class Stream extends ChannelOwner {
 
     @Override
     public int read(byte[] b, int off, int len) {
+      if (len == 0) {
+        return 0;
+      }
       JsonObject params = new JsonObject();
       params.addProperty("size", len);
       JsonObject json = sendMessage("read", params).getAsJsonObject();
