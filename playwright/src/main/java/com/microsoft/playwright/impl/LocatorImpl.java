@@ -18,12 +18,10 @@ import static com.microsoft.playwright.impl.Utils.convertViaJson;
 class LocatorImpl implements Locator {
   private final FrameImpl frame;
   private final String selector;
-  private final String visibleSelector;
 
   public LocatorImpl(FrameImpl frame, String selector) {
     this.frame = frame;
     this.selector = selector;
-    this.visibleSelector = selector + " >> _visible=true";
   }
 
   private <R, O> R withElement(BiFunction<ElementHandle, O, R> callback, O options) {
@@ -65,7 +63,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new CheckOptions();
     }
-    frame.check(visibleSelector, convertViaJson(options, Frame.CheckOptions.class).setStrict(true));
+    frame.check(selector, convertViaJson(options, Frame.CheckOptions.class).setStrict(true));
   }
 
   @Override
@@ -73,7 +71,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new ClickOptions();
     }
-    frame.click(visibleSelector, convertViaJson(options, Frame.ClickOptions.class).setStrict(true));
+    frame.click(selector, convertViaJson(options, Frame.ClickOptions.class).setStrict(true));
   }
 
   @Override
@@ -86,7 +84,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new DblclickOptions();
     }
-    frame.dblclick(visibleSelector, convertViaJson(options, Frame.DblclickOptions.class).setStrict(true));
+    frame.dblclick(selector, convertViaJson(options, Frame.DblclickOptions.class).setStrict(true));
   }
 
   @Override
@@ -94,7 +92,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new DispatchEventOptions();
     }
-    frame.dispatchEvent(visibleSelector, type, eventInit, convertViaJson(options, Frame.DispatchEventOptions.class).setStrict(true));
+    frame.dispatchEvent(selector, type, eventInit, convertViaJson(options, Frame.DispatchEventOptions.class).setStrict(true));
   }
 
   @Override
@@ -105,12 +103,12 @@ class LocatorImpl implements Locator {
     Frame.WaitForSelectorOptions frameOptions = convertViaJson(options, Frame.WaitForSelectorOptions.class);
     frameOptions.setStrict(true);
     frameOptions.setState(WaitForSelectorState.ATTACHED);
-    return frame.waitForSelector(visibleSelector, frameOptions);
+    return frame.waitForSelector(selector, frameOptions);
   }
 
   @Override
   public List<ElementHandle> elementHandles() {
-    return frame.querySelectorAll(visibleSelector);
+    return frame.querySelectorAll(selector);
   }
 
   @Override
@@ -120,7 +118,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public Object evaluateAll(String expression, Object arg) {
-    return frame.evalOnSelectorAll(visibleSelector, expression, arg);
+    return frame.evalOnSelectorAll(selector, expression, arg);
   }
 
   @Override
@@ -133,12 +131,12 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new FillOptions();
     }
-    frame.fill(visibleSelector, value, convertViaJson(options, Frame.FillOptions.class).setStrict(true));
+    frame.fill(selector, value, convertViaJson(options, Frame.FillOptions.class).setStrict(true));
   }
 
   @Override
   public Locator first() {
-    return new LocatorImpl(frame, selector + " >> _nth=first");
+    return new LocatorImpl(frame, selector + " >> nth=0");
   }
 
   @Override
@@ -146,7 +144,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new FocusOptions();
     }
-    frame.focus(visibleSelector, convertViaJson(options, Frame.FocusOptions.class).setStrict(true));
+    frame.focus(selector, convertViaJson(options, Frame.FocusOptions.class).setStrict(true));
   }
 
   @Override
@@ -154,7 +152,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new GetAttributeOptions();
     }
-    return frame.getAttribute(visibleSelector, name, convertViaJson(options, Frame.GetAttributeOptions.class).setStrict(true));
+    return frame.getAttribute(selector, name, convertViaJson(options, Frame.GetAttributeOptions.class).setStrict(true));
   }
 
   @Override
@@ -162,7 +160,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new HoverOptions();
     }
-    frame.hover(visibleSelector, convertViaJson(options, Frame.HoverOptions.class).setStrict(true));
+    frame.hover(selector, convertViaJson(options, Frame.HoverOptions.class).setStrict(true));
   }
 
   @Override
@@ -170,7 +168,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new InnerHTMLOptions();
     }
-    return frame.innerHTML(visibleSelector, convertViaJson(options, Frame.InnerHTMLOptions.class).setStrict(true));
+    return frame.innerHTML(selector, convertViaJson(options, Frame.InnerHTMLOptions.class).setStrict(true));
   }
 
   @Override
@@ -178,7 +176,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new InnerTextOptions();
     }
-    return frame.innerText(visibleSelector, convertViaJson(options, Frame.InnerTextOptions.class).setStrict(true));
+    return frame.innerText(selector, convertViaJson(options, Frame.InnerTextOptions.class).setStrict(true));
   }
 
   @Override
@@ -186,7 +184,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new InputValueOptions();
     }
-    return frame.inputValue(visibleSelector, convertViaJson(options, Frame.InputValueOptions.class).setStrict(true));
+    return frame.inputValue(selector, convertViaJson(options, Frame.InputValueOptions.class).setStrict(true));
   }
 
   @Override
@@ -194,7 +192,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new IsCheckedOptions();
     }
-    return frame.isChecked(visibleSelector, convertViaJson(options, Frame.IsCheckedOptions.class).setStrict(true));
+    return frame.isChecked(selector, convertViaJson(options, Frame.IsCheckedOptions.class).setStrict(true));
   }
 
   @Override
@@ -202,7 +200,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new IsDisabledOptions();
     }
-    return frame.isDisabled(visibleSelector, convertViaJson(options, Frame.IsDisabledOptions.class).setStrict(true));
+    return frame.isDisabled(selector, convertViaJson(options, Frame.IsDisabledOptions.class).setStrict(true));
   }
 
   @Override
@@ -210,7 +208,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new IsEditableOptions();
     }
-    return frame.isEditable(visibleSelector, convertViaJson(options, Frame.IsEditableOptions.class).setStrict(true));
+    return frame.isEditable(selector, convertViaJson(options, Frame.IsEditableOptions.class).setStrict(true));
   }
 
   @Override
@@ -218,7 +216,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new IsEnabledOptions();
     }
-    return frame.isEnabled(visibleSelector, convertViaJson(options, Frame.IsEnabledOptions.class).setStrict(true));
+    return frame.isEnabled(selector, convertViaJson(options, Frame.IsEnabledOptions.class).setStrict(true));
   }
 
   @Override
@@ -226,7 +224,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new IsHiddenOptions();
     }
-    return frame.isHidden(visibleSelector, convertViaJson(options, Frame.IsHiddenOptions.class).setStrict(true));
+    return frame.isHidden(selector, convertViaJson(options, Frame.IsHiddenOptions.class).setStrict(true));
   }
 
   @Override
@@ -234,12 +232,12 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new IsVisibleOptions();
     }
-    return frame.isVisible(visibleSelector, convertViaJson(options, Frame.IsVisibleOptions.class).setStrict(true));
+    return frame.isVisible(selector, convertViaJson(options, Frame.IsVisibleOptions.class).setStrict(true));
   }
 
   @Override
   public Locator last() {
-    return new LocatorImpl(frame, selector + " >> _nth=last");
+    return new LocatorImpl(frame, selector + " >> nth=-1");
   }
 
   @Override
@@ -249,7 +247,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator nth(int index) {
-    return new LocatorImpl(frame, selector + " >> _nth=" + index);
+    return new LocatorImpl(frame, selector + " >> nth=" + index);
   }
 
   @Override
@@ -257,7 +255,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new PressOptions();
     }
-    frame.press(visibleSelector, key, convertViaJson(options, Frame.PressOptions.class).setStrict(true));
+    frame.press(selector, key, convertViaJson(options, Frame.PressOptions.class).setStrict(true));
   }
 
   @Override
@@ -278,7 +276,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new SelectOptionOptions();
     }
-    return frame.selectOption(visibleSelector, values, convertViaJson(options, Frame.SelectOptionOptions.class).setStrict(true));
+    return frame.selectOption(selector, values, convertViaJson(options, Frame.SelectOptionOptions.class).setStrict(true));
   }
 
   @Override
@@ -286,7 +284,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new SelectOptionOptions();
     }
-    return frame.selectOption(visibleSelector, values, convertViaJson(options, Frame.SelectOptionOptions.class).setStrict(true));
+    return frame.selectOption(selector, values, convertViaJson(options, Frame.SelectOptionOptions.class).setStrict(true));
   }
 
   @Override
@@ -294,7 +292,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new SelectOptionOptions();
     }
-    return frame.selectOption(visibleSelector, values, convertViaJson(options, Frame.SelectOptionOptions.class).setStrict(true));
+    return frame.selectOption(selector, values, convertViaJson(options, Frame.SelectOptionOptions.class).setStrict(true));
   }
 
   @Override
@@ -302,7 +300,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new SelectOptionOptions();
     }
-    return frame.selectOption(visibleSelector, values, convertViaJson(options, Frame.SelectOptionOptions.class).setStrict(true));
+    return frame.selectOption(selector, values, convertViaJson(options, Frame.SelectOptionOptions.class).setStrict(true));
   }
 
   @Override
@@ -310,7 +308,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new SelectOptionOptions();
     }
-    return frame.selectOption(visibleSelector, values, convertViaJson(options, Frame.SelectOptionOptions.class).setStrict(true));
+    return frame.selectOption(selector, values, convertViaJson(options, Frame.SelectOptionOptions.class).setStrict(true));
   }
 
   @Override
@@ -318,7 +316,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new SelectOptionOptions();
     }
-    return frame.selectOption(visibleSelector, values, convertViaJson(options, Frame.SelectOptionOptions.class).setStrict(true));
+    return frame.selectOption(selector, values, convertViaJson(options, Frame.SelectOptionOptions.class).setStrict(true));
   }
 
   @Override
@@ -334,7 +332,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new SetInputFilesOptions();
     }
-    frame.setInputFiles(visibleSelector, files, convertViaJson(options, Frame.SetInputFilesOptions.class).setStrict(true));
+    frame.setInputFiles(selector, files, convertViaJson(options, Frame.SetInputFilesOptions.class).setStrict(true));
   }
 
   @Override
@@ -342,7 +340,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new SetInputFilesOptions();
     }
-    frame.setInputFiles(visibleSelector, files, convertViaJson(options, Frame.SetInputFilesOptions.class).setStrict(true));
+    frame.setInputFiles(selector, files, convertViaJson(options, Frame.SetInputFilesOptions.class).setStrict(true));
   }
 
   @Override
@@ -350,7 +348,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new SetInputFilesOptions();
     }
-    frame.setInputFiles(visibleSelector, files, convertViaJson(options, Frame.SetInputFilesOptions.class).setStrict(true));
+    frame.setInputFiles(selector, files, convertViaJson(options, Frame.SetInputFilesOptions.class).setStrict(true));
   }
 
   @Override
@@ -358,7 +356,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new SetInputFilesOptions();
     }
-    frame.setInputFiles(visibleSelector, files, convertViaJson(options, Frame.SetInputFilesOptions.class).setStrict(true));
+    frame.setInputFiles(selector, files, convertViaJson(options, Frame.SetInputFilesOptions.class).setStrict(true));
   }
 
   @Override
@@ -366,7 +364,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new TapOptions();
     }
-    frame.tap(visibleSelector, convertViaJson(options, Frame.TapOptions.class).setStrict(true));
+    frame.tap(selector, convertViaJson(options, Frame.TapOptions.class).setStrict(true));
   }
 
   @Override
@@ -374,7 +372,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new TextContentOptions();
     }
-    return frame.textContent(visibleSelector, convertViaJson(options, Frame.TextContentOptions.class).setStrict(true));
+    return frame.textContent(selector, convertViaJson(options, Frame.TextContentOptions.class).setStrict(true));
   }
 
   @Override
@@ -382,7 +380,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new TypeOptions();
     }
-    frame.type(visibleSelector, text, convertViaJson(options, Frame.TypeOptions.class).setStrict(true));
+    frame.type(selector, text, convertViaJson(options, Frame.TypeOptions.class).setStrict(true));
   }
 
   @Override
@@ -390,7 +388,7 @@ class LocatorImpl implements Locator {
     if (options == null) {
       options = new UncheckOptions();
     }
-    frame.uncheck(visibleSelector, convertViaJson(options, Frame.UncheckOptions.class).setStrict(true));
+    frame.uncheck(selector, convertViaJson(options, Frame.UncheckOptions.class).setStrict(true));
   }
 
   @Override
