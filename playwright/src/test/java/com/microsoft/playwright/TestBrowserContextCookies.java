@@ -50,7 +50,7 @@ public class TestBrowserContextCookies extends TestBase {
       "    expires: -1,\n" +
       "    httpOnly: false,\n" +
       "    secure: false,\n" +
-      "    sameSite: 'NONE'\n" +
+      "    sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
       "  }]", cookies);
   }
 
@@ -74,7 +74,11 @@ public class TestBrowserContextCookies extends TestBase {
     assertEquals(timestamp, cookie.expires);
     assertEquals(false, cookie.httpOnly);
     assertEquals(false, cookie.secure);
-    assertEquals(SameSiteAttribute.NONE, cookie.sameSite);
+    if (isChromium()) {
+      assertEquals(SameSiteAttribute.LAX, cookie.sameSite);
+    } else {
+      assertEquals(SameSiteAttribute.NONE, cookie.sameSite);
+    }
   }
 
   @Test
@@ -142,7 +146,7 @@ public class TestBrowserContextCookies extends TestBase {
       "    expires: -1,\n" +
       "    httpOnly: false,\n" +
       "    secure: false,\n" +
-      "    sameSite: 'NONE'\n" +
+      "    sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
       "  },\n" +
       "  {\n" +
       "    name: 'username',\n" +
@@ -152,7 +156,7 @@ public class TestBrowserContextCookies extends TestBase {
       "    expires: -1,\n" +
       "    httpOnly: false,\n" +
       "    secure: false,\n" +
-      "    sameSite: 'NONE'\n" +
+      "    sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
       "  }\n" +
       "]", cookies);
   }
@@ -170,19 +174,19 @@ public class TestBrowserContextCookies extends TestBase {
       "  value: 'tweets',\n" +
       "  domain: 'baz.com',\n" +
       "  path: '/',\n" +
-      "  expires: -1,\n" +
+      "  expires: -1.0,\n" +
       "  httpOnly: false,\n" +
       "  secure: true,\n" +
-      "  sameSite: 'NONE'\n" +
+      "  sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
       "}, {\n" +
       "  name: 'doggo',\n" +
       "  value: 'woofs',\n" +
       "  domain: 'foo.com',\n" +
       "  path: '/',\n" +
-      "  expires: -1,\n" +
+      "  expires: -1.0,\n" +
       "  httpOnly: false,\n" +
       "  secure: true,\n" +
-      "  sameSite: 'NONE'\n" +
+      "  sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
       "}]", cookies);
   }
 
@@ -200,9 +204,17 @@ public class TestBrowserContextCookies extends TestBase {
 
     page.navigate(server.EMPTY_PAGE);
     Object documentCookie = page.evaluate("document.cookie.split('; ').sort().join('; ')");
-    assertEquals("one=uno; three=tres; two=dos", documentCookie);
+    if (isChromium()) {
+      assertEquals("one=uno; two=dos", documentCookie);
+    } else {
+      assertEquals("one=uno; three=tres; two=dos", documentCookie);
+    }
 
     List<SameSiteAttribute> list = context.cookies().stream().map(c -> c.sameSite).sorted().collect(Collectors.toList());
-    assertEquals(asList( SameSiteAttribute.STRICT, SameSiteAttribute.LAX, SameSiteAttribute.NONE), list);
+    if (isChromium()) {
+      assertEquals(asList(SameSiteAttribute.STRICT, SameSiteAttribute.LAX), list);
+    } else {
+      assertEquals(asList(SameSiteAttribute.STRICT, SameSiteAttribute.LAX, SameSiteAttribute.NONE), list);
+    }
   }
 }
