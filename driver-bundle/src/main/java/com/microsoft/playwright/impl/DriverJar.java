@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class DriverJar extends Driver {
+  private static final String PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD";
   private final Path driverTempDir;
 
   DriverJar() throws IOException, URISyntaxException, InterruptedException {
@@ -39,6 +40,13 @@ public class DriverJar extends Driver {
   }
 
   private void installBrowsers(Map<String, String> env) throws IOException, InterruptedException {
+    String skip = env.get(PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD);
+    if (skip == null) {
+      skip = System.getenv(PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD);
+    }
+    if (skip != null && !"0".equals(skip) && !"false".equals(skip)) {
+      return;
+    }
     String cliFileName = super.cliFileName();
     Path driver = driverTempDir.resolve(cliFileName);
     if (!Files.exists(driver)) {
