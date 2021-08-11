@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import static com.microsoft.playwright.Utils.assertJsonEquals;
+import static com.microsoft.playwright.Utils.getOS;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -217,7 +218,7 @@ public class TestBrowserContextAddCookies extends TestBase {
       "  expires: -1,\n" +
       "  httpOnly: false,\n" +
       "  secure: false,\n" +
-      "  sameSite: 'NONE'\n" +
+      "  sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
       "}]", cookies);
   }
 
@@ -236,7 +237,7 @@ public class TestBrowserContextAddCookies extends TestBase {
       "  expires: -1,\n" +
       "  httpOnly: false,\n" +
       "  secure: false,\n" +
-      "  sameSite: 'NONE'\n" +
+      "  sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
       "}]", cookies);
     assertEquals("gridcookie=GRID", page.evaluate("document.cookie"));
     page.navigate(server.EMPTY_PAGE);
@@ -309,7 +310,7 @@ public class TestBrowserContextAddCookies extends TestBase {
       "  expires: -1,\n" +
       "  httpOnly: false,\n" +
       "  secure: true,\n" +
-      "  sameSite: 'NONE'\n" +
+      "  sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
       "}]", context.cookies("https://www.example.com"));
   }
 
@@ -345,7 +346,7 @@ public class TestBrowserContextAddCookies extends TestBase {
       "}", server.CROSS_PROCESS_PREFIX + "/grid.html");
     page.frames().get(1).evaluate("document.cookie = 'username=John Doe'");
     page.waitForTimeout(2000);
-    boolean allowsThirdParty = isChromium() || isFirefox();
+    boolean allowsThirdParty = isFirefox();
     List<Cookie> cookies = context.cookies(server.CROSS_PROCESS_PREFIX + "/grid.html");
     if (allowsThirdParty) {
       assertJsonEquals("[{\n" +

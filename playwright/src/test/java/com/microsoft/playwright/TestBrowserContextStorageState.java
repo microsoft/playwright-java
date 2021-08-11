@@ -100,24 +100,24 @@ public class TestBrowserContextStorageState extends TestBase {
     context.storageState(new BrowserContext.StorageStateOptions().setPath(path));
     JsonObject expected = new Gson().fromJson(
       "{\n" +
-      "  \"cookies\":[\n" +
+      "  'cookies':[\n" +
       "    { \n" +
-      "      \"name\":\"username\",\n" +
-      "      \"value\":\"John Doe\",\n" +
-      "      \"domain\":\"www.example.com\",\n" +
-      "      \"path\":\"/\",\n" +
-      "      \"expires\":-1,\n" +
-      "      \"httpOnly\":false,\n" +
-      "      \"secure\":false,\n" +
-      "      \"sameSite\":\"None\"\n" +
+      "      'name':'username',\n" +
+      "      'value':'John Doe',\n" +
+      "      'domain':'www.example.com',\n" +
+      "      'path':'/',\n" +
+      "      'expires':-1,\n" +
+      "      'httpOnly':false,\n" +
+      "      'secure':false,\n" +
+      "      'sameSite':'" + (isChromium() ? "Lax" : "None") + "'\n" +
       "    }],\n" +
-      "  \"origins\":[\n" +
+      "  'origins':[\n" +
       "    {\n" +
-      "      \"origin\":\"https://www.example.com\",\n" +
-      "      \"localStorage\":[\n" +
+      "      'origin':'https://www.example.com',\n" +
+      "      'localStorage':[\n" +
       "        {\n" +
-      "          \"name\":\"name1\",\n" +
-      "          \"value\":\"value1\"\n" +
+      "          'name':'name1',\n" +
+      "          'value':'value1'\n" +
       "        }]\n" +
       "    }]\n" +
       "}\n", JsonObject.class);
