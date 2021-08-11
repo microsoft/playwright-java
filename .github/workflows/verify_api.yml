@@ -32,10 +32,12 @@ jobs:
         run: scripts/download_driver_for_all_platforms.sh
       - name: Regenerate APIs
         run: scripts/generate_api.sh
+      - name: Update APIs
+        run: scripts/update_api.sh
       - name: Verify API is up to date
         run: |
           if [[ -n $(git status -s) ]]; then
-            echo "ERROR: generated interfaces differ from the current sources:"
+            echo "ERROR: generated interfaces/docs differ from the current sources:"
             git diff
             exit 1
           fi
