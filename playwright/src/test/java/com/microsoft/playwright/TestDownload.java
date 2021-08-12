@@ -74,6 +74,42 @@ public class TestDownload extends TestBase {
   }
 
   @Test
+  void shouldReportDownloadWhenNavigationTurnsIntoDownload() throws IOException {
+    Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(true));
+
+    Response[] response = new Response[]{null};
+    PlaywrightException[] error = new PlaywrightException[]{null};
+    Download download  = page.waitForDownload(() -> {
+      try {
+        response[0] = page.navigate(server.PREFIX + "/download");
+      } catch (PlaywrightException e) {
+        error[0] = e;
+      }
+    });
+
+    assertEquals(page, download.page());
+    assertEquals(server.PREFIX + "/download", download.url());
+    Path path = download.path();
+    assertTrue(Files.exists(path));
+    byte[] bytes = readAllBytes(path);
+    assertEquals("Hello world", new String(bytes, UTF_8));
+    if (isChromium()) {
+      assertNotNull(error[0]);
+      assertTrue(error[0].getMessage().contains("net::ERR_ABORTED"));
+      assertEquals("about:blank", page.url());
+    } else if (isWebKit()) {
+      assertNotNull(error[0]);
+      assertTrue(error[0].getMessage().contains("Download is starting"));
+      assertEquals("about:blank", page.url());
+    } else {
+      assertNotNull(response[0]);
+      assertEquals(200, response[0].status());
+      assertEquals(server.PREFIX + "/download", page.url());
+    }
+    page.close();
+  }
+
+  @Test
   void shouldReportDownloadsWithAcceptDownloadsFalse() {
     page.setContent("<a href='" + server.PREFIX + "/downloadWithFilename'>download</a>");
     Download download = page.waitForDownload(() -> page.click("a"));
