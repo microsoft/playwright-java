@@ -1250,8 +1250,8 @@ public interface Locator {
    * to {@code expression}. Returns the result of {@code expression} invocation.
    *
    * <p> If {@code expression} returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
-   * [{@code Locator.evaluateAll}] would wait for the promise to resolve and return its value.
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Locator#evaluateAll Locator.evaluateAll()} would wait for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
@@ -1270,8 +1270,8 @@ public interface Locator {
    * to {@code expression}. Returns the result of {@code expression} invocation.
    *
    * <p> If {@code expression} returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
-   * [{@code Locator.evaluateAll}] would wait for the promise to resolve and return its value.
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
+   * Locator#evaluateAll Locator.evaluateAll()} would wait for the promise to resolve and return its value.
    *
    * <p> Examples:
    * <pre>{@code
