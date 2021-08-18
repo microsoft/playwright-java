@@ -47,6 +47,18 @@ import java.util.*;
  * locator.hover();
  * locator.click();
  * }</pre>
+ *
+ * <p> **Strictness**
+ *
+ * <p> Locators are strict. This means that all operations on locators that imply some target DOM element will throw if more
+ * than one element matches given selector.
+ * <pre>{@code
+ * // Throws if there are several buttons in DOM:
+ * page.locator("button").click();
+ *
+ * // Works because you explicitly tell locator to pick the first element:
+ * page.locator("button").first().click();
+ * }</pre>
  */
 public interface Locator {
   class BoundingBoxOptions {
