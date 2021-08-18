@@ -2231,8 +2231,6 @@ public interface Frame {
    * element immediately before performing an action, so a series of actions on the same locator can in fact be performed on
    * different DOM elements. That would happen if the DOM structure between those actions has changed.
    *
-   * <p> Note that locator always implies visibility, so it will always be locating visible elements.
-   *
    * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
    * selectors</a> for more details.
    */
