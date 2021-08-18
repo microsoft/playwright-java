@@ -441,6 +441,12 @@ public interface BrowserType {
      */
     public Double slowMo;
     /**
+     * It specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
+     * more about the strict mode.
+     */
+    public Boolean strictSelectors;
+    /**
      * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
      * disable timeout.
      */
@@ -626,6 +632,10 @@ public interface BrowserType {
     }
     public LaunchPersistentContextOptions setSlowMo(double slowMo) {
       this.slowMo = slowMo;
+      return this;
+    }
+    public LaunchPersistentContextOptions setStrictSelectors(boolean strictSelectors) {
+      this.strictSelectors = strictSelectors;
       return this;
     }
     public LaunchPersistentContextOptions setTimeout(double timeout) {
