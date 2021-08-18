@@ -175,6 +175,12 @@ public interface Browser extends AutoCloseable {
      */
     public Path storageStatePath;
     /**
+     * It specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
+     * more about the strict mode.
+     */
+    public Boolean strictSelectors;
+    /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
      * metaZones.txt</a> for a list of supported timezone IDs.
@@ -298,6 +304,10 @@ public interface Browser extends AutoCloseable {
     }
     public NewContextOptions setStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
+      return this;
+    }
+    public NewContextOptions setStrictSelectors(boolean strictSelectors) {
+      this.strictSelectors = strictSelectors;
       return this;
     }
     public NewContextOptions setTimezoneId(String timezoneId) {
@@ -436,6 +446,12 @@ public interface Browser extends AutoCloseable {
      */
     public Path storageStatePath;
     /**
+     * It specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
+     * more about the strict mode.
+     */
+    public Boolean strictSelectors;
+    /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
      * metaZones.txt</a> for a list of supported timezone IDs.
@@ -559,6 +575,10 @@ public interface Browser extends AutoCloseable {
     }
     public NewPageOptions setStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
+      return this;
+    }
+    public NewPageOptions setStrictSelectors(boolean strictSelectors) {
+      this.strictSelectors = strictSelectors;
       return this;
     }
     public NewPageOptions setTimezoneId(String timezoneId) {
