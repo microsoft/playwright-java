@@ -34,18 +34,30 @@ public class Margin {
    */
   public String left;
 
+  /**
+   * Top margin, accepts values labeled with units. Defaults to {@code 0}.
+   */
   public Margin setTop(String top) {
     this.top = top;
     return this;
   }
+  /**
+   * Right margin, accepts values labeled with units. Defaults to {@code 0}.
+   */
   public Margin setRight(String right) {
     this.right = right;
     return this;
   }
+  /**
+   * Bottom margin, accepts values labeled with units. Defaults to {@code 0}.
+   */
   public Margin setBottom(String bottom) {
     this.bottom = bottom;
     return this;
   }
+  /**
+   * Left margin, accepts values labeled with units. Defaults to {@code 0}.
+   */
   public Margin setLeft(String left) {
     this.left = left;
     return this;

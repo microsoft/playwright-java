@@ -43,22 +43,37 @@ public interface Route {
      */
     public String url;
 
+    /**
+     * If set changes the request HTTP headers. Header values will be converted to a string.
+     */
     public ResumeOptions setHeaders(Map<String, String> headers) {
       this.headers = headers;
       return this;
     }
+    /**
+     * If set changes the request method (e.g. GET or POST)
+     */
     public ResumeOptions setMethod(String method) {
       this.method = method;
       return this;
     }
+    /**
+     * If set changes the post data of request
+     */
     public ResumeOptions setPostData(String postData) {
       this.postData = postData;
       return this;
     }
+    /**
+     * If set changes the post data of request
+     */
     public ResumeOptions setPostData(byte[] postData) {
       this.postData = postData;
       return this;
     }
+    /**
+     * If set changes the request URL. New URL must have same protocol as original one.
+     */
     public ResumeOptions setUrl(String url) {
       this.url = url;
       return this;
@@ -91,26 +106,45 @@ public interface Route {
      */
     public Integer status;
 
+    /**
+     * Optional response body as text.
+     */
     public FulfillOptions setBody(String body) {
       this.body = body;
       return this;
     }
+    /**
+     * Optional response body as raw bytes.
+     */
     public FulfillOptions setBodyBytes(byte[] bodyBytes) {
       this.bodyBytes = bodyBytes;
       return this;
     }
+    /**
+     * If set, equals to setting {@code Content-Type} response header.
+     */
     public FulfillOptions setContentType(String contentType) {
       this.contentType = contentType;
       return this;
     }
+    /**
+     * Response headers. Header values will be converted to a string.
+     */
     public FulfillOptions setHeaders(Map<String, String> headers) {
       this.headers = headers;
       return this;
     }
+    /**
+     * File path to respond with. The content type will be inferred from file extension. If {@code path} is a relative path, then it
+     * is resolved relative to the current working directory.
+     */
     public FulfillOptions setPath(Path path) {
       this.path = path;
       return this;
     }
+    /**
+     * Response status code, defaults to {@code 200}.
+     */
     public FulfillOptions setStatus(int status) {
       this.status = status;
       return this;

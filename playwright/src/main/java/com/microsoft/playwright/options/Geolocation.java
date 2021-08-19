@@ -34,6 +34,9 @@ public class Geolocation {
     this.latitude = latitude;
     this.longitude = longitude;
   }
+  /**
+   * Non-negative accuracy value. Defaults to {@code 0}.
+   */
   public Geolocation setAccuracy(double accuracy) {
     this.accuracy = accuracy;
     return this;

@@ -196,26 +196,53 @@ public interface Browser extends AutoCloseable {
      */
     public Optional<ViewportSize> viewportSize;
 
+    /**
+     * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
+     */
     public NewContextOptions setAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
       return this;
     }
+    /**
+     * When using {@link Page#navigate Page.navigate()}, {@link Page#route Page.route()}, {@link Page#waitForURL
+     * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
+     * Page.waitForResponse()} it takes the base URL in consideration by using the <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the corresponding
+     * URL. Examples:
+     * <ul>
+     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code http://localhost:3000/foo/bar.html}</li>
+     * </ul>
+     */
     public NewContextOptions setBaseURL(String baseURL) {
       this.baseURL = baseURL;
       return this;
     }
+    /**
+     * Toggles bypassing page's Content-Security-Policy.
+     */
     public NewContextOptions setBypassCSP(boolean bypassCSP) {
       this.bypassCSP = bypassCSP;
       return this;
     }
+    /**
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
+     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "light"}.
+     */
     public NewContextOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = colorScheme;
       return this;
     }
+    /**
+     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
+     */
     public NewContextOptions setDeviceScaleFactor(double deviceScaleFactor) {
       this.deviceScaleFactor = deviceScaleFactor;
       return this;
     }
+    /**
+     * An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+     */
     public NewContextOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
       return this;
@@ -227,101 +254,207 @@ public interface Browser extends AutoCloseable {
       this.geolocation = geolocation;
       return this;
     }
+    /**
+     * Specifies if viewport supports touch events. Defaults to false.
+     */
     public NewContextOptions setHasTouch(boolean hasTouch) {
       this.hasTouch = hasTouch;
       return this;
     }
+    /**
+     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>.
+     */
     public NewContextOptions setHttpCredentials(String username, String password) {
       return setHttpCredentials(new HttpCredentials(username, password));
     }
+    /**
+     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>.
+     */
     public NewContextOptions setHttpCredentials(HttpCredentials httpCredentials) {
       this.httpCredentials = httpCredentials;
       return this;
     }
+    /**
+     * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
+     */
     public NewContextOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;
       return this;
     }
+    /**
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported
+     * in Firefox.
+     */
     public NewContextOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
       return this;
     }
+    /**
+     * Whether or not to enable JavaScript in the context. Defaults to {@code true}.
+     */
     public NewContextOptions setJavaScriptEnabled(boolean javaScriptEnabled) {
       this.javaScriptEnabled = javaScriptEnabled;
       return this;
     }
+    /**
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language}
+     * request header value as well as number and date formatting rules.
+     */
     public NewContextOptions setLocale(String locale) {
       this.locale = locale;
       return this;
     }
+    /**
+     * Whether to emulate network being offline. Defaults to {@code false}.
+     */
     public NewContextOptions setOffline(boolean offline) {
       this.offline = offline;
       return this;
     }
+    /**
+     * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
+     * BrowserContext.grantPermissions()} for more details.
+     */
     public NewContextOptions setPermissions(List<String> permissions) {
       this.permissions = permissions;
       return this;
     }
+    /**
+     * Network proxy settings to use with this context.
+     *
+     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
+     * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
+     * 'http://per-context' } })}.
+     */
     public NewContextOptions setProxy(String server) {
       return setProxy(new Proxy(server));
     }
+    /**
+     * Network proxy settings to use with this context.
+     *
+     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
+     * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
+     * 'http://per-context' } })}.
+     */
     public NewContextOptions setProxy(Proxy proxy) {
       this.proxy = proxy;
       return this;
     }
+    /**
+     * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
+     */
     public NewContextOptions setRecordHarOmitContent(boolean recordHarOmitContent) {
       this.recordHarOmitContent = recordHarOmitContent;
       return this;
     }
+    /**
+     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
+     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link BrowserContext#close
+     * BrowserContext.close()} for the HAR to be saved.
+     */
     public NewContextOptions setRecordHarPath(Path recordHarPath) {
       this.recordHarPath = recordHarPath;
       return this;
     }
+    /**
+     * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
+     * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
+     */
     public NewContextOptions setRecordVideoDir(Path recordVideoDir) {
       this.recordVideoDir = recordVideoDir;
       return this;
     }
+    /**
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
+     * be scaled down if necessary to fit the specified size.
+     */
     public NewContextOptions setRecordVideoSize(int width, int height) {
       return setRecordVideoSize(new RecordVideoSize(width, height));
     }
+    /**
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
+     * be scaled down if necessary to fit the specified size.
+     */
     public NewContextOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
       return this;
     }
+    /**
+     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
+     * Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "no-preference"}.
+     */
     public NewContextOptions setReducedMotion(ReducedMotion reducedMotion) {
       this.reducedMotion = reducedMotion;
       return this;
     }
+    /**
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
+     * is set.
+     */
     public NewContextOptions setScreenSize(int width, int height) {
       return setScreenSize(new ScreenSize(width, height));
     }
+    /**
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
+     * is set.
+     */
     public NewContextOptions setScreenSize(ScreenSize screenSize) {
       this.screenSize = screenSize;
       return this;
     }
+    /**
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     */
     public NewContextOptions setStorageState(String storageState) {
       this.storageState = storageState;
       return this;
     }
+    /**
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
+     * state.
+     */
     public NewContextOptions setStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
       return this;
     }
+    /**
+     * It specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
+     * more about the strict mode.
+     */
     public NewContextOptions setStrictSelectors(boolean strictSelectors) {
       this.strictSelectors = strictSelectors;
       return this;
     }
+    /**
+     * Changes the timezone of the context. See <a
+     * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
+     * metaZones.txt</a> for a list of supported timezone IDs.
+     */
     public NewContextOptions setTimezoneId(String timezoneId) {
       this.timezoneId = timezoneId;
       return this;
     }
+    /**
+     * Specific user agent to use in this context.
+     */
     public NewContextOptions setUserAgent(String userAgent) {
       this.userAgent = userAgent;
       return this;
     }
+    /**
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     */
     public NewContextOptions setViewportSize(int width, int height) {
       return setViewportSize(new ViewportSize(width, height));
     }
+    /**
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     */
     public NewContextOptions setViewportSize(ViewportSize viewportSize) {
       this.viewportSize = Optional.ofNullable(viewportSize);
       return this;
@@ -468,26 +601,53 @@ public interface Browser extends AutoCloseable {
      */
     public Optional<ViewportSize> viewportSize;
 
+    /**
+     * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
+     */
     public NewPageOptions setAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
       return this;
     }
+    /**
+     * When using {@link Page#navigate Page.navigate()}, {@link Page#route Page.route()}, {@link Page#waitForURL
+     * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
+     * Page.waitForResponse()} it takes the base URL in consideration by using the <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the corresponding
+     * URL. Examples:
+     * <ul>
+     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code http://localhost:3000/foo/bar.html}</li>
+     * </ul>
+     */
     public NewPageOptions setBaseURL(String baseURL) {
       this.baseURL = baseURL;
       return this;
     }
+    /**
+     * Toggles bypassing page's Content-Security-Policy.
+     */
     public NewPageOptions setBypassCSP(boolean bypassCSP) {
       this.bypassCSP = bypassCSP;
       return this;
     }
+    /**
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
+     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "light"}.
+     */
     public NewPageOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = colorScheme;
       return this;
     }
+    /**
+     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
+     */
     public NewPageOptions setDeviceScaleFactor(double deviceScaleFactor) {
       this.deviceScaleFactor = deviceScaleFactor;
       return this;
     }
+    /**
+     * An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+     */
     public NewPageOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
       return this;
@@ -499,101 +659,207 @@ public interface Browser extends AutoCloseable {
       this.geolocation = geolocation;
       return this;
     }
+    /**
+     * Specifies if viewport supports touch events. Defaults to false.
+     */
     public NewPageOptions setHasTouch(boolean hasTouch) {
       this.hasTouch = hasTouch;
       return this;
     }
+    /**
+     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>.
+     */
     public NewPageOptions setHttpCredentials(String username, String password) {
       return setHttpCredentials(new HttpCredentials(username, password));
     }
+    /**
+     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>.
+     */
     public NewPageOptions setHttpCredentials(HttpCredentials httpCredentials) {
       this.httpCredentials = httpCredentials;
       return this;
     }
+    /**
+     * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
+     */
     public NewPageOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;
       return this;
     }
+    /**
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported
+     * in Firefox.
+     */
     public NewPageOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
       return this;
     }
+    /**
+     * Whether or not to enable JavaScript in the context. Defaults to {@code true}.
+     */
     public NewPageOptions setJavaScriptEnabled(boolean javaScriptEnabled) {
       this.javaScriptEnabled = javaScriptEnabled;
       return this;
     }
+    /**
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language}
+     * request header value as well as number and date formatting rules.
+     */
     public NewPageOptions setLocale(String locale) {
       this.locale = locale;
       return this;
     }
+    /**
+     * Whether to emulate network being offline. Defaults to {@code false}.
+     */
     public NewPageOptions setOffline(boolean offline) {
       this.offline = offline;
       return this;
     }
+    /**
+     * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
+     * BrowserContext.grantPermissions()} for more details.
+     */
     public NewPageOptions setPermissions(List<String> permissions) {
       this.permissions = permissions;
       return this;
     }
+    /**
+     * Network proxy settings to use with this context.
+     *
+     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
+     * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
+     * 'http://per-context' } })}.
+     */
     public NewPageOptions setProxy(String server) {
       return setProxy(new Proxy(server));
     }
+    /**
+     * Network proxy settings to use with this context.
+     *
+     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
+     * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
+     * 'http://per-context' } })}.
+     */
     public NewPageOptions setProxy(Proxy proxy) {
       this.proxy = proxy;
       return this;
     }
+    /**
+     * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
+     */
     public NewPageOptions setRecordHarOmitContent(boolean recordHarOmitContent) {
       this.recordHarOmitContent = recordHarOmitContent;
       return this;
     }
+    /**
+     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
+     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link BrowserContext#close
+     * BrowserContext.close()} for the HAR to be saved.
+     */
     public NewPageOptions setRecordHarPath(Path recordHarPath) {
       this.recordHarPath = recordHarPath;
       return this;
     }
+    /**
+     * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
+     * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
+     */
     public NewPageOptions setRecordVideoDir(Path recordVideoDir) {
       this.recordVideoDir = recordVideoDir;
       return this;
     }
+    /**
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
+     * be scaled down if necessary to fit the specified size.
+     */
     public NewPageOptions setRecordVideoSize(int width, int height) {
       return setRecordVideoSize(new RecordVideoSize(width, height));
     }
+    /**
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
+     * be scaled down if necessary to fit the specified size.
+     */
     public NewPageOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
       return this;
     }
+    /**
+     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
+     * Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "no-preference"}.
+     */
     public NewPageOptions setReducedMotion(ReducedMotion reducedMotion) {
       this.reducedMotion = reducedMotion;
       return this;
     }
+    /**
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
+     * is set.
+     */
     public NewPageOptions setScreenSize(int width, int height) {
       return setScreenSize(new ScreenSize(width, height));
     }
+    /**
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
+     * is set.
+     */
     public NewPageOptions setScreenSize(ScreenSize screenSize) {
       this.screenSize = screenSize;
       return this;
     }
+    /**
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     */
     public NewPageOptions setStorageState(String storageState) {
       this.storageState = storageState;
       return this;
     }
+    /**
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
+     * state.
+     */
     public NewPageOptions setStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
       return this;
     }
+    /**
+     * It specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
+     * more about the strict mode.
+     */
     public NewPageOptions setStrictSelectors(boolean strictSelectors) {
       this.strictSelectors = strictSelectors;
       return this;
     }
+    /**
+     * Changes the timezone of the context. See <a
+     * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
+     * metaZones.txt</a> for a list of supported timezone IDs.
+     */
     public NewPageOptions setTimezoneId(String timezoneId) {
       this.timezoneId = timezoneId;
       return this;
     }
+    /**
+     * Specific user agent to use in this context.
+     */
     public NewPageOptions setUserAgent(String userAgent) {
       this.userAgent = userAgent;
       return this;
     }
+    /**
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     */
     public NewPageOptions setViewportSize(int width, int height) {
       return setViewportSize(new ViewportSize(width, height));
     }
+    /**
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     */
     public NewPageOptions setViewportSize(ViewportSize viewportSize) {
       this.viewportSize = Optional.ofNullable(viewportSize);
       return this;
@@ -613,14 +879,23 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean screenshots;
 
+    /**
+     * specify custom categories to use instead of default.
+     */
     public StartTracingOptions setCategories(List<String> categories) {
       this.categories = categories;
       return this;
     }
+    /**
+     * A path to write the trace file to.
+     */
     public StartTracingOptions setPath(Path path) {
       this.path = path;
       return this;
     }
+    /**
+     * captures screenshots in the trace.
+     */
     public StartTracingOptions setScreenshots(boolean screenshots) {
       this.screenshots = screenshots;
       return this;

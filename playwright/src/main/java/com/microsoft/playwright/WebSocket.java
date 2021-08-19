@@ -72,10 +72,17 @@ public interface WebSocket {
      */
     public Double timeout;
 
+    /**
+     * Receives the {@code WebSocketFrame} object and resolves to truthy value when the waiting should resolve.
+     */
     public WaitForFrameReceivedOptions setPredicate(Predicate<WebSocketFrame> predicate) {
       this.predicate = predicate;
       return this;
     }
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     */
     public WaitForFrameReceivedOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -92,10 +99,17 @@ public interface WebSocket {
      */
     public Double timeout;
 
+    /**
+     * Receives the {@code WebSocketFrame} object and resolves to truthy value when the waiting should resolve.
+     */
     public WaitForFrameSentOptions setPredicate(Predicate<WebSocketFrame> predicate) {
       this.predicate = predicate;
       return this;
     }
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     */
     public WaitForFrameSentOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;

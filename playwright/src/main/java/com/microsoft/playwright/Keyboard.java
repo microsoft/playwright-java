@@ -60,6 +60,9 @@ public interface Keyboard {
      */
     public Double delay;
 
+    /**
+     * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
+     */
     public PressOptions setDelay(double delay) {
       this.delay = delay;
       return this;
@@ -71,6 +74,9 @@ public interface Keyboard {
      */
     public Double delay;
 
+    /**
+     * Time to wait between key presses in milliseconds. Defaults to 0.
+     */
     public TypeOptions setDelay(double delay) {
       this.delay = delay;
       return this;

@@ -137,6 +137,10 @@ public interface BrowserContext extends AutoCloseable {
      */
     public Boolean handle;
 
+    /**
+     * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument is
+     * supported. When passing by value, multiple arguments are supported.
+     */
     public ExposeBindingOptions setHandle(boolean handle) {
       this.handle = handle;
       return this;
@@ -148,6 +152,9 @@ public interface BrowserContext extends AutoCloseable {
      */
     public String origin;
 
+    /**
+     * The [origin] to grant permissions to, e.g. "https://example.com".
+     */
     public GrantPermissionsOptions setOrigin(String origin) {
       this.origin = origin;
       return this;
@@ -160,6 +167,10 @@ public interface BrowserContext extends AutoCloseable {
      */
     public Path path;
 
+    /**
+     * The file path to save the storage state to. If {@code path} is a relative path, then it is resolved relative to current
+     * working directory. If no path is provided, storage state is still returned, but won't be saved to the disk.
+     */
     public StorageStateOptions setPath(Path path) {
       this.path = path;
       return this;
@@ -176,10 +187,17 @@ public interface BrowserContext extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Receives the {@code Page} object and resolves to truthy value when the waiting should resolve.
+     */
     public WaitForPageOptions setPredicate(Predicate<Page> predicate) {
       this.predicate = predicate;
       return this;
     }
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     */
     public WaitForPageOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;

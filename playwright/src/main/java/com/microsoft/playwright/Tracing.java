@@ -52,14 +52,24 @@ public interface Tracing {
      */
     public Boolean snapshots;
 
+    /**
+     * If specified, the trace is going to be saved into the file with the given name inside the {@code tracesDir} folder specified
+     * in {@link BrowserType#launch BrowserType.launch()}.
+     */
     public StartOptions setName(String name) {
       this.name = name;
       return this;
     }
+    /**
+     * Whether to capture screenshots during tracing. Screenshots are used to build a timeline preview.
+     */
     public StartOptions setScreenshots(boolean screenshots) {
       this.screenshots = screenshots;
       return this;
     }
+    /**
+     * Whether to capture DOM snapshot on every action.
+     */
     public StartOptions setSnapshots(boolean snapshots) {
       this.snapshots = snapshots;
       return this;
@@ -71,6 +81,9 @@ public interface Tracing {
      */
     public Path path;
 
+    /**
+     * Export trace into the file with the given name.
+     */
     public StopOptions setPath(Path path) {
       this.path = path;
       return this;

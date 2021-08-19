@@ -326,18 +326,32 @@ public interface Page extends AutoCloseable {
      */
     public String url;
 
+    /**
+     * Raw JavaScript content to be injected into frame.
+     */
     public AddScriptTagOptions setContent(String content) {
       this.content = content;
       return this;
     }
+    /**
+     * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the
+     * current working directory.
+     */
     public AddScriptTagOptions setPath(Path path) {
       this.path = path;
       return this;
     }
+    /**
+     * Script type. Use 'module' in order to load a Javascript ES6 module. See <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script">script</a> for more details.
+     */
     public AddScriptTagOptions setType(String type) {
       this.type = type;
       return this;
     }
+    /**
+     * URL of a script to be added.
+     */
     public AddScriptTagOptions setUrl(String url) {
       this.url = url;
       return this;
@@ -358,14 +372,24 @@ public interface Page extends AutoCloseable {
      */
     public String url;
 
+    /**
+     * Raw CSS content to be injected into frame.
+     */
     public AddStyleTagOptions setContent(String content) {
       this.content = content;
       return this;
     }
+    /**
+     * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the
+     * current working directory.
+     */
     public AddStyleTagOptions setPath(Path path) {
       this.path = path;
       return this;
     }
+    /**
+     * URL of the {@code <link>} tag.
+     */
     public AddStyleTagOptions setUrl(String url) {
       this.url = url;
       return this;
@@ -406,29 +430,60 @@ public interface Page extends AutoCloseable {
      */
     public Boolean trial;
 
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public CheckOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public CheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public CheckOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public CheckOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public CheckOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public CheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
     public CheckOptions setTrial(boolean trial) {
       this.trial = trial;
       return this;
@@ -486,45 +541,89 @@ public interface Page extends AutoCloseable {
      */
     public Boolean trial;
 
+    /**
+     * Defaults to {@code left}.
+     */
     public ClickOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
+    /**
+     * defaults to 1. See [UIEvent.detail].
+     */
     public ClickOptions setClickCount(int clickCount) {
       this.clickCount = clickCount;
       return this;
     }
+    /**
+     * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
+     */
     public ClickOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public ClickOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
+     */
     public ClickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public ClickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public ClickOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public ClickOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public ClickOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public ClickOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
     public ClickOptions setTrial(boolean trial) {
       this.trial = trial;
       return this;
@@ -537,6 +636,10 @@ public interface Page extends AutoCloseable {
      */
     public Boolean runBeforeUnload;
 
+    /**
+     * Defaults to {@code false}. Whether to run the <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/Events/beforeunload">before unload</a> page handlers.
+     */
     public CloseOptions setRunBeforeUnload(boolean runBeforeUnload) {
       this.runBeforeUnload = runBeforeUnload;
       return this;
@@ -590,41 +693,82 @@ public interface Page extends AutoCloseable {
      */
     public Boolean trial;
 
+    /**
+     * Defaults to {@code left}.
+     */
     public DblclickOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
+    /**
+     * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
+     */
     public DblclickOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public DblclickOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
+     */
     public DblclickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public DblclickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public DblclickOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public DblclickOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public DblclickOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public DblclickOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
     public DblclickOptions setTrial(boolean trial) {
       this.trial = trial;
       return this;
@@ -643,10 +787,19 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public DispatchEventOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public DispatchEventOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -692,36 +845,75 @@ public interface Page extends AutoCloseable {
      */
     public Boolean trial;
 
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public DragAndDropOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public DragAndDropOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * Clicks on the source element at this point relative to the top-left corner of the element's padding box. If not
+     * specified, some visible point of the element is used.
+     */
     public DragAndDropOptions setSourcePosition(double x, double y) {
       return setSourcePosition(new Position(x, y));
     }
+    /**
+     * Clicks on the source element at this point relative to the top-left corner of the element's padding box. If not
+     * specified, some visible point of the element is used.
+     */
     public DragAndDropOptions setSourcePosition(Position sourcePosition) {
       this.sourcePosition = sourcePosition;
       return this;
     }
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public DragAndDropOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Drops on the target element at this point relative to the top-left corner of the element's padding box. If not
+     * specified, some visible point of the element is used.
+     */
     public DragAndDropOptions setTargetPosition(double x, double y) {
       return setTargetPosition(new Position(x, y));
     }
+    /**
+     * Drops on the target element at this point relative to the top-left corner of the element's padding box. If not
+     * specified, some visible point of the element is used.
+     */
     public DragAndDropOptions setTargetPosition(Position targetPosition) {
       this.targetPosition = targetPosition;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public DragAndDropOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
     public DragAndDropOptions setTrial(boolean trial) {
       this.trial = trial;
       return this;
@@ -744,14 +936,26 @@ public interface Page extends AutoCloseable {
      */
     public Optional<ReducedMotion> reducedMotion;
 
+    /**
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. Passing
+     * {@code null} disables color scheme emulation.
+     */
     public EmulateMediaOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
       return this;
     }
+    /**
+     * Changes the CSS media type of the page. The only allowed values are {@code "screen"}, {@code "print"} and {@code null}. Passing {@code null}
+     * disables CSS media emulation.
+     */
     public EmulateMediaOptions setMedia(Media media) {
       this.media = Optional.ofNullable(media);
       return this;
     }
+    /**
+     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. Passing {@code null}
+     * disables reduced motion emulation.
+     */
     public EmulateMediaOptions setReducedMotion(ReducedMotion reducedMotion) {
       this.reducedMotion = Optional.ofNullable(reducedMotion);
       return this;
@@ -764,6 +968,10 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
 
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public EvalOnSelectorOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
@@ -776,6 +984,10 @@ public interface Page extends AutoCloseable {
      */
     public Boolean handle;
 
+    /**
+     * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument is
+     * supported. When passing by value, multiple arguments are supported.
+     */
     public ExposeBindingOptions setHandle(boolean handle) {
       this.handle = handle;
       return this;
@@ -805,18 +1017,36 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public FillOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public FillOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public FillOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public FillOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -835,10 +1065,19 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public FocusOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public FocusOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -857,10 +1096,19 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public GetAttributeOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public GetAttributeOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -884,10 +1132,24 @@ public interface Page extends AutoCloseable {
      */
     public WaitUntilState waitUntil;
 
+    /**
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     */
     public GoBackOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When to consider operation succeeded, defaults to {@code load}. Events can be either:
+     * <ul>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
+     */
     public GoBackOptions setWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
@@ -911,10 +1173,24 @@ public interface Page extends AutoCloseable {
      */
     public WaitUntilState waitUntil;
 
+    /**
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     */
     public GoForwardOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When to consider operation succeeded, defaults to {@code load}. Events can be either:
+     * <ul>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
+     */
     public GoForwardOptions setWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
@@ -943,14 +1219,32 @@ public interface Page extends AutoCloseable {
      */
     public WaitUntilState waitUntil;
 
+    /**
+     * Referer header value. If provided it will take preference over the referer header value set by {@link
+     * Page#setExtraHTTPHeaders Page.setExtraHTTPHeaders()}.
+     */
     public NavigateOptions setReferer(String referer) {
       this.referer = referer;
       return this;
     }
+    /**
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     */
     public NavigateOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When to consider operation succeeded, defaults to {@code load}. Events can be either:
+     * <ul>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
+     */
     public NavigateOptions setWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
@@ -990,29 +1284,59 @@ public interface Page extends AutoCloseable {
      */
     public Boolean trial;
 
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public HoverOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
+     */
     public HoverOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public HoverOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public HoverOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public HoverOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public HoverOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
     public HoverOptions setTrial(boolean trial) {
       this.trial = trial;
       return this;
@@ -1031,10 +1355,19 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public InnerHTMLOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public InnerHTMLOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1053,10 +1386,19 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public InnerTextOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public InnerTextOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1075,10 +1417,19 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public InputValueOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public InputValueOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1097,10 +1448,19 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public IsCheckedOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public IsCheckedOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1119,10 +1479,19 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public IsDisabledOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public IsDisabledOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1141,10 +1510,19 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public IsEditableOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public IsEditableOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1163,10 +1541,19 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public IsEnabledOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public IsEnabledOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1185,10 +1572,19 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public IsHiddenOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public IsHiddenOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1207,10 +1603,19 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public IsVisibleOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1280,54 +1685,103 @@ public interface Page extends AutoCloseable {
      */
     public String width;
 
+    /**
+     * Display header and footer. Defaults to {@code false}.
+     */
     public PdfOptions setDisplayHeaderFooter(boolean displayHeaderFooter) {
       this.displayHeaderFooter = displayHeaderFooter;
       return this;
     }
+    /**
+     * HTML template for the print footer. Should use the same format as the {@code headerTemplate}.
+     */
     public PdfOptions setFooterTemplate(String footerTemplate) {
       this.footerTemplate = footerTemplate;
       return this;
     }
+    /**
+     * Paper format. If set, takes priority over {@code width} or {@code height} options. Defaults to 'Letter'.
+     */
     public PdfOptions setFormat(String format) {
       this.format = format;
       return this;
     }
+    /**
+     * HTML template for the print header. Should be valid HTML markup with following classes used to inject printing values
+     * into them:
+     * <ul>
+     * <li> {@code "date"} formatted print date</li>
+     * <li> {@code "title"} document title</li>
+     * <li> {@code "url"} document location</li>
+     * <li> {@code "pageNumber"} current page number</li>
+     * <li> {@code "totalPages"} total pages in the document</li>
+     * </ul>
+     */
     public PdfOptions setHeaderTemplate(String headerTemplate) {
       this.headerTemplate = headerTemplate;
       return this;
     }
+    /**
+     * Paper height, accepts values labeled with units.
+     */
     public PdfOptions setHeight(String height) {
       this.height = height;
       return this;
     }
+    /**
+     * Paper orientation. Defaults to {@code false}.
+     */
     public PdfOptions setLandscape(boolean landscape) {
       this.landscape = landscape;
       return this;
     }
+    /**
+     * Paper margins, defaults to none.
+     */
     public PdfOptions setMargin(Margin margin) {
       this.margin = margin;
       return this;
     }
+    /**
+     * Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print all pages.
+     */
     public PdfOptions setPageRanges(String pageRanges) {
       this.pageRanges = pageRanges;
       return this;
     }
+    /**
+     * The file path to save the PDF to. If {@code path} is a relative path, then it is resolved relative to the current working
+     * directory. If no path is provided, the PDF won't be saved to the disk.
+     */
     public PdfOptions setPath(Path path) {
       this.path = path;
       return this;
     }
+    /**
+     * Give any CSS {@code @page} size declared in the page priority over what is declared in {@code width} and {@code height} or {@code format}
+     * options. Defaults to {@code false}, which will scale the content to fit the paper size.
+     */
     public PdfOptions setPreferCSSPageSize(boolean preferCSSPageSize) {
       this.preferCSSPageSize = preferCSSPageSize;
       return this;
     }
+    /**
+     * Print background graphics. Defaults to {@code false}.
+     */
     public PdfOptions setPrintBackground(boolean printBackground) {
       this.printBackground = printBackground;
       return this;
     }
+    /**
+     * Scale of the webpage rendering. Defaults to {@code 1}. Scale amount must be between 0.1 and 2.
+     */
     public PdfOptions setScale(double scale) {
       this.scale = scale;
       return this;
     }
+    /**
+     * Paper width, accepts values labeled with units.
+     */
     public PdfOptions setWidth(String width) {
       this.width = width;
       return this;
@@ -1356,18 +1810,35 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
+     */
     public PressOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public PressOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public PressOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public PressOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1380,6 +1851,10 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
 
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public QuerySelectorOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
@@ -1403,10 +1878,24 @@ public interface Page extends AutoCloseable {
      */
     public WaitUntilState waitUntil;
 
+    /**
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     */
     public ReloadOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When to consider operation succeeded, defaults to {@code load}. Events can be either:
+     * <ul>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
+     */
     public ReloadOptions setWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
@@ -1448,33 +1937,63 @@ public interface Page extends AutoCloseable {
      */
     public ScreenshotType type;
 
+    /**
+     * An object which specifies clipping of the resulting image. Should have the following fields:
+     */
     public ScreenshotOptions setClip(double x, double y, double width, double height) {
       return setClip(new Clip(x, y, width, height));
     }
+    /**
+     * An object which specifies clipping of the resulting image. Should have the following fields:
+     */
     public ScreenshotOptions setClip(Clip clip) {
       this.clip = clip;
       return this;
     }
+    /**
+     * When true, takes a screenshot of the full scrollable page, instead of the currently visible viewport. Defaults to
+     * {@code false}.
+     */
     public ScreenshotOptions setFullPage(boolean fullPage) {
       this.fullPage = fullPage;
       return this;
     }
+    /**
+     * Hides default white background and allows capturing screenshots with transparency. Not applicable to {@code jpeg} images.
+     * Defaults to {@code false}.
+     */
     public ScreenshotOptions setOmitBackground(boolean omitBackground) {
       this.omitBackground = omitBackground;
       return this;
     }
+    /**
+     * The file path to save the image to. The screenshot type will be inferred from file extension. If {@code path} is a relative
+     * path, then it is resolved relative to the current working directory. If no path is provided, the image won't be saved to
+     * the disk.
+     */
     public ScreenshotOptions setPath(Path path) {
       this.path = path;
       return this;
     }
+    /**
+     * The quality of the image, between 0-100. Not applicable to {@code png} images.
+     */
     public ScreenshotOptions setQuality(int quality) {
       this.quality = quality;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public ScreenshotOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * Specify screenshot type, defaults to {@code png}.
+     */
     public ScreenshotOptions setType(ScreenshotType type) {
       this.type = type;
       return this;
@@ -1504,18 +2023,36 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public SelectOptionOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public SelectOptionOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public SelectOptionOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1539,10 +2076,24 @@ public interface Page extends AutoCloseable {
      */
     public WaitUntilState waitUntil;
 
+    /**
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     */
     public SetContentOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When to consider operation succeeded, defaults to {@code load}. Events can be either:
+     * <ul>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
+     */
     public SetContentOptions setWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
@@ -1567,14 +2118,28 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public SetInputFilesOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public SetInputFilesOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public SetInputFilesOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1620,33 +2185,68 @@ public interface Page extends AutoCloseable {
      */
     public Boolean trial;
 
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public TapOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
+     */
     public TapOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public TapOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public TapOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public TapOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public TapOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public TapOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
     public TapOptions setTrial(boolean trial) {
       this.trial = trial;
       return this;
@@ -1665,10 +2265,19 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public TextContentOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public TextContentOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1697,18 +2306,35 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Time to wait between key presses in milliseconds. Defaults to 0.
+     */
     public TypeOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public TypeOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public TypeOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public TypeOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1749,29 +2375,60 @@ public interface Page extends AutoCloseable {
      */
     public Boolean trial;
 
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public UncheckOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public UncheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public UncheckOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public UncheckOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public UncheckOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public UncheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
     public UncheckOptions setTrial(boolean trial) {
       this.trial = trial;
       return this;
@@ -1784,6 +2441,10 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     */
     public WaitForCloseOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1800,10 +2461,17 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Receives the {@code ConsoleMessage} object and resolves to truthy value when the waiting should resolve.
+     */
     public WaitForConsoleMessageOptions setPredicate(Predicate<ConsoleMessage> predicate) {
       this.predicate = predicate;
       return this;
     }
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     */
     public WaitForConsoleMessageOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1820,10 +2488,17 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Receives the {@code Download} object and resolves to truthy value when the waiting should resolve.
+     */
     public WaitForDownloadOptions setPredicate(Predicate<Download> predicate) {
       this.predicate = predicate;
       return this;
     }
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     */
     public WaitForDownloadOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1840,10 +2515,17 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Receives the {@code FileChooser} object and resolves to truthy value when the waiting should resolve.
+     */
     public WaitForFileChooserOptions setPredicate(Predicate<FileChooser> predicate) {
       this.predicate = predicate;
       return this;
     }
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     */
     public WaitForFileChooserOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1861,10 +2543,18 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * If specified, then it is treated as an interval in milliseconds at which the function would be executed. By default if
+     * the option is not specified {@code expression} is executed in {@code requestAnimationFrame} callback.
+     */
     public WaitForFunctionOptions setPollingInterval(double pollingInterval) {
       this.pollingInterval = pollingInterval;
       return this;
     }
+    /**
+     * maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     */
     public WaitForFunctionOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1879,6 +2569,12 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     */
     public WaitForLoadStateOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1906,22 +2602,45 @@ public interface Page extends AutoCloseable {
      */
     public WaitUntilState waitUntil;
 
+    /**
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     */
     public WaitForNavigationOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+     */
     public WaitForNavigationOptions setUrl(String url) {
       this.url = url;
       return this;
     }
+    /**
+     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+     */
     public WaitForNavigationOptions setUrl(Pattern url) {
       this.url = url;
       return this;
     }
+    /**
+     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+     */
     public WaitForNavigationOptions setUrl(Predicate<String> url) {
       this.url = url;
       return this;
     }
+    /**
+     * When to consider operation succeeded, defaults to {@code load}. Events can be either:
+     * <ul>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
+     */
     public WaitForNavigationOptions setWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
@@ -1938,10 +2657,17 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Receives the {@code Page} object and resolves to truthy value when the waiting should resolve.
+     */
     public WaitForPopupOptions setPredicate(Predicate<Page> predicate) {
       this.predicate = predicate;
       return this;
     }
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     */
     public WaitForPopupOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1954,6 +2680,10 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be
+     * changed by using the {@link Page#setDefaultTimeout Page.setDefaultTimeout()} method.
+     */
     public WaitForRequestOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1970,10 +2700,17 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Receives the {@code Request} object and resolves to truthy value when the waiting should resolve.
+     */
     public WaitForRequestFinishedOptions setPredicate(Predicate<Request> predicate) {
       this.predicate = predicate;
       return this;
     }
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     */
     public WaitForRequestFinishedOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1987,6 +2724,11 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     */
     public WaitForResponseOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -2017,14 +2759,34 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Defaults to {@code "visible"}. Can be either:
+     * <ul>
+     * <li> {@code "attached"} - wait for element to be present in DOM.</li>
+     * <li> {@code "detached"} - wait for element to not be present in DOM.</li>
+     * <li> {@code "visible"} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
+     * content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
+     * <li> {@code "hidden"} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
+     * is opposite to the {@code "visible"} option.</li>
+     * </ul>
+     */
     public WaitForSelectorOptions setState(WaitForSelectorState state) {
       this.state = state;
       return this;
     }
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
     public WaitForSelectorOptions setStrict(boolean strict) {
       this.strict = strict;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public WaitForSelectorOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -2048,10 +2810,24 @@ public interface Page extends AutoCloseable {
      */
     public WaitUntilState waitUntil;
 
+    /**
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     */
     public WaitForURLOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When to consider operation succeeded, defaults to {@code load}. Events can be either:
+     * <ul>
+     * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
+     * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * </ul>
+     */
     public WaitForURLOptions setWaitUntil(WaitUntilState waitUntil) {
       this.waitUntil = waitUntil;
       return this;
@@ -2068,10 +2844,17 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Receives the {@code WebSocket} object and resolves to truthy value when the waiting should resolve.
+     */
     public WaitForWebSocketOptions setPredicate(Predicate<WebSocket> predicate) {
       this.predicate = predicate;
       return this;
     }
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     */
     public WaitForWebSocketOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -2088,10 +2871,17 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
 
+    /**
+     * Receives the {@code Worker} object and resolves to truthy value when the waiting should resolve.
+     */
     public WaitForWorkerOptions setPredicate(Predicate<Worker> predicate) {
       this.predicate = predicate;
       return this;
     }
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     */
     public WaitForWorkerOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;

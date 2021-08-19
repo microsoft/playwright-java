@@ -38,14 +38,23 @@ public class Proxy {
   public Proxy(String server) {
     this.server = server;
   }
+  /**
+   * Optional coma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
+   */
   public Proxy setBypass(String bypass) {
     this.bypass = bypass;
     return this;
   }
+  /**
+   * Optional username to use if HTTP proxy requires authentication.
+   */
   public Proxy setUsername(String username) {
     this.username = username;
     return this;
   }
+  /**
+   * Optional password to use if HTTP proxy requires authentication.
+   */
   public Proxy setPassword(String password) {
     this.password = password;
     return this;
