@@ -19,11 +19,11 @@ package com.microsoft.playwright;
 import java.util.*;
 
 /**
- * {@code ConsoleMessage} objects are dispatched by page via the {@link Page#onConsole Page.onConsole()} event.
+ * {@code ConsoleMessage} objects are dispatched by page via the {@link Page#onConsoleMessage Page.onConsoleMessage()} event.
  */
 public interface ConsoleMessage {
   /**
-   * List of arguments passed to a {@code console} function call. See also {@link Page#onConsole Page.onConsole()}.
+   * List of arguments passed to a {@code console} function call. See also {@link Page#onConsoleMessage Page.onConsoleMessage()}.
    */
   List<JSHandle> args();
   /**

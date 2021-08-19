@@ -658,7 +658,7 @@ public interface BrowserContext extends AutoCloseable {
    * <ul>
    * <li> {@link Page#goBack Page.goBack()}</li>
    * <li> {@link Page#goForward Page.goForward()}</li>
-   * <li> {@link Page#goto Page.goto()}</li>
+   * <li> {@link Page#navigate Page.navigate()}</li>
    * <li> {@link Page#reload Page.reload()}</li>
    * <li> {@link Page#setContent Page.setContent()}</li>
    * <li> {@link Page#waitForNavigation Page.waitForNavigation()}</li>
