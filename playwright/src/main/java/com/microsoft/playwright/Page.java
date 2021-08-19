@@ -3135,7 +3135,7 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the <a
    * href="https://bugs.chromium.org/p/chromium/issues/detail?id=761295">upstream issue</a>.
    *
-   * <p> Shortcut for main frame's {@link Frame#goto Frame.goto()}
+   * <p> Shortcut for main frame's {@link Frame#navigate Frame.navigate()}
    *
    * @param url URL to navigate page to. The url should include scheme, e.g. {@code https://}. When a {@code baseURL} via the context options was
    * provided and the passed URL is a path, it gets merged via the <a
@@ -3167,7 +3167,7 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the <a
    * href="https://bugs.chromium.org/p/chromium/issues/detail?id=761295">upstream issue</a>.
    *
-   * <p> Shortcut for main frame's {@link Frame#goto Frame.goto()}
+   * <p> Shortcut for main frame's {@link Frame#navigate Frame.navigate()}
    *
    * @param url URL to navigate page to. The url should include scheme, e.g. {@code https://}. When a {@code baseURL} via the context options was
    * provided and the passed URL is a path, it gets merged via the <a
@@ -4186,7 +4186,7 @@ public interface Page extends AutoCloseable {
    * <ul>
    * <li> {@link Page#goBack Page.goBack()}</li>
    * <li> {@link Page#goForward Page.goForward()}</li>
-   * <li> {@link Page#goto Page.goto()}</li>
+   * <li> {@link Page#navigate Page.navigate()}</li>
    * <li> {@link Page#reload Page.reload()}</li>
    * <li> {@link Page#setContent Page.setContent()}</li>
    * <li> {@link Page#waitForNavigation Page.waitForNavigation()}</li>
@@ -4560,7 +4560,7 @@ public interface Page extends AutoCloseable {
   /**
    * Performs action and waits for a {@code ConsoleMessage} to be logged by in the page. If predicate is provided, it passes
    * {@code ConsoleMessage} value into the {@code predicate} function and waits for {@code predicate(message)} to return a truthy value. Will
-   * throw an error if the page is closed before the {@link Page#onConsole Page.onConsole()} event is fired.
+   * throw an error if the page is closed before the {@link Page#onConsoleMessage Page.onConsoleMessage()} event is fired.
    *
    * @param callback Callback that performs the action triggering the event.
    */
@@ -4570,7 +4570,7 @@ public interface Page extends AutoCloseable {
   /**
    * Performs action and waits for a {@code ConsoleMessage} to be logged by in the page. If predicate is provided, it passes
    * {@code ConsoleMessage} value into the {@code predicate} function and waits for {@code predicate(message)} to return a truthy value. Will
-   * throw an error if the page is closed before the {@link Page#onConsole Page.onConsole()} event is fired.
+   * throw an error if the page is closed before the {@link Page#onConsoleMessage Page.onConsoleMessage()} event is fired.
    *
    * @param callback Callback that performs the action triggering the event.
    */

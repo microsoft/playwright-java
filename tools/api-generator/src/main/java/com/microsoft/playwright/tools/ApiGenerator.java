@@ -160,6 +160,9 @@ abstract class Element {
     while (matcher.find()) {
       linkified += paragraph.substring(start, matcher.start());
       String name = matcher.group(2);
+      if (ApiGenerator.aliases.containsKey(name)) {
+        name = ApiGenerator.aliases.get(name);
+      }
       if ("event".equals(matcher.group(1))) {
         String[] parts = name.split("\\.");
         name = parts[0] + ".on" + toTitle(parts[1]);
@@ -1048,12 +1051,16 @@ class Enum extends TypeDefinition {
 }
 
 public class ApiGenerator {
+  // TODO: make it an instance field.
+  static final Map<String, String> aliases = new HashMap<>();
+
   ApiGenerator(Reader reader) throws IOException {
     JsonArray api = new Gson().fromJson(reader, JsonArray.class);
     File cwd = FileSystems.getDefault().getPath(".").toFile();
     File dir = new File(cwd, "playwright/src/main/java/com/microsoft/playwright");
     System.out.println("Writing files to: " + dir.getCanonicalPath());
-    filterOtherLangs(api);
+    Stack<String> path = new Stack<>();
+    filterOtherLangs(api, path);
     Map<String, TypeDefinition> topLevelTypes = new HashMap<>();
     for (JsonElement entry: api) {
       String name = entry.getAsJsonObject().get("name").getAsString();
@@ -1080,14 +1087,14 @@ public class ApiGenerator {
     }
   }
 
-  private static void filterOtherLangs(JsonElement json) {
+  private static void filterOtherLangs(JsonElement json, Stack<String> path) {
     if (json.isJsonArray()) {
       List<Integer> toRemove = new ArrayList<>();
       JsonArray array = json.getAsJsonArray();
       for (int i = 0; i < array.size(); i++) {
         JsonElement item = array.get(i);
         if (isSupported(item)) {
-          filterOtherLangs(item);
+          filterOtherLangs(item, path);
         } else {
           toRemove.add(i);
         }
@@ -1099,19 +1106,25 @@ public class ApiGenerator {
     } else if (json.isJsonObject()) {
       List<String> toRemove = new ArrayList<>();
       JsonObject object = json.getAsJsonObject();
+      path.push(object.has("name") ? object.get("name").getAsString() : "<none>");
       String alias = alias(object);
       if (alias != null) {
+        List<String> aliasPath = new ArrayList<>(path);
+        aliasPath.set(aliasPath.size() - 1, alias);
+        aliases.put(String.join(".", path), String.join(".", aliasPath));
         // Rename in place.
         object.addProperty("name", alias);
       }
       overrideType(object);
+
       for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
         if (isSupported(entry.getValue())) {
-          filterOtherLangs(entry.getValue());
+          filterOtherLangs(entry.getValue(), path);
         } else {
           toRemove.add(entry.getKey());
         }
       }
+      path.pop();
       for (String key : toRemove) {
         object.remove(key);
       }
