@@ -5,4 +5,3 @@
 * set new driver version in `scripts/CLI_VERSION`
 * regenerate API: `./scripts/download_driver_for_all_platforms.sh -f && ./scripts/generate_api.sh`
 * commit & send PR with the roll
-
