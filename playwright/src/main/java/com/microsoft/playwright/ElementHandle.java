@@ -89,25 +89,52 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean trial;
 
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public CheckOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public CheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public CheckOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public CheckOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public CheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
     public CheckOptions setTrial(boolean trial) {
       this.trial = trial;
       return this;
@@ -160,41 +187,81 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean trial;
 
+    /**
+     * Defaults to {@code left}.
+     */
     public ClickOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
+    /**
+     * defaults to 1. See [UIEvent.detail].
+     */
     public ClickOptions setClickCount(int clickCount) {
       this.clickCount = clickCount;
       return this;
     }
+    /**
+     * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
+     */
     public ClickOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public ClickOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
+     */
     public ClickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public ClickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public ClickOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public ClickOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public ClickOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
     public ClickOptions setTrial(boolean trial) {
       this.trial = trial;
       return this;
@@ -243,37 +310,74 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean trial;
 
+    /**
+     * Defaults to {@code left}.
+     */
     public DblclickOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
+    /**
+     * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
+     */
     public DblclickOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public DblclickOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
+     */
     public DblclickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public DblclickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public DblclickOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public DblclickOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public DblclickOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
     public DblclickOptions setTrial(boolean trial) {
       this.trial = trial;
       return this;
@@ -298,14 +402,28 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public FillOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public FillOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public FillOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -340,25 +458,51 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean trial;
 
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public HoverOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
+     */
     public HoverOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public HoverOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public HoverOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public HoverOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
     public HoverOptions setTrial(boolean trial) {
       this.trial = trial;
       return this;
@@ -372,6 +516,11 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public InputValueOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -395,14 +544,27 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
+    /**
+     * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
+     */
     public PressOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public PressOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public PressOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -435,22 +597,42 @@ public interface ElementHandle extends JSHandle {
      */
     public ScreenshotType type;
 
+    /**
+     * Hides default white background and allows capturing screenshots with transparency. Not applicable to {@code jpeg} images.
+     * Defaults to {@code false}.
+     */
     public ScreenshotOptions setOmitBackground(boolean omitBackground) {
       this.omitBackground = omitBackground;
       return this;
     }
+    /**
+     * The file path to save the image to. The screenshot type will be inferred from file extension. If {@code path} is a relative
+     * path, then it is resolved relative to the current working directory. If no path is provided, the image won't be saved to
+     * the disk.
+     */
     public ScreenshotOptions setPath(Path path) {
       this.path = path;
       return this;
     }
+    /**
+     * The quality of the image, between 0-100. Not applicable to {@code png} images.
+     */
     public ScreenshotOptions setQuality(int quality) {
       this.quality = quality;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public ScreenshotOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * Specify screenshot type, defaults to {@code png}.
+     */
     public ScreenshotOptions setType(ScreenshotType type) {
       this.type = type;
       return this;
@@ -464,6 +646,11 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public ScrollIntoViewIfNeededOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -488,14 +675,28 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public SelectOptionOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public SelectOptionOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -514,10 +715,19 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public SelectTextOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public SelectTextOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -537,10 +747,20 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public SetInputFilesOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public SetInputFilesOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -581,29 +801,60 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean trial;
 
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public TapOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
+     */
     public TapOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public TapOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public TapOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public TapOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public TapOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
     public TapOptions setTrial(boolean trial) {
       this.trial = trial;
       return this;
@@ -627,14 +878,27 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
+    /**
+     * Time to wait between key presses in milliseconds. Defaults to 0.
+     */
     public TypeOptions setDelay(double delay) {
       this.delay = delay;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public TypeOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public TypeOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -670,25 +934,52 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean trial;
 
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
     public UncheckOptions setForce(boolean force) {
       this.force = force;
       return this;
     }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
     public UncheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public UncheckOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
     public UncheckOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public UncheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
     public UncheckOptions setTrial(boolean trial) {
       this.trial = trial;
       return this;
@@ -702,6 +993,11 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public WaitForElementStateOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -727,10 +1023,26 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
 
+    /**
+     * Defaults to {@code "visible"}. Can be either:
+     * <ul>
+     * <li> {@code "attached"} - wait for element to be present in DOM.</li>
+     * <li> {@code "detached"} - wait for element to not be present in DOM.</li>
+     * <li> {@code "visible"} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
+     * content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
+     * <li> {@code "hidden"} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
+     * is opposite to the {@code "visible"} option.</li>
+     * </ul>
+     */
     public WaitForSelectorOptions setState(WaitForSelectorState state) {
       this.state = state;
       return this;
     }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
     public WaitForSelectorOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;

@@ -30,14 +30,23 @@ public class SelectOption {
    */
   public Integer index;
 
+  /**
+   * Matches by {@code option.value}. Optional.
+   */
   public SelectOption setValue(String value) {
     this.value = value;
     return this;
   }
+  /**
+   * Matches by {@code option.label}. Optional.
+   */
   public SelectOption setLabel(String label) {
     this.label = label;
     return this;
   }
+  /**
+   * Matches by the index. Optional.
+   */
   public SelectOption setIndex(int index) {
     this.index = index;
     return this;

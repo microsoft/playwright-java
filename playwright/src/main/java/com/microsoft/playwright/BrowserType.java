@@ -57,14 +57,25 @@ public interface BrowserType {
      */
     public Double timeout;
 
+    /**
+     * Additional HTTP headers to be sent with web socket connect request. Optional.
+     */
     public ConnectOptions setHeaders(Map<String, String> headers) {
       this.headers = headers;
       return this;
     }
+    /**
+     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
+     * Defaults to 0.
+     */
     public ConnectOptions setSlowMo(double slowMo) {
       this.slowMo = slowMo;
       return this;
     }
+    /**
+     * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
+     * disable timeout.
+     */
     public ConnectOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -86,14 +97,25 @@ public interface BrowserType {
      */
     public Double timeout;
 
+    /**
+     * Additional HTTP headers to be sent with connect request. Optional.
+     */
     public ConnectOverCDPOptions setHeaders(Map<String, String> headers) {
       this.headers = headers;
       return this;
     }
+    /**
+     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
+     * Defaults to 0.
+     */
     public ConnectOverCDPOptions setSlowMo(double slowMo) {
       this.slowMo = slowMo;
       return this;
     }
+    /**
+     * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
+     * disable timeout.
+     */
     public ConnectOverCDPOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -187,82 +209,158 @@ public interface BrowserType {
      */
     public Path tracesDir;
 
+    /**
+     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
+     * href="http://peter.sh/experiments/chromium-command-line-switches/">here</a>.
+     */
     public LaunchOptions setArgs(List<String> args) {
       this.args = args;
       return this;
     }
     @Deprecated
+    /**
+     * Browser distribution channel.  Supported values are "chrome", "chrome-beta", "chrome-dev", "chrome-canary", "msedge",
+     * "msedge-beta", "msedge-dev", "msedge-canary". Read more about using <a
+     * href="https://playwright.dev/java/docs/browsers/#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
+     */
     public LaunchOptions setChannel(BrowserChannel channel) {
       this.channel = channel;
       return this;
     }
+    /**
+     * Browser distribution channel.  Supported values are "chrome", "chrome-beta", "chrome-dev", "chrome-canary", "msedge",
+     * "msedge-beta", "msedge-dev", "msedge-canary". Read more about using <a
+     * href="https://playwright.dev/java/docs/browsers/#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
+     */
     public LaunchOptions setChannel(String channel) {
       this.channel = channel;
       return this;
     }
+    /**
+     * Enable Chromium sandboxing. Defaults to {@code false}.
+     */
     public LaunchOptions setChromiumSandbox(boolean chromiumSandbox) {
       this.chromiumSandbox = chromiumSandbox;
       return this;
     }
+    /**
+     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless}
+     * option will be set {@code false}.
+     */
     public LaunchOptions setDevtools(boolean devtools) {
       this.devtools = devtools;
       return this;
     }
+    /**
+     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
+     * deleted when browser is closed.
+     */
     public LaunchOptions setDownloadsPath(Path downloadsPath) {
       this.downloadsPath = downloadsPath;
       return this;
     }
+    /**
+     * Specify environment variables that will be visible to the browser. Defaults to {@code process.env}.
+     */
     public LaunchOptions setEnv(Map<String, String> env) {
       this.env = env;
       return this;
     }
+    /**
+     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is
+     * resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium, Firefox
+     * or WebKit, use at your own risk.
+     */
     public LaunchOptions setExecutablePath(Path executablePath) {
       this.executablePath = executablePath;
       return this;
     }
+    /**
+     * Firefox user preferences. Learn more about the Firefox user preferences at <a
+     * href="https://support.mozilla.org/en-US/kb/about-config-editor-firefox">{@code about:config}</a>.
+     */
     public LaunchOptions setFirefoxUserPrefs(Map<String, Object> firefoxUserPrefs) {
       this.firefoxUserPrefs = firefoxUserPrefs;
       return this;
     }
+    /**
+     * Close the browser process on SIGHUP. Defaults to {@code true}.
+     */
     public LaunchOptions setHandleSIGHUP(boolean handleSIGHUP) {
       this.handleSIGHUP = handleSIGHUP;
       return this;
     }
+    /**
+     * Close the browser process on Ctrl-C. Defaults to {@code true}.
+     */
     public LaunchOptions setHandleSIGINT(boolean handleSIGINT) {
       this.handleSIGINT = handleSIGINT;
       return this;
     }
+    /**
+     * Close the browser process on SIGTERM. Defaults to {@code true}.
+     */
     public LaunchOptions setHandleSIGTERM(boolean handleSIGTERM) {
       this.handleSIGTERM = handleSIGTERM;
       return this;
     }
+    /**
+     * Whether to run browser in headless mode. More details for <a
+     * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
+     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless the
+     * {@code devtools} option is {@code true}.
+     */
     public LaunchOptions setHeadless(boolean headless) {
       this.headless = headless;
       return this;
     }
+    /**
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
+     * use with care. Defaults to {@code false}.
+     */
     public LaunchOptions setIgnoreAllDefaultArgs(boolean ignoreAllDefaultArgs) {
       this.ignoreAllDefaultArgs = ignoreAllDefaultArgs;
       return this;
     }
+    /**
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
+     * use with care.
+     */
     public LaunchOptions setIgnoreDefaultArgs(List<String> ignoreDefaultArgs) {
       this.ignoreDefaultArgs = ignoreDefaultArgs;
       return this;
     }
+    /**
+     * Network proxy settings.
+     */
     public LaunchOptions setProxy(String server) {
       return setProxy(new Proxy(server));
     }
+    /**
+     * Network proxy settings.
+     */
     public LaunchOptions setProxy(Proxy proxy) {
       this.proxy = proxy;
       return this;
     }
+    /**
+     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
+     */
     public LaunchOptions setSlowMo(double slowMo) {
       this.slowMo = slowMo;
       return this;
     }
+    /**
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
+     * disable timeout.
+     */
     public LaunchOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * If specified, traces are saved into this directory.
+     */
     public LaunchOptions setTracesDir(Path tracesDir) {
       this.tracesDir = tracesDir;
       return this;
@@ -471,59 +569,119 @@ public interface BrowserType {
      */
     public Optional<ViewportSize> viewportSize;
 
+    /**
+     * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
+     */
     public LaunchPersistentContextOptions setAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;
       return this;
     }
+    /**
+     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
+     * href="http://peter.sh/experiments/chromium-command-line-switches/">here</a>.
+     */
     public LaunchPersistentContextOptions setArgs(List<String> args) {
       this.args = args;
       return this;
     }
+    /**
+     * When using {@link Page#navigate Page.navigate()}, {@link Page#route Page.route()}, {@link Page#waitForURL
+     * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
+     * Page.waitForResponse()} it takes the base URL in consideration by using the <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the corresponding
+     * URL. Examples:
+     * <ul>
+     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code http://localhost:3000/foo/bar.html}</li>
+     * </ul>
+     */
     public LaunchPersistentContextOptions setBaseURL(String baseURL) {
       this.baseURL = baseURL;
       return this;
     }
+    /**
+     * Toggles bypassing page's Content-Security-Policy.
+     */
     public LaunchPersistentContextOptions setBypassCSP(boolean bypassCSP) {
       this.bypassCSP = bypassCSP;
       return this;
     }
     @Deprecated
+    /**
+     * Browser distribution channel.  Supported values are "chrome", "chrome-beta", "chrome-dev", "chrome-canary", "msedge",
+     * "msedge-beta", "msedge-dev", "msedge-canary". Read more about using <a
+     * href="https://playwright.dev/java/docs/browsers/#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
+     */
     public LaunchPersistentContextOptions setChannel(BrowserChannel channel) {
       this.channel = channel;
       return this;
     }
+    /**
+     * Browser distribution channel.  Supported values are "chrome", "chrome-beta", "chrome-dev", "chrome-canary", "msedge",
+     * "msedge-beta", "msedge-dev", "msedge-canary". Read more about using <a
+     * href="https://playwright.dev/java/docs/browsers/#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
+     */
     public LaunchPersistentContextOptions setChannel(String channel) {
       this.channel = channel;
       return this;
     }
+    /**
+     * Enable Chromium sandboxing. Defaults to {@code false}.
+     */
     public LaunchPersistentContextOptions setChromiumSandbox(boolean chromiumSandbox) {
       this.chromiumSandbox = chromiumSandbox;
       return this;
     }
+    /**
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
+     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "light"}.
+     */
     public LaunchPersistentContextOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = colorScheme;
       return this;
     }
+    /**
+     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
+     */
     public LaunchPersistentContextOptions setDeviceScaleFactor(double deviceScaleFactor) {
       this.deviceScaleFactor = deviceScaleFactor;
       return this;
     }
+    /**
+     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless}
+     * option will be set {@code false}.
+     */
     public LaunchPersistentContextOptions setDevtools(boolean devtools) {
       this.devtools = devtools;
       return this;
     }
+    /**
+     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
+     * deleted when browser is closed.
+     */
     public LaunchPersistentContextOptions setDownloadsPath(Path downloadsPath) {
       this.downloadsPath = downloadsPath;
       return this;
     }
+    /**
+     * Specify environment variables that will be visible to the browser. Defaults to {@code process.env}.
+     */
     public LaunchPersistentContextOptions setEnv(Map<String, String> env) {
       this.env = env;
       return this;
     }
+    /**
+     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is
+     * resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium, Firefox
+     * or WebKit, use at your own risk.
+     */
     public LaunchPersistentContextOptions setExecutablePath(Path executablePath) {
       this.executablePath = executablePath;
       return this;
     }
+    /**
+     * An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+     */
     public LaunchPersistentContextOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
       return this;
@@ -535,129 +693,251 @@ public interface BrowserType {
       this.geolocation = geolocation;
       return this;
     }
+    /**
+     * Close the browser process on SIGHUP. Defaults to {@code true}.
+     */
     public LaunchPersistentContextOptions setHandleSIGHUP(boolean handleSIGHUP) {
       this.handleSIGHUP = handleSIGHUP;
       return this;
     }
+    /**
+     * Close the browser process on Ctrl-C. Defaults to {@code true}.
+     */
     public LaunchPersistentContextOptions setHandleSIGINT(boolean handleSIGINT) {
       this.handleSIGINT = handleSIGINT;
       return this;
     }
+    /**
+     * Close the browser process on SIGTERM. Defaults to {@code true}.
+     */
     public LaunchPersistentContextOptions setHandleSIGTERM(boolean handleSIGTERM) {
       this.handleSIGTERM = handleSIGTERM;
       return this;
     }
+    /**
+     * Specifies if viewport supports touch events. Defaults to false.
+     */
     public LaunchPersistentContextOptions setHasTouch(boolean hasTouch) {
       this.hasTouch = hasTouch;
       return this;
     }
+    /**
+     * Whether to run browser in headless mode. More details for <a
+     * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
+     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless the
+     * {@code devtools} option is {@code true}.
+     */
     public LaunchPersistentContextOptions setHeadless(boolean headless) {
       this.headless = headless;
       return this;
     }
+    /**
+     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>.
+     */
     public LaunchPersistentContextOptions setHttpCredentials(String username, String password) {
       return setHttpCredentials(new HttpCredentials(username, password));
     }
+    /**
+     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>.
+     */
     public LaunchPersistentContextOptions setHttpCredentials(HttpCredentials httpCredentials) {
       this.httpCredentials = httpCredentials;
       return this;
     }
+    /**
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
+     * use with care. Defaults to {@code false}.
+     */
     public LaunchPersistentContextOptions setIgnoreAllDefaultArgs(boolean ignoreAllDefaultArgs) {
       this.ignoreAllDefaultArgs = ignoreAllDefaultArgs;
       return this;
     }
+    /**
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
+     * use with care.
+     */
     public LaunchPersistentContextOptions setIgnoreDefaultArgs(List<String> ignoreDefaultArgs) {
       this.ignoreDefaultArgs = ignoreDefaultArgs;
       return this;
     }
+    /**
+     * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
+     */
     public LaunchPersistentContextOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;
       return this;
     }
+    /**
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported
+     * in Firefox.
+     */
     public LaunchPersistentContextOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
       return this;
     }
+    /**
+     * Whether or not to enable JavaScript in the context. Defaults to {@code true}.
+     */
     public LaunchPersistentContextOptions setJavaScriptEnabled(boolean javaScriptEnabled) {
       this.javaScriptEnabled = javaScriptEnabled;
       return this;
     }
+    /**
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language}
+     * request header value as well as number and date formatting rules.
+     */
     public LaunchPersistentContextOptions setLocale(String locale) {
       this.locale = locale;
       return this;
     }
+    /**
+     * Whether to emulate network being offline. Defaults to {@code false}.
+     */
     public LaunchPersistentContextOptions setOffline(boolean offline) {
       this.offline = offline;
       return this;
     }
+    /**
+     * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
+     * BrowserContext.grantPermissions()} for more details.
+     */
     public LaunchPersistentContextOptions setPermissions(List<String> permissions) {
       this.permissions = permissions;
       return this;
     }
+    /**
+     * Network proxy settings.
+     */
     public LaunchPersistentContextOptions setProxy(String server) {
       return setProxy(new Proxy(server));
     }
+    /**
+     * Network proxy settings.
+     */
     public LaunchPersistentContextOptions setProxy(Proxy proxy) {
       this.proxy = proxy;
       return this;
     }
+    /**
+     * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
+     */
     public LaunchPersistentContextOptions setRecordHarOmitContent(boolean recordHarOmitContent) {
       this.recordHarOmitContent = recordHarOmitContent;
       return this;
     }
+    /**
+     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
+     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link BrowserContext#close
+     * BrowserContext.close()} for the HAR to be saved.
+     */
     public LaunchPersistentContextOptions setRecordHarPath(Path recordHarPath) {
       this.recordHarPath = recordHarPath;
       return this;
     }
+    /**
+     * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
+     * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
+     */
     public LaunchPersistentContextOptions setRecordVideoDir(Path recordVideoDir) {
       this.recordVideoDir = recordVideoDir;
       return this;
     }
+    /**
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
+     * be scaled down if necessary to fit the specified size.
+     */
     public LaunchPersistentContextOptions setRecordVideoSize(int width, int height) {
       return setRecordVideoSize(new RecordVideoSize(width, height));
     }
+    /**
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
+     * be scaled down if necessary to fit the specified size.
+     */
     public LaunchPersistentContextOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
       return this;
     }
+    /**
+     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
+     * Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "no-preference"}.
+     */
     public LaunchPersistentContextOptions setReducedMotion(ReducedMotion reducedMotion) {
       this.reducedMotion = reducedMotion;
       return this;
     }
+    /**
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
+     * is set.
+     */
     public LaunchPersistentContextOptions setScreenSize(int width, int height) {
       return setScreenSize(new ScreenSize(width, height));
     }
+    /**
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
+     * is set.
+     */
     public LaunchPersistentContextOptions setScreenSize(ScreenSize screenSize) {
       this.screenSize = screenSize;
       return this;
     }
+    /**
+     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
+     */
     public LaunchPersistentContextOptions setSlowMo(double slowMo) {
       this.slowMo = slowMo;
       return this;
     }
+    /**
+     * It specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
+     * more about the strict mode.
+     */
     public LaunchPersistentContextOptions setStrictSelectors(boolean strictSelectors) {
       this.strictSelectors = strictSelectors;
       return this;
     }
+    /**
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
+     * disable timeout.
+     */
     public LaunchPersistentContextOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
+    /**
+     * Changes the timezone of the context. See <a
+     * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
+     * metaZones.txt</a> for a list of supported timezone IDs.
+     */
     public LaunchPersistentContextOptions setTimezoneId(String timezoneId) {
       this.timezoneId = timezoneId;
       return this;
     }
+    /**
+     * If specified, traces are saved into this directory.
+     */
     public LaunchPersistentContextOptions setTracesDir(Path tracesDir) {
       this.tracesDir = tracesDir;
       return this;
     }
+    /**
+     * Specific user agent to use in this context.
+     */
     public LaunchPersistentContextOptions setUserAgent(String userAgent) {
       this.userAgent = userAgent;
       return this;
     }
+    /**
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     */
     public LaunchPersistentContextOptions setViewportSize(int width, int height) {
       return setViewportSize(new ViewportSize(width, height));
     }
+    /**
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     */
     public LaunchPersistentContextOptions setViewportSize(ViewportSize viewportSize) {
       this.viewportSize = Optional.ofNullable(viewportSize);
       return this;

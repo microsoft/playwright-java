@@ -52,30 +52,51 @@ public class Cookie {
     this.name = name;
     this.value = value;
   }
+  /**
+   * either url or domain / path are required. Optional.
+   */
   public Cookie setUrl(String url) {
     this.url = url;
     return this;
   }
+  /**
+   * either url or domain / path are required Optional.
+   */
   public Cookie setDomain(String domain) {
     this.domain = domain;
     return this;
   }
+  /**
+   * either url or domain / path are required Optional.
+   */
   public Cookie setPath(String path) {
     this.path = path;
     return this;
   }
+  /**
+   * Unix time in seconds. Optional.
+   */
   public Cookie setExpires(double expires) {
     this.expires = expires;
     return this;
   }
+  /**
+   * Optional.
+   */
   public Cookie setHttpOnly(boolean httpOnly) {
     this.httpOnly = httpOnly;
     return this;
   }
+  /**
+   * Optional.
+   */
   public Cookie setSecure(boolean secure) {
     this.secure = secure;
     return this;
   }
+  /**
+   * Optional.
+   */
   public Cookie setSameSite(SameSiteAttribute sameSite) {
     this.sameSite = sameSite;
     return this;

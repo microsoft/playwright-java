@@ -49,14 +49,23 @@ public interface Mouse {
      */
     public Double delay;
 
+    /**
+     * Defaults to {@code left}.
+     */
     public ClickOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
+    /**
+     * defaults to 1. See [UIEvent.detail].
+     */
     public ClickOptions setClickCount(int clickCount) {
       this.clickCount = clickCount;
       return this;
     }
+    /**
+     * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
+     */
     public ClickOptions setDelay(double delay) {
       this.delay = delay;
       return this;
@@ -72,10 +81,16 @@ public interface Mouse {
      */
     public Double delay;
 
+    /**
+     * Defaults to {@code left}.
+     */
     public DblclickOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
+    /**
+     * Time to wait between {@code mousedown} and {@code mouseup} in milliseconds. Defaults to 0.
+     */
     public DblclickOptions setDelay(double delay) {
       this.delay = delay;
       return this;
@@ -91,10 +106,16 @@ public interface Mouse {
      */
     public Integer clickCount;
 
+    /**
+     * Defaults to {@code left}.
+     */
     public DownOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
+    /**
+     * defaults to 1. See [UIEvent.detail].
+     */
     public DownOptions setClickCount(int clickCount) {
       this.clickCount = clickCount;
       return this;
@@ -106,6 +127,9 @@ public interface Mouse {
      */
     public Integer steps;
 
+    /**
+     * defaults to 1. Sends intermediate {@code mousemove} events.
+     */
     public MoveOptions setSteps(int steps) {
       this.steps = steps;
       return this;
@@ -121,10 +145,16 @@ public interface Mouse {
      */
     public Integer clickCount;
 
+    /**
+     * Defaults to {@code left}.
+     */
     public UpOptions setButton(MouseButton button) {
       this.button = button;
       return this;
     }
+    /**
+     * defaults to 1. See [UIEvent.detail].
+     */
     public UpOptions setClickCount(int clickCount) {
       this.clickCount = clickCount;
       return this;

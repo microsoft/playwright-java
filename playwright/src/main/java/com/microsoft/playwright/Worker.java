@@ -52,6 +52,10 @@ public interface Worker {
      */
     public Double timeout;
 
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     */
     public WaitForCloseOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
