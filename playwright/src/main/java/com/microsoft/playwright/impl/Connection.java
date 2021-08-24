@@ -19,16 +19,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.TimeoutError;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -77,7 +73,14 @@ public class Connection {
 
   class Root extends ChannelOwner {
     Root(Connection connection) {
-      super(connection, "", "");
+      super(connection, "Root", "");
+    }
+
+    Playwright initialize() {
+      JsonObject params = new JsonObject();
+      params.addProperty("sdkLanguage", "java");
+      JsonElement result = sendMessage("initialize", params.getAsJsonObject());
+      return this.connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("playwright").get("guid").getAsString());
     }
   }
 
@@ -177,11 +180,8 @@ public class Connection {
     return result;
   }
 
-  public ChannelOwner waitForObjectWithKnownName(String guid) {
-    while (!objects.containsKey(guid)) {
-      processOneMessage();
-    }
-    return objects.get(guid);
+  public PlaywrightImpl initializePlaywright() {
+    return (PlaywrightImpl) this.root.initialize();
   }
 
   public <T> T getExistingObject(String guid) {

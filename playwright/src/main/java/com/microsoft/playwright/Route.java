@@ -224,7 +224,7 @@ public interface Route {
    * <p> An example of serving static file:
    * <pre>{@code
    * page.route("**\/xhr_endpoint", route -> route.fulfill(
-   *   new Route.FulfillOptions().setPath(Paths.get("mock_data.json")));
+   *   new Route.FulfillOptions().setPath(Paths.get("mock_data.json"))));
    * }</pre>
    */
   default void fulfill() {
@@ -246,7 +246,7 @@ public interface Route {
    * <p> An example of serving static file:
    * <pre>{@code
    * page.route("**\/xhr_endpoint", route -> route.fulfill(
-   *   new Route.FulfillOptions().setPath(Paths.get("mock_data.json")));
+   *   new Route.FulfillOptions().setPath(Paths.get("mock_data.json"))));
    * }</pre>
    */
   void fulfill(FulfillOptions options);
