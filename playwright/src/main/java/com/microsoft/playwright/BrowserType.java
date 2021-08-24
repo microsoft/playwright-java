@@ -144,7 +144,8 @@ public interface BrowserType {
     public Boolean devtools;
     /**
      * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
-     * deleted when browser is closed.
+     * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
+     * is closed.
      */
     public Path downloadsPath;
     /**
@@ -253,7 +254,8 @@ public interface BrowserType {
     }
     /**
      * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
-     * deleted when browser is closed.
+     * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
+     * is closed.
      */
     public LaunchOptions setDownloadsPath(Path downloadsPath) {
       this.downloadsPath = downloadsPath;
@@ -418,7 +420,8 @@ public interface BrowserType {
     public Boolean devtools;
     /**
      * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
-     * deleted when browser is closed.
+     * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
+     * is closed.
      */
     public Path downloadsPath;
     /**
@@ -657,7 +660,8 @@ public interface BrowserType {
     }
     /**
      * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
-     * deleted when browser is closed.
+     * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
+     * is closed.
      */
     public LaunchPersistentContextOptions setDownloadsPath(Path downloadsPath) {
       this.downloadsPath = downloadsPath;

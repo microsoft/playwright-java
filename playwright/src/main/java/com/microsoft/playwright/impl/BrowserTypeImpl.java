@@ -75,7 +75,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       }
       WebSocketTransport transport = new WebSocketTransport(new URI(wsEndpoint), headers, timeout, slowMo);
       Connection connection = new Connection(transport);
-      PlaywrightImpl playwright = (PlaywrightImpl) connection.waitForObjectWithKnownName("Playwright");
+      PlaywrightImpl playwright = connection.initializePlaywright();
       if (!playwright.initializer.has("preLaunchedBrowser")) {
         try {
           connection.close();
@@ -119,7 +119,6 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     }
 
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.addProperty("sdkLanguage", "java");
     params.addProperty("endpointURL", endpointURL);
     JsonObject json = sendMessage("connectOverCDP", params).getAsJsonObject();
 
@@ -183,7 +182,6 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
         params.addProperty("noDefaultViewport", true);
       }
     }
-    params.addProperty("sdkLanguage", "java");
     JsonObject json = sendMessage("launchPersistentContext", params).getAsJsonObject();
     BrowserContextImpl context = connection.getExistingObject(json.getAsJsonObject("context").get("guid").getAsString());
     if (options.recordVideoDir != null) {

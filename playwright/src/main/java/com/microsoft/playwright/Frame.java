@@ -2569,7 +2569,7 @@ public interface Frame {
    * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
    * last redirect.
    *
-   * <p> {@code frame.goto} will throw an error if:
+   * <p> The method will throw an error if:
    * <ul>
    * <li> there's an SSL error (e.g. in case of self-signed certificates).</li>
    * <li> target URL is invalid.</li>
@@ -2578,11 +2578,11 @@ public interface Frame {
    * <li> the main resource failed to load.</li>
    * </ul>
    *
-   * <p> {@code frame.goto} will not throw an error when any valid HTTP status code is returned by the remote server, including 404
-   * "Not Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling {@link
+   * <p> The method will not throw an error when any valid HTTP status code is returned by the remote server, including 404 "Not
+   * Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling {@link
    * Response#status Response.status()}.
    *
-   * <p> <strong>NOTE:</strong> {@code frame.goto} either throws an error or returns a main resource response. The only exceptions are navigation to
+   * <p> <strong>NOTE:</strong> The method either throws an error or returns a main resource response. The only exceptions are navigation to
    * {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
    *
    * <p> <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the <a
@@ -2597,7 +2597,7 @@ public interface Frame {
    * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
    * last redirect.
    *
-   * <p> {@code frame.goto} will throw an error if:
+   * <p> The method will throw an error if:
    * <ul>
    * <li> there's an SSL error (e.g. in case of self-signed certificates).</li>
    * <li> target URL is invalid.</li>
@@ -2606,11 +2606,11 @@ public interface Frame {
    * <li> the main resource failed to load.</li>
    * </ul>
    *
-   * <p> {@code frame.goto} will not throw an error when any valid HTTP status code is returned by the remote server, including 404
-   * "Not Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling {@link
+   * <p> The method will not throw an error when any valid HTTP status code is returned by the remote server, including 404 "Not
+   * Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling {@link
    * Response#status Response.status()}.
    *
-   * <p> <strong>NOTE:</strong> {@code frame.goto} either throws an error or returns a main resource response. The only exceptions are navigation to
+   * <p> <strong>NOTE:</strong> The method either throws an error or returns a main resource response. The only exceptions are navigation to
    * {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
    *
    * <p> <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the <a

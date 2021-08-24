@@ -42,7 +42,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       pb.environment().putAll(env);
       Process p = pb.start();
       Connection connection = new Connection(new PipeTransport(p.getInputStream(), p.getOutputStream()));
-      PlaywrightImpl result = (PlaywrightImpl) connection.waitForObjectWithKnownName("Playwright");
+      PlaywrightImpl result = connection.initializePlaywright();
       result.driverProcess = p;
       result.initSharedSelectors(null);
       return result;
