@@ -73,6 +73,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
           slowMo = Duration.ofMillis(options.slowMo.intValue());
         }
       }
+      headers.put("User-Agent", getUserAgent());
       WebSocketTransport transport = new WebSocketTransport(new URI(wsEndpoint), headers, timeout, slowMo);
       Connection connection = new Connection(transport);
       PlaywrightImpl playwright = connection.initializePlaywright();
@@ -103,6 +104,14 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     } catch (URISyntaxException e) {
       throw new PlaywrightException("Failed to connect", e);
     }
+  }
+
+  private String getUserAgent() {
+    return String.format("Playwright/%s (%s/%s/%s)",
+      getClass().getPackage().getImplementationVersion(),
+      System.getProperty("os.arch"),
+      System.getProperty("os.name"),
+      System.getProperty("os.version"));
   }
 
   @Override
