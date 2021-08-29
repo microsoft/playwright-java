@@ -170,6 +170,18 @@ public class TestBrowserTypeConnect extends TestBase {
   }
 
   @Test
+  void shouldSetDefaultHeadersAsUserAgentWithConnectRequest() throws Exception {
+    try (WebSocketServerImpl webSocketServer = WebSocketServerImpl.create()) {
+      try {
+        browserType.connect("ws://localhost:" + webSocketServer.getPort() + "/ws",
+          new BrowserType.ConnectOptions());
+      } catch (Exception e) {
+      }
+      assertTrue("Playwright".contains(webSocketServer.lastClientHandshake.getFieldValue("User-Agent")));
+    }
+  }
+
+  @Test
   void disconnectedEventShouldBeEmittedWhenBrowserIsClosedOrServerIsClosed() throws InterruptedException {
     // Launch another server to not affect other tests.
     BrowserServer remote = launchBrowserServer(browserType);
