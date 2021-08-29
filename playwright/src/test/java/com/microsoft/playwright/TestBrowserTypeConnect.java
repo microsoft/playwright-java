@@ -173,11 +173,10 @@ public class TestBrowserTypeConnect extends TestBase {
   void shouldSetDefaultHeadersAsUserAgentWithConnectRequest() throws Exception {
     try (WebSocketServerImpl webSocketServer = WebSocketServerImpl.create()) {
       try {
-        browserType.connect("ws://localhost:" + webSocketServer.getPort() + "/ws",
-          new BrowserType.ConnectOptions());
+        browserType.connect("ws://localhost:" + webSocketServer.getPort() + "/ws");
       } catch (Exception e) {
       }
-      assertTrue("Playwright".contains(webSocketServer.lastClientHandshake.getFieldValue("User-Agent")));
+      assertTrue(webSocketServer.lastClientHandshake.getFieldValue("User-Agent").contains("Playwright"));
     }
   }
 

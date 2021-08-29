@@ -28,7 +28,9 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
@@ -60,7 +62,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
   private Browser connectImpl(String wsEndpoint, ConnectOptions options) {
     try {
       Duration timeout = Duration.ofDays(1);
-      Map<String, String> headers = Collections.emptyMap();
+      Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
       Duration slowMo = null;
       if (options != null) {
         if (options.timeout != null) {
@@ -73,7 +75,9 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
           slowMo = Duration.ofMillis(options.slowMo.intValue());
         }
       }
-      headers.put("User-Agent", getUserAgent());
+      if (!headers.containsKey("User-Agent")) {
+        headers.put("User-Agent", getUserAgent());
+      }
       WebSocketTransport transport = new WebSocketTransport(new URI(wsEndpoint), headers, timeout, slowMo);
       Connection connection = new Connection(transport);
       PlaywrightImpl playwright = connection.initializePlaywright();
