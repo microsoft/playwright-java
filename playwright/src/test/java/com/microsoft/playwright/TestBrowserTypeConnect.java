@@ -70,7 +70,7 @@ public class TestBrowserTypeConnect extends TestBase {
       pb.redirectError(ProcessBuilder.Redirect.INHERIT);
       BrowserServer result = new BrowserServer();
       result.process = pb.start();
-      BufferedReader input =  new BufferedReader(new InputStreamReader(result.process.getInputStream()));
+      BufferedReader input = new BufferedReader(new InputStreamReader(result.process.getInputStream()));
       result.wsEndpoint = input.readLine();
       if (!result.wsEndpoint.startsWith("ws://")) {
         throw new RuntimeException("Invalid web socket address: " + result.wsEndpoint);
@@ -83,7 +83,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Override
   @BeforeAll
-  // Hide base class method to launch browser server and connect to it.
+    // Hide base class method to launch browser server and connect to it.
   void launchBrowser() {
     initBrowserType();
     BrowserServer r = launchBrowserServer(browserType);
@@ -265,7 +265,8 @@ public class TestBrowserTypeConnect extends TestBase {
     }
     assertFalse(browser.isConnected());
     try {
-      page.waitForNavigation(() -> {});
+      page.waitForNavigation(() -> {
+      });
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Playwright connection closed"));
@@ -277,7 +278,8 @@ public class TestBrowserTypeConnect extends TestBase {
     Browser remote = browserType.connect(wsEndpoint);
     Page page = remote.newPage();
 
-    server.setRoute("/one-style.css", r -> {});
+    server.setRoute("/one-style.css", r -> {
+    });
     page.onRequest(r -> remote.close());
     try {
       page.navigate(server.PREFIX + "/one-style.html", new Page.NavigateOptions().setTimeout(60000));
@@ -402,7 +404,7 @@ public class TestBrowserTypeConnect extends TestBase {
   void shouldSaveAsVideosFromRemoteBrowser(@TempDir Path tempDir) {
     Path videosPath = tempDir.resolve("videosPath");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .setRecordVideoDir(videosPath).setRecordVideoSize(320,  240));
+      .setRecordVideoDir(videosPath).setRecordVideoSize(320, 240));
     Page page = context.newPage();
     page.evaluate("() => document.body.style.backgroundColor = 'red'");
     page.waitForTimeout(1000);
