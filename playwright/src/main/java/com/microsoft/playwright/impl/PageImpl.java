@@ -445,7 +445,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForCloseOptions();
     }
-    return waitForEventWithTimeout(EventType.CLOSE, code, options.timeout);
+    return waitForEventWithTimeout(EventType.CLOSE, code, null, options.timeout);
   }
 
   @Override
@@ -457,7 +457,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForConsoleMessageOptions();
     }
-    return waitForEventWithTimeout(EventType.CONSOLE, code, options.timeout);
+    return waitForEventWithTimeout(EventType.CONSOLE, code, options.predicate, options.timeout);
   }
 
   @Override
@@ -469,7 +469,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForDownloadOptions();
     }
-    return waitForEventWithTimeout(EventType.DOWNLOAD, code, options.timeout);
+    return waitForEventWithTimeout(EventType.DOWNLOAD, code, options.predicate, options.timeout);
   }
 
   @Override
@@ -482,7 +482,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForFileChooserOptions();
     }
-    return waitForEventWithTimeout(EventType.FILECHOOSER, code, options.timeout);
+    return waitForEventWithTimeout(EventType.FILECHOOSER, code, options.predicate, options.timeout);
   }
 
   @Override
@@ -494,7 +494,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForPopupOptions();
     }
-    return waitForEventWithTimeout(EventType.POPUP, code, options.timeout);
+    return waitForEventWithTimeout(EventType.POPUP, code, options.predicate, options.timeout);
   }
 
   @Override
@@ -506,7 +506,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForWebSocketOptions();
     }
-    return waitForEventWithTimeout(EventType.WEBSOCKET, code, options.timeout);
+    return waitForEventWithTimeout(EventType.WEBSOCKET, code, options.predicate, options.timeout);
   }
 
   @Override
@@ -518,12 +518,12 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new WaitForWorkerOptions();
     }
-    return waitForEventWithTimeout(EventType.WORKER, code, options.timeout);
+    return waitForEventWithTimeout(EventType.WORKER, code, options.predicate, options.timeout);
   }
 
-  private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Double timeout) {
+  private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Predicate<T> predicate, Double timeout) {
     List<Waitable<T>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, eventType));
+    waitables.add(new WaitableEvent<>(listeners, eventType, predicate));
     waitables.add(createWaitForCloseHelper());
     waitables.add(createWaitableTimeout(timeout));
     return runUntil(code, new WaitableRace<>(waitables));
@@ -1313,8 +1313,7 @@ public class PageImpl extends ChannelOwner implements Page {
       options = new WaitForRequestOptions();
     }
     List<Waitable<Request>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, EventType.REQUEST,
-      request -> predicate == null || predicate.test(request)));
+    waitables.add(new WaitableEvent<>(listeners, EventType.REQUEST, predicate));
     waitables.add(createWaitForCloseHelper());
     waitables.add(createWaitableTimeout(options.timeout));
     return runUntil(code, new WaitableRace<>(waitables));
@@ -1331,8 +1330,7 @@ public class PageImpl extends ChannelOwner implements Page {
     }
     List<Waitable<Request>> waitables = new ArrayList<>();
     Predicate<Request> predicate = options.predicate;
-    waitables.add(new WaitableEvent<>(listeners, EventType.REQUESTFINISHED,
-      request -> predicate == null || predicate.test(request)));
+    waitables.add(new WaitableEvent<>(listeners, EventType.REQUESTFINISHED, predicate));
     waitables.add(createWaitForCloseHelper());
     waitables.add(createWaitableTimeout(options.timeout));
     return runUntil(code, new WaitableRace<>(waitables));
@@ -1362,8 +1360,7 @@ public class PageImpl extends ChannelOwner implements Page {
       options = new WaitForResponseOptions();
     }
     List<Waitable<Response>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, EventType.RESPONSE,
-      response -> predicate == null || predicate.test(response)));
+    waitables.add(new WaitableEvent<>(listeners, EventType.RESPONSE, predicate));
     waitables.add(createWaitForCloseHelper());
     waitables.add(createWaitableTimeout(options.timeout));
     return runUntil(code, new WaitableRace<>(waitables));

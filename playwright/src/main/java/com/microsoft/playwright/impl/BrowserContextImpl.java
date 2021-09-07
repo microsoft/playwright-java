@@ -144,9 +144,9 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     listeners.remove(EventType.RESPONSE, handler);
   }
 
-  private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Double timeout) {
+  private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Predicate<T> predicate, Double timeout) {
     List<Waitable<T>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, eventType));
+    waitables.add(new WaitableEvent<>(listeners, eventType, predicate));
     waitables.add(new WaitableContextClose<>());
     waitables.add(timeoutSettings.createWaitable(timeout));
     return runUntil(code, new WaitableRace<>(waitables));
@@ -161,7 +161,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     if (options == null) {
       options = new WaitForPageOptions();
     }
-    return waitForEventWithTimeout(EventType.PAGE, code, options.timeout);
+    return waitForEventWithTimeout(EventType.PAGE, code, options.predicate, options.timeout);
   }
 
   @Override

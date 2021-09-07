@@ -143,8 +143,7 @@ class WebSocketImpl extends ChannelOwner implements WebSocket {
 
   private WebSocketFrame waitForEventWithTimeout(EventType eventType, Runnable code, Predicate<WebSocketFrame> predicate, Double timeout) {
     List<Waitable<WebSocketFrame>> waitables = new ArrayList<>();
-    waitables.add(new WaitableEvent<>(listeners, eventType,
-      frame -> predicate == null || predicate.test(frame)));
+    waitables.add(new WaitableEvent<>(listeners, eventType, predicate));
     waitables.add(new WaitableWebSocketClose<>());
     waitables.add(new WaitableWebSocketError<>());
     waitables.add(page.createWaitForCloseHelper());
