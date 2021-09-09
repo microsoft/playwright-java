@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 
 import static com.microsoft.playwright.Utils.getOS;
 import static com.microsoft.playwright.options.LoadState.DOMCONTENTLOADED;
@@ -103,7 +104,7 @@ public class TestHar extends TestBase {
 
     assertEquals(1, log.getAsJsonArray("pages").size());
     JsonObject pageEntry = log.getAsJsonArray("pages").get(0).getAsJsonObject();
-    assertEquals("page_0", pageEntry.get("id").getAsString());
+    assertNotNull(pageEntry.get("id").getAsString());
     assertEquals("Hello", pageEntry.get("title").getAsString());
 //    expect(new Date(pageEntry.startedDateTime).valueOf()).toBeGreaterThan(Date.now() - 3600 * 1000);
     assertTrue(pageEntry.getAsJsonObject("pageTimings").get("onContentLoad").getAsDouble() > 0);
@@ -129,7 +130,7 @@ public class TestHar extends TestBase {
     }
     assertEquals(1, log.getAsJsonArray("pages").size());
     JsonObject pageEntry = log.getAsJsonArray("pages").get(0).getAsJsonObject();
-    assertEquals("page_0", pageEntry.get("id").getAsString());
+    assertNotNull(pageEntry.get("id").getAsString());
     assertEquals("Hello", pageEntry.get("title").getAsString());
   }
 
@@ -139,7 +140,8 @@ public class TestHar extends TestBase {
     JsonObject log = pageWithHar.log();
     assertEquals(1, log.getAsJsonArray("entries").size());
     JsonObject entry = log.getAsJsonArray("entries").get(0).getAsJsonObject();
-    assertEquals("page_0", entry.get("pageref").getAsString());
+    String id = log.getAsJsonArray("pages").get(0).getAsJsonObject().get("id").getAsString();
+    assertEquals(id, entry.get("pageref").getAsString());
     assertEquals(server.EMPTY_PAGE, entry.getAsJsonObject("request").get("url").getAsString());
     assertEquals("GET", entry.getAsJsonObject("request").get("method").getAsString());
     assertEquals("HTTP/1.1", entry.getAsJsonObject("request").get("httpVersion").getAsString());

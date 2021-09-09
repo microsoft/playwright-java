@@ -328,6 +328,14 @@ class LocatorImpl implements Locator {
   }
 
   @Override
+  public void setChecked(boolean checked, SetCheckedOptions options) {
+    if (options == null) {
+      options = new SetCheckedOptions();
+    }
+    frame.setChecked(selector, checked, convertViaJson(options, Frame.SetCheckedOptions.class).setStrict(true));
+  }
+
+  @Override
   public void setInputFiles(Path files, SetInputFilesOptions options) {
     if (options == null) {
       options = new SetInputFilesOptions();

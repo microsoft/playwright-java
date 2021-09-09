@@ -943,23 +943,23 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void route(String url, Consumer<Route> handler) {
-    route(new UrlMatcher(browserContext.baseUrl, url), handler);
+  public void route(String url, Consumer<Route> handler, RouteOptions options) {
+    route(new UrlMatcher(browserContext.baseUrl, url), handler, options);
   }
 
   @Override
-  public void route(Pattern url, Consumer<Route> handler) {
-    route(new UrlMatcher(url), handler);
+  public void route(Pattern url, Consumer<Route> handler, RouteOptions options) {
+    route(new UrlMatcher(url), handler, options);
   }
 
   @Override
-  public void route(Predicate<String> url, Consumer<Route> handler) {
-    route(new UrlMatcher(url), handler);
+  public void route(Predicate<String> url, Consumer<Route> handler, RouteOptions options) {
+    route(new UrlMatcher(url), handler, options);
   }
 
-  private void route(UrlMatcher matcher, Consumer<Route> handler) {
+  private void route(UrlMatcher matcher, Consumer<Route> handler, RouteOptions options) {
     withLogging("Page.route", () -> {
-      routes.add(matcher, handler);
+      routes.add(matcher, handler, options == null ? null : options.times);
       if (routes.size() == 1) {
         JsonObject params = new JsonObject();
         params.addProperty("enabled", true);
@@ -1040,6 +1040,12 @@ public class PageImpl extends ChannelOwner implements Page {
   public List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options) {
     return withLogging("Page.selectOption",
       () -> mainFrame.selectOptionImpl(selector, values, convertViaJson(options, Frame.SelectOptionOptions.class)));
+  }
+
+  @Override
+  public void setChecked(String selector, boolean checked, SetCheckedOptions options) {
+    withLogging("Page.setChecked",
+      () -> mainFrame.setCheckedImpl(selector, checked, convertViaJson(options, Frame.SetCheckedOptions.class)));
   }
 
   @Override

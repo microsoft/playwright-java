@@ -926,6 +926,14 @@ public interface Page extends AutoCloseable {
      */
     public Optional<ColorScheme> colorScheme;
     /**
+     * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"} and {@code "none"}. Passing {@code null} disables forced
+     * colors emulation.
+     *
+     * <p> <strong>NOTE:</strong> It's not supported in WebKit, see <a href="https://bugs.webkit.org/show_bug.cgi?id=225281">here</a> in their issue
+     * tracker.
+     */
+    public Optional<ForcedColors> forcedColors;
+    /**
      * Changes the CSS media type of the page. The only allowed values are {@code "screen"}, {@code "print"} and {@code null}. Passing {@code null}
      * disables CSS media emulation.
      */
@@ -942,6 +950,17 @@ public interface Page extends AutoCloseable {
      */
     public EmulateMediaOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
+      return this;
+    }
+    /**
+     * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"} and {@code "none"}. Passing {@code null} disables forced
+     * colors emulation.
+     *
+     * <p> <strong>NOTE:</strong> It's not supported in WebKit, see <a href="https://bugs.webkit.org/show_bug.cgi?id=225281">here</a> in their issue
+     * tracker.
+     */
+    public EmulateMediaOptions setForcedColors(ForcedColors forcedColors) {
+      this.forcedColors = Optional.ofNullable(forcedColors);
       return this;
     }
     /**
@@ -1566,9 +1585,8 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * **DEPRECATED** This option is ignored. {@link Page#isHidden Page.isHidden()} does not wait for the element to become
+     * hidden and returns immediately.
      */
     public Double timeout;
 
@@ -1581,9 +1599,8 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * **DEPRECATED** This option is ignored. {@link Page#isHidden Page.isHidden()} does not wait for the element to become
+     * hidden and returns immediately.
      */
     public IsHiddenOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1597,9 +1614,8 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * **DEPRECATED** This option is ignored. {@link Page#isVisible Page.isVisible()} does not wait for the element to become
+     * visible and returns immediately.
      */
     public Double timeout;
 
@@ -1612,9 +1628,8 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * **DEPRECATED** This option is ignored. {@link Page#isVisible Page.isVisible()} does not wait for the element to become
+     * visible and returns immediately.
      */
     public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1901,6 +1916,20 @@ public interface Page extends AutoCloseable {
       return this;
     }
   }
+  class RouteOptions {
+    /**
+     * How often a route should be used. By default it will be used every time.
+     */
+    public Integer times;
+
+    /**
+     * How often a route should be used. By default it will be used every time.
+     */
+    public RouteOptions setTimes(int times) {
+      this.times = times;
+      return this;
+    }
+  }
   class ScreenshotOptions {
     /**
      * An object which specifies clipping of the resulting image. Should have the following fields:
@@ -2055,6 +2084,100 @@ public interface Page extends AutoCloseable {
      */
     public SelectOptionOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+  }
+  class SetCheckedOptions {
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
+    public Boolean force;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
+    public Boolean noWaitAfter;
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
+    public Position position;
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public Double timeout;
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public Boolean trial;
+
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
+    public SetCheckedOptions setForce(boolean force) {
+      this.force = force;
+      return this;
+    }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
+    public SetCheckedOptions setNoWaitAfter(boolean noWaitAfter) {
+      this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
+    public SetCheckedOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
+    }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
+    public SetCheckedOptions setPosition(Position position) {
+      this.position = position;
+      return this;
+    }
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * element, the call throws an exception.
+     */
+    public SetCheckedOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public SetCheckedOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public SetCheckedOptions setTrial(boolean trial) {
+      this.trial = trial;
       return this;
     }
   }
@@ -4429,6 +4552,10 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> The handler will only be called for the first url if the response is a redirect.
    *
+   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
+   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
    * Page page = browser.newPage();
@@ -4468,7 +4595,9 @@ public interface Page extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    */
-  void route(String url, Consumer<Route> handler);
+  default void route(String url, Consumer<Route> handler) {
+    route(url, handler, null);
+  }
   /**
    * Routing provides the capability to modify network requests that are made by a page.
    *
@@ -4476,6 +4605,10 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> The handler will only be called for the first url if the response is a redirect.
    *
+   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
+   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
    * Page page = browser.newPage();
@@ -4515,7 +4648,7 @@ public interface Page extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    */
-  void route(Pattern url, Consumer<Route> handler);
+  void route(String url, Consumer<Route> handler, RouteOptions options);
   /**
    * Routing provides the capability to modify network requests that are made by a page.
    *
@@ -4523,6 +4656,10 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> The handler will only be called for the first url if the response is a redirect.
    *
+   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
+   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
    * Page page = browser.newPage();
@@ -4562,7 +4699,164 @@ public interface Page extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    */
-  void route(Predicate<String> url, Consumer<Route> handler);
+  default void route(Pattern url, Consumer<Route> handler) {
+    route(url, handler, null);
+  }
+  /**
+   * Routing provides the capability to modify network requests that are made by a page.
+   *
+   * <p> Once routing is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   *
+   * <p> <strong>NOTE:</strong> The handler will only be called for the first url if the response is a redirect.
+   *
+   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
+   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   *
+   * <p> An example of a naive handler that aborts all image requests:
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
+   * <p> or the same snippet using a regex pattern instead:
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.route(Pattern.compile("(\\.png$)|(\\.jpg$)"),route -> route.abort());
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
+   * <p> It is possible to examine the request to decide the route action. For example, mocking all requests that contain some
+   * post data, and leaving all other requests as is:
+   * <pre>{@code
+   * page.route("/api/**", route -> {
+   *   if (route.request().postData().contains("my-string"))
+   *     route.fulfill(new Route.FulfillOptions().setBody("mocked-data"));
+   *   else
+   *     route.resume();
+   * });
+   * }</pre>
+   *
+   * <p> Page routes take precedence over browser context routes (set up with {@link BrowserContext#route
+   * BrowserContext.route()}) when request matches both handlers.
+   *
+   * <p> To remove a route with its handler you can use {@link Page#unroute Page.unroute()}.
+   *
+   * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the context
+   * options was provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
+   * @param handler handler function to route the request.
+   */
+  void route(Pattern url, Consumer<Route> handler, RouteOptions options);
+  /**
+   * Routing provides the capability to modify network requests that are made by a page.
+   *
+   * <p> Once routing is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   *
+   * <p> <strong>NOTE:</strong> The handler will only be called for the first url if the response is a redirect.
+   *
+   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
+   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   *
+   * <p> An example of a naive handler that aborts all image requests:
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
+   * <p> or the same snippet using a regex pattern instead:
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.route(Pattern.compile("(\\.png$)|(\\.jpg$)"),route -> route.abort());
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
+   * <p> It is possible to examine the request to decide the route action. For example, mocking all requests that contain some
+   * post data, and leaving all other requests as is:
+   * <pre>{@code
+   * page.route("/api/**", route -> {
+   *   if (route.request().postData().contains("my-string"))
+   *     route.fulfill(new Route.FulfillOptions().setBody("mocked-data"));
+   *   else
+   *     route.resume();
+   * });
+   * }</pre>
+   *
+   * <p> Page routes take precedence over browser context routes (set up with {@link BrowserContext#route
+   * BrowserContext.route()}) when request matches both handlers.
+   *
+   * <p> To remove a route with its handler you can use {@link Page#unroute Page.unroute()}.
+   *
+   * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the context
+   * options was provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
+   * @param handler handler function to route the request.
+   */
+  default void route(Predicate<String> url, Consumer<Route> handler) {
+    route(url, handler, null);
+  }
+  /**
+   * Routing provides the capability to modify network requests that are made by a page.
+   *
+   * <p> Once routing is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   *
+   * <p> <strong>NOTE:</strong> The handler will only be called for the first url if the response is a redirect.
+   *
+   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
+   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   *
+   * <p> An example of a naive handler that aborts all image requests:
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
+   * <p> or the same snippet using a regex pattern instead:
+   * <pre>{@code
+   * Page page = browser.newPage();
+   * page.route(Pattern.compile("(\\.png$)|(\\.jpg$)"),route -> route.abort());
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
+   * <p> It is possible to examine the request to decide the route action. For example, mocking all requests that contain some
+   * post data, and leaving all other requests as is:
+   * <pre>{@code
+   * page.route("/api/**", route -> {
+   *   if (route.request().postData().contains("my-string"))
+   *     route.fulfill(new Route.FulfillOptions().setBody("mocked-data"));
+   *   else
+   *     route.resume();
+   * });
+   * }</pre>
+   *
+   * <p> Page routes take precedence over browser context routes (set up with {@link BrowserContext#route
+   * BrowserContext.route()}) when request matches both handlers.
+   *
+   * <p> To remove a route with its handler you can use {@link Page#unroute Page.unroute()}.
+   *
+   * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the context
+   * options was provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
+   * @param handler handler function to route the request.
+   */
+  void route(Predicate<String> url, Consumer<Route> handler, RouteOptions options);
   /**
    * Returns the buffer with the captured screenshot.
    */
@@ -4957,6 +5251,56 @@ public interface Page extends AutoCloseable {
    * is considered matching if all specified properties match.
    */
   List<String> selectOption(String selector, SelectOption[] values, SelectOptionOptions options);
+  /**
+   * This method checks or unchecks an element matching {@code selector} by performing the following steps:
+   * <ol>
+   * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws.</li>
+   * <li> If the element already has the right checked state, this method returns immediately.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * <li> Ensure that the element is now checked or unchecked. If not, this method throws.</li>
+   * </ol>
+   *
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
+   *
+   * <p> Shortcut for main frame's {@link Frame#setChecked Frame.setChecked()}.
+   *
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param checked Whether to check or uncheck the checkbox.
+   */
+  default void setChecked(String selector, boolean checked) {
+    setChecked(selector, checked, null);
+  }
+  /**
+   * This method checks or unchecks an element matching {@code selector} by performing the following steps:
+   * <ol>
+   * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws.</li>
+   * <li> If the element already has the right checked state, this method returns immediately.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * <li> Ensure that the element is now checked or unchecked. If not, this method throws.</li>
+   * </ol>
+   *
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
+   *
+   * <p> Shortcut for main frame's {@link Frame#setChecked Frame.setChecked()}.
+   *
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more details.
+   * @param checked Whether to check or uncheck the checkbox.
+   */
+  void setChecked(String selector, boolean checked, SetCheckedOptions options);
   /**
    *
    *

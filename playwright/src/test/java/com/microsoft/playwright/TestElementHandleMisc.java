@@ -73,4 +73,14 @@ public class TestElementHandleMisc extends TestBase {
     button.focus();
     assertEquals(true, button.evaluate("button => document.activeElement === button"));
   }
+
+  @Test
+  void shouldCheckTheBoxUsingSetChecked() {
+    page.setContent("<input id='checkbox' type='checkbox'></input>");
+    ElementHandle input = page.querySelector("input");
+    input.setChecked(true);
+    assertEquals(true, page.evaluate("checkbox.checked"));
+    input.setChecked(false);
+    assertEquals(false, page.evaluate("checkbox.checked"));
+  }
 }

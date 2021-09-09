@@ -19,21 +19,22 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Frame;
-import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Response;
+import com.microsoft.playwright.options.HttpHeader;
 import com.microsoft.playwright.options.SecurityDetails;
 import com.microsoft.playwright.options.ServerAddr;
 import com.microsoft.playwright.options.Timing;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Utils.toHeadersMap;
+import static java.util.Arrays.asList;
 
 public class ResponseImpl extends ChannelOwner implements Response {
   private final Map<String, String> headers = new HashMap<>();
+  private List<HttpHeader> rawHeaders;
   private final RequestImpl request;
 
   ResponseImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -45,12 +46,12 @@ public class ResponseImpl extends ChannelOwner implements Response {
     }
 
     request = connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());
-    request.headers.clear();
-    for (JsonElement e : initializer.getAsJsonArray("requestHeaders")) {
-      JsonObject item = e.getAsJsonObject();
-      request.headers.put(item.get("name").getAsString().toLowerCase(), item.get("value").getAsString());
-    }
     request.timing = gson().fromJson(initializer.get("timing"), Timing.class);
+  }
+
+  @Override
+  public Map<String, String> allHeaders() {
+    return withLogging("Response.allHeaders", () -> toHeadersMap(getRawHeaders()));
   }
 
   @Override
@@ -63,13 +64,22 @@ public class ResponseImpl extends ChannelOwner implements Response {
 
   @Override
   public String finished() {
-    return withLogging("Response.finished", () -> {
-      JsonObject json = sendMessage("finished").getAsJsonObject();
-      if (json.has("error")) {
-        return json.get("error").getAsString();
+    List<Waitable<String>> waitables = new ArrayList<>();
+    waitables.add(new WaitableNever<String>() {
+      @Override
+      public boolean isDone() {
+        return request.didFailOrFinish;
       }
-      return null;
+      @Override
+      public String get() {
+        return request.failure();
+      }
     });
+    PageImpl page = request.frame().page;
+    waitables.add(page.createWaitForCloseHelper());
+    waitables.add(page.createWaitableTimeout(null));
+    runUntil(() -> {}, new WaitableRace<>(waitables));
+    return request.failure();
   }
 
   @Override
@@ -80,6 +90,11 @@ public class ResponseImpl extends ChannelOwner implements Response {
   @Override
   public Map<String, String> headers() {
     return headers;
+  }
+
+  @Override
+  public List<HttpHeader> headersArray() {
+    return withLogging("Response.headersArray", () -> getRawHeaders());
   }
 
   @Override
@@ -132,5 +147,13 @@ public class ResponseImpl extends ChannelOwner implements Response {
   @Override
   public String url() {
     return initializer.get("url").getAsString();
+  }
+
+  private List<HttpHeader> getRawHeaders() {
+    if (rawHeaders == null) {
+      JsonObject json = sendMessage("rawResponseHeaders").getAsJsonObject();
+      rawHeaders = asList(gson().fromJson(json.getAsJsonArray("headers"), HttpHeader[].class));
+    }
+    return rawHeaders;
   }
 }

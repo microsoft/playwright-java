@@ -39,6 +39,10 @@ import java.util.*;
  */
 public interface Request {
   /**
+   * An object with all the request HTTP headers associated with this request. The header names are lower-cased.
+   */
+  Map<String, String> allHeaders();
+  /**
    * The method returns {@code null} unless this request has failed, as reported by {@code requestfailed} event.
    *
    * <p> Example of logging of all the failed requests:
@@ -54,9 +58,16 @@ public interface Request {
    */
   Frame frame();
   /**
-   * An object with HTTP headers associated with the request. All header names are lower-case.
+   * **DEPRECATED** Incomplete list of headers as seen by the rendering engine. Use {@link Request#allHeaders
+   * Request.allHeaders()} instead.
    */
   Map<String, String> headers();
+  /**
+   * An array with all the request HTTP headers associated with this request. Unlike {@link Request#allHeaders
+   * Request.allHeaders()}, header names are not lower-cased. Headers with multiple entries, such as {@code Set-Cookie}, appear in
+   * the array multiple times.
+   */
+  List<HttpHeader> headersArray();
   /**
    * Whether this request is driving frame's navigation.
    */
@@ -112,6 +123,10 @@ public interface Request {
    * Returns the matching {@code Response} object, or {@code null} if the response was not received due to error.
    */
   Response response();
+  /**
+   * Returns resource size information for given request.
+   */
+  Sizes sizes();
   /**
    * Returns resource timing information for given request. Most of the timing values become available upon the response,
    * {@code responseEnd} becomes available when request finishes. Find more information at <a

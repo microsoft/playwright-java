@@ -167,12 +167,11 @@ class BrowserImpl extends ChannelOwner implements Browser {
     }
     JsonElement result = sendMessage("newContext", params);
     BrowserContextImpl context = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("context").get("guid").getAsString());
-    if (options.recordVideoDir != null) {
-      context.videosDir = options.recordVideoDir;
-    }
+    context.videosDir = options.recordVideoDir;
     if (options.baseURL != null) {
       context.setBaseUrl(options.baseURL);
     }
+    context.recordHarPath = options.recordHarPath;
     contexts.add(context);
     return context;
   }

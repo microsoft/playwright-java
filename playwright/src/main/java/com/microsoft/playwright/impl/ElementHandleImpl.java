@@ -34,6 +34,7 @@ import java.util.Base64;
 import java.util.List;
 
 import static com.microsoft.playwright.impl.Serialization.*;
+import static com.microsoft.playwright.impl.Utils.convertViaJson;
 import static com.microsoft.playwright.options.ScreenshotType.JPEG;
 import static com.microsoft.playwright.options.ScreenshotType.PNG;
 
@@ -429,6 +430,15 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   @Override
   public void selectText(SelectTextOptions options) {
     withLogging("ElementHandle.selectText", () -> selectTextImpl(options));
+  }
+
+  @Override
+  public void setChecked(boolean checked, SetCheckedOptions options) {
+    if (checked) {
+      check(convertViaJson(options, CheckOptions.class));
+    } else {
+      uncheck(convertViaJson(options, UncheckOptions.class));
+    }
   }
 
   @Override

@@ -77,4 +77,23 @@ public class TestTracing extends TestBase {
     assertTrue(Files.exists(traceFile2));
   }
 
+  @Test
+  void shouldWorkWithMultipleChunks(@TempDir Path tempDir) {
+    context.tracing().start(new Tracing.StartOptions().setScreenshots(true).setSnapshots(true));
+    page.navigate(server.PREFIX + "/frames/frame.html");
+
+    context.tracing().startChunk();
+    page.setContent("<button>Click</button>");
+    page.click("'Click'");
+    Path traceFile1 = tempDir.resolve("trace1.zip");
+    context.tracing().stopChunk(new Tracing.StopChunkOptions().setPath(traceFile1));
+
+    context.tracing().startChunk();
+    page.hover("'Click'");
+    Path traceFile2 = tempDir.resolve("trace2.zip");
+    context.tracing().stopChunk(new Tracing.StopChunkOptions().setPath(traceFile2));
+
+    assertTrue(Files.exists(traceFile1));
+    assertTrue(Files.exists(traceFile2));
+  }
 }

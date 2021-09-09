@@ -644,6 +644,19 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
+  public void setChecked(String selector, boolean checked, SetCheckedOptions options) {
+    withLogging("Frame.setChecked", () -> setCheckedImpl(selector, checked, options));
+  }
+
+  void setCheckedImpl(String selector, boolean checked, SetCheckedOptions options) {
+    if (checked) {
+      checkImpl(selector, convertViaJson(options, CheckOptions.class));
+    } else {
+      uncheckImpl(selector, convertViaJson(options, UncheckOptions.class));
+    }
+  }
+
+  @Override
   public void setContent(String html, SetContentOptions options) {
     withLogging("Frame.setContent", () -> setContentImpl(html, options));
   }

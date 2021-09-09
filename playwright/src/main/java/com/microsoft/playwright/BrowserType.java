@@ -438,6 +438,14 @@ public interface BrowserType {
      * An object containing additional HTTP headers to be sent with every request. All header values must be strings.
      */
     public Map<String, String> extraHTTPHeaders;
+    /**
+     * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link Page#emulateMedia
+     * Page.emulateMedia()} for more details. Defaults to {@code "none"}.
+     *
+     * <p> <strong>NOTE:</strong> It's not supported in WebKit, see <a href="https://bugs.webkit.org/show_bug.cgi?id=225281">here</a> in their issue
+     * tracker.
+     */
+    public ForcedColors forcedColors;
     public Geolocation geolocation;
     /**
      * Close the browser process on SIGHUP. Defaults to {@code true}.
@@ -688,6 +696,17 @@ public interface BrowserType {
      */
     public LaunchPersistentContextOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
+      return this;
+    }
+    /**
+     * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link Page#emulateMedia
+     * Page.emulateMedia()} for more details. Defaults to {@code "none"}.
+     *
+     * <p> <strong>NOTE:</strong> It's not supported in WebKit, see <a href="https://bugs.webkit.org/show_bug.cgi?id=225281">here</a> in their issue
+     * tracker.
+     */
+    public LaunchPersistentContextOptions setForcedColors(ForcedColors forcedColors) {
+      this.forcedColors = forcedColors;
       return this;
     }
     public LaunchPersistentContextOptions setGeolocation(double latitude, double longitude) {

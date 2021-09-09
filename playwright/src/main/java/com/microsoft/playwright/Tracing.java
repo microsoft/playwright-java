@@ -20,10 +20,10 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * API for collecting and saving Playwright traces. Playwright traces can be opened using the Playwright CLI after
- * Playwright script runs.
+ * API for collecting and saving Playwright traces. Playwright traces can be opened in <a
+ * href="https://playwright.dev/java/docs/trace-viewer/">Trace Viewer</a> after Playwright script runs.
  *
- * <p> Start with specifying the folder traces will be stored in:
+ * <p> Start recording a trace before performing actions. At the end, stop tracing and save it to a file.
  * <pre>{@code
  * Browser browser = chromium.launch();
  * BrowserContext context = browser.newContext();
@@ -77,14 +77,30 @@ public interface Tracing {
   }
   class StopOptions {
     /**
-     * Export trace into the file with the given name.
+     * Export trace into the file with the given path.
      */
     public Path path;
 
     /**
-     * Export trace into the file with the given name.
+     * Export trace into the file with the given path.
      */
     public StopOptions setPath(Path path) {
+      this.path = path;
+      return this;
+    }
+  }
+  class StopChunkOptions {
+    /**
+     * Export trace collected since the last {@link Tracing#startChunk Tracing.startChunk()} call into the file with the given
+     * path.
+     */
+    public Path path;
+
+    /**
+     * Export trace collected since the last {@link Tracing#startChunk Tracing.startChunk()} call into the file with the given
+     * path.
+     */
+    public StopChunkOptions setPath(Path path) {
       this.path = path;
       return this;
     }
@@ -118,6 +134,31 @@ public interface Tracing {
    */
   void start(StartOptions options);
   /**
+   * Start a new trace chunk. If you'd like to record multiple traces on the same {@code BrowserContext}, use {@link Tracing#start
+   * Tracing.start()} once, and then create multiple trace chunks with {@link Tracing#startChunk Tracing.startChunk()} and
+   * {@link Tracing#stopChunk Tracing.stopChunk()}.
+   * <pre>{@code
+   * context.tracing().start(new Tracing.StartOptions()
+   *   .setScreenshots(true)
+   *   .setSnapshots(true));
+   * Page page = context.newPage();
+   * page.navigate("https://playwright.dev");
+   *
+   * context.tracing().startChunk();
+   * page.click("text=Get Started");
+   * // Everything between startChunk and stopChunk will be recorded in the trace.
+   * context.tracing().stopChunk(new Tracing.StopChunkOptions()
+   *   .setPath(Paths.get("trace1.zip")));
+   *
+   * context.tracing().startChunk();
+   * page.navigate("http://example.com");
+   * // Save a second trace file with different actions.
+   * context.tracing().stopChunk(new Tracing.StopChunkOptions()
+   *   .setPath(Paths.get("trace2.zip")));
+   * }</pre>
+   */
+  void startChunk();
+  /**
    * Stop tracing.
    */
   default void stop() {
@@ -127,5 +168,15 @@ public interface Tracing {
    * Stop tracing.
    */
   void stop(StopOptions options);
+  /**
+   * Stop the trace chunk. See {@link Tracing#startChunk Tracing.startChunk()} for more details about multiple trace chunks.
+   */
+  default void stopChunk() {
+    stopChunk(null);
+  }
+  /**
+   * Stop the trace chunk. See {@link Tracing#startChunk Tracing.startChunk()} for more details about multiple trace chunks.
+   */
+  void stopChunk(StopChunkOptions options);
 }
 

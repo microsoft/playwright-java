@@ -16,7 +16,10 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.ForcedColors;
+import com.microsoft.playwright.options.ReducedMotion;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.util.function.Supplier;
 
@@ -25,6 +28,7 @@ import static com.microsoft.playwright.options.ColorScheme.LIGHT;
 import static com.microsoft.playwright.options.Media.PRINT;
 import static com.microsoft.playwright.Utils.attachFrame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestPageEmulateMedia extends TestBase {
   @Test
@@ -140,5 +144,31 @@ public class TestPageEmulateMedia extends TestBase {
 
     page.emulateMedia(new Page.EmulateMediaOptions().setColorScheme(LIGHT));
     assertEquals("rgb(255, 255, 255)", backgroundColor.get());
+  }
+
+  @Test
+  void shouldEmulateReducedMotion() {
+    assertEquals(true, page.evaluate("() => matchMedia('(prefers-reduced-motion: no-preference)').matches"));
+    page.emulateMedia(new Page.EmulateMediaOptions().setReducedMotion(ReducedMotion.REDUCE));
+    assertEquals(true, page.evaluate("() => matchMedia('(prefers-reduced-motion: reduce)').matches"));
+    assertEquals(false, page.evaluate("() => matchMedia('(prefers-reduced-motion: no-preference)').matches"));
+    page.emulateMedia(new Page.EmulateMediaOptions().setReducedMotion(ReducedMotion.NO_PREFERENCE));
+    assertEquals(false, page.evaluate("() => matchMedia('(prefers-reduced-motion: reduce)').matches"));
+    assertEquals(true, page.evaluate("() => matchMedia('(prefers-reduced-motion: no-preference)').matches"));
+    page.emulateMedia(new Page.EmulateMediaOptions().setReducedMotion(null));
+  }
+
+  @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="https://bugs.webkit.org/show_bug.cgi?id=225281")
+  void shouldEmulateForcedColors() {
+    assertEquals(true, page.evaluate("() => matchMedia('(forced-colors: none)').matches"));
+    page.emulateMedia(new Page.EmulateMediaOptions().setForcedColors(ForcedColors.NONE));
+    assertEquals(true, page.evaluate("() => matchMedia('(forced-colors: none)').matches"));
+    assertEquals(false, page.evaluate("() => matchMedia('(forced-colors: active)').matches"));
+    page.emulateMedia(new Page.EmulateMediaOptions().setForcedColors(ForcedColors.ACTIVE));
+    assertEquals(false, page.evaluate("() => matchMedia('(forced-colors: none)').matches"));
+    assertEquals(true, page.evaluate("() => matchMedia('(forced-colors: active)').matches"));
+    page.emulateMedia(new Page.EmulateMediaOptions().setForcedColors(null));
+    assertEquals(true, page.evaluate("() => matchMedia('(forced-colors: none)').matches"));
   }
 }

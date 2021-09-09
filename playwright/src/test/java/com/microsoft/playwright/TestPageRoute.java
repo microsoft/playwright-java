@@ -517,7 +517,13 @@ public class TestPageRoute extends TestBase {
           "}");
         fail("did not throw");
       } catch (PlaywrightException e) {
-        assertTrue(e.getMessage().contains("failed"));
+        if (isChromium()) {
+          assertTrue(e.getMessage().contains("Failed"), e.getMessage());
+        } else if (isWebKit()) {
+          assertTrue(e.getMessage().contains("TypeError"), e.getMessage());
+        } else if (isFirefox()) {
+          assertTrue(e.getMessage().contains("NetworkError"), e.getMessage());
+        }
       }
     }
   }
@@ -637,4 +643,16 @@ public class TestPageRoute extends TestBase {
     }
   }
 
+  @Test
+  void shouldSupportTheTimesParameterWithRouteMatching() {
+    int[] intercepted = {0};
+    page.route("**/empty.html", route -> {
+      ++intercepted[0];
+      route.resume();
+    }, new Page.RouteOptions().setTimes(1));
+    page.navigate(server.EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
+    assertEquals(1, intercepted[0]);
+  }
 }

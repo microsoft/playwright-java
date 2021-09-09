@@ -31,8 +31,13 @@ class TracingImpl implements Tracing {
     this.context = context;
   }
 
-  private void export(Path path) {
-    JsonObject json = context.sendMessage("tracingExport").getAsJsonObject();
+  private void stopChunkImpl(Path path) {
+    JsonObject params = new JsonObject();
+    params.addProperty("save", path != null);
+    JsonObject json = context.sendMessage("tracingStopChunk", params).getAsJsonObject();
+    if (!json.has("artifact")) {
+      return;
+    }
     ArtifactImpl artifact = context.connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
     // In case of CDP connection browser is null but since the connection is established by
     // the driver it is safe to consider the artifact local.
@@ -48,21 +53,34 @@ class TracingImpl implements Tracing {
     context.withLogging("Tracing.start", () -> startImpl(options));
   }
 
+  @Override
+  public void startChunk() {
+    context.withLogging("Tracing.startChunk", () -> {
+      context.sendMessage("tracingStartChunk");
+    });
+  }
+
   private void startImpl(StartOptions options) {
     if (options == null) {
       options = new StartOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     context.sendMessage("tracingStart", params);
+    context.sendMessage("tracingStartChunk");
   }
 
   @Override
   public void stop(StopOptions options) {
     context.withLogging("Tracing.stop", () -> {
-      if (options != null && options.path != null) {
-        export(options.path);
-      }
+      stopChunkImpl(options == null ? null : options.path);
       context.sendMessage("tracingStop");
+    });
+  }
+
+  @Override
+  public void stopChunk(StopChunkOptions options) {
+    context.withLogging("Tracing.stopChunk", () -> {
+      stopChunkImpl(options == null ? null : options.path);
     });
   }
 }

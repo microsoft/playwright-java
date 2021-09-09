@@ -24,6 +24,10 @@ import java.util.*;
  */
 public interface Response {
   /**
+   * An object with all the response HTTP headers associated with this response.
+   */
+  Map<String, String> allHeaders();
+  /**
    * Returns the buffer with response body.
    */
   byte[] body();
@@ -36,9 +40,16 @@ public interface Response {
    */
   Frame frame();
   /**
-   * Returns the object with HTTP headers associated with the response. All header names are lower-case.
+   * **DEPRECATED** Incomplete list of headers as seen by the rendering engine. Use {@link Response#allHeaders
+   * Response.allHeaders()} instead.
    */
   Map<String, String> headers();
+  /**
+   * An array with all the request HTTP headers associated with this response. Unlike {@link Response#allHeaders
+   * Response.allHeaders()}, header names are not lower-cased. Headers with multiple entries, such as {@code Set-Cookie}, appear in
+   * the array multiple times.
+   */
+  List<HttpHeader> headersArray();
   /**
    * Contains a boolean stating whether the response was successful (status in the range 200-299) or not.
    */
