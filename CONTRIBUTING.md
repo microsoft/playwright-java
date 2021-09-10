@@ -34,9 +34,9 @@ Names of published driver archives can be found at https://github.com/microsoft/
 mvn compile
 mvn test
 # Executing a single test
-BROWSER=chromium mvn test -DfailIfNoTests=false -Dtest=TestPageNetworkSizes#shouldHaveTheCorrectResponseBodySize
+BROWSER=chromium mvn test -Dtest=TestPageNetworkSizes#shouldHaveTheCorrectResponseBodySize
 # Executing a single test class
-BROWSER=chromium mvn test -DfailIfNoTests=false -Dtest=TestPageNetworkSizes
+BROWSER=chromium mvn test -Dtest=TestPageNetworkSizes
 ```
 
 ### Generating API
