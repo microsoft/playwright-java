@@ -123,6 +123,9 @@
                 junit.jupiter.execution.parallel.config.dynamic.factor=0.5
               </configurationParameters>
             </properties>
+            <failIfNoTests>
+              false
+            </failIfNoTests>
           </configuration>
         </plugin>
         <plugin>
