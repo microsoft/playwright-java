@@ -115,10 +115,9 @@ public class TestBrowserContextBasic extends TestBase {
 
 
   @Test
-  @Disabled("TODO: supported null viewport option")
   void shouldNotAllowDeviceScaleFactorWithNullViewport() {
     try {
-      browser.newContext(new Browser.NewContextOptions().setDeviceScaleFactor(1.0));
+      browser.newContext(new Browser.NewContextOptions().setDeviceScaleFactor(1.0).setViewportSize(null));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("\"deviceScaleFactor\" option is not supported with null \"viewport\""));
@@ -126,10 +125,9 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  @Disabled("TODO: supported null viewport option")
   void shouldNotAllowIsMobileWithNullViewport() {
     try {
-      browser.newContext(new Browser.NewContextOptions().setIsMobile(true));
+      browser.newContext(new Browser.NewContextOptions().setIsMobile(true).setViewportSize(null));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("\"isMobile\" option is not supported with null \"viewport\""));
