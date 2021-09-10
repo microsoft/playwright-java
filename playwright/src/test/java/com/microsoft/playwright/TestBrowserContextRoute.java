@@ -121,4 +121,17 @@ public class TestBrowserContextRoute extends TestBase {
     assertEquals("context", response.text());
     context.close();
   }
+
+  @Test
+  void shouldSupportTheTimesParameterWithRouteMatching() {
+    int[] intercepted = {0};
+    context.route("**/empty.html", route -> {
+      ++intercepted[0];
+      route.resume();
+    }, new BrowserContext.RouteOptions().setTimes(2));
+    page.navigate(server.EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
+    assertEquals(2, intercepted[0]);
+  }
 }

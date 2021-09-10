@@ -39,9 +39,11 @@ class Serialization {
     if (gson == null) {
       gson = new GsonBuilder()
         .registerTypeAdapter(SameSiteAttribute.class, new SameSiteAdapter().nullSafe())
-        .registerTypeAdapter(BrowserChannel.class, new BrowserChannelSerializer())
-        .registerTypeAdapter(ColorScheme.class, new ColorSchemeAdapter().nullSafe())
-        .registerTypeAdapter(Media.class, new MediaSerializer())
+        .registerTypeAdapter(BrowserChannel.class, new ToLowerCaseAndDashSerializer<BrowserChannel>())
+        .registerTypeAdapter(ColorScheme.class, new ToLowerCaseAndDashSerializer<ColorScheme>())
+        .registerTypeAdapter(Media.class, new ToLowerCaseSerializer<Media>())
+        .registerTypeAdapter(ForcedColors.class, new ToLowerCaseSerializer<ForcedColors>())
+        .registerTypeAdapter(ReducedMotion.class, new ToLowerCaseAndDashSerializer<ReducedMotion>())
         .registerTypeAdapter(ScreenshotType.class, new ToLowerCaseSerializer<ScreenshotType>())
         .registerTypeAdapter(MouseButton.class, new ToLowerCaseSerializer<MouseButton>())
         .registerTypeAdapter(LoadState.class, new ToLowerCaseSerializer<LoadState>())
@@ -255,6 +257,8 @@ class Serialization {
     private static boolean isSupported(Type type) {
       return new TypeToken<Optional<Media>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
         new TypeToken<Optional<ColorScheme>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
+        new TypeToken<Optional<ForcedColors>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
+        new TypeToken<Optional<ReducedMotion>>() {}.getType().getTypeName().equals(type.getTypeName()) ||
         new TypeToken<Optional<ViewportSize>>() {}.getType().getTypeName().equals(type.getTypeName());
     }
 
@@ -303,11 +307,10 @@ class Serialization {
       return new JsonPrimitive(src.toString().toLowerCase().replace('_', '-'));
     }
   }
-
-  private static class MediaSerializer implements JsonSerializer<Media> {
+  private static class ToLowerCaseAndDashSerializer<E extends Enum<E>> implements JsonSerializer<E> {
     @Override
-    public JsonElement serialize(Media src, Type typeOfSrc, JsonSerializationContext context) {
-      return new JsonPrimitive(src.toString().toLowerCase());
+    public JsonElement serialize(E src, Type typeOfSrc, JsonSerializationContext context) {
+      return new JsonPrimitive(src.toString().toLowerCase().replace('_', '-'));
     }
   }
 
@@ -349,38 +352,6 @@ class Serialization {
     public SameSiteAttribute read(JsonReader in) throws IOException {
       String value = in.nextString();
       return SameSiteAttribute.valueOf(value.toUpperCase());
-    }
-  }
-
-  private static class ColorSchemeAdapter extends TypeAdapter<ColorScheme> {
-    @Override
-    public void write(JsonWriter out, ColorScheme value) throws IOException {
-      String stringValue;
-      switch (value) {
-        case DARK:
-          stringValue = "dark";
-          break;
-        case LIGHT:
-          stringValue = "light";
-          break;
-        case NO_PREFERENCE:
-          stringValue = "no-preference";
-          break;
-        default:
-          throw new PlaywrightException("Unexpected value: " + value);
-      }
-      out.value(stringValue);
-    }
-
-    @Override
-    public ColorScheme read(JsonReader in) throws IOException {
-      String value = in.nextString();
-      switch (value) {
-        case "dark": return ColorScheme.DARK;
-        case "light": return ColorScheme.LIGHT;
-        case "no-preference": return ColorScheme.NO_PREFERENCE;
-        default: throw new PlaywrightException("Unexpected value: " + value);
-      }
     }
   }
 }

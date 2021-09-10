@@ -106,8 +106,12 @@ public class TestNetworkRequest extends TestBase {
     return (isWebKit() && getOS() == Utils.OS.WINDOWS) || isChromium();
   }
 
+  static boolean isWebKitWindows() {
+    return isWebKit() && getOS() == Utils.OS.WINDOWS;
+  }
+
   @Test
-  @DisabledIf(value="isWebKitWindowsOrChromium", disabledReason="Flaky, see https://github.com/microsoft/playwright/issues/6690")
+  @DisabledIf(value="isWebKitWindows", disabledReason="Flaky, see https://github.com/microsoft/playwright/issues/6690")
   void shouldGetTheSameHeadersAsTheServer() throws ExecutionException, InterruptedException {
     Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
     server.setRoute("/empty.html", exchange -> {
@@ -119,7 +123,7 @@ public class TestNetworkRequest extends TestBase {
     Response response = page.navigate(server.PREFIX + "/empty.html");
     Map<String, String> expectedHeaders = serverRequest.get().headers.entrySet().stream().collect(
       Collectors.toMap(e -> e.getKey().toLowerCase(), e -> e.getValue().get(0)));
-    assertEquals(expectedHeaders, response.request().headers());
+    assertEquals(expectedHeaders, response.request().allHeaders());
   }
 
   @Test
@@ -143,7 +147,7 @@ public class TestNetworkRequest extends TestBase {
       });
     Map<String, String> expectedHeaders = serverRequest.get().headers.entrySet().stream().collect(
       Collectors.toMap(e -> e.getKey().toLowerCase(), e -> e.getValue().get(0)));
-    assertEquals(expectedHeaders, response.request().headers());
+    assertEquals(expectedHeaders, response.request().allHeaders());
   }
 
   @Test

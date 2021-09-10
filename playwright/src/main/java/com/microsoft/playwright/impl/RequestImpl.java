@@ -16,25 +16,32 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.Frame;
+import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Request;
-import com.microsoft.playwright.Response;
+import com.microsoft.playwright.options.HttpHeader;
+import com.microsoft.playwright.options.Sizes;
 import com.microsoft.playwright.options.Timing;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Utils.toHeadersMap;
+import static java.util.Arrays.asList;
 
 public class RequestImpl extends ChannelOwner implements Request {
   private final byte[] postData;
   private RequestImpl redirectedFrom;
   private RequestImpl redirectedTo;
-  final Map<String, String> headers = new HashMap<>();
+  private final List<HttpHeader> headers;
+  private List<HttpHeader> rawHeaders;
   String failure;
   Timing timing;
+  boolean didFailOrFinish;
 
   RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -43,10 +50,7 @@ public class RequestImpl extends ChannelOwner implements Request {
       redirectedFrom = connection.getExistingObject(initializer.getAsJsonObject("redirectedFrom").get("guid").getAsString());
       redirectedFrom.redirectedTo = this;
     }
-    for (JsonElement e : initializer.getAsJsonArray("headers")) {
-      JsonObject item = e.getAsJsonObject();
-      headers.put(item.get("name").getAsString().toLowerCase(), item.get("value").getAsString());
-    }
+    headers = asList(gson().fromJson(initializer.getAsJsonArray("headers"), HttpHeader[].class));
     if (initializer.has("postData")) {
       postData = Base64.getDecoder().decode(initializer.get("postData").getAsString());
     } else {
@@ -55,18 +59,28 @@ public class RequestImpl extends ChannelOwner implements Request {
   }
 
   @Override
+  public Map<String, String> allHeaders() {
+    return withLogging("Request.allHeaders", () -> toHeadersMap(getRawHeaders()));
+  }
+
+  @Override
   public String failure() {
     return failure;
   }
 
   @Override
-  public Frame frame() {
+  public FrameImpl frame() {
     return connection.getExistingObject(initializer.getAsJsonObject("frame").get("guid").getAsString());
   }
 
   @Override
   public Map<String, String> headers() {
-    return headers;
+    return toHeadersMap(headers);
+  }
+
+  @Override
+  public List<HttpHeader> headersArray() {
+    return withLogging("Request.headersArray", () -> getRawHeaders());
   }
 
   @Override
@@ -108,13 +122,25 @@ public class RequestImpl extends ChannelOwner implements Request {
   }
 
   @Override
-  public Response response() {
+  public ResponseImpl response() {
     return withLogging("Request.response", () -> {
       JsonObject result = sendMessage("response").getAsJsonObject();
       if (!result.has("response")) {
         return null;
       }
       return connection.getExistingObject(result.getAsJsonObject("response").get("guid").getAsString());
+    });
+  }
+
+  @Override
+  public Sizes sizes() {
+    return withLogging("Request.sizes", () -> {
+      ResponseImpl response = response();
+      if (response == null) {
+        throw new PlaywrightException("Unable to fetch sizes for failed request");
+      }
+      JsonObject json = response.sendMessage("sizes").getAsJsonObject();
+      return gson().fromJson(json.getAsJsonObject("sizes"), Sizes.class);
     });
   }
 
@@ -132,4 +158,22 @@ public class RequestImpl extends ChannelOwner implements Request {
     return redirectedTo != null ? redirectedTo.finalRequest() : this;
   }
 
+  private List<HttpHeader> getRawHeaders() {
+    if (rawHeaders != null) {
+      return rawHeaders;
+    }
+    ResponseImpl response = response();
+    // there is no response, so should we return the headers we have now?
+    if (response == null) {
+      return headers;
+    }
+    JsonArray rawHeadersJson = response.withLogging("Request.allHeaders", () -> {
+      JsonObject result = response.sendMessage("rawRequestHeaders").getAsJsonObject();
+      return result.getAsJsonArray("headers");
+    });
+
+    // The field may have been initialized in a nested call but it is ok.
+    rawHeaders = asList(gson().fromJson(rawHeadersJson, HttpHeader[].class));
+    return rawHeaders;
+  }
 }

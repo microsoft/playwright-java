@@ -19,6 +19,7 @@ package com.microsoft.playwright.impl;
 import com.google.gson.*;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.FilePayload;
+import com.microsoft.playwright.options.HttpHeader;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -186,5 +187,13 @@ class Utils {
       result.append(Integer.toHexString(random.nextInt()));
     }
     return result.toString();
+  }
+
+  static Map<String, String> toHeadersMap(List<HttpHeader> headers) {
+    Map<String, String> map = new LinkedHashMap<>();
+    for (HttpHeader header: headers) {
+      map.put(header.name.toLowerCase(), header.value);
+    }
+    return map;
   }
 }

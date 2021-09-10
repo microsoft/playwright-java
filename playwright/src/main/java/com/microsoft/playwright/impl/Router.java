@@ -29,15 +29,31 @@ class Router {
   private static class RouteInfo {
     final UrlMatcher matcher;
     final Consumer<Route> handler;
+    Integer times;
 
-    RouteInfo(UrlMatcher matcher, Consumer<Route> handler) {
+    RouteInfo(UrlMatcher matcher, Consumer<Route> handler, Integer times) {
       this.matcher = matcher;
       this.handler = handler;
+      this.times = times;
+    }
+
+    boolean handle(Route route) {
+      if (times != null && times <= 0) {
+        return false;
+      }
+      if (!matcher.test(route.request().url())) {
+        return false;
+      }
+      if (times != null) {
+        --times;
+      }
+      handler.accept(route);
+      return true;
     }
   }
 
-  void add(UrlMatcher matcher, Consumer<Route> handler) {
-    routes.add(0, new RouteInfo(matcher, handler));
+  void add(UrlMatcher matcher, Consumer<Route> handler, Integer times) {
+    routes.add(0, new RouteInfo(matcher, handler, times));
   }
 
   void remove(UrlMatcher matcher, Consumer<Route> handler) {
@@ -52,8 +68,7 @@ class Router {
 
   boolean handle(Route route) {
     for (RouteInfo info : routes) {
-      if (info.matcher.test(route.request().url())) {
-        info.handler.accept(route);
+      if (info.handle(route)) {
         return true;
       }
     }

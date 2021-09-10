@@ -1,0 +1,94 @@
+/*
+ * Copyright (c) Microsoft Corporation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.microsoft.playwright;
+
+import com.google.gson.Gson;
+import com.microsoft.playwright.options.HttpHeader;
+import org.junit.jupiter.api.Test;
+
+import java.util.*;
+import java.util.concurrent.Semaphore;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class TestPageNetworkRequest extends TestBase {
+  @Test
+  void shouldReportRawHeaders() throws InterruptedException {
+    List<HttpHeader> serverHeaders = new ArrayList<>();
+    Semaphore responseWritten = new Semaphore(0);
+    server.setRoute("/headers", exchange -> {
+      for (Map.Entry<String, List<String>> entry : exchange.getRequestHeaders().entrySet()) {
+        for (String value : entry.getValue()) {
+          HttpHeader header = new HttpHeader();
+          header.name = entry.getKey();
+          header.value = value;
+          serverHeaders.add(header);
+        }
+      }
+      exchange.sendResponseHeaders(200, 0);
+      exchange.getResponseBody().close();
+      responseWritten.release();
+    });
+    page.navigate(server.EMPTY_PAGE);
+    Request request = page.waitForRequest("**/*", () -> {
+      page.evaluate("() => fetch('/headers', {\n" +
+        "      headers: [\n" +
+        "        ['header-a', 'value-a'],\n" +
+        "        ['header-b', 'value-b'],\n" +
+        "        ['header-a', 'value-a-1'],\n" +
+        "        ['header-a', 'value-a-2'],\n" +
+        "      ]\n" +
+        "    })");
+    });
+
+    responseWritten.acquire();
+    List<HttpHeader> expectedHeaders = serverHeaders;
+    if (isWebKit() && isWindows) {
+      expectedHeaders = expectedHeaders.stream()
+        .filter(h -> !"accept-encoding".equals(h.name.toLowerCase()) && !"accept-language".equals(h.name.toLowerCase()))
+        .collect(Collectors.toList());
+    }
+
+    List<HttpHeader> headers = request.headersArray();
+    // Java HTTP server normalizes header names, work around that:
+    expectedHeaders = expectedHeaders.stream().map(h -> {
+      h.name = h.name.toLowerCase();
+      return h;
+    }).collect(Collectors.toList());
+    headers = headers.stream().map(h -> {
+      h.name = h.name.toLowerCase();
+      return h;
+    }).collect(Collectors.toList());
+    Comparator<HttpHeader> comparator = Comparator.comparing(h -> h.name);
+    expectedHeaders.sort(comparator);
+    headers.sort(comparator);
+    assertEquals(new Gson().toJsonTree(expectedHeaders), new Gson().toJsonTree(headers));
+  }
+
+  @Test
+  void shouldReportAllCookiesInOneHeader() {
+    page.navigate(server.EMPTY_PAGE);
+    page.evaluate("() => {\n" +
+      "    document.cookie = 'myCookie=myValue';\n" +
+      "    document.cookie = 'myOtherCookie=myOtherValue';\n" +
+      "  }");
+    Response response = page.navigate(server.EMPTY_PAGE);
+    String cookie = response.request().allHeaders().get("cookie");
+    assertEquals("myCookie=myValue; myOtherCookie=myOtherValue", cookie);
+  }
+}

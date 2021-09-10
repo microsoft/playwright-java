@@ -56,8 +56,11 @@ import java.util.*;
  * // Throws if there are several buttons in DOM:
  * page.locator("button").click();
  *
- * // Works because you explicitly tell locator to pick the first element:
+ * // Works because we explicitly tell locator to pick the first element:
  * page.locator("button").first().click();
+ *
+ * // Works because count knows what to do with multiple matches:
+ * page.locator("button").count();
  * }</pre>
  */
 public interface Locator {
@@ -764,16 +767,14 @@ public interface Locator {
   }
   class IsHiddenOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * **DEPRECATED** This option is ignored. {@link Locator#isHidden Locator.isHidden()} does not wait for the element to
+     * become hidden and returns immediately.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * **DEPRECATED** This option is ignored. {@link Locator#isHidden Locator.isHidden()} does not wait for the element to
+     * become hidden and returns immediately.
      */
     public IsHiddenOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -782,16 +783,14 @@ public interface Locator {
   }
   class IsVisibleOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * **DEPRECATED** This option is ignored. {@link Locator#isVisible Locator.isVisible()} does not wait for the element to
+     * become visible and returns immediately.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * **DEPRECATED** This option is ignored. {@link Locator#isVisible Locator.isVisible()} does not wait for the element to
+     * become visible and returns immediately.
      */
     public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1002,6 +1001,87 @@ public interface Locator {
      */
     public SelectTextOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+  }
+  class SetCheckedOptions {
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
+    public Boolean force;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
+    public Boolean noWaitAfter;
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
+    public Position position;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public Double timeout;
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public Boolean trial;
+
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
+    public SetCheckedOptions setForce(boolean force) {
+      this.force = force;
+      return this;
+    }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
+    public SetCheckedOptions setNoWaitAfter(boolean noWaitAfter) {
+      this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
+    public SetCheckedOptions setPosition(double x, double y) {
+      return setPosition(new Position(x, y));
+    }
+    /**
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
+     */
+    public SetCheckedOptions setPosition(Position position) {
+      this.position = position;
+      return this;
+    }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public SetCheckedOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public SetCheckedOptions setTrial(boolean trial) {
+      this.trial = trial;
       return this;
     }
   }
@@ -2347,6 +2427,46 @@ public interface Locator {
    * the element and selects all its text content.
    */
   void selectText(SelectTextOptions options);
+  /**
+   * This method checks or unchecks an element by performing the following steps:
+   * <ol>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws.</li>
+   * <li> If the element already has the right checked state, this method returns immediately.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * <li> Ensure that the element is now checked or unchecked. If not, this method throws.</li>
+   * </ol>
+   *
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
+   *
+   * @param checked Whether to check or uncheck the checkbox.
+   */
+  default void setChecked(boolean checked) {
+    setChecked(checked, null);
+  }
+  /**
+   * This method checks or unchecks an element by performing the following steps:
+   * <ol>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws.</li>
+   * <li> If the element already has the right checked state, this method returns immediately.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
+   * <li> Scroll the element into view if needed.</li>
+   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
+   * <li> Ensure that the element is now checked or unchecked. If not, this method throws.</li>
+   * </ol>
+   *
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
+   * zero timeout disables this.
+   *
+   * @param checked Whether to check or uncheck the checkbox.
+   */
+  void setChecked(boolean checked, SetCheckedOptions options);
   /**
    * This method expects {@code element} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.

@@ -56,6 +56,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   final TimeoutSettings timeoutSettings = new TimeoutSettings();
   Path videosDir;
   URL baseUrl;
+  Path recordHarPath;
 
   enum EventType {
     CLOSE,
@@ -180,6 +181,18 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
     isClosedOrClosing = true;
     try {
+      if (recordHarPath != null)  {
+        JsonObject json = sendMessage("harExport").getAsJsonObject();
+        ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
+        // In case of CDP connection browser is null but since the connection is established by
+        // the driver it is safe to consider the artifact local.
+        if (browser() != null && browser().isRemote) {
+          artifact.isRemote = true;
+        }
+        artifact.saveAs(recordHarPath);
+        artifact.delete();
+      }
+
       sendMessage("close");
     } catch (PlaywrightException e) {
       if (!isSafeCloseError(e)) {
@@ -317,23 +330,23 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void route(String url, Consumer<Route> handler) {
-    route(new UrlMatcher(this.baseUrl, url), handler);
+  public void route(String url, Consumer<Route> handler, RouteOptions options) {
+    route(new UrlMatcher(this.baseUrl, url), handler, options);
   }
 
   @Override
-  public void route(Pattern url, Consumer<Route> handler) {
-    route(new UrlMatcher(url), handler);
+  public void route(Pattern url, Consumer<Route> handler, RouteOptions options) {
+    route(new UrlMatcher(url), handler, options);
   }
 
   @Override
-  public void route(Predicate<String> url, Consumer<Route> handler) {
-    route(new UrlMatcher(url), handler);
+  public void route(Predicate<String> url, Consumer<Route> handler, RouteOptions options) {
+    route(new UrlMatcher(url), handler, options);
   }
 
-  private void route(UrlMatcher matcher, Consumer<Route> handler) {
+  private void route(UrlMatcher matcher, Consumer<Route> handler, RouteOptions options) {
     withLogging("BrowserContext.route", () -> {
-      routes.add(matcher, handler);
+      routes.add(matcher, handler, options == null ? null : options.times);
       if (routes.size() == 1) {
         JsonObject params = new JsonObject();
         params.addProperty("enabled", true);
@@ -488,6 +501,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     } else if ("requestFailed".equals(event)) {
       String guid = params.getAsJsonObject("request").get("guid").getAsString();
       RequestImpl request = connection.getExistingObject(guid);
+      request.didFailOrFinish = true;
       if (params.has("failureText")) {
         request.failure = params.get("failureText").getAsString();
       }
@@ -502,6 +516,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     } else if ("requestFinished".equals(event)) {
       String guid = params.getAsJsonObject("request").get("guid").getAsString();
       RequestImpl request = connection.getExistingObject(guid);
+      request.didFailOrFinish = true;
       if (request.timing != null) {
         request.timing.responseEnd = params.get("responseEndTiming").getAsDouble();
       }

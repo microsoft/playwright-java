@@ -252,6 +252,9 @@ class TypeRef extends Element {
     customTypeNames.put("BrowserContext.addCookies.cookies", "Cookie");
     customTypeNames.put("BrowserContext.cookies", "Cookie");
 
+    customTypeNames.put("Request.headersArray", "HttpHeader");
+    customTypeNames.put("Response.headersArray", "HttpHeader");
+
     customTypeNames.put("Locator.selectOption.values", "SelectOption");
     customTypeNames.put("ElementHandle.selectOption.values", "SelectOption");
     customTypeNames.put("Frame.selectOption.values", "SelectOption");

@@ -160,6 +160,20 @@ public interface BrowserContext extends AutoCloseable {
       return this;
     }
   }
+  class RouteOptions {
+    /**
+     * How often a route should be used. By default it will be used every time.
+     */
+    public Integer times;
+
+    /**
+     * How often a route should be used. By default it will be used every time.
+     */
+    public RouteOptions setTimes(int times) {
+      this.times = times;
+      return this;
+    }
+  }
   class StorageStateOptions {
     /**
      * The file path to save the storage state to. If {@code path} is a relative path, then it is resolved relative to current
@@ -537,6 +551,10 @@ public interface BrowserContext extends AutoCloseable {
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
+   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
+   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
    * BrowserContext context = browser.newContext();
@@ -578,11 +596,17 @@ public interface BrowserContext extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    */
-  void route(String url, Consumer<Route> handler);
+  default void route(String url, Consumer<Route> handler) {
+    route(url, handler, null);
+  }
   /**
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
+   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
+   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
    * BrowserContext context = browser.newContext();
@@ -624,11 +648,15 @@ public interface BrowserContext extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    */
-  void route(Pattern url, Consumer<Route> handler);
+  void route(String url, Consumer<Route> handler, RouteOptions options);
   /**
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
+   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
+   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
    * BrowserContext context = browser.newContext();
@@ -670,7 +698,161 @@ public interface BrowserContext extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    */
-  void route(Predicate<String> url, Consumer<Route> handler);
+  default void route(Pattern url, Consumer<Route> handler) {
+    route(url, handler, null);
+  }
+  /**
+   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
+   * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   *
+   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
+   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   *
+   * <p> An example of a naive handler that aborts all image requests:
+   * <pre>{@code
+   * BrowserContext context = browser.newContext();
+   * context.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
+   * Page page = context.newPage();
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
+   * <p> or the same snippet using a regex pattern instead:
+   * <pre>{@code
+   * BrowserContext context = browser.newContext();
+   * context.route(Pattern.compile("(\\.png$)|(\\.jpg$)"), route -> route.abort());
+   * Page page = context.newPage();
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
+   * <p> It is possible to examine the request to decide the route action. For example, mocking all requests that contain some
+   * post data, and leaving all other requests as is:
+   * <pre>{@code
+   * context.route("/api/**", route -> {
+   *   if (route.request().postData().contains("my-string"))
+   *     route.fulfill(new Route.FulfillOptions().setBody("mocked-data"));
+   *   else
+   *     route.resume();
+   * });
+   * }</pre>
+   *
+   * <p> Page routes (set up with {@link Page#route Page.route()}) take precedence over browser context routes when request
+   * matches both handlers.
+   *
+   * <p> To remove a route with its handler you can use {@link BrowserContext#unroute BrowserContext.unroute()}.
+   *
+   * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the context
+   * options was provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
+   * @param handler handler function to route the request.
+   */
+  void route(Pattern url, Consumer<Route> handler, RouteOptions options);
+  /**
+   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
+   * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   *
+   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
+   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   *
+   * <p> An example of a naive handler that aborts all image requests:
+   * <pre>{@code
+   * BrowserContext context = browser.newContext();
+   * context.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
+   * Page page = context.newPage();
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
+   * <p> or the same snippet using a regex pattern instead:
+   * <pre>{@code
+   * BrowserContext context = browser.newContext();
+   * context.route(Pattern.compile("(\\.png$)|(\\.jpg$)"), route -> route.abort());
+   * Page page = context.newPage();
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
+   * <p> It is possible to examine the request to decide the route action. For example, mocking all requests that contain some
+   * post data, and leaving all other requests as is:
+   * <pre>{@code
+   * context.route("/api/**", route -> {
+   *   if (route.request().postData().contains("my-string"))
+   *     route.fulfill(new Route.FulfillOptions().setBody("mocked-data"));
+   *   else
+   *     route.resume();
+   * });
+   * }</pre>
+   *
+   * <p> Page routes (set up with {@link Page#route Page.route()}) take precedence over browser context routes when request
+   * matches both handlers.
+   *
+   * <p> To remove a route with its handler you can use {@link BrowserContext#unroute BrowserContext.unroute()}.
+   *
+   * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the context
+   * options was provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
+   * @param handler handler function to route the request.
+   */
+  default void route(Predicate<String> url, Consumer<Route> handler) {
+    route(url, handler, null);
+  }
+  /**
+   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
+   * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   *
+   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
+   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   *
+   * <p> An example of a naive handler that aborts all image requests:
+   * <pre>{@code
+   * BrowserContext context = browser.newContext();
+   * context.route("**\/*.{png,jpg,jpeg}", route -> route.abort());
+   * Page page = context.newPage();
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
+   * <p> or the same snippet using a regex pattern instead:
+   * <pre>{@code
+   * BrowserContext context = browser.newContext();
+   * context.route(Pattern.compile("(\\.png$)|(\\.jpg$)"), route -> route.abort());
+   * Page page = context.newPage();
+   * page.navigate("https://example.com");
+   * browser.close();
+   * }</pre>
+   *
+   * <p> It is possible to examine the request to decide the route action. For example, mocking all requests that contain some
+   * post data, and leaving all other requests as is:
+   * <pre>{@code
+   * context.route("/api/**", route -> {
+   *   if (route.request().postData().contains("my-string"))
+   *     route.fulfill(new Route.FulfillOptions().setBody("mocked-data"));
+   *   else
+   *     route.resume();
+   * });
+   * }</pre>
+   *
+   * <p> Page routes (set up with {@link Page#route Page.route()}) take precedence over browser context routes when request
+   * matches both handlers.
+   *
+   * <p> To remove a route with its handler you can use {@link BrowserContext#unroute BrowserContext.unroute()}.
+   *
+   * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
+   *
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the context
+   * options was provided and the passed URL is a path, it gets merged via the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
+   * @param handler handler function to route the request.
+   */
+  void route(Predicate<String> url, Consumer<Route> handler, RouteOptions options);
   /**
    * This setting will change the default maximum navigation time for the following methods and related shortcuts:
    * <ul>

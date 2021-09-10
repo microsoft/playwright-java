@@ -51,7 +51,7 @@ public class TestWorkers extends TestBase {
     try {
       workerThisObj.getProperty("self");
     } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Most likely the worker has been closed."));
+      assertTrue(e.getMessage().contains("Target closed"), e.getMessage());
     }
   }
 
