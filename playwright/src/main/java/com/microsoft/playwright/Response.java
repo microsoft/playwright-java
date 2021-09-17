@@ -32,7 +32,7 @@ public interface Response {
    */
   byte[] body();
   /**
-   * Waits for this response to finish, returns failure error if request failed.
+   * Waits for this response to finish, returns always {@code null}.
    */
   String finished();
   /**
@@ -46,10 +46,24 @@ public interface Response {
   Map<String, String> headers();
   /**
    * An array with all the request HTTP headers associated with this response. Unlike {@link Response#allHeaders
-   * Response.allHeaders()}, header names are not lower-cased. Headers with multiple entries, such as {@code Set-Cookie}, appear in
+   * Response.allHeaders()}, header names are NOT lower-cased. Headers with multiple entries, such as {@code Set-Cookie}, appear in
    * the array multiple times.
    */
   List<HttpHeader> headersArray();
+  /**
+   * Returns the value of the header matching the name. The name is case insensitive. If multiple headers have the same name
+   * (except {@code set-cookie}), they are returned as a list separated by {@code , }. For {@code set-cookie}, the {@code \n} separator is used. If
+   * no headers are found, {@code null} is returned.
+   *
+   * @param name Name of the header.
+   */
+  String headerValue(String name);
+  /**
+   * Returns all values of the headers matching the name, for example {@code set-cookie}. The name is case insensitive.
+   *
+   * @param name Name of the header.
+   */
+  List<String> headerValues(String name);
   /**
    * Contains a boolean stating whether the response was successful (status in the range 200-299) or not.
    */

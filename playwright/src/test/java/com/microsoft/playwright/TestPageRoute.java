@@ -189,7 +189,9 @@ public class TestPageRoute extends TestBase {
   void shouldWorkWithCustomRefererHeaders() {
     page.setExtraHTTPHeaders(mapOf("referer", server.EMPTY_PAGE));
     page.route("**/*", route -> {
-      assertEquals(server.EMPTY_PAGE, route.request().headers().get("referer"));
+      String referer = route.request().headers().get("referer");
+      assertNotNull(referer);
+      assertTrue(referer.contains(server.EMPTY_PAGE), referer);
       route.resume();
     });
     Response response = page.navigate(server.EMPTY_PAGE);

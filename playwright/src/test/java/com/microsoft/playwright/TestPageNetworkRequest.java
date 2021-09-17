@@ -78,6 +78,8 @@ public class TestPageNetworkRequest extends TestBase {
     expectedHeaders.sort(comparator);
     headers.sort(comparator);
     assertEquals(new Gson().toJsonTree(expectedHeaders), new Gson().toJsonTree(headers));
+    assertEquals("value-a, value-a-1, value-a-2", request.headerValue("header-a"));
+    assertEquals(null, request.headerValue("not-there"));
   }
 
   @Test
