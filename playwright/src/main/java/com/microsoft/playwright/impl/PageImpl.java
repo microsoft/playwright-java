@@ -129,7 +129,6 @@ public class PageImpl extends ChannelOwner implements Page {
           try {
             dialog.accept();
           } catch (PlaywrightException e) {
-            System.out.println(e);
           }
         } else {
           dialog.dismiss();
