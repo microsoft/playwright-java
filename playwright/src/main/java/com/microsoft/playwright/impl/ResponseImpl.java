@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Utils.toHeadersMap;
 import static java.util.Arrays.asList;
 
 public class ResponseImpl extends ChannelOwner implements Response {

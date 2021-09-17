@@ -42,8 +42,9 @@ class RawHeaders {
 
   String get(String name) {
     List<String> values = getAll(name);
-    if (values == null)
+    if (values == null) {
       return null;
+    }
     return String.join("set-cookie".equals(name.toLowerCase()) ? "\n" : ", ", values);
   }
 
