@@ -64,10 +64,16 @@ public interface Request {
   Map<String, String> headers();
   /**
    * An array with all the request HTTP headers associated with this request. Unlike {@link Request#allHeaders
-   * Request.allHeaders()}, header names are not lower-cased. Headers with multiple entries, such as {@code Set-Cookie}, appear in
+   * Request.allHeaders()}, header names are NOT lower-cased. Headers with multiple entries, such as {@code Set-Cookie}, appear in
    * the array multiple times.
    */
   List<HttpHeader> headersArray();
+  /**
+   * Returns the value of the header matching the name. The name is case insensitive.
+   *
+   * @param name Name of the header.
+   */
+  String headerValue(String name);
   /**
    * Whether this request is driving frame's navigation.
    */

@@ -125,7 +125,15 @@ public class PageImpl extends ChannelOwner implements Page {
       if (listeners.hasListeners(EventType.DIALOG)) {
         listeners.notify(EventType.DIALOG, dialog);
       } else {
-        dialog.dismiss();
+        if ("beforeunload".equals(dialog.type())) {
+          try {
+            dialog.accept();
+          } catch (PlaywrightException e) {
+            System.out.println(e);
+          }
+        } else {
+          dialog.dismiss();
+        }
       }
     } else if ("worker".equals(event)) {
       String guid = params.getAsJsonObject("worker").get("guid").getAsString();

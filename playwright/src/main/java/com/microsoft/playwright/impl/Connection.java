@@ -305,6 +305,10 @@ public class Connection {
       case "ElementHandle":
         result = new ElementHandleImpl(parent, type, guid, initializer);
         break;
+      case "FetchRequest":
+        // Create fake object as this API is experimental an only exposed in Node.js.
+        result = new ChannelOwner(parent, type, guid, initializer);
+        break;
       case "Frame":
         result = new FrameImpl(parent, type, guid, initializer);
         break;

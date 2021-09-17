@@ -37,8 +37,8 @@ public class RequestImpl extends ChannelOwner implements Request {
   private final byte[] postData;
   private RequestImpl redirectedFrom;
   private RequestImpl redirectedTo;
-  private final List<HttpHeader> headers;
-  private List<HttpHeader> rawHeaders;
+  private final RawHeaders headers;
+  private RawHeaders rawHeaders;
   String failure;
   Timing timing;
   boolean didFailOrFinish;
@@ -50,7 +50,7 @@ public class RequestImpl extends ChannelOwner implements Request {
       redirectedFrom = connection.getExistingObject(initializer.getAsJsonObject("redirectedFrom").get("guid").getAsString());
       redirectedFrom.redirectedTo = this;
     }
-    headers = asList(gson().fromJson(initializer.getAsJsonArray("headers"), HttpHeader[].class));
+    headers = new RawHeaders(asList(gson().fromJson(initializer.getAsJsonArray("headers"), HttpHeader[].class)));
     if (initializer.has("postData")) {
       postData = Base64.getDecoder().decode(initializer.get("postData").getAsString());
     } else {
@@ -60,7 +60,7 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public Map<String, String> allHeaders() {
-    return withLogging("Request.allHeaders", () -> toHeadersMap(getRawHeaders()));
+    return withLogging("Request.allHeaders", () -> getRawHeaders().headers());
   }
 
   @Override
@@ -75,12 +75,17 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public Map<String, String> headers() {
-    return toHeadersMap(headers);
+    return headers.headers();
   }
 
   @Override
   public List<HttpHeader> headersArray() {
-    return withLogging("Request.headersArray", () -> getRawHeaders());
+    return withLogging("Request.headersArray", () -> getRawHeaders().headersArray());
+  }
+
+  @Override
+  public String headerValue(String name) {
+    return withLogging("Request.headerValue", () -> getRawHeaders().get(name));
   }
 
   @Override
@@ -158,7 +163,7 @@ public class RequestImpl extends ChannelOwner implements Request {
     return redirectedTo != null ? redirectedTo.finalRequest() : this;
   }
 
-  private List<HttpHeader> getRawHeaders() {
+  private RawHeaders getRawHeaders() {
     if (rawHeaders != null) {
       return rawHeaders;
     }
@@ -173,7 +178,7 @@ public class RequestImpl extends ChannelOwner implements Request {
     });
 
     // The field may have been initialized in a nested call but it is ok.
-    rawHeaders = asList(gson().fromJson(rawHeadersJson, HttpHeader[].class));
+    rawHeaders = new RawHeaders(asList(gson().fromJson(rawHeadersJson, HttpHeader[].class)));
     return rawHeaders;
   }
 }

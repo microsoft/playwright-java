@@ -93,6 +93,16 @@ class MouseImpl implements Mouse {
     page.withLogging("Mouse.up", () -> upImpl(options));
   }
 
+  @Override
+  public void wheel(double deltaX, double deltaY) {
+    page.withLogging("Mouse.wheel", () -> {
+      JsonObject params = new JsonObject();
+      params.addProperty("deltaX", deltaX);
+      params.addProperty("deltaY", deltaY);
+      page.sendMessage("mouseWheel", params);
+    });
+  }
+
   private void upImpl(UpOptions options) {
     if (options == null) {
       options = new UpOptions();

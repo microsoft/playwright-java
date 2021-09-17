@@ -212,5 +212,15 @@ public interface Mouse {
    * Dispatches a {@code mouseup} event.
    */
   void up(UpOptions options);
+  /**
+   * Dispatches a {@code wheel} event.
+   *
+   * <p> <strong>NOTE:</strong> Wheel events may cause scrolling if they are not handled, and this method does not wait for the scrolling to finish
+   * before returning.
+   *
+   * @param deltaX Pixels to scroll horizontally.
+   * @param deltaY Pixels to scroll vertically.
+   */
+  void wheel(double deltaX, double deltaY);
 }
 
