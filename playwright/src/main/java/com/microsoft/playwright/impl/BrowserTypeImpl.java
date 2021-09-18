@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Browser;
@@ -23,12 +24,7 @@ import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.PlaywrightException;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.time.Duration;
-import java.util.Collections;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
@@ -58,51 +54,40 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
   }
 
   private Browser connectImpl(String wsEndpoint, ConnectOptions options) {
-    try {
-      Duration timeout = Duration.ofDays(1);
-      Map<String, String> headers = Collections.emptyMap();
-      Duration slowMo = null;
-      if (options != null) {
-        if (options.timeout != null) {
-          timeout = Duration.ofMillis(Math.round(options.timeout));
-        }
-        if (options.headers != null) {
-          headers = options.headers;
-        }
-        if (options.slowMo != null) {
-          slowMo = Duration.ofMillis(options.slowMo.intValue());
-        }
-      }
-      WebSocketTransport transport = new WebSocketTransport(new URI(wsEndpoint), headers, timeout, slowMo);
-      Connection connection = new Connection(transport);
-      PlaywrightImpl playwright = connection.initializePlaywright();
-      if (!playwright.initializer.has("preLaunchedBrowser")) {
-        try {
-          connection.close();
-        } catch (IOException e) {
-          e.printStackTrace(System.err);
-        }
-        throw new PlaywrightException("Malformed endpoint. Did you use launchServer method?");
-      }
-      playwright.initSharedSelectors(this.connection.getExistingObject("Playwright"));
-      BrowserImpl browser = connection.getExistingObject(playwright.initializer.getAsJsonObject("preLaunchedBrowser").get("guid").getAsString());
-      browser.isRemote = true;
-      browser.isConnectedOverWebSocket = true;
-      Consumer<WebSocketTransport> connectionCloseListener = t -> browser.notifyRemoteClosed();
-      transport.onClose(connectionCloseListener);
-      browser.onDisconnected(b -> {
-        playwright.unregisterSelectors();
-        transport.offClose(connectionCloseListener);
-        try {
-          connection.close();
-        } catch (IOException e) {
-          e.printStackTrace(System.err);
-        }
-      });
-      return browser;
-    } catch (URISyntaxException e) {
-      throw new PlaywrightException("Failed to connect", e);
+    if (options == null) {
+      options = new ConnectOptions();
     }
+    // We don't use gson() here as the headers map should be serialized to a json object.
+    JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("wsEndpoint", wsEndpoint);
+    JsonObject json = sendMessage("connect", params).getAsJsonObject();
+    JsonPipe pipe = connection.getExistingObject(json.getAsJsonObject("pipe").get("guid").getAsString());
+    Connection connection = new Connection(pipe);
+    PlaywrightImpl playwright = connection.initializePlaywright();
+    if (!playwright.initializer.has("preLaunchedBrowser")) {
+      try {
+        connection.close();
+      } catch (IOException e) {
+        e.printStackTrace(System.err);
+      }
+      throw new PlaywrightException("Malformed endpoint. Did you use launchServer method?");
+    }
+    playwright.initSharedSelectors(this.connection.getExistingObject("Playwright"));
+    BrowserImpl browser = connection.getExistingObject(playwright.initializer.getAsJsonObject("preLaunchedBrowser").get("guid").getAsString());
+    browser.isRemote = true;
+    browser.isConnectedOverWebSocket = true;
+    Consumer<JsonPipe> connectionCloseListener = t -> browser.notifyRemoteClosed();
+    pipe.onClose(connectionCloseListener);
+    browser.onDisconnected(b -> {
+      playwright.unregisterSelectors();
+      pipe.offClose(connectionCloseListener);
+      try {
+        connection.close();
+      } catch (IOException e) {
+        e.printStackTrace(System.err);
+      }
+    });
+    return browser;
   }
 
   @Override

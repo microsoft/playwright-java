@@ -315,6 +315,9 @@ public class Connection {
       case "JSHandle":
         result = new JSHandleImpl(parent, type, guid, initializer);
         break;
+      case "JsonPipe":
+        result = new JsonPipe(parent, type, guid, initializer);
+        break;
       case "Page":
         result = new PageImpl(parent, type, guid, initializer);
         break;

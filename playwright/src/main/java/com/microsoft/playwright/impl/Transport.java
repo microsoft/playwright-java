@@ -18,6 +18,7 @@ package com.microsoft.playwright.impl;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.function.Consumer;
 
 public interface Transport {
   void send(String message);
