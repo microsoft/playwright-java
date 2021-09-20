@@ -53,13 +53,12 @@ public class TestPageNetworkSizes extends TestBase {
   }
 
   @Test
-  @Disabled("responseBodySize == 16")
   void shouldSetBodySizeHeadersSizeAndTransferSize() throws ExecutionException, InterruptedException {
     server.setRoute("/get", exchange -> {
       // In Firefox, |fetch| will be hanging until it receives |Content-Type| header
       // from server.
       exchange.getResponseHeaders().add("Content-Type", "text/plain; charset=utf-8");
-      exchange.sendResponseHeaders(200, 0);
+      exchange.sendResponseHeaders(200, 6);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
         writer.write("abc134");
       }
