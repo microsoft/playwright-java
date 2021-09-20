@@ -44,7 +44,6 @@ class JsonPipe extends ChannelOwner implements Transport {
     JsonObject params = new JsonObject();
     params.add("message", message);
     sendMessage("send", params);
-    //onPipeClosed
   }
 
   @Override
