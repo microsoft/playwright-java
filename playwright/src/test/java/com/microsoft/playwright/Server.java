@@ -201,23 +201,31 @@ public class Server implements HttpHandler {
       return;
     }
     exchange.getResponseHeaders().add("Content-Type", mimeType(file));
-    OutputStream output = exchange.getResponseBody();
+    ByteArrayOutputStream body = new ByteArrayOutputStream();
+    //exchange.getResponseBody();
+    OutputStream output = body;
     if (gzipRoutes.contains(path)) {
       exchange.getResponseHeaders().add("Content-Encoding", "gzip");
     }
     try (FileInputStream input = new FileInputStream(file)) {
-      exchange.sendResponseHeaders(200, 0);
       if (gzipRoutes.contains(path)) {
         output = new GZIPOutputStream(output);
       }
       copy(input, output);
+      output.close();
     } catch (IOException e) {
-      try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
+      body.reset();
+      try (Writer writer = new OutputStreamWriter(output)) {
         writer.write("Exception: " + e);
       }
-      return;
     }
-    output.close();
+    long contnentLength = body.size();
+    // -1 means no body, 0 means chunked encoding.
+    exchange.sendResponseHeaders(200, contnentLength == 0 ? -1 : contnentLength);
+    if (contnentLength > 0) {
+      exchange.getResponseBody().write(body.toByteArray());
+    }
+    exchange.getResponseBody().close();
   }
 
   private static String mimeType(File file) {
