@@ -218,10 +218,10 @@ public class Server implements HttpHandler {
         writer.write("Exception: " + e);
       }
     }
-    long contnentLength = body.size();
+    long contentLength = body.size();
     // -1 means no body, 0 means chunked encoding.
-    exchange.sendResponseHeaders(200, contnentLength == 0 ? -1 : contnentLength);
-    if (contnentLength > 0) {
+    exchange.sendResponseHeaders(200, contentLength == 0 ? -1 : contentLength);
+    if (contentLength > 0) {
       exchange.getResponseBody().write(body.toByteArray());
     }
     exchange.getResponseBody().close();
