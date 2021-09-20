@@ -39,25 +39,23 @@ class JsonPipe extends ChannelOwner implements Transport {
   }
 
   @Override
-  public void send(String message) {
+  public void send(JsonObject message) {
     checkIfClosed();
-    JsonObject json = gson().fromJson(message, JsonObject.class);
     JsonObject params = new JsonObject();
-    params.add("message", json);
+    params.add("message", message);
     sendMessage("send", params);
     //onPipeClosed
   }
 
   @Override
-  public String poll(Duration timeout) {
+  public JsonObject poll(Duration timeout) {
     Instant start = Instant.now();
-    return runUntil(() -> {}, new Waitable<String>() {
-      String message;
+    return runUntil(() -> {}, new Waitable<JsonObject>() {
+      JsonObject message;
       @Override
       public boolean isDone() {
         if (!incoming.isEmpty()) {
-          JsonObject head = incoming.remove();
-          message = gson().toJson(head);
+          message = incoming.remove();
           return true;
         }
         checkIfClosed();
@@ -68,7 +66,7 @@ class JsonPipe extends ChannelOwner implements Transport {
       }
 
       @Override
-      public String get() {
+      public JsonObject get() {
         return message;
       }
 
