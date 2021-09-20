@@ -202,7 +202,6 @@ public class Server implements HttpHandler {
     }
     exchange.getResponseHeaders().add("Content-Type", mimeType(file));
     ByteArrayOutputStream body = new ByteArrayOutputStream();
-    //exchange.getResponseBody();
     OutputStream output = body;
     if (gzipRoutes.contains(path)) {
       exchange.getResponseHeaders().add("Content-Encoding", "gzip");
