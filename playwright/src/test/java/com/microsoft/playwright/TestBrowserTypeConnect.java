@@ -226,11 +226,21 @@ public class TestBrowserTypeConnect extends TestBase {
     BrowserServer server = launchBrowserServer(browserType);
     Browser remote = browserType.connect(server.wsEndpoint);
     Page page = remote.newPage();
+    boolean[] disconnected = {false};
+    remote.onDisconnected(b -> disconnected[0] = true);
     server.kill();
+    while (!disconnected[0]) {
+      try {
+        page.waitForTimeout(10);
+      } catch (PlaywrightException e) {
+        assertTrue(e.getMessage().contains("Browser has been closed"));
+      }
+    }
+    assertFalse(remote.isConnected());
     try {
       page.evaluate("1 + 1");
     } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Playwright connection closed"));
+      assertTrue(e.getMessage().contains("Browser has been closed"), e.getMessage());
     }
     assertFalse(remote.isConnected());
   }
@@ -248,7 +258,7 @@ public class TestBrowserTypeConnect extends TestBase {
       try {
         page.waitForTimeout(10);
       } catch (PlaywrightException e) {
-        assertTrue(e.getMessage().contains("Playwright connection closed"));
+        assertTrue(e.getMessage().contains("Browser has been closed"));
       }
     }
     assertFalse(browser.isConnected());
@@ -256,7 +266,7 @@ public class TestBrowserTypeConnect extends TestBase {
       page.waitForNavigation(() -> {});
       fail("did not throw");
     } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Playwright connection closed"));
+      assertTrue(e.getMessage().contains("Browser has been closed"));
     }
   }
 
@@ -271,7 +281,7 @@ public class TestBrowserTypeConnect extends TestBase {
       page.navigate(server.PREFIX + "/one-style.html", new Page.NavigateOptions().setTimeout(60000));
       fail("did not throw");
     } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Playwright connection closed"));
+      assertTrue(e.getMessage().contains("Browser has been closed"));
     }
   }
 

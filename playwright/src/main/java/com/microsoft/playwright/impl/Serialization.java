@@ -33,29 +33,26 @@ import java.nio.file.Path;
 import java.util.*;
 
 class Serialization {
-  private static Gson gson;
+  private static Gson gson = new GsonBuilder()
+    .registerTypeAdapter(SameSiteAttribute.class, new SameSiteAdapter().nullSafe())
+    .registerTypeAdapter(BrowserChannel.class, new ToLowerCaseAndDashSerializer<BrowserChannel>())
+    .registerTypeAdapter(ColorScheme.class, new ToLowerCaseAndDashSerializer<ColorScheme>())
+    .registerTypeAdapter(Media.class, new ToLowerCaseSerializer<Media>())
+    .registerTypeAdapter(ForcedColors.class, new ToLowerCaseSerializer<ForcedColors>())
+    .registerTypeAdapter(ReducedMotion.class, new ToLowerCaseAndDashSerializer<ReducedMotion>())
+    .registerTypeAdapter(ScreenshotType.class, new ToLowerCaseSerializer<ScreenshotType>())
+    .registerTypeAdapter(MouseButton.class, new ToLowerCaseSerializer<MouseButton>())
+    .registerTypeAdapter(LoadState.class, new ToLowerCaseSerializer<LoadState>())
+    .registerTypeAdapter(WaitUntilState.class, new ToLowerCaseSerializer<WaitUntilState>())
+    .registerTypeAdapter(WaitForSelectorState.class, new ToLowerCaseSerializer<WaitForSelectorState>())
+    .registerTypeAdapter((new TypeToken<List<KeyboardModifier>>(){}).getType(), new KeyboardModifiersSerializer())
+    .registerTypeAdapter(Optional.class, new OptionalSerializer())
+    .registerTypeHierarchyAdapter(JSHandleImpl.class, new HandleSerializer())
+    .registerTypeAdapter((new TypeToken<Map<String, String>>(){}).getType(), new StringMapSerializer())
+    .registerTypeAdapter((new TypeToken<Map<String, Object>>(){}).getType(), new FirefoxUserPrefsSerializer())
+    .registerTypeHierarchyAdapter(Path.class, new PathSerializer()).create();;
 
   static Gson gson() {
-    if (gson == null) {
-      gson = new GsonBuilder()
-        .registerTypeAdapter(SameSiteAttribute.class, new SameSiteAdapter().nullSafe())
-        .registerTypeAdapter(BrowserChannel.class, new ToLowerCaseAndDashSerializer<BrowserChannel>())
-        .registerTypeAdapter(ColorScheme.class, new ToLowerCaseAndDashSerializer<ColorScheme>())
-        .registerTypeAdapter(Media.class, new ToLowerCaseSerializer<Media>())
-        .registerTypeAdapter(ForcedColors.class, new ToLowerCaseSerializer<ForcedColors>())
-        .registerTypeAdapter(ReducedMotion.class, new ToLowerCaseAndDashSerializer<ReducedMotion>())
-        .registerTypeAdapter(ScreenshotType.class, new ToLowerCaseSerializer<ScreenshotType>())
-        .registerTypeAdapter(MouseButton.class, new ToLowerCaseSerializer<MouseButton>())
-        .registerTypeAdapter(LoadState.class, new ToLowerCaseSerializer<LoadState>())
-        .registerTypeAdapter(WaitUntilState.class, new ToLowerCaseSerializer<WaitUntilState>())
-        .registerTypeAdapter(WaitForSelectorState.class, new ToLowerCaseSerializer<WaitForSelectorState>())
-        .registerTypeAdapter((new TypeToken<List<KeyboardModifier>>(){}).getType(), new KeyboardModifiersSerializer())
-        .registerTypeAdapter(Optional.class, new OptionalSerializer())
-        .registerTypeHierarchyAdapter(JSHandleImpl.class, new HandleSerializer())
-        .registerTypeAdapter((new TypeToken<Map<String, String>>(){}).getType(), new StringMapSerializer())
-        .registerTypeAdapter((new TypeToken<Map<String, Object>>(){}).getType(), new FirefoxUserPrefsSerializer())
-        .registerTypeHierarchyAdapter(Path.class, new PathSerializer()).create();
-    }
     return gson;
   }
 

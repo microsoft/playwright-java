@@ -85,6 +85,9 @@ public class Connection {
   }
 
   Connection(Transport transport) {
+    if (isLogging) {
+      transport = new TransportLogger(transport);
+    }
     this.transport = transport;
     root = new Root(this);
     String srcRoot = System.getenv("PLAYWRIGHT_JAVA_SRC");
@@ -172,11 +175,7 @@ public class Connection {
       metadata.addProperty("apiName", apiName);
     }
     message.add("metadata", metadata);
-    String messageString = gson().toJson(message);
-    if (isLogging) {
-      logWithTimestamp("SEND ► " + messageString);
-    }
-    transport.send(messageString);
+    transport.send(message);
     return result;
   }
 
@@ -200,16 +199,13 @@ public class Connection {
   }
 
   void processOneMessage() {
-    String messageString = transport.poll(Duration.ofMillis(10));
-    if (messageString == null) {
+    JsonObject message = transport.poll(Duration.ofMillis(10));
+    if (message == null) {
       return;
     }
-    if (isLogging) {
-      logWithTimestamp("◀ RECV " + messageString);
-    }
     Gson gson = gson();
-    Message message = gson.fromJson(messageString, Message.class);
-    dispatch(message);
+    Message messageObj = gson.fromJson(message, Message.class);
+    dispatch(messageObj);
   }
 
   private void dispatch(Message message) {
@@ -314,6 +310,9 @@ public class Connection {
         break;
       case "JSHandle":
         result = new JSHandleImpl(parent, type, guid, initializer);
+        break;
+      case "JsonPipe":
+        result = new JsonPipe(parent, type, guid, initializer);
         break;
       case "Page":
         result = new PageImpl(parent, type, guid, initializer);

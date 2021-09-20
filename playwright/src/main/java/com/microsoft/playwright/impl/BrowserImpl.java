@@ -71,7 +71,6 @@ class BrowserImpl extends ChannelOwner implements Browser {
       } catch (IOException e) {
         throw new PlaywrightException("Failed to close browser connection", e);
       }
-      notifyRemoteClosed();
       return;
     }
     try {

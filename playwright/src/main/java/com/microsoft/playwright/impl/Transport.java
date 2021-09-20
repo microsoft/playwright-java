@@ -16,11 +16,13 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonObject;
+
 import java.io.IOException;
 import java.time.Duration;
 
 public interface Transport {
-  void send(String message);
-  String poll(Duration timeout);
+  void send(JsonObject message);
+  JsonObject poll(Duration timeout);
   void close() throws IOException;
 }

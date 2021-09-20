@@ -15,6 +15,7 @@
  */
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 
 import java.io.*;
@@ -24,8 +25,10 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import static com.microsoft.playwright.impl.Serialization.gson;
+
 public class PipeTransport implements Transport {
-  private final BlockingQueue<String> incoming = new ArrayBlockingQueue<>(1000);
+  private final BlockingQueue<JsonObject> incoming = new ArrayBlockingQueue<>(1000);
   private final BlockingQueue<String> outgoing= new ArrayBlockingQueue<>(1000);
 
   private final ReaderThread readerThread;
@@ -42,24 +45,27 @@ public class PipeTransport implements Transport {
   }
 
   @Override
-  public void send(String message) {
+  public void send(JsonObject message) {
     if (isClosed) {
       throw new PlaywrightException("Playwright connection closed");
     }
     try {
-      outgoing.put(message);
+      // We could serialize the message on the IO thread but there is no guarantee
+      // that the message object won't be modified on this thread after it's added
+      // to the queue.
+      outgoing.put(gson().toJson(message));
     } catch (InterruptedException e) {
       throw new PlaywrightException("Failed to send message", e);
     }
   }
 
   @Override
-  public String poll(Duration timeout) {
+  public JsonObject poll(Duration timeout) {
     if (isClosed) {
       throw new PlaywrightException("Playwright connection closed");
     }
     try {
-      String message = incoming.poll(timeout.toMillis(), TimeUnit.MILLISECONDS);
+      JsonObject message = incoming.poll(timeout.toMillis(), TimeUnit.MILLISECONDS);
       if (message == null && readerThread.exception != null) {
         try {
           close();
@@ -91,7 +97,7 @@ public class PipeTransport implements Transport {
 
 class ReaderThread extends Thread {
   private final DataInputStream in;
-  private final BlockingQueue<String> queue;
+  private final BlockingQueue<JsonObject> queue;
   volatile boolean isClosing;
   volatile Exception exception;
 
@@ -107,7 +113,7 @@ class ReaderThread extends Thread {
     }
   }
 
-  ReaderThread(DataInputStream in, BlockingQueue<String> queue) {
+  ReaderThread(DataInputStream in, BlockingQueue<JsonObject> queue) {
     this.in = in;
     this.queue = queue;
   }
@@ -116,7 +122,8 @@ class ReaderThread extends Thread {
   public void run() {
     while (!isInterrupted()) {
       try {
-        queue.put(readMessage());
+        JsonObject message = gson().fromJson(readMessage(), JsonObject.class);
+        queue.put(message);
       } catch (IOException e) {
         if (!isInterrupted() && !isClosing) {
           exception = e;
