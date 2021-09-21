@@ -25,5 +25,5 @@ POM_FILES=(
 
 for name in ${POM_FILES[*]};
 do
-  mvn versions:set -D newVersion=$VERSION -f $name
+  mvn versions:set -D generateBackupPoms=false -D newVersion=$VERSION -f $name
 done
