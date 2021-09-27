@@ -141,7 +141,7 @@ public class TestPageSelectOption extends TestBase {
       page.selectOption("body", "");
       fail("did not throw");
     } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Element is not a <select> element."));
+      assertTrue(e.getMessage().contains("Element is not a <select> element"), e.getMessage());
     }
   }
 
