@@ -2712,7 +2712,9 @@ public interface Page extends AutoCloseable {
      */
     public Double timeout;
     /**
-     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+     * parameter is a string without wilcard characters, the method will wait for navigation to URL that is exactly equal to
+     * the string.
      */
     public Object url;
     /**
@@ -2736,21 +2738,27 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+     * parameter is a string without wilcard characters, the method will wait for navigation to URL that is exactly equal to
+     * the string.
      */
     public WaitForNavigationOptions setUrl(String url) {
       this.url = url;
       return this;
     }
     /**
-     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+     * parameter is a string without wilcard characters, the method will wait for navigation to URL that is exactly equal to
+     * the string.
      */
     public WaitForNavigationOptions setUrl(Pattern url) {
       this.url = url;
       return this;
     }
     /**
-     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+     * A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+     * parameter is a string without wilcard characters, the method will wait for navigation to URL that is exactly equal to
+     * the string.
      */
     public WaitForNavigationOptions setUrl(Predicate<String> url) {
       this.url = url;
@@ -6394,7 +6402,9 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * parameter is a string without wilcard characters, the method will wait for navigation to URL that is exactly equal to
+   * the string.
    */
   default void waitForURL(String url) {
     waitForURL(url, null);
@@ -6408,7 +6418,9 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * parameter is a string without wilcard characters, the method will wait for navigation to URL that is exactly equal to
+   * the string.
    */
   void waitForURL(String url, WaitForURLOptions options);
   /**
@@ -6420,7 +6432,9 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * parameter is a string without wilcard characters, the method will wait for navigation to URL that is exactly equal to
+   * the string.
    */
   default void waitForURL(Pattern url) {
     waitForURL(url, null);
@@ -6434,7 +6448,9 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * parameter is a string without wilcard characters, the method will wait for navigation to URL that is exactly equal to
+   * the string.
    */
   void waitForURL(Pattern url, WaitForURLOptions options);
   /**
@@ -6446,7 +6462,9 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * parameter is a string without wilcard characters, the method will wait for navigation to URL that is exactly equal to
+   * the string.
    */
   default void waitForURL(Predicate<String> url) {
     waitForURL(url, null);
@@ -6460,7 +6478,9 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation.
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
+   * parameter is a string without wilcard characters, the method will wait for navigation to URL that is exactly equal to
+   * the string.
    */
   void waitForURL(Predicate<String> url, WaitForURLOptions options);
   /**
