@@ -65,14 +65,14 @@ public class TestLocatorConvenience extends TestBase {
       page.inputValue("#inner");
       fail("did not throw");
     } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Node is not an HTMLInputElement or HTMLTextAreaElement or HTMLSelectElement"));
+      assertTrue(e.getMessage().contains("Node is not an <input>, <textarea> or <select> element"), e.getMessage());
     }
     try {
       Locator locator2 = page.locator("#inner");
       locator2.inputValue();
       fail("did not throw");
     } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Node is not an HTMLInputElement or HTMLTextAreaElement or HTMLSelectElement"));
+      assertTrue(e.getMessage().contains("Node is not an <input>, <textarea> or <select> element"), e.getMessage());
     }
   }
 
@@ -99,14 +99,14 @@ public class TestLocatorConvenience extends TestBase {
       page.innerText("svg");
       fail("did not throw");
     } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Not an HTMLElement"));
+      assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
     }
     Locator locator = page.locator("svg");
     try {
       locator.innerText();
       fail("did not throw");
     } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Not an HTMLElement"));
+      assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
     }
   }
 

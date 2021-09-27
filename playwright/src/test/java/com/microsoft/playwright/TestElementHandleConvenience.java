@@ -61,14 +61,14 @@ public class TestElementHandleConvenience extends TestBase {
       page.inputValue("#inner");
       fail("did not throw");
     } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Node is not an HTMLInputElement or HTMLTextAreaElement"), e.getMessage());
+      assertTrue(e.getMessage().contains("Node is not an <input>, <textarea> or <select> element"), e.getMessage());
     }
     ElementHandle handle2 = page.querySelector("#inner");
     try {
       handle2.inputValue();
       fail("did not throw");
     } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Node is not an HTMLInputElement or HTMLTextAreaElement"), e.getMessage());
+      assertTrue(e.getMessage().contains("Node is not an <input>, <textarea> or <select> element"), e.getMessage());
     }
   }
 
@@ -95,14 +95,14 @@ public class TestElementHandleConvenience extends TestBase {
       page.innerText("svg");
       fail("did not throw");
     } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Not an HTMLElement"));
+      assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
     }
     ElementHandle handle = page.querySelector("svg");
     try {
       handle.innerText();
       fail("did not throw");
     } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Not an HTMLElement"));
+      assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
     }
   }
 
