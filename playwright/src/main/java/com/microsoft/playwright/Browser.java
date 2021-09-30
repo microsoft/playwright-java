@@ -86,7 +86,7 @@ public interface Browser extends AutoCloseable {
      */
     public Double deviceScaleFactor;
     /**
-     * An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+     * An object containing additional HTTP headers to be sent with every request.
      */
     public Map<String, String> extraHTTPHeaders;
     /**
@@ -107,7 +107,7 @@ public interface Browser extends AutoCloseable {
      */
     public HttpCredentials httpCredentials;
     /**
-     * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
+     * Whether to ignore HTTPS errors when sending network requests. Defaults to {@code false}.
      */
     public Boolean ignoreHTTPSErrors;
     /**
@@ -249,7 +249,7 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+     * An object containing additional HTTP headers to be sent with every request.
      */
     public NewContextOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
@@ -294,7 +294,7 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
+     * Whether to ignore HTTPS errors when sending network requests. Defaults to {@code false}.
      */
     public NewContextOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;
@@ -510,7 +510,7 @@ public interface Browser extends AutoCloseable {
      */
     public Double deviceScaleFactor;
     /**
-     * An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+     * An object containing additional HTTP headers to be sent with every request.
      */
     public Map<String, String> extraHTTPHeaders;
     /**
@@ -531,7 +531,7 @@ public interface Browser extends AutoCloseable {
      */
     public HttpCredentials httpCredentials;
     /**
-     * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
+     * Whether to ignore HTTPS errors when sending network requests. Defaults to {@code false}.
      */
     public Boolean ignoreHTTPSErrors;
     /**
@@ -673,7 +673,7 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+     * An object containing additional HTTP headers to be sent with every request.
      */
     public NewPageOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
@@ -718,7 +718,7 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
+     * Whether to ignore HTTPS errors when sending network requests. Defaults to {@code false}.
      */
     public NewPageOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;

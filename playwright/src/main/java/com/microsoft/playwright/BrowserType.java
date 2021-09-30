@@ -435,7 +435,7 @@ public interface BrowserType {
      */
     public Path executablePath;
     /**
-     * An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+     * An object containing additional HTTP headers to be sent with every request.
      */
     public Map<String, String> extraHTTPHeaders;
     /**
@@ -485,7 +485,7 @@ public interface BrowserType {
      */
     public List<String> ignoreDefaultArgs;
     /**
-     * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
+     * Whether to ignore HTTPS errors when sending network requests. Defaults to {@code false}.
      */
     public Boolean ignoreHTTPSErrors;
     /**
@@ -692,7 +692,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+     * An object containing additional HTTP headers to be sent with every request.
      */
     public LaunchPersistentContextOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
@@ -784,7 +784,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Whether to ignore HTTPS errors during navigation. Defaults to {@code false}.
+     * Whether to ignore HTTPS errors when sending network requests. Defaults to {@code false}.
      */
     public LaunchPersistentContextOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
       this.ignoreHTTPSErrors = ignoreHTTPSErrors;
