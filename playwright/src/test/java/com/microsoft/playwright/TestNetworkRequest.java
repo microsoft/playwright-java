@@ -73,6 +73,18 @@ public class TestNetworkRequest extends TestBase {
     assertEquals(server.PREFIX + "/empty.html", requests.get(1).url());
   }
 
+  @Test
+  void shouldWorkAllHeadersInsideRoute() {
+    List<Request> requests = new ArrayList<>();
+    page.route("**", route -> {
+      assertTrue(route.request().allHeaders().get("accept").length() > 5);
+      requests.add(route.request());
+      route.resume();
+    });
+    page.navigate(server.PREFIX + "/empty.html");
+    assertEquals(1, requests.size());
+  }
+
   // https://github.com/microsoft/playwright/issues/3993
   @Test
   void shouldNotWorkForARedirectAndInterception() {

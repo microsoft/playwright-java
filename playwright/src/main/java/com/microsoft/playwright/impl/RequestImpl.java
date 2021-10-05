@@ -167,13 +167,8 @@ public class RequestImpl extends ChannelOwner implements Request {
     if (rawHeaders != null) {
       return rawHeaders;
     }
-    ResponseImpl response = response();
-    // there is no response, so should we return the headers we have now?
-    if (response == null) {
-      return headers;
-    }
-    JsonArray rawHeadersJson = response.withLogging("Request.allHeaders", () -> {
-      JsonObject result = response.sendMessage("rawRequestHeaders").getAsJsonObject();
+    JsonArray rawHeadersJson = withLogging("Request.allHeaders", () -> {
+      JsonObject result = sendMessage("rawRequestHeaders").getAsJsonObject();
       return result.getAsJsonArray("headers");
     });
 
