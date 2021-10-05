@@ -948,11 +948,16 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   ElementHandle waitForSelectorImpl(String selector, WaitForSelectorOptions options) {
+    return waitForSelectorImpl(selector, options, false);
+  }
+
+  ElementHandle waitForSelectorImpl(String selector, WaitForSelectorOptions options, boolean omitReturnValue) {
     if (options == null) {
       options = new WaitForSelectorOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
+    params.addProperty("omitReturnValue", omitReturnValue);
     JsonElement json = sendMessage("waitForSelector", params);
     JsonObject element = json.getAsJsonObject().getAsJsonObject("element");
     if (element == null) {

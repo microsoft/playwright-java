@@ -16,9 +16,11 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.WaitForSelectorState;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestLocatorMisc extends TestBase{
   @Test
@@ -29,5 +31,22 @@ public class TestLocatorMisc extends TestBase{
     assertEquals(true, page.evaluate("checkbox.checked"));
     input.setChecked(false);
     assertEquals(false, page.evaluate("checkbox.checked"));
+  }
+
+  @Test
+  void shouldWaitFor() {
+    page.setContent("<div></div>");
+    Locator locator = page.locator("span");
+    page.evalOnSelector("div", "div => setTimeout(() => div.innerHTML = '<span>target</span>', 500)");
+    locator.waitFor();
+    assertTrue(locator.textContent().contains("target"));
+  }
+
+  @Test
+  void shouldWaitForHidden() {
+    page.setContent("<div><span>target</span></div>");
+    Locator locator = page.locator("span");
+    page.evalOnSelector("div", "div => setTimeout(() => div.innerHTML = '', 500)");
+    locator.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.HIDDEN));
   }
 }

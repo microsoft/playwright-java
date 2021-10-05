@@ -1355,6 +1355,51 @@ public interface Locator {
       return this;
     }
   }
+  class WaitForOptions {
+    /**
+     * Defaults to {@code "visible"}. Can be either:
+     * <ul>
+     * <li> {@code "attached"} - wait for element to be present in DOM.</li>
+     * <li> {@code "detached"} - wait for element to not be present in DOM.</li>
+     * <li> {@code "visible"} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
+     * content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
+     * <li> {@code "hidden"} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
+     * is opposite to the {@code "visible"} option.</li>
+     * </ul>
+     */
+    public WaitForSelectorState state;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public Double timeout;
+
+    /**
+     * Defaults to {@code "visible"}. Can be either:
+     * <ul>
+     * <li> {@code "attached"} - wait for element to be present in DOM.</li>
+     * <li> {@code "detached"} - wait for element to not be present in DOM.</li>
+     * <li> {@code "visible"} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
+     * content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
+     * <li> {@code "hidden"} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
+     * is opposite to the {@code "visible"} option.</li>
+     * </ul>
+     */
+    public WaitForOptions setState(WaitForSelectorState state) {
+      this.state = state;
+      return this;
+    }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public WaitForOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   /**
    * Returns an array of {@code node.innerText} values for all matching nodes.
    */
@@ -2667,5 +2712,29 @@ public interface Locator {
    * zero timeout disables this.
    */
   void uncheck(UncheckOptions options);
+  /**
+   * Returns when element specified by locator satisfies the {@code state} option.
+   *
+   * <p> If target element already satisfies the condition, the method returns immediately. Otherwise, waits for up to {@code timeout}
+   * milliseconds until the condition is met.
+   * <pre>{@code
+   * Locator orderSent = page.locator("#order-sent");
+   * orderSent.waitFor();
+   * }</pre>
+   */
+  default void waitFor() {
+    waitFor(null);
+  }
+  /**
+   * Returns when element specified by locator satisfies the {@code state} option.
+   *
+   * <p> If target element already satisfies the condition, the method returns immediately. Otherwise, waits for up to {@code timeout}
+   * milliseconds until the condition is met.
+   * <pre>{@code
+   * Locator orderSent = page.locator("#order-sent");
+   * orderSent.waitFor();
+   * }</pre>
+   */
+  void waitFor(WaitForOptions options);
 }
 
