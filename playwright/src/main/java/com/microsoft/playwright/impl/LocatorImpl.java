@@ -400,6 +400,18 @@ class LocatorImpl implements Locator {
   }
 
   @Override
+  public void waitFor(WaitForOptions options) {
+    if (options == null) {
+      options = new WaitForOptions();
+    }
+    waitForImpl(options);
+  }
+
+  private void waitForImpl(WaitForOptions options) {
+    frame.withLogging("Locator.waitFor", () -> frame.waitForSelectorImpl(selector, convertViaJson(options, Frame.WaitForSelectorOptions.class).setStrict(true), true));
+  }
+
+  @Override
   public String toString() {
     return "Locator@" + selector;
   }

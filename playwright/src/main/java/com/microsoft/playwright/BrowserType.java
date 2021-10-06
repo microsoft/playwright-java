@@ -1079,7 +1079,8 @@ public interface BrowserType {
    * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for <a
    * href="https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md#introduction">Chromium</a> and <a
    * href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile">Firefox</a>. Note that
-   * Chromium's user data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}.
+   * Chromium's user data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}. Pass an
+   * empty string to use a temporary directory instead.
    */
   default BrowserContext launchPersistentContext(Path userDataDir) {
     return launchPersistentContext(userDataDir, null);
@@ -1093,7 +1094,8 @@ public interface BrowserType {
    * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for <a
    * href="https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md#introduction">Chromium</a> and <a
    * href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile">Firefox</a>. Note that
-   * Chromium's user data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}.
+   * Chromium's user data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}. Pass an
+   * empty string to use a temporary directory instead.
    */
   BrowserContext launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options);
   /**
