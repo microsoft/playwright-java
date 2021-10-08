@@ -29,8 +29,8 @@ import java.util.regex.Pattern;
  * <p> If a page opens another page, e.g. with a {@code window.open} call, the popup will belong to the parent page's browser
  * context.
  *
- * <p> Playwright allows creation of "incognito" browser contexts with {@code browser.newContext()} method. "Incognito" browser
- * contexts don't write any browsing data to disk.
+ * <p> Playwright allows creating "incognito" browser contexts with {@link Browser#newContext Browser.newContext()} method.
+ * "Incognito" browser contexts don't write any browsing data to disk.
  * <pre>{@code
  * // Create a new incognito browser context
  * BrowserContext context = browser.newContext();
