@@ -875,7 +875,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Locator locator(String selector) {
+  public LocatorImpl locator(String selector) {
     return mainFrame.locator(selector);
   }
 

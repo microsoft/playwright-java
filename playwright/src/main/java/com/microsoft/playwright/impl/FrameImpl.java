@@ -560,7 +560,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public Locator locator(String selector) {
+  public LocatorImpl locator(String selector) {
     return new LocatorImpl(this, selector);
   }
 

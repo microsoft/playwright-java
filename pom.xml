@@ -39,6 +39,7 @@
     <module>driver</module>
     <module>driver-bundle</module>
     <module>playwright</module>
+    <module>assertions</module>
   </modules>
 
   <properties>
@@ -47,6 +48,7 @@
     <junit.version>5.7.0</junit.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <websocket.version>1.5.1</websocket.version>
+    <opentest4j.version>1.2.0</opentest4j.version>
   </properties>
 
   <dependencyManagement>
@@ -65,6 +67,11 @@
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
         <version>${gson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.opentest4j</groupId>
+        <artifactId>opentest4j</artifactId>
+        <version>${opentest4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>

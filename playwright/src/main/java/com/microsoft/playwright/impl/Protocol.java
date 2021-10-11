@@ -18,17 +18,11 @@
 
 package com.microsoft.playwright.impl;
 
-class Binary {
-}
+import java.util.List;
 
 class Channel {
   String guid;
 }
-
-class Metadata{
-  String stack;
-}
-
 
 class SerializedValue{
   Number n;
@@ -51,44 +45,10 @@ class SerializedValue{
   Number h;
 }
 
-
 class SerializedArgument{
   SerializedValue value;
   Channel[] handles;
 }
-
-class AXNode{
-  String role;
-  String name;
-  String valueString;
-  Number valueNumber;
-  String description;
-  String keyshortcuts;
-  String roledescription;
-  String valuetext;
-  Boolean disabled;
-  Boolean expanded;
-  Boolean focused;
-  Boolean modal;
-  Boolean multiline;
-  Boolean multiselectable;
-  Boolean readonly;
-  Boolean required;
-  Boolean selected;
-  // Possible values: { 'checked, 'unchecked, 'mixed }
-  String checked;
-  // Possible values: { 'pressed, 'released, 'mixed }
-  String pressed;
-  Number level;
-  Number valuemin;
-  Number valuemax;
-  String autocomplete;
-  String haspopup;
-  String invalid;
-  String orientation;
-  AXNode[] children;
-}
-
 
 class SerializedError{
   public static class Error {
@@ -118,4 +78,29 @@ class SerializedError{
       '}';
   }
 }
+
+class ExpectedTextValue {
+  String string;
+  String regexSource;
+  String regexFlags;
+  Boolean matchSubstring;
+  Boolean normalizeWhiteSpace;
+}
+
+class FrameExpectOptions {
+  Object expressionArg;
+  List<ExpectedTextValue> expectedText;
+  Integer expectedNumber;
+  SerializedArgument expectedValue;
+  Boolean useInnerText;
+  boolean isNot;
+  Double timeout;
+}
+
+class FrameExpectResult {
+  boolean matches;
+  SerializedValue received;
+  List<String> log;
+}
+
 

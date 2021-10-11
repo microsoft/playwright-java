@@ -54,7 +54,7 @@ class UrlMatcher {
     throw new PlaywrightException("Url must be String, Pattern or Predicate<String>, found: " + object.getClass().getTypeName());
   }
 
-  private static String resolveUrl(URL baseUrl, String spec) {
+  static String resolveUrl(URL baseUrl, String spec) {
     if (baseUrl == null) {
       return spec;
     }

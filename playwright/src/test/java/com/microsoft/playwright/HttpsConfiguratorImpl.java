@@ -23,7 +23,6 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.FileInputStream;
 import java.security.KeyStore;
 
 class HttpsConfiguratorImpl extends HttpsConfigurator {
@@ -52,8 +51,7 @@ class HttpsConfiguratorImpl extends HttpsConfigurator {
       String password = "password";
       // Generated via
       // keytool -genkey -keyalg RSA -validity 36500 -keysize 4096 -dname cn=Playwright,ou=Playwright,o=Playwright,c=US -keystore keystore.jks -storepass password -keypass password
-      ks.load(new FileInputStream("src/test/resources/keys/keystore.jks"), password.toCharArray());
-
+      ks.load(HttpsConfiguratorImpl.class.getClassLoader().getResourceAsStream("resources/keys/keystore.jks"), password.toCharArray());
       KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
       kmf.init(ks, password.toCharArray());
 

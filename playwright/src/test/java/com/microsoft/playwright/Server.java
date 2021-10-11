@@ -35,7 +35,6 @@ public class Server implements HttpHandler {
   public final String CROSS_PROCESS_PREFIX;
   public final int PORT;
   public final String EMPTY_PAGE;
-  private final File resourcesDir;
 
   private final Map<String, CompletableFuture<Request>> requestSubscribers = Collections.synchronizedMap(new HashMap<>());
   private final Map<String, Auth> auths = Collections.synchronizedMap(new HashMap<>());
@@ -79,7 +78,6 @@ public class Server implements HttpHandler {
     server.setExecutor(null); // creates a default executor
 
     File cwd = FileSystems.getDefault().getPath(".").toFile();
-    resourcesDir = new File(cwd, "src/test/resources");
     server.start();
   }
 
@@ -192,21 +190,24 @@ public class Server implements HttpHandler {
     if ("/".equals(path)) {
       path = "/index.html";
     }
-    File file = new File(resourcesDir, path.substring(1));
-    if (!file.exists()) {
+
+    // Resources from "src/test/resources/" are copied to "resources/" directory in the jar.
+    String resourcePath = "resources" + path;
+    InputStream resource = getClass().getClassLoader().getResourceAsStream(resourcePath);
+    if (resource == null) {
       exchange.sendResponseHeaders(404, 0);
       try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
-        writer.write("File not found: " + file.getCanonicalPath());
+        writer.write("File not found: " + resourcePath);
       }
       return;
     }
-    exchange.getResponseHeaders().add("Content-Type", mimeType(file));
+    exchange.getResponseHeaders().add("Content-Type", mimeType(new File(resourcePath)));
     ByteArrayOutputStream body = new ByteArrayOutputStream();
     OutputStream output = body;
     if (gzipRoutes.contains(path)) {
       exchange.getResponseHeaders().add("Content-Encoding", "gzip");
     }
-    try (FileInputStream input = new FileInputStream(file)) {
+    try (InputStream input = resource) {
       if (gzipRoutes.contains(path)) {
         output = new GZIPOutputStream(output);
       }
