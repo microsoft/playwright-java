@@ -70,7 +70,7 @@ public class TestPageNetworkSizes extends TestBase {
     request.get();
     Sizes sizes = response.request().sizes();
     assertEquals(6, sizes.responseBodySize);
-    assertTrue(sizes.responseHeadersSize >= 100);
+    assertTrue(sizes.responseHeadersSize > 10);
   }
 
   @Test
@@ -78,7 +78,7 @@ public class TestPageNetworkSizes extends TestBase {
     Response response = page.navigate(server.EMPTY_PAGE);
     Sizes sizes = response.request().sizes();
     assertEquals(0, sizes.responseBodySize);
-    assertTrue(sizes.responseHeadersSize >= 100, "" + sizes.responseHeadersSize);
+    assertTrue(sizes.responseHeadersSize > 10, "" + sizes.responseHeadersSize);
   }
 
   @Test
