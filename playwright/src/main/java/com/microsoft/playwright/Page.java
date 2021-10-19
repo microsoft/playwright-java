@@ -5462,7 +5462,9 @@ public interface Page extends AutoCloseable {
    * Browser#newContext Browser.newContext()} allows to set viewport size (and more) for all pages in the context at once.
    *
    * <p> {@code page.setViewportSize} will resize the page. A lot of websites don't expect phones to change size, so you should set the
-   * viewport size before navigating to the page.
+   * viewport size before navigating to the page. {@link Page#setViewportSize Page.setViewportSize()} will also reset
+   * {@code screen} size, use {@link Browser#newContext Browser.newContext()} with {@code screen} and {@code viewport} parameters if you need
+   * better control of these properties.
    * <pre>{@code
    * Page page = browser.newPage();
    * page.setViewportSize(640, 480);
