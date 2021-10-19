@@ -23,7 +23,7 @@ public class Proxy {
    */
   public String server;
   /**
-   * Optional coma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
+   * Optional comma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
    */
   public String bypass;
   /**
@@ -39,7 +39,7 @@ public class Proxy {
     this.server = server;
   }
   /**
-   * Optional coma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
+   * Optional comma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
    */
   public Proxy setBypass(String bypass) {
     this.bypass = bypass;
