@@ -50,6 +50,10 @@ class Router {
       handler.accept(route);
       return true;
     }
+
+    boolean isDone() {
+      return times != null && times <= 0;
+    }
   }
 
   void add(UrlMatcher matcher, Consumer<Route> handler, Integer times) {
@@ -69,6 +73,9 @@ class Router {
   boolean handle(Route route) {
     for (RouteInfo info : routes) {
       if (info.handle(route)) {
+        if (info.isDone()) {
+          routes.remove(info);
+        }
         return true;
       }
     }
