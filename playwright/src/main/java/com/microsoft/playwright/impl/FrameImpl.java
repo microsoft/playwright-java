@@ -972,13 +972,9 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   void waitForTimeoutImpl(double timeout) {
-    runUntil(() -> {}, new WaitableTimeout<Void>(timeout) {
-      @Override
-      public Void get() {
-        // Override to not throw.
-        return null;
-      }
-    });
+    JsonObject params = new JsonObject();
+    params.addProperty("timeout", timeout);
+    sendMessage("waitForTimeout", params);
   }
 
   @Override
