@@ -457,12 +457,25 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private void unroute(UrlMatcher matcher, Consumer<Route> handler) {
     withLogging("BrowserContext.unroute", () -> {
       routes.remove(matcher, handler);
-      if (routes.size() == 0) {
-        JsonObject params = new JsonObject();
-        params.addProperty("enabled", false);
-        sendMessage("setNetworkInterceptionEnabled", params);
-      }
+      maybeDisableNetworkInterception();
     });
+  }
+
+  private void maybeDisableNetworkInterception() {
+    if (routes.size() == 0) {
+      JsonObject params = new JsonObject();
+      params.addProperty("enabled", false);
+      sendMessage("setNetworkInterceptionEnabled", params);
+    }
+  }
+
+  void handleRoute(Route route) {
+    boolean handled = routes.handle(route);
+    if (handled) {
+      maybeDisableNetworkInterception();
+    } else {
+      route.resume();
+    }
   }
 
   void pause() {
@@ -473,10 +486,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   protected void handleEvent(String event, JsonObject params) {
     if ("route".equals(event)) {
       Route route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
-      boolean handled = routes.handle(route);
-      if (!handled) {
-        route.resume();
-      }
+      handleRoute(route);
     } else if ("page".equals(event)) {
       PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
       pages.add(page);

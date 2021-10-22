@@ -198,11 +198,10 @@ public class PageImpl extends ChannelOwner implements Page {
     } else if ("route".equals(event)) {
       Route route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
       boolean handled = routes.handle(route);
-      if (!handled) {
-        handled = browserContext.routes.handle(route);
-      }
-      if (!handled) {
-        route.resume();
+      if (handled) {
+        maybeDisableNetworkInterception();
+      } else {
+        browserContext.handleRoute(route);
       }
     } else if ("video".equals(event)) {
       String artifactGuid = params.getAsJsonObject("artifact").get("guid").getAsString();
@@ -1181,12 +1180,16 @@ public class PageImpl extends ChannelOwner implements Page {
   private void unroute(UrlMatcher matcher, Consumer<Route> handler) {
     withLogging("Page.unroute", () -> {
       routes.remove(matcher, handler);
-      if (routes.size() == 0) {
-        JsonObject params = new JsonObject();
-        params.addProperty("enabled", false);
-        sendMessage("setNetworkInterceptionEnabled", params);
-      }
+      maybeDisableNetworkInterception();
     });
+  }
+
+  private void maybeDisableNetworkInterception() {
+    if (routes.size() == 0) {
+      JsonObject params = new JsonObject();
+      params.addProperty("enabled", false);
+      sendMessage("setNetworkInterceptionEnabled", params);
+    }
   }
 
   @Override
