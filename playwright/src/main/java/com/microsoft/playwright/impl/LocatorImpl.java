@@ -1,5 +1,7 @@
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.JSHandle;
@@ -13,6 +15,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.BiFunction;
 
+import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Serialization.serializeArgument;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 
 class LocatorImpl implements Locator {
@@ -414,5 +418,25 @@ class LocatorImpl implements Locator {
   @Override
   public String toString() {
     return "Locator@" + selector;
+  }
+
+  FrameExpectResult expect(String expression, FrameExpectOptions options) {
+    return frame.withLogging("Locator.expect", () -> expectImpl(expression, options));
+  }
+
+  private FrameExpectResult expectImpl(String expression, FrameExpectOptions options) {
+    if (options == null) {
+      options = new FrameExpectOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    params.addProperty("expression", expression);
+    if (options.expectedValue != null) {
+      params.remove("expectedValue");
+      params.add("expectedValue", gson().toJsonTree(serializeArgument(options.expectedValue)));
+    }
+    JsonElement json = frame.sendMessage("expect", params);
+    FrameExpectResult result = gson().fromJson(json, FrameExpectResult.class);
+    return result;
   }
 }

@@ -47,8 +47,6 @@ public class TestPageWaitForNavigation extends TestBase {
       fail("did not throw");
     } catch (TimeoutError e) {
       assertTrue(e.getMessage().contains("Timeout 5000ms exceeded"));
-//      assertTrue(e.getMessage().contains("waiting for navigation to '**/frame.html' until 'load'"));
-//      assertTrue(e.getMessage().contains("navigated to '${server.EMPTY_PAGE}'"));
     }
   }
 

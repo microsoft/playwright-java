@@ -24,6 +24,7 @@ import com.google.gson.JsonObject;
 import java.io.*;
 import java.nio.file.FileSystems;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -627,6 +628,14 @@ class Method extends Element {
       output.add(offset + "}");
       return;
     }
+    if ("PlaywrightAssertions.assertThat".equals(jsonPath)) {
+      writeJavadoc(params, output, offset);
+      output.add(offset + "static PageAssertions assertThat(Page page) {");
+      output.add(offset + "  return new PageAssertionsImpl(page);");
+      output.add(offset + "}");
+      output.add("");
+      return;
+    }
     int numOverloads = 1;
     for (int i = 0; i < params.size(); i++) {
       if (params.get(i).type.isTypeUnion()) {
@@ -844,9 +853,7 @@ class Interface extends TypeDefinition {
     " * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
     " * See the License for the specific language governing permissions and\n" +
     " * limitations under the License.\n" +
-    " */\n" +
-    "\n" +
-    "package com.microsoft.playwright;\n";
+    " */\n";
 
   private static Set<String> allowedBaseInterfaces = new HashSet<>(asList("Browser", "JSHandle", "BrowserContext"));
   private static Set<String> autoCloseableInterfaces = new HashSet<>(asList("Playwright", "Browser", "BrowserContext", "Page"));
@@ -877,7 +884,6 @@ class Interface extends TypeDefinition {
   }
 
   void writeTo(List<String> output, String offset) {
-    output.add(header);
     if ("Playwright".equals(jsonName)) {
       output.add("import com.microsoft.playwright.impl.PlaywrightImpl;");
     }
@@ -900,8 +906,19 @@ class Interface extends TypeDefinition {
     if (asList("Page", "Frame", "BrowserContext", "WebSocket").contains(jsonName)) {
       output.add("import java.util.function.Predicate;");
     }
-    if (asList("Page", "Frame", "BrowserContext").contains(jsonName)) {
+    if (asList("Page", "Frame", "BrowserContext", "PageAssertions").contains(jsonName)) {
       output.add("import java.util.regex.Pattern;");
+    }
+    if ("PlaywrightAssertions".equals(jsonName)) {
+      output.add("import com.microsoft.playwright.Page;");
+      output.add("import com.microsoft.playwright.Locator;");
+      output.add("import com.microsoft.playwright.impl.PageAssertionsImpl;");
+    }
+    if ("PageAssertions".equals(jsonName)) {
+      output.add("import com.microsoft.playwright.Page;");
+    }
+    if ("LocatorAssertions".equals(jsonName)) {
+      output.add("import com.microsoft.playwright.Locator;");
     }
     output.add("");
 
@@ -1062,10 +1079,22 @@ public class ApiGenerator {
   ApiGenerator(Reader reader) throws IOException {
     JsonArray api = new Gson().fromJson(reader, JsonArray.class);
     File cwd = FileSystems.getDefault().getPath(".").toFile();
+    filterOtherLangs(api, new Stack<>());
+
     File dir = new File(cwd, "playwright/src/main/java/com/microsoft/playwright");
     System.out.println("Writing files to: " + dir.getCanonicalPath());
-    Stack<String> path = new Stack<>();
-    filterOtherLangs(api, path);
+    generate(api, dir, "com.microsoft.playwright", isAssertion().negate());
+
+    File assertionsDir = new File(cwd,"assertions/src/main/java/com/microsoft/playwright/assertions");
+    System.out.println("Writing assertion files to: " + dir.getCanonicalPath());
+    generate(api, assertionsDir, "com.microsoft.playwright.assertions", isAssertion());
+  }
+
+  private static Predicate<String> isAssertion() {
+    return className -> className.toLowerCase().contains("assert");
+  }
+
+  private void generate(JsonArray api, File dir, String packageName, Predicate<String> classFilter) throws IOException {
     Map<String, TypeDefinition> topLevelTypes = new HashMap<>();
     for (JsonElement entry: api) {
       String name = entry.getAsJsonObject().get("name").getAsString();
@@ -1073,17 +1102,26 @@ public class ApiGenerator {
       if (asList("PlaywrightException", "TimeoutError").contains(name)) {
         continue;
       }
+      if (!classFilter.test(name)) {
+        continue;
+      }
       List<String> lines = new ArrayList<>();
+      lines.add(Interface.header);
+      lines.add("package " + packageName + ";");
+      lines.add("");
       new Interface(entry.getAsJsonObject(), topLevelTypes).writeTo(lines, "");
       String text = String.join("\n", lines);
       try (FileWriter writer = new FileWriter(new File(dir, name + ".java"))) {
         writer.write(text);
       }
     }
+
     dir = new File(dir, "options");
     for (TypeDefinition e : topLevelTypes.values()) {
       List<String> lines = new ArrayList<>();
-      lines.add(Interface.header.replace("package com.microsoft.playwright;", "package com.microsoft.playwright.options;"));
+      lines.add(Interface.header);
+      lines.add("package " + packageName + ".options;");
+      lines.add("");
       e.writeTo(lines, "");
       String text = String.join("\n", lines);
       try (FileWriter writer = new FileWriter(new File(dir, e.name() + ".java"))) {
