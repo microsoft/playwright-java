@@ -12,7 +12,7 @@
   <artifactId>assertions</artifactId>
   <name>Playwright - Assertions</name>
   <description>
-    This module provides AssertJ Matchers specific to Playwright.
+    This module provides Playwright assertions that will wait until the expected condition is met.
   </description>
 
   <build>
@@ -25,24 +25,13 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <source>8</source>
-          <failOnError>false</failOnError>
+          <subpackages>com.microsoft.playwright.assertions</subpackages>
+          <excludePackageNames>com.microsoft.playwright.impl</excludePackageNames>
         </configuration>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <redirectTestOutputToFile>true</redirectTestOutputToFile>
-        </configuration>
       </plugin>
     </plugins>
   </build>

@@ -12,7 +12,7 @@
   <artifactId>driver-bundle</artifactId>
   <name>Playwright - Drivers For All Platforms</name>
   <description>
-    This module includes playwright-cli binary and related utilities for all supported platforms.
+    This module includes Playwright driver and related utilities for all supported platforms.
     It is intended to be used on the systems where Playwright driver is not preinstalled.
   </description>
 
@@ -28,18 +28,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <source>8</source>
-          <failOnError>false</failOnError>
-        </configuration>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
