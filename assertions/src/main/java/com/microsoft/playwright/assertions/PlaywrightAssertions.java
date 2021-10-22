@@ -17,8 +17,9 @@
 package com.microsoft.playwright.assertions;
 
 import java.util.*;
-import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.impl.LocatorAssertionsImpl;
 import com.microsoft.playwright.impl.PageAssertionsImpl;
 
 /**
@@ -37,6 +38,18 @@ import com.microsoft.playwright.impl.PageAssertionsImpl;
  * <p> By default, the timeout for assertions is set to 5 seconds.
  */
 public interface PlaywrightAssertions {
+  /**
+   * Creates a {@code LocatorAssertions} object for the given {@code Locator}.
+   * <pre>{@code
+   * PlaywrightAssertions.assertThat(locator).isVisible();
+   * }</pre>
+   *
+   * @param locator {@code Locator} object to use for assertions.
+   */
+  static LocatorAssertions assertThat(Locator locator) {
+    return new LocatorAssertionsImpl(locator);
+  }
+
   /**
    * Creates a {@code PageAssertions} object for the given {@code Page}.
    * <pre>{@code
