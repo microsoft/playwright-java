@@ -264,8 +264,7 @@ public class TestBrowserTypeConnect extends TestBase {
       page.waitForNavigation(() -> {});
       fail("did not throw");
     } catch (PlaywrightException e) {
-      System.out.println(e.getMessage());
-      assertTrue(e.getMessage().contains("Page closed"), e.getMessage());
+      assertTrue(e.getMessage().contains("Page closed") || e.getMessage().contains("Browser has been closed"), e.getMessage());
     }
   }
 
