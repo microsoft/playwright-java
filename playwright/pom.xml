@@ -31,17 +31,7 @@
         <configuration>
           <subpackages>com.microsoft.playwright</subpackages>
           <excludePackageNames>com.microsoft.playwright.impl</excludePackageNames>
-          <additionalOptions>--allow-script-in-comments</additionalOptions>
-          <failOnError>false</failOnError>
         </configuration>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

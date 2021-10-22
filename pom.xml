@@ -116,6 +116,18 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>3.2.0</version>
+          <configuration>
+            <additionalOptions>--allow-script-in-comments</additionalOptions>
+            <failOnError>false</failOnError>
+          </configuration>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -131,9 +143,8 @@
                 junit.jupiter.execution.parallel.config.dynamic.factor=0.5
               </configurationParameters>
             </properties>
-            <failIfNoTests>
-              false
-            </failIfNoTests>
+            <failIfNoTests>false</failIfNoTests>
+            <redirectTestOutputToFile>true</redirectTestOutputToFile>
           </configuration>
         </plugin>
         <plugin>
