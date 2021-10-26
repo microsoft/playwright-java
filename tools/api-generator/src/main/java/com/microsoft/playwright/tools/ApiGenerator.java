@@ -630,10 +630,20 @@ class Method extends Element {
     }
     if ("PlaywrightAssertions.assertThat".equals(jsonPath)) {
       writeJavadoc(params, output, offset);
-      output.add(offset + "static PageAssertions assertThat(Page page) {");
-      output.add(offset + "  return new PageAssertionsImpl(page);");
-      output.add(offset + "}");
-      output.add("");
+      String originalName = jsonElement.getAsJsonObject().get("originalName").getAsString();
+      if ("assertThatPage".equals(originalName)) {
+        output.add(offset + "static PageAssertions assertThat(Page page) {");
+        output.add(offset + "  return new PageAssertionsImpl(page);");
+        output.add(offset + "}");
+        output.add("");
+      } else if ("assertThatLocator".equals(originalName)) {
+        output.add(offset + "static LocatorAssertions assertThat(Locator locator) {");
+        output.add(offset + "  return new LocatorAssertionsImpl(locator);");
+        output.add(offset + "}");
+        output.add("");
+      } else {
+        throw new RuntimeException("Unexpected originalName: " + originalName);
+      }
       return;
     }
     int numOverloads = 1;
@@ -906,12 +916,13 @@ class Interface extends TypeDefinition {
     if (asList("Page", "Frame", "BrowserContext", "WebSocket").contains(jsonName)) {
       output.add("import java.util.function.Predicate;");
     }
-    if (asList("Page", "Frame", "BrowserContext", "PageAssertions").contains(jsonName)) {
+    if (asList("Page", "Frame", "BrowserContext", "PageAssertions", "LocatorAssertions").contains(jsonName)) {
       output.add("import java.util.regex.Pattern;");
     }
     if ("PlaywrightAssertions".equals(jsonName)) {
-      output.add("import com.microsoft.playwright.Page;");
       output.add("import com.microsoft.playwright.Locator;");
+      output.add("import com.microsoft.playwright.Page;");
+      output.add("import com.microsoft.playwright.impl.LocatorAssertionsImpl;");
       output.add("import com.microsoft.playwright.impl.PageAssertionsImpl;");
     }
     if ("PageAssertions".equals(jsonName)) {
@@ -1155,6 +1166,8 @@ public class ApiGenerator {
         List<String> aliasPath = new ArrayList<>(path);
         aliasPath.set(aliasPath.size() - 1, alias);
         aliases.put(String.join(".", path), String.join(".", aliasPath));
+        // Save original name.
+        object.addProperty("originalName", object.get("name").getAsString());
         // Rename in place.
         object.addProperty("name", alias);
       }
@@ -1227,7 +1240,6 @@ public class ApiGenerator {
 
   public static void main(String[] args) throws IOException {
     File cwd = FileSystems.getDefault().getPath(".").toFile();
-    System.out.println(cwd.getCanonicalPath());
     File file = new File(cwd, "tools/api-generator/src/main/resources/api.json");
     System.out.println("Reading from: " + file.getCanonicalPath());
     new ApiGenerator(new FileReader(file));
