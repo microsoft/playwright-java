@@ -1,24 +1,17 @@
 name: Test Docker
 on:
   push:
-    paths:
-      - '.github/workflows/test_docker.yml'
-      - 'Dockerfile*'
     branches:
       - master
       - release-*
   pull_request:
-    paths:
-      - .github/workflows/test_docker.yml
-      - Dockerfile.*
-      - scripts/CLI_VERSION
-      - '**/pom.xml'
     branches:
       - master
       - release-*
+      - test-docker
 jobs:
   test:
-    timeout-minutes: 60
+    timeout-minutes: 20
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
