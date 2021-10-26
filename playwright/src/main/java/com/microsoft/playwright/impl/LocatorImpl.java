@@ -431,10 +431,6 @@ class LocatorImpl implements Locator {
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
     params.addProperty("expression", expression);
-    if (options.expectedValue != null) {
-      params.remove("expectedValue");
-      params.add("expectedValue", gson().toJsonTree(serializeArgument(options.expectedValue)));
-    }
     JsonElement json = frame.sendMessage("expect", params);
     FrameExpectResult result = gson().fromJson(json, FrameExpectResult.class);
     return result;
