@@ -51,6 +51,9 @@ class AssertionsBase {
     if (expectOptions.timeout == null) {
       expectOptions.timeout = 5_000.0;
     }
+    if (expectOptions.isNot) {
+      message = message.replace("expected to", "expected not to");
+    }
     FrameExpectResult result = actualLocator.expect(expression, expectOptions);
     if (result.matches == isNot) {
       Object actual = result.received == null ? null : Serialization.deserialize(result.received);
