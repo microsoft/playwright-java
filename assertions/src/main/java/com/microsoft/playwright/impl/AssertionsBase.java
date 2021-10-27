@@ -48,6 +48,9 @@ class AssertionsBase {
   }
 
   void expectImpl(String expression, FrameExpectOptions expectOptions, Object expected, String message) {
+    if (expectOptions.timeout == null) {
+      expectOptions.timeout = 5_000.0;
+    }
     FrameExpectResult result = actualLocator.expect(expression, expectOptions);
     if (result.matches == isNot) {
       Object actual = result.received == null ? null : Serialization.deserialize(result.received);
