@@ -139,7 +139,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertEquals("[]", e.getExpected().getStringRepresentation());
       assertEquals("null", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have text"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected not to have text"), e.getMessage());
     }
   }
 
@@ -499,7 +499,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertNull(e.getExpected());
       assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected to be checked"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected not to be checked"), e.getMessage());
     }
   }
 
@@ -534,7 +534,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertNull(e.getExpected());
       assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected to be disabled"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected not to be disabled"), e.getMessage());
     }
   }
 
@@ -569,7 +569,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertNull(e.getExpected());
       assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected to be editable"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected not to be editable"), e.getMessage());
     }
   }
 
@@ -605,7 +605,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertNull(e.getExpected());
       assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected to be empty"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected not to be empty"), e.getMessage());
     }
   }
 
@@ -640,7 +640,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertNull(e.getExpected());
       assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected to be enabled"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected not to be enabled"), e.getMessage());
     }
   }
 
@@ -677,7 +677,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertNull(e.getExpected());
       assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected to be focused"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected not to be focused"), e.getMessage());
     }
   }
 
@@ -712,7 +712,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertNull(e.getExpected());
       assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected to be hidden"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected not to be hidden"), e.getMessage());
     }
   }
 
@@ -747,7 +747,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertNull(e.getExpected());
       assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected to be visible"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected not to be visible"), e.getMessage());
     }
   }
 }
