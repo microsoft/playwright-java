@@ -100,7 +100,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     }
     FrameExpectOptions commonOptions = convertViaJson(options, FrameExpectOptions.class);
     commonOptions.expressionArg = name;
-    expectImpl("to.have.attribute", expectedText, expectedValue, "Locator expected to have attribute", commonOptions);
+    expectImpl("to.have.attribute", expectedText, expectedValue, "Locator expected to have attribute '" + name + "'", commonOptions);
   }
 
   @Override
@@ -170,7 +170,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     }
     FrameExpectOptions commonOptions = convertViaJson(options, FrameExpectOptions.class);
     commonOptions.expressionArg = name;
-    expectImpl("to.have.css", expectedText, expectedValue, "Locator expected to have CSS", commonOptions);
+    expectImpl("to.have.css", expectedText, expectedValue, "Locator expected to have CSS property '" + name + "'", commonOptions);
   }
 
   @Override
@@ -189,7 +189,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     commonOptions.expressionArg = name;
     commonOptions.expectedValue = serializeArgument(value);
     List<ExpectedTextValue> list = null;
-    expectImpl("to.have.property", list, value, "Locator expected to have js property", commonOptions);
+    expectImpl("to.have.property", list, value, "Locator expected to have JavaScript property '" + name + "'", commonOptions);
   }
 
   @Override
