@@ -19,5 +19,5 @@ jobs:
         run: docker build -t playwright-java:localbuild-focal -f Dockerfile.focal .
       - name: Test
         run: |
-          CONTAINER_ID="$(docker run --rm --shm-size=2GB --ipc=host -v $(pwd):/root/playwright --name playwright-docker-test -d -t playwright-java:localbuild-focal /bin/bash)"
+          CONTAINER_ID="$(docker run --rm --ipc=host -v $(pwd):/root/playwright --name playwright-docker-test -d -t playwright-java:localbuild-focal /bin/bash)"
           docker exec "${CONTAINER_ID}" /root/playwright/tools/test-local-installation/create_project_and_run_tests.sh
