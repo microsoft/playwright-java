@@ -150,7 +150,7 @@ public class TestLocatorAssertions extends TestBase {
     Locator locator = page.locator("p");
     page.evaluate("setTimeout(() => {\n" +
       "  div.innerHTML = \"<p>Text 1</p><p>Text 2</p>\";\n" +
-      "}, 500);");
+      "}, 100);");
     // Should normalize whitespace.
     assertThat(locator).hasText(new String[] {"Text  1", "Text   2"}, new LocatorAssertions.HasTextOptions().setTimeout(1000));
   }
@@ -161,7 +161,7 @@ public class TestLocatorAssertions extends TestBase {
     Locator locator = page.locator("div");
     page.evaluate("setTimeout(() => {\n" +
       "  div.innerHTML = \"<p>Text 1</p><p>Text 2</p>\";\n" +
-      "}, 500);");
+      "}, 100);");
     try {
       // Should normalize whitespace.
       assertThat(locator).hasText(new String[] {"Text 1", "Text 3", "Extra"}, new LocatorAssertions.HasTextOptions().setTimeout(1000));
