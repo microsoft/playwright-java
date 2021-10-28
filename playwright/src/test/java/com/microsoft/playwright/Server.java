@@ -193,10 +193,8 @@ public class Server implements HttpHandler {
 
     // Resources from "src/test/resources/" are copied to "resources/" directory in the jar.
     String resourcePath = "resources" + path;
-    System.err.println("Serving: " + resourcePath);
     InputStream resource = getClass().getClassLoader().getResourceAsStream(resourcePath);
     if (resource == null) {
-      System.err.println("  not found: " + resourcePath);
       exchange.sendResponseHeaders(404, 0);
       try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
         writer.write("File not found: " + resourcePath);
@@ -215,7 +213,6 @@ public class Server implements HttpHandler {
       }
       copy(input, output);
       output.close();
-      System.err.println("  read all");
     } catch (IOException e) {
       body.reset();
       try (Writer writer = new OutputStreamWriter(output)) {
@@ -229,7 +226,6 @@ public class Server implements HttpHandler {
       exchange.getResponseBody().write(body.toByteArray());
     }
     exchange.getResponseBody().close();
-    System.err.println("  done.");
   }
 
   private static String mimeType(File file) {
