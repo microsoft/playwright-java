@@ -428,7 +428,6 @@ public class TestLocatorAssertions extends TestBase {
       assertEquals("{a=2}", e.getExpected().getStringRepresentation());
       assertEquals("{a=1, b=string}", e.getActual().getStringRepresentation());
       assertTrue(e.getMessage().contains("Locator expected to have JavaScript property 'foo'"), e.getMessage());
-      throw e;
     }
   }
 
