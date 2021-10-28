@@ -15,6 +15,6 @@ cp -R ../../driver-bundle/src/test/ $PROJECT_DIR/src/
 cp -R ../../playwright/src/test/ $PROJECT_DIR/src/
 cd $PROJECT_DIR
 
-mvn test --no-transfer-progress
+mvn test --no-transfer-progress -D test=*Test*Route*
 
 rm -rf $PROJECT_DIR
