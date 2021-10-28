@@ -11,7 +11,7 @@ on:
       - test-docker
 jobs:
   test:
-    timeout-minutes: 25
+    timeout-minutes: 7
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -21,3 +21,8 @@ jobs:
         run: |
           CONTAINER_ID="$(docker run --rm --ipc=host -v $(pwd):/root/playwright --name playwright-docker-test -d -t playwright-java:localbuild-focal /bin/bash)"
           docker exec "${CONTAINER_ID}" /root/playwright/tools/test-local-installation/create_project_and_run_tests.sh
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: logs
+          path: logs
