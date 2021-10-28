@@ -26,10 +26,6 @@ Linux)
   PLATFORM=linux
   echo "Downloading driver for Linux"
   ;;
-MINGW32*)
-  PLATFORM=win32
-  echo "Downloading driver for Win32"
-  ;;
 MINGW64*)
   PLATFORM=win32_x64
   echo "Downloading driver for Win64"

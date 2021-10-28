@@ -131,7 +131,7 @@ public class DriverJar extends Driver {
   private static String platformDir() {
     String name = System.getProperty("os.name").toLowerCase();
     if (name.contains("windows")) {
-      return System.getProperty("os.arch").equals("amd64") ? "win32_x64" : "win32";
+      return "win32_x64";
     }
     if (name.contains("linux")) {
       return "linux";
