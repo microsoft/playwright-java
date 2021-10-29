@@ -97,7 +97,7 @@ public class TestPageRoute extends TestBase {
 
   @Test
   void shouldWorkWhenPOSTIsRedirectedWith302() {
-    System.out.println("OOO");
+    System.err.println("EEE");
     server.setRedirect("/rredirect", "/empty.html");
     page.navigate(server.EMPTY_PAGE);
     page.route("**/*", route -> route.resume());
