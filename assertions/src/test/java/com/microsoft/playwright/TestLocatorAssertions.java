@@ -250,7 +250,7 @@ public class TestLocatorAssertions extends TestBase {
     page.setContent("<div id=node>Text content</div>");
     Locator locator = page.locator("#node");
     try {
-      assertThat(locator).hasAttribute("id", ".Nod..", new LocatorAssertions.HasAttributeOptions().setTimeout(1000));
+      assertThat(locator).hasAttribute("id", Pattern.compile(".Nod.."), new LocatorAssertions.HasAttributeOptions().setTimeout(1000));
       fail("did not throw");
     } catch (AssertionFailedError e) {
       assertEquals(".Nod..", e.getExpected().getStringRepresentation());
@@ -292,7 +292,7 @@ public class TestLocatorAssertions extends TestBase {
     page.setContent("<div class=\"bar baz\"></div>");
     Locator locator = page.locator("div");
     try {
-      assertThat(locator).hasClass("foo Z.*", new LocatorAssertions.HasClassOptions().setTimeout(1000));
+      assertThat(locator).hasClass(Pattern.compile("foo Z.*"), new LocatorAssertions.HasClassOptions().setTimeout(1000));
       fail("did not throw");
     } catch (AssertionFailedError e) {
       assertEquals("foo Z.*", e.getExpected().getStringRepresentation());

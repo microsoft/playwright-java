@@ -96,7 +96,11 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     }
     FrameExpectOptions commonOptions = convertViaJson(options, FrameExpectOptions.class);
     commonOptions.expressionArg = name;
-    expectImpl("to.have.attribute", expectedText, expectedValue, "Locator expected to have attribute '" + name + "'", commonOptions);
+    String message = "Locator expected to have attribute '" + name + "'";
+    if (expectedValue instanceof Pattern) {
+      message += " matching regex";
+    }
+    expectImpl("to.have.attribute", expectedText, expectedValue, message, commonOptions);
   }
 
   @Override
