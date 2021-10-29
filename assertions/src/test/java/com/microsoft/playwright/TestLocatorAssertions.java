@@ -38,6 +38,27 @@ public class TestLocatorAssertions extends TestBase {
   }
 
   @Test
+  void containsTextWRegexCaseInsensitivePass() {
+    page.setContent("<div id=node>Text   content</div>");
+    Locator locator = page.locator("#node");
+    assertThat(locator).containsText(Pattern.compile("text", Pattern.CASE_INSENSITIVE));
+  }
+
+  @Test
+  void containsTextWRegexMultilinePass() {
+    page.setContent("<div id=node>Text \nContent</div>");
+    Locator locator = page.locator("#node");
+    assertThat(locator).containsText(Pattern.compile("^Content", Pattern.MULTILINE));
+  }
+
+  @Test
+  void containsTextWRegexDotAllPass() {
+    page.setContent("<div id=node>foo\nbar</div>");
+    Locator locator = page.locator("#node");
+    assertThat(locator).containsText(Pattern.compile("foo.bar", Pattern.DOTALL));
+  }
+
+  @Test
   void containsTextWRegexFail() {
     page.setContent("<div id=node>Text   content</div>");
     Locator locator = page.locator("#node");
@@ -47,7 +68,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertEquals("ex2", e.getExpected().getStringRepresentation());
       assertEquals("Text   content", e.getActual().getValue());
-      assertTrue(e.getMessage().contains("Locator expected to contain text"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected to contain regex"), e.getMessage());
     }
   }
 
@@ -55,9 +76,9 @@ public class TestLocatorAssertions extends TestBase {
   void hasTextWRegexPass() {
     page.setContent("<div id=node>Text   content</div>");
     Locator locator = page.locator("#node");
-    assertThat(locator).hasText(Pattern.compile("Text"));
+    assertThat(locator).hasText(Pattern.compile("Te.t"));
     // Should not normalize whitespace.
-    assertThat(locator).hasText(Pattern.compile("Text   content"));
+    assertThat(locator).hasText(Pattern.compile("Text.+content"));
   }
 
   @Test
@@ -70,7 +91,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertEquals("Text 2", e.getExpected().getStringRepresentation());
       assertEquals("Text   content", e.getActual().getValue());
-      assertTrue(e.getMessage().contains("Locator expected to have text"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected to have text matching regex"), e.getMessage());
     }
   }
 
@@ -234,7 +255,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertEquals(".Nod..", e.getExpected().getStringRepresentation());
       assertEquals("node", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have attribute"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected to have attribute 'id' matching regex"), e.getMessage());
     }
   }
 
@@ -276,7 +297,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertEquals("foo Z.*", e.getExpected().getStringRepresentation());
       assertEquals("bar baz", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have class"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected to have class matching regex"), e.getMessage());
     }
   }
 
@@ -318,7 +339,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertEquals("[fo.*, .ar, baz, extra]", e.getExpected().getStringRepresentation());
       assertEquals("[foo, bar, baz]", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have class"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected to have class matching regex"), e.getMessage());
     }
   }
 
@@ -369,6 +390,27 @@ public class TestLocatorAssertions extends TestBase {
       assertEquals("red", e.getExpected().getStringRepresentation());
       assertEquals("rgb(255, 0, 0)", e.getActual().getStringRepresentation());
       assertTrue(e.getMessage().contains("Locator expected to have CSS property 'color'"), e.getMessage());
+    }
+  }
+
+  @Test
+  void hasCSSRegExPass() {
+    page.setContent("<div id=node style='color: rgb(255, 0, 0)'>Text content</div>");
+    Locator locator = page.locator("#node");
+    assertThat(locator).hasCSS("color", Pattern.compile("rgb.*"));
+  }
+
+  @Test
+  void hasCSSRegExFail() {
+    page.setContent("<div id=node style='color: rgb(255, 0, 0)'>Text content</div>");
+    Locator locator = page.locator("#node");
+    try {
+      assertThat(locator).hasCSS("color", Pattern.compile("red"), new LocatorAssertions.HasCSSOptions().setTimeout(1000));
+      fail("did not throw");
+    } catch (AssertionFailedError e) {
+      assertEquals("red", e.getExpected().getStringRepresentation());
+      assertEquals("rgb(255, 0, 0)", e.getActual().getStringRepresentation());
+      assertTrue(e.getMessage().contains("Locator expected to have CSS property 'color' matching regex"), e.getMessage());
     }
   }
 
@@ -496,7 +538,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertEquals("Text2", e.getExpected().getStringRepresentation());
       assertEquals("Text content", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have value"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected to have value matching regex"), e.getMessage());
     }
   }
 

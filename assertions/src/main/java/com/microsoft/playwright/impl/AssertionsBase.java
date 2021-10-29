@@ -16,11 +16,13 @@
 
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.PlaywrightException;
 import org.opentest4j.AssertionFailedError;
 import org.opentest4j.ValueWrapper;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -75,5 +77,29 @@ class AssertionsBase {
     Collection<String> values = asList((Object[]) value).stream().map(e -> e.toString()).collect(Collectors.toList());
     String stringRepresentation = "[" + String.join(", ", values) + "]";
     return ValueWrapper.create(value, stringRepresentation);
+  }
+
+  static ExpectedTextValue expectedRegex(Pattern pattern) {
+    ExpectedTextValue expected = new ExpectedTextValue();
+    expected.regexSource = pattern.pattern();
+    if (pattern.flags() != 0) {
+      expected.regexFlags = "";
+      if ((pattern.flags() & Pattern.CASE_INSENSITIVE) != 0) {
+        // Case-insensitive search.
+        expected.regexFlags += "i";
+      }
+      if ((pattern.flags() & Pattern.DOTALL) != 0) {
+        // Allows . to match newline characters.
+        expected.regexFlags += "s";
+      }
+      if ((pattern.flags() & Pattern.MULTILINE) != 0) {
+        // Multi-line search.
+        expected.regexFlags += "m";
+      }
+      if ((pattern.flags() & ~(Pattern.MULTILINE | Pattern.CASE_INSENSITIVE | Pattern.DOTALL)) != 0) {
+        throw new PlaywrightException("Unexpected RegEx flag, only CASE_INSENSITIVE, DOTALL and MULTILINE are supported.");
+      }
+    }
+    return expected;
   }
 }
