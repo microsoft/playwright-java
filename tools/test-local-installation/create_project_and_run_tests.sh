@@ -16,7 +16,7 @@ cp -R ../../driver-bundle/src/test/ $PROJECT_DIR/src/
 cp -R ../../playwright/src/test/ $PROJECT_DIR/src/
 cd $PROJECT_DIR
 
-DEBUG=pw:channel mvn test --no-transfer-progress -D test=*TestBrowser*Route*
+mvn test --no-transfer-progress -D test=*TestPageRoute*
 
 cp -R target/surefire-reports $LOG_DIR
 
