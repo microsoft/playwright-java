@@ -13,7 +13,7 @@ Playwright is a Java library to automate [Chromium](https://www.chromium.org/Hom
 |   :---   | :---: | :---: | :---:   |
 | Chromium <!-- GEN:chromium-version -->97.0.4666.0<!-- GEN:stop --> | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | WebKit <!-- GEN:webkit-version -->15.4<!-- GEN:stop --> | ✅ | ✅ | ✅ |
-| Firefox <!-- GEN:firefox-version -->92.0<!-- GEN:stop --> | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Firefox <!-- GEN:firefox-version -->93.0<!-- GEN:stop --> | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 Headless execution is supported for all the browsers on all platforms. Check out [system requirements](https://playwright.dev/java/docs/next/intro/#system-requirements) for details.
 
