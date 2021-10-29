@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -72,6 +73,7 @@ public class TestRequestContinue extends TestBase {
   }
 
   @Test
+  @Disabled("resume() method is now asynchronous")
   void shouldNotAllowChangingProtocolWhenOverridingUrl() {
     PlaywrightException[] error = {null};
     page.route("**/*", route -> {

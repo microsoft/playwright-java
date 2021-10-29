@@ -38,7 +38,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     withLogging("Route.abort", () -> {
       JsonObject params = new JsonObject();
       params.addProperty("errorCode", errorCode);
-      sendMessage("abort", params);
+      sendMessageAsync("abort", params);
     });
   }
 
@@ -73,7 +73,7 @@ public class RouteImpl extends ChannelOwner implements Route {
       String base64 = Base64.getEncoder().encodeToString(bytes);
       params.addProperty("postData", base64);
     }
-    sendMessage("continue", params);
+    sendMessageAsync("continue", params);
   }
 
   @Override
@@ -128,7 +128,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     params.add("headers", Serialization.toProtocol(headers));
     params.addProperty("isBase64", isBase64);
     params.addProperty("body", body);
-    sendMessage("fulfill", params);
+    sendMessageAsync("fulfill", params);
   }
 
   @Override
