@@ -46,12 +46,10 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
 
   @Override
   public void containsText(Pattern pattern, ContainsTextOptions options) {
-    ExpectedTextValue expected = new ExpectedTextValue();
-    expected.regexSource = pattern.pattern();
-    // expected.regexFlags =
+    ExpectedTextValue expected = expectedRegex(pattern);
     expected.matchSubstring = true;
     expected.normalizeWhiteSpace = true;
-    expectImpl("to.have.text", expected, pattern, "Locator expected to contain text", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.text", expected, pattern, "Locator expected to contain regex", convertViaJson(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -71,8 +69,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   public void containsText(Pattern[] patterns, ContainsTextOptions options) {
     List<ExpectedTextValue> list = new ArrayList<>();
     for (Pattern pattern : patterns) {
-      ExpectedTextValue expected = new ExpectedTextValue();
-      expected.regexSource = pattern.pattern();
+      ExpectedTextValue expected = expectedRegex(pattern);
       expected.matchSubstring = true;
       expected.normalizeWhiteSpace = true;
       list.add(expected);
@@ -89,8 +86,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
 
   @Override
   public void hasAttribute(String name, Pattern pattern, HasAttributeOptions options) {
-    ExpectedTextValue expected = new ExpectedTextValue();
-    expected.regexSource = pattern.pattern();
+    ExpectedTextValue expected = expectedRegex(pattern);
     hasAttribute(name, expected, pattern, options);
   }
 
@@ -100,7 +96,11 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     }
     FrameExpectOptions commonOptions = convertViaJson(options, FrameExpectOptions.class);
     commonOptions.expressionArg = name;
-    expectImpl("to.have.attribute", expectedText, expectedValue, "Locator expected to have attribute '" + name + "'", commonOptions);
+    String message = "Locator expected to have attribute '" + name + "'";
+    if (expectedValue instanceof Pattern) {
+      message += " matching regex";
+    }
+    expectImpl("to.have.attribute", expectedText, expectedValue, message, commonOptions);
   }
 
   @Override
@@ -112,9 +112,8 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
 
   @Override
   public void hasClass(Pattern pattern, HasClassOptions options) {
-    ExpectedTextValue expected = new ExpectedTextValue();
-    expected.regexSource = pattern.pattern();
-    expectImpl("to.have.class", expected, pattern, "Locator expected to have class", convertViaJson(options, FrameExpectOptions.class));
+    ExpectedTextValue expected = expectedRegex(pattern);
+    expectImpl("to.have.class", expected, pattern, "Locator expected to have class matching regex", convertViaJson(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -132,11 +131,10 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   public void hasClass(Pattern[] patterns, HasClassOptions options) {
     List<ExpectedTextValue> list = new ArrayList<>();
     for (Pattern pattern : patterns) {
-      ExpectedTextValue expected = new ExpectedTextValue();
-      expected.regexSource = pattern.pattern();
+      ExpectedTextValue expected = expectedRegex(pattern);
       list.add(expected);
     }
-    expectImpl("to.have.class.array", list, patterns, "Locator expected to have class", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.class.array", list, patterns, "Locator expected to have class matching regex", convertViaJson(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -158,10 +156,9 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   }
 
   @Override
-  public void hasCSS(String name, Pattern value, HasCSSOptions options) {
-    ExpectedTextValue expected = new ExpectedTextValue();
-    expected.regexSource = value.pattern();
-    hasCSS(name, expected, value, options);
+  public void hasCSS(String name, Pattern pattern, HasCSSOptions options) {
+    ExpectedTextValue expected = expectedRegex(pattern);
+    hasCSS(name, expected, pattern, options);
   }
 
   private void hasCSS(String name, ExpectedTextValue expectedText, Object expectedValue, HasCSSOptions options) {
@@ -170,7 +167,11 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     }
     FrameExpectOptions commonOptions = convertViaJson(options, FrameExpectOptions.class);
     commonOptions.expressionArg = name;
-    expectImpl("to.have.css", expectedText, expectedValue, "Locator expected to have CSS property '" + name + "'", commonOptions);
+    String message = "Locator expected to have CSS property '" + name + "'";
+    if (expectedValue instanceof Pattern) {
+      message += " matching regex";
+    }
+    expectImpl("to.have.css", expectedText, expectedValue, message, commonOptions);
   }
 
   @Override
@@ -203,12 +204,11 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
 
   @Override
   public void hasText(Pattern pattern, HasTextOptions options) {
-    ExpectedTextValue expected = new ExpectedTextValue();
-    expected.string = pattern.pattern();
+    ExpectedTextValue expected = expectedRegex(pattern);
     // Just match substring, same as containsText.
     expected.matchSubstring = true;
     expected.normalizeWhiteSpace = true;
-    expectImpl("to.have.text", expected, pattern, "Locator expected to have text", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.text", expected, pattern, "Locator expected to have text matching regex", convertViaJson(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -228,13 +228,12 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   public void hasText(Pattern[] patterns, HasTextOptions options) {
     List<ExpectedTextValue> list = new ArrayList<>();
     for (Pattern pattern : patterns) {
-      ExpectedTextValue expected = new ExpectedTextValue();
-      expected.regexSource = pattern.pattern();
+      ExpectedTextValue expected = expectedRegex(pattern);
       expected.matchSubstring = true;
       expected.normalizeWhiteSpace = true;
       list.add(expected);
     }
-    expectImpl("to.have.text.array", list, patterns, "Locator expected to have text", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.text.array", list, patterns, "Locator expected to have text matching regex", convertViaJson(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -246,9 +245,8 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
 
   @Override
   public void hasValue(Pattern pattern, HasValueOptions options) {
-    ExpectedTextValue expected = new ExpectedTextValue();
-    expected.regexSource = pattern.pattern();
-    expectImpl("to.have.value", expected, pattern, "Locator expected to have value", convertViaJson(options, FrameExpectOptions.class));
+    ExpectedTextValue expected = expectedRegex(pattern);
+    expectImpl("to.have.value", expected, pattern, "Locator expected to have value matching regex", convertViaJson(options, FrameExpectOptions.class));
   }
 
   @Override

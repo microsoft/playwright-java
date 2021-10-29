@@ -128,4 +128,10 @@ public class TestPageAssertions extends TestBase {
     page.navigate(server.PREFIX + "/title.html");
     assertThat(page).not().hasTitle(Pattern.compile("ab.ut"));
   }
+
+  @Test
+  void hasTitleRegExCaseInsensitivePass() {
+    page.navigate(server.PREFIX + "/title.html");
+    assertThat(page).hasTitle(Pattern.compile("woof-woof", Pattern.CASE_INSENSITIVE));
+  }
 }

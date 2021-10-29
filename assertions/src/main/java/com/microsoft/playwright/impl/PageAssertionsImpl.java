@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.UrlMatcher.resolveUrl;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
-import static java.util.Arrays.asList;
 
 public class PageAssertionsImpl extends AssertionsBase implements PageAssertions {
   private final PageImpl actualPage;
@@ -46,10 +45,7 @@ public class PageAssertionsImpl extends AssertionsBase implements PageAssertions
 
   @Override
   public void hasTitle(Pattern pattern, HasTitleOptions options) {
-    //urlOrRegExp.flags();
-    ExpectedTextValue expected = new ExpectedTextValue();
-    expected.regexSource = pattern.pattern();
-    // expected.regexFlags =
+    ExpectedTextValue expected = expectedRegex(pattern);
     expectImpl("to.have.title", expected, pattern, "Page title expected to match regex", convertViaJson(options, FrameExpectOptions.class));
   }
 
@@ -65,10 +61,7 @@ public class PageAssertionsImpl extends AssertionsBase implements PageAssertions
 
   @Override
   public void hasURL(Pattern pattern, HasURLOptions options) {
-    //urlOrRegExp.flags();
-    ExpectedTextValue expected = new ExpectedTextValue();
-    expected.regexSource = pattern.pattern();
-    // expected.regexFlags =
+    ExpectedTextValue expected = expectedRegex(pattern);
     expectImpl("to.have.url", expected, pattern, "Page URL expected to match regex", convertViaJson(options, FrameExpectOptions.class));
   }
 
