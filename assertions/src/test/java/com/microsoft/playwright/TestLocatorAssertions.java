@@ -447,13 +447,13 @@ public class TestLocatorAssertions extends TestBase {
   void hasJSPropertyNumberFail() {
     page.setContent("<div id=node>Text content</div>");
     Locator locator = page.locator("#node");
-    page.evalOnSelector("div", "e => e.foo = { a: 1, b: 'string' }");
+    page.evalOnSelector("div", "e => e.foo = 2021");
     try {
       assertThat(locator).hasJSProperty("foo", 1, new LocatorAssertions.HasJSPropertyOptions().setTimeout(1000));
       fail("did not throw");
     } catch (AssertionFailedError e) {
       assertEquals("1", e.getExpected().getStringRepresentation());
-      assertEquals("{a=1, b=string}", e.getActual().getStringRepresentation());
+      assertEquals("2021", e.getActual().getStringRepresentation());
       assertTrue(e.getMessage().contains("Locator expected to have JavaScript property 'foo'"), e.getMessage());
     }
   }
@@ -474,7 +474,6 @@ public class TestLocatorAssertions extends TestBase {
   }
 
   @Test
-  @Disabled("https://github.com/microsoft/playwright/pull/9865")
   void hasJSPropertyStringFail() {
     page.setContent("<div id=node>Text content</div>");
     Locator locator = page.locator("#node");
@@ -485,9 +484,9 @@ public class TestLocatorAssertions extends TestBase {
       assertEquals("foo", e.getExpected().getStringRepresentation());
       assertEquals("node", e.getActual().getStringRepresentation());
       assertTrue(e.getMessage().contains("Locator expected to have JavaScript property 'id'"), e.getMessage());
-      throw e;
     }
   }
+
   @Test
   void hasValueTextPass() {
     page.setContent("<input id=node></input>");

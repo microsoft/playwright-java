@@ -28,7 +28,18 @@ import com.microsoft.playwright.impl.PageAssertionsImpl;
  *
  * <p> Consider the following example:
  * <pre>{@code
- * assertThat(page.locator('.status')).hasText('Submitted');
+ * ...
+ * import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+ *
+ * public class TestExample {
+ *   ...
+ *   @Test
+ *   void statusBecomesSubmitted() {
+ *     ...
+ *     page.click("#submit-button");
+ *     assertThat(page.locator(".status")).hasText("Submitted");
+ *   }
+ * }
  * }</pre>
  *
  * <p> Playwright will be re-testing the node with the selector {@code .status} until fetched Node has the {@code "Submitted"} text. It
@@ -36,6 +47,8 @@ import com.microsoft.playwright.impl.PageAssertionsImpl;
  * You can pass this timeout as an option.
  *
  * <p> By default, the timeout for assertions is set to 5 seconds.
+ *
+ * <p> To use Playwright assertions add the following dependency into the {@code pom.xml} of your Maven project:
  */
 public interface PlaywrightAssertions {
   /**
