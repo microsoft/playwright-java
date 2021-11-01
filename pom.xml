@@ -144,7 +144,6 @@
               </configurationParameters>
             </properties>
             <failIfNoTests>false</failIfNoTests>
-            <redirectTestOutputToFile>true</redirectTestOutputToFile>
           </configuration>
         </plugin>
         <plugin>
