@@ -69,6 +69,7 @@ public class TestPageNetworkSizes extends TestBase {
       () -> page.evaluate("async () => fetch('./get').then(r => r.text())"));
     request.get();
     Sizes sizes = response.request().sizes();
+    assertEquals("abc134", response.text());
     assertEquals(6, sizes.responseBodySize);
     assertTrue(sizes.responseHeadersSize > 10);
   }
