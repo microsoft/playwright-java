@@ -41,8 +41,8 @@ public class TestWheel extends TestBase {
       "shiftKey", false,
       "altKey", false,
       "metaKey", false);
-    assertEquals(expected, page.evaluate("window.lastEvent"));
     page.waitForFunction("window.scrollY === 100");
+    assertEquals(expected, page.evaluate("window.lastEvent"));
   }
 
   @Test
