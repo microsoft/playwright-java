@@ -813,6 +813,7 @@ public interface Frame {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -841,6 +842,7 @@ public interface Frame {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public NavigateOptions setWaitUntil(WaitUntilState waitUntil) {
@@ -1455,6 +1457,7 @@ public interface Frame {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -1475,6 +1478,7 @@ public interface Frame {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public SetContentOptions setWaitUntil(WaitUntilState waitUntil) {
@@ -1886,6 +1890,7 @@ public interface Frame {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -1933,6 +1938,7 @@ public interface Frame {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitForNavigationOptions setWaitUntil(WaitUntilState waitUntil) {
@@ -2012,6 +2018,7 @@ public interface Frame {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -2032,6 +2039,7 @@ public interface Frame {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitForURLOptions setWaitUntil(WaitUntilState waitUntil) {

@@ -19,5 +19,6 @@ package com.microsoft.playwright.options;
 public enum WaitUntilState {
   LOAD,
   DOMCONTENTLOADED,
-  NETWORKIDLE
+  NETWORKIDLE,
+  COMMIT
 }

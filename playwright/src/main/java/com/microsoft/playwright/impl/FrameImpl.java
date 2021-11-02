@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.options.LoadState.*;
+import static com.microsoft.playwright.options.WaitUntilState.*;
 import static com.microsoft.playwright.impl.Serialization.*;
 import static com.microsoft.playwright.impl.Utils.convertViaJson;
 
@@ -40,7 +40,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
   private String url;
   FrameImpl parentFrame;
   Set<FrameImpl> childFrames = new LinkedHashSet<>();
-  private final Set<LoadState> loadStates = new HashSet<>();
+  private final Set<WaitUntilState> loadStates = new HashSet<>();
 
   enum InternalEventType { NAVIGATED, LOADSTATE }
   private final ListenerCollection<InternalEventType> internalListeners = new ListenerCollection<>();
@@ -61,11 +61,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
   }
 
-  private static LoadState loadStateFromProtocol(String value) {
+  private static WaitUntilState loadStateFromProtocol(String value) {
     switch (value) {
       case "load": return LOAD;
       case "domcontentloaded": return DOMCONTENTLOADED;
       case "networkidle": return NETWORKIDLE;
+      case "commit": return COMMIT;
       default: throw new PlaywrightException("Unexpected value: " + value);
     }
   }
@@ -801,6 +802,10 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   void waitForLoadStateImpl(LoadState state, WaitForLoadStateOptions options) {
+    waitForLoadStateImpl(convertViaJson(state, WaitUntilState.class), options);
+  }
+
+  private void waitForLoadStateImpl(WaitUntilState state, WaitForLoadStateOptions options) {
     if (options == null) {
       options = new WaitForLoadStateOptions();
     }
@@ -815,11 +820,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
     runUntil(() -> {}, new WaitableRace<>(waitables));
   }
 
-  private class WaitForLoadStateHelper implements Waitable<Void>, Consumer<LoadState> {
-    private final LoadState expectedState;
+  private class WaitForLoadStateHelper implements Waitable<Void>, Consumer<WaitUntilState> {
+    private final WaitUntilState expectedState;
     private boolean isDone;
 
-    WaitForLoadStateHelper(LoadState state) {
+    WaitForLoadStateHelper(WaitUntilState state) {
       expectedState = state;
       isDone = loadStates.contains(state);
       if (!isDone) {
@@ -828,7 +833,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
 
     @Override
-    public void accept(LoadState state) {
+    public void accept(WaitUntilState state) {
       if (expectedState.equals(state)) {
         isDone = true;
         dispose();
@@ -851,13 +856,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   private class WaitForNavigationHelper implements Waitable<Response>, Consumer<JsonObject> {
     private final UrlMatcher matcher;
-    private final LoadState expectedLoadState;
+    private final WaitUntilState expectedLoadState;
     private WaitForLoadStateHelper loadStateHelper;
 
     private RequestImpl request;
     private RuntimeException exception;
 
-    WaitForNavigationHelper(UrlMatcher matcher, LoadState expectedLoadState) {
+    WaitForNavigationHelper(UrlMatcher matcher, WaitUntilState expectedLoadState) {
       this.matcher = matcher;
       this.expectedLoadState = expectedLoadState;
       internalListeners.add(InternalEventType.NAVIGATED, this);
@@ -935,7 +940,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (matcher == null) {
       matcher = UrlMatcher.forOneOf(page.context().baseUrl, options.url);
     }
-    waitables.add(new WaitForNavigationHelper(matcher, convertViaJson(options.waitUntil, LoadState.class)));
+    waitables.add(new WaitForNavigationHelper(matcher, options.waitUntil));
     waitables.add(page.createWaitForCloseHelper());
     waitables.add(page.createWaitableFrameDetach(this));
     waitables.add(page.createWaitableNavigationTimeout(options.timeout));
@@ -1001,8 +1006,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
       options = new WaitForURLOptions();
     }
     if (matcher.test(url())) {
-      waitForLoadStateImpl(convertViaJson(options.waitUntil, LoadState.class),
-        convertViaJson(options, WaitForLoadStateOptions.class));
+      waitForLoadStateImpl(options.waitUntil, convertViaJson(options, WaitForLoadStateOptions.class));
       return;
     }
     waitForNavigationImpl(() -> {}, convertViaJson(options, WaitForNavigationOptions.class), matcher);
@@ -1012,7 +1016,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if ("loadstate".equals(event)) {
       JsonElement add = params.get("add");
       if (add != null) {
-        LoadState state = loadStateFromProtocol(add.getAsString());
+        WaitUntilState state = loadStateFromProtocol(add.getAsString());
         loadStates.add(state);
         internalListeners.notify(InternalEventType.LOADSTATE, state);
       }

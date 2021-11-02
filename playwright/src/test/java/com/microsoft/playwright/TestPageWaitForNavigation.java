@@ -19,12 +19,14 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.options.WaitUntilState;
 import org.junit.jupiter.api.Test;
 
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.Utils.expectedSSLError;
+import static java.util.Collections.nCopies;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPageWaitForNavigation extends TestBase {
@@ -52,6 +54,23 @@ public class TestPageWaitForNavigation extends TestBase {
 
   // Skipped in sync API.
   void shouldWorkWithBothDomcontentloadedAndLoad() {
+  }
+
+  @Test
+  void shouldWorkWithCommit() {
+    server.setRoute("/empty.html", exchange -> {
+      exchange.getResponseHeaders().add("Content-Type", "text/html");
+      exchange.sendResponseHeaders(200, 8192);
+      OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
+      writer.write("<title>" + String.join("", nCopies(4100, "A")));
+      writer.flush();
+    });
+    page.waitForNavigation(new Page.WaitForNavigationOptions().setWaitUntil(WaitUntilState.COMMIT), () -> {
+      try {
+        page.navigate(server.EMPTY_PAGE, new Page.NavigateOptions().setTimeout(100));
+      } catch (TimeoutError e) {
+      }
+    });
   }
 
   @Test

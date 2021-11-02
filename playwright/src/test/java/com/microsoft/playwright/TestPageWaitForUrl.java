@@ -19,6 +19,11 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.options.WaitUntilState;
 import org.junit.jupiter.api.Test;
 
+import java.io.OutputStreamWriter;
+import java.util.Collections;
+import java.util.concurrent.Semaphore;
+
+import static java.util.Collections.nCopies;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPageWaitForUrl extends TestBase {
@@ -45,6 +50,27 @@ public class TestPageWaitForUrl extends TestBase {
     page.navigate(server.PREFIX + "/one-style.html");
     page.waitForURL("**/one-style.html", new Page.WaitForURLOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
     page.waitForURL("**/one-style.html", new Page.WaitForURLOptions().setWaitUntil(WaitUntilState.LOAD));
+  }
+
+  @Test
+  void shouldWorkWithCommit() {
+    server.setRoute("/empty.html", exchange -> {
+      exchange.getResponseHeaders().add("Content-Type", "text/html");
+      exchange.sendResponseHeaders(200, 8192);
+      OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
+      writer.write("<title>" + String.join("", nCopies(4100, "A")));
+      writer.flush();
+    });
+    try {
+      page.navigate(server.EMPTY_PAGE, new Page.NavigateOptions().setTimeout(100));
+    } catch (TimeoutError e) {
+    }
+    page.waitForURL("**/empty.html", new Page.WaitForURLOptions().setWaitUntil(WaitUntilState.COMMIT));
+  }
+
+  @Test
+  void shouldWorkWithCommitAndAboutBlank() {
+    page.waitForURL("about:blank", new Page.WaitForURLOptions().setWaitUntil(WaitUntilState.COMMIT));
   }
 
   @Test

@@ -1147,6 +1147,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -1167,6 +1168,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public GoBackOptions setWaitUntil(WaitUntilState waitUntil) {
@@ -1188,6 +1190,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -1208,6 +1211,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public GoForwardOptions setWaitUntil(WaitUntilState waitUntil) {
@@ -1234,6 +1238,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -1262,6 +1267,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public NavigateOptions setWaitUntil(WaitUntilState waitUntil) {
@@ -1889,6 +1895,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -1909,6 +1916,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public ReloadOptions setWaitUntil(WaitUntilState waitUntil) {
@@ -2195,6 +2203,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -2215,6 +2224,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public SetContentOptions setWaitUntil(WaitUntilState waitUntil) {
@@ -2723,6 +2733,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -2770,6 +2781,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitForNavigationOptions setWaitUntil(WaitUntilState waitUntil) {
@@ -2937,6 +2949,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
@@ -2957,6 +2970,7 @@ public interface Page extends AutoCloseable {
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
      * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitForURLOptions setWaitUntil(WaitUntilState waitUntil) {
@@ -4542,15 +4556,15 @@ public interface Page extends AutoCloseable {
    */
   List<ElementHandle> querySelectorAll(String selector);
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * last redirect.
+   * This method reloads the current page, in the same way as if the user had triggered a browser refresh. Returns the main
+   * resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect.
    */
   default Response reload() {
     return reload(null);
   }
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * last redirect.
+   * This method reloads the current page, in the same way as if the user had triggered a browser refresh. Returns the main
+   * resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect.
    */
   Response reload(ReloadOptions options);
   /**
