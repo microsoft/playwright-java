@@ -160,7 +160,7 @@ public class TestLocatorAssertions extends TestBase {
       fail("did not throw");
     } catch (AssertionFailedError e) {
       assertEquals("[]", e.getExpected().getStringRepresentation());
-      assertEquals("null", e.getActual().getStringRepresentation());
+      assertEquals("[]", e.getActual().getStringRepresentation());
       assertTrue(e.getMessage().contains("Locator expected not to have text"), e.getMessage());
     }
   }
