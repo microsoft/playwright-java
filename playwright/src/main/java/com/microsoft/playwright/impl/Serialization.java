@@ -212,13 +212,17 @@ class Serialization {
   static JsonArray toJsonArray(FilePayload[] files) {
     JsonArray jsonFiles = new JsonArray();
     for (FilePayload p : files) {
-      JsonObject jsonFile = new JsonObject();
-      jsonFile.addProperty("name", p.name);
-      jsonFile.addProperty("mimeType", p.mimeType);
-      jsonFile.addProperty("buffer", Base64.getEncoder().encodeToString(p.buffer));
-      jsonFiles.add(jsonFile);
+      jsonFiles.add(toProtocol(p));
     }
     return jsonFiles;
+  }
+
+  static JsonObject toProtocol(FilePayload p) {
+    JsonObject jsonFile = new JsonObject();
+    jsonFile.addProperty("name", p.name);
+    jsonFile.addProperty("mimeType", p.mimeType);
+    jsonFile.addProperty("buffer", Base64.getEncoder().encodeToString(p.buffer));
+    return jsonFile;
   }
 
   static JsonArray toProtocol(ElementHandle[] handles) {
@@ -232,11 +236,15 @@ class Serialization {
   }
 
   static JsonArray toProtocol(Map<String, String> map) {
+    return toNameValueArray(map);
+  }
+
+  static JsonArray toNameValueArray(Map<String, ?> map) {
     JsonArray array = new JsonArray();
-    for (Map.Entry<String, String> e : map.entrySet()) {
+    for (Map.Entry<String, ?> e : map.entrySet()) {
       JsonObject item = new JsonObject();
       item.addProperty("name", e.getKey());
-      item.addProperty("value", e.getValue());
+      item.add("value", gson().toJsonTree(e.getValue()));
       array.add(item);
     }
     return array;

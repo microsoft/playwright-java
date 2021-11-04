@@ -3467,7 +3467,10 @@ public interface Page extends AutoCloseable {
    */
   void emulateMedia(EmulateMediaOptions options);
   /**
-   * The method finds an element matching the specified selector within the page and passes it as a first argument to
+   * <strong>NOTE:</strong> This method does not wait for the element to pass actionability checks and therefore can lead to the flaky tests. Use
+   * {@link Locator#evaluate Locator.evaluate()}, other {@code Locator} helper methods or web-first assertions instead.
+   *
+   * <p> The method finds an element matching the specified selector within the page and passes it as a first argument to
    * {@code expression}. If no elements match the selector, the method throws an error. Returns the value of {@code expression}.
    *
    * <p> If {@code expression} returns a <a
@@ -3493,7 +3496,10 @@ public interface Page extends AutoCloseable {
     return evalOnSelector(selector, expression, arg, null);
   }
   /**
-   * The method finds an element matching the specified selector within the page and passes it as a first argument to
+   * <strong>NOTE:</strong> This method does not wait for the element to pass actionability checks and therefore can lead to the flaky tests. Use
+   * {@link Locator#evaluate Locator.evaluate()}, other {@code Locator} helper methods or web-first assertions instead.
+   *
+   * <p> The method finds an element matching the specified selector within the page and passes it as a first argument to
    * {@code expression}. If no elements match the selector, the method throws an error. Returns the value of {@code expression}.
    *
    * <p> If {@code expression} returns a <a
@@ -3518,7 +3524,10 @@ public interface Page extends AutoCloseable {
     return evalOnSelector(selector, expression, null);
   }
   /**
-   * The method finds an element matching the specified selector within the page and passes it as a first argument to
+   * <strong>NOTE:</strong> This method does not wait for the element to pass actionability checks and therefore can lead to the flaky tests. Use
+   * {@link Locator#evaluate Locator.evaluate()}, other {@code Locator} helper methods or web-first assertions instead.
+   *
+   * <p> The method finds an element matching the specified selector within the page and passes it as a first argument to
    * {@code expression}. If no elements match the selector, the method throws an error. Returns the value of {@code expression}.
    *
    * <p> If {@code expression} returns a <a
@@ -3542,7 +3551,10 @@ public interface Page extends AutoCloseable {
    */
   Object evalOnSelector(String selector, String expression, Object arg, EvalOnSelectorOptions options);
   /**
-   * The method finds all elements matching the specified selector within the page and passes an array of matched elements as
+   * <strong>NOTE:</strong> In most cases, {@link Locator#evaluateAll Locator.evaluateAll()}, other {@code Locator} helper methods and web-first
+   * assertions do a better job.
+   *
+   * <p> The method finds all elements matching the specified selector within the page and passes an array of matched elements as
    * a first argument to {@code expression}. Returns the result of {@code expression} invocation.
    *
    * <p> If {@code expression} returns a <a
@@ -3563,7 +3575,10 @@ public interface Page extends AutoCloseable {
     return evalOnSelectorAll(selector, expression, null);
   }
   /**
-   * The method finds all elements matching the specified selector within the page and passes an array of matched elements as
+   * <strong>NOTE:</strong> In most cases, {@link Locator#evaluateAll Locator.evaluateAll()}, other {@code Locator} helper methods and web-first
+   * assertions do a better job.
+   *
+   * <p> The method finds all elements matching the specified selector within the page and passes an array of matched elements as
    * a first argument to {@code expression}. Returns the result of {@code expression} invocation.
    *
    * <p> If {@code expression} returns a <a
@@ -3608,7 +3623,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> {@code ElementHandle} instances can be passed as an argument to the {@link Page#evaluate Page.evaluate()}:
    * <pre>{@code
-   * ElementHandle bodyHandle = page.querySelector("body");
+   * ElementHandle bodyHandle = page.evaluate("document.body");
    * String html = (String) page.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
    * bodyHandle.dispose();
    * }</pre>
@@ -3647,7 +3662,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> {@code ElementHandle} instances can be passed as an argument to the {@link Page#evaluate Page.evaluate()}:
    * <pre>{@code
-   * ElementHandle bodyHandle = page.querySelector("body");
+   * ElementHandle bodyHandle = page.evaluate("document.body");
    * String html = (String) page.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
    * bodyHandle.dispose();
    * }</pre>
@@ -4535,9 +4550,10 @@ public interface Page extends AutoCloseable {
    */
   void press(String selector, String key, PressOptions options);
   /**
-   * The method finds an element matching the specified selector within the page. If no elements match the selector, the
-   * return value resolves to {@code null}. To wait for an element on the page, use {@link Page#waitForSelector
-   * Page.waitForSelector()}.
+   * <strong>NOTE:</strong> The use of {@code ElementHandle} is discouraged, use {@code Locator} objects and web-first assertions instead.
+   *
+   * <p> The method finds an element matching the specified selector within the page. If no elements match the selector, the
+   * return value resolves to {@code null}. To wait for an element on the page, use {@link Locator#waitFor Locator.waitFor()}.
    *
    * <p> Shortcut for main frame's {@link Frame#querySelector Frame.querySelector()}.
    *
@@ -4548,9 +4564,10 @@ public interface Page extends AutoCloseable {
     return querySelector(selector, null);
   }
   /**
-   * The method finds an element matching the specified selector within the page. If no elements match the selector, the
-   * return value resolves to {@code null}. To wait for an element on the page, use {@link Page#waitForSelector
-   * Page.waitForSelector()}.
+   * <strong>NOTE:</strong> The use of {@code ElementHandle} is discouraged, use {@code Locator} objects and web-first assertions instead.
+   *
+   * <p> The method finds an element matching the specified selector within the page. If no elements match the selector, the
+   * return value resolves to {@code null}. To wait for an element on the page, use {@link Locator#waitFor Locator.waitFor()}.
    *
    * <p> Shortcut for main frame's {@link Frame#querySelector Frame.querySelector()}.
    *
@@ -4559,7 +4576,9 @@ public interface Page extends AutoCloseable {
    */
   ElementHandle querySelector(String selector, QuerySelectorOptions options);
   /**
-   * The method finds all elements matching the specified selector within the page. If no elements match the selector, the
+   * <strong>NOTE:</strong> The use of {@code ElementHandle} is discouraged, use {@code Locator} objects and web-first assertions instead.
+   *
+   * <p> The method finds all elements matching the specified selector within the page. If no elements match the selector, the
    * return value resolves to {@code []}.
    *
    * <p> Shortcut for main frame's {@link Frame#querySelectorAll Frame.querySelectorAll()}.
@@ -4580,6 +4599,10 @@ public interface Page extends AutoCloseable {
    * resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect.
    */
   Response reload(ReloadOptions options);
+  /**
+   * API testing helper associated with this page. Requests made with this API will use page cookies.
+   */
+  APIRequestContext request();
   /**
    * Routing provides the capability to modify network requests that are made by a page.
    *
@@ -6343,6 +6366,9 @@ public interface Page extends AutoCloseable {
    * Returns when element specified by selector satisfies {@code state} option. Returns {@code null} if waiting for {@code hidden} or
    * {@code detached}.
    *
+   * <p> <strong>NOTE:</strong> Playwright automatically waits for element to be ready before performing an action. Using {@code Locator} objects and
+   * web-first assertions make the code wait-for-selector-free.
+   *
    * <p> Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at
    * the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the
    * selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
@@ -6377,6 +6403,9 @@ public interface Page extends AutoCloseable {
   /**
    * Returns when element specified by selector satisfies {@code state} option. Returns {@code null} if waiting for {@code hidden} or
    * {@code detached}.
+   *
+   * <p> <strong>NOTE:</strong> Playwright automatically waits for element to be ready before performing an action. Using {@code Locator} objects and
+   * web-first assertions make the code wait-for-selector-free.
    *
    * <p> Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at
    * the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the

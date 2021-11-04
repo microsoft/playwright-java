@@ -17,6 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.APIRequest;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Selectors;
@@ -55,6 +56,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private final BrowserTypeImpl firefox;
   private final BrowserTypeImpl webkit;
   private final SelectorsImpl selectors;
+  private final APIRequestImpl apiRequest;
   private SharedSelectors sharedSelectors;;
 
   PlaywrightImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -64,6 +66,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
     webkit = parent.connection.getExistingObject(initializer.getAsJsonObject("webkit").get("guid").getAsString());
 
     selectors = connection.getExistingObject(initializer.getAsJsonObject("selectors").get("guid").getAsString());
+    apiRequest = new APIRequestImpl(this);
   }
 
   void initSharedSelectors(PlaywrightImpl parent) {
@@ -88,6 +91,11 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   @Override
   public BrowserTypeImpl firefox() {
     return firefox;
+  }
+
+  @Override
+  public APIRequest request() {
+    return apiRequest;
   }
 
   @Override

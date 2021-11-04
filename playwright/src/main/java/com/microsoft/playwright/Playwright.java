@@ -65,6 +65,10 @@ public interface Playwright extends AutoCloseable {
    */
   BrowserType firefox();
   /**
+   * Exposes API that can be used for the Web API testing.
+   */
+  APIRequest request();
+  /**
    * Selectors can be used to install custom selector engines. See <a
    * href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more information.
    */

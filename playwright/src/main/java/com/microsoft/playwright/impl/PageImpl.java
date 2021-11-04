@@ -941,6 +941,11 @@ public class PageImpl extends ChannelOwner implements Page {
     return withLogging("Page.reload", () -> reloadImpl(options));
   }
 
+  @Override
+  public APIRequestContextImpl request() {
+    return browserContext.request();
+  }
+
   private Response reloadImpl(ReloadOptions options) {
     if (options == null) {
       options = new ReloadOptions();

@@ -303,7 +303,7 @@ public class Connection {
         break;
       case "APIRequestContext":
         // Create fake object as this API is experimental an only exposed in Node.js.
-        result = new ChannelOwner(parent, type, guid, initializer);
+        result = new APIRequestContextImpl(parent, type, guid, initializer);
         break;
       case "Frame":
         result = new FrameImpl(parent, type, guid, initializer);
