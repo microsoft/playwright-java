@@ -55,10 +55,18 @@ class TracingImpl implements Tracing {
   }
 
   @Override
-  public void startChunk() {
+  public void startChunk(StartChunkOptions options) {
     context.withLogging("Tracing.startChunk", () -> {
-      context.sendMessage("tracingStartChunk");
+      startChunkImpl(options);
     });
+  }
+
+  private void startChunkImpl(StartChunkOptions options) {
+    if (options == null) {
+      options = new StartChunkOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    context.sendMessage("tracingStartChunk", params);
   }
 
   private void startImpl(StartOptions options) {

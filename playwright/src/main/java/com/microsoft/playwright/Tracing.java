@@ -51,6 +51,10 @@ public interface Tracing {
      * Whether to capture DOM snapshot on every action.
      */
     public Boolean snapshots;
+    /**
+     * Trace name to be shown in the Trace Viewer.
+     */
+    public String title;
 
     /**
      * If specified, the trace is going to be saved into the file with the given name inside the {@code tracesDir} folder specified
@@ -72,6 +76,27 @@ public interface Tracing {
      */
     public StartOptions setSnapshots(boolean snapshots) {
       this.snapshots = snapshots;
+      return this;
+    }
+    /**
+     * Trace name to be shown in the Trace Viewer.
+     */
+    public StartOptions setTitle(String title) {
+      this.title = title;
+      return this;
+    }
+  }
+  class StartChunkOptions {
+    /**
+     * Trace name to be shown in the Trace Viewer.
+     */
+    public String title;
+
+    /**
+     * Trace name to be shown in the Trace Viewer.
+     */
+    public StartChunkOptions setTitle(String title) {
+      this.title = title;
       return this;
     }
   }
@@ -157,7 +182,34 @@ public interface Tracing {
    *   .setPath(Paths.get("trace2.zip")));
    * }</pre>
    */
-  void startChunk();
+  default void startChunk() {
+    startChunk(null);
+  }
+  /**
+   * Start a new trace chunk. If you'd like to record multiple traces on the same {@code BrowserContext}, use {@link Tracing#start
+   * Tracing.start()} once, and then create multiple trace chunks with {@link Tracing#startChunk Tracing.startChunk()} and
+   * {@link Tracing#stopChunk Tracing.stopChunk()}.
+   * <pre>{@code
+   * context.tracing().start(new Tracing.StartOptions()
+   *   .setScreenshots(true)
+   *   .setSnapshots(true));
+   * Page page = context.newPage();
+   * page.navigate("https://playwright.dev");
+   *
+   * context.tracing().startChunk();
+   * page.click("text=Get Started");
+   * // Everything between startChunk and stopChunk will be recorded in the trace.
+   * context.tracing().stopChunk(new Tracing.StopChunkOptions()
+   *   .setPath(Paths.get("trace1.zip")));
+   *
+   * context.tracing().startChunk();
+   * page.navigate("http://example.com");
+   * // Save a second trace file with different actions.
+   * context.tracing().stopChunk(new Tracing.StopChunkOptions()
+   *   .setPath(Paths.get("trace2.zip")));
+   * }</pre>
+   */
+  void startChunk(StartChunkOptions options);
   /**
    * Stop tracing.
    */
