@@ -358,6 +358,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   }
 
+  @Override
+  public FrameLocator frameLocator(String selector) {
+    return new FrameLocatorImpl(this, selector);
+  }
+
   ElementHandle frameElementImpl() {
     JsonObject json = sendMessage("frameElement").getAsJsonObject();
     return connection.getExistingObject(json.getAsJsonObject("element").get("guid").getAsString());

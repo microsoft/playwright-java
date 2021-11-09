@@ -23,7 +23,21 @@ import com.microsoft.playwright.Locator;
 /**
  * The {@code LocatorAssertions} class provides assertion methods that can be used to make assertions about the {@code Locator} state
  * in the tests. A new instance of {@code LocatorAssertions} is created by calling {@link PlaywrightAssertions#assertThat
- * PlaywrightAssertions.assertThat()}.
+ * PlaywrightAssertions.assertThat()}:
+ * <pre>{@code
+ * ...
+ * import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+ *
+ * public class TestLocator {
+ *   ...
+ *   @Test
+ *   void statusBecomesSubmitted() {
+ *     ...
+ *     page.click("#submit-button");
+ *     assertThat(page.locator(".status")).hasText("Submitted");
+ *   }
+ * }
+ * }</pre>
  */
 public interface LocatorAssertions {
   class ContainsTextOptions {
@@ -295,7 +309,7 @@ public interface LocatorAssertions {
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .list-item")).containsText(Arrays.asList("Text 1", "Text 4", "Text 5"));
+   * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -312,7 +326,7 @@ public interface LocatorAssertions {
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .list-item")).containsText(Arrays.asList("Text 1", "Text 4", "Text 5"));
+   * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -327,7 +341,7 @@ public interface LocatorAssertions {
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .list-item")).containsText(Arrays.asList("Text 1", "Text 4", "Text 5"));
+   * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -344,7 +358,7 @@ public interface LocatorAssertions {
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .list-item")).containsText(Arrays.asList("Text 1", "Text 4", "Text 5"));
+   * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -359,7 +373,7 @@ public interface LocatorAssertions {
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .list-item")).containsText(Arrays.asList("Text 1", "Text 4", "Text 5"));
+   * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -376,7 +390,7 @@ public interface LocatorAssertions {
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .list-item")).containsText(Arrays.asList("Text 1", "Text 4", "Text 5"));
+   * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -391,7 +405,7 @@ public interface LocatorAssertions {
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .list-item")).containsText(Arrays.asList("Text 1", "Text 4", "Text 5"));
+   * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -408,7 +422,7 @@ public interface LocatorAssertions {
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .list-item")).containsText(Arrays.asList("Text 1", "Text 4", "Text 5"));
+   * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -466,7 +480,7 @@ public interface LocatorAssertions {
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasClass(Arrays.asList("component", "component selected", "component"));
+   * assertThat(page.locator("list > .component")).hasClass(new String[] {"component", "component selected", "component"});
    * }</pre>
    *
    * @param expected Expected class or RegExp or a list of those.
@@ -482,7 +496,7 @@ public interface LocatorAssertions {
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasClass(Arrays.asList("component", "component selected", "component"));
+   * assertThat(page.locator("list > .component")).hasClass(new String[] {"component", "component selected", "component"});
    * }</pre>
    *
    * @param expected Expected class or RegExp or a list of those.
@@ -496,7 +510,7 @@ public interface LocatorAssertions {
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasClass(Arrays.asList("component", "component selected", "component"));
+   * assertThat(page.locator("list > .component")).hasClass(new String[] {"component", "component selected", "component"});
    * }</pre>
    *
    * @param expected Expected class or RegExp or a list of those.
@@ -512,7 +526,7 @@ public interface LocatorAssertions {
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasClass(Arrays.asList("component", "component selected", "component"));
+   * assertThat(page.locator("list > .component")).hasClass(new String[] {"component", "component selected", "component"});
    * }</pre>
    *
    * @param expected Expected class or RegExp or a list of those.
@@ -526,7 +540,7 @@ public interface LocatorAssertions {
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasClass(Arrays.asList("component", "component selected", "component"));
+   * assertThat(page.locator("list > .component")).hasClass(new String[] {"component", "component selected", "component"});
    * }</pre>
    *
    * @param expected Expected class or RegExp or a list of those.
@@ -542,7 +556,7 @@ public interface LocatorAssertions {
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasClass(Arrays.asList("component", "component selected", "component"));
+   * assertThat(page.locator("list > .component")).hasClass(new String[] {"component", "component selected", "component"});
    * }</pre>
    *
    * @param expected Expected class or RegExp or a list of those.
@@ -556,7 +570,7 @@ public interface LocatorAssertions {
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasClass(Arrays.asList("component", "component selected", "component"));
+   * assertThat(page.locator("list > .component")).hasClass(new String[] {"component", "component selected", "component"});
    * }</pre>
    *
    * @param expected Expected class or RegExp or a list of those.
@@ -572,7 +586,7 @@ public interface LocatorAssertions {
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasClass(Arrays.asList("component", "component selected", "component"));
+   * assertThat(page.locator("list > .component")).hasClass(new String[] {"component", "component selected", "component"});
    * }</pre>
    *
    * @param expected Expected class or RegExp or a list of those.
@@ -689,13 +703,13 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
    * <pre>{@code
-   * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, Test User"));
+   * assertThat(page.locator(".title")).hasText("Welcome, Test User");
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasText(Arrays.asList("Text 1", "Text 2", "Text 3"));
+   * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -706,13 +720,13 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
    * <pre>{@code
-   * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, Test User"));
+   * assertThat(page.locator(".title")).hasText("Welcome, Test User");
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasText(Arrays.asList("Text 1", "Text 2", "Text 3"));
+   * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -721,13 +735,13 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
    * <pre>{@code
-   * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, Test User"));
+   * assertThat(page.locator(".title")).hasText("Welcome, Test User");
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasText(Arrays.asList("Text 1", "Text 2", "Text 3"));
+   * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -738,13 +752,13 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
    * <pre>{@code
-   * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, Test User"));
+   * assertThat(page.locator(".title")).hasText("Welcome, Test User");
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasText(Arrays.asList("Text 1", "Text 2", "Text 3"));
+   * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -753,13 +767,13 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
    * <pre>{@code
-   * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, Test User"));
+   * assertThat(page.locator(".title")).hasText("Welcome, Test User");
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasText(Arrays.asList("Text 1", "Text 2", "Text 3"));
+   * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -770,13 +784,13 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
    * <pre>{@code
-   * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, Test User"));
+   * assertThat(page.locator(".title")).hasText("Welcome, Test User");
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasText(Arrays.asList("Text 1", "Text 2", "Text 3"));
+   * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -785,13 +799,13 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
    * <pre>{@code
-   * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, Test User"));
+   * assertThat(page.locator(".title")).hasText("Welcome, Test User");
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasText(Arrays.asList("Text 1", "Text 2", "Text 3"));
+   * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -802,13 +816,13 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
    * <pre>{@code
-   * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, Test User"));
+   * assertThat(page.locator(".title")).hasText("Welcome, Test User");
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
    * <p> Note that if array is passed as an expected value, entire lists can be asserted:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasText(Arrays.asList("Text 1", "Text 2", "Text 3"));
+   * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.

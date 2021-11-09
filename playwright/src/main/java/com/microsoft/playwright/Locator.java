@@ -1899,6 +1899,18 @@ public interface Locator {
    */
   void focus(FocusOptions options);
   /**
+   * When working with iframes, you can create a frame locator that will enter the iframe and allow selecting elements in
+   * that iframe:
+   * <pre>{@code
+   * Locator locator = page.frameLocator("iframe").locator("text=Submit");
+   * locator.click();
+   * }</pre>
+   *
+   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
+   * selectors</a> for more details.
+   */
+  FrameLocator frameLocator(String selector);
+  /**
    * Returns element attribute value.
    *
    * @param name Attribute name to get the value for.
@@ -2045,8 +2057,7 @@ public interface Locator {
    */
   Locator last();
   /**
-   * The method finds an element matching the specified selector in the {@code Locator}'s subtree. See <a
-   * href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details.
+   * The method finds an element matching the specified selector in the {@code Locator}'s subtree.
    *
    * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
    * selectors</a> for more details.

@@ -2,10 +2,7 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.ElementHandle;
-import com.microsoft.playwright.Frame;
-import com.microsoft.playwright.JSHandle;
-import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.BoundingBox;
 import com.microsoft.playwright.options.FilePayload;
 import com.microsoft.playwright.options.SelectOption;
@@ -149,6 +146,11 @@ class LocatorImpl implements Locator {
       options = new FocusOptions();
     }
     frame.focus(selector, convertViaJson(options, Frame.FocusOptions.class).setStrict(true));
+  }
+
+  @Override
+  public FrameLocatorImpl frameLocator(String selector) {
+    return new FrameLocatorImpl(frame, this.selector + " >> " + selector);
   }
 
   @Override

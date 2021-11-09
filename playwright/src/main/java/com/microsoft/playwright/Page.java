@@ -3994,6 +3994,19 @@ public interface Page extends AutoCloseable {
    */
   Frame frameByUrl(Predicate<String> url);
   /**
+   * When working with iframes, you can create a frame locator that will enter the iframe and allow selecting elements in
+   * that iframe. Following snippet locates element with text "Submit" in the iframe with id {@code my-frame}, like {@code <iframe
+   * id="my-frame">}:
+   * <pre>{@code
+   * Locator locator = page.frameLocator("#my-iframe").locator("text=Submit");
+   * locator.click();
+   * }</pre>
+   *
+   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
+   * selectors</a> for more details.
+   */
+  FrameLocator frameLocator(String selector);
+  /**
    * An array of all frames attached to the page.
    */
   List<Frame> frames();
