@@ -737,6 +737,11 @@ public class PageImpl extends ChannelOwner implements Page {
     return frameFor(new UrlMatcher(predicate));
   }
 
+  @Override
+  public FrameLocator frameLocator(String selector) {
+    return mainFrame.frameLocator(selector);
+  }
+
   private Frame frameFor(UrlMatcher matcher) {
     for (Frame frame : frames) {
       if (matcher.test(frame.url())) {

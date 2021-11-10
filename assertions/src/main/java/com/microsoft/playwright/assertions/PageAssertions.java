@@ -23,7 +23,21 @@ import com.microsoft.playwright.Page;
 /**
  * The {@code PageAssertions} class provides assertion methods that can be used to make assertions about the {@code Page} state in the
  * tests. A new instance of {@code LocatorAssertions} is created by calling {@link PlaywrightAssertions#assertThat
- * PlaywrightAssertions.assertThat()}.
+ * PlaywrightAssertions.assertThat()}:
+ * <pre>{@code
+ * ...
+ * import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+ *
+ * public class TestPage {
+ *   ...
+ *   @Test
+ *   void navigatesToLoginPage() {
+ *     ...
+ *     page.click("#login");
+ *     assertThat(page).hasURL(Pattern.compile(".*\/login"));
+ *   }
+ * }
+ * }</pre>
  */
 public interface PageAssertions {
   class HasTitleOptions {
@@ -97,7 +111,7 @@ public interface PageAssertions {
   /**
    * Ensures the page is navigated to the given URL.
    * <pre>{@code
-   * assertThat(page).hasURL('.com');
+   * assertThat(page).hasURL(".com");
    * }</pre>
    *
    * @param urlOrRegExp Expected substring or RegExp.
@@ -108,7 +122,7 @@ public interface PageAssertions {
   /**
    * Ensures the page is navigated to the given URL.
    * <pre>{@code
-   * assertThat(page).hasURL('.com');
+   * assertThat(page).hasURL(".com");
    * }</pre>
    *
    * @param urlOrRegExp Expected substring or RegExp.
@@ -117,7 +131,7 @@ public interface PageAssertions {
   /**
    * Ensures the page is navigated to the given URL.
    * <pre>{@code
-   * assertThat(page).hasURL('.com');
+   * assertThat(page).hasURL(".com");
    * }</pre>
    *
    * @param urlOrRegExp Expected substring or RegExp.
@@ -128,7 +142,7 @@ public interface PageAssertions {
   /**
    * Ensures the page is navigated to the given URL.
    * <pre>{@code
-   * assertThat(page).hasURL('.com');
+   * assertThat(page).hasURL(".com");
    * }</pre>
    *
    * @param urlOrRegExp Expected substring or RegExp.
@@ -138,7 +152,7 @@ public interface PageAssertions {
    * Makes the assertion check for the opposite condition. For example, this code tests that the page URL doesn't contain
    * {@code "error"}:
    * <pre>{@code
-   * assertThat(page).not().hasURL('error');
+   * assertThat(page).not().hasURL("error");
    * }</pre>
    */
   PageAssertions not();
