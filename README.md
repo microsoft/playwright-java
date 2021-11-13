@@ -179,7 +179,7 @@ You can also browse [javadoc online](https://www.javadoc.io/doc/com.microsoft.pl
 
 ## Contributing
 
-Follow [the instructions](https://github.com/microsoft/playwright-java/blob/master/CONTRIBUTING.md#getting-code) to build the project from source and install the driver.
+Follow [the instructions](https://github.com/microsoft/playwright-java/blob/main/CONTRIBUTING.md#getting-code) to build the project from source and install the driver.
 
 ## Is Playwright for Java ready?
 

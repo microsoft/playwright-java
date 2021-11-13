@@ -5,7 +5,7 @@ on:
       - '.github/workflows/test_docker.yml'
       - 'Dockerfile*'
     branches:
-      - master
+      - main
       - release-*
   pull_request:
     paths:
@@ -14,7 +14,7 @@ on:
       - scripts/CLI_VERSION
       - '**/pom.xml'
     branches:
-      - master
+      - main
       - release-*
 jobs:
   test:

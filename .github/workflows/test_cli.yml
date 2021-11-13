@@ -2,17 +2,15 @@ name: Test CLI
 on:
   push:
     branches:
-      - master
+      - main
       - release-*
   pull_request:
     branches:
-      - master
+      - main
       - release-*
 jobs:
   verify:
     timeout-minutes: 30
-    strategy:
-      fail-fast: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

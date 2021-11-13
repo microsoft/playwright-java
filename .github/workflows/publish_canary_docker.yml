@@ -3,7 +3,7 @@ name: "devrelease:docker"
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   publish-canary-docker:
     name: "publish to DockerHub"

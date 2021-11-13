@@ -2,14 +2,14 @@ name: Verify API
 on:
   push:
     branches:
-      - master
+      - main
       - release-*
     paths:
       - 'scripts/*'
       - 'api-generator/*'
   pull_request:
     branches:
-      - master
+      - main
       - release-*
     paths:
       - 'scripts/**'
@@ -17,8 +17,6 @@ on:
 jobs:
   verify:
     timeout-minutes: 30
-    strategy:
-      fail-fast: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
