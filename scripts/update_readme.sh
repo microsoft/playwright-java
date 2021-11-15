@@ -7,6 +7,9 @@ trap "cd $(pwd -P)" EXIT
 
 cd "$(dirname $0)/.."
 
+# Remove artifacts from previous driver (for local builds).
+mvn clean
+
 # Built from source and do local install.
 mvn install --no-transfer-progress -D skipTests
 
