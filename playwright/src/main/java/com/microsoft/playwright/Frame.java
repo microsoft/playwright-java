@@ -2329,6 +2329,9 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression}.
    *
+   * <p> <strong>NOTE:</strong> This method does not wait for the element to pass actionability checks and therefore can lead to the flaky tests. Use
+   * {@link Locator#evaluate Locator.evaluate()}, other {@code Locator} helper methods or web-first assertions instead.
+   *
    * <p> The method finds an element matching the specified selector within the frame and passes it as a first argument to
    * {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If
    * no elements match the selector, the method throws an error.
@@ -2356,6 +2359,9 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression}.
    *
+   * <p> <strong>NOTE:</strong> This method does not wait for the element to pass actionability checks and therefore can lead to the flaky tests. Use
+   * {@link Locator#evaluate Locator.evaluate()}, other {@code Locator} helper methods or web-first assertions instead.
+   *
    * <p> The method finds an element matching the specified selector within the frame and passes it as a first argument to
    * {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If
    * no elements match the selector, the method throws an error.
@@ -2382,6 +2388,9 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression}.
    *
+   * <p> <strong>NOTE:</strong> This method does not wait for the element to pass actionability checks and therefore can lead to the flaky tests. Use
+   * {@link Locator#evaluate Locator.evaluate()}, other {@code Locator} helper methods or web-first assertions instead.
+   *
    * <p> The method finds an element matching the specified selector within the frame and passes it as a first argument to
    * {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If
    * no elements match the selector, the method throws an error.
@@ -2407,6 +2416,9 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression}.
    *
+   * <p> <strong>NOTE:</strong> In most cases, {@link Locator#evaluateAll Locator.evaluateAll()}, other {@code Locator} helper methods and web-first
+   * assertions do a better job.
+   *
    * <p> The method finds all elements matching the specified selector within the frame and passes an array of matched elements
    * as a first argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with
    * selectors</a> for more details.
@@ -2430,6 +2442,9 @@ public interface Frame {
   }
   /**
    * Returns the return value of {@code expression}.
+   *
+   * <p> <strong>NOTE:</strong> In most cases, {@link Locator#evaluateAll Locator.evaluateAll()}, other {@code Locator} helper methods and web-first
+   * assertions do a better job.
    *
    * <p> The method finds all elements matching the specified selector within the frame and passes an array of matched elements
    * as a first argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with
@@ -2475,7 +2490,7 @@ public interface Frame {
    *
    * <p> {@code ElementHandle} instances can be passed as an argument to the {@link Frame#evaluate Frame.evaluate()}:
    * <pre>{@code
-   * ElementHandle bodyHandle = frame.querySelector("body");
+   * ElementHandle bodyHandle = frame.evaluate("document.body");
    * String html = (String) frame.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
    * bodyHandle.dispose();
    * }</pre>
@@ -2510,7 +2525,7 @@ public interface Frame {
    *
    * <p> {@code ElementHandle} instances can be passed as an argument to the {@link Frame#evaluate Frame.evaluate()}:
    * <pre>{@code
-   * ElementHandle bodyHandle = frame.querySelector("body");
+   * ElementHandle bodyHandle = frame.evaluate("document.body");
    * String html = (String) frame.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
    * bodyHandle.dispose();
    * }</pre>
@@ -3010,6 +3025,8 @@ public interface Frame {
   /**
    * Returns the ElementHandle pointing to the frame element.
    *
+   * <p> <strong>NOTE:</strong> The use of {@code ElementHandle} is discouraged, use {@code Locator} objects and web-first assertions instead.
+   *
    * <p> The method finds an element matching the specified selector within the frame. See <a
    * href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If no elements match the
    * selector, returns {@code null}.
@@ -3023,6 +3040,8 @@ public interface Frame {
   /**
    * Returns the ElementHandle pointing to the frame element.
    *
+   * <p> <strong>NOTE:</strong> The use of {@code ElementHandle} is discouraged, use {@code Locator} objects and web-first assertions instead.
+   *
    * <p> The method finds an element matching the specified selector within the frame. See <a
    * href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If no elements match the
    * selector, returns {@code null}.
@@ -3033,6 +3052,8 @@ public interface Frame {
   ElementHandle querySelector(String selector, QuerySelectorOptions options);
   /**
    * Returns the ElementHandles pointing to the frame elements.
+   *
+   * <p> <strong>NOTE:</strong> The use of {@code ElementHandle} is discouraged, use {@code Locator} objects instead.
    *
    * <p> The method finds all elements matching the specified selector within the frame. See <a
    * href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If no elements match the
@@ -3904,6 +3925,9 @@ public interface Frame {
    * Returns when element specified by selector satisfies {@code state} option. Returns {@code null} if waiting for {@code hidden} or
    * {@code detached}.
    *
+   * <p> <strong>NOTE:</strong> Playwright automatically waits for element to be ready before performing an action. Using {@code Locator} objects and
+   * web-first assertions make the code wait-for-selector-free.
+   *
    * <p> Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at
    * the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the
    * selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
@@ -3938,6 +3962,9 @@ public interface Frame {
   /**
    * Returns when element specified by selector satisfies {@code state} option. Returns {@code null} if waiting for {@code hidden} or
    * {@code detached}.
+   *
+   * <p> <strong>NOTE:</strong> Playwright automatically waits for element to be ready before performing an action. Using {@code Locator} objects and
+   * web-first assertions make the code wait-for-selector-free.
    *
    * <p> Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at
    * the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the

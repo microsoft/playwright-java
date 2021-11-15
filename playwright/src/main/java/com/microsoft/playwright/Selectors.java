@@ -62,11 +62,11 @@ public interface Selectors {
    * Page page = browser.newPage();
    * page.setContent("<div><button>Click me</button></div>");
    * // Use the selector prefixed with its name.
-   * ElementHandle button = page.querySelector("tag=button");
+   * Locator button = page.locator("tag=button");
    * // Combine it with other selector engines.
    * page.click("tag=div >> text=\"Click me\"");
    * // Can use it in any methods supporting selectors.
-   * int buttonCount = (int) page.evalOnSelectorAll("tag=button", "buttons => buttons.length");
+   * int buttonCount = (int) page.locator("tag=button").count();
    * browser.close();
    * }</pre>
    *
@@ -97,11 +97,11 @@ public interface Selectors {
    * Page page = browser.newPage();
    * page.setContent("<div><button>Click me</button></div>");
    * // Use the selector prefixed with its name.
-   * ElementHandle button = page.querySelector("tag=button");
+   * Locator button = page.locator("tag=button");
    * // Combine it with other selector engines.
    * page.click("tag=div >> text=\"Click me\"");
    * // Can use it in any methods supporting selectors.
-   * int buttonCount = (int) page.evalOnSelectorAll("tag=button", "buttons => buttons.length");
+   * int buttonCount = (int) page.locator("tag=button").count();
    * browser.close();
    * }</pre>
    *
@@ -130,11 +130,11 @@ public interface Selectors {
    * Page page = browser.newPage();
    * page.setContent("<div><button>Click me</button></div>");
    * // Use the selector prefixed with its name.
-   * ElementHandle button = page.querySelector("tag=button");
+   * Locator button = page.locator("tag=button");
    * // Combine it with other selector engines.
    * page.click("tag=div >> text=\"Click me\"");
    * // Can use it in any methods supporting selectors.
-   * int buttonCount = (int) page.evalOnSelectorAll("tag=button", "buttons => buttons.length");
+   * int buttonCount = (int) page.locator("tag=button").count();
    * browser.close();
    * }</pre>
    *
@@ -165,11 +165,11 @@ public interface Selectors {
    * Page page = browser.newPage();
    * page.setContent("<div><button>Click me</button></div>");
    * // Use the selector prefixed with its name.
-   * ElementHandle button = page.querySelector("tag=button");
+   * Locator button = page.locator("tag=button");
    * // Combine it with other selector engines.
    * page.click("tag=div >> text=\"Click me\"");
    * // Can use it in any methods supporting selectors.
-   * int buttonCount = (int) page.evalOnSelectorAll("tag=button", "buttons => buttons.length");
+   * int buttonCount = (int) page.locator("tag=button").count();
    * browser.close();
    * }</pre>
    *
