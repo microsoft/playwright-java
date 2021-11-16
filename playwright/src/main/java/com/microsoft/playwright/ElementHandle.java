@@ -23,6 +23,8 @@ import java.util.*;
 /**
  * ElementHandle represents an in-page DOM element. ElementHandles can be created with the {@link Page#querySelector
  * Page.querySelector()} method.
+ *
+ * <p> <strong>NOTE:</strong> The use of ElementHandle is discouraged, use {@code Locator} objects and web-first assertions instead.
  * <pre>{@code
  * ElementHandle hrefElement = page.querySelector("a");
  * hrefElement.click();
@@ -33,10 +35,6 @@ import java.util.*;
  *
  * <p> ElementHandle instances can be used as an argument in {@link Page#evalOnSelector Page.evalOnSelector()} and {@link
  * Page#evaluate Page.evaluate()} methods.
- *
- * <p> <strong>NOTE:</strong> In most cases, you would want to use the {@code Locator} object instead. You should only use {@code ElementHandle} if you want to
- * retain a handle to a particular DOM Node that you intend to pass into {@link Page#evaluate Page.evaluate()} as an
- * argument.
  *
  * <p> The difference between the {@code Locator} and ElementHandle is that the ElementHandle points to a particular element, while
  * {@code Locator} captures the logic of how to retrieve an element.

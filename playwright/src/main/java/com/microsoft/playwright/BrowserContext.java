@@ -548,6 +548,10 @@ public interface BrowserContext extends AutoCloseable {
    */
   List<Page> pages();
   /**
+   * API testing helper associated with this context. Requests made with this API will use context cookies.
+   */
+  APIRequestContext request();
+  /**
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *

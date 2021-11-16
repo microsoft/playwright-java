@@ -170,7 +170,9 @@ public class PageImpl extends ChannelOwner implements Page {
         try {
           bindingCall.call(binding);
         } catch (RuntimeException e) {
-          e.printStackTrace();
+          if (!isSafeCloseError(e.getMessage())) {
+            logWithTimestamp(e.getMessage());
+          }
         }
       }
     } else if ("load".equals(event)) {
@@ -939,6 +941,11 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public Response reload(ReloadOptions options) {
     return withLogging("Page.reload", () -> reloadImpl(options));
+  }
+
+  @Override
+  public APIRequestContextImpl request() {
+    return browserContext.request();
   }
 
   private Response reloadImpl(ReloadOptions options) {

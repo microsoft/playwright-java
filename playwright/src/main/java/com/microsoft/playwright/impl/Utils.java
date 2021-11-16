@@ -24,6 +24,9 @@ import com.microsoft.playwright.options.HttpHeader;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,6 +34,34 @@ import java.nio.file.Paths;
 import java.util.*;
 
 class Utils {
+  static <F, T> T convertViaReflection(F f, Class<T> t) {
+    if (f == null) {
+      return null;
+    }
+
+    try {
+      T result = t.getDeclaredConstructor().newInstance();
+      for (Field toField : t.getDeclaredFields()) {
+        if (Modifier.isStatic(toField.getModifiers()) ||
+          !Modifier.isPublic(toField.getModifiers())) {
+          continue;
+        }
+        try {
+          Field fromField = f.getClass().getDeclaredField(toField.getName());
+          Object value = fromField.get(f);
+          if (value != null) {
+            toField.set(result, value);
+          }
+        } catch (NoSuchFieldException e) {
+          continue;
+        }
+      }
+      return result;
+    } catch (Exception e) {
+      throw new PlaywrightException("Internal error", e);
+    }
+  }
+
   // TODO: generate converter.
   static <F, T> T convertViaJson(F f, Class<T> t) {
     Gson gson = new GsonBuilder()
@@ -126,15 +157,19 @@ class Utils {
   static FilePayload[] toFilePayloads(Path[] files) {
     List<FilePayload> payloads = new ArrayList<>();
     for (Path file : files) {
-      byte[] buffer;
-      try {
-        buffer = Files.readAllBytes(file);
-      } catch (IOException e) {
-        throw new PlaywrightException("Failed to read from file", e);
-      }
-      payloads.add(new FilePayload(file.getFileName().toString(), mimeType(file), buffer));
+      payloads.add(toFilePayload(file));
     }
     return payloads.toArray(new FilePayload[0]);
+  }
+
+  static FilePayload toFilePayload(Path file) {
+    byte[] buffer;
+    try {
+      buffer = Files.readAllBytes(file);
+    } catch (IOException e) {
+      throw new PlaywrightException("Failed to read from file", e);
+    }
+    return new FilePayload(file.getFileName().toString(), mimeType(file), buffer);
   }
 
   static void mkParentDirs(Path file) {
@@ -177,7 +212,7 @@ class Utils {
   }
 
   static boolean isSafeCloseError(String error) {
-    return error.endsWith("Browser has been closed") || error.endsWith("Target page, context or browser has been closed");
+    return error.contains("Browser has been closed") || error.contains("Target page, context or browser has been closed");
   }
 
   static String createGuid() {

@@ -98,12 +98,14 @@ public class Server implements HttpHandler {
   }
 
   static class Request {
+    public final String url;
     public final String method;
     // TODO: make a copy to ensure thread safety?
     public final Headers headers;
     public final byte[] postBody;
 
     Request(HttpExchange exchange) throws IOException {
+      url = exchange.getRequestURI().toString();
       method = exchange.getRequestMethod();
       headers = exchange.getRequestHeaders();
       ByteArrayOutputStream out = new ByteArrayOutputStream();

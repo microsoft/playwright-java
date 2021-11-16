@@ -47,6 +47,7 @@ import static java.util.Arrays.asList;
 class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private final BrowserImpl browser;
   private final TracingImpl tracing;
+  private final APIRequestContextImpl request;
   final List<PageImpl> pages = new ArrayList<>();
   final Router routes = new Router();
   private boolean isClosedOrClosing;
@@ -75,6 +76,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       browser = null;
     }
     this.tracing = new TracingImpl(this);
+    this.request = connection.getExistingObject(initializer.getAsJsonObject("APIRequestContext").get("guid").getAsString());
   }
 
   void setBaseUrl(String spec) {
@@ -327,6 +329,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   public List<Page> pages() {
     return new ArrayList<>(pages);
+  }
+
+  @Override
+  public APIRequestContextImpl request() {
+    return request;
   }
 
   @Override
