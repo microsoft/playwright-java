@@ -112,7 +112,7 @@ public class TestBrowserContextFetch extends TestBase {
   @Test
   void shouldAddSessionCookiesToRequest() throws ExecutionException, InterruptedException {
     Cookie cookie = new Cookie("username", "John Doe");
-    cookie.domain = "localhost:" + server.PORT;
+    cookie.domain = "localhost";
     cookie.path = "/";
     cookie.expires = -1.0;
     cookie.httpOnly = false;
@@ -155,7 +155,7 @@ public class TestBrowserContextFetch extends TestBase {
   @Test
   void shouldNotAddContextCookieIfCookieHeaderPassedAsAParameter() throws ExecutionException, InterruptedException {
     Cookie cookie = new Cookie("username", "John Doe");
-    cookie.domain = "localhost:" + server.PORT;
+    cookie.domain = "localhost";
     cookie.path = "/";
     cookie.expires = -1.0;
     cookie.httpOnly = false;
@@ -172,7 +172,7 @@ public class TestBrowserContextFetch extends TestBase {
     server.setRedirect("/redirect1", "/redirect2");
     server.setRedirect("/redirect2", "/simple.json");
     Cookie cookie = new Cookie("username", "John Doe");
-    cookie.domain = "localhost:" + server.PORT;
+    cookie.domain = "localhost";
     cookie.path = "/";
     cookie.expires = -1.0;
     cookie.httpOnly = false;
