@@ -170,7 +170,9 @@ public class PageImpl extends ChannelOwner implements Page {
         try {
           bindingCall.call(binding);
         } catch (RuntimeException e) {
-          e.printStackTrace();
+          if (!isSafeCloseError(e.getMessage())) {
+            logWithTimestamp(e.getMessage());
+          }
         }
       }
     } else if ("load".equals(event)) {
