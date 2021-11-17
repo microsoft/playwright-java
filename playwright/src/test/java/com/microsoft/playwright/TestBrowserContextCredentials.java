@@ -31,12 +31,11 @@ public class TestBrowserContextCredentials extends TestBase {
   @Test
   @DisabledIf(value="isChromiumHeadful", disabledReason="fail")
   void shouldFailWithoutCredentials() {
+    System.err.println("____ shouldFailWithoutCredentials");
     server.setAuth("/empty.html", "user", "pass");
-    BrowserContext context = browser.newContext();
-    Page page = context.newPage();
     Response response = page.navigate(server.EMPTY_PAGE);
     assertEquals(401, response.status());
-    context.close();
+    System.err.println("<<<< shouldFailWithoutCredentials");
   }
 
   void shouldWorkWithSetHTTPCredentials() {
@@ -45,35 +44,42 @@ public class TestBrowserContextCredentials extends TestBase {
 
   @Test
   void shouldWorkWithCorrectCredentials() {
+    System.err.println("____ shouldWorkWithCorrectCredentials");
     server.setAuth("/empty.html", "user", "pass");
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .setHttpCredentials("user", "pass"));
-    Page page = context.newPage();
-    Response response = page.navigate(server.EMPTY_PAGE);
-    assertEquals(200, response.status());
-    context.close();
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setHttpCredentials("user", "pass"))) {
+      Page page = context.newPage();
+      Response response = page.navigate(server.EMPTY_PAGE);
+      assertEquals(200, response.status());
+    }
+    System.err.println("<<<< shouldWorkWithCorrectCredentials");
   }
 
   @Test
   void shouldFailWithWrongCredentials() {
+    System.err.println("____ shouldFailWithWrongCredentials");
     server.setAuth("/empty.html", "user", "pass");
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setHttpCredentials("foo", "bar"));
-    Page page = context.newPage();
-    Response response = page.navigate(server.EMPTY_PAGE);
-    assertEquals(401, response.status());
-    context.close();
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setHttpCredentials("foo", "bar"))) {
+      Page page = context.newPage();
+      Response response = page.navigate(server.EMPTY_PAGE);
+      assertEquals(401, response.status());
+    }
+    System.err.println("<<<< shouldFailWithWrongCredentials");
   }
 
   @Test
   void shouldReturnResourceBody() {
+    System.err.println("____ shouldReturnResourceBody");
     server.setAuth("/playground.html", "user", "pass");
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .setHttpCredentials("user", "pass"));
-    Page page = context.newPage();
-    Response response = page.navigate(server.PREFIX + "/playground.html");
-    assertEquals(200, response.status());
-    assertEquals("Playground", page.title());
-    assertTrue(new String(response.body()).contains("Playground"));
-    context.close();
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setHttpCredentials("user", "pass"))) {
+      Page page = context.newPage();
+      Response response = page.navigate(server.PREFIX + "/playground.html");
+      assertEquals(200, response.status());
+      assertEquals("Playground", page.title());
+      assertTrue(new String(response.body()).contains("Playground"));
+    }
+    System.err.println("<<<< shouldReturnResourceBody");
   }
 }
