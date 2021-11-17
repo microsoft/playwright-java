@@ -31,7 +31,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Utils.convertViaJson;
+import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 
 class BrowserImpl extends ChannelOwner implements Browser {
@@ -209,7 +209,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
   }
 
   private Page newPageImpl(NewPageOptions options) {
-    BrowserContextImpl context = newContext(convertViaJson(options, NewContextOptions.class));
+    BrowserContextImpl context = newContext(convertType(options, NewContextOptions.class));
     PageImpl page = context.newPage();
     page.ownedContext = context;
     context.ownerPage = page;

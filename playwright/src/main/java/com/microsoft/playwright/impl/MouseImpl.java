@@ -20,7 +20,7 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.Mouse;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Utils.convertViaJson;
+import static com.microsoft.playwright.impl.Utils.convertType;
 
 class MouseImpl implements Mouse {
   private final ChannelOwner page;
@@ -54,7 +54,7 @@ class MouseImpl implements Mouse {
     if (options == null) {
       clickOptions = new ClickOptions();
     } else {
-      clickOptions = convertViaJson(options, ClickOptions.class);
+      clickOptions = convertType(options, ClickOptions.class);
     }
     clickOptions.clickCount = 2;
     click(x, y, clickOptions);

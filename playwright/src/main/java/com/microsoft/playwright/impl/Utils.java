@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.*;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.FilePayload;
 import com.microsoft.playwright.options.HttpHeader;
@@ -25,26 +24,34 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 class Utils {
-  static <F, T> T convertViaReflection(F f, Class<T> t) {
+  static <F, T> T convertType(F f, Class<T> t) {
     if (f == null) {
       return null;
+    }
+
+    // Make sure shallow copy is sufficient
+    if (!t.getSuperclass().equals(Object.class) && !t.getSuperclass().equals(Enum.class)) {
+      throw new PlaywrightException("Cannot convert to " + t.getCanonicalName() + " that has superclass " + t.getSuperclass().getCanonicalName());
+    }
+    if (!f.getClass().getSuperclass().equals(t.getSuperclass())) {
+      throw new PlaywrightException("Cannot convert from " + t.getCanonicalName() + " that has superclass " + t.getSuperclass().getCanonicalName());
+    }
+
+    if (f instanceof Enum) {
+      return (T) Enum.valueOf((Class) t, ((Enum) f).name());
     }
 
     try {
       T result = t.getDeclaredConstructor().newInstance();
       for (Field toField : t.getDeclaredFields()) {
-        if (Modifier.isStatic(toField.getModifiers()) ||
-          !Modifier.isPublic(toField.getModifiers())) {
-          continue;
+        if (Modifier.isStatic(toField.getModifiers())) {
+            throw new RuntimeException("Unexpected field modifiers: " + t.getCanonicalName() + "." + toField.getName() + ", modifiers: " + toField.getModifiers());
         }
         try {
           Field fromField = f.getClass().getDeclaredField(toField.getName());
@@ -59,28 +66,6 @@ class Utils {
       return result;
     } catch (Exception e) {
       throw new PlaywrightException("Internal error", e);
-    }
-  }
-
-  // TODO: generate converter.
-  static <F, T> T convertViaJson(F f, Class<T> t) {
-    Gson gson = new GsonBuilder()
-      // Necessary to avoid access to private fields/classes,
-      // see https://github.com/microsoft/playwright-java/issues/423
-      .registerTypeAdapter(Optional.class, new OptionalSerializer())
-      .create();
-    String json = gson.toJson(f);
-    return gson.fromJson(json, t);
-  }
-
-  private static class OptionalSerializer implements JsonSerializer<Optional> {
-    @Override
-    public JsonElement serialize(Optional src, Type typeOfSrc, JsonSerializationContext context) {
-      JsonObject result = new JsonObject();
-      if (src.isPresent()) {
-        result.add("value", context.serialize(src.get()));
-      }
-      return result;
     }
   }
 

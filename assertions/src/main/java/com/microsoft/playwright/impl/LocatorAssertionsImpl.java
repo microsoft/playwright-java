@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.serializeArgument;
-import static com.microsoft.playwright.impl.Utils.convertViaJson;
+import static com.microsoft.playwright.impl.Utils.convertType;
 
 public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAssertions {
   public LocatorAssertionsImpl(Locator locator) {
@@ -41,7 +41,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     expected.string = text;
     expected.matchSubstring = true;
     expected.normalizeWhiteSpace = true;
-    expectImpl("to.have.text", expected, text, "Locator expected to contain text", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.text", expected, text, "Locator expected to contain text", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -49,7 +49,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     ExpectedTextValue expected = expectedRegex(pattern);
     expected.matchSubstring = true;
     expected.normalizeWhiteSpace = true;
-    expectImpl("to.have.text", expected, pattern, "Locator expected to contain regex", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.text", expected, pattern, "Locator expected to contain regex", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -62,7 +62,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
       expected.normalizeWhiteSpace = true;
       list.add(expected);
     }
-    expectImpl("to.contain.text.array", list, strings, "Locator expected to contain text", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.contain.text.array", list, strings, "Locator expected to contain text", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -74,7 +74,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
       expected.normalizeWhiteSpace = true;
       list.add(expected);
     }
-    expectImpl("to.contain.text.array", list, patterns, "Locator expected to contain text", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.contain.text.array", list, patterns, "Locator expected to contain text", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -94,7 +94,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     if (options == null) {
       options = new HasAttributeOptions();
     }
-    FrameExpectOptions commonOptions = convertViaJson(options, FrameExpectOptions.class);
+    FrameExpectOptions commonOptions = convertType(options, FrameExpectOptions.class);
     commonOptions.expressionArg = name;
     String message = "Locator expected to have attribute '" + name + "'";
     if (expectedValue instanceof Pattern) {
@@ -107,13 +107,13 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   public void hasClass(String text, HasClassOptions options) {
     ExpectedTextValue expected = new ExpectedTextValue();
     expected.string = text;
-    expectImpl("to.have.class", expected, text, "Locator expected to have class", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.class", expected, text, "Locator expected to have class", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
   public void hasClass(Pattern pattern, HasClassOptions options) {
     ExpectedTextValue expected = expectedRegex(pattern);
-    expectImpl("to.have.class", expected, pattern, "Locator expected to have class matching regex", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.class", expected, pattern, "Locator expected to have class matching regex", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -124,7 +124,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
       expected.string = text;
       list.add(expected);
     }
-    expectImpl("to.have.class.array", list, strings, "Locator expected to have class", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.class.array", list, strings, "Locator expected to have class", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -134,7 +134,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
       ExpectedTextValue expected = expectedRegex(pattern);
       list.add(expected);
     }
-    expectImpl("to.have.class.array", list, patterns, "Locator expected to have class matching regex", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.class.array", list, patterns, "Locator expected to have class matching regex", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -142,7 +142,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     if (options == null) {
       options = new HasCountOptions();
     }
-    FrameExpectOptions commonOptions = convertViaJson(options, FrameExpectOptions.class);
+    FrameExpectOptions commonOptions = convertType(options, FrameExpectOptions.class);
     commonOptions.expectedNumber = count;
     List<ExpectedTextValue> expectedText = null;
     expectImpl("to.have.count", expectedText, count, "Locator expected to have count", commonOptions);
@@ -165,7 +165,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     if (options == null) {
       options = new HasCSSOptions();
     }
-    FrameExpectOptions commonOptions = convertViaJson(options, FrameExpectOptions.class);
+    FrameExpectOptions commonOptions = convertType(options, FrameExpectOptions.class);
     commonOptions.expressionArg = name;
     String message = "Locator expected to have CSS property '" + name + "'";
     if (expectedValue instanceof Pattern) {
@@ -178,7 +178,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   public void hasId(String id, HasIdOptions options) {
     ExpectedTextValue expected = new ExpectedTextValue();
     expected.string = id;
-    expectImpl("to.have.id", expected, id, "Locator expected to have ID", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.id", expected, id, "Locator expected to have ID", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -186,7 +186,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     if (options == null) {
       options = new HasJSPropertyOptions();
     }
-    FrameExpectOptions commonOptions = convertViaJson(options, FrameExpectOptions.class);
+    FrameExpectOptions commonOptions = convertType(options, FrameExpectOptions.class);
     commonOptions.expressionArg = name;
     commonOptions.expectedValue = serializeArgument(value);
     List<ExpectedTextValue> list = null;
@@ -199,7 +199,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     expected.string = text;
     expected.matchSubstring = false;
     expected.normalizeWhiteSpace = true;
-    expectImpl("to.have.text", expected, text, "Locator expected to have text", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.text", expected, text, "Locator expected to have text", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -208,7 +208,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     // Just match substring, same as containsText.
     expected.matchSubstring = true;
     expected.normalizeWhiteSpace = true;
-    expectImpl("to.have.text", expected, pattern, "Locator expected to have text matching regex", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.text", expected, pattern, "Locator expected to have text matching regex", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -221,7 +221,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
       expected.normalizeWhiteSpace = true;
       list.add(expected);
     }
-    expectImpl("to.have.text.array", list, strings, "Locator expected to have text", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.text.array", list, strings, "Locator expected to have text", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -233,60 +233,60 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
       expected.normalizeWhiteSpace = true;
       list.add(expected);
     }
-    expectImpl("to.have.text.array", list, patterns, "Locator expected to have text matching regex", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.text.array", list, patterns, "Locator expected to have text matching regex", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
   public void hasValue(String value, HasValueOptions options) {
     ExpectedTextValue expected = new ExpectedTextValue();
     expected.string = value;
-    expectImpl("to.have.value", expected, value, "Locator expected to have value", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.value", expected, value, "Locator expected to have value", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
   public void hasValue(Pattern pattern, HasValueOptions options) {
     ExpectedTextValue expected = expectedRegex(pattern);
-    expectImpl("to.have.value", expected, pattern, "Locator expected to have value matching regex", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.value", expected, pattern, "Locator expected to have value matching regex", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
   public void isChecked(IsCheckedOptions options) {
-    expectTrue("to.be.checked", "Locator expected to be checked", convertViaJson(options, FrameExpectOptions.class));
+    expectTrue("to.be.checked", "Locator expected to be checked", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
   public void isDisabled(IsDisabledOptions options) {
-    expectTrue("to.be.disabled", "Locator expected to be disabled", convertViaJson(options, FrameExpectOptions.class));
+    expectTrue("to.be.disabled", "Locator expected to be disabled", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
   public void isEditable(IsEditableOptions options) {
-    expectTrue("to.be.editable", "Locator expected to be editable", convertViaJson(options, FrameExpectOptions.class));
+    expectTrue("to.be.editable", "Locator expected to be editable", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
   public void isEmpty(IsEmptyOptions options) {
-    expectTrue("to.be.empty", "Locator expected to be empty", convertViaJson(options, FrameExpectOptions.class));
+    expectTrue("to.be.empty", "Locator expected to be empty", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
   public void isEnabled(IsEnabledOptions options) {
-    expectTrue("to.be.enabled", "Locator expected to be enabled", convertViaJson(options, FrameExpectOptions.class));
+    expectTrue("to.be.enabled", "Locator expected to be enabled", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
   public void isFocused(IsFocusedOptions options) {
-    expectTrue("to.be.focused", "Locator expected to be focused", convertViaJson(options, FrameExpectOptions.class));
+    expectTrue("to.be.focused", "Locator expected to be focused", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
   public void isHidden(IsHiddenOptions options) {
-    expectTrue("to.be.hidden", "Locator expected to be hidden", convertViaJson(options, FrameExpectOptions.class));
+    expectTrue("to.be.hidden", "Locator expected to be hidden", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
   public void isVisible(IsVisibleOptions options) {
-    expectTrue("to.be.visible", "Locator expected to be visible", convertViaJson(options, FrameExpectOptions.class));
+    expectTrue("to.be.visible", "Locator expected to be visible", convertType(options, FrameExpectOptions.class));
   }
 
   private void expectTrue(String expression, String message, FrameExpectOptions options) {

@@ -20,7 +20,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.ElementHandle;
-import com.microsoft.playwright.FileChooser;
 import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.options.BoundingBox;
 import com.microsoft.playwright.options.ElementState;
@@ -34,7 +33,7 @@ import java.util.Base64;
 import java.util.List;
 
 import static com.microsoft.playwright.impl.Serialization.*;
-import static com.microsoft.playwright.impl.Utils.convertViaJson;
+import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.options.ScreenshotType.JPEG;
 import static com.microsoft.playwright.options.ScreenshotType.PNG;
 
@@ -435,9 +434,9 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   @Override
   public void setChecked(boolean checked, SetCheckedOptions options) {
     if (checked) {
-      check(convertViaJson(options, CheckOptions.class));
+      check(convertType(options, CheckOptions.class));
     } else {
-      uncheck(convertViaJson(options, UncheckOptions.class));
+      uncheck(convertType(options, UncheckOptions.class));
     }
   }
 
