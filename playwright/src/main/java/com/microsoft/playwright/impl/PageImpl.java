@@ -28,10 +28,10 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.options.ScreenshotType.JPEG;
 import static com.microsoft.playwright.options.ScreenshotType.PNG;
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Utils.convertViaJson;
 import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
@@ -558,7 +558,7 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public ElementHandle querySelector(String selector, QuerySelectorOptions options) {
     return withLogging("Page.querySelector", () -> mainFrame.querySelectorImpl(
-      selector, convertViaJson(options, Frame.QuerySelectorOptions.class)));
+      selector, convertType(options, Frame.QuerySelectorOptions.class)));
   }
 
   @Override
@@ -569,7 +569,7 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public Object evalOnSelector(String selector, String pageFunction, Object arg, EvalOnSelectorOptions options) {
     return withLogging("Page.evalOnSelector", () -> mainFrame.evalOnSelectorImpl(
-      selector, pageFunction, arg, convertViaJson(options, Frame.EvalOnSelectorOptions.class)));
+      selector, pageFunction, arg, convertType(options, Frame.EvalOnSelectorOptions.class)));
   }
 
   @Override
@@ -603,13 +603,13 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public ElementHandle addScriptTag(AddScriptTagOptions options) {
     return withLogging("Page.addScriptTag",
-      () -> mainFrame.addScriptTagImpl(convertViaJson(options, Frame.AddScriptTagOptions.class)));
+      () -> mainFrame.addScriptTagImpl(convertType(options, Frame.AddScriptTagOptions.class)));
   }
 
   @Override
   public ElementHandle addStyleTag(AddStyleTagOptions options) {
     return withLogging("Page.addStyleTag",
-      () -> mainFrame.addStyleTagImpl(convertViaJson(options, Frame.AddStyleTagOptions.class)));
+      () -> mainFrame.addStyleTagImpl(convertType(options, Frame.AddStyleTagOptions.class)));
   }
 
   @Override
@@ -620,13 +620,13 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void check(String selector, CheckOptions options) {
     withLogging("Page.check",
-      () -> mainFrame.checkImpl(selector, convertViaJson(options, Frame.CheckOptions.class)));
+      () -> mainFrame.checkImpl(selector, convertType(options, Frame.CheckOptions.class)));
   }
 
   @Override
   public void click(String selector, ClickOptions options) {
     withLogging("Page.click",
-      () -> mainFrame.clickImpl(selector, convertViaJson(options, Frame.ClickOptions.class)));
+      () -> mainFrame.clickImpl(selector, convertType(options, Frame.ClickOptions.class)));
   }
 
   @Override
@@ -642,13 +642,13 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void dblclick(String selector, DblclickOptions options) {
     withLogging("Page.dblclick",
-      () -> mainFrame.dblclickImpl(selector, convertViaJson(options, Frame.DblclickOptions.class)));
+      () -> mainFrame.dblclickImpl(selector, convertType(options, Frame.DblclickOptions.class)));
   }
 
   @Override
   public void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options) {
     withLogging("Page.dispatchEvent",
-      () -> mainFrame.dispatchEventImpl(selector, type, eventInit, convertViaJson(options, Frame.DispatchEventOptions.class)));
+      () -> mainFrame.dispatchEventImpl(selector, type, eventInit, convertType(options, Frame.DispatchEventOptions.class)));
   }
 
   @Override
@@ -705,13 +705,13 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void fill(String selector, String value, FillOptions options) {
     withLogging("Page.fill",
-      () -> mainFrame.fillImpl(selector, value, convertViaJson(options, Frame.FillOptions.class)));
+      () -> mainFrame.fillImpl(selector, value, convertType(options, Frame.FillOptions.class)));
   }
 
   @Override
   public void focus(String selector, FocusOptions options) {
     withLogging("Page.focus",
-      () -> mainFrame.focusImpl(selector, convertViaJson(options, Frame.FocusOptions.class)));
+      () -> mainFrame.focusImpl(selector, convertType(options, Frame.FocusOptions.class)));
   }
 
   @Override
@@ -761,7 +761,7 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public String getAttribute(String selector, String name, GetAttributeOptions options) {
     return withLogging("Page.getAttribute",
-      () -> mainFrame.getAttributeImpl(selector, name, convertViaJson(options, Frame.GetAttributeOptions.class)));
+      () -> mainFrame.getAttributeImpl(selector, name, convertType(options, Frame.GetAttributeOptions.class)));
   }
 
   @Override
@@ -800,44 +800,41 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public ResponseImpl navigate(String url, NavigateOptions options) {
-    return withLogging("Page.navigate", () ->
-      mainFrame.navigateImpl(url, convertViaJson(options, Frame.NavigateOptions.class)));
+    return withLogging("Page.navigate", () -> mainFrame.navigateImpl(url, convertType(options, Frame.NavigateOptions.class)));
   }
 
   @Override
   public void hover(String selector, HoverOptions options) {
-    withLogging("Page.hover", () ->
-      mainFrame.hoverImpl(selector, convertViaJson(options, Frame.HoverOptions.class)));
+    withLogging("Page.hover", () -> mainFrame.hoverImpl(selector, convertType(options, Frame.HoverOptions.class)));
   }
 
   @Override
   public void dragAndDrop(String source, String target, DragAndDropOptions options) {
-    withLogging("Page.dragAndDrop", () ->
-      mainFrame.dragAndDropImpl(source, target, convertViaJson(options, Frame.DragAndDropOptions.class)));
+    withLogging("Page.dragAndDrop", () -> mainFrame.dragAndDropImpl(source, target, convertType(options, Frame.DragAndDropOptions.class)));
   }
 
   @Override
   public String innerHTML(String selector, InnerHTMLOptions options) {
     return withLogging("Page.innerHTML",
-      () -> mainFrame.innerHTMLImpl(selector, convertViaJson(options, Frame.InnerHTMLOptions.class)));
+      () -> mainFrame.innerHTMLImpl(selector, convertType(options, Frame.InnerHTMLOptions.class)));
   }
 
   @Override
   public String innerText(String selector, InnerTextOptions options) {
     return withLogging("Page.innerText",
-      () -> mainFrame.innerTextImpl(selector, convertViaJson(options, Frame.InnerTextOptions.class)));
+      () -> mainFrame.innerTextImpl(selector, convertType(options, Frame.InnerTextOptions.class)));
   }
 
   @Override
   public String inputValue(String selector, InputValueOptions options) {
     return withLogging("Page.inputValue",
-      () -> mainFrame.inputValueImpl(selector, convertViaJson(options, Frame.InputValueOptions.class)));
+      () -> mainFrame.inputValueImpl(selector, convertType(options, Frame.InputValueOptions.class)));
   }
 
   @Override
   public boolean isChecked(String selector, IsCheckedOptions options) {
     return withLogging("Page.isChecked",
-      () -> mainFrame.isCheckedImpl(selector, convertViaJson(options, Frame.IsCheckedOptions.class)));
+      () -> mainFrame.isCheckedImpl(selector, convertType(options, Frame.IsCheckedOptions.class)));
   }
 
   @Override
@@ -848,31 +845,31 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public boolean isDisabled(String selector, IsDisabledOptions options) {
     return withLogging("Page.isDisabled",
-      () -> mainFrame.isDisabledImpl(selector, convertViaJson(options, Frame.IsDisabledOptions.class)));
+      () -> mainFrame.isDisabledImpl(selector, convertType(options, Frame.IsDisabledOptions.class)));
   }
 
   @Override
   public boolean isEditable(String selector, IsEditableOptions options) {
     return withLogging("Page.isEditable",
-      () -> mainFrame.isEditableImpl(selector, convertViaJson(options, Frame.IsEditableOptions.class)));
+      () -> mainFrame.isEditableImpl(selector, convertType(options, Frame.IsEditableOptions.class)));
   }
 
   @Override
   public boolean isEnabled(String selector, IsEnabledOptions options) {
     return withLogging("Page.isEnabled",
-      () -> mainFrame.isEnabledImpl(selector, convertViaJson(options, Frame.IsEnabledOptions.class)));
+      () -> mainFrame.isEnabledImpl(selector, convertType(options, Frame.IsEnabledOptions.class)));
   }
 
   @Override
   public boolean isHidden(String selector, IsHiddenOptions options) {
     return withLogging("Page.isHidden",
-      () -> mainFrame.isHiddenImpl(selector, convertViaJson(options, Frame.IsHiddenOptions.class)));
+      () -> mainFrame.isHiddenImpl(selector, convertType(options, Frame.IsHiddenOptions.class)));
   }
 
   @Override
   public boolean isVisible(String selector, IsVisibleOptions options) {
     return withLogging("Page.isVisible",
-      () -> mainFrame.isVisibleImpl(selector, convertViaJson(options, Frame.IsVisibleOptions.class)));
+      () -> mainFrame.isVisibleImpl(selector, convertType(options, Frame.IsVisibleOptions.class)));
   }
 
   @Override
@@ -935,7 +932,7 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void press(String selector, String key, PressOptions options) {
     withLogging("Page.press",
-      () -> mainFrame.pressImpl(selector, key, convertViaJson(options, Frame.PressOptions.class)));
+      () -> mainFrame.pressImpl(selector, key, convertType(options, Frame.PressOptions.class)));
   }
 
   @Override
@@ -1051,25 +1048,25 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public List<String> selectOption(String selector, SelectOption[] values, SelectOptionOptions options) {
     return withLogging("Page.selectOption",
-      () -> mainFrame.selectOptionImpl(selector, values, convertViaJson(options, Frame.SelectOptionOptions.class)));
+      () -> mainFrame.selectOptionImpl(selector, values, convertType(options, Frame.SelectOptionOptions.class)));
   }
 
   @Override
   public List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options) {
     return withLogging("Page.selectOption",
-      () -> mainFrame.selectOptionImpl(selector, values, convertViaJson(options, Frame.SelectOptionOptions.class)));
+      () -> mainFrame.selectOptionImpl(selector, values, convertType(options, Frame.SelectOptionOptions.class)));
   }
 
   @Override
   public void setChecked(String selector, boolean checked, SetCheckedOptions options) {
     withLogging("Page.setChecked",
-      () -> mainFrame.setCheckedImpl(selector, checked, convertViaJson(options, Frame.SetCheckedOptions.class)));
+      () -> mainFrame.setCheckedImpl(selector, checked, convertType(options, Frame.SetCheckedOptions.class)));
   }
 
   @Override
   public void setContent(String html, SetContentOptions options) {
     withLogging("Page.setContent",
-      () -> mainFrame.setContentImpl(html, convertViaJson(options, Frame.SetContentOptions.class)));
+      () -> mainFrame.setContentImpl(html, convertType(options, Frame.SetContentOptions.class)));
   }
 
   @Override
@@ -1116,7 +1113,7 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void setInputFiles(String selector, Path[] files, SetInputFilesOptions options) {
     withLogging("Page.setInputFiles",
-      () -> mainFrame.setInputFilesImpl(selector, files, convertViaJson(options, Frame.SetInputFilesOptions.class)));
+      () -> mainFrame.setInputFilesImpl(selector, files, convertType(options, Frame.SetInputFilesOptions.class)));
   }
 
   @Override
@@ -1127,7 +1124,7 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void setInputFiles(String selector, FilePayload[] files, SetInputFilesOptions options) {
     withLogging("Page.setInputFiles",
-      () -> mainFrame.setInputFilesImpl(selector, files, convertViaJson(options, Frame.SetInputFilesOptions.class)));
+      () -> mainFrame.setInputFilesImpl(selector, files, convertType(options, Frame.SetInputFilesOptions.class)));
   }
 
   @Override
@@ -1143,13 +1140,13 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void tap(String selector, TapOptions options) {
     withLogging("Page.tap",
-      () -> mainFrame.tapImpl(selector, convertViaJson(options, Frame.TapOptions.class)));
+      () -> mainFrame.tapImpl(selector, convertType(options, Frame.TapOptions.class)));
   }
 
   @Override
   public String textContent(String selector, TextContentOptions options) {
     return withLogging("Page.textContent",
-      () -> mainFrame.textContentImpl(selector, convertViaJson(options, Frame.TextContentOptions.class)));
+      () -> mainFrame.textContentImpl(selector, convertType(options, Frame.TextContentOptions.class)));
   }
 
   @Override
@@ -1165,13 +1162,13 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void type(String selector, String text, TypeOptions options) {
     withLogging("Page.type",
-      () -> mainFrame.typeImpl(selector, text, convertViaJson(options, Frame.TypeOptions.class)));
+      () -> mainFrame.typeImpl(selector, text, convertType(options, Frame.TypeOptions.class)));
   }
 
   @Override
   public void uncheck(String selector, UncheckOptions options) {
     withLogging("Page.uncheck",
-      () -> mainFrame.uncheckImpl(selector, convertViaJson(options, Frame.UncheckOptions.class)));
+      () -> mainFrame.uncheckImpl(selector, convertType(options, Frame.UncheckOptions.class)));
   }
 
   @Override
@@ -1244,13 +1241,13 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public JSHandle waitForFunction(String pageFunction, Object arg, WaitForFunctionOptions options) {
     return withLogging("Page.waitForFunction",
-      () -> mainFrame.waitForFunctionImpl(pageFunction, arg, convertViaJson(options, Frame.WaitForFunctionOptions.class)));
+      () -> mainFrame.waitForFunctionImpl(pageFunction, arg, convertType(options, Frame.WaitForFunctionOptions.class)));
   }
 
   @Override
   public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
     withWaitLogging("Page.waitForLoadState", () -> {
-      mainFrame.waitForLoadStateImpl(state, convertViaJson(options, Frame.WaitForLoadStateOptions.class));
+      mainFrame.waitForLoadStateImpl(state, convertType(options, Frame.WaitForLoadStateOptions.class));
       return null;
     });
   }
@@ -1384,7 +1381,7 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public ElementHandle waitForSelector(String selector, WaitForSelectorOptions options) {
     return withLogging("Page.waitForSelector",
-      () -> mainFrame.waitForSelectorImpl(selector, convertViaJson(options, Frame.WaitForSelectorOptions.class)));
+      () -> mainFrame.waitForSelectorImpl(selector, convertType(options, Frame.WaitForSelectorOptions.class)));
   }
 
   @Override
@@ -1408,7 +1405,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   private void waitForURL(UrlMatcher matcher, WaitForURLOptions options) {
-    withLogging("Page.waitForURL", () -> mainFrame.waitForURLImpl(matcher, convertViaJson(options, Frame.WaitForURLOptions.class)));
+    withLogging("Page.waitForURL", () -> mainFrame.waitForURLImpl(matcher, convertType(options, Frame.WaitForURLOptions.class)));
   }
 
   @Override

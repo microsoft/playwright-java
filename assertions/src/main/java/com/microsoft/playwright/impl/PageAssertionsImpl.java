@@ -22,7 +22,7 @@ import com.microsoft.playwright.assertions.PageAssertions;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.UrlMatcher.resolveUrl;
-import static com.microsoft.playwright.impl.Utils.convertViaJson;
+import static com.microsoft.playwright.impl.Utils.convertType;
 
 public class PageAssertionsImpl extends AssertionsBase implements PageAssertions {
   private final PageImpl actualPage;
@@ -40,13 +40,13 @@ public class PageAssertionsImpl extends AssertionsBase implements PageAssertions
   public void hasTitle(String title, HasTitleOptions options) {
     ExpectedTextValue expected = new ExpectedTextValue();
     expected.string = title;
-    expectImpl("to.have.title", expected, title, "Page title expected to be", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.title", expected, title, "Page title expected to be", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
   public void hasTitle(Pattern pattern, HasTitleOptions options) {
     ExpectedTextValue expected = expectedRegex(pattern);
-    expectImpl("to.have.title", expected, pattern, "Page title expected to match regex", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.title", expected, pattern, "Page title expected to match regex", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -56,13 +56,13 @@ public class PageAssertionsImpl extends AssertionsBase implements PageAssertions
       url = resolveUrl(actualPage.context().baseUrl, url);
     }
     expected.string = url;
-    expectImpl("to.have.url", expected, url, "Page URL expected to be", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.url", expected, url, "Page URL expected to be", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
   public void hasURL(Pattern pattern, HasURLOptions options) {
     ExpectedTextValue expected = expectedRegex(pattern);
-    expectImpl("to.have.url", expected, pattern, "Page URL expected to match regex", convertViaJson(options, FrameExpectOptions.class));
+    expectImpl("to.have.url", expected, pattern, "Page URL expected to match regex", convertType(options, FrameExpectOptions.class));
   }
 
   @Override

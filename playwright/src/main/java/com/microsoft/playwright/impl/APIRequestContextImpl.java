@@ -17,7 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.Serialization.*;
-import static com.microsoft.playwright.impl.Utils.convertViaReflection;
+import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.toFilePayload;
 
 class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
@@ -198,7 +198,7 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
   }
 
   private static <T> FetchOptions toFetchOptions(T options) {
-    FetchOptions fetchOptions = convertViaReflection(options, FetchOptions.class);
+    FetchOptions fetchOptions = convertType(options, FetchOptions.class);
     if (fetchOptions == null) {
       fetchOptions = new FetchOptions();
     }

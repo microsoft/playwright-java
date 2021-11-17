@@ -31,9 +31,9 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.options.WaitUntilState.*;
 import static com.microsoft.playwright.impl.Serialization.*;
-import static com.microsoft.playwright.impl.Utils.convertViaJson;
 
 public class FrameImpl extends ChannelOwner implements Frame {
   private String name;
@@ -656,9 +656,9 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   void setCheckedImpl(String selector, boolean checked, SetCheckedOptions options) {
     if (checked) {
-      checkImpl(selector, convertViaJson(options, CheckOptions.class));
+      checkImpl(selector, convertType(options, CheckOptions.class));
     } else {
-      uncheckImpl(selector, convertViaJson(options, UncheckOptions.class));
+      uncheckImpl(selector, convertType(options, UncheckOptions.class));
     }
   }
 
@@ -807,7 +807,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   void waitForLoadStateImpl(LoadState state, WaitForLoadStateOptions options) {
-    waitForLoadStateImpl(convertViaJson(state, WaitUntilState.class), options);
+    waitForLoadStateImpl(convertType(state, WaitUntilState.class), options);
   }
 
   private void waitForLoadStateImpl(WaitUntilState state, WaitForLoadStateOptions options) {
@@ -1011,10 +1011,10 @@ public class FrameImpl extends ChannelOwner implements Frame {
       options = new WaitForURLOptions();
     }
     if (matcher.test(url())) {
-      waitForLoadStateImpl(options.waitUntil, convertViaJson(options, WaitForLoadStateOptions.class));
+      waitForLoadStateImpl(options.waitUntil, convertType(options, WaitForLoadStateOptions.class));
       return;
     }
-    waitForNavigationImpl(() -> {}, convertViaJson(options, WaitForNavigationOptions.class), matcher);
+    waitForNavigationImpl(() -> {}, convertType(options, WaitForNavigationOptions.class), matcher);
   }
 
   protected void handleEvent(String event, JsonObject params) {

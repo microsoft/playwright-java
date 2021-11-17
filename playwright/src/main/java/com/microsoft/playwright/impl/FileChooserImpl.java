@@ -23,7 +23,7 @@ import com.microsoft.playwright.options.FilePayload;
 
 import java.nio.file.Path;
 
-import static com.microsoft.playwright.impl.Utils.convertViaJson;
+import static com.microsoft.playwright.impl.Utils.convertType;
 
 class FileChooserImpl implements FileChooser {
   private final PageImpl page;
@@ -69,6 +69,6 @@ class FileChooserImpl implements FileChooser {
   @Override
   public void setFiles(FilePayload[] files, SetFilesOptions options) {
     page.withLogging("FileChooser.setInputFiles",
-      () -> element.setInputFilesImpl(files, convertViaJson(options, ElementHandle.SetInputFilesOptions.class)));
+        () -> element.setInputFilesImpl(files, convertType(options, ElementHandle.SetInputFilesOptions.class)));
   }
 }
