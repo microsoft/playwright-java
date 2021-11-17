@@ -38,6 +38,7 @@ jobs:
     - name: Run tests
       run: mvn test --no-transfer-progress --fail-at-end -D test=*TestBrowserContextCredentials*
       env:
+        DEBUG: pw:browser,pw:protocol
         BROWSER: ${{ matrix.browser }}
     - name: Test Spring Boot Starter
       shell: bash
@@ -87,5 +88,6 @@ jobs:
       - name: Run tests
         run: mvn test --no-transfer-progress --fail-at-end -D test=*TestBrowserContextCredentials*
         env:
+          DEBUG: pw:browser,pw:protocol
           BROWSER: chromium
           BROWSER_CHANNEL: ${{ matrix.browser-channel }}
