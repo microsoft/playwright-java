@@ -32,11 +32,8 @@ public class TestBrowserContextCredentials extends TestBase {
   @DisabledIf(value="isChromiumHeadful", disabledReason="fail")
   void shouldFailWithoutCredentials() {
     server.setAuth("/empty.html", "user", "pass");
-    BrowserContext context = browser.newContext();
-    Page page = context.newPage();
     Response response = page.navigate(server.EMPTY_PAGE);
     assertEquals(401, response.status());
-    context.close();
   }
 
   void shouldWorkWithSetHTTPCredentials() {
@@ -46,34 +43,35 @@ public class TestBrowserContextCredentials extends TestBase {
   @Test
   void shouldWorkWithCorrectCredentials() {
     server.setAuth("/empty.html", "user", "pass");
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .setHttpCredentials("user", "pass"));
-    Page page = context.newPage();
-    Response response = page.navigate(server.EMPTY_PAGE);
-    assertEquals(200, response.status());
-    context.close();
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setHttpCredentials("user", "pass"))) {
+      Page page = context.newPage();
+      Response response = page.navigate(server.EMPTY_PAGE);
+      assertEquals(200, response.status());
+    }
   }
 
   @Test
   void shouldFailWithWrongCredentials() {
     server.setAuth("/empty.html", "user", "pass");
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setHttpCredentials("foo", "bar"));
-    Page page = context.newPage();
-    Response response = page.navigate(server.EMPTY_PAGE);
-    assertEquals(401, response.status());
-    context.close();
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setHttpCredentials("foo", "bar"))) {
+      Page page = context.newPage();
+      Response response = page.navigate(server.EMPTY_PAGE);
+      assertEquals(401, response.status());
+    }
   }
 
   @Test
   void shouldReturnResourceBody() {
     server.setAuth("/playground.html", "user", "pass");
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
-      .setHttpCredentials("user", "pass"));
-    Page page = context.newPage();
-    Response response = page.navigate(server.PREFIX + "/playground.html");
-    assertEquals(200, response.status());
-    assertEquals("Playground", page.title());
-    assertTrue(new String(response.body()).contains("Playground"));
-    context.close();
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setHttpCredentials("user", "pass"))) {
+      Page page = context.newPage();
+      Response response = page.navigate(server.PREFIX + "/playground.html");
+      assertEquals(200, response.status());
+      assertEquals("Playground", page.title());
+      assertTrue(new String(response.body()).contains("Playground"));
+    }
   }
 }

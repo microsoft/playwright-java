@@ -165,8 +165,6 @@ public class Server implements HttpHandler {
         exchange.sendResponseHeaders(401, 0);
         try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
           writer.write("HTTP Error 401 Unauthorized: Access is denied");
-          // TODO: notify subscriber?
-          exchange.getResponseBody().close();
         }
         return;
       }
