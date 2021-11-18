@@ -154,7 +154,7 @@ class Utils {
     } catch (IOException e) {
       throw new PlaywrightException("Failed to read from file", e);
     }
-    return new FilePayload(file.getFileName().toString(), mimeType(file), buffer);
+    return new FilePayload(file.getFileName().toString(), null, buffer);
   }
 
   static void mkParentDirs(Path file) {
