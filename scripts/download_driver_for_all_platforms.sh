@@ -45,7 +45,7 @@ do
   echo "Downloading driver for $PLATFORM to $(pwd)"
 
   URL=https://playwright.azureedge.net/builds/driver
-  if ! [[ $CLI_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  if [[ "$CLI_VERSION" == *-alpha* || "$CLI_VERSION" == *-beta* || "$CLI_VERSION" == *-next* ]]; then
     URL=$URL/next
   fi
   URL=$URL/$FILE_NAME
