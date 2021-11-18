@@ -597,7 +597,7 @@ public class TestBrowserContextFetch extends TestBase {
       "\r\n" +
       "Doe"), body);
     assertTrue(body.contains("content-disposition: form-data; name=\"file\"; filename=\"simplezip.json\"\r\n" +
-      (isMac ? "content-type: application/octet-stream\r\n" : "content-type: application/json\r\n") +
+      "content-type: application/json\r\n" +
       "\r\n" +
       "{\"foo\":\"bar\"}"), body);
     assertEquals(200, response.status());
