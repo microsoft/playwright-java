@@ -69,6 +69,14 @@ public interface PageAssertions {
     }
   }
   /**
+   * Makes the assertion check for the opposite condition. For example, this code tests that the page URL doesn't contain
+   * {@code "error"}:
+   * <pre>{@code
+   * assertThat(page).not().hasURL("error");
+   * }</pre>
+   */
+  PageAssertions not();
+  /**
    * Ensures the page has the given title.
    * <pre>{@code
    * assertThat(page).hasTitle("Playwright");
@@ -148,13 +156,5 @@ public interface PageAssertions {
    * @param urlOrRegExp Expected substring or RegExp.
    */
   void hasURL(Pattern urlOrRegExp, HasURLOptions options);
-  /**
-   * Makes the assertion check for the opposite condition. For example, this code tests that the page URL doesn't contain
-   * {@code "error"}:
-   * <pre>{@code
-   * assertThat(page).not().hasURL("error");
-   * }</pre>
-   */
-  PageAssertions not();
 }
 

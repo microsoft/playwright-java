@@ -182,6 +182,12 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   }
 
   @Override
+  public void hasId(Pattern pattern, HasIdOptions options) {
+    ExpectedTextValue expected = expectedRegex(pattern);
+    expectImpl("to.have.id", expected, pattern, "Locator expected to have ID matching regex", convertType(options, FrameExpectOptions.class));
+  }
+
+  @Override
   public void hasJSProperty(String name, Object value, HasJSPropertyOptions options) {
     if (options == null) {
       options = new HasJSPropertyOptions();
