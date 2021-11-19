@@ -504,5 +504,6 @@ public class TestBrowserTypeConnect extends TestBase {
 
     assertTrue(Files.exists(traceFile));
     assertTrue(Files.size(traceFile) > 0);
+    System.err.println("<<< shouldSupportTracingOverWebSocket");
   }
 }

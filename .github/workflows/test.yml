@@ -36,7 +36,7 @@ jobs:
     - name: Build with Maven
       run: mvn -B package -D skipTests --no-transfer-progress
     - name: Run tests
-      run: mvn test --no-transfer-progress --fail-at-end -D test=*TestBrowserTypeConnect*
+      run: mvn test --no-transfer-progress --fail-at-end -D test=*TestBrowserTypeConnect#shouldSupportTracingOverWebSocket*
       env:
         DEBUG: pw:protocol,pw:browser
         BROWSER: ${{ matrix.browser }}
@@ -86,7 +86,7 @@ jobs:
       - name: Build with Maven
         run: mvn -B package -D skipTests --no-transfer-progress
       - name: Run tests
-        run: mvn test --no-transfer-progress --fail-at-end -D test=*TestBrowserTypeConnect*
+        run: mvn test --no-transfer-progress --fail-at-end -D test=*TestBrowserTypeConnect#shouldSupportTracingOverWebSocket*
         env:
           DEBUG: pw:protocol,pw:browser
           BROWSER: chromium
