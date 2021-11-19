@@ -40,6 +40,118 @@ import com.microsoft.playwright.Locator;
  * }</pre>
  */
 public interface LocatorAssertions {
+  class IsCheckedOptions {
+    /**
+     * Time to retry the assertion for.
+     */
+    public Double timeout;
+
+    /**
+     * Time to retry the assertion for.
+     */
+    public IsCheckedOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsDisabledOptions {
+    /**
+     * Time to retry the assertion for.
+     */
+    public Double timeout;
+
+    /**
+     * Time to retry the assertion for.
+     */
+    public IsDisabledOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsEditableOptions {
+    /**
+     * Time to retry the assertion for.
+     */
+    public Double timeout;
+
+    /**
+     * Time to retry the assertion for.
+     */
+    public IsEditableOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsEmptyOptions {
+    /**
+     * Time to retry the assertion for.
+     */
+    public Double timeout;
+
+    /**
+     * Time to retry the assertion for.
+     */
+    public IsEmptyOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsEnabledOptions {
+    /**
+     * Time to retry the assertion for.
+     */
+    public Double timeout;
+
+    /**
+     * Time to retry the assertion for.
+     */
+    public IsEnabledOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsFocusedOptions {
+    /**
+     * Time to retry the assertion for.
+     */
+    public Double timeout;
+
+    /**
+     * Time to retry the assertion for.
+     */
+    public IsFocusedOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsHiddenOptions {
+    /**
+     * Time to retry the assertion for.
+     */
+    public Double timeout;
+
+    /**
+     * Time to retry the assertion for.
+     */
+    public IsHiddenOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsVisibleOptions {
+    /**
+     * Time to retry the assertion for.
+     */
+    public Double timeout;
+
+    /**
+     * Time to retry the assertion for.
+     */
+    public IsVisibleOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class ContainsTextOptions {
     /**
      * Time to retry the assertion for.
@@ -188,118 +300,146 @@ public interface LocatorAssertions {
       return this;
     }
   }
-  class IsCheckedOptions {
-    /**
-     * Time to retry the assertion for.
-     */
-    public Double timeout;
-
-    /**
-     * Time to retry the assertion for.
-     */
-    public IsCheckedOptions setTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
+  /**
+   * Makes the assertion check for the opposite condition. For example, this code tests that the Locator doesn't contain text
+   * {@code "error"}:
+   * <pre>{@code
+   * assertThat(locator).not().containsText("error");
+   * }</pre>
+   */
+  LocatorAssertions not();
+  /**
+   * Ensures the {@code Locator} points to a checked input.
+   * <pre>{@code
+   * assertThat(page.locator(".subscribe")).isChecked();
+   * }</pre>
+   */
+  default void isChecked() {
+    isChecked(null);
   }
-  class IsDisabledOptions {
-    /**
-     * Time to retry the assertion for.
-     */
-    public Double timeout;
-
-    /**
-     * Time to retry the assertion for.
-     */
-    public IsDisabledOptions setTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
+  /**
+   * Ensures the {@code Locator} points to a checked input.
+   * <pre>{@code
+   * assertThat(page.locator(".subscribe")).isChecked();
+   * }</pre>
+   */
+  void isChecked(IsCheckedOptions options);
+  /**
+   * Ensures the {@code Locator} points to a disabled element.
+   * <pre>{@code
+   * assertThat(page.locator("button.submit")).isDisabled();
+   * }</pre>
+   */
+  default void isDisabled() {
+    isDisabled(null);
   }
-  class IsEditableOptions {
-    /**
-     * Time to retry the assertion for.
-     */
-    public Double timeout;
-
-    /**
-     * Time to retry the assertion for.
-     */
-    public IsEditableOptions setTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
+  /**
+   * Ensures the {@code Locator} points to a disabled element.
+   * <pre>{@code
+   * assertThat(page.locator("button.submit")).isDisabled();
+   * }</pre>
+   */
+  void isDisabled(IsDisabledOptions options);
+  /**
+   * Ensures the {@code Locator} points to an editable element.
+   * <pre>{@code
+   * assertThat(page.locator("input")).isEditable();
+   * }</pre>
+   */
+  default void isEditable() {
+    isEditable(null);
   }
-  class IsEmptyOptions {
-    /**
-     * Time to retry the assertion for.
-     */
-    public Double timeout;
-
-    /**
-     * Time to retry the assertion for.
-     */
-    public IsEmptyOptions setTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
+  /**
+   * Ensures the {@code Locator} points to an editable element.
+   * <pre>{@code
+   * assertThat(page.locator("input")).isEditable();
+   * }</pre>
+   */
+  void isEditable(IsEditableOptions options);
+  /**
+   * Ensures the {@code Locator} points to an empty editable element or to a DOM node that has no text.
+   * <pre>{@code
+   * assertThat(page.locator("div.warning")).isEmpty();
+   * }</pre>
+   */
+  default void isEmpty() {
+    isEmpty(null);
   }
-  class IsEnabledOptions {
-    /**
-     * Time to retry the assertion for.
-     */
-    public Double timeout;
-
-    /**
-     * Time to retry the assertion for.
-     */
-    public IsEnabledOptions setTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
+  /**
+   * Ensures the {@code Locator} points to an empty editable element or to a DOM node that has no text.
+   * <pre>{@code
+   * assertThat(page.locator("div.warning")).isEmpty();
+   * }</pre>
+   */
+  void isEmpty(IsEmptyOptions options);
+  /**
+   * Ensures the {@code Locator} points to an enabled element.
+   * <pre>{@code
+   * assertThat(page.locator("button.submit")).isEnabled();
+   * }</pre>
+   */
+  default void isEnabled() {
+    isEnabled(null);
   }
-  class IsFocusedOptions {
-    /**
-     * Time to retry the assertion for.
-     */
-    public Double timeout;
-
-    /**
-     * Time to retry the assertion for.
-     */
-    public IsFocusedOptions setTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
+  /**
+   * Ensures the {@code Locator} points to an enabled element.
+   * <pre>{@code
+   * assertThat(page.locator("button.submit")).isEnabled();
+   * }</pre>
+   */
+  void isEnabled(IsEnabledOptions options);
+  /**
+   * Ensures the {@code Locator} points to a focused DOM node.
+   * <pre>{@code
+   * assertThat(page.locator("input")).isFocused();
+   * }</pre>
+   */
+  default void isFocused() {
+    isFocused(null);
   }
-  class IsHiddenOptions {
-    /**
-     * Time to retry the assertion for.
-     */
-    public Double timeout;
-
-    /**
-     * Time to retry the assertion for.
-     */
-    public IsHiddenOptions setTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
+  /**
+   * Ensures the {@code Locator} points to a focused DOM node.
+   * <pre>{@code
+   * assertThat(page.locator("input")).isFocused();
+   * }</pre>
+   */
+  void isFocused(IsFocusedOptions options);
+  /**
+   * Ensures the {@code Locator} points to a hidden DOM node, which is the opposite of <a
+   * href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.
+   * <pre>{@code
+   * assertThat(page.locator(".my-element")).isHidden();
+   * }</pre>
+   */
+  default void isHidden() {
+    isHidden(null);
   }
-  class IsVisibleOptions {
-    /**
-     * Time to retry the assertion for.
-     */
-    public Double timeout;
-
-    /**
-     * Time to retry the assertion for.
-     */
-    public IsVisibleOptions setTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
+  /**
+   * Ensures the {@code Locator} points to a hidden DOM node, which is the opposite of <a
+   * href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.
+   * <pre>{@code
+   * assertThat(page.locator(".my-element")).isHidden();
+   * }</pre>
+   */
+  void isHidden(IsHiddenOptions options);
+  /**
+   * Ensures the {@code Locator} points to a <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a> DOM
+   * node.
+   * <pre>{@code
+   * assertThat(page.locator(".my-element")).toBeVisible();
+   * }</pre>
+   */
+  default void isVisible() {
+    isVisible(null);
   }
+  /**
+   * Ensures the {@code Locator} points to a <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a> DOM
+   * node.
+   * <pre>{@code
+   * assertThat(page.locator(".my-element")).toBeVisible();
+   * }</pre>
+   */
+  void isVisible(IsVisibleOptions options);
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
    * as well.
@@ -677,6 +817,26 @@ public interface LocatorAssertions {
    */
   void hasId(String id, HasIdOptions options);
   /**
+   * Ensures the {@code Locator} points to an element with the given DOM Node ID.
+   * <pre>{@code
+   * assertThat(page.locator("input")).hasId("lastname");
+   * }</pre>
+   *
+   * @param id Element id.
+   */
+  default void hasId(Pattern id) {
+    hasId(id, null);
+  }
+  /**
+   * Ensures the {@code Locator} points to an element with the given DOM Node ID.
+   * <pre>{@code
+   * assertThat(page.locator("input")).hasId("lastname");
+   * }</pre>
+   *
+   * @param id Element id.
+   */
+  void hasId(Pattern id, HasIdOptions options);
+  /**
    * Ensures the {@code Locator} points to an element with given JavaScript property. Note that this property can be of a primitive
    * type as well as a plain serializable JavaScript object.
    * <pre>{@code
@@ -872,145 +1032,5 @@ public interface LocatorAssertions {
    * @param value Expected value.
    */
   void hasValue(Pattern value, HasValueOptions options);
-  /**
-   * Ensures the {@code Locator} points to a checked input.
-   * <pre>{@code
-   * assertThat(page.locator(".subscribe")).isChecked();
-   * }</pre>
-   */
-  default void isChecked() {
-    isChecked(null);
-  }
-  /**
-   * Ensures the {@code Locator} points to a checked input.
-   * <pre>{@code
-   * assertThat(page.locator(".subscribe")).isChecked();
-   * }</pre>
-   */
-  void isChecked(IsCheckedOptions options);
-  /**
-   * Ensures the {@code Locator} points to a disabled element.
-   * <pre>{@code
-   * assertThat(page.locator("button.submit")).isDisabled();
-   * }</pre>
-   */
-  default void isDisabled() {
-    isDisabled(null);
-  }
-  /**
-   * Ensures the {@code Locator} points to a disabled element.
-   * <pre>{@code
-   * assertThat(page.locator("button.submit")).isDisabled();
-   * }</pre>
-   */
-  void isDisabled(IsDisabledOptions options);
-  /**
-   * Ensures the {@code Locator} points to an editable element.
-   * <pre>{@code
-   * assertThat(page.locator("input")).isEditable();
-   * }</pre>
-   */
-  default void isEditable() {
-    isEditable(null);
-  }
-  /**
-   * Ensures the {@code Locator} points to an editable element.
-   * <pre>{@code
-   * assertThat(page.locator("input")).isEditable();
-   * }</pre>
-   */
-  void isEditable(IsEditableOptions options);
-  /**
-   * Ensures the {@code Locator} points to an empty editable element or to a DOM node that has no text.
-   * <pre>{@code
-   * assertThat(page.locator("div.warning")).isEmpty();
-   * }</pre>
-   */
-  default void isEmpty() {
-    isEmpty(null);
-  }
-  /**
-   * Ensures the {@code Locator} points to an empty editable element or to a DOM node that has no text.
-   * <pre>{@code
-   * assertThat(page.locator("div.warning")).isEmpty();
-   * }</pre>
-   */
-  void isEmpty(IsEmptyOptions options);
-  /**
-   * Ensures the {@code Locator} points to an enabled element.
-   * <pre>{@code
-   * assertThat(page.locator("button.submit")).isEnabled();
-   * }</pre>
-   */
-  default void isEnabled() {
-    isEnabled(null);
-  }
-  /**
-   * Ensures the {@code Locator} points to an enabled element.
-   * <pre>{@code
-   * assertThat(page.locator("button.submit")).isEnabled();
-   * }</pre>
-   */
-  void isEnabled(IsEnabledOptions options);
-  /**
-   * Ensures the {@code Locator} points to a focused DOM node.
-   * <pre>{@code
-   * assertThat(page.locator("input")).isFocused();
-   * }</pre>
-   */
-  default void isFocused() {
-    isFocused(null);
-  }
-  /**
-   * Ensures the {@code Locator} points to a focused DOM node.
-   * <pre>{@code
-   * assertThat(page.locator("input")).isFocused();
-   * }</pre>
-   */
-  void isFocused(IsFocusedOptions options);
-  /**
-   * Ensures the {@code Locator} points to a hidden DOM node, which is the opposite of <a
-   * href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.
-   * <pre>{@code
-   * assertThat(page.locator(".my-element")).isHidden();
-   * }</pre>
-   */
-  default void isHidden() {
-    isHidden(null);
-  }
-  /**
-   * Ensures the {@code Locator} points to a hidden DOM node, which is the opposite of <a
-   * href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.
-   * <pre>{@code
-   * assertThat(page.locator(".my-element")).isHidden();
-   * }</pre>
-   */
-  void isHidden(IsHiddenOptions options);
-  /**
-   * Ensures the {@code Locator} points to a <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a> DOM
-   * node.
-   * <pre>{@code
-   * assertThat(page.locator(".my-element")).isVisible();
-   * }</pre>
-   */
-  default void isVisible() {
-    isVisible(null);
-  }
-  /**
-   * Ensures the {@code Locator} points to a <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a> DOM
-   * node.
-   * <pre>{@code
-   * assertThat(page.locator(".my-element")).isVisible();
-   * }</pre>
-   */
-  void isVisible(IsVisibleOptions options);
-  /**
-   * Makes the assertion check for the opposite condition. For example, this code tests that the Locator doesn't contain text
-   * {@code "error"}:
-   * <pre>{@code
-   * assertThat(locator).not().containsText("error");
-   * }</pre>
-   */
-  LocatorAssertions not();
 }
 
