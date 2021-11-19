@@ -1,10 +1,7 @@
 package com.microsoft.playwright;
 
 import com.google.gson.Gson;
-import com.microsoft.playwright.options.Cookie;
-import com.microsoft.playwright.options.FilePayload;
-import com.microsoft.playwright.options.HttpHeader;
-import com.microsoft.playwright.options.SameSiteAttribute;
+import com.microsoft.playwright.options.*;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -128,7 +125,7 @@ public class TestBrowserContextFetch extends TestBase {
   void getShouldSupportQueryParams() throws ExecutionException, InterruptedException {
     Future<Server.Request> req = server.futureRequest("/empty.html");
     context.request().get(server.EMPTY_PAGE + "?p1=foo",
-      new APIRequestContext.GetOptions().setParams(mapOf("p1", "v1", "парам2", "знач2")));
+      RequestOptions.create().setQueryParam("p1", "v1").setQueryParam("парам2", "знач2"));
     assertNotNull(req.get());
     assertEquals("/empty.html?p1=v1&%D0%BF%D0%B0%D1%80%D0%B0%D0%BC2=%D0%B7%D0%BD%D0%B0%D1%872", req.get().url);
   }
@@ -138,7 +135,7 @@ public class TestBrowserContextFetch extends TestBase {
   @Test
   void getShouldSupportFailOnStatusCode() {
     try {
-      context.request().get(server.PREFIX + "/does-not-exist.html", new APIRequestContext.GetOptions().setFailOnStatusCode(true));
+      context.request().get(server.PREFIX + "/does-not-exist.html", RequestOptions.create().setFailOnStatusCode(true));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("404 Not Found"), e.getMessage());
@@ -148,7 +145,7 @@ public class TestBrowserContextFetch extends TestBase {
   @Test
   @Disabled("Error: socket hang up")
   void getShouldSupportIgnoreHTTPSErrorsOption() {
-    APIResponse response = context.request().get(httpsServer.EMPTY_PAGE, new APIRequestContext.GetOptions().setIgnoreHTTPSErrors(true));
+    APIResponse response = context.request().get(httpsServer.EMPTY_PAGE, RequestOptions.create().setIgnoreHTTPSErrors(true));
     assertEquals(200, response.status());
   }
 
@@ -163,7 +160,7 @@ public class TestBrowserContextFetch extends TestBase {
     cookie.sameSite = SameSiteAttribute.LAX;
     context.addCookies(asList(cookie));
     Future<Server.Request> req = server.futureRequest("/empty.html");
-    context.request().get(server.EMPTY_PAGE, new APIRequestContext.GetOptions().setHeaders(mapOf("Cookie", "foo=bar")));
+    context.request().get(server.EMPTY_PAGE, RequestOptions.create().setHeader("Cookie", "foo=bar"));
     assertEquals(asList("foo=bar"), req.get().headers.get("cookie"));
   }
 
@@ -235,9 +232,8 @@ public class TestBrowserContextFetch extends TestBase {
 
     String base64 = Base64.getEncoder().encodeToString("user:pass".getBytes(StandardCharsets.UTF_8));;
     Future<Server.Request> request = server.futureRequest("/empty.html");
-    APIResponse response = context.request().get(server.EMPTY_PAGE, new APIRequestContext.GetOptions().setHeaders(
-      mapOf("authorization", "Basic " + base64)
-    ));
+    APIResponse response = context.request().get(server.EMPTY_PAGE, RequestOptions.create()
+      .setHeader("authorization", "Basic " + base64));
     assertEquals(200, response.status());
     assertEquals("/empty.html", request.get().url);
   }
@@ -269,7 +265,7 @@ public class TestBrowserContextFetch extends TestBase {
   void postShouldSupportPostData() throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/simple.json");
     APIResponse response = context.request().post(server.PREFIX + "/simple.json",
-      new APIRequestContext.PostOptions().setData("My request"));
+      RequestOptions.create().setData("My request"));
     assertEquals("POST", request.get().method);
     assertEquals("My request", new String(request.get().postBody));
     assertEquals(200, response.status());
@@ -280,7 +276,7 @@ public class TestBrowserContextFetch extends TestBase {
   void deleteShouldSupportPostData() throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/simple.json");
     APIResponse response = context.request().delete(server.PREFIX + "/simple.json",
-      new APIRequestContext.DeleteOptions().setData("My request"));
+      RequestOptions.create().setData("My request"));
     assertEquals("DELETE", request.get().method);
     assertEquals("My request", new String(request.get().postBody));
     assertEquals(200, response.status());
@@ -291,7 +287,7 @@ public class TestBrowserContextFetch extends TestBase {
   void patchShouldSupportPostData() throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/simple.json");
     APIResponse response = context.request().patch(server.PREFIX + "/simple.json",
-      new APIRequestContext.PatchOptions().setData("My request"));
+      RequestOptions.create().setData("My request"));
     assertEquals("PATCH", request.get().method);
     assertEquals("My request", new String(request.get().postBody));
     assertEquals(200, response.status());
@@ -302,7 +298,7 @@ public class TestBrowserContextFetch extends TestBase {
   void putShouldSupportPostData() throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/simple.json");
     APIResponse response = context.request().put(server.PREFIX + "/simple.json",
-      new APIRequestContext.PutOptions().setData("My request"));
+      RequestOptions.create().setData("My request"));
     assertEquals("PUT", request.get().method);
     assertEquals("My request", new String(request.get().postBody));
     assertEquals(200, response.status());
@@ -328,7 +324,7 @@ public class TestBrowserContextFetch extends TestBase {
       bytes[i] = (byte) i;
     }
     Future<Server.Request> request = server.futureRequest("/empty.html");
-    context.request().post(server.EMPTY_PAGE, new APIRequestContext.PostOptions().setData(bytes));
+    context.request().post(server.EMPTY_PAGE, RequestOptions.create().setData(bytes));
     assertEquals(asList("256"), request.get().headers.get("content-length"));
     assertEquals(asList("application/octet-stream"), request.get().headers.get("content-type"));
   }
@@ -348,12 +344,11 @@ public class TestBrowserContextFetch extends TestBase {
   @Test
   void shouldAllowToOverrideDefaultHeaders() throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/empty.html");
-    context.request().get(server.EMPTY_PAGE, new APIRequestContext.GetOptions().setHeaders(
-      mapOf(
-        "User-Agent", "Playwright",
-        "Accept", "text/html",
-        "Accept-Encoding", "br"
-      )));
+    context.request().get(server.EMPTY_PAGE, RequestOptions.create()
+        .setHeader(
+          "User-Agent", "Playwright")
+        .setHeader("Accept", "text/html")
+        .setHeader("Accept-Encoding", "br"));
     assertEquals(asList("text/html"), request.get().headers.get("accept"));
     assertEquals(asList("Playwright"), request.get().headers.get("user-agent"));
     assertEquals(asList("br"), request.get().headers.get("accept-encoding"));
@@ -366,9 +361,8 @@ public class TestBrowserContextFetch extends TestBase {
     Future<Server.Request> req1 = server.futureRequest("/a/redirect1");
     Future<Server.Request> req2 = server.futureRequest("/b/c/redirect2");
     Future<Server.Request> req3 = server.futureRequest("/simple.json");
-    context.request().get(server.PREFIX + "/a/redirect1", new APIRequestContext.GetOptions().setHeaders(
-      mapOf("foo", "bar")
-    ));
+    context.request().get(server.PREFIX + "/a/redirect1",
+      RequestOptions.create().setHeader("foo", "bar"));
     assertEquals(asList("bar"), req1.get().headers.get("foo"));
     assertEquals(asList("bar"), req2.get().headers.get("foo"));
     assertEquals(asList("bar"), req3.get().headers.get("foo"));
@@ -392,8 +386,8 @@ public class TestBrowserContextFetch extends TestBase {
   @Test
   void shouldThrowOnInvalidHeaderValue() {
     try {
-      context.request().get(server.EMPTY_PAGE, new APIRequestContext.GetOptions()
-        .setHeaders(mapOf("foo", "недопустимое значение")));
+      context.request().get(server.EMPTY_PAGE, RequestOptions.create()
+        .setHeader("foo", "недопустимое значение"));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Invalid character in header content"), e.getMessage());
@@ -424,7 +418,7 @@ public class TestBrowserContextFetch extends TestBase {
     });
 
     try {
-      context.request().get(server.PREFIX + "/slow", new APIRequestContext.GetOptions().setTimeout(100));
+      context.request().get(server.PREFIX + "/slow", RequestOptions.create().setTimeout(100));
       fail("did not throw");
     } catch (PlaywrightException e) {
       assertTrue(e.getMessage().contains("Request timed out after 100ms"), e.getMessage());
@@ -446,7 +440,7 @@ public class TestBrowserContextFetch extends TestBase {
       }
     });
     APIResponse response = context.request().get(server.PREFIX + "/slow",
-      new APIRequestContext.GetOptions().setTimeout(0));
+      RequestOptions.create().setTimeout(0));
     assertEquals("done", response.text());
   }
 
@@ -497,8 +491,8 @@ public class TestBrowserContextFetch extends TestBase {
   void shouldOverrideRequestParameters() throws ExecutionException, InterruptedException {
     Request pageReq = page.waitForRequest("**/*", () -> page.navigate(server.EMPTY_PAGE));
     Future<Server.Request> req = server.futureRequest("/empty.html");
-    context.request().fetch(pageReq, new APIRequestContext.FetchOptions().setMethod("POST")
-        .setHeaders(mapOf("foo", "bar"))
+    context.request().fetch(pageReq, RequestOptions.create().setMethod("POST")
+        .setHeader("foo", "bar")
         .setData("data"));
     assertEquals("POST", req.get().method);
     assertEquals(asList("bar"), req.get().headers.get("foo"));
@@ -508,10 +502,11 @@ public class TestBrowserContextFetch extends TestBase {
   @Test
   void shouldSupportApplicationXWwwFormUrlencoded() throws ExecutionException, InterruptedException {
     Future<Server.Request> req = server.futureRequest("/empty.html");
-    context.request().post(server.EMPTY_PAGE, new APIRequestContext.PostOptions().setForm(
-      mapOf("firstName", "John",
-        "lastName", "Doe",
-        "file", "f.js")));
+    context.request().post(server.EMPTY_PAGE, RequestOptions.create().setForm(
+      FormData.create()
+        .set("firstName", "John")
+        .set("lastName", "Doe")
+        .set("file", "f.js")));
 
     assertEquals("POST", req.get().method);
     assertEquals(asList("application/x-www-form-urlencoded"), req.get().headers.get("content-type"));
@@ -529,7 +524,7 @@ public class TestBrowserContextFetch extends TestBase {
       "file", mapOf("name", "f.js")
     );
     Future<Server.Request> req = server.futureRequest("/empty.html");
-    context.request().post(server.EMPTY_PAGE, new APIRequestContext.PostOptions().setData(data));
+    context.request().post(server.EMPTY_PAGE, RequestOptions.create().setData(data));
     assertEquals("POST", req.get().method);
     assertEquals(asList("application/json"), req.get().headers.get("content-type"));
     String body = new String(req.get().postBody);
@@ -542,11 +537,11 @@ public class TestBrowserContextFetch extends TestBase {
 
     FilePayload file = new FilePayload("f.js", "text/javascript",
       "var x = 10;\r\n;console.log(x);".getBytes(StandardCharsets.UTF_8));
-    APIResponse response = context.request().post(server.EMPTY_PAGE, new APIRequestContext.PostOptions().setMultipart(
-      mapOf("firstName", "John",
-        "lastName", "Doe",
-        "file", file
-      )));
+    APIResponse response = context.request().post(server.EMPTY_PAGE, RequestOptions.create().setMultipart(
+      FormData.create()
+        .set("firstName", "John")
+        .set("lastName", "Doe")
+        .set("file", file)));
 
     assertEquals("POST", serverRequest.get().method);
     List<String> contentType = serverRequest.get().headers.get("content-type");
@@ -577,11 +572,11 @@ public class TestBrowserContextFetch extends TestBase {
     try (FileOutputStream output = new FileOutputStream(path.toFile())) {
       output.write("{\"foo\":\"bar\"}".getBytes(StandardCharsets.UTF_8));
     }
-    APIResponse response = context.request().post(server.EMPTY_PAGE, new APIRequestContext.PostOptions().setMultipart(
-      mapOf("firstName", "John",
-        "lastName", "Doe",
-        "file", path
-      )));
+    APIResponse response = context.request().post(server.EMPTY_PAGE, RequestOptions.create().setMultipart(
+      FormData.create()
+        .set("firstName", "John")
+        .set("lastName", "Doe")
+        .set("file", path)));
 
     assertEquals("POST", serverRequest.get().method);
     List<String> contentType = serverRequest.get().headers.get("content-type");
@@ -609,8 +604,8 @@ public class TestBrowserContextFetch extends TestBase {
       "firstName", "John",
       "lastName", "Doe");
     Future<Server.Request> req = server.futureRequest("/empty.html");
-    context.request().post(server.EMPTY_PAGE, new APIRequestContext.PostOptions()
-      .setHeaders(mapOf("content-type", "unknown"))
+    context.request().post(server.EMPTY_PAGE, RequestOptions.create()
+      .setHeader("content-type", "unknown")
       .setData(data));
     assertEquals("POST", req.get().method);
     assertEquals(asList("unknown"), req.get().headers.get("content-type"));
@@ -621,7 +616,7 @@ public class TestBrowserContextFetch extends TestBase {
   @Test
   void shouldThrowWhenDataPassedForUnsupportedRequest() {
     try {
-      context.request().fetch(server.EMPTY_PAGE, new APIRequestContext.FetchOptions()
+      context.request().fetch(server.EMPTY_PAGE, RequestOptions.create()
         .setMethod("GET").setData("bar"));
       fail("did not throw");
     } catch (PlaywrightException e) {
@@ -650,13 +645,12 @@ public class TestBrowserContextFetch extends TestBase {
   @Test
   void shouldAcceptBoolAndNumericParams() throws ExecutionException, InterruptedException {
     Future<Server.Request> req = server.futureRequest("/empty.html");
-    page.request().get(server.EMPTY_PAGE, new APIRequestContext.GetOptions().setParams(mapOf(
-      "str", "s",
-      "num", 10,
-      "bool", true,
-      "bool2", false
-      )));
-    assertEquals("/empty.html?str=s&bool2=false&bool=true&num=10", req.get().url);
+    page.request().get(server.EMPTY_PAGE, RequestOptions.create()
+      .setQueryParam("str", "s")
+      .setQueryParam("num", 10)
+      .setQueryParam("bool", true)
+      .setQueryParam("bool2", false));
+    assertEquals("/empty.html?str=s&num=10&bool=true&bool2=false", req.get().url);
   }
 
   @Test
