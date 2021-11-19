@@ -110,7 +110,7 @@ public class TestPageNavigate extends TestBase {
   @Test
   void shouldWorkWithSubframesReturn204() {
     server.setRoute("/frames/frame.html", exchange -> {
-      exchange.sendResponseHeaders(204, 0);
+      exchange.sendResponseHeaders(204, -1);
       exchange.getResponseBody().close();
     });
     page.navigate(server.PREFIX + "/frames/one-frame.html");
@@ -119,7 +119,7 @@ public class TestPageNavigate extends TestBase {
   @Test
   void shouldWorkWithSubframesReturn204WithDomcontentloaded() {
     server.setRoute("/frames/frame.html", exchange -> {
-      exchange.sendResponseHeaders(204, 0);
+      exchange.sendResponseHeaders(204, -1);
       exchange.getResponseBody().close();
     });
     page.navigate(server.PREFIX + "/frames/one-frame.html", new Page.NavigateOptions().setWaitUntil(WaitUntilState.DOMCONTENTLOADED));
@@ -129,7 +129,7 @@ public class TestPageNavigate extends TestBase {
   void shouldFailWhenServerReturns204() {
     // WebKit just loads an empty page.
     server.setRoute("/empty.html", exchange -> {
-      exchange.sendResponseHeaders(204, 0);
+      exchange.sendResponseHeaders(204, -1);
       exchange.getResponseBody().close();
     });
     try {

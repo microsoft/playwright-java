@@ -63,15 +63,15 @@ public class TestGlobalFetch extends TestBase {
   @Test
   void headShouldWork() {
     APIRequestContext request = playwright.request().newContext();
-    APIResponse response = request.head(server.PREFIX + "/simple.json");
-    assertEquals(server.PREFIX + "/simple.json", response.url());
+    APIResponse response = request.head(server.EMPTY_PAGE);
+    assertEquals(server.EMPTY_PAGE, response.url());
     assertEquals(200, response.status());
     assertEquals("OK", response.statusText());
     assertTrue(response.ok());
-    assertEquals("application/json", response.headers().get("content-type"));
+    assertEquals("text/html", response.headers().get("content-type"));
     Optional<HttpHeader> contentType = response.headersArray().stream().filter(h -> "content-type".equals(h.name.toLowerCase())).findFirst();
     assertTrue(contentType.isPresent());
-    assertEquals("application/json", contentType.get().value);
+    assertEquals("text/html", contentType.get().value);
     assertEquals("", response.text());
   }
 
