@@ -106,6 +106,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldBeAbleToReconnectToABrowser() {
+    System.err.println("___ shouldBeAbleToReconnectToABrowser");
     {
       Browser browser = browserType.connect(wsEndpoint);
       BrowserContext browserContext = browser.newContext();
@@ -122,10 +123,12 @@ public class TestBrowserTypeConnect extends TestBase {
       page.navigate(server.EMPTY_PAGE);
       browser.close();
     }
+    System.err.println("<<< shouldBeAbleToReconnectToABrowser");
   }
 
   @Test
   void shouldSupportSlowMo() {
+    System.err.println("___ shouldSupportSlowMo");
     Browser browser = browserType.connect(wsEndpoint,
       new BrowserType.ConnectOptions().setSlowMo(1));
     BrowserContext browserContext = browser.newContext();
@@ -137,6 +140,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldBeAbleToConnectTwoBrowsersAtTheSameTime() {
+    System.err.println("___ shouldBeAbleToConnectTwoBrowsersAtTheSameTime");
     Browser browser1 = browserType.connect(wsEndpoint);
     assertEquals(0, browser1.contexts().size());
     browser1.newContext();
@@ -157,6 +161,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldSendExtraHeadersWithConnectRequest() throws Exception {
+    System.err.println("___ shouldSendExtraHeadersWithConnectRequest");
     try (WebSocketServerImpl webSocketServer = WebSocketServerImpl.create()) {
       try {
         browserType.connect("ws://localhost:" + webSocketServer.getPort() + "/ws",
@@ -171,6 +176,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void disconnectedEventShouldBeEmittedWhenBrowserIsClosedOrServerIsClosed() throws InterruptedException {
+    System.err.println("___ disconnectedEventShouldBeEmittedWhenBrowserIsClosedOrServerIsClosed");
     // Launch another server to not affect other tests.
     BrowserServer remote = launchBrowserServer(browserType);
 
@@ -201,6 +207,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void disconnectedEventShouldHaveBrowserAsArgument() {
+    System.err.println("___ disconnectedEventShouldHaveBrowserAsArgument");
     Browser browser = browserType.connect(wsEndpoint);
     Browser[] disconnected = {null};
     browser.onDisconnected(b -> disconnected[0] = b);
@@ -214,6 +221,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldSetTheBrowserConnectedState() {
+    System.err.println("___ shouldSetTheBrowserConnectedState");
     Browser remote = browserType.connect(wsEndpoint);
     assertTrue(remote.isConnected());
     remote.close();
@@ -222,6 +230,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldThrowWhenUsedAfterIsConnectedReturnsFalse() throws InterruptedException {
+    System.err.println("___ shouldThrowWhenUsedAfterIsConnectedReturnsFalse");
     // Launch another server to not affect other tests.
     BrowserServer server = launchBrowserServer(browserType);
     Browser remote = browserType.connect(server.wsEndpoint);
@@ -246,6 +255,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldThrowWhenCallingWaitForNavigationAfterDisconnect() throws InterruptedException {
+    System.err.println("___ shouldThrowWhenCallingWaitForNavigationAfterDisconnect");
     BrowserServer server = launchBrowserServer(browserType);
     Browser browser = browserType.connect(server.wsEndpoint);
     Page page = browser.newPage();
@@ -270,6 +280,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldRejectNavigationWhenBrowserCloses() {
+    System.err.println("___ shouldRejectNavigationWhenBrowserCloses");
     Browser remote = browserType.connect(wsEndpoint);
     Page page = remote.newPage();
 
@@ -285,6 +296,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldEmitCloseEventsOnPagesAndContexts() throws InterruptedException {
+    System.err.println("___ shouldEmitCloseEventsOnPagesAndContexts");
     BrowserServer server = launchBrowserServer(browserType);
     Browser browser = browserType.connect(server.wsEndpoint);
     BrowserContext context = browser.newContext();
@@ -306,6 +318,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldRespectSelectors() {
+    System.err.println("___ shouldRespectSelectors");
     String mycss = "{\n" +
       "    query(root, selector) {\n" +
       "      return root.querySelector(selector);\n" +
@@ -347,6 +360,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldNotThrowOnCloseAfterDisconnect() throws InterruptedException {
+    System.err.println("___ shouldNotThrowOnCloseAfterDisconnect");
     BrowserServer remoteServer = launchBrowserServer(browserType);
     Browser browser = browserType.connect(remoteServer.wsEndpoint);
     Page page = browser.newPage();
@@ -363,6 +377,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldNotThrowOnContextCloseAfterDisconnect() throws InterruptedException {
+    System.err.println("___ shouldNotThrowOnContextCloseAfterDisconnect");
     BrowserServer remoteServer = launchBrowserServer(browserType);
     Browser browser = browserType.connect(remoteServer.wsEndpoint);
     BrowserContext context = browser.newContext();
@@ -380,6 +395,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldNotThrowOnPageCloseAfterDisconnect() throws InterruptedException {
+    System.err.println("___ shouldNotThrowOnPageCloseAfterDisconnect");
     BrowserServer remoteServer = launchBrowserServer(browserType);
     Browser browser = browserType.connect(remoteServer.wsEndpoint);
     Page page = browser.newPage();
@@ -396,6 +412,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldSaveAsVideosFromRemoteBrowser(@TempDir Path tempDir) {
+    System.err.println("___ shouldSaveAsVideosFromRemoteBrowser");
     Path videosPath = tempDir.resolve("videosPath");
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setRecordVideoDir(videosPath).setRecordVideoSize(320,  240));
@@ -417,6 +434,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldSaveDownload(@TempDir Path tempDir) throws IOException {
+    System.err.println("___ shouldSaveDownload");
     server.setRoute("/download", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
       exchange.getResponseHeaders().add("Content-Disposition", "attachment");
@@ -444,6 +462,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldErrorWhenSavingDownloadAfterDeletion(@TempDir Path tempDir) {
+    System.err.println("___ shouldErrorWhenSavingDownloadAfterDeletion");
     server.setRoute("/download", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
       exchange.getResponseHeaders().add("Content-Disposition", "attachment");
@@ -468,6 +487,7 @@ public class TestBrowserTypeConnect extends TestBase {
 
   @Test
   void shouldSupportTracingOverWebSocket(@TempDir Path tempDir) throws IOException {
+    System.err.println("___ shouldSupportTracingOverWebSocket");
     List<BrowserContext> contexts = browser.contexts();
     assertEquals(1, contexts.size());
     BrowserContext context = contexts.get(0);
