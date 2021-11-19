@@ -36,7 +36,7 @@ jobs:
     - name: Build with Maven
       run: mvn -B package -D skipTests --no-transfer-progress
     - name: Run tests
-      run: mvn test --no-transfer-progress --fail-at-end
+      run: mvn test --no-transfer-progress --fail-at-end -D test=*TestBrowserTypeConnect*
       env:
         BROWSER: ${{ matrix.browser }}
     - name: Test Spring Boot Starter
@@ -85,7 +85,7 @@ jobs:
       - name: Build with Maven
         run: mvn -B package -D skipTests --no-transfer-progress
       - name: Run tests
-        run: mvn test --no-transfer-progress --fail-at-end
+        run: mvn test --no-transfer-progress --fail-at-end -D test=*TestBrowserTypeConnect*
         env:
           BROWSER: chromium
           BROWSER_CHANNEL: ${{ matrix.browser-channel }}
