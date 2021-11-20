@@ -2,6 +2,7 @@ package com.microsoft.playwright;
 
 import com.google.gson.Gson;
 import com.microsoft.playwright.options.HttpHeader;
+import com.microsoft.playwright.options.RequestOptions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -212,7 +213,7 @@ public class TestGlobalFetch extends TestBase {
   void shouldPropagateIgnoreHTTPSErrorsOnRedirects() {
     httpsServer.setRedirect("/redir", "/empty.html");
     APIRequestContext request = playwright.request().newContext();
-    APIResponse response = request.get(httpsServer.PREFIX + "/redir", new APIRequestContext.GetOptions().setIgnoreHTTPSErrors(true));
+    APIResponse response = request.get(httpsServer.PREFIX + "/redir", RequestOptions.create().setIgnoreHTTPSErrors(true));
     assertEquals(200, response.status());
   }
 
@@ -259,7 +260,7 @@ public class TestGlobalFetch extends TestBase {
     APIRequestContext request = playwright.request().newContext();
     Future<Server.Request> req1 = server.futureRequest("/redirect");
     Future<Server.Request> req2 = server.futureRequest("/empty.html");
-    APIResponse result = request.post(server.PREFIX + "/redirect", new APIRequestContext.PostOptions().setData(mapOf("foo", "bar")));
+    APIResponse result = request.post(server.PREFIX + "/redirect", RequestOptions.create().setData(mapOf("foo", "bar")));
 
     assertEquals(200, result.status());
     assertEquals(asList("13"), req1.get().headers.get("content-length"));
@@ -280,7 +281,7 @@ public class TestGlobalFetch extends TestBase {
     APIRequestContext request = playwright.request().newContext();
     for (Object value : values) {
       Future<Server.Request> req = server.futureRequest("/empty.html");
-      request.post(server.EMPTY_PAGE, new APIRequestContext.PostOptions().setHeaders(mapOf("content-type", "application/json")).setData(value));
+      request.post(server.EMPTY_PAGE, RequestOptions.create().setHeader("content-type", "application/json").setData(value));
       byte[] body = req.get().postBody;
       assertEquals(new Gson().toJson(value), new String(body));
     }
@@ -293,8 +294,8 @@ public class TestGlobalFetch extends TestBase {
     for (Object value : values) {
       String stringifiedValue = new Gson().toJson(value);
       Future<Server.Request> req = server.futureRequest("/empty.html");
-      request.post(server.EMPTY_PAGE, new APIRequestContext.PostOptions()
-        .setHeaders(mapOf("content-type", "application/json"))
+      request.post(server.EMPTY_PAGE, RequestOptions.create()
+        .setHeader("content-type", "application/json")
         .setData(stringifiedValue));
       byte[] body = req.get().postBody;
       assertEquals(stringifiedValue, new String(body));

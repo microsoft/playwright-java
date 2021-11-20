@@ -8,6 +8,7 @@ import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Request;
 import com.microsoft.playwright.options.FilePayload;
+import com.microsoft.playwright.options.RequestOptions;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -17,7 +18,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.Serialization.*;
-import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.toFilePayload;
 
 class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
@@ -26,10 +26,8 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
   }
 
   @Override
-  public APIResponse delete(String url, DeleteOptions options) {
-    FetchOptions fetchOptions = toFetchOptions(options);
-    fetchOptions.method = "DELETE";
-    return fetch(url, fetchOptions);
+  public APIResponse delete(String url, RequestOptions options) {
+    return fetch(url, ensureOptions(options, "DELETE"));
   }
 
   @Override
@@ -38,14 +36,15 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
   }
 
   @Override
-  public APIResponse fetch(String urlOrRequest, FetchOptions options) {
-    return withLogging("APIRequestContext.fetch", () -> fetchImpl(urlOrRequest, options));
+  public APIResponse fetch(String urlOrRequest, RequestOptions options) {
+    return withLogging("APIRequestContext.fetch", () -> fetchImpl(urlOrRequest, (RequestOptionsImpl) options));
   }
 
   @Override
-  public APIResponse fetch(Request request, FetchOptions options) {
+  public APIResponse fetch(Request request, RequestOptions optionsArg) {
+    RequestOptionsImpl options = (RequestOptionsImpl) optionsArg;
     if (options == null) {
-      options = new FetchOptions();
+      options = new RequestOptionsImpl();
     }
     if (options.method == null) {
       options.method = request.method();
@@ -59,9 +58,9 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
     return fetch(request.url(), options);
   }
 
-  private APIResponse fetchImpl(String url, FetchOptions options) {
+  private APIResponse fetchImpl(String url, RequestOptionsImpl options) {
     if (options == null) {
-      options = new FetchOptions();
+      options = new RequestOptionsImpl();
     }
     JsonObject params = new JsonObject();
     params.addProperty("url", url);
@@ -94,10 +93,10 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
       }
     }
     if (options.form != null) {
-      params.add("formData", toNameValueArray(options.form));
+      params.add("formData", toNameValueArray(options.form.fields));
     }
     if (options.multipart != null) {
-      params.add("multipartData", serializeMultipartData(options.multipart));
+      params.add("multipartData", serializeMultipartData(options.multipart.fields));
     }
     if (options.timeout != null) {
       params.addProperty("timeout", options.timeout);
@@ -151,38 +150,28 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
   }
 
   @Override
-  public APIResponse get(String url, GetOptions options) {
-    FetchOptions fetchOptions = toFetchOptions(options);
-    fetchOptions.method = "GET";
-    return fetch(url, fetchOptions);
+  public APIResponse get(String url, RequestOptions options) {
+    return fetch(url, ensureOptions(options, "GET"));
   }
 
   @Override
-  public APIResponse head(String url, HeadOptions options) {
-    FetchOptions fetchOptions = toFetchOptions(options);
-    fetchOptions.method = "HEAD";
-    return fetch(url, fetchOptions);
+  public APIResponse head(String url, RequestOptions options) {
+    return fetch(url, ensureOptions(options, "HEAD"));
   }
 
   @Override
-  public APIResponse patch(String url, PatchOptions options) {
-    FetchOptions fetchOptions = toFetchOptions(options);
-    fetchOptions.method = "PATCH";
-    return fetch(url, fetchOptions);
+  public APIResponse patch(String url, RequestOptions options) {
+    return fetch(url, ensureOptions(options, "PATCH"));
   }
 
   @Override
-  public APIResponse post(String url, PostOptions options) {
-    FetchOptions fetchOptions = toFetchOptions(options);
-    fetchOptions.method = "POST";
-    return fetch(url, fetchOptions);
+  public APIResponse post(String url, RequestOptions options) {
+    return fetch(url, ensureOptions(options, "POST"));
   }
 
   @Override
-  public APIResponse put(String url, PutOptions options) {
-    FetchOptions fetchOptions = toFetchOptions(options);
-    fetchOptions.method = "PUT";
-    return fetch(url, fetchOptions);
+  public APIResponse put(String url, RequestOptions options) {
+    return fetch(url, ensureOptions(options, "PUT"));
   }
 
   @Override
@@ -197,11 +186,14 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
     });
   }
 
-  private static <T> FetchOptions toFetchOptions(T options) {
-    FetchOptions fetchOptions = convertType(options, FetchOptions.class);
-    if (fetchOptions == null) {
-      fetchOptions = new FetchOptions();
+  private static RequestOptionsImpl ensureOptions(RequestOptions options, String method) {
+    RequestOptionsImpl impl = (RequestOptionsImpl) options;
+    if (impl == null) {
+      impl = new RequestOptionsImpl();
     }
-    return fetchOptions;
+    if (impl.method == null) {
+      impl.method = method;
+    }
+    return impl;
   }
 }

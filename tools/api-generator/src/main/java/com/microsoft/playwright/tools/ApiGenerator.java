@@ -268,6 +268,7 @@ class TypeRef extends Element {
     customTypeNames.put("Frame.setInputFiles.files", "FilePayload");
     customTypeNames.put("Page.setInputFiles.files", "FilePayload");
     customTypeNames.put("Page.setInputFiles.files", "FilePayload");
+    customTypeNames.put("FormData.set.value", "FilePayload");
 
     customTypeNames.put("Page.dragAndDrop.options.sourcePosition", "Position");
     customTypeNames.put("Frame.dragAndDrop.options.sourcePosition", "Position");
@@ -630,6 +631,20 @@ class Method extends Element {
       output.add(offset + "}");
       return;
     }
+    if ("FormData.create".equals(jsonPath)) {
+      writeJavadoc(params, output, offset);
+      output.add(offset + "static FormData create() {");
+      output.add(offset + "  return new FormDataImpl();");
+      output.add(offset + "}");
+      return;
+    }
+    if ("RequestOptions.create".equals(jsonPath)) {
+      writeJavadoc(params, output, offset);
+      output.add(offset + "static RequestOptions create() {");
+      output.add(offset + "  return new RequestOptionsImpl();");
+      output.add(offset + "}");
+      return;
+    }
     if ("PlaywrightAssertions.assertThat".equals(jsonPath)) {
       writeJavadoc(params, output, offset);
       String originalName = jsonElement.getAsJsonObject().get("originalName").getAsString();
@@ -896,10 +911,10 @@ class Interface extends TypeDefinition {
   }
 
   void writeTo(List<String> output, String offset) {
-    if ("Playwright".equals(jsonName)) {
-      output.add("import com.microsoft.playwright.impl.PlaywrightImpl;");
+    if (methods.stream().anyMatch(m -> "create".equals(m.jsonName))) {
+      output.add("import com.microsoft.playwright.impl." + jsonName + "Impl;");
     }
-    if (asList("Page", "Request", "Response", "APIRequest", "APIResponse", "FileChooser", "Frame", "ElementHandle", "Locator", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard").contains(jsonName)) {
+    if (asList("Page", "Request", "Response", "APIRequestContext", "APIRequest", "APIResponse", "FileChooser", "Frame", "ElementHandle", "Locator", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard").contains(jsonName)) {
       output.add("import com.microsoft.playwright.options.*;");
     }
     if (jsonName.equals("Route")) {
@@ -908,7 +923,7 @@ class Interface extends TypeDefinition {
     if ("Download".equals(jsonName)) {
       output.add("import java.io.InputStream;");
     }
-    if (asList("Page", "Frame", "ElementHandle", "Locator", "APIRequest", "APIRequestContext", "FileChooser", "Browser", "BrowserContext", "BrowserType", "Download", "Route", "Selectors", "Tracing", "Video").contains(jsonName)) {
+    if (asList("Page", "Frame", "ElementHandle", "Locator", "FormData", "APIRequest", "APIRequestContext", "FileChooser", "Browser", "BrowserContext", "BrowserType", "Download", "Route", "Selectors", "Tracing", "Video").contains(jsonName)) {
       output.add("import java.nio.file.Path;");
     }
     output.add("import java.util.*;");
@@ -1118,11 +1133,16 @@ public class ApiGenerator {
       if (!classFilter.test(name)) {
         continue;
       }
+      Interface iface = new Interface(entry.getAsJsonObject(), topLevelTypes);
+      if (asList("RequestOptions", "FormData").contains(name)) {
+        topLevelTypes.put(name, iface);
+        continue;
+      }
       List<String> lines = new ArrayList<>();
       lines.add(Interface.header);
       lines.add("package " + packageName + ";");
       lines.add("");
-      new Interface(entry.getAsJsonObject(), topLevelTypes).writeTo(lines, "");
+      iface.writeTo(lines, "");
       String text = String.join("\n", lines);
       try (FileWriter writer = new FileWriter(new File(dir, name + ".java"))) {
         writer.write(text);
