@@ -33,7 +33,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 class Serialization {
-  private static Gson gson = new GsonBuilder()
+  private static final Gson gson = new GsonBuilder()
     .registerTypeAdapter(SameSiteAttribute.class, new SameSiteAdapter().nullSafe())
     .registerTypeAdapter(BrowserChannel.class, new ToLowerCaseAndDashSerializer<BrowserChannel>())
     .registerTypeAdapter(ColorScheme.class, new ToLowerCaseAndDashSerializer<ColorScheme>())
@@ -50,7 +50,7 @@ class Serialization {
     .registerTypeHierarchyAdapter(JSHandleImpl.class, new HandleSerializer())
     .registerTypeAdapter((new TypeToken<Map<String, String>>(){}).getType(), new StringMapSerializer())
     .registerTypeAdapter((new TypeToken<Map<String, Object>>(){}).getType(), new FirefoxUserPrefsSerializer())
-    .registerTypeHierarchyAdapter(Path.class, new PathSerializer()).create();;
+    .registerTypeHierarchyAdapter(Path.class, new PathSerializer()).create();
 
   static Gson gson() {
     return gson;

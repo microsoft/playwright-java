@@ -30,10 +30,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -174,7 +171,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public List<Cookie> cookies(String url) {
-    return cookies(url == null ? new ArrayList<>() : asList(url));
+    return cookies(url == null ? new ArrayList<>() : Collections.singletonList(url));
   }
 
   private void closeImpl() {

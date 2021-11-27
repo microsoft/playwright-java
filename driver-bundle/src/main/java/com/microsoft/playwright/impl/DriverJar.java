@@ -28,7 +28,7 @@ public class DriverJar extends Driver {
   private static final String PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD";
   private final Path driverTempDir;
 
-  DriverJar() throws IOException, URISyntaxException, InterruptedException {
+  DriverJar() throws IOException {
     driverTempDir = Files.createTempDirectory("playwright-java-");
     driverTempDir.toFile().deleteOnExit();
   }
