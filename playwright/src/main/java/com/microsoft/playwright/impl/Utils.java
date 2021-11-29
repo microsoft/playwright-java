@@ -78,7 +78,7 @@ class Utils {
     for (int i = 0; i < glob.length(); ++i) {
       char c = glob.charAt(i);
       if (escapeGlobChars.contains(c)) {
-        tokens.append("\\" + c);
+        tokens.append("\\").append(c);
         continue;
       }
       if (c == '*') {
@@ -116,7 +116,7 @@ class Utils {
             tokens.append('|');
             break;
           }
-          tokens.append("\\" + c);
+          tokens.append("\\").append(c);
           break;
         default:
           tokens.append(c);
@@ -164,7 +164,7 @@ class Utils {
         try {
           Files.createDirectories(dir);
         } catch (IOException e) {
-          throw new PlaywrightException("Failed to create parent directory: " + dir.toString(), e);
+          throw new PlaywrightException("Failed to create parent directory: " + dir, e);
         }
       }
     }

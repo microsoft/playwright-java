@@ -24,7 +24,6 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestInstall {
