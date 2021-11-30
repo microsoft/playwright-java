@@ -87,6 +87,7 @@ public class TestPageDrag extends TestBase {
     assertEquals(true, page.evalOnSelector("#target",
       "target => target.contains(document.querySelector('#source'))")); // could not find source in target
   }
+
   @Test
   void shouldAllowSpecifyingThePosition() {
     page.setContent("<div style='width:100px;height:100px;background:red;' id='red'>\n" +
@@ -115,5 +116,12 @@ public class TestPageDrag extends TestBase {
         .setSourcePosition(34, 7).setTargetPosition(10, 20));
     Object json = eventsHandle.jsonValue();
     assertJsonEquals("[{type: \"mousedown\", x: 34, y: 7},{type: \"mouseup\", x: 10, y: 20}]", json);
+  }
+
+  @Test
+  void shouldWorkWithLocators() {
+    page.navigate(server.PREFIX + "/drag-n-drop.html");
+    page.locator("#source").dragTo(page.locator("#target"));
+    assertEquals(true, page.evalOnSelector("#target", "target => target.contains(document.querySelector('#source'))"));
   }
 }

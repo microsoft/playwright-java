@@ -424,6 +424,107 @@ public interface Locator {
       return this;
     }
   }
+  class DragToOptions {
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
+    public Boolean force;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
+    public Boolean noWaitAfter;
+    /**
+     * Clicks on the source element at this point relative to the top-left corner of the element's padding box. If not
+     * specified, some visible point of the element is used.
+     */
+    public Position sourcePosition;
+    /**
+     * Drops on the target element at this point relative to the top-left corner of the element's padding box. If not
+     * specified, some visible point of the element is used.
+     */
+    public Position targetPosition;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public Double timeout;
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public Boolean trial;
+
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
+    public DragToOptions setForce(boolean force) {
+      this.force = force;
+      return this;
+    }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
+    public DragToOptions setNoWaitAfter(boolean noWaitAfter) {
+      this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    /**
+     * Clicks on the source element at this point relative to the top-left corner of the element's padding box. If not
+     * specified, some visible point of the element is used.
+     */
+    public DragToOptions setSourcePosition(double x, double y) {
+      return setSourcePosition(new Position(x, y));
+    }
+    /**
+     * Clicks on the source element at this point relative to the top-left corner of the element's padding box. If not
+     * specified, some visible point of the element is used.
+     */
+    public DragToOptions setSourcePosition(Position sourcePosition) {
+      this.sourcePosition = sourcePosition;
+      return this;
+    }
+    /**
+     * Drops on the target element at this point relative to the top-left corner of the element's padding box. If not
+     * specified, some visible point of the element is used.
+     */
+    public DragToOptions setTargetPosition(double x, double y) {
+      return setTargetPosition(new Position(x, y));
+    }
+    /**
+     * Drops on the target element at this point relative to the top-left corner of the element's padding box. If not
+     * specified, some visible point of the element is used.
+     */
+    public DragToOptions setTargetPosition(Position targetPosition) {
+      this.targetPosition = targetPosition;
+      return this;
+    }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public DragToOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+    /**
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
+     * performing it.
+     */
+    public DragToOptions setTrial(boolean trial) {
+      this.trial = trial;
+      return this;
+    }
+  }
   class ElementHandleOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
@@ -1674,6 +1775,20 @@ public interface Locator {
    * @param eventInit Optional event-specific initialization properties.
    */
   void dispatchEvent(String type, Object eventInit, DispatchEventOptions options);
+  /**
+   *
+   *
+   * @param target Locator of the element to drag to.
+   */
+  default void dragTo(Locator target) {
+    dragTo(target, null);
+  }
+  /**
+   *
+   *
+   * @param target Locator of the element to drag to.
+   */
+  void dragTo(Locator target, DragToOptions options);
   /**
    * Resolves given locator to the first matching DOM element. If no elements matching the query are visible, waits for them
    * up to a given timeout. If multiple elements match the selector, throws.

@@ -21,7 +21,9 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * Exposes API that can be used for the Web API testing.
+ * Exposes API that can be used for the Web API testing. Each Playwright browser context has a APIRequestContext instance
+ * attached which shares cookies with the page context. Its also possible to create a new APIRequestContext instance
+ * manually. For more information see <a href="https://playwright.dev/java/docs/class-apirequestcontext">here</a>.
  */
 public interface APIRequest {
   class NewContextOptions {

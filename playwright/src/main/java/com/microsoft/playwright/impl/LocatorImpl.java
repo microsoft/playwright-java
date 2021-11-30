@@ -96,6 +96,16 @@ class LocatorImpl implements Locator {
   }
 
   @Override
+  public void dragTo(Locator target, DragToOptions options) {
+    if (options == null) {
+      options = new DragToOptions();
+    }
+    Frame.DragAndDropOptions frameOptions = convertType(options, Frame.DragAndDropOptions.class);
+    frameOptions.setStrict(true);
+    frame.dragAndDrop(selector, ((LocatorImpl) target).selector, frameOptions);
+  }
+
+  @Override
   public ElementHandle elementHandle(ElementHandleOptions options) {
     if (options == null) {
       options = new ElementHandleOptions();
