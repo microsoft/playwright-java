@@ -270,8 +270,10 @@ class TypeRef extends Element {
     customTypeNames.put("Page.setInputFiles.files", "FilePayload");
     customTypeNames.put("FormData.set.value", "FilePayload");
 
+    customTypeNames.put("Locator.dragTo.options.sourcePosition", "Position");
     customTypeNames.put("Page.dragAndDrop.options.sourcePosition", "Position");
     customTypeNames.put("Frame.dragAndDrop.options.sourcePosition", "Position");
+    customTypeNames.put("Locator.dragTo.options.targetPosition", "Position");
     customTypeNames.put("Page.dragAndDrop.options.targetPosition", "Position");
     customTypeNames.put("Frame.dragAndDrop.options.targetPosition", "Position");
   }
@@ -648,12 +650,12 @@ class Method extends Element {
     if ("PlaywrightAssertions.assertThat".equals(jsonPath)) {
       writeJavadoc(params, output, offset);
       String originalName = jsonElement.getAsJsonObject().get("originalName").getAsString();
-      if ("assertThatPage".equals(originalName)) {
+      if ("expectPage".equals(originalName)) {
         output.add(offset + "static PageAssertions assertThat(Page page) {");
         output.add(offset + "  return new PageAssertionsImpl(page);");
         output.add(offset + "}");
         output.add("");
-      } else if ("assertThatLocator".equals(originalName)) {
+      } else if ("expectLocator".equals(originalName)) {
         output.add(offset + "static LocatorAssertions assertThat(Locator locator) {");
         output.add(offset + "  return new LocatorAssertionsImpl(locator);");
         output.add(offset + "}");

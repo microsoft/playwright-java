@@ -108,9 +108,6 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
       params.addProperty("ignoreHTTPSErrors", options.ignoreHTTPSErrors);
     }
     JsonObject json = sendMessage("fetch", params).getAsJsonObject();
-    if (json.has("error")) {
-      throw new PlaywrightException(json.get("error").getAsString());
-    }
     return new APIResponseImpl(this, json.getAsJsonObject("response"));
   }
 
