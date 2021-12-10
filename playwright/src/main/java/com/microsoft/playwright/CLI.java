@@ -35,6 +35,10 @@ public class CLI {
     if (!pb.environment().containsKey("PW_CLI_TARGET_LANG")) {
       pb.environment().put("PW_CLI_TARGET_LANG", "java");
     }
+    String version = Playwright.class.getPackage().getImplementationVersion();
+    if (version != null) {
+      pb.environment().put("PW_CLI_DISPLAY_VERSION", version);
+    }
     pb.inheritIO();
     Process process = pb.start();
     System.exit(process.waitFor());
