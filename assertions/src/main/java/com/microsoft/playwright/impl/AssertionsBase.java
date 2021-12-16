@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 import static java.util.Arrays.asList;
 
 class AssertionsBase {
@@ -83,22 +84,7 @@ class AssertionsBase {
     ExpectedTextValue expected = new ExpectedTextValue();
     expected.regexSource = pattern.pattern();
     if (pattern.flags() != 0) {
-      expected.regexFlags = "";
-      if ((pattern.flags() & Pattern.CASE_INSENSITIVE) != 0) {
-        // Case-insensitive search.
-        expected.regexFlags += "i";
-      }
-      if ((pattern.flags() & Pattern.DOTALL) != 0) {
-        // Allows . to match newline characters.
-        expected.regexFlags += "s";
-      }
-      if ((pattern.flags() & Pattern.MULTILINE) != 0) {
-        // Multi-line search.
-        expected.regexFlags += "m";
-      }
-      if ((pattern.flags() & ~(Pattern.MULTILINE | Pattern.CASE_INSENSITIVE | Pattern.DOTALL)) != 0) {
-        throw new PlaywrightException("Unexpected RegEx flag, only CASE_INSENSITIVE, DOTALL and MULTILINE are supported.");
-      }
+      expected.regexFlags = toJsRegexFlags(pattern);
     }
     return expected;
   }

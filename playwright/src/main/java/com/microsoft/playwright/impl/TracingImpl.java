@@ -33,8 +33,11 @@ class TracingImpl implements Tracing {
 
   private void stopChunkImpl(Path path) {
     JsonObject params = new JsonObject();
-    params.addProperty("save", path != null);
-    params.addProperty("skipCompress", false);
+    String mode = "doNotSave";
+    if (path != null) {
+      mode = "compressTrace";
+    }
+    params.addProperty("mode", mode);
     JsonObject json = context.sendMessage("tracingStopChunk", params).getAsJsonObject();
     if (!json.has("artifact")) {
       return;

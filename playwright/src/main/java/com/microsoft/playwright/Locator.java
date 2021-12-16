@@ -19,49 +19,14 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
- * Locator represents a view to the element(s) on the page. It captures the logic sufficient to retrieve the element at any
- * given moment. Locator can be created with the {@link Page#locator Page.locator()} method.
- * <pre>{@code
- * Locator locator = page.locator("text=Submit");
- * locator.click();
- * }</pre>
+ * Locators are the central piece of Playwright's auto-waiting and retry-ability. In a nutshell, locators represent a way
+ * to find element(s) on the page at any moment. Locator can be created with the {@link Page#locator Page.locator()}
+ * method.
  *
- * <p> The difference between the Locator and {@code ElementHandle} is that the latter points to a particular element, while Locator
- * captures the logic of how to retrieve that element.
- *
- * <p> In the example below, handle points to a particular DOM element on page. If that element changes text or is used by
- * React to render an entirely different component, handle is still pointing to that very DOM element. This can lead to
- * unexpected behaviors.
- * <pre>{@code
- * ElementHandle handle = page.querySelector("text=Submit");
- * handle.hover();
- * handle.click();
- * }</pre>
- *
- * <p> With the locator, every time the {@code element} is used, up-to-date DOM element is located in the page using the selector. So
- * in the snippet below, underlying DOM element is going to be located twice.
- * <pre>{@code
- * Locator locator = page.locator("text=Submit");
- * locator.hover();
- * locator.click();
- * }</pre>
- *
- * <p> **Strictness**
- *
- * <p> Locators are strict. This means that all operations on locators that imply some target DOM element will throw if more
- * than one element matches given selector.
- * <pre>{@code
- * // Throws if there are several buttons in DOM:
- * page.locator("button").click();
- *
- * // Works because we explicitly tell locator to pick the first element:
- * page.locator("button").first().click();
- *
- * // Works because count knows what to do with multiple matches:
- * page.locator("button").count();
- * }</pre>
+ * <p> <a href="https://playwright.dev/java/docs/locators/">Learn more about locators</a>.
  */
 public interface Locator {
   class BoundingBoxOptions {
@@ -895,6 +860,30 @@ public interface Locator {
      */
     public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+  }
+  class LocatorOptions {
+    /**
+     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. For example,
+     * {@code "Playwright"} matches {@code <article><div>Playwright</div></article>}.
+     */
+    public Object hasText;
+
+    /**
+     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. For example,
+     * {@code "Playwright"} matches {@code <article><div>Playwright</div></article>}.
+     */
+    public LocatorOptions setHasText(String hasText) {
+      this.hasText = hasText;
+      return this;
+    }
+    /**
+     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. For example,
+     * {@code "Playwright"} matches {@code <article><div>Playwright</div></article>}.
+     */
+    public LocatorOptions setHasText(Pattern hasText) {
+      this.hasText = hasText;
       return this;
     }
   }
@@ -2177,7 +2166,16 @@ public interface Locator {
    * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
    * selectors</a> for more details.
    */
-  Locator locator(String selector);
+  default Locator locator(String selector) {
+    return locator(selector, null);
+  }
+  /**
+   * The method finds an element matching the specified selector in the {@code Locator}'s subtree.
+   *
+   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
+   * selectors</a> for more details.
+   */
+  Locator locator(String selector, LocatorOptions options);
   /**
    * Returns locator to the n-th matching element.
    */

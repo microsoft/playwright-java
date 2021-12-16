@@ -41,16 +41,47 @@ public class TestPageFill extends TestBase {
   @Test
   void shouldThrowOnUnsupportedInputs() {
     page.navigate(server.PREFIX + "/input/textarea.html");
-    for (String type : new String[]{"button", "checkbox", "file", "image", "radio", "range", "reset", "submit"}) {
+    for (String type : new String[]{"button", "checkbox", "file", "image", "radio", "reset", "submit"}) {
       page.evalOnSelector("input", "(input, type) => input.setAttribute('type', type)", type);
       try {
         page.fill("input", "");
         fail("fill should throw");
       } catch (PlaywrightException e) {
-        assertTrue(e.getMessage().contains("input of type \"" + type + "\" cannot be filled"), e.getMessage());
+        assertTrue(e.getMessage().contains("input of type \"" + type + "\" cannot be filled"), "type = " + type + e.getMessage());
       }
     }
   }
+
+  @Test
+  void shouldFillRangeInput() {
+    page.setContent("<input type=range min=0 max=100 value=50>");
+    page.fill("input", "42");
+    assertEquals("42", page.evalOnSelector("input", "input => input.value"));
+  }
+
+  @Test
+  void shouldThrowOnIncorrectRangeValue() {
+    page.setContent("<input type=range min=0 max=100 value=50>");
+    try {
+      page.fill("input", "foo");
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Malformed value"), e.getMessage());
+    }
+    try {
+      page.fill("input", "200");
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Malformed value"), e.getMessage());
+    }
+    try {
+      page.fill("input", "15.43");
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Malformed value"), e.getMessage());
+    }
+  }
+
 
   @Test
   void shouldFillDifferentInputTypes() {
