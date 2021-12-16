@@ -26,3 +26,6 @@ jobs:
         run: mvn install -D skipTests --no-transfer-progress
       - name: Test CLI
         run: mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -f playwright/pom.xml  -D exec.args=-V
+      - name: Test CLI version
+        shell: bash
+        run: tools/test-cli-version/test.sh
