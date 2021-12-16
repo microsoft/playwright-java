@@ -147,10 +147,6 @@ public interface Page extends AutoCloseable {
   /**
    * Emitted when attachment download started. User can access basic file operations on downloaded content via the passed
    * {@code Download} instance.
-   *
-   * <p> <strong>NOTE:</strong> Browser context **must** be created with the {@code acceptDownloads} set to {@code true} when user needs access to the downloaded
-   * content. If {@code acceptDownloads} is not set, download events are emitted, but the actual download is not performed and user
-   * has no access to the downloaded files.
    */
   void onDownload(Consumer<Download> handler);
   /**
@@ -1639,6 +1635,30 @@ public interface Page extends AutoCloseable {
      */
     public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+  }
+  class LocatorOptions {
+    /**
+     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. For example,
+     * {@code "Playwright"} matches {@code <article><div>Playwright</div></article>}.
+     */
+    public Object hasText;
+
+    /**
+     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. For example,
+     * {@code "Playwright"} matches {@code <article><div>Playwright</div></article>}.
+     */
+    public LocatorOptions setHasText(String hasText) {
+      this.hasText = hasText;
+      return this;
+    }
+    /**
+     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. For example,
+     * {@code "Playwright"} matches {@code <article><div>Playwright</div></article>}.
+     */
+    public LocatorOptions setHasText(Pattern hasText) {
+      this.hasText = hasText;
       return this;
     }
   }
@@ -4346,7 +4366,20 @@ public interface Page extends AutoCloseable {
    * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
    * selectors</a> for more details.
    */
-  Locator locator(String selector);
+  default Locator locator(String selector) {
+    return locator(selector, null);
+  }
+  /**
+   * The method returns an element locator that can be used to perform actions on the page. Locator is resolved to the
+   * element immediately before performing an action, so a series of actions on the same locator can in fact be performed on
+   * different DOM elements. That would happen if the DOM structure between those actions has changed.
+   *
+   * <p> Shortcut for main frame's {@link Frame#locator Frame.locator()}.
+   *
+   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
+   * selectors</a> for more details.
+   */
+  Locator locator(String selector, LocatorOptions options);
   /**
    * The page's main frame. Page is guaranteed to have a main frame which persists during navigations.
    */

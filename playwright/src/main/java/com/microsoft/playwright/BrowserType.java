@@ -370,7 +370,7 @@ public interface BrowserType {
   }
   class LaunchPersistentContextOptions {
     /**
-     * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
+     * Whether to automatically download all the attachments. Defaults to {@code true} where all the downloads are accepted.
      */
     public Boolean acceptDownloads;
     /**
@@ -581,7 +581,7 @@ public interface BrowserType {
     public Optional<ViewportSize> viewportSize;
 
     /**
-     * Whether to automatically download all the attachments. Defaults to {@code false} where all the downloads are canceled.
+     * Whether to automatically download all the attachments. Defaults to {@code true} where all the downloads are accepted.
      */
     public LaunchPersistentContextOptions setAcceptDownloads(boolean acceptDownloads) {
       this.acceptDownloads = acceptDownloads;

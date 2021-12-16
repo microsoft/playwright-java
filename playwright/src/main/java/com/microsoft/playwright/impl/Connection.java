@@ -314,6 +314,8 @@ public class Connection {
       case "JsonPipe":
         result = new JsonPipe(parent, type, guid, initializer);
         break;
+      case "LocalUtils":
+        break;
       case "Page":
         result = new PageImpl(parent, type, guid, initializer);
         break;

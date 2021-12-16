@@ -17,6 +17,9 @@
 package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.FrameLocator;
+import com.microsoft.playwright.Locator;
+
+import static com.microsoft.playwright.impl.Utils.convertType;
 
 class FrameLocatorImpl implements FrameLocator {
   private final FrameImpl frame;
@@ -43,8 +46,8 @@ class FrameLocatorImpl implements FrameLocator {
   }
 
   @Override
-  public LocatorImpl locator(String selector) {
-    return new LocatorImpl(frame, frameSelector + " >> control=enter-frame >> " + selector);
+  public Locator locator(String selector, LocatorOptions options) {
+    return new LocatorImpl(frame, frameSelector + " >> control=enter-frame >> " + selector, convertType(options, Locator.LocatorOptions.class));
   }
 
   @Override

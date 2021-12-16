@@ -40,10 +40,6 @@ import java.util.*;
  * // wait for download to complete
  * Path path = download.path();
  * }</pre>
- *
- * <p> <strong>NOTE:</strong> Browser context **must** be created with the {@code acceptDownloads} set to {@code true} when user needs access to the downloaded
- * content. If {@code acceptDownloads} is not set, download events are emitted, but the actual download is not performed and user
- * has no access to the downloaded files.
  */
 public interface Download {
   /**

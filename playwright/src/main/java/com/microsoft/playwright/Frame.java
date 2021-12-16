@@ -1217,6 +1217,30 @@ public interface Frame {
       return this;
     }
   }
+  class LocatorOptions {
+    /**
+     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. For example,
+     * {@code "Playwright"} matches {@code <article><div>Playwright</div></article>}.
+     */
+    public Object hasText;
+
+    /**
+     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. For example,
+     * {@code "Playwright"} matches {@code <article><div>Playwright</div></article>}.
+     */
+    public LocatorOptions setHasText(String hasText) {
+      this.hasText = hasText;
+      return this;
+    }
+    /**
+     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. For example,
+     * {@code "Playwright"} matches {@code <article><div>Playwright</div></article>}.
+     */
+    public LocatorOptions setHasText(Pattern hasText) {
+      this.hasText = hasText;
+      return this;
+    }
+  }
   class PressOptions {
     /**
      * Time to wait between {@code keydown} and {@code keyup} in milliseconds. Defaults to 0.
@@ -2955,7 +2979,18 @@ public interface Frame {
    * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
    * selectors</a> for more details.
    */
-  Locator locator(String selector);
+  default Locator locator(String selector) {
+    return locator(selector, null);
+  }
+  /**
+   * The method returns an element locator that can be used to perform actions in the frame. Locator is resolved to the
+   * element immediately before performing an action, so a series of actions on the same locator can in fact be performed on
+   * different DOM elements. That would happen if the DOM structure between those actions has changed.
+   *
+   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
+   * selectors</a> for more details.
+   */
+  Locator locator(String selector, LocatorOptions options);
   /**
    * Returns frame's name attribute as specified in the tag.
    *

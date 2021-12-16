@@ -28,6 +28,7 @@ import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Pattern;
 
 class Utils {
   static <F, T> T convertType(F f, Class<T> t) {
@@ -215,5 +216,25 @@ class Utils {
       map.put(header.name.toLowerCase(), header.value);
     }
     return map;
+  }
+
+  static String toJsRegexFlags(Pattern pattern) {
+    String regexFlags = "";
+    if ((pattern.flags() & Pattern.CASE_INSENSITIVE) != 0) {
+      // Case-insensitive search.
+      regexFlags += "i";
+    }
+    if ((pattern.flags() & Pattern.DOTALL) != 0) {
+      // Allows . to match newline characters.
+      regexFlags += "s";
+    }
+    if ((pattern.flags() & Pattern.MULTILINE) != 0) {
+      // Multi-line search.
+      regexFlags += "m";
+    }
+    if ((pattern.flags() & ~(Pattern.MULTILINE | Pattern.CASE_INSENSITIVE | Pattern.DOTALL)) != 0) {
+      throw new PlaywrightException("Unexpected RegEx flag, only CASE_INSENSITIVE, DOTALL and MULTILINE are supported.");
+    }
+    return regexFlags;
   }
 }

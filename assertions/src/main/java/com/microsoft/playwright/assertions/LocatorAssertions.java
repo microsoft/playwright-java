@@ -41,11 +41,16 @@ import com.microsoft.playwright.Locator;
  */
 public interface LocatorAssertions {
   class IsCheckedOptions {
+    public Boolean checked;
     /**
      * Time to retry the assertion for.
      */
     public Double timeout;
 
+    public IsCheckedOptions setChecked(boolean checked) {
+      this.checked = checked;
+      return this;
+    }
     /**
      * Time to retry the assertion for.
      */
@@ -840,7 +845,7 @@ public interface LocatorAssertions {
    * Ensures the {@code Locator} points to an element with given JavaScript property. Note that this property can be of a primitive
    * type as well as a plain serializable JavaScript object.
    * <pre>{@code
-   * assertThat(page.locator("input")).hasJSProperty("type", "text");
+   * assertThat(page.locator("input")).hasJSProperty("loaded", true);
    * }</pre>
    *
    * @param name Property name.
@@ -853,7 +858,7 @@ public interface LocatorAssertions {
    * Ensures the {@code Locator} points to an element with given JavaScript property. Note that this property can be of a primitive
    * type as well as a plain serializable JavaScript object.
    * <pre>{@code
-   * assertThat(page.locator("input")).hasJSProperty("type", "text");
+   * assertThat(page.locator("input")).hasJSProperty("loaded", true);
    * }</pre>
    *
    * @param name Property name.

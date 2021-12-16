@@ -1,5 +1,6 @@
 package com.microsoft.playwright.impl;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
@@ -11,17 +12,32 @@ import com.microsoft.playwright.options.WaitForSelectorState;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertType;
+import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 class LocatorImpl implements Locator {
   private final FrameImpl frame;
   private final String selector;
 
-  public LocatorImpl(FrameImpl frame, String selector) {
+  public LocatorImpl(FrameImpl frame, String selector, LocatorOptions options) {
     this.frame = frame;
+    if (options != null && options.hasText != null) {
+      if (options.hasText instanceof Pattern) {
+        Pattern pattern = (Pattern) options.hasText;
+        selector += " >> :scope:text-matches(" + escapeWithQuotes(pattern.pattern()) + ", \"" + toJsRegexFlags(pattern) + "\")";
+      } else if (options.hasText instanceof String) {
+        String text = (String) options.hasText;
+        selector += " >> :scope:has-text(" + escapeWithQuotes(text)+ ")";
+      }
+    }
     this.selector = selector;
+  }
+
+  private static String escapeWithQuotes(String text) {
+    return gson().toJson(text);
   }
 
   private <R, O> R withElement(BiFunction<ElementHandle, O, R> callback, O options) {
@@ -146,7 +162,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator first() {
-    return new LocatorImpl(frame, selector + " >> nth=0");
+    return new LocatorImpl(frame, selector + " >> nth=0", null);
   }
 
   @Override
@@ -252,17 +268,17 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator last() {
-    return new LocatorImpl(frame, selector + " >> nth=-1");
+    return new LocatorImpl(frame, selector + " >> nth=-1", null);
   }
 
   @Override
-  public Locator locator(String selector) {
-    return new LocatorImpl(frame, this.selector + " >> " + selector);
+  public Locator locator(String selector, LocatorOptions options) {
+    return new LocatorImpl(frame, this.selector + " >> " + selector, options);
   }
 
   @Override
   public Locator nth(int index) {
-    return new LocatorImpl(frame, selector + " >> nth=" + index);
+    return new LocatorImpl(frame, selector + " >> nth=" + index, null);
   }
 
   @Override
