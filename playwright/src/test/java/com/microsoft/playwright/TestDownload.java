@@ -111,16 +111,18 @@ public class TestDownload extends TestBase {
 
   @Test
   void shouldReportDownloadsWithAcceptDownloadsFalse() {
-    page.setContent("<a href='" + server.PREFIX + "/downloadWithFilename'>download</a>");
-    Download download = page.waitForDownload(() -> page.click("a"));
-    assertEquals(server.PREFIX + "/downloadWithFilename", download.url());
-    assertEquals("file.txt", download.suggestedFilename());
-    try {
-      download.path();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(download.failure().contains("acceptDownloads"));
-      assertTrue(e.getMessage().contains("acceptDownloads: true"));
+    try (Page page = browser.newPage(new Browser.NewPageOptions().setAcceptDownloads(false))) {
+      page.setContent("<a href='" + server.PREFIX + "/downloadWithFilename'>download</a>");
+      Download download = page.waitForDownload(() -> page.click("a"));
+      assertEquals(server.PREFIX + "/downloadWithFilename", download.url());
+      assertEquals("file.txt", download.suggestedFilename());
+      try {
+        download.path();
+        fail("did not throw");
+      } catch (PlaywrightException e) {
+        assertTrue(download.failure().contains("acceptDownloads"));
+        assertTrue(e.getMessage().contains("acceptDownloads: true"));
+      }
     }
   }
   @Test
