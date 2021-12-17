@@ -52,6 +52,11 @@ public interface Tracing {
      */
     public Boolean snapshots;
     /**
+     * Whether to include source files for trace actions. List of the directories with source code for the application must be
+     * provided via {@code PLAYWRIGHT_JAVA_SRC} environment variable.
+     */
+    public Boolean sources;
+    /**
      * Trace name to be shown in the Trace Viewer.
      */
     public String title;
@@ -76,6 +81,14 @@ public interface Tracing {
      */
     public StartOptions setSnapshots(boolean snapshots) {
       this.snapshots = snapshots;
+      return this;
+    }
+    /**
+     * Whether to include source files for trace actions. List of the directories with source code for the application must be
+     * provided via {@code PLAYWRIGHT_JAVA_SRC} environment variable.
+     */
+    public StartOptions setSources(boolean sources) {
+      this.sources = sources;
       return this;
     }
     /**

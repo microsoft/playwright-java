@@ -16,16 +16,30 @@
 
 package com.microsoft.playwright;
 
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
+import static com.microsoft.playwright.Utils.copy;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestTracing extends TestBase {
+
+  private static final String _PW_JAVA_TEST_SRC = "_PW_JAVA_TEST_SRC";
 
   @Override
   @BeforeAll
@@ -95,5 +109,40 @@ public class TestTracing extends TestBase {
 
     assertTrue(Files.exists(traceFile1));
     assertTrue(Files.exists(traceFile2));
+  }
+
+  @Test
+  void shouldCollectSources(@TempDir Path tmpDir) throws IOException {
+    Assumptions.assumeTrue(System.getenv("PLAYWRIGHT_JAVA_SRC") != null, "PLAYWRIGHT_JAVA_SRC must point to the directory containing this test source.");
+    context.tracing().start(new Tracing.StartOptions().setSources(true));
+    page.navigate(server.EMPTY_PAGE);
+    page.setContent("<button>Click</button>");
+    page.click("'Click'");
+    Path trace = tmpDir.resolve("trace1.zip");
+    context.tracing().stop(new Tracing.StopOptions().setPath(trace));
+
+    Map<String, byte[]> entries = parseTrace(trace);
+    Map<String, byte[]> sources = entries.entrySet().stream().filter(e -> e.getKey().endsWith(".txt")).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    assertEquals(1, sources.size());
+
+    String path = getClass().getName().replaceAll("\\.", File.separator);
+    Path sourceFile = Paths.get(System.getenv("PLAYWRIGHT_JAVA_SRC"), path + ".java");
+    byte[] thisFile = Files.readAllBytes(sourceFile);
+    assertEquals(new String(thisFile, UTF_8), new String(sources.values().iterator().next(), UTF_8));
+  }
+
+  private static Map<String, byte[]> parseTrace(Path trace) throws IOException {
+    Map<String, byte[]> entries = new HashMap<>();
+    try (ZipInputStream zis = new ZipInputStream(new FileInputStream(trace.toFile()))) {
+      for (ZipEntry zipEntry = zis.getNextEntry(); zipEntry != null; zipEntry = zis.getNextEntry()) {
+        ByteArrayOutputStream content = new ByteArrayOutputStream();
+        try (OutputStream output = content) {
+          copy(zis, output);
+        }
+        entries.put(zipEntry.getName(), content.toByteArray());
+      }
+      zis.closeEntry();
+    }
+    return entries;
   }
 }

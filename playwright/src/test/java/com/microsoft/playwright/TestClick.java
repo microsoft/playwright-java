@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.condition.EnabledIf;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +34,11 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickTheButton() {
+    context.tracing().start(new Tracing.StartOptions().setSources(true).setScreenshots(true).setSnapshots(true));
     page.navigate(server.PREFIX + "/input/button.html");
     page.click("button");
     assertEquals("Clicked", page.evaluate("result"));
+    context.tracing().stopChunk(new Tracing.StopChunkOptions().setPath(Paths.get("/tmp/t.zip")));
   }
 
   @Test
