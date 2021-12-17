@@ -40,7 +40,7 @@ jobs:
       run: mvn test --no-transfer-progress --fail-at-end
       env:
         BROWSER: ${{ matrix.browser }}
-        PLAYWRIGHT_JAVA_SRC: playwright/src/test/java
+        PLAYWRIGHT_JAVA_SRC: src/test/java
     - name: Test Spring Boot Starter
       shell: bash
       env:
@@ -92,7 +92,7 @@ jobs:
         env:
           BROWSER: chromium
           BROWSER_CHANNEL: ${{ matrix.browser-channel }}
-          PLAYWRIGHT_JAVA_SRC: playwright/src/test/java
+          PLAYWRIGHT_JAVA_SRC: src/test/java
 
   Java_17:
     timeout-minutes: 30
@@ -124,7 +124,7 @@ jobs:
         run: mvn test --no-transfer-progress --fail-at-end
         env:
           BROWSER: ${{ matrix.browser }}
-          PLAYWRIGHT_JAVA_SRC: playwright/src/test/java
+          PLAYWRIGHT_JAVA_SRC: src/test/java
       - name: Test Spring Boot Starter
         shell: bash
         env:
