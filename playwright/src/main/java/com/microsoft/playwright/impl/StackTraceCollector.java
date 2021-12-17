@@ -43,7 +43,11 @@ class StackTraceCollector {
       pkg = frame.getClassName().substring(0, lastDot + 1);
     }
     pkg = pkg.replace('.', File.separatorChar);
-    return srcDir.resolve(pkg).resolve(frame.getFileName()).toString();
+    String file = frame.getFileName();
+    if (file == null) {
+      return "";
+    }
+    return srcDir.resolve(pkg).resolve(file).toString();
   }
 
   JsonArray currentStackTrace() {
