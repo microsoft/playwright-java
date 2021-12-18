@@ -16,8 +16,8 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Tracing;
 
 import java.nio.file.Path;
@@ -26,16 +26,23 @@ import static com.microsoft.playwright.impl.Serialization.gson;
 
 class TracingImpl implements Tracing {
   private final BrowserContextImpl context;
+  private boolean includeSources;
 
   TracingImpl(BrowserContextImpl context) {
     this.context = context;
   }
 
   private void stopChunkImpl(Path path) {
+    boolean isRemote = context.browser() != null && context.browser().isRemote;
     JsonObject params = new JsonObject();
     String mode = "doNotSave";
     if (path != null) {
-      mode = "compressTrace";
+      if (isRemote) {
+        mode = "compressTrace";
+      } else {
+        // TODO: support source zips and do compression on the client.
+        mode = "compressTraceAndSources";
+      }
     }
     params.addProperty("mode", mode);
     JsonObject json = context.sendMessage("tracingStopChunk", params).getAsJsonObject();
@@ -45,7 +52,7 @@ class TracingImpl implements Tracing {
     ArtifactImpl artifact = context.connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
     // In case of CDP connection browser is null but since the connection is established by
     // the driver it is safe to consider the artifact local.
-    if (context.browser() != null && context.browser().isRemote) {
+    if (isRemote) {
       artifact.isRemote = true;
     }
     artifact.saveAs(path);
@@ -77,6 +84,13 @@ class TracingImpl implements Tracing {
       options = new StartOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    includeSources = options.sources != null;
+    if (includeSources) {
+      if (!context.connection.isCollectingStacks()) {
+        throw new PlaywrightException("Source root directories must be provided to enable source collection");
+      }
+      params.addProperty("sources", true);
+    }
     context.sendMessage("tracingStart", params);
     context.sendMessage("tracingStartChunk");
   }

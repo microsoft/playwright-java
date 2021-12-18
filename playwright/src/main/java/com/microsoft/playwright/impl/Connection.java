@@ -16,23 +16,18 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.TimeoutError;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.microsoft.playwright.impl.LoggingSupport.logWithTimestamp;
 import static com.microsoft.playwright.impl.Serialization.gson;
 
 class Message {
@@ -62,7 +57,7 @@ public class Connection {
   private final Map<String, ChannelOwner> objects = new HashMap<>();
   private final Root root;
   private int lastId = 0;
-  private final Path srcDir;
+  private final StackTraceCollector stackTraceCollector;
   private final Map<Integer, WaitableResult<JsonElement>> callbacks = new HashMap<>();
   private String apiName;
   private static final boolean isLogging;
@@ -91,14 +86,11 @@ public class Connection {
     this.transport = transport;
     root = new Root(this);
     String srcRoot = System.getenv("PLAYWRIGHT_JAVA_SRC");
-    if (srcRoot == null) {
-      srcDir = null;
-    } else {
-      srcDir = Paths.get(srcRoot);
-      if (!Files.exists(srcDir)) {
-        throw new PlaywrightException("PLAYWRIGHT_JAVA_SRC environment variable points to non-existing location: '" + srcRoot + "'");
-      }
-    }
+    stackTraceCollector = (srcRoot == null) ? null: new StackTraceCollector(Paths.get(srcRoot));
+  }
+
+  boolean isCollectingStacks() {
+    return stackTraceCollector != null;
   }
 
   String setApiName(String name) {
@@ -119,45 +111,6 @@ public class Connection {
     return internalSendMessage(guid, method, params);
   }
 
-  private String sourceFile(StackTraceElement frame) {
-    String pkg = frame.getClassName();
-    int lastDot = pkg.lastIndexOf('.');
-    if (lastDot == -1) {
-      pkg = "";
-    } else {
-      pkg = frame.getClassName().substring(0, lastDot + 1);
-    }
-    pkg = pkg.replace('.', File.separatorChar);
-    return srcDir.resolve(pkg).resolve(frame.getFileName()).toString();
-  }
-
-  private JsonArray currentStackTrace() {
-    StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-
-    int index = 0;
-    while (index < stack.length && !stack[index].getClassName().equals(getClass().getName())) {
-      index++;
-    };
-    // Find Playwright API call
-    while (index < stack.length && stack[index].getClassName().startsWith("com.microsoft.playwright.")) {
-      // hack for tests
-      if (stack[index].getClassName().startsWith("com.microsoft.playwright.Test")) {
-        break;
-      }
-      index++;
-    }
-    JsonArray jsonStack = new JsonArray();
-    for (; index < stack.length; index++) {
-      StackTraceElement frame = stack[index];
-      JsonObject jsonFrame = new JsonObject();
-      jsonFrame.addProperty("file", sourceFile(frame));
-      jsonFrame.addProperty("line", frame.getLineNumber());
-      jsonFrame.addProperty("function", frame.getClassName() + "." + frame.getMethodName());
-      jsonStack.add(jsonFrame);
-    }
-    return jsonStack;
-  }
-
   private WaitableResult<JsonElement> internalSendMessage(String guid, String method, JsonObject params) {
     int id = ++lastId;
     WaitableResult<JsonElement> result = new WaitableResult<>();
@@ -168,8 +121,8 @@ public class Connection {
     message.addProperty("method", method);
     message.add("params", params);
     JsonObject metadata = new JsonObject();
-    if (srcDir != null) {
-      metadata.add("stack", currentStackTrace());
+    if (stackTraceCollector != null) {
+      metadata.add("stack", stackTraceCollector.currentStackTrace());
     }
     if (apiName != null) {
       metadata.addProperty("apiName", apiName);

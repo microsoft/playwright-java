@@ -22,7 +22,7 @@ import com.microsoft.playwright.Page;
 
 /**
  * The {@code PageAssertions} class provides assertion methods that can be used to make assertions about the {@code Page} state in the
- * tests. A new instance of {@code LocatorAssertions} is created by calling {@link PlaywrightAssertions#assertThat
+ * tests. A new instance of {@code PageAssertions} is created by calling {@link PlaywrightAssertions#assertThat
  * PlaywrightAssertions.assertThat()}:
  * <pre>{@code
  * ...
