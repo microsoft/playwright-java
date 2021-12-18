@@ -125,7 +125,7 @@ public class TestTracing extends TestBase {
     Map<String, byte[]> sources = entries.entrySet().stream().filter(e -> e.getKey().endsWith(".txt")).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     assertEquals(1, sources.size());
 
-    String path = getClass().getName().replaceAll("\\.", File.separator);
+    String path = getClass().getName().replace('.', File.separatorChar);
     Path sourceFile = Paths.get(System.getenv("PLAYWRIGHT_JAVA_SRC"), path + ".java");
     byte[] thisFile = Files.readAllBytes(sourceFile);
     assertEquals(new String(thisFile, UTF_8), new String(sources.values().iterator().next(), UTF_8));
