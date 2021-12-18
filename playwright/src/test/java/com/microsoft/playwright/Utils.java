@@ -20,16 +20,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -86,6 +87,21 @@ class Utils {
     while ((read = in.read(buffer, 0, 8192)) != -1) {
       out.write(buffer, 0, read);
     }
+  }
+
+  static Map<String, byte[]> parseTrace(Path trace) throws IOException {
+    Map<String, byte[]> entries = new HashMap<>();
+    try (ZipInputStream zis = new ZipInputStream(new FileInputStream(trace.toFile()))) {
+      for (ZipEntry zipEntry = zis.getNextEntry(); zipEntry != null; zipEntry = zis.getNextEntry()) {
+        ByteArrayOutputStream content = new ByteArrayOutputStream();
+        try (OutputStream output = content) {
+          copy(zis, output);
+        }
+        entries.put(zipEntry.getName(), content.toByteArray());
+      }
+      zis.closeEntry();
+    }
+    return entries;
   }
 
   enum OS { WINDOWS, MAC, LINUX, UNKNOWN }

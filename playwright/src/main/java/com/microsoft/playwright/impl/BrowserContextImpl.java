@@ -55,6 +55,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   Path videosDir;
   URL baseUrl;
   Path recordHarPath;
+  LocalUtils localUtils;
 
   enum EventType {
     CLOSE,
