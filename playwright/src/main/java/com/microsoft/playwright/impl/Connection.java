@@ -268,6 +268,7 @@ public class Connection {
         result = new JsonPipe(parent, type, guid, initializer);
         break;
       case "LocalUtils":
+        result = new LocalUtils(parent, type, guid, initializer);
         break;
       case "Page":
         result = new PageImpl(parent, type, guid, initializer);

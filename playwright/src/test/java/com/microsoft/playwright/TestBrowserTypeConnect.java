@@ -19,21 +19,22 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.impl.Driver;
 import com.microsoft.playwright.options.WaitForSelectorState;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.Utils.mapOf;
+import static com.microsoft.playwright.Utils.parseTrace;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -485,4 +486,25 @@ public class TestBrowserTypeConnect extends TestBase {
     assertTrue(Files.exists(traceFile));
     assertTrue(Files.size(traceFile) > 0);
   }
+
+  @Test
+  void shouldRecordTraceWithSources(@TempDir Path tmpDir) throws IOException {
+    Assumptions.assumeTrue(System.getenv("PLAYWRIGHT_JAVA_SRC") != null, "PLAYWRIGHT_JAVA_SRC must point to the directory containing this test source.");
+    context.tracing().start(new Tracing.StartOptions().setSources(true));
+    page.navigate(server.EMPTY_PAGE);
+    page.setContent("<button>Click</button>");
+    page.click("'Click'");
+    Path trace = tmpDir.resolve("trace1.zip");
+    context.tracing().stop(new Tracing.StopOptions().setPath(trace));
+
+    Map<String, byte[]> entries = parseTrace(trace);
+    Map<String, byte[]> sources = entries.entrySet().stream().filter(e -> e.getKey().endsWith(".txt")).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    assertEquals(1, sources.size());
+
+    String path = getClass().getName().replace('.', File.separatorChar);
+    Path sourceFile = Paths.get(System.getenv("PLAYWRIGHT_JAVA_SRC"), path + ".java");
+    byte[] thisFile = Files.readAllBytes(sourceFile);
+    assertEquals(new String(thisFile, UTF_8), new String(sources.values().iterator().next(), UTF_8));
+  }
+
 }

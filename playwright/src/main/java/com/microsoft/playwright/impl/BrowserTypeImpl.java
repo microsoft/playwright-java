@@ -30,6 +30,8 @@ import java.util.function.Consumer;
 import static com.microsoft.playwright.impl.Serialization.gson;
 
 class BrowserTypeImpl extends ChannelOwner implements BrowserType {
+  LocalUtils localUtils;
+
   BrowserTypeImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
@@ -45,7 +47,9 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     JsonElement result = sendMessage("launch", params);
-    return connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("browser").get("guid").getAsString());
+    BrowserImpl browser = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("browser").get("guid").getAsString());
+    browser.localUtils = localUtils;
+    return browser;
   }
 
   @Override
@@ -76,6 +80,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     BrowserImpl browser = connection.getExistingObject(playwright.initializer.getAsJsonObject("preLaunchedBrowser").get("guid").getAsString());
     browser.isRemote = true;
     browser.isConnectedOverWebSocket = true;
+    browser.localUtils = localUtils;
     Consumer<JsonPipe> connectionCloseListener = t -> browser.notifyRemoteClosed();
     pipe.onClose(connectionCloseListener);
     browser.onDisconnected(b -> {
@@ -109,6 +114,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
 
     BrowserImpl browser = connection.getExistingObject(json.getAsJsonObject("browser").get("guid").getAsString());
     browser.isRemote = true;
+    browser.localUtils = localUtils;
     if (json.has("defaultContext")) {
       String contextId = json.getAsJsonObject("defaultContext").get("guid").getAsString();
       BrowserContextImpl defaultContext = connection.getExistingObject(contextId);
@@ -174,6 +180,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       context.setBaseUrl(options.baseURL);
     }
     context.recordHarPath = options.recordHarPath;
+    context.localUtils = localUtils;
     return context;
   }
 

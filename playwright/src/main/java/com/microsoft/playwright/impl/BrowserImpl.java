@@ -40,6 +40,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
   boolean isRemote;
   boolean isConnectedOverWebSocket;
   private boolean isConnected = true;
+  LocalUtils localUtils;
 
   enum EventType {
     DISCONNECTED,
@@ -171,6 +172,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
       context.setBaseUrl(options.baseURL);
     }
     context.recordHarPath = options.recordHarPath;
+    context.localUtils = localUtils;
     contexts.add(context);
     return context;
   }

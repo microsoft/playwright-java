@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Tracing;
@@ -40,7 +41,6 @@ class TracingImpl implements Tracing {
       if (isRemote) {
         mode = "compressTrace";
       } else {
-        // TODO: support source zips and do compression on the client.
         mode = "compressTraceAndSources";
       }
     }
@@ -57,6 +57,12 @@ class TracingImpl implements Tracing {
     }
     artifact.saveAs(path);
     artifact.delete();
+
+    // Add local sources to the remote trace if necessary.
+    if (isRemote && json.has("sourceEntries")) {
+      JsonArray entries = json.getAsJsonArray("sourceEntries");
+      context.localUtils.zip(path, entries);
+    }
   }
 
   @Override
