@@ -54,15 +54,15 @@ public abstract class Driver {
         throw new RuntimeException("Failed to create driver", exception);
       }
     }
-    String name = instance.cliFileName();
-    return instance.driverDir().resolve(name);
+    return instance.driverPath();
   }
 
   protected abstract void initialize(Map<String, String> env) throws Exception;
 
-  protected String cliFileName() {
-    return System.getProperty("os.name").toLowerCase().contains("windows") ?
+  public Path driverPath() {
+    String cliFileName = System.getProperty("os.name").toLowerCase().contains("windows") ?
       "playwright.cmd" : "playwright.sh";
+    return driverDir().resolve(cliFileName);
   }
 
   private static Driver createDriver() throws Exception {

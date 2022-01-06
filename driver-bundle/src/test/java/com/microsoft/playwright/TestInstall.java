@@ -17,7 +17,9 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.impl.Driver;
+import com.microsoft.playwright.impl.DriverJar;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,5 +42,12 @@ public class TestInstall {
     Process p = pb.start();
     boolean result = p.waitFor(1, TimeUnit.MINUTES);
     assertTrue(result, "Timed out waiting for browsers to install");
+  }
+
+  @Test
+  void playwrightDriverInAlternativeTmpdir(@TempDir Path tmpdir) throws Exception {
+    System.setProperty("playwright.driver.tmpdir", tmpdir.toString());
+    DriverJar driver = new DriverJar();
+    assertTrue(driver.driverPath().startsWith(tmpdir), "Driver path: " + driver.driverPath() + " tmp: " + tmpdir);
   }
 }
