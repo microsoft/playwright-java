@@ -28,8 +28,14 @@ public class DriverJar extends Driver {
   private static final String PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD";
   private final Path driverTempDir;
 
-  DriverJar() throws IOException {
-    driverTempDir = Files.createTempDirectory("playwright-java-");
+  public DriverJar() throws IOException {
+    // Allow specifying custom path for the driver installation
+    // See https://github.com/microsoft/playwright-java/issues/728
+    String alternativeTmpdir = System.getProperty("playwright.driver.tmpdir");
+    String prefix = "playwright-java-";
+    driverTempDir = alternativeTmpdir == null
+      ? Files.createTempDirectory(prefix)
+      : Files.createTempDirectory(Paths.get(alternativeTmpdir), prefix);
     driverTempDir.toFile().deleteOnExit();
   }
 
@@ -48,10 +54,9 @@ public class DriverJar extends Driver {
       System.out.println("Skipping browsers download because `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD` env variable is set");
       return;
     }
-    String cliFileName = super.cliFileName();
-    Path driver = driverTempDir.resolve(cliFileName);
+    Path driver = driverPath();
     if (!Files.exists(driver)) {
-      throw new RuntimeException("Failed to find " + cliFileName + " at " + driver);
+      throw new RuntimeException("Failed to find driver: " + driver);
     }
     ProcessBuilder pb = new ProcessBuilder(driver.toString(), "install");
     pb.environment().putAll(env);

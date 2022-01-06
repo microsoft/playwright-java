@@ -17,7 +17,11 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.impl.Driver;
+import com.microsoft.playwright.impl.DriverJar;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,10 +31,15 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestInstall {
-  @Test
-  void playwrightCliInstalled() throws Exception {
+  @BeforeEach
+  void clearSystemProperties() {
     // Clear system property to ensure that the driver is loaded from jar.
     System.clearProperty("playwright.cli.dir");
+    System.clearProperty("playwright.driver.tmpdir");
+  }
+
+  @Test
+  void playwrightCliInstalled() throws Exception {
     Path cli = Driver.ensureDriverInstalled(Collections.emptyMap());
     assertTrue(Files.exists(cli));
 
@@ -40,5 +49,12 @@ public class TestInstall {
     Process p = pb.start();
     boolean result = p.waitFor(1, TimeUnit.MINUTES);
     assertTrue(result, "Timed out waiting for browsers to install");
+  }
+
+  @Test
+  void playwrightDriverInAlternativeTmpdir(@TempDir Path tmpdir) throws Exception {
+    System.setProperty("playwright.driver.tmpdir", tmpdir.toString());
+    DriverJar driver = new DriverJar();
+    assertTrue(driver.driverPath().startsWith(tmpdir), "Driver path: " + driver.driverPath() + " tmp: " + tmpdir);
   }
 }
