@@ -18,6 +18,8 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.impl.Driver;
 import com.microsoft.playwright.impl.DriverJar;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -29,10 +31,15 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestInstall {
-  @Test
-  void playwrightCliInstalled() throws Exception {
+  @BeforeEach
+  void clearSystemProperties() {
     // Clear system property to ensure that the driver is loaded from jar.
     System.clearProperty("playwright.cli.dir");
+    System.clearProperty("playwright.driver.tmpdir");
+  }
+
+  @Test
+  void playwrightCliInstalled() throws Exception {
     Path cli = Driver.ensureDriverInstalled(Collections.emptyMap());
     assertTrue(Files.exists(cli));
 
