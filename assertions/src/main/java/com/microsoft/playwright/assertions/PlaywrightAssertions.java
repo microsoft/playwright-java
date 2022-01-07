@@ -17,8 +17,10 @@
 package com.microsoft.playwright.assertions;
 
 import java.util.*;
+import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.impl.APIResponseAssertionsImpl;
 import com.microsoft.playwright.impl.LocatorAssertionsImpl;
 import com.microsoft.playwright.impl.PageAssertionsImpl;
 
@@ -58,6 +60,18 @@ import com.microsoft.playwright.impl.PageAssertionsImpl;
  * }</pre>
  */
 public interface PlaywrightAssertions {
+  /**
+   * Creates a {@code APIResponseAssertions} object for the given {@code APIResponse}.
+   * <pre>{@code
+   * PlaywrightAssertions.assertThat(response).isOK();
+   * }</pre>
+   *
+   * @param response {@code APIResponse} object to use for assertions.
+   */
+  static APIResponseAssertions assertThat(APIResponse response) {
+    return new APIResponseAssertionsImpl(response);
+  }
+
   /**
    * Creates a {@code LocatorAssertions} object for the given {@code Locator}.
    * <pre>{@code

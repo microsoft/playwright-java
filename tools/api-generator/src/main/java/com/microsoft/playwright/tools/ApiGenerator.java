@@ -660,6 +660,11 @@ class Method extends Element {
         output.add(offset + "  return new LocatorAssertionsImpl(locator);");
         output.add(offset + "}");
         output.add("");
+      } else if ("expectAPIResponse".equals(originalName)) {
+        output.add(offset + "static APIResponseAssertions assertThat(APIResponse response) {");
+        output.add(offset + "  return new APIResponseAssertionsImpl(response);");
+        output.add(offset + "}");
+        output.add("");
       } else {
         throw new RuntimeException("Unexpected originalName: " + originalName);
       }
@@ -939,8 +944,10 @@ class Interface extends TypeDefinition {
       output.add("import java.util.regex.Pattern;");
     }
     if ("PlaywrightAssertions".equals(jsonName)) {
+      output.add("import com.microsoft.playwright.APIResponse;");
       output.add("import com.microsoft.playwright.Locator;");
       output.add("import com.microsoft.playwright.Page;");
+      output.add("import com.microsoft.playwright.impl.APIResponseAssertionsImpl;");
       output.add("import com.microsoft.playwright.impl.LocatorAssertionsImpl;");
       output.add("import com.microsoft.playwright.impl.PageAssertionsImpl;");
     }

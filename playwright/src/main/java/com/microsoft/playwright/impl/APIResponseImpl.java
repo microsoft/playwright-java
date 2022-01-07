@@ -17,7 +17,9 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.HttpHeader;
@@ -109,6 +111,14 @@ class APIResponseImpl implements APIResponse {
 
   private String fetchUid() {
     return initializer.get("fetchUid").getAsString();
+  }
+
+  List<String> fetchLog() {
+    JsonObject params = new JsonObject();
+    params.addProperty("fetchUid", fetchUid());
+    JsonObject json = context.sendMessage("fetchLog", params).getAsJsonObject();
+    JsonArray log = json.get("log").getAsJsonArray();
+    return gson().fromJson(log, new TypeToken<List<String>>() {}.getType());
   }
 
 }
