@@ -29,6 +29,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.Utils.mapOf;
@@ -93,6 +94,38 @@ public class TestPageRoute extends TestBase {
     page.unroute("**/empty.html");
     page.navigate(server.EMPTY_PAGE);
     assertEquals(asList(1), intercepted);
+  }
+
+  @Test
+  void shouldUnroutePredicate() {
+    List<Integer> intercepted = new ArrayList<>();
+    Predicate<String> predicate = r -> true;
+    page.route(predicate, route -> {
+      intercepted.add(1);
+      route.resume();
+    });
+    page.route(predicate, route -> {
+      intercepted.add(2);
+      route.resume();
+    });
+    Consumer<Route> handler3 = route -> {
+      intercepted.add(3);
+      route.resume();
+    };
+    page.route(predicate, handler3);
+
+    page.navigate(server.EMPTY_PAGE);
+    assertEquals(asList(3), intercepted);
+
+    intercepted.clear();
+    page.unroute(predicate, handler3);
+    page.navigate(server.EMPTY_PAGE);
+    assertEquals(asList(2), intercepted);
+
+    intercepted.clear();
+    page.unroute(predicate);
+    page.navigate(server.EMPTY_PAGE);
+    assertEquals(asList(), intercepted);
   }
 
   @Test
