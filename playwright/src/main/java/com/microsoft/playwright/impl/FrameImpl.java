@@ -1017,6 +1017,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
     waitForNavigationImpl(() -> {}, convertType(options, WaitForNavigationOptions.class), matcher);
   }
 
+  int queryCount(String selector) {
+    JsonObject params = new JsonObject();
+    params.addProperty("selector", selector);
+    JsonObject result = sendMessage("queryCount", params).getAsJsonObject();
+    return result.get("value").getAsInt();
+  }
+
   protected void handleEvent(String event, JsonObject params) {
     if ("loadstate".equals(event)) {
       JsonElement add = params.get("add");

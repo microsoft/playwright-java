@@ -92,7 +92,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public int count() {
-    return ((Number) evaluateAll("ee => ee.length")).intValue();
+    return frame.queryCount(selector);
   }
 
   @Override
