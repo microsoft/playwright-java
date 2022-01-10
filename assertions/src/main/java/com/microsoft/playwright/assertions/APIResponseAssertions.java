@@ -47,7 +47,7 @@ public interface APIResponseAssertions {
    */
   APIResponseAssertions not();
   /**
-   * Ensures the response status code is within [200..299) range.
+   * Ensures the response status code is within [200..299] range.
    * <pre>{@code
    * assertThat(response).isOK();
    * }</pre>

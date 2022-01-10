@@ -823,4 +823,11 @@ public class TestLocatorAssertions extends TestBase {
       assertTrue(e.getMessage().contains("Locator expected not to be visible"), e.getMessage());
     }
   }
+
+  @Test
+  void locatorCountShouldWorkWithDeletedMapInMainWorld() {
+    page.evaluate("Map = 1");
+    page.locator("#searchResultTableDiv .x-grid3-row").count();
+    assertThat(page.locator("#searchResultTableDiv .x-grid3-row")).hasCount(0);
+  }
 }

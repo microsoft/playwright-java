@@ -452,7 +452,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
    * }</pre>
@@ -469,7 +469,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
    * }</pre>
@@ -484,7 +484,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
    * }</pre>
@@ -501,7 +501,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
    * }</pre>
@@ -516,7 +516,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
    * }</pre>
@@ -533,7 +533,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
    * }</pre>
@@ -548,7 +548,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
    * }</pre>
@@ -565,7 +565,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
    * }</pre>
@@ -623,7 +623,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasClass(new String[] {"component", "component selected", "component"});
    * }</pre>
@@ -639,7 +639,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasClass(new String[] {"component", "component selected", "component"});
    * }</pre>
@@ -653,7 +653,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasClass(new String[] {"component", "component selected", "component"});
    * }</pre>
@@ -669,7 +669,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasClass(new String[] {"component", "component selected", "component"});
    * }</pre>
@@ -683,7 +683,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasClass(new String[] {"component", "component selected", "component"});
    * }</pre>
@@ -699,7 +699,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasClass(new String[] {"component", "component selected", "component"});
    * }</pre>
@@ -713,7 +713,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasClass(new String[] {"component", "component selected", "component"});
    * }</pre>
@@ -729,7 +729,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasClass(new String[] {"component", "component selected", "component"});
    * }</pre>
@@ -872,7 +872,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
@@ -889,7 +889,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
@@ -904,7 +904,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
@@ -921,7 +921,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
@@ -936,7 +936,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
@@ -953,7 +953,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
@@ -968,7 +968,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
@@ -985,7 +985,7 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists can be asserted:
+   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
