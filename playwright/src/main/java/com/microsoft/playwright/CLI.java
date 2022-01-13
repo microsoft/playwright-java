@@ -34,6 +34,7 @@ public class CLI {
     pb.command().addAll(asList(args));
     if (!pb.environment().containsKey("PW_CLI_TARGET_LANG")) {
       pb.environment().put("PW_CLI_TARGET_LANG", "java");
+      pb.environment().put("PW_CLI_TARGET_LANG_VERSION", getMajorJavaVersion());
     }
     String version = Playwright.class.getPackage().getImplementationVersion();
     if (version != null) {
@@ -42,5 +43,17 @@ public class CLI {
     pb.inheritIO();
     Process process = pb.start();
     System.exit(process.waitFor());
+  }
+
+  private static String getMajorJavaVersion() {
+    String version = System.getProperty("java.version");
+    if (version.startsWith("1.")) {
+      return version.substring(2, 3);
+    }
+    int dot = version.indexOf(".");
+    if (dot != -1) {
+      return version.substring(0, dot);
+    }
+    return version;
   }
 }
