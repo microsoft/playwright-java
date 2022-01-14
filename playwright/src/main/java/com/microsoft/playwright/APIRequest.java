@@ -35,6 +35,8 @@ public interface APIRequest {
      * <li> baseURL: {@code http://localhost:3000} and sending request to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
      * <li> baseURL: {@code http://localhost:3000/foo/} and sending request to {@code ./bar.html} results in
      * {@code http://localhost:3000/foo/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo} (without trailing slash) and navigating to {@code ./bar.html} results in
+     * {@code http://localhost:3000/bar.html}</li>
      * </ul>
      */
     public String baseURL;
@@ -85,6 +87,8 @@ public interface APIRequest {
      * <li> baseURL: {@code http://localhost:3000} and sending request to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
      * <li> baseURL: {@code http://localhost:3000/foo/} and sending request to {@code ./bar.html} results in
      * {@code http://localhost:3000/foo/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo} (without trailing slash) and navigating to {@code ./bar.html} results in
+     * {@code http://localhost:3000/bar.html}</li>
      * </ul>
      */
     public NewContextOptions setBaseURL(String baseURL) {

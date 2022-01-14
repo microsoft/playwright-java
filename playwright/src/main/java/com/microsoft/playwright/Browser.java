@@ -69,6 +69,8 @@ public interface Browser extends AutoCloseable {
      * <ul>
      * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
      * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code http://localhost:3000/foo/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo} (without trailing slash) and navigating to {@code ./bar.html} results in
+     * {@code http://localhost:3000/bar.html}</li>
      * </ul>
      */
     public String baseURL;
@@ -220,6 +222,8 @@ public interface Browser extends AutoCloseable {
      * <ul>
      * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
      * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code http://localhost:3000/foo/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo} (without trailing slash) and navigating to {@code ./bar.html} results in
+     * {@code http://localhost:3000/bar.html}</li>
      * </ul>
      */
     public NewContextOptions setBaseURL(String baseURL) {
@@ -493,6 +497,8 @@ public interface Browser extends AutoCloseable {
      * <ul>
      * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
      * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code http://localhost:3000/foo/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo} (without trailing slash) and navigating to {@code ./bar.html} results in
+     * {@code http://localhost:3000/bar.html}</li>
      * </ul>
      */
     public String baseURL;
@@ -644,6 +650,8 @@ public interface Browser extends AutoCloseable {
      * <ul>
      * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
      * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code http://localhost:3000/foo/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo} (without trailing slash) and navigating to {@code ./bar.html} results in
+     * {@code http://localhost:3000/bar.html}</li>
      * </ul>
      */
     public NewPageOptions setBaseURL(String baseURL) {
