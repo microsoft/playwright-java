@@ -18,7 +18,6 @@ package com.microsoft.playwright.options;
 
 import com.microsoft.playwright.impl.FormDataImpl;
 import java.nio.file.Path;
-import java.util.*;
 
 /**
  * The {@code FormData} is used create form data that is sent via {@code APIRequestContext}.

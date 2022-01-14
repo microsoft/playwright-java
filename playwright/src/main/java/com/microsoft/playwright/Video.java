@@ -17,7 +17,6 @@
 package com.microsoft.playwright;
 
 import java.nio.file.Path;
-import java.util.*;
 
 /**
  * When browser context is created with the {@code recordVideo} option, each page has a video object associated with it.

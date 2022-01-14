@@ -17,7 +17,6 @@
 package com.microsoft.playwright.options;
 
 import com.microsoft.playwright.impl.RequestOptionsImpl;
-import java.util.*;
 
 /**
  * The {@code RequestOptions} allows to create form data to be sent via {@code APIRequestContext}.

@@ -17,7 +17,6 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.options.*;
-import java.util.*;
 
 /**
  * Keyboard provides an api for managing a virtual keyboard. The high level api is {@link Keyboard#type Keyboard.type()},

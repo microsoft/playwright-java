@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright;
 
-import java.util.*;
 
 /**
  * The Touchscreen class operates in main-frame CSS pixels relative to the top-left corner of the viewport. Methods on the

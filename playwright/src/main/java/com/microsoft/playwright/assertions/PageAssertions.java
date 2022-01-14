@@ -16,9 +16,7 @@
 
 package com.microsoft.playwright.assertions;
 
-import java.util.*;
 import java.util.regex.Pattern;
-import com.microsoft.playwright.Page;
 
 /**
  * The {@code PageAssertions} class provides assertion methods that can be used to make assertions about the {@code Page} state in the

@@ -18,7 +18,6 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
-import java.util.*;
 
 /**
  * This API is used for the Web API testing. You can use it to trigger API endpoints, configure micro-services, prepare

@@ -17,7 +17,6 @@
 package com.microsoft.playwright;
 
 import java.nio.file.Path;
-import java.util.*;
 
 /**
  * Selectors can be used to install custom selector engines. See <a

@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright.assertions;
 
-import java.util.*;
 import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;

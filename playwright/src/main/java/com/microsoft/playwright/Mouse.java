@@ -17,7 +17,6 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.options.*;
-import java.util.*;
 
 /**
  * The Mouse class operates in main-frame CSS pixels relative to the top-left corner of the viewport.

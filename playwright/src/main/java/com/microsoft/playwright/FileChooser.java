@@ -18,7 +18,6 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
-import java.util.*;
 
 /**
  * {@code FileChooser} objects are dispatched by the page in the {@link Page#onFileChooser Page.onFileChooser()} event.

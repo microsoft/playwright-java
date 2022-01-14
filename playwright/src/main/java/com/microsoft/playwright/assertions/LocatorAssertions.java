@@ -16,9 +16,7 @@
 
 package com.microsoft.playwright.assertions;
 
-import java.util.*;
 import java.util.regex.Pattern;
-import com.microsoft.playwright.Locator;
 
 /**
  * The {@code LocatorAssertions} class provides assertion methods that can be used to make assertions about the {@code Locator} state
