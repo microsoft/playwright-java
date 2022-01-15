@@ -65,6 +65,25 @@ public abstract class Driver {
     return driverDir().resolve(cliFileName);
   }
 
+  public static void setRequiredEnvironmentVariables(ProcessBuilder pb) {
+    if (!pb.environment().containsKey("PW_CLI_TARGET_LANG")) {
+      pb.environment().put("PW_CLI_TARGET_LANG", "java");
+      pb.environment().put("PW_CLI_TARGET_LANG_VERSION", getMajorJavaVersion());
+    }
+  }
+
+  private static String getMajorJavaVersion() {
+    String version = System.getProperty("java.version");
+    if (version.startsWith("1.")) {
+      return version.substring(2, 3);
+    }
+    int dot = version.indexOf(".");
+    if (dot != -1) {
+      return version.substring(0, dot);
+    }
+    return version;
+  }
+
   private static Driver createDriver() throws Exception {
     String pathFromProperty = System.getProperty("playwright.cli.dir");
     if (pathFromProperty != null) {

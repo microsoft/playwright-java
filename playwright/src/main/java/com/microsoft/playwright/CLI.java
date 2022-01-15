@@ -32,9 +32,7 @@ public class CLI {
     Path driver = Driver.ensureDriverInstalled(Collections.emptyMap());
     ProcessBuilder pb = new ProcessBuilder(driver.toString());
     pb.command().addAll(asList(args));
-    if (!pb.environment().containsKey("PW_CLI_TARGET_LANG")) {
-      pb.environment().put("PW_CLI_TARGET_LANG", "java");
-    }
+    Driver.setRequiredEnvironmentVariables(pb);
     String version = Playwright.class.getPackage().getImplementationVersion();
     if (version != null) {
       pb.environment().put("PW_CLI_DISPLAY_VERSION", version);
