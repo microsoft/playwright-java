@@ -18,7 +18,6 @@ package com.microsoft.playwright;
 
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.*;
 
 /**
  * {@code Download} objects are dispatched by page via the {@link Page#onDownload Page.onDownload()} event.

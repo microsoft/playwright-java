@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright;
 
-import java.util.*;
 
 /**
  * {@code Dialog} objects are dispatched by page via the {@link Page#onDialog Page.onDialog()} event.

@@ -10,7 +10,6 @@ cd "$(dirname $0)"
 PROJECT_DIR=$(mktemp -d)
 echo "Creating project in $PROJECT_DIR"
 cp -R . $PROJECT_DIR
-cp -R ../../assertions/src/test/ $PROJECT_DIR/src/
 cp -R ../../driver-bundle/src/test/ $PROJECT_DIR/src/
 cp -R ../../playwright/src/test/ $PROJECT_DIR/src/
 cd $PROJECT_DIR

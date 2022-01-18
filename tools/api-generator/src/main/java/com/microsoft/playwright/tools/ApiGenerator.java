@@ -924,16 +924,15 @@ class Interface extends TypeDefinition {
     if (asList("Page", "Request", "Response", "APIRequestContext", "APIRequest", "APIResponse", "FileChooser", "Frame", "ElementHandle", "Locator", "Browser", "BrowserContext", "BrowserType", "Mouse", "Keyboard").contains(jsonName)) {
       output.add("import com.microsoft.playwright.options.*;");
     }
-    if (jsonName.equals("Route")) {
-      output.add("import java.nio.charset.StandardCharsets;");
-    }
     if ("Download".equals(jsonName)) {
       output.add("import java.io.InputStream;");
     }
     if (asList("Page", "Frame", "ElementHandle", "Locator", "FormData", "APIRequest", "APIRequestContext", "FileChooser", "Browser", "BrowserContext", "BrowserType", "Download", "Route", "Selectors", "Tracing", "Video").contains(jsonName)) {
       output.add("import java.nio.file.Path;");
     }
-    output.add("import java.util.*;");
+    if (asList("Page", "Frame", "ElementHandle", "Locator", "APIRequest", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright").contains(jsonName)) {
+      output.add("import java.util.*;");
+    }
     if (asList("Page", "Browser", "BrowserContext", "WebSocket", "Worker").contains(jsonName)) {
       output.add("import java.util.function.Consumer;");
     }
@@ -950,12 +949,6 @@ class Interface extends TypeDefinition {
       output.add("import com.microsoft.playwright.impl.APIResponseAssertionsImpl;");
       output.add("import com.microsoft.playwright.impl.LocatorAssertionsImpl;");
       output.add("import com.microsoft.playwright.impl.PageAssertionsImpl;");
-    }
-    if ("PageAssertions".equals(jsonName)) {
-      output.add("import com.microsoft.playwright.Page;");
-    }
-    if ("LocatorAssertions".equals(jsonName)) {
-      output.add("import com.microsoft.playwright.Locator;");
     }
     output.add("");
 
@@ -1122,7 +1115,7 @@ public class ApiGenerator {
     System.out.println("Writing files to: " + dir.getCanonicalPath());
     generate(api, dir, "com.microsoft.playwright", isAssertion().negate());
 
-    File assertionsDir = new File(cwd,"assertions/src/main/java/com/microsoft/playwright/assertions");
+    File assertionsDir = new File(cwd,"playwright/src/main/java/com/microsoft/playwright/assertions");
     System.out.println("Writing assertion files to: " + dir.getCanonicalPath());
     generate(api, assertionsDir, "com.microsoft.playwright.assertions", isAssertion());
   }

@@ -17,7 +17,6 @@
 package com.microsoft.playwright;
 
 import java.nio.file.Path;
-import java.util.*;
 
 /**
  * API for collecting and saving Playwright traces. Playwright traces can be opened in <a

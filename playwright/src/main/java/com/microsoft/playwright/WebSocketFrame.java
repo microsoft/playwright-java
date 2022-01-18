@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright;
 
-import java.util.*;
 
 /**
  * The {@code WebSocketFrame} class represents frames sent over {@code WebSocket} connections in the page. Frame payload is returned by

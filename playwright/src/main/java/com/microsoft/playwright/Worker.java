@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright;
 
-import java.util.*;
 import java.util.function.Consumer;
 
 /**

@@ -74,6 +74,10 @@
       <artifactId>junit-jupiter-engine</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.opentest4j</groupId>
+      <artifactId>opentest4j</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.microsoft.playwright</groupId>
       <artifactId>driver</artifactId>
     </dependency>
