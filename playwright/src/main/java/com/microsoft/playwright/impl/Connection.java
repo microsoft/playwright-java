@@ -121,11 +121,15 @@ public class Connection {
     message.addProperty("method", method);
     message.add("params", params);
     JsonObject metadata = new JsonObject();
-    if (stackTraceCollector != null) {
-      metadata.add("stack", stackTraceCollector.currentStackTrace());
-    }
-    if (apiName != null) {
+    if (apiName == null) {
+      metadata.addProperty("internal", true);
+    } else {
       metadata.addProperty("apiName", apiName);
+      // All but first message in an API call are considered internal and will be hidden from the inspector.
+      apiName = null;
+      if (stackTraceCollector != null) {
+        metadata.add("stack", stackTraceCollector.currentStackTrace());
+      }
     }
     message.add("metadata", metadata);
     transport.send(message);
