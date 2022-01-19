@@ -24,9 +24,13 @@ public class TestGlobalFetch extends TestBase {
     assertTrue(response.ok());
     assertEquals(server.EMPTY_PAGE, response.url());
     String version = System.getProperty("java.version");
-    int dot = version.indexOf(".");
-    if (dot != -1) {
-      version =  version.substring(0, dot);
+    if (version.startsWith("1.")) {
+      version = version.substring(2, 3);
+    } else {
+      int dot = version.indexOf(".");
+      if (dot != -1) {
+        version =  version.substring(0, dot);
+      }
     }
     assertTrue(serverRequest.get().headers.get("user-agent").get(0).contains("java/" + version));
   }
