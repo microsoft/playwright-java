@@ -93,7 +93,7 @@ class TracingImpl implements Tracing {
     includeSources = options.sources != null;
     if (includeSources) {
       if (!context.connection.isCollectingStacks()) {
-        throw new PlaywrightException("Source root directories must be provided to enable source collection");
+        throw new PlaywrightException("Source root directory must be specified via PLAYWRIGHT_JAVA_SRC environment variable when source collection is enabled");
       }
       params.addProperty("sources", true);
     }
