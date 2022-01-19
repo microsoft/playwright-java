@@ -17,6 +17,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGlobalFetch extends TestBase {
   @Test
+  void shouldHaveJavaInDefaultUesrAgent() throws ExecutionException, InterruptedException {
+    APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions());
+    Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
+    APIResponse response = request.get(server.EMPTY_PAGE);
+    assertTrue(response.ok());
+    assertEquals(server.EMPTY_PAGE, response.url());
+    String version = System.getProperty("java.version");
+    if (version.startsWith("1.")) {
+      version = version.substring(2, 3);
+    } else {
+      int dot = version.indexOf(".");
+      if (dot != -1) {
+        version =  version.substring(0, dot);
+      }
+    }
+    assertTrue(serverRequest.get().headers.get("user-agent").get(0).contains("java/" + version));
+  }
+
+  @Test
   void fetchShouldWork() {
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.fetch(server.PREFIX + "/simple.json");

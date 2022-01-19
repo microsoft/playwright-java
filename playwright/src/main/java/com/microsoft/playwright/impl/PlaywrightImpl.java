@@ -41,6 +41,7 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
       ProcessBuilder pb = new ProcessBuilder(driver.toString(), "run-driver");
       pb.redirectError(ProcessBuilder.Redirect.INHERIT);
       pb.environment().putAll(env);
+      Driver.setRequiredEnvironmentVariables(pb);
       Process p = pb.start();
       Connection connection = new Connection(new PipeTransport(p.getInputStream(), p.getOutputStream()));
       PlaywrightImpl result = connection.initializePlaywright();
