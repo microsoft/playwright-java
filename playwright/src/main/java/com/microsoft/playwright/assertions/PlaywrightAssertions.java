@@ -48,15 +48,6 @@ import com.microsoft.playwright.impl.PageAssertionsImpl;
  * You can pass this timeout as an option.
  *
  * <p> By default, the timeout for assertions is set to 5 seconds.
- *
- * <p> To use Playwright assertions add the following dependency into the {@code pom.xml} of your Maven project:
- * <pre>{@code
- * <dependency>
- *   <groupId>com.microsoft.playwright</groupId>
- *   <artifactId>assertions</artifactId>
- *   <version>1.17.0</version>
- * </dependency>
- * }</pre>
  */
 public interface PlaywrightAssertions {
   /**
