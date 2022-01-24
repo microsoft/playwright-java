@@ -40,9 +40,10 @@ public class DriverJar extends Driver {
   }
 
   @Override
-  protected void initialize(Map<String, String> env) throws Exception {
+  protected void initialize(Map<String, String> env, Boolean installBrowsers) throws Exception {
     extractDriverToTempDir();
-    installBrowsers(env);
+    if (installBrowsers)
+      installBrowsers(env);
   }
 
   private void installBrowsers(Map<String, String> env) throws IOException, InterruptedException {
@@ -60,6 +61,7 @@ public class DriverJar extends Driver {
     }
     ProcessBuilder pb = new ProcessBuilder(driver.toString(), "install");
     pb.environment().putAll(env);
+    setRequiredEnvironmentVariables(pb);
     pb.redirectError(ProcessBuilder.Redirect.INHERIT);
     pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
     Process p = pb.start();

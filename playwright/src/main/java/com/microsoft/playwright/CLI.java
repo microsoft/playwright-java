@@ -29,7 +29,7 @@ import static java.util.Arrays.asList;
  */
 public class CLI {
   public static void main(String[] args) throws IOException, InterruptedException {
-    Path driver = Driver.ensureDriverInstalled(Collections.emptyMap());
+    Path driver = Driver.ensureDriverInstalled(Collections.emptyMap(), false);
     ProcessBuilder pb = new ProcessBuilder(driver.toString());
     pb.command().addAll(asList(args));
     Driver.setRequiredEnvironmentVariables(pb);

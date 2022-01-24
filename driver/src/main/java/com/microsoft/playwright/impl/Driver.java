@@ -35,7 +35,7 @@ public abstract class Driver {
     }
 
     @Override
-    protected void initialize(Map<String, String> env) {
+    protected void initialize(Map<String, String> env, Boolean installBrowsers) {
       // no-op
     }
 
@@ -45,11 +45,11 @@ public abstract class Driver {
     }
   }
 
-  public static synchronized Path ensureDriverInstalled(Map<String, String> env) {
+  public static synchronized Path ensureDriverInstalled(Map<String, String> env, Boolean installBrowsers) {
     if (instance == null) {
       try {
         instance = createDriver();
-        instance.initialize(env);
+        instance.initialize(env, installBrowsers);
       } catch (Exception exception) {
         throw new RuntimeException("Failed to create driver", exception);
       }
@@ -57,7 +57,7 @@ public abstract class Driver {
     return instance.driverPath();
   }
 
-  protected abstract void initialize(Map<String, String> env) throws Exception;
+  protected abstract void initialize(Map<String, String> env, Boolean installBrowsers) throws Exception;
 
   public Path driverPath() {
     String cliFileName = System.getProperty("os.name").toLowerCase().contains("windows") ?
@@ -66,9 +66,11 @@ public abstract class Driver {
   }
 
   public static void setRequiredEnvironmentVariables(ProcessBuilder pb) {
-    if (!pb.environment().containsKey("PW_CLI_TARGET_LANG")) {
-      pb.environment().put("PW_CLI_TARGET_LANG", "java");
-      pb.environment().put("PW_CLI_TARGET_LANG_VERSION", getMajorJavaVersion());
+    pb.environment().put("PW_CLI_TARGET_LANG", "java");
+    pb.environment().put("PW_CLI_TARGET_LANG_VERSION", getMajorJavaVersion());
+    String version = Driver.class.getPackage().getImplementationVersion();
+    if (version != null) {
+      pb.environment().put("PW_CLI_DISPLAY_VERSION", version);
     }
   }
 
