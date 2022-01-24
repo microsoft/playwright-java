@@ -40,7 +40,7 @@ public class TestInstall {
 
   @Test
   void playwrightCliInstalled() throws Exception {
-    Path cli = Driver.ensureDriverInstalled(Collections.emptyMap());
+    Path cli = Driver.ensureDriverInstalled(Collections.emptyMap(), false);
     assertTrue(Files.exists(cli));
 
     ProcessBuilder pb = new ProcessBuilder(cli.toString(), "install");
