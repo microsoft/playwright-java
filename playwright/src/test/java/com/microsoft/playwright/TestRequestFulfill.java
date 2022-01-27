@@ -24,7 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static com.microsoft.playwright.Utils.mapOf;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestRequestFulfill extends TestBase {
   @Test
@@ -104,4 +104,45 @@ public class TestRequestFulfill extends TestBase {
   }
 
 
+  @Test
+  void fulfillShouldThrowIfHandledTwice() {
+    try {
+      page.route("**/*", route -> {
+        route.fulfill();
+        route.fulfill();
+      });
+      page.navigate(server.EMPTY_PAGE);
+      fail("didn't throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Route is already handled!"), e.getMessage());
+    }
+  }
+
+  @Test
+  void abortShouldThrowIfHandledTwice() {
+    try {
+      page.route("**/*", route -> {
+        route.abort();
+        route.abort();
+      });
+      page.navigate(server.EMPTY_PAGE);
+      fail("didn't throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Route is already handled!"), e.getMessage());
+    }
+  }
+
+  @Test
+  void resumeShouldThrowIfHandledTwice() {
+    try {
+      page.route("**/*", route -> {
+        route.resume();
+        route.resume();
+      });
+      page.navigate(server.EMPTY_PAGE);
+      fail("didn't throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Route is already handled!"), e.getMessage());
+    }
+  }
 }
