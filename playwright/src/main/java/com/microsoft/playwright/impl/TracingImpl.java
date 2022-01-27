@@ -25,16 +25,16 @@ import java.nio.file.Path;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
-class TracingImpl implements Tracing {
-  private final BrowserContextImpl context;
+class TracingImpl extends ChannelOwner implements Tracing {
+  LocalUtils localUtils;
+  boolean isRemote;
   private boolean includeSources;
 
-  TracingImpl(BrowserContextImpl context) {
-    this.context = context;
+  TracingImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
+    super(parent, type, guid, initializer);
   }
 
   private void stopChunkImpl(Path path) {
-    boolean isRemote = context.browser() != null && context.browser().isRemote;
     JsonObject params = new JsonObject();
     String mode = "doNotSave";
     if (path != null) {
@@ -45,11 +45,11 @@ class TracingImpl implements Tracing {
       }
     }
     params.addProperty("mode", mode);
-    JsonObject json = context.sendMessage("tracingStopChunk", params).getAsJsonObject();
+    JsonObject json = sendMessage("tracingStopChunk", params).getAsJsonObject();
     if (!json.has("artifact")) {
       return;
     }
-    ArtifactImpl artifact = context.connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
+    ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
     // In case of CDP connection browser is null but since the connection is established by
     // the driver it is safe to consider the artifact local.
     if (isRemote) {
@@ -61,18 +61,18 @@ class TracingImpl implements Tracing {
     // Add local sources to the remote trace if necessary.
     if (isRemote && json.has("sourceEntries")) {
       JsonArray entries = json.getAsJsonArray("sourceEntries");
-      context.localUtils.zip(path, entries);
+      localUtils.zip(path, entries);
     }
   }
 
   @Override
   public void start(StartOptions options) {
-    context.withLogging("Tracing.start", () -> startImpl(options));
+    withLogging("Tracing.start", () -> startImpl(options));
   }
 
   @Override
   public void startChunk(StartChunkOptions options) {
-    context.withLogging("Tracing.startChunk", () -> {
+    withLogging("Tracing.startChunk", () -> {
       startChunkImpl(options);
     });
   }
@@ -82,7 +82,7 @@ class TracingImpl implements Tracing {
       options = new StartChunkOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    context.sendMessage("tracingStartChunk", params);
+    sendMessage("tracingStartChunk", params);
   }
 
   private void startImpl(StartOptions options) {
@@ -92,26 +92,26 @@ class TracingImpl implements Tracing {
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     includeSources = options.sources != null;
     if (includeSources) {
-      if (!context.connection.isCollectingStacks()) {
+      if (!connection.isCollectingStacks()) {
         throw new PlaywrightException("Source root directory must be specified via PLAYWRIGHT_JAVA_SRC environment variable when source collection is enabled");
       }
       params.addProperty("sources", true);
     }
-    context.sendMessage("tracingStart", params);
-    context.sendMessage("tracingStartChunk");
+    sendMessage("tracingStart", params);
+    sendMessage("tracingStartChunk");
   }
 
   @Override
   public void stop(StopOptions options) {
-    context.withLogging("Tracing.stop", () -> {
+    withLogging("Tracing.stop", () -> {
       stopChunkImpl(options == null ? null : options.path);
-      context.sendMessage("tracingStop");
+      sendMessage("tracingStop");
     });
   }
 
   @Override
   public void stopChunk(StopChunkOptions options) {
-    context.withLogging("Tracing.stopChunk", () -> {
+    withLogging("Tracing.stopChunk", () -> {
       stopChunkImpl(options == null ? null : options.path);
     });
   }

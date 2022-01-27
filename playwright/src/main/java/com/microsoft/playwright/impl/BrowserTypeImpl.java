@@ -180,7 +180,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       context.setBaseUrl(options.baseURL);
     }
     context.recordHarPath = options.recordHarPath;
-    context.localUtils = localUtils;
+    context.tracing().localUtils = localUtils;
     return context;
   }
 

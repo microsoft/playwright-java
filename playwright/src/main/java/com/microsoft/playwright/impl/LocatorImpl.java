@@ -282,6 +282,11 @@ class LocatorImpl implements Locator {
   }
 
   @Override
+  public Page page() {
+    return frame.page();
+  }
+
+  @Override
   public void press(String key, PressOptions options) {
     if (options == null) {
       options = new PressOptions();

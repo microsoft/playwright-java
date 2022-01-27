@@ -21,8 +21,11 @@ import static com.microsoft.playwright.impl.Serialization.*;
 import static com.microsoft.playwright.impl.Utils.toFilePayload;
 
 class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
+  private final TracingImpl tracing;
+
   APIRequestContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    this.tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());
   }
 
   @Override

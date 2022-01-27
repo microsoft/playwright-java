@@ -172,7 +172,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
       context.setBaseUrl(options.baseURL);
     }
     context.recordHarPath = options.recordHarPath;
-    context.localUtils = localUtils;
+    context.tracing().localUtils = localUtils;
     contexts.add(context);
     return context;
   }

@@ -91,8 +91,25 @@ public class RouteImpl extends ChannelOwner implements Route {
       options = new FulfillOptions();
     }
 
-    int status = options.status == null ? 200 : options.status;
-    String body = "";
+    Integer status = options.status;
+    Map<String, String> headersOption = options.headers;
+    String fetchResponseUid = null;
+
+    if (options.response != null) {
+      if (status == null) {
+        status = options.response.status();
+      }
+      if (headersOption == null) {
+        headersOption = options.response.headers();
+      }
+      if (options.body == null && options.path == null) {
+        fetchResponseUid = ((APIResponseImpl) options.response).fetchUid();
+      }
+    }
+    if (status == null) {
+      status = 200;
+    }
+    String body = null;
     boolean isBase64 = false;
     int length = 0;
     if (options.path != null) {
@@ -115,8 +132,8 @@ public class RouteImpl extends ChannelOwner implements Route {
     }
 
     Map<String, String> headers = new LinkedHashMap<>();
-    if (options.headers != null) {
-      for (Map.Entry<String, String> h : options.headers.entrySet()) {
+    if (headersOption != null) {
+      for (Map.Entry<String, String> h : headersOption.entrySet()) {
         headers.put(h.getKey().toLowerCase(), h.getValue());
       }
     }
@@ -133,6 +150,9 @@ public class RouteImpl extends ChannelOwner implements Route {
     params.add("headers", Serialization.toProtocol(headers));
     params.addProperty("isBase64", isBase64);
     params.addProperty("body", body);
+    if (fetchResponseUid != null) {
+      params.addProperty("fetchResponseUid", fetchResponseUid);
+    }
     sendMessageAsync("fulfill", params);
   }
 

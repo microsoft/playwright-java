@@ -2181,6 +2181,10 @@ public interface Locator {
    */
   Locator nth(int index);
   /**
+   * A page this locator belongs to.
+   */
+  Page page();
+  /**
    * Focuses the element, and then uses {@link Keyboard#down Keyboard.down()} and {@link Keyboard#up Keyboard.up()}.
    *
    * <p> {@code key} can specify the intended <a
