@@ -29,12 +29,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class RouteImpl extends ChannelOwner implements Route {
+  private boolean handled;
+
   public RouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 
   @Override
   public void abort(String errorCode) {
+    startHandling();
     withLogging("Route.abort", () -> {
       JsonObject params = new JsonObject();
       params.addProperty("errorCode", errorCode);
@@ -44,6 +47,7 @@ public class RouteImpl extends ChannelOwner implements Route {
 
   @Override
   public void resume(ResumeOptions options) {
+    startHandling();
     withLogging("Route.resume", () -> resumeImpl(options));
   }
 
@@ -78,6 +82,7 @@ public class RouteImpl extends ChannelOwner implements Route {
 
   @Override
   public void fulfill(FulfillOptions options) {
+    startHandling();
     withLogging("Route.fulfill", () -> fulfillImpl(options));
   }
 
@@ -134,5 +139,12 @@ public class RouteImpl extends ChannelOwner implements Route {
   @Override
   public Request request() {
     return connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());
+  }
+
+  private void startHandling() {
+    if (handled) {
+      throw new PlaywrightException("Route is already handled!");
+    }
+    handled = true;
   }
 }
