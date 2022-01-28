@@ -295,6 +295,9 @@ public class Connection {
       case "Selectors":
         result = new SelectorsImpl(parent, type, guid, initializer);
         break;
+      case "Tracing":
+        result = new TracingImpl(parent, type, guid, initializer);
+        break;
       case "WebSocket":
         result = new WebSocketImpl(parent, type, guid, initializer);
         break;

@@ -109,7 +109,7 @@ class APIResponseImpl implements APIResponse {
     return initializer.get("url").getAsString();
   }
 
-  private String fetchUid() {
+  String fetchUid() {
     return initializer.get("fetchUid").getAsString();
   }
 

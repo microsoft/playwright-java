@@ -55,7 +55,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   Path videosDir;
   URL baseUrl;
   Path recordHarPath;
-  LocalUtils localUtils;
 
   enum EventType {
     CLOSE,
@@ -73,7 +72,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     } else {
       browser = null;
     }
-    this.tracing = new TracingImpl(this);
+    this.tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());
+    tracing.isRemote = browser != null && browser.isRemote;
     this.request = connection.getExistingObject(initializer.getAsJsonObject("APIRequestContext").get("guid").getAsString());
   }
 
@@ -429,7 +429,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public Tracing tracing() {
+  public TracingImpl tracing() {
     return tracing;
   }
 

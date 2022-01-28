@@ -109,7 +109,7 @@ public class TestBrowserContextStorageState extends TestBase {
       "      'expires':-1,\n" +
       "      'httpOnly':false,\n" +
       "      'secure':false,\n" +
-      "      'sameSite':'" + (isChromium() ? "Lax" : "None") + "'\n" +
+      "      'sameSite':'" + (isChromium() || isFirefox() ? "Lax" : "None") + "'\n" +
       "    }],\n" +
       "  'origins':[\n" +
       "    {\n" +

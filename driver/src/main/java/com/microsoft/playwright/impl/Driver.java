@@ -66,8 +66,8 @@ public abstract class Driver {
   }
 
   public static void setRequiredEnvironmentVariables(ProcessBuilder pb) {
-    pb.environment().put("PW_CLI_TARGET_LANG", "java");
-    pb.environment().put("PW_CLI_TARGET_LANG_VERSION", getMajorJavaVersion());
+    pb.environment().put("PW_LANG_NAME", "java");
+    pb.environment().put("PW_LANG_NAME_VERSION", getMajorJavaVersion());
     String version = Driver.class.getPackage().getImplementationVersion();
     if (version != null) {
       pb.environment().put("PW_CLI_DISPLAY_VERSION", version);

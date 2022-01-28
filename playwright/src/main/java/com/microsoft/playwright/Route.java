@@ -101,6 +101,11 @@ public interface Route {
      */
     public Path path;
     /**
+     * {@code APIResponse} to fulfill route's request with. Individual fields of the response (such as headers) can be overridden
+     * using fulfill options.
+     */
+    public APIResponse response;
+    /**
      * Response status code, defaults to {@code 200}.
      */
     public Integer status;
@@ -139,6 +144,14 @@ public interface Route {
      */
     public FulfillOptions setPath(Path path) {
       this.path = path;
+      return this;
+    }
+    /**
+     * {@code APIResponse} to fulfill route's request with. Individual fields of the response (such as headers) can be overridden
+     * using fulfill options.
+     */
+    public FulfillOptions setResponse(APIResponse response) {
+      this.response = response;
       return this;
     }
     /**
