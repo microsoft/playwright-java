@@ -23,6 +23,8 @@ import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.Utils.expectedSSLError;
@@ -239,15 +241,18 @@ public class TestPageWaitForNavigation extends TestBase {
     server.setRoute("/empty.html", exchange -> {});
     try {
       frame.waitForNavigation(() -> {
-        page.evaluate("() => {\n" +
-          "  frames[0].location.href = '/empty.html';\n" +
-          "  setTimeout(() => document.querySelector('iframe').remove());\n" +
-          "}\n");
+        Future<Server.Request> req = server.futureRequest("/empty.html");
+        page.evalOnSelector("iframe", "frame => { frame.contentWindow.location.href = '/empty.html'; }");
+        try {
+          req.get();
+        } catch (InterruptedException | ExecutionException e) {
+          throw new RuntimeException(e);
+        }
+        page.evaluate("setTimeout(() => document.querySelector('iframe').remove());");
       });
       fail("did not throw");
     } catch (PlaywrightException e) {
-//      assertTrue(e.getMessage().contains("waiting for navigation until \"load\""));
-      assertTrue(e.getMessage().contains("frame was detached"));
+      assertTrue(e.getMessage().contains("frame was detached"), e.getMessage());
     }
   }
 
