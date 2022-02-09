@@ -16,10 +16,7 @@ cd "$(dirname $0)/.."
 VERSION=$1
 POM_FILES=(
   pom.xml
-  tools/api-generator/pom.xml
-  tools/update-docs-version/pom.xml
-  tools/test-local-installation/pom.xml
-  tools/test-spring-boot-starter/pom.xml
+  tools/*/pom.xml
   examples/pom.xml
 )
 
