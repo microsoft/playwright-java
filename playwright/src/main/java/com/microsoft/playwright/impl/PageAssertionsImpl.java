@@ -40,6 +40,7 @@ public class PageAssertionsImpl extends AssertionsBase implements PageAssertions
   public void hasTitle(String title, HasTitleOptions options) {
     ExpectedTextValue expected = new ExpectedTextValue();
     expected.string = title;
+    expected.normalizeWhiteSpace = true;
     expectImpl("to.have.title", expected, title, "Page title expected to be", convertType(options, FrameExpectOptions.class));
   }
 

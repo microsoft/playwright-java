@@ -92,6 +92,12 @@ public class TestPageAssertions extends TestBase {
   }
 
   @Test
+  void hasTitleTextNormalizeWhitespaces() {
+    page.setContent("<title>     Foo     Bar    </title>");
+    assertThat(page).hasTitle("  Foo  Bar", new PageAssertions.HasTitleOptions().setTimeout(1_000));
+  }
+
+  @Test
   void hasTitleTextFail() {
     page.navigate(server.PREFIX + "/title.html");
     try {
