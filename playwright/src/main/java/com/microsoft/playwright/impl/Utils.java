@@ -51,6 +51,10 @@ class Utils {
     try {
       T result = t.getDeclaredConstructor().newInstance();
       for (Field toField : t.getDeclaredFields()) {
+        // Skip fields added by test coverage tools, see https://github.com/microsoft/playwright-java/issues/802
+        if (toField.isSynthetic()) {
+          continue;
+        }
         if (Modifier.isStatic(toField.getModifiers())) {
             throw new RuntimeException("Unexpected field modifiers: " + t.getCanonicalName() + "." + toField.getName() + ", modifiers: " + toField.getModifiers());
         }
