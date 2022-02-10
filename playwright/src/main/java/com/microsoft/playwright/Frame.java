@@ -1219,11 +1219,28 @@ public interface Frame {
   }
   class LocatorOptions {
     /**
+     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
+     * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator has;
+    /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. For example,
      * {@code "Playwright"} matches {@code <article><div>Playwright</div></article>}.
      */
     public Object hasText;
 
+    /**
+     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
+     * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setHas(Locator has) {
+      this.has = has;
+      return this;
+    }
     /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. For example,
      * {@code "Playwright"} matches {@code <article><div>Playwright</div></article>}.

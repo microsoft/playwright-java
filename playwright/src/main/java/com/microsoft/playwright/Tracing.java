@@ -47,7 +47,11 @@ public interface Tracing {
      */
     public Boolean screenshots;
     /**
-     * Whether to capture DOM snapshot on every action.
+     * If this option is true tracing will
+     * <ul>
+     * <li> capture DOM snapshot on every action</li>
+     * <li> record network activity</li>
+     * </ul>
      */
     public Boolean snapshots;
     /**
@@ -76,7 +80,11 @@ public interface Tracing {
       return this;
     }
     /**
-     * Whether to capture DOM snapshot on every action.
+     * If this option is true tracing will
+     * <ul>
+     * <li> capture DOM snapshot on every action</li>
+     * <li> record network activity</li>
+     * </ul>
      */
     public StartOptions setSnapshots(boolean snapshots) {
       this.snapshots = snapshots;

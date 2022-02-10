@@ -24,14 +24,24 @@ class LocatorImpl implements Locator {
 
   public LocatorImpl(FrameImpl frame, String selector, LocatorOptions options) {
     this.frame = frame;
-    if (options != null && options.hasText != null) {
-      if (options.hasText instanceof Pattern) {
-        Pattern pattern = (Pattern) options.hasText;
-        selector += " >> :scope:text-matches(" + escapeWithQuotes(pattern.pattern()) + ", \"" + toJsRegexFlags(pattern) + "\")";
-      } else if (options.hasText instanceof String) {
-        String text = (String) options.hasText;
-        selector += " >> :scope:has-text(" + escapeWithQuotes(text)+ ")";
+    if (options != null) {
+      if (options.hasText != null) {
+        if (options.hasText instanceof Pattern) {
+          Pattern pattern = (Pattern) options.hasText;
+          selector += " >> :scope:text-matches(" + escapeWithQuotes(pattern.pattern()) + ", \"" + toJsRegexFlags(pattern) + "\")";
+        } else if (options.hasText instanceof String) {
+          String text = (String) options.hasText;
+          selector += " >> :scope:has-text(" + escapeWithQuotes(text) + ")";
+        }
       }
+      if (options.has != null) {
+        LocatorImpl has = (LocatorImpl) options.has;
+        if (has.frame != frame) {
+          throw new PlaywrightException("Inner 'has' locator must belong to the same frame.");
+        }
+        selector += " >> has=" + gson().toJson(has.selector);
+      }
+
     }
     this.selector = selector;
   }
