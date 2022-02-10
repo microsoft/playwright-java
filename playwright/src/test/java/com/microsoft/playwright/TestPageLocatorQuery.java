@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPageLocatorQuery extends TestBase {
@@ -118,4 +119,19 @@ public class TestPageLocatorQuery extends TestBase {
     assertEquals("Hello \"world\"", page.locator("div", new Page.LocatorOptions().setHasText(pattern)).textContent());
   }
 
+  @Test
+  void shouldSupportHasLocator() {
+    page.setContent("<div><span>hello</span></div><div><span>world</span></div>");
+    assertThat(page.locator("div", new Page.LocatorOptions().setHas(page.locator("text=world")))).hasCount(1);
+    assertEquals("<div><span>world</span></div>", page.locator("div", new Page.LocatorOptions().setHas(page.locator("text=world"))).evaluate("e => e.outerHTML"));
+    assertThat(page.locator("div", new Page.LocatorOptions().setHas(page.locator("text='hello'")))).hasCount(1);
+    assertEquals("<div><span>hello</span></div>", page.locator("div", new Page.LocatorOptions().setHas(page.locator("text='hello'"))).evaluate("e => e.outerHTML"));
+    assertThat(page.locator("div", new Page.LocatorOptions().setHas(page.locator("xpath=./span")))).hasCount(2);
+    assertThat(page.locator("div", new Page.LocatorOptions().setHas(page.locator("span")))).hasCount(2);
+    assertThat(page.locator("div", new Page.LocatorOptions().setHas(page.locator("span", new Page.LocatorOptions().setHasText("wor"))))).hasCount(1);
+    assertEquals("<div><span>world</span></div>", page.locator("div", new Page.LocatorOptions().setHas(
+      page.locator("span", new Page.LocatorOptions().setHasText("wor")))).evaluate("e => e.outerHTML"));
+    assertThat(page.locator("div", new Page.LocatorOptions()
+        .setHas(page.locator("span")).setHasText("wor"))).hasCount(1);
+  }
 }

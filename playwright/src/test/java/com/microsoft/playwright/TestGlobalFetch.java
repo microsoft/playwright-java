@@ -137,7 +137,7 @@ public class TestGlobalFetch extends TestBase {
     Optional<HttpHeader> contentType = response.headersArray().stream().filter(h -> "content-type".equals(h.name.toLowerCase())).findFirst();
     assertTrue(contentType.isPresent());
     assertEquals("application/json", contentType.get().value);
-    assertEquals("{\"foo\": \"bar\"}\n", response.text());
+    assertEquals("", response.text());
   }
 
   @Test
