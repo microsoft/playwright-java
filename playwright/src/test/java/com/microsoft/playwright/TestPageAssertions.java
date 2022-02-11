@@ -106,7 +106,7 @@ public class TestPageAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertEquals("foo", e.getExpected().getValue());
       assertEquals("Woof-Woof", e.getActual().getValue());
-      assertTrue(e.getMessage().contains("Page title expected to be"), e.getMessage());
+      assertTrue(e.getMessage().contains("Page title expected to be: foo\nReceived: Woof-Woof"), e.getMessage());
     }
   }
 
@@ -125,7 +125,7 @@ public class TestPageAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertEquals("^foo[AB]", e.getExpected().getStringRepresentation());
       assertEquals("Woof-Woof", e.getActual().getValue());
-      assertTrue(e.getMessage().contains("Page title expected to match regex"), e.getMessage());
+      assertTrue(e.getMessage().contains("Page title expected to match regex: ^foo[AB]\nReceived: Woof-Woof"), e.getMessage());
     }
   }
 
