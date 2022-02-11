@@ -190,7 +190,8 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertEquals("[Text 1, Text 3, Extra]", e.getExpected().getStringRepresentation());
       assertEquals("[Text 1, Text 3]", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have text"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected to have text: [Text 1, Text 3, Extra]"), e.getMessage());
+      assertTrue(e.getMessage().contains("Received: [Text 1, Text 3]"), e.getMessage());
     }
   }
 
@@ -234,7 +235,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertEquals("foo", e.getExpected().getStringRepresentation());
       assertEquals("node", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have attribute 'id'"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected to have attribute 'id': foo\nReceived: node"), e.getMessage());
     }
   }
 
@@ -255,7 +256,7 @@ public class TestLocatorAssertions extends TestBase {
     } catch (AssertionFailedError e) {
       assertEquals(".Nod..", e.getExpected().getStringRepresentation());
       assertEquals("node", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have attribute 'id' matching regex"), e.getMessage());
+      assertTrue(e.getMessage().contains("Locator expected to have attribute 'id' matching regex: .Nod..\nReceived: node"), e.getMessage());
     }
   }
 

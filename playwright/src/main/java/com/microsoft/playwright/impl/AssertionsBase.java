@@ -67,7 +67,10 @@ class AssertionsBase {
       if (expected == null) {
         throw new AssertionFailedError(message + log);
       }
-      throw new AssertionFailedError(message + log, formatValue(expected), formatValue(actual));
+      ValueWrapper expectedValue = formatValue(expected);
+      ValueWrapper actualValue = formatValue(actual);
+      message += ": " + expectedValue.getStringRepresentation() + "\nReceived: " + actualValue.getStringRepresentation() + "\n";
+      throw new AssertionFailedError(message + log, expectedValue, actualValue);
     }
   }
 
