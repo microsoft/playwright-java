@@ -16,15 +16,11 @@
 
 package com.microsoft.playwright.impl;
 
-import java.util.function.Function;
+class WaitableAdapter<T> implements Waitable<T> {
+  private final Waitable<T> waitable;
 
-class WaitableAdapter<F, T> implements Waitable<T> {
-  private final Waitable<F> waitable;
-  private final Function<F, T> transformation;
-
-  WaitableAdapter(Waitable<F> waitable, Function<F, T> transformation) {
+  WaitableAdapter(Waitable<T> waitable) {
     this.waitable = waitable;
-    this.transformation = transformation;
   }
   @Override
   public boolean isDone() {
@@ -33,7 +29,7 @@ class WaitableAdapter<F, T> implements Waitable<T> {
 
   @Override
   public T get() {
-    return transformation.apply(waitable.get());
+    return waitable.get();
   }
 
   @Override

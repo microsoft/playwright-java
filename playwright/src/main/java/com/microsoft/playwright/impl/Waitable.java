@@ -22,7 +22,4 @@ interface Waitable<T> {
   boolean isDone();
   T get();
   void dispose();
-  default <U> Waitable<U> apply(Function<T, U> transform) {
-    return new WaitableAdapter<T, U>(this, transform);
-  }
 }
