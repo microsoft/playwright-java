@@ -586,7 +586,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public Page page() {
+  public PageImpl page() {
     return page;
   }
 

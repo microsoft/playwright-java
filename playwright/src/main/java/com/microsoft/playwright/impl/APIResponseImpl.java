@@ -34,7 +34,7 @@ import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 import static java.util.Arrays.asList;
 
 class APIResponseImpl implements APIResponse {
-  private final APIRequestContextImpl context;
+  final APIRequestContextImpl context;
   private final JsonObject initializer;
   private final RawHeaders headers;
 
