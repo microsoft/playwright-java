@@ -23,7 +23,6 @@ import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.TimeoutError;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -85,8 +84,7 @@ public class Connection {
     }
     this.transport = transport;
     root = new Root(this);
-    String srcRoot = System.getenv("PLAYWRIGHT_JAVA_SRC");
-    stackTraceCollector = (srcRoot == null) ? null: new StackTraceCollector(Paths.get(srcRoot));
+    stackTraceCollector = StackTraceCollector.createFromEnv();
   }
 
   boolean isCollectingStacks() {

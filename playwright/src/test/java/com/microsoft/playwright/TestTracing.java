@@ -119,7 +119,9 @@ public class TestTracing extends TestBase {
     assertEquals(1, sources.size());
 
     String path = getClass().getName().replace('.', File.separatorChar);
-    Path sourceFile = Paths.get(System.getenv("PLAYWRIGHT_JAVA_SRC"), path + ".java");
+    String[] srcRoots = System.getenv("PLAYWRIGHT_JAVA_SRC").split(File.pathSeparator);
+    // Resolve in the last specified source dir.
+    Path sourceFile = Paths.get(srcRoots[srcRoots.length - 1], path + ".java");
     byte[] thisFile = Files.readAllBytes(sourceFile);
     assertEquals(new String(thisFile, UTF_8), new String(sources.values().iterator().next(), UTF_8));
   }

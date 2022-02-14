@@ -23,15 +23,30 @@ import com.microsoft.playwright.PlaywrightException;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
 
 class StackTraceCollector {
-  private final Path srcDir;
+  private final List<Path> srcDirs;
+  private final Map<Path, String> classToSourceCache = new HashMap<>();
 
-  StackTraceCollector(Path srcDir) {
-    if (!Files.exists(srcDir.toAbsolutePath())) {
-      throw new PlaywrightException("Source location doesn't exist: '" + srcDir.toAbsolutePath() + "'");
+  static StackTraceCollector createFromEnv() {
+    String srcRoots = System.getenv("PLAYWRIGHT_JAVA_SRC");
+    if (srcRoots == null) {
+      return null;
     }
-    this.srcDir = srcDir;
+    List<Path> srcDirs = Arrays.stream(srcRoots.split(File.pathSeparator)).map(p -> Paths.get(p)).collect(Collectors.toList());
+    for (Path srcDir: srcDirs) {
+      if (!Files.exists(srcDir.toAbsolutePath())) {
+        throw new PlaywrightException("Source location specified in PLAYWRIGHT_JAVA_SRC doesn't exist: '" + srcDir.toAbsolutePath() + "'");
+      }
+    }
+    return new StackTraceCollector(srcDirs);
+  }
+
+  private StackTraceCollector(List<Path> srcDirs) {
+    this.srcDirs = srcDirs;
   }
 
   private String sourceFile(StackTraceElement frame) {
@@ -47,7 +62,26 @@ class StackTraceCollector {
     if (file == null) {
       return "";
     }
-    return srcDir.resolve(pkg).resolve(file).toString();
+    return resolveSourcePath(Paths.get(pkg).resolve(file));
+  }
+
+  private String resolveSourcePath(Path relativePath) {
+    String path = classToSourceCache.get(relativePath);
+    if (path == null) {
+      for (Path dir : srcDirs) {
+        Path absolutePath = dir.resolve(relativePath);
+        if (Files.exists(absolutePath)) {
+          path = absolutePath.toString();
+          classToSourceCache.put(relativePath, path);
+          break;
+        }
+      }
+      if (path == null) {
+        path = "";
+        classToSourceCache.put(relativePath, path);
+      }
+    }
+    return path;
   }
 
   JsonArray currentStackTrace() {
