@@ -16,10 +16,13 @@
 
 package com.microsoft.playwright;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
@@ -133,5 +136,71 @@ public class TestBrowserContextRoute extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     page.navigate(server.EMPTY_PAGE);
     assertEquals(2, intercepted[0]);
+  }
+
+  @Test
+  void shouldOverwritePostBodyWithEmptyString() throws ExecutionException, InterruptedException {
+    context.route("**/empty.html", route -> {
+      route.resume(new Route.ResumeOptions().setPostData(""));
+    });
+
+    Future<Server.Request> req = server.futureRequest("/empty.html");
+    page.setContent("<script>\n" +
+      "        (async () => {\n" +
+      "            await fetch('" + server.EMPTY_PAGE + "', {\n" +
+      "              method: 'POST',\n" +
+      "              body: 'original',\n" +
+      "            });\n" +
+      "        })()\n" +
+      "      </script>");
+
+    byte[] body = req.get().postBody;
+    assertEquals(0, body.length);
+  }
+
+  @Test
+  void shouldNotSwallowExceptionsInRoute() throws ExecutionException, InterruptedException {
+    context.route("**/empty.html", route -> {
+      throw new RuntimeException("My Exception");
+    });
+
+    try {
+      page.navigate(server.EMPTY_PAGE);
+      fail("did not throw");
+    } catch (RuntimeException e) {
+      assertTrue(e.getMessage().contains("My Exception"), e.getMessage());
+    }
+  }
+
+  @Test
+  @Disabled("Conflicts with https://github.com/microsoft/playwright-java/pull/680")
+  void shouldNotSwallowExceptionsInFulfill() throws ExecutionException, InterruptedException {
+    APIRequestContext request = playwright.request().newContext();
+    APIResponse response = request.get(server.EMPTY_PAGE);
+    response.dispose();
+    page.route("**/*", route -> {
+      // Fulfilling with dsiposed response will lead to a server-side exception.
+      route.fulfill(new Route.FulfillOptions().setResponse(response));
+    });
+    try {
+      page.navigate(server.EMPTY_PAGE);
+      fail("did not throw");
+    } catch (RuntimeException e) {
+      assertTrue(e.getMessage().contains("Fetch response has been disposed"), e.getMessage());
+    }
+  }
+
+  @Test
+  @Disabled("Conflicts with https://github.com/microsoft/playwright-java/pull/680")
+  void shouldNotSwallowExceptionsInResume() throws ExecutionException, InterruptedException {
+    page.route("**/*", route -> {
+      route.resume(new Route.ResumeOptions().setUrl("file:///tmp"));
+    });
+    try {
+      page.navigate(server.EMPTY_PAGE);
+      fail("did not throw");
+    } catch (RuntimeException e) {
+      assertTrue(e.getMessage().contains("New URL must have same protocol as overridden URL"), e.getMessage());
+    }
   }
 }

@@ -18,7 +18,6 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
-import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Route;
 
 import java.io.IOException;
@@ -102,9 +101,6 @@ public class RouteImpl extends ChannelOwner implements Route {
       if (headersOption == null) {
         headersOption = options.response.headers();
       }
-      if (options.body == null && options.path == null) {
-        fetchResponseUid = ((APIResponseImpl) options.response).fetchUid();
-      }
     }
     if (status == null) {
       status = 200;
@@ -114,10 +110,10 @@ public class RouteImpl extends ChannelOwner implements Route {
     int length = 0;
     if (options.path != null) {
       try {
-         byte[] buffer = Files.readAllBytes(options.path);
-         body = Base64.getEncoder().encodeToString(buffer);
-         isBase64 = true;
-         length = buffer.length;
+        byte[] buffer = Files.readAllBytes(options.path);
+        body = Base64.getEncoder().encodeToString(buffer);
+        isBase64 = true;
+        length = buffer.length;
       } catch (IOException e) {
         throw new PlaywrightException("Failed to read from file: " + options.path, e);
       }
@@ -129,7 +125,18 @@ public class RouteImpl extends ChannelOwner implements Route {
       body = Base64.getEncoder().encodeToString(options.bodyBytes);
       isBase64 = true;
       length = options.bodyBytes.length;
+    } else if (options.response != null) {
+      APIResponseImpl response = (APIResponseImpl) options.response;
+      if (response.context.connection == connection) {
+        fetchResponseUid = response.fetchUid();
+      } else {
+        byte[] bodyBytes = response.body();
+        body = Base64.getEncoder().encodeToString(bodyBytes);
+        isBase64 = true;
+        length = bodyBytes.length;
+      }
     }
+
 
     Map<String, String> headers = new LinkedHashMap<>();
     if (headersOption != null) {
@@ -157,7 +164,7 @@ public class RouteImpl extends ChannelOwner implements Route {
   }
 
   @Override
-  public Request request() {
+  public RequestImpl request() {
     return connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());
   }
 

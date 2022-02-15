@@ -507,4 +507,15 @@ public class TestBrowserTypeConnect extends TestBase {
     assertEquals(new String(thisFile, UTF_8), new String(sources.values().iterator().next(), UTF_8));
   }
 
+  @Test
+  void shouldFulfillWithGlobalFetchResult() {
+    page.route("**/*", route -> {
+      APIRequestContext request = playwright.request().newContext();
+      APIResponse response = request.get(server.PREFIX + "/simple.json");
+      route.fulfill(new Route.FulfillOptions().setResponse(response));
+    });
+    Response response = page.navigate(server.EMPTY_PAGE);
+    assertEquals(200, response.status());
+    assertEquals("{\"foo\": \"bar\"}\n", response.text());
+  }
 }
