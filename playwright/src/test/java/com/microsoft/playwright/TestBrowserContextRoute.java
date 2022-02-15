@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -172,6 +173,7 @@ public class TestBrowserContextRoute extends TestBase {
   }
 
   @Test
+  @Disabled("Conflicts with https://github.com/microsoft/playwright-java/pull/680")
   void shouldNotSwallowExceptionsInFulfill() throws ExecutionException, InterruptedException {
     APIRequestContext request = playwright.request().newContext();
     APIResponse response = request.get(server.EMPTY_PAGE);
@@ -189,6 +191,7 @@ public class TestBrowserContextRoute extends TestBase {
   }
 
   @Test
+  @Disabled("Conflicts with https://github.com/microsoft/playwright-java/pull/680")
   void shouldNotSwallowExceptionsInResume() throws ExecutionException, InterruptedException {
     page.route("**/*", route -> {
       route.resume(new Route.ResumeOptions().setUrl("file:///tmp"));

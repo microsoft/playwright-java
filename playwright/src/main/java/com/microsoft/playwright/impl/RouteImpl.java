@@ -16,18 +16,16 @@
 
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
-import com.microsoft.playwright.Request;
 import com.microsoft.playwright.Route;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.*;
-
-import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
+import java.util.Base64;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class RouteImpl extends ChannelOwner implements Route {
   private boolean handled;
@@ -78,7 +76,7 @@ public class RouteImpl extends ChannelOwner implements Route {
       String base64 = Base64.getEncoder().encodeToString(bytes);
       params.addProperty("postData", base64);
     }
-    raceWithPageClose(sendMessageAsync("continue", params));
+    sendMessageAsync("continue", params);
   }
 
   @Override
@@ -162,36 +160,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     if (fetchResponseUid != null) {
       params.addProperty("fetchResponseUid", fetchResponseUid);
     }
-    raceWithPageClose(sendMessageAsync("fulfill", params));
-  }
-
-  private void raceWithPageClose(WaitableResult<JsonElement> messageResponse) {
-    List<Waitable<JsonElement>> waitables = new ArrayList<>();
-    // When page closes or crashes, we catch any potential rejects from this Route.
-    // Note that page could be missing when routing popup's initial request that
-    // does not have a Page initialized just yet.
-    PageImpl page = request().frame().page();
-    if (page != null) {
-      waitables.add(new WaitableAdapter<JsonElement>(page.createWaitForCloseHelper()) {
-        @Override
-        public JsonElement get() {
-          return null;
-        }
-      });
-    }
-    waitables.add(new WaitableAdapter<JsonElement>(messageResponse) {
-      @Override
-      public JsonElement get() {
-        try {
-          return super.get();
-        } catch (PlaywrightException e) {
-          if (isSafeCloseError(e))
-            return null;
-          throw e;
-        }
-      }
-    });
-    runUntil(() -> {}, new WaitableRace<>(waitables));
+    sendMessageAsync("fulfill", params);
   }
 
   @Override
