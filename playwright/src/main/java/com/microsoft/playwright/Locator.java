@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
  * to find element(s) on the page at any moment. Locator can be created with the {@link Page#locator Page.locator()}
  * method.
  *
- * <p> <a href="https://playwright.dev/java/docs/locators/">Learn more about locators</a>.
+ * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
  */
 public interface Locator {
   class BoundingBoxOptions {
@@ -49,7 +49,7 @@ public interface Locator {
   }
   class CheckOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -71,14 +71,14 @@ public interface Locator {
      */
     public Double timeout;
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
     public Boolean trial;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public CheckOptions setForce(boolean force) {
@@ -119,7 +119,7 @@ public interface Locator {
       return this;
     }
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -142,7 +142,7 @@ public interface Locator {
      */
     public Double delay;
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -169,7 +169,7 @@ public interface Locator {
      */
     public Double timeout;
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -197,7 +197,7 @@ public interface Locator {
       return this;
     }
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public ClickOptions setForce(boolean force) {
@@ -246,7 +246,7 @@ public interface Locator {
       return this;
     }
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -265,7 +265,7 @@ public interface Locator {
      */
     public Double delay;
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -292,7 +292,7 @@ public interface Locator {
      */
     public Double timeout;
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -313,7 +313,7 @@ public interface Locator {
       return this;
     }
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public DblclickOptions setForce(boolean force) {
@@ -362,7 +362,7 @@ public interface Locator {
       return this;
     }
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -391,7 +391,7 @@ public interface Locator {
   }
   class DragToOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -418,14 +418,14 @@ public interface Locator {
      */
     public Double timeout;
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
     public Boolean trial;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public DragToOptions setForce(boolean force) {
@@ -481,7 +481,7 @@ public interface Locator {
       return this;
     }
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -546,7 +546,7 @@ public interface Locator {
   }
   class FillOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -564,7 +564,7 @@ public interface Locator {
     public Double timeout;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public FillOptions setForce(boolean force) {
@@ -628,7 +628,7 @@ public interface Locator {
   }
   class HoverOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -649,14 +649,14 @@ public interface Locator {
      */
     public Double timeout;
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
     public Boolean trial;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public HoverOptions setForce(boolean force) {
@@ -696,7 +696,7 @@ public interface Locator {
       return this;
     }
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -1036,7 +1036,7 @@ public interface Locator {
   }
   class SelectOptionOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -1054,7 +1054,7 @@ public interface Locator {
     public Double timeout;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public SelectOptionOptions setForce(boolean force) {
@@ -1082,7 +1082,7 @@ public interface Locator {
   }
   class SelectTextOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -1094,7 +1094,7 @@ public interface Locator {
     public Double timeout;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public SelectTextOptions setForce(boolean force) {
@@ -1113,7 +1113,7 @@ public interface Locator {
   }
   class SetCheckedOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -1135,14 +1135,14 @@ public interface Locator {
      */
     public Double timeout;
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
     public Boolean trial;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public SetCheckedOptions setForce(boolean force) {
@@ -1183,7 +1183,7 @@ public interface Locator {
       return this;
     }
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -1227,7 +1227,7 @@ public interface Locator {
   }
   class TapOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -1254,14 +1254,14 @@ public interface Locator {
      */
     public Double timeout;
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
     public Boolean trial;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public TapOptions setForce(boolean force) {
@@ -1310,7 +1310,7 @@ public interface Locator {
       return this;
     }
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -1383,7 +1383,7 @@ public interface Locator {
   }
   class UncheckOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -1405,14 +1405,14 @@ public interface Locator {
      */
     public Double timeout;
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
     public Boolean trial;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public UncheckOptions setForce(boolean force) {
@@ -1453,7 +1453,7 @@ public interface Locator {
       return this;
     }
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -1560,7 +1560,7 @@ public interface Locator {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already checked, this
    * method returns immediately.</li>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
@@ -1581,7 +1581,7 @@ public interface Locator {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already checked, this
    * method returns immediately.</li>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
@@ -1598,7 +1598,7 @@ public interface Locator {
   /**
    * This method clicks the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element, or the specified {@code position}.</li>
@@ -1616,7 +1616,7 @@ public interface Locator {
   /**
    * This method clicks the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element, or the specified {@code position}.</li>
@@ -1636,7 +1636,7 @@ public interface Locator {
   /**
    * This method double clicks the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
@@ -1657,7 +1657,7 @@ public interface Locator {
   /**
    * This method double clicks the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
@@ -1974,7 +1974,7 @@ public interface Locator {
    */
   JSHandle evaluateHandle(String expression, Object arg, EvaluateHandleOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, focuses the
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
    * element, fills it and triggers an {@code input} event after filling. Note that you can pass an empty string to clear the input
    * field.
    *
@@ -1991,7 +1991,7 @@ public interface Locator {
     fill(value, null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, focuses the
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
    * element, fills it and triggers an {@code input} event after filling. Note that you can pass an empty string to clear the input
    * field.
    *
@@ -2027,7 +2027,7 @@ public interface Locator {
    * locator.click();
    * }</pre>
    *
-   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
+   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
    * selectors</a> for more details.
    */
   FrameLocator frameLocator(String selector);
@@ -2048,7 +2048,7 @@ public interface Locator {
   /**
    * This method hovers over the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to hover over the center of the element, or the specified {@code position}.</li>
@@ -2066,7 +2066,7 @@ public interface Locator {
   /**
    * This method hovers over the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to hover over the center of the element, or the specified {@code position}.</li>
@@ -2121,56 +2121,56 @@ public interface Locator {
   boolean isChecked(IsCheckedOptions options);
   /**
    * Returns whether the element is disabled, the opposite of <a
-   * href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.
+   * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    */
   default boolean isDisabled() {
     return isDisabled(null);
   }
   /**
    * Returns whether the element is disabled, the opposite of <a
-   * href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.
+   * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    */
   boolean isDisabled(IsDisabledOptions options);
   /**
-   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#editable">editable</a>.
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
    */
   default boolean isEditable() {
     return isEditable(null);
   }
   /**
-   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#editable">editable</a>.
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
    */
   boolean isEditable(IsEditableOptions options);
   /**
-   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    */
   default boolean isEnabled() {
     return isEnabled(null);
   }
   /**
-   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    */
   boolean isEnabled(IsEnabledOptions options);
   /**
    * Returns whether the element is hidden, the opposite of <a
-   * href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.
+   * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
    */
   default boolean isHidden() {
     return isHidden(null);
   }
   /**
    * Returns whether the element is hidden, the opposite of <a
-   * href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.
+   * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
    */
   boolean isHidden(IsHiddenOptions options);
   /**
-   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
    */
   default boolean isVisible() {
     return isVisible(null);
   }
   /**
-   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
    */
   boolean isVisible(IsVisibleOptions options);
   /**
@@ -2180,7 +2180,7 @@ public interface Locator {
   /**
    * The method finds an element matching the specified selector in the {@code Locator}'s subtree.
    *
-   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
+   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
    * selectors</a> for more details.
    */
   default Locator locator(String selector) {
@@ -2189,7 +2189,7 @@ public interface Locator {
   /**
    * The method finds an element matching the specified selector in the {@code Locator}'s subtree.
    *
-   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
+   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
    * selectors</a> for more details.
    */
   Locator locator(String selector, LocatorOptions options);
@@ -2254,7 +2254,7 @@ public interface Locator {
   /**
    * Returns the buffer with the captured screenshot.
    *
-   * <p> This method waits for the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then
+   * <p> This method waits for the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then
    * scrolls element into view before taking a screenshot. If the element is detached from DOM, the method throws an error.
    */
   default byte[] screenshot() {
@@ -2263,12 +2263,12 @@ public interface Locator {
   /**
    * Returns the buffer with the captured screenshot.
    *
-   * <p> This method waits for the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then
+   * <p> This method waits for the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then
    * scrolls element into view before taking a screenshot. If the element is detached from DOM, the method throws an error.
    */
   byte[] screenshot(ScreenshotOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then tries to
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then tries to
    * scroll element into view, unless it is completely visible as defined by <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">IntersectionObserver</a>'s {@code ratio}.
    */
@@ -2276,14 +2276,14 @@ public interface Locator {
     scrollIntoViewIfNeeded(null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then tries to
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then tries to
    * scroll element into view, unless it is completely visible as defined by <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">IntersectionObserver</a>'s {@code ratio}.
    */
   void scrollIntoViewIfNeeded(ScrollIntoViewIfNeededOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -2310,8 +2310,8 @@ public interface Locator {
     return selectOption(values, null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -2336,8 +2336,8 @@ public interface Locator {
    */
   List<String> selectOption(String values, SelectOptionOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -2364,8 +2364,8 @@ public interface Locator {
     return selectOption(values, null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -2390,8 +2390,8 @@ public interface Locator {
    */
   List<String> selectOption(ElementHandle values, SelectOptionOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -2418,8 +2418,8 @@ public interface Locator {
     return selectOption(values, null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -2444,8 +2444,8 @@ public interface Locator {
    */
   List<String> selectOption(String[] values, SelectOptionOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -2472,8 +2472,8 @@ public interface Locator {
     return selectOption(values, null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -2498,8 +2498,8 @@ public interface Locator {
    */
   List<String> selectOption(SelectOption values, SelectOptionOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -2526,8 +2526,8 @@ public interface Locator {
     return selectOption(values, null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -2552,8 +2552,8 @@ public interface Locator {
    */
   List<String> selectOption(ElementHandle[] values, SelectOptionOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -2580,8 +2580,8 @@ public interface Locator {
     return selectOption(values, null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -2606,14 +2606,14 @@ public interface Locator {
    */
   List<String> selectOption(SelectOption[] values, SelectOptionOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then focuses
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then focuses
    * the element and selects all its text content.
    */
   default void selectText() {
     selectText(null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then focuses
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then focuses
    * the element and selects all its text content.
    */
   void selectText(SelectTextOptions options);
@@ -2622,7 +2622,7 @@ public interface Locator {
    * <ol>
    * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws.</li>
    * <li> If the element already has the right checked state, this method returns immediately.</li>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
@@ -2643,7 +2643,7 @@ public interface Locator {
    * <ol>
    * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws.</li>
    * <li> If the element already has the right checked state, this method returns immediately.</li>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
@@ -2732,7 +2732,7 @@ public interface Locator {
   /**
    * This method taps the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#touchscreen Page.touchscreen()} to tap the center of the element, or the specified {@code position}.</li>
@@ -2752,7 +2752,7 @@ public interface Locator {
   /**
    * This method taps the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#touchscreen Page.touchscreen()} to tap the center of the element, or the specified {@code position}.</li>
@@ -2822,7 +2822,7 @@ public interface Locator {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already unchecked,
    * this method returns immediately.</li>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
@@ -2843,7 +2843,7 @@ public interface Locator {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already unchecked,
    * this method returns immediately.</li>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
