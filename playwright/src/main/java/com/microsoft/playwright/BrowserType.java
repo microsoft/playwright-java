@@ -130,7 +130,7 @@ public interface BrowserType {
     /**
      * Browser distribution channel.  Supported values are "chrome", "chrome-beta", "chrome-dev", "chrome-canary", "msedge",
      * "msedge-beta", "msedge-dev", "msedge-canary". Read more about using <a
-     * href="https://playwright.dev/java/docs/browsers/#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
+     * href="https://playwright.dev/java/docs/browsers#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
      */
     public Object channel;
     /**
@@ -222,7 +222,7 @@ public interface BrowserType {
     /**
      * Browser distribution channel.  Supported values are "chrome", "chrome-beta", "chrome-dev", "chrome-canary", "msedge",
      * "msedge-beta", "msedge-dev", "msedge-canary". Read more about using <a
-     * href="https://playwright.dev/java/docs/browsers/#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
+     * href="https://playwright.dev/java/docs/browsers#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
      */
     public LaunchOptions setChannel(BrowserChannel channel) {
       this.channel = channel;
@@ -231,7 +231,7 @@ public interface BrowserType {
     /**
      * Browser distribution channel.  Supported values are "chrome", "chrome-beta", "chrome-dev", "chrome-canary", "msedge",
      * "msedge-beta", "msedge-dev", "msedge-canary". Read more about using <a
-     * href="https://playwright.dev/java/docs/browsers/#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
+     * href="https://playwright.dev/java/docs/browsers#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
      */
     public LaunchOptions setChannel(String channel) {
       this.channel = channel;
@@ -399,7 +399,7 @@ public interface BrowserType {
     /**
      * Browser distribution channel.  Supported values are "chrome", "chrome-beta", "chrome-dev", "chrome-canary", "msedge",
      * "msedge-beta", "msedge-dev", "msedge-canary". Read more about using <a
-     * href="https://playwright.dev/java/docs/browsers/#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
+     * href="https://playwright.dev/java/docs/browsers#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
      */
     public Object channel;
     /**
@@ -625,7 +625,7 @@ public interface BrowserType {
     /**
      * Browser distribution channel.  Supported values are "chrome", "chrome-beta", "chrome-dev", "chrome-canary", "msedge",
      * "msedge-beta", "msedge-dev", "msedge-canary". Read more about using <a
-     * href="https://playwright.dev/java/docs/browsers/#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
+     * href="https://playwright.dev/java/docs/browsers#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
      */
     public LaunchPersistentContextOptions setChannel(BrowserChannel channel) {
       this.channel = channel;
@@ -634,7 +634,7 @@ public interface BrowserType {
     /**
      * Browser distribution channel.  Supported values are "chrome", "chrome-beta", "chrome-dev", "chrome-canary", "msedge",
      * "msedge-beta", "msedge-dev", "msedge-canary". Read more about using <a
-     * href="https://playwright.dev/java/docs/browsers/#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
+     * href="https://playwright.dev/java/docs/browsers#google-chrome--microsoft-edge">Google Chrome and Microsoft Edge</a>.
      */
     public LaunchPersistentContextOptions setChannel(String channel) {
       this.channel = channel;

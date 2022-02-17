@@ -59,7 +59,7 @@ import java.util.*;
 public interface ElementHandle extends JSHandle {
   class CheckOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -81,14 +81,14 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
     public Boolean trial;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public CheckOptions setForce(boolean force) {
@@ -129,7 +129,7 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -152,7 +152,7 @@ public interface ElementHandle extends JSHandle {
      */
     public Double delay;
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -179,7 +179,7 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -207,7 +207,7 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public ClickOptions setForce(boolean force) {
@@ -256,7 +256,7 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -275,7 +275,7 @@ public interface ElementHandle extends JSHandle {
      */
     public Double delay;
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -302,7 +302,7 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -323,7 +323,7 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public DblclickOptions setForce(boolean force) {
@@ -372,7 +372,7 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -383,7 +383,7 @@ public interface ElementHandle extends JSHandle {
   }
   class FillOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -401,7 +401,7 @@ public interface ElementHandle extends JSHandle {
     public Double timeout;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public FillOptions setForce(boolean force) {
@@ -429,7 +429,7 @@ public interface ElementHandle extends JSHandle {
   }
   class HoverOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -450,14 +450,14 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
     public Boolean trial;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public HoverOptions setForce(boolean force) {
@@ -497,7 +497,7 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -656,7 +656,7 @@ public interface ElementHandle extends JSHandle {
   }
   class SelectOptionOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -674,7 +674,7 @@ public interface ElementHandle extends JSHandle {
     public Double timeout;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public SelectOptionOptions setForce(boolean force) {
@@ -702,7 +702,7 @@ public interface ElementHandle extends JSHandle {
   }
   class SelectTextOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -714,7 +714,7 @@ public interface ElementHandle extends JSHandle {
     public Double timeout;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public SelectTextOptions setForce(boolean force) {
@@ -733,7 +733,7 @@ public interface ElementHandle extends JSHandle {
   }
   class SetCheckedOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -755,14 +755,14 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
     public Boolean trial;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public SetCheckedOptions setForce(boolean force) {
@@ -803,7 +803,7 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -847,7 +847,7 @@ public interface ElementHandle extends JSHandle {
   }
   class TapOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -874,14 +874,14 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
     public Boolean trial;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public TapOptions setForce(boolean force) {
@@ -930,7 +930,7 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -985,7 +985,7 @@ public interface ElementHandle extends JSHandle {
   }
   class UncheckOptions {
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public Boolean force;
@@ -1007,14 +1007,14 @@ public interface ElementHandle extends JSHandle {
      */
     public Double timeout;
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
     public Boolean trial;
 
     /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks. Defaults to
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
      * {@code false}.
      */
     public UncheckOptions setForce(boolean force) {
@@ -1055,7 +1055,7 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability/">actionability</a>
+     * When set, this method only performs the <a href="https://playwright.dev/java/docs/actionability">actionability</a>
      * checks and skips the action. Defaults to {@code false}. Useful to wait until the element is ready for the action without
      * performing it.
      */
@@ -1164,7 +1164,7 @@ public interface ElementHandle extends JSHandle {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already checked, this
    * method returns immediately.</li>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
@@ -1185,7 +1185,7 @@ public interface ElementHandle extends JSHandle {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already checked, this
    * method returns immediately.</li>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
@@ -1202,7 +1202,7 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method clicks the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element, or the specified {@code position}.</li>
@@ -1220,7 +1220,7 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method clicks the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element, or the specified {@code position}.</li>
@@ -1240,7 +1240,7 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method double clicks the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
@@ -1261,7 +1261,7 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method double clicks the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
@@ -1352,7 +1352,7 @@ public interface ElementHandle extends JSHandle {
    * Returns the return value of {@code expression}.
    *
    * <p> The method finds an element matching the specified selector in the {@code ElementHandle}s subtree and passes it as a first
-   * argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more
+   * argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors">Working with selectors</a> for more
    * details. If no elements match the selector, the method throws an error.
    *
    * <p> If {@code expression} returns a <a
@@ -1366,7 +1366,7 @@ public interface ElementHandle extends JSHandle {
    * assertEquals("10", tweetHandle.evalOnSelector(".retweets", "node => node.innerText"));
    * }</pre>
    *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
@@ -1378,7 +1378,7 @@ public interface ElementHandle extends JSHandle {
    * Returns the return value of {@code expression}.
    *
    * <p> The method finds an element matching the specified selector in the {@code ElementHandle}s subtree and passes it as a first
-   * argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more
+   * argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors">Working with selectors</a> for more
    * details. If no elements match the selector, the method throws an error.
    *
    * <p> If {@code expression} returns a <a
@@ -1392,7 +1392,7 @@ public interface ElementHandle extends JSHandle {
    * assertEquals("10", tweetHandle.evalOnSelector(".retweets", "node => node.innerText"));
    * }</pre>
    *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
@@ -1403,7 +1403,7 @@ public interface ElementHandle extends JSHandle {
    * Returns the return value of {@code expression}.
    *
    * <p> The method finds all elements matching the specified selector in the {@code ElementHandle}'s subtree and passes an array of
-   * matched elements as a first argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working
+   * matched elements as a first argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors">Working
    * with selectors</a> for more details.
    *
    * <p> If {@code expression} returns a <a
@@ -1417,7 +1417,7 @@ public interface ElementHandle extends JSHandle {
    * assertEquals(Arrays.asList("Hello!", "Hi!"), feedHandle.evalOnSelectorAll(".tweet", "nodes => nodes.map(n => n.innerText)"));
    * }</pre>
    *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
@@ -1429,7 +1429,7 @@ public interface ElementHandle extends JSHandle {
    * Returns the return value of {@code expression}.
    *
    * <p> The method finds all elements matching the specified selector in the {@code ElementHandle}'s subtree and passes an array of
-   * matched elements as a first argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors/">Working
+   * matched elements as a first argument to {@code expression}. See <a href="https://playwright.dev/java/docs/selectors">Working
    * with selectors</a> for more details.
    *
    * <p> If {@code expression} returns a <a
@@ -1443,7 +1443,7 @@ public interface ElementHandle extends JSHandle {
    * assertEquals(Arrays.asList("Hello!", "Hi!"), feedHandle.evalOnSelectorAll(".tweet", "nodes => nodes.map(n => n.innerText)"));
    * }</pre>
    *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
    * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
    * as a function. Otherwise, evaluated as an expression.
@@ -1451,7 +1451,7 @@ public interface ElementHandle extends JSHandle {
    */
   Object evalOnSelectorAll(String selector, String expression, Object arg);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, focuses the
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
    * element, fills it and triggers an {@code input} event after filling. Note that you can pass an empty string to clear the input
    * field.
    *
@@ -1468,7 +1468,7 @@ public interface ElementHandle extends JSHandle {
     fill(value, null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, focuses the
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
    * element, fills it and triggers an {@code input} event after filling. Note that you can pass an empty string to clear the input
    * field.
    *
@@ -1495,7 +1495,7 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method hovers over the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to hover over the center of the element, or the specified {@code position}.</li>
@@ -1513,7 +1513,7 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method hovers over the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to hover over the center of the element, or the specified {@code position}.</li>
@@ -1550,24 +1550,24 @@ public interface ElementHandle extends JSHandle {
   boolean isChecked();
   /**
    * Returns whether the element is disabled, the opposite of <a
-   * href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.
+   * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    */
   boolean isDisabled();
   /**
-   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#editable">editable</a>.
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
    */
   boolean isEditable();
   /**
-   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    */
   boolean isEnabled();
   /**
    * Returns whether the element is hidden, the opposite of <a
-   * href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.
+   * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
    */
   boolean isHidden();
   /**
-   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
    */
   boolean isVisible();
   /**
@@ -1626,26 +1626,26 @@ public interface ElementHandle extends JSHandle {
   void press(String key, PressOptions options);
   /**
    * The method finds an element matching the specified selector in the {@code ElementHandle}'s subtree. See <a
-   * href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If no elements match the
+   * href="https://playwright.dev/java/docs/selectors">Working with selectors</a> for more details. If no elements match the
    * selector, returns {@code null}.
    *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
    */
   ElementHandle querySelector(String selector);
   /**
    * The method finds all elements matching the specified selector in the {@code ElementHandle}s subtree. See <a
-   * href="https://playwright.dev/java/docs/selectors/">Working with selectors</a> for more details. If no elements match the
+   * href="https://playwright.dev/java/docs/selectors">Working with selectors</a> for more details. If no elements match the
    * selector, returns empty array.
    *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
    */
   List<ElementHandle> querySelectorAll(String selector);
   /**
    * Returns the buffer with the captured screenshot.
    *
-   * <p> This method waits for the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then
+   * <p> This method waits for the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then
    * scrolls element into view before taking a screenshot. If the element is detached from DOM, the method throws an error.
    */
   default byte[] screenshot() {
@@ -1654,12 +1654,12 @@ public interface ElementHandle extends JSHandle {
   /**
    * Returns the buffer with the captured screenshot.
    *
-   * <p> This method waits for the <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then
+   * <p> This method waits for the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then
    * scrolls element into view before taking a screenshot. If the element is detached from DOM, the method throws an error.
    */
   byte[] screenshot(ScreenshotOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then tries to
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then tries to
    * scroll element into view, unless it is completely visible as defined by <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">IntersectionObserver</a>'s {@code ratio}.
    *
@@ -1670,7 +1670,7 @@ public interface ElementHandle extends JSHandle {
     scrollIntoViewIfNeeded(null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then tries to
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then tries to
    * scroll element into view, unless it is completely visible as defined by <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">IntersectionObserver</a>'s {@code ratio}.
    *
@@ -1679,8 +1679,8 @@ public interface ElementHandle extends JSHandle {
    */
   void scrollIntoViewIfNeeded(ScrollIntoViewIfNeededOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -1707,8 +1707,8 @@ public interface ElementHandle extends JSHandle {
     return selectOption(values, null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -1733,8 +1733,8 @@ public interface ElementHandle extends JSHandle {
    */
   List<String> selectOption(String values, SelectOptionOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -1761,8 +1761,8 @@ public interface ElementHandle extends JSHandle {
     return selectOption(values, null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -1787,8 +1787,8 @@ public interface ElementHandle extends JSHandle {
    */
   List<String> selectOption(ElementHandle values, SelectOptionOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -1815,8 +1815,8 @@ public interface ElementHandle extends JSHandle {
     return selectOption(values, null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -1841,8 +1841,8 @@ public interface ElementHandle extends JSHandle {
    */
   List<String> selectOption(String[] values, SelectOptionOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -1869,8 +1869,8 @@ public interface ElementHandle extends JSHandle {
     return selectOption(values, null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -1895,8 +1895,8 @@ public interface ElementHandle extends JSHandle {
    */
   List<String> selectOption(SelectOption values, SelectOptionOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -1923,8 +1923,8 @@ public interface ElementHandle extends JSHandle {
     return selectOption(values, null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -1949,8 +1949,8 @@ public interface ElementHandle extends JSHandle {
    */
   List<String> selectOption(ElementHandle[] values, SelectOptionOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -1977,8 +1977,8 @@ public interface ElementHandle extends JSHandle {
     return selectOption(values, null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, waits until
-   * all specified options are present in the {@code <select>} element and selects these options.
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
+   * specified options are present in the {@code <select>} element and selects these options.
    *
    * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
    * {@code <label>} element that has an associated <a
@@ -2003,14 +2003,14 @@ public interface ElementHandle extends JSHandle {
    */
   List<String> selectOption(SelectOption[] values, SelectOptionOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then focuses
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then focuses
    * the element and selects all its text content.
    */
   default void selectText() {
     selectText(null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks, then focuses
+   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then focuses
    * the element and selects all its text content.
    */
   void selectText(SelectTextOptions options);
@@ -2019,7 +2019,7 @@ public interface ElementHandle extends JSHandle {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws.</li>
    * <li> If the element already has the right checked state, this method returns immediately.</li>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
@@ -2040,7 +2040,7 @@ public interface ElementHandle extends JSHandle {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws.</li>
    * <li> If the element already has the right checked state, this method returns immediately.</li>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the matched element,
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
@@ -2129,7 +2129,7 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method taps the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#touchscreen Page.touchscreen()} to tap the center of the element, or the specified {@code position}.</li>
@@ -2149,7 +2149,7 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method taps the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#touchscreen Page.touchscreen()} to tap the center of the element, or the specified {@code position}.</li>
@@ -2213,7 +2213,7 @@ public interface ElementHandle extends JSHandle {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already unchecked,
    * this method returns immediately.</li>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
@@ -2234,7 +2234,7 @@ public interface ElementHandle extends JSHandle {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already unchecked,
    * this method returns immediately.</li>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability/">actionability</a> checks on the element, unless
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
    * {@code force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
@@ -2252,19 +2252,18 @@ public interface ElementHandle extends JSHandle {
    * Returns when the element satisfies the {@code state}.
    *
    * <p> Depending on the {@code state} parameter, this method waits for one of the <a
-   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks to pass. This method throws when the
+   * href="https://playwright.dev/java/docs/actionability">actionability</a> checks to pass. This method throws when the
    * element is detached while waiting, unless waiting for the {@code "hidden"} state.
    * <ul>
-   * <li> {@code "visible"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.</li>
-   * <li> {@code "hidden"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#visible">not visible</a>
-   * or <a href="https://playwright.dev/java/docs/actionability/#attached">not attached</a>. Note that waiting for hidden
-   * does not throw when the element detaches.</li>
-   * <li> {@code "stable"} Wait until the element is both <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>
-   * and <a href="https://playwright.dev/java/docs/actionability/#stable">stable</a>.</li>
-   * <li> {@code "enabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.</li>
-   * <li> {@code "disabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#enabled">not
-   * enabled</a>.</li>
-   * <li> {@code "editable"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#editable">editable</a>.</li>
+   * <li> {@code "visible"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>.</li>
+   * <li> {@code "hidden"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#visible">not visible</a> or
+   * <a href="https://playwright.dev/java/docs/actionability#attached">not attached</a>. Note that waiting for hidden does
+   * not throw when the element detaches.</li>
+   * <li> {@code "stable"} Wait until the element is both <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>
+   * and <a href="https://playwright.dev/java/docs/actionability#stable">stable</a>.</li>
+   * <li> {@code "enabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.</li>
+   * <li> {@code "disabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#enabled">not enabled</a>.</li>
+   * <li> {@code "editable"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.</li>
    * </ul>
    *
    * <p> If the element does not satisfy the condition for the {@code timeout} milliseconds, this method will throw.
@@ -2278,19 +2277,18 @@ public interface ElementHandle extends JSHandle {
    * Returns when the element satisfies the {@code state}.
    *
    * <p> Depending on the {@code state} parameter, this method waits for one of the <a
-   * href="https://playwright.dev/java/docs/actionability/">actionability</a> checks to pass. This method throws when the
+   * href="https://playwright.dev/java/docs/actionability">actionability</a> checks to pass. This method throws when the
    * element is detached while waiting, unless waiting for the {@code "hidden"} state.
    * <ul>
-   * <li> {@code "visible"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>.</li>
-   * <li> {@code "hidden"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#visible">not visible</a>
-   * or <a href="https://playwright.dev/java/docs/actionability/#attached">not attached</a>. Note that waiting for hidden
-   * does not throw when the element detaches.</li>
-   * <li> {@code "stable"} Wait until the element is both <a href="https://playwright.dev/java/docs/actionability/#visible">visible</a>
-   * and <a href="https://playwright.dev/java/docs/actionability/#stable">stable</a>.</li>
-   * <li> {@code "enabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#enabled">enabled</a>.</li>
-   * <li> {@code "disabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#enabled">not
-   * enabled</a>.</li>
-   * <li> {@code "editable"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability/#editable">editable</a>.</li>
+   * <li> {@code "visible"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>.</li>
+   * <li> {@code "hidden"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#visible">not visible</a> or
+   * <a href="https://playwright.dev/java/docs/actionability#attached">not attached</a>. Note that waiting for hidden does
+   * not throw when the element detaches.</li>
+   * <li> {@code "stable"} Wait until the element is both <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>
+   * and <a href="https://playwright.dev/java/docs/actionability#stable">stable</a>.</li>
+   * <li> {@code "enabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.</li>
+   * <li> {@code "disabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#enabled">not enabled</a>.</li>
+   * <li> {@code "editable"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.</li>
    * </ul>
    *
    * <p> If the element does not satisfy the condition for the {@code timeout} milliseconds, this method will throw.
@@ -2316,7 +2314,7 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> <strong>NOTE:</strong> This method does not work across navigations, use {@link Page#waitForSelector Page.waitForSelector()} instead.
    *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
    */
   default ElementHandle waitForSelector(String selector) {
@@ -2340,7 +2338,7 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> <strong>NOTE:</strong> This method does not work across navigations, use {@link Page#waitForSelector Page.waitForSelector()} instead.
    *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors/">working with selectors</a> for more
+   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
    */
   ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);

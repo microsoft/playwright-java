@@ -20,7 +20,7 @@ import java.nio.file.Path;
 
 /**
  * API for collecting and saving Playwright traces. Playwright traces can be opened in <a
- * href="https://playwright.dev/java/docs/trace-viewer/">Trace Viewer</a> after Playwright script runs.
+ * href="https://playwright.dev/java/docs/trace-viewer">Trace Viewer</a> after Playwright script runs.
  *
  * <p> Start recording a trace before performing actions. At the end, stop tracing and save it to a file.
  * <pre>{@code

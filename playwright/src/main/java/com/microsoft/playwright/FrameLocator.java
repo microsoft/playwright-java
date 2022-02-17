@@ -97,7 +97,7 @@ public interface FrameLocator {
    * When working with iframes, you can create a frame locator that will enter the iframe and allow selecting elements in
    * that iframe.
    *
-   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
+   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
    * selectors</a> for more details.
    */
   FrameLocator frameLocator(String selector);
@@ -108,7 +108,7 @@ public interface FrameLocator {
   /**
    * The method finds an element matching the specified selector in the FrameLocator's subtree.
    *
-   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
+   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
    * selectors</a> for more details.
    */
   default Locator locator(String selector) {
@@ -117,7 +117,7 @@ public interface FrameLocator {
   /**
    * The method finds an element matching the specified selector in the FrameLocator's subtree.
    *
-   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors/">working with
+   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
    * selectors</a> for more details.
    */
   Locator locator(String selector, LocatorOptions options);

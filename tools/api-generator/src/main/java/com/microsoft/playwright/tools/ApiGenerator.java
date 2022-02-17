@@ -183,7 +183,7 @@ abstract class Element {
       String url = matcher.group(2);
       if (url.startsWith("./")) {
         // ./actionability.md#editable => https://playwright.dev/java/docs/actionability/#editable
-        url = url.replace(".md", "/");
+        url = url.replace(".md", "");
         url = url.replace("./", "https://playwright.dev/java/docs/");
       }
       String link = "<a href=\"" + url + "\">" + matcher.group(1) + "</a>";
