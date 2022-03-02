@@ -17,10 +17,9 @@ jobs:
         username: playwright
         password: ${{ secrets.DOCKER_PASSWORD }}
     - uses: actions/checkout@v2
-    - name: Build Docker image
-      run: docker build -t playwright-java:localbuild-focal -f Dockerfile.focal .
-    - name: tag & publish
-      run: |
-        ./scripts/tag_image_and_push.sh playwright-java:localbuild-focal playwright.azurecr.io/public/playwright/java:next
-        ./scripts/tag_image_and_push.sh playwright-java:localbuild-focal playwright.azurecr.io/public/playwright/java:next-focal
-        ./scripts/tag_image_and_push.sh playwright-java:localbuild-focal playwright.azurecr.io/public/playwright/java:sha-${{ github.sha }}
+    - name: Set up Docker QEMU for arm64 docker builds
+      uses: docker/setup-qemu-action@v1
+      with:
+        platforms: arm64
+    - name: publish docker canary
+      run: ./utils/docker/publish_docker.sh canary

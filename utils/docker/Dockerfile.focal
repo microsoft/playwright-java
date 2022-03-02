@@ -2,26 +2,32 @@ FROM ubuntu:focal
 
 # === INSTALL JDK and Maven ===
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    openjdk-11-jdk maven
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    openjdk-11-jdk maven \
+    # Install utilities required for downloading browsers
+    curl \
+    # Install utilities required for downloading driver
+    unzip && \
+    rm -rf /var/lib/apt/lists/* && \
+    # Create the pwuser
+    adduser pwuser  
 
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
-# Install utilities required for downloading driver
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl unzip
-
-# === INSTALL playwright maven modules & browsers ===
+# === BAKE BROWSERS INTO IMAGE ===
 
 # Browsers will remain downloaded in `/ms-playwright`.
 # Note: make sure to set 777 to the registry so that any user can access
 # registry.
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
-RUN mkdir /ms-playwright && chmod -R 777 $PLAYWRIGHT_BROWSERS_PATH
+RUN mkdir /ms-playwright && \
+    chmod -R 777 $PLAYWRIGHT_BROWSERS_PATH && \
+    mkdir /tmp/pw-java
 
-RUN mkdir /tmp/pw-java
 COPY . /tmp/pw-java
+
 RUN cd /tmp/pw-java && \
     ./scripts/download_driver_for_all_platforms.sh && \
     mvn install -D skipTests --no-transfer-progress && \
