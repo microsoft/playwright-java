@@ -17,20 +17,12 @@ jobs:
         login-server: playwright.azurecr.io
         username: playwright
         password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Set up Docker QEMU for arm64 docker builds
+      uses: docker/setup-qemu-action@v1
+      with:
+        platforms: arm64
     - uses: actions/checkout@v2
-    - name: Build Docker image
-      run: docker build -t playwright-java:localbuild-focal -f Dockerfile.focal .
-    - name: tag & publish
-      run: |
-        # GITHUB_REF has a form of `refs/tags/v1.3.0`.
-        # TAG_NAME would be `v1.3.0`
-        TAG_NAME=${GITHUB_REF#refs/tags/}
-        if [[ ! "$TAG_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]];
-        then
-          echo "Wrong TAG_NAME format: $TAG_NAME"
-          exit 1
-        fi
-        ./scripts/tag_image_and_push.sh playwright-java:localbuild-focal playwright.azurecr.io/public/playwright/java:latest
-        ./scripts/tag_image_and_push.sh playwright-java:localbuild-focal playwright.azurecr.io/public/playwright/java:focal
-        ./scripts/tag_image_and_push.sh playwright-java:localbuild-focal playwright.azurecr.io/public/playwright/java:${TAG_NAME}
-        ./scripts/tag_image_and_push.sh playwright-java:localbuild-focal playwright.azurecr.io/public/playwright/java:${TAG_NAME}-focal
+    - run: ./utils/docker/publish_docker.sh stable
+      if: (github.event_name != 'workflow_dispatch' && !github.event.release.prerelease) || (github.event_name == 'workflow_dispatch' && github.event.inputs.is_release == 'true')
+    - run: ./utils/docker/publish_docker.sh canary
+      if: (github.event_name != 'workflow_dispatch' && github.event.release.prerelease) || (github.event_name == 'workflow_dispatch' && github.event.inputs.is_release != 'true')
