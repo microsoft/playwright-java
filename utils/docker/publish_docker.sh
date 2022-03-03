@@ -19,7 +19,7 @@ if [[ "${RELEASE_CHANNEL}" == "stable" ]]; then
     exit 1
   fi
 elif [[ "${RELEASE_CHANNEL}" == "canary" ]]; then
-
+  :
 else
   echo "ERROR: unknown release channel - ${RELEASE_CHANNEL}"
   echo "Must be either 'stable' or 'canary'"
