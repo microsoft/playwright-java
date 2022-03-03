@@ -14,7 +14,7 @@ PW_VERSION="${TAG_NAME#v}"
 
 RELEASE_CHANNEL="$1"
 if [[ "${RELEASE_CHANNEL}" == "stable" ]]; then
-  if [[ ! "${PW_VERSION}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]];
+  if [[ ! "${PW_VERSION}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     echo "ERROR: cannot publish stable docker with Playwright version '${PW_VERSION}'"
     exit 1
   fi
