@@ -1981,10 +1981,20 @@ public interface Page extends AutoCloseable {
      */
     public Clip clip;
     /**
+     * When true, stops CSS animations, CSS transitions and Web Animations. Animations get different treatment depending on
+     * their duration:
+     */
+    public Boolean disableAnimations;
+    /**
      * When true, takes a screenshot of the full scrollable page, instead of the currently visible viewport. Defaults to
      * {@code false}.
      */
     public Boolean fullPage;
+    /**
+     * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlayed with a pink box
+     * {@code #FF00FF} that completely covers its bounding box.
+     */
+    public List<Locator> mask;
     /**
      * Hides default white background and allows capturing screenshots with transparency. Not applicable to {@code jpeg} images.
      * Defaults to {@code false}.
@@ -2025,11 +2035,27 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
+     * When true, stops CSS animations, CSS transitions and Web Animations. Animations get different treatment depending on
+     * their duration:
+     */
+    public ScreenshotOptions setDisableAnimations(boolean disableAnimations) {
+      this.disableAnimations = disableAnimations;
+      return this;
+    }
+    /**
      * When true, takes a screenshot of the full scrollable page, instead of the currently visible viewport. Defaults to
      * {@code false}.
      */
     public ScreenshotOptions setFullPage(boolean fullPage) {
       this.fullPage = fullPage;
+      return this;
+    }
+    /**
+     * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlayed with a pink box
+     * {@code #FF00FF} that completely covers its bounding box.
+     */
+    public ScreenshotOptions setMask(List<Locator> mask) {
+      this.mask = mask;
       return this;
     }
     /**
@@ -5561,10 +5587,10 @@ public interface Page extends AutoCloseable {
    * In the case of multiple pages in a single browser, each page can have its own viewport size. However, {@link
    * Browser#newContext Browser.newContext()} allows to set viewport size (and more) for all pages in the context at once.
    *
-   * <p> {@code page.setViewportSize} will resize the page. A lot of websites don't expect phones to change size, so you should set the
-   * viewport size before navigating to the page. {@link Page#setViewportSize Page.setViewportSize()} will also reset
-   * {@code screen} size, use {@link Browser#newContext Browser.newContext()} with {@code screen} and {@code viewport} parameters if you need
-   * better control of these properties.
+   * <p> {@link Page#setViewportSize Page.setViewportSize()} will resize the page. A lot of websites don't expect phones to
+   * change size, so you should set the viewport size before navigating to the page. {@link Page#setViewportSize
+   * Page.setViewportSize()} will also reset {@code screen} size, use {@link Browser#newContext Browser.newContext()} with {@code screen}
+   * and {@code viewport} parameters if you need better control of these properties.
    * <pre>{@code
    * Page page = browser.newPage();
    * page.setViewportSize(640, 480);

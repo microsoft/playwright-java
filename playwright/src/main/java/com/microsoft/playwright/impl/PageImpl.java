@@ -28,11 +28,11 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertType;
+import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 import static com.microsoft.playwright.options.ScreenshotType.JPEG;
 import static com.microsoft.playwright.options.ScreenshotType.PNG;
-import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
@@ -1034,8 +1034,18 @@ public class PageImpl extends ChannelOwner implements Page {
         }
       }
     }
+    List<Locator> mask = options.mask;
+    options.mask = null;
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    options.mask = mask;
     params.remove("path");
+    if (mask != null) {
+      JsonArray maskArray = new JsonArray();
+      for (Locator locator: mask) {
+        maskArray.add(((LocatorImpl) locator).toProtocol());
+      }
+      params.add("mask", maskArray);
+    }
     JsonObject json = sendMessage("screenshot", params).getAsJsonObject();
 
     byte[] buffer = Base64.getDecoder().decode(json.get("binary").getAsString());

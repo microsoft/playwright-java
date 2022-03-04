@@ -24,8 +24,8 @@ import com.microsoft.playwright.impl.LocatorAssertionsImpl;
 import com.microsoft.playwright.impl.PageAssertionsImpl;
 
 /**
- * The {@code PlaywrightAssertions} class provides convenience methods for creating assertions that will wait until the expected
- * condition is met.
+ * Playwright gives you Web-First Assertions with convenience methods for creating assertions that will wait and retry
+ * until the expected condition is met.
  *
  * <p> Consider the following example:
  * <pre>{@code

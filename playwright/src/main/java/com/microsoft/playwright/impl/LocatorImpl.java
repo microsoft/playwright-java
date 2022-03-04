@@ -197,6 +197,11 @@ class LocatorImpl implements Locator {
   }
 
   @Override
+  public void highlight() {
+    frame.highlightImpl(selector);
+  }
+
+  @Override
   public void hover(HoverOptions options) {
     if (options == null) {
       options = new HoverOptions();
@@ -464,6 +469,15 @@ class LocatorImpl implements Locator {
 
   FrameExpectResult expect(String expression, FrameExpectOptions options) {
     return frame.withLogging("Locator.expect", () -> expectImpl(expression, options));
+  }
+
+  JsonObject toProtocol() {
+    JsonObject result = new JsonObject();
+    JsonObject frameJson = new JsonObject();
+    frameJson.addProperty("guid", frame.guid);
+    result.add("frame", frameJson);
+    result.addProperty("selector", selector);
+    return result;
   }
 
   private FrameExpectResult expectImpl(String expression, FrameExpectOptions options) {
