@@ -950,6 +950,16 @@ public interface Locator {
   }
   class ScreenshotOptions {
     /**
+     * When true, stops CSS animations, CSS transitions and Web Animations. Animations get different treatment depending on
+     * their duration:
+     */
+    public Boolean disableAnimations;
+    /**
+     * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlayed with a pink box
+     * {@code #FF00FF} that completely covers its bounding box.
+     */
+    public List<Locator> mask;
+    /**
      * Hides default white background and allows capturing screenshots with transparency. Not applicable to {@code jpeg} images.
      * Defaults to {@code false}.
      */
@@ -975,6 +985,22 @@ public interface Locator {
      */
     public ScreenshotType type;
 
+    /**
+     * When true, stops CSS animations, CSS transitions and Web Animations. Animations get different treatment depending on
+     * their duration:
+     */
+    public ScreenshotOptions setDisableAnimations(boolean disableAnimations) {
+      this.disableAnimations = disableAnimations;
+      return this;
+    }
+    /**
+     * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlayed with a pink box
+     * {@code #FF00FF} that completely covers its bounding box.
+     */
+    public ScreenshotOptions setMask(List<Locator> mask) {
+      this.mask = mask;
+      return this;
+    }
     /**
      * Hides default white background and allows capturing screenshots with transparency. Not applicable to {@code jpeg} images.
      * Defaults to {@code false}.
@@ -2045,6 +2071,11 @@ public interface Locator {
    * @param name Attribute name to get the value for.
    */
   String getAttribute(String name, GetAttributeOptions options);
+  /**
+   * Highlight the corresponding element(s) on the screen. Useful for debugging, don't commit the code that uses {@link
+   * Locator#highlight Locator.highlight()}.
+   */
+  void highlight();
   /**
    * This method hovers over the element by performing the following steps:
    * <ol>

@@ -1024,6 +1024,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
     return result.get("value").getAsInt();
   }
 
+  void highlightImpl(String selector) {
+    JsonObject params = new JsonObject();
+    params.addProperty("selector", selector);
+    sendMessage("highlight", params);
+  }
+
   protected void handleEvent(String event, JsonObject params) {
     if ("loadstate".equals(event)) {
       JsonElement add = params.get("add");
