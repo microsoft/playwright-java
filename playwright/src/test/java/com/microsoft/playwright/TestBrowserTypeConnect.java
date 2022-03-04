@@ -66,7 +66,7 @@ public class TestBrowserTypeConnect extends TestBase {
       String cliJs = dir.resolve("package/lib/cli/cli.js").toString();
       // We launch node process directly instead of using playwright.sh script as killing the script
       // process will leave node process running and killing it would be more hassle.
-      ProcessBuilder pb = new ProcessBuilder(node, cliJs, "launch-server", browserType.name());
+      ProcessBuilder pb = new ProcessBuilder(node, cliJs, "launch-server", "--browser", browserType.name());
       pb.directory(dir.toFile());
       pb.redirectError(ProcessBuilder.Redirect.INHERIT);
       BrowserServer result = new BrowserServer();
