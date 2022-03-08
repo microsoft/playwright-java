@@ -1977,14 +1977,18 @@ public interface Page extends AutoCloseable {
   }
   class ScreenshotOptions {
     /**
+     * When set to {@code "disabled"}, stops CSS animations, CSS transitions and Web Animations. Animations get different treatment
+     * depending on their duration:
+     * <ul>
+     * <li> finite animations are fast-forwarded to completion, so they'll fire {@code transitionend} event.</li>
+     * <li> infinite animations are canceled to initial state, and then played over after the screenshot.</li>
+     * </ul>
+     */
+    public ScreenshotAnimations animations;
+    /**
      * An object which specifies clipping of the resulting image. Should have the following fields:
      */
     public Clip clip;
-    /**
-     * When true, stops CSS animations, CSS transitions and Web Animations. Animations get different treatment depending on
-     * their duration:
-     */
-    public Boolean disableAnimations;
     /**
      * When true, takes a screenshot of the full scrollable page, instead of the currently visible viewport. Defaults to
      * {@code false}.
@@ -2022,6 +2026,18 @@ public interface Page extends AutoCloseable {
     public ScreenshotType type;
 
     /**
+     * When set to {@code "disabled"}, stops CSS animations, CSS transitions and Web Animations. Animations get different treatment
+     * depending on their duration:
+     * <ul>
+     * <li> finite animations are fast-forwarded to completion, so they'll fire {@code transitionend} event.</li>
+     * <li> infinite animations are canceled to initial state, and then played over after the screenshot.</li>
+     * </ul>
+     */
+    public ScreenshotOptions setAnimations(ScreenshotAnimations animations) {
+      this.animations = animations;
+      return this;
+    }
+    /**
      * An object which specifies clipping of the resulting image. Should have the following fields:
      */
     public ScreenshotOptions setClip(double x, double y, double width, double height) {
@@ -2032,14 +2048,6 @@ public interface Page extends AutoCloseable {
      */
     public ScreenshotOptions setClip(Clip clip) {
       this.clip = clip;
-      return this;
-    }
-    /**
-     * When true, stops CSS animations, CSS transitions and Web Animations. Animations get different treatment depending on
-     * their duration:
-     */
-    public ScreenshotOptions setDisableAnimations(boolean disableAnimations) {
-      this.disableAnimations = disableAnimations;
       return this;
     }
     /**
