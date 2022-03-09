@@ -10,7 +10,7 @@ on:
   pull_request:
     paths:
       - .github/workflows/test_docker.yml
-      - Dockerfile.*
+      - utils/docker/Dockerfile.*
       - scripts/CLI_VERSION
       - '**/pom.xml'
     branches:
