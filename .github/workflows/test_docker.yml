@@ -3,14 +3,14 @@ on:
   push:
     paths:
       - '.github/workflows/test_docker.yml'
-      - 'Dockerfile*'
+      - '**/Dockerfile*'
     branches:
       - main
       - release-*
   pull_request:
     paths:
       - .github/workflows/test_docker.yml
-      - utils/docker/Dockerfile.*
+      - '**/Dockerfile*'
       - scripts/CLI_VERSION
       - '**/pom.xml'
     branches:
