@@ -346,7 +346,21 @@ public class TestBrowserContextAddCookies extends TestBase {
       "}", server.CROSS_PROCESS_PREFIX + "/grid.html");
     page.frames().get(1).evaluate("document.cookie = 'username=John Doe'");
     page.waitForTimeout(2000);
+    boolean allowsThirdParty = isFirefox();
     List<Cookie> cookies = context.cookies(server.CROSS_PROCESS_PREFIX + "/grid.html");
-    assertEquals(0, cookies.size());
+    if (allowsThirdParty) {
+      assertJsonEquals("[{\n" +
+        "  'domain': '127.0.0.1',\n" +
+        "  'expires': -1,\n" +
+        "  'httpOnly': false,\n" +
+        "  'name': 'username',\n" +
+        "  'path': '/',\n" +
+        "  'sameSite': 'NONE',\n" +
+        "  'secure': false,\n" +
+        "  'value': 'John Doe'\n" +
+        "}]", cookies);
+    } else {
+      assertEquals(0, cookies.size());
+    }
   }
 }
