@@ -11,7 +11,7 @@ RUN apt-get update && \
     unzip && \
     rm -rf /var/lib/apt/lists/* && \
     # Create the pwuser
-    adduser pwuser  
+    adduser pwuser
 
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
@@ -20,10 +20,10 @@ ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 # Browsers will remain downloaded in `/ms-playwright`.
 # Note: make sure to set 777 to the registry so that any user can access
 # registry.
+
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
 RUN mkdir /ms-playwright && \
-    chmod -R 777 $PLAYWRIGHT_BROWSERS_PATH && \
     mkdir /tmp/pw-java
 
 COPY . /tmp/pw-java
@@ -35,4 +35,5 @@ RUN cd /tmp/pw-java && \
                      -D exec.args="install-deps" -f playwright/pom.xml --no-transfer-progress && \
     mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
                      -D exec.args="install" -f playwright/pom.xml --no-transfer-progress && \
-    rm -rf /tmp/pw-java
+    rm -rf /tmp/pw-java && \
+    chmod -R 777 $PLAYWRIGHT_BROWSERS_PATH
