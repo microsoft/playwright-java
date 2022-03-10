@@ -34,10 +34,19 @@ public class TestBrowserContextNetworkEvents extends TestBase {
     page.setContent("<a target=_blank rel=noopener href='/one-style.html'>yo</a>");
     Page page1 = context.waitForPage(() -> page.click("a"));
     page1.waitForLoadState();
-    assertEquals(asList(
-      server.EMPTY_PAGE,
-      server.PREFIX + "/one-style.html",
-      server.PREFIX + "/one-style.css"), requests);
+    // In firefox one-style.css is requested multiple times.
+    if (isFirefox()) {
+      assertEquals(asList(
+        server.EMPTY_PAGE,
+        server.PREFIX + "/one-style.html",
+        server.PREFIX + "/one-style.css",
+        server.PREFIX + "/one-style.css"), requests);
+    } else {
+      assertEquals(asList(
+        server.EMPTY_PAGE,
+        server.PREFIX + "/one-style.html",
+        server.PREFIX + "/one-style.css"), requests);
+    }
   }
 
   @Test
