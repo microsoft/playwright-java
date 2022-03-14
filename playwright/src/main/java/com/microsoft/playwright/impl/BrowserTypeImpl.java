@@ -64,6 +64,22 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     // We don't use gson() here as the headers map should be serialized to a json object.
     JsonObject params = new Gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("wsEndpoint", wsEndpoint);
+
+    if (!params.has("headers")) {
+      params.add("headers", new JsonObject());
+    }
+    JsonObject headers = params.get("headers").getAsJsonObject();
+    boolean foundBrowserHeader = false;
+    for (String name : headers.keySet()) {
+      if ("x-playwright-browser".equalsIgnoreCase(name)) {
+        foundBrowserHeader = true;
+        break;
+      }
+    }
+    if (!foundBrowserHeader) {
+      headers.addProperty("x-playwright-browser", name());
+    }
+
     JsonObject json = sendMessage("connect", params).getAsJsonObject();
     JsonPipe pipe = connection.getExistingObject(json.getAsJsonObject("pipe").get("guid").getAsString());
     Connection connection = new Connection(pipe);
