@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.options.Clip;
+import com.microsoft.playwright.options.ScreenshotAnimations;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -27,6 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import static com.microsoft.playwright.options.ScreenshotAnimations.DISABLED;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -67,10 +69,10 @@ public class TestPageScreenshot extends TestBase {
   void shouldNotCaptureInfiniteCssAnimation() {
     page.navigate(server.PREFIX + "/rotate-z.html");
     Locator div = page.locator("div");
-    byte[] screenshot = div.screenshot(new Locator.ScreenshotOptions().setDisableAnimations(true));
+    byte[] screenshot = div.screenshot(new Locator.ScreenshotOptions().setAnimations(DISABLED));
     for (int i = 0; i < 10; ++i) {
       rafraf(page);
-      byte[] newScreenshot = div.screenshot(new Locator.ScreenshotOptions().setDisableAnimations(true));
+      byte[] newScreenshot = div.screenshot(new Locator.ScreenshotOptions().setAnimations(DISABLED));
       assertArrayEquals(screenshot, newScreenshot);
     }
   }
@@ -79,10 +81,10 @@ public class TestPageScreenshot extends TestBase {
   void shouldNotCapturePseudoElementCssAnimation() {
     page.navigate(server.PREFIX + "/rotate-pseudo.html");
     Locator div = page.locator("div");
-    byte[] screenshot = div.screenshot(new Locator.ScreenshotOptions().setDisableAnimations(true));
+    byte[] screenshot = div.screenshot(new Locator.ScreenshotOptions().setAnimations(DISABLED));
     for (int i = 0; i < 10; ++i) {
       rafraf(page);
-      byte[] newScreenshot = div.screenshot(new Locator.ScreenshotOptions().setDisableAnimations(true));
+      byte[] newScreenshot = div.screenshot(new Locator.ScreenshotOptions().setAnimations(DISABLED));
       assertArrayEquals(screenshot, newScreenshot);
     }
   }
@@ -90,10 +92,10 @@ public class TestPageScreenshot extends TestBase {
   @Test
   void shouldNotCaptureCssAnimationsInShadowDOM() {
     page.navigate(server.PREFIX + "/rotate-z-shadow-dom.html");
-    byte[] screenshot = page.screenshot(new Page.ScreenshotOptions().setDisableAnimations(true));
+    byte[] screenshot = page.screenshot(new Page.ScreenshotOptions().setAnimations(DISABLED));
     for (int i = 0; i < 10; ++i) {
       rafraf(page);
-      byte[] newScreenshot = page.screenshot(new Page.ScreenshotOptions().setDisableAnimations(true));
+      byte[] newScreenshot = page.screenshot(new Page.ScreenshotOptions().setAnimations(DISABLED));
       assertArrayEquals(screenshot, newScreenshot);
     }
   }
@@ -101,7 +103,7 @@ public class TestPageScreenshot extends TestBase {
   @Test
   void shouldResumeInfiniteAnimations() {
     page.navigate(server.PREFIX + "/rotate-z.html");
-    page.screenshot(new Page.ScreenshotOptions().setDisableAnimations(true));
+    page.screenshot(new Page.ScreenshotOptions().setAnimations(DISABLED));
     byte[] buffer1 = page.screenshot();
     rafraf(page);
     byte[] buffer2 = page.screenshot();
@@ -117,10 +119,10 @@ public class TestPageScreenshot extends TestBase {
   void shouldNotCaptureInfiniteWebAnimations() {
     page.navigate(server.PREFIX + "/web-animation.html");
     Locator div = page.locator("div");
-    byte[] screenshot = div.screenshot(new Locator.ScreenshotOptions().setDisableAnimations(true));
+    byte[] screenshot = div.screenshot(new Locator.ScreenshotOptions().setAnimations(DISABLED));
     for (int i = 0; i < 10; ++i) {
       rafraf(page);
-      byte[] newScreenshot = div.screenshot(new Locator.ScreenshotOptions().setDisableAnimations(true));
+      byte[] newScreenshot = div.screenshot(new Locator.ScreenshotOptions().setAnimations(DISABLED));
       assertArrayEquals(screenshot, newScreenshot);
     }
     // Should resume infinite web animation.

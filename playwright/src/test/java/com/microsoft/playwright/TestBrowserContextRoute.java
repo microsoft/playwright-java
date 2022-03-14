@@ -140,8 +140,10 @@ public class TestBrowserContextRoute extends TestBase {
 
   @Test
   void shouldOverwritePostBodyWithEmptyString() throws ExecutionException, InterruptedException {
+    boolean[] routeHandled = {false};
     context.route("**/empty.html", route -> {
       route.resume(new Route.ResumeOptions().setPostData(""));
+      routeHandled[0] = true;
     });
 
     Future<Server.Request> req = server.futureRequest("/empty.html");
@@ -153,7 +155,9 @@ public class TestBrowserContextRoute extends TestBase {
       "            });\n" +
       "        })()\n" +
       "      </script>");
-
+    while (!routeHandled[0]) {
+      page.waitForTimeout(100);
+    }
     byte[] body = req.get().postBody;
     assertEquals(0, body.length);
   }

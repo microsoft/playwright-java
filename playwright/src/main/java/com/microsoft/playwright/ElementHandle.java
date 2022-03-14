@@ -570,10 +570,14 @@ public interface ElementHandle extends JSHandle {
   }
   class ScreenshotOptions {
     /**
-     * When true, stops CSS animations, CSS transitions and Web Animations. Animations get different treatment depending on
-     * their duration:
+     * When set to {@code "disabled"}, stops CSS animations, CSS transitions and Web Animations. Animations get different treatment
+     * depending on their duration:
+     * <ul>
+     * <li> finite animations are fast-forwarded to completion, so they'll fire {@code transitionend} event.</li>
+     * <li> infinite animations are canceled to initial state, and then played over after the screenshot.</li>
+     * </ul>
      */
-    public Boolean disableAnimations;
+    public ScreenshotAnimations animations;
     /**
      * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlayed with a pink box
      * {@code #FF00FF} that completely covers its bounding box.
@@ -606,11 +610,15 @@ public interface ElementHandle extends JSHandle {
     public ScreenshotType type;
 
     /**
-     * When true, stops CSS animations, CSS transitions and Web Animations. Animations get different treatment depending on
-     * their duration:
+     * When set to {@code "disabled"}, stops CSS animations, CSS transitions and Web Animations. Animations get different treatment
+     * depending on their duration:
+     * <ul>
+     * <li> finite animations are fast-forwarded to completion, so they'll fire {@code transitionend} event.</li>
+     * <li> infinite animations are canceled to initial state, and then played over after the screenshot.</li>
+     * </ul>
      */
-    public ScreenshotOptions setDisableAnimations(boolean disableAnimations) {
-      this.disableAnimations = disableAnimations;
+    public ScreenshotOptions setAnimations(ScreenshotAnimations animations) {
+      this.animations = animations;
       return this;
     }
     /**

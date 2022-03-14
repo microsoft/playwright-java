@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.sun.net.httpserver.Filter;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -33,10 +34,19 @@ public class TestBrowserContextNetworkEvents extends TestBase {
     page.setContent("<a target=_blank rel=noopener href='/one-style.html'>yo</a>");
     Page page1 = context.waitForPage(() -> page.click("a"));
     page1.waitForLoadState();
-    assertEquals(asList(
-      server.EMPTY_PAGE,
-      server.PREFIX + "/one-style.html",
-      server.PREFIX + "/one-style.css"), requests);
+    // In firefox one-style.css is requested multiple times.
+    if (isFirefox()) {
+      assertEquals(asList(
+        server.EMPTY_PAGE,
+        server.PREFIX + "/one-style.html",
+        server.PREFIX + "/one-style.css",
+        server.PREFIX + "/one-style.css"), requests);
+    } else {
+      assertEquals(asList(
+        server.EMPTY_PAGE,
+        server.PREFIX + "/one-style.html",
+        server.PREFIX + "/one-style.css"), requests);
+    }
   }
 
   @Test
@@ -47,10 +57,19 @@ public class TestBrowserContextNetworkEvents extends TestBase {
     page.setContent("<a target=_blank rel=noopener href='/one-style.html'>yo</a>");
     Page page1 = context.waitForPage(() -> page.click("a"));
     page1.waitForLoadState();
-    assertEquals(asList(
-      server.EMPTY_PAGE,
-      server.PREFIX + "/one-style.html",
-      server.PREFIX + "/one-style.css"), responses);
+    // In firefox one-style.css is requested multiple times.
+    if (isFirefox()) {
+      assertEquals(asList(
+        server.EMPTY_PAGE,
+        server.PREFIX + "/one-style.html",
+        server.PREFIX + "/one-style.css",
+        server.PREFIX + "/one-style.css"), responses);
+    } else {
+      assertEquals(asList(
+        server.EMPTY_PAGE,
+        server.PREFIX + "/one-style.html",
+        server.PREFIX + "/one-style.css"), responses);
+    }
   }
 
   @Test
@@ -59,7 +78,12 @@ public class TestBrowserContextNetworkEvents extends TestBase {
     List<Request> failedRequests = new ArrayList<>();
     context.onRequestFailed(request -> failedRequests.add(request));
     page.navigate(server.PREFIX + "/one-style.html");
-    assertEquals(1, failedRequests.size());
+    // In firefox one-style.css is requested multiple times.
+    if (isFirefox()) {
+      assertTrue(failedRequests.size() > 0);
+    } else {
+      assertEquals(1, failedRequests.size());
+    }
     assertTrue(failedRequests.get(0).url().contains("one-style.css"));
     assertNull(failedRequests.get(0).response());
     assertEquals("stylesheet", failedRequests.get(0).resourceType());

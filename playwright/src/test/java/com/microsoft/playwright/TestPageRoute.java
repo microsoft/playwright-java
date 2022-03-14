@@ -347,7 +347,12 @@ public class TestPageRoute extends TestBase {
     assertEquals(200, response.status());
     assertTrue(response.url().contains("one-style.html"));
 
-    assertEquals(2, intercepted.size());
+    // In firefox one-style.css is requested multiple times.
+    if (isFirefox()) {
+      assertTrue(intercepted.size() > 1);
+    } else {
+      assertEquals(2, intercepted.size());
+    }
     assertEquals("document", intercepted.get(0).resourceType());
     assertTrue(intercepted.get(0).url().contains("one-style.html"));
 
@@ -460,7 +465,12 @@ public class TestPageRoute extends TestBase {
     });
     Response response = page.navigate("data:text/html,<link rel='stylesheet' href='" + server.PREFIX + "/fonts?helvetica|arial'/>");
     assertNull(response);
-    assertEquals(1, requests.size());
+    // In firefox linked resource is requested multiple times.
+    if (isFirefox()) {
+      assertTrue(requests.size() > 0);
+    } else {
+      assertEquals(1, requests.size());
+    }
     assertEquals(400, (requests.get(0).response()).status());
   }
 

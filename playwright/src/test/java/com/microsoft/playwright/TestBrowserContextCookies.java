@@ -50,7 +50,7 @@ public class TestBrowserContextCookies extends TestBase {
       "    expires: -1,\n" +
       "    httpOnly: false,\n" +
       "    secure: false,\n" +
-      "    sameSite: '" + (isChromium() || isFirefox() ? "LAX" : "NONE") +"'\n" +
+      "    sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
       "  }]", cookies);
   }
 
@@ -74,7 +74,7 @@ public class TestBrowserContextCookies extends TestBase {
     assertEquals(timestamp, cookie.expires);
     assertEquals(false, cookie.httpOnly);
     assertEquals(false, cookie.secure);
-    if (isChromium() || isFirefox()) {
+    if (isChromium()) {
       assertEquals(SameSiteAttribute.LAX, cookie.sameSite);
     } else {
       assertEquals(SameSiteAttribute.NONE, cookie.sameSite);
@@ -146,7 +146,7 @@ public class TestBrowserContextCookies extends TestBase {
       "    expires: -1,\n" +
       "    httpOnly: false,\n" +
       "    secure: false,\n" +
-      "    sameSite: '" + (isChromium() || isFirefox() ? "LAX" : "NONE") +"'\n" +
+      "    sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
       "  },\n" +
       "  {\n" +
       "    name: 'username',\n" +
@@ -156,7 +156,7 @@ public class TestBrowserContextCookies extends TestBase {
       "    expires: -1,\n" +
       "    httpOnly: false,\n" +
       "    secure: false,\n" +
-      "    sameSite: '" + (isChromium() || isFirefox() ? "LAX" : "NONE") +"'\n" +
+      "    sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
       "  }\n" +
       "]", cookies);
   }

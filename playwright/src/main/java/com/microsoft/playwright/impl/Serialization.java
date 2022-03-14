@@ -40,6 +40,7 @@ class Serialization {
     .registerTypeAdapter(Media.class, new ToLowerCaseSerializer<Media>())
     .registerTypeAdapter(ForcedColors.class, new ToLowerCaseSerializer<ForcedColors>())
     .registerTypeAdapter(ReducedMotion.class, new ToLowerCaseAndDashSerializer<ReducedMotion>())
+    .registerTypeAdapter(ScreenshotAnimations.class, new ToLowerCaseSerializer<ScreenshotAnimations>())
     .registerTypeAdapter(ScreenshotType.class, new ToLowerCaseSerializer<ScreenshotType>())
     .registerTypeAdapter(MouseButton.class, new ToLowerCaseSerializer<MouseButton>())
     .registerTypeAdapter(LoadState.class, new ToLowerCaseSerializer<LoadState>())

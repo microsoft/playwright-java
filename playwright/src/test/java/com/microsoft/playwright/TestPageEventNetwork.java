@@ -57,7 +57,12 @@ public class TestPageEventNetwork extends TestBase {
     List<Request> failedRequests = new ArrayList<>();
     page.onRequestFailed(request -> failedRequests.add(request));
     page.navigate(server.PREFIX + "/one-style.html");
-    assertEquals(1, failedRequests.size());
+    // In firefox one-style.css is requested multiple times.
+    if (isFirefox()) {
+      assertTrue(failedRequests.size() > 0);
+    } else {
+      assertEquals(1, failedRequests.size());
+    }
     assertTrue(failedRequests.get(0).url().contains("one-style.css"));
     assertNull(failedRequests.get(0).response());
     assertEquals("stylesheet", failedRequests.get(0).resourceType());

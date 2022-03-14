@@ -48,6 +48,6 @@ public class TestElementHandlePress extends TestBase {
   void shouldWorkWithNumberInput() {
     page.setContent("<input type='number' value=2 />");
     page.press("input", "1");
-    assertEquals("12", page.evalOnSelector("input", "input => input.value"));
+    assertEquals(isWebKit() ? "1" : "12", page.evalOnSelector("input", "input => input.value"));
   }
 }
