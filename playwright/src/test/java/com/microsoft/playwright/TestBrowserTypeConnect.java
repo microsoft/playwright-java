@@ -32,8 +32,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.microsoft.playwright.Utils.mapOf;
-import static com.microsoft.playwright.Utils.parseTrace;
+import static com.microsoft.playwright.Utils.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -166,6 +165,7 @@ public class TestBrowserTypeConnect extends TestBase {
       }
       assertNotNull(webSocketServer.lastClientHandshake);
       assertEquals("Playwright", webSocketServer.lastClientHandshake.getFieldValue("User-Agent"));
+      assertEquals(browserType.name(), webSocketServer.lastClientHandshake.getFieldValue("x-playwright-browser"));
       assertEquals("bar", webSocketServer.lastClientHandshake.getFieldValue("foo"));
     }
   }
