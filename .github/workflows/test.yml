@@ -19,23 +19,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
-    - uses: microsoft/playwright-github-action@v1.5.0
+    - uses: microsoft/playwright-github-action@v1
     - name: Set up JDK 1.8
       uses: actions/setup-java@v2
       with:
         distribution: zulu
         java-version: 8
-    - name: Cache Maven packages
-      uses: actions/cache@v2
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
     - name: Download drivers
       shell: bash
       run: scripts/download_driver_for_all_platforms.sh
-    - name: Build with Maven
-      run: mvn -B package -D skipTests --no-transfer-progress
+    - name: Build & Install
+      run: mvn -B install -D skipTests --no-transfer-progress
     - name: Run tests
       run: mvn test --no-transfer-progress --fail-at-end
       env:
@@ -50,7 +44,6 @@ jobs:
       env:
         BROWSER: ${{ matrix.browser }}
       run: |
-        mvn -B install -D skipTests --no-transfer-progress
         cd tools/test-spring-boot-starter
         mvn package -D skipTests --no-transfer-progress
         java -jar target/test-spring-boot*.jar
@@ -70,7 +63,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - uses: microsoft/playwright-github-action@v1.5.0
+      - uses: microsoft/playwright-github-action@v1
       - name: Install Media Pack
         if: matrix.os == 'windows-latest'
         shell: powershell
@@ -80,17 +73,11 @@ jobs:
         with:
           distribution: zulu
           java-version: 8
-      - name: Cache Maven packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
       - name: Download drivers
         shell: bash
         run: scripts/download_driver_for_all_platforms.sh
-      - name: Build with Maven
-        run: mvn -B package -D skipTests --no-transfer-progress
+      - name: Build & Install
+        run: mvn -B install -D skipTests --no-transfer-progress
       - name: Run tests
         run: mvn test --no-transfer-progress --fail-at-end
         env:
@@ -106,23 +93,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: microsoft/playwright-github-action@v1.5.0
+      - uses: microsoft/playwright-github-action@v1
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
           distribution: adopt
           java-version: 17
-      - name: Cache Maven packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: m2
       - name: Download drivers
         shell: bash
         run: scripts/download_driver_for_all_platforms.sh
-      - name: Build with Maven
-        run: mvn -B package -D skipTests --no-transfer-progress
+      - name: Build & Install
+        run: mvn -B install -D skipTests --no-transfer-progress
       - name: Run tests
         run: mvn test --no-transfer-progress --fail-at-end
         env:
@@ -132,7 +113,6 @@ jobs:
         env:
           BROWSER: ${{ matrix.browser }}
         run: |
-          mvn -B install -D skipTests --no-transfer-progress
           cd tools/test-spring-boot-starter
           mvn package -D skipTests --no-transfer-progress
           java -jar target/test-spring-boot*.jar
