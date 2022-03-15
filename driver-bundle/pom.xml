@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.microsoft.playwright</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>1.19.0-SNAPSHOT</version>
+    <version>1.21.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>driver-bundle</artifactId>
