@@ -497,7 +497,6 @@ public interface BrowserContext extends AutoCloseable {
    * <li> {@code "midi"}</li>
    * <li> {@code "midi-sysex"} (system-exclusive midi)</li>
    * <li> {@code "notifications"}</li>
-   * <li> {@code "push"}</li>
    * <li> {@code "camera"}</li>
    * <li> {@code "microphone"}</li>
    * <li> {@code "background-sync"}</li>
@@ -524,7 +523,6 @@ public interface BrowserContext extends AutoCloseable {
    * <li> {@code "midi"}</li>
    * <li> {@code "midi-sysex"} (system-exclusive midi)</li>
    * <li> {@code "notifications"}</li>
-   * <li> {@code "push"}</li>
    * <li> {@code "camera"}</li>
    * <li> {@code "microphone"}</li>
    * <li> {@code "background-sync"}</li>
