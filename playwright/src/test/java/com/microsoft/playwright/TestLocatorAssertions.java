@@ -176,7 +176,7 @@ public class TestLocatorAssertions extends TestBase {
 
   @Test
   void defaultTimeoutFail() {
-    LocatorAssertions.TimeoutOptions.setDefaultTimeout(0);
+    LocatorAssertions.TimeoutOptions.setDefaultTimeout(1000);
     page.setContent("<div>Text 1</div><div>Text 3</div>");
     Locator locator = page.locator("div");
     page.evaluate("setTimeout(() => {\n" +
@@ -184,7 +184,7 @@ public class TestLocatorAssertions extends TestBase {
       "}, 100);");
     try {
       // Should normalize whitespace.
-      assertThat(locator).hasText(new String[] {"Text 1", "Text 3", "Extra"}, new LocatorAssertions.HasTextOptions().setTimeout(1000));
+      assertThat(locator).hasText(new String[] {"Text 1", "Text 3", "Extra"});
       fail("did not throw");
     } catch (AssertionFailedError e) {
       assertEquals("[Text 1, Text 3, Extra]", e.getExpected().getStringRepresentation());
