@@ -166,6 +166,35 @@ public class TestLocatorAssertions extends TestBase {
   }
 
   @Test
+  void defaultTimeoutPass() {
+    LocatorAssertions.TimeoutOptions.setDefaultTimeout(0);
+    page.setContent("<div></div>");
+    Locator locator = page.locator("p");
+    // Should normalize whitespace.
+    assertThat(locator).not().hasText(new String[] {"Test"});
+  }
+
+  @Test
+  void defaultTimeoutFail() {
+    LocatorAssertions.TimeoutOptions.setDefaultTimeout(0);
+    page.setContent("<div>Text 1</div><div>Text 3</div>");
+    Locator locator = page.locator("div");
+    page.evaluate("setTimeout(() => {\n" +
+      "  div.innerHTML = \"<p>Text 1</p><p>Text 2</p>\";\n" +
+      "}, 100);");
+    try {
+      // Should normalize whitespace.
+      assertThat(locator).hasText(new String[] {"Text 1", "Text 3", "Extra"}, new LocatorAssertions.HasTextOptions().setTimeout(1000));
+      fail("did not throw");
+    } catch (AssertionFailedError e) {
+      assertEquals("[Text 1, Text 3, Extra]", e.getExpected().getStringRepresentation());
+      assertEquals("[Text 1, Text 3]", e.getActual().getStringRepresentation());
+      assertTrue(e.getMessage().contains("Locator expected to have text: [Text 1, Text 3, Extra]"), e.getMessage());
+      assertTrue(e.getMessage().contains("Received: [Text 1, Text 3]"), e.getMessage());
+    }
+  }
+
+  @Test
   void hasTextWTextArrayPassLazyPass() {
     page.setContent("<div id=div></div>");
     Locator locator = page.locator("p");

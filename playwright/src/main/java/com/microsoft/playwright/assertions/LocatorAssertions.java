@@ -38,6 +38,18 @@ import java.util.regex.Pattern;
  * }</pre>
  */
 public interface LocatorAssertions {
+  class TimeoutOptions {
+    static double defaultTimeout = 5_000.0;
+
+    public static double getDefaultTimeout() {
+      return defaultTimeout;
+    }
+
+    public static double setDefaultTimeout(double timeout) {
+      return defaultTimeout = timeout;
+    }
+  }
+
   class IsCheckedOptions {
     public Boolean checked;
     /**
