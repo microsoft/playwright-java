@@ -45,8 +45,8 @@ public interface LocatorAssertions {
       return defaultTimeout;
     }
 
-    public static double setDefaultTimeout(double timeout) {
-      return defaultTimeout = timeout;
+    public static void setDefaultTimeout(double timeout) {
+      defaultTimeout = timeout;
     }
   }
 
