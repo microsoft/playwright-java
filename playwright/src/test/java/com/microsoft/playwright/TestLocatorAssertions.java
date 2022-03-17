@@ -166,31 +166,62 @@ public class TestLocatorAssertions extends TestBase {
   }
 
   @Test
-  void defaultTimeoutPass() {
+  void defaultTimeoutWithValueZeroPass() {
     LocatorAssertions.TimeoutOptions.setDefaultTimeout(0);
-    page.setContent("<div></div>");
-    Locator locator = page.locator("p");
-    // Should normalize whitespace.
-    assertThat(locator).not().hasText(new String[] {"Test"});
+    page.setContent("<div id=div>Text 1</div>");
+    Locator locator = page.locator("#div");
+    assertThat(locator).hasText("Text 1");
   }
 
   @Test
-  void defaultTimeoutFail() {
-    LocatorAssertions.TimeoutOptions.setDefaultTimeout(1000);
-    page.setContent("<div>Text 1</div><div>Text 3</div>");
-    Locator locator = page.locator("div");
+  void defaultTimeoutWithValueZeroFail() {
+    LocatorAssertions.TimeoutOptions.setDefaultTimeout(0);
+    page.setContent("<div id=div></div>");
+    Locator locator = page.locator("p");
     page.evaluate("setTimeout(() => {\n" +
       "  div.innerHTML = \"<p>Text 1</p><p>Text 2</p>\";\n" +
       "}, 100);");
     try {
       // Should normalize whitespace.
-      assertThat(locator).hasText(new String[] {"Text 1", "Text 3", "Extra"});
+      assertThat(locator).hasText(new String[] {"Text  1", "Text   2"});
       fail("did not throw");
     } catch (AssertionFailedError e) {
-      assertEquals("[Text 1, Text 3, Extra]", e.getExpected().getStringRepresentation());
-      assertEquals("[Text 1, Text 3]", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have text: [Text 1, Text 3, Extra]"), e.getMessage());
-      assertTrue(e.getMessage().contains("Received: [Text 1, Text 3]"), e.getMessage());
+      assertEquals("[Text  1, Text   2]", e.getExpected().getStringRepresentation());
+      assertEquals("null", e.getActual().getStringRepresentation());
+      assertTrue(e.getMessage().contains("Locator expected to have text: [Text  1, Text   2]"), e.getMessage());
+      assertTrue(e.getMessage().contains("Received: null"), e.getMessage());
+    }
+  }
+
+  @Test
+  void defaultTimeoutWithValueGreaterThanZeroPass() {
+    LocatorAssertions.TimeoutOptions.setDefaultTimeout(200);
+    page.setContent("<div id=div></div>");
+    Locator locator = page.locator("p");
+    page.evaluate("setTimeout(() => {\n" +
+      "  div.innerHTML = \"<p>Text 1</p><p>Text 2</p>\";\n" +
+      "}, 100);");
+    // Should normalize whitespace.
+    assertThat(locator).hasText(new String[] {"Text  1", "Text   2"});
+  }
+
+  @Test
+  void defaultTimeoutWithValueGreaterThanZeroFail() {
+    LocatorAssertions.TimeoutOptions.setDefaultTimeout(100);
+    page.setContent("<div id=div></div>");
+    Locator locator = page.locator("p");
+    page.evaluate("setTimeout(() => {\n" +
+      "  div.innerHTML = \"<p>Text 1</p><p>Text 2</p>\";\n" +
+      "}, 200);");
+    try {
+      // Should normalize whitespace.
+      assertThat(locator).hasText(new String[] {"Text  1", "Text   2"});
+      fail("did not throw");
+    } catch (AssertionFailedError e) {
+      assertEquals("[Text  1, Text   2]", e.getExpected().getStringRepresentation());
+      assertEquals("null", e.getActual().getStringRepresentation());
+      assertTrue(e.getMessage().contains("Locator expected to have text: [Text  1, Text   2]"), e.getMessage());
+      assertTrue(e.getMessage().contains("Received: null"), e.getMessage());
     }
   }
 
