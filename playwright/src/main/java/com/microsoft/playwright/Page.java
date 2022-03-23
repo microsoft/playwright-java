@@ -4684,7 +4684,9 @@ public interface Page extends AutoCloseable {
    */
   Response reload(ReloadOptions options);
   /**
-   * API testing helper associated with this page. Requests made with this API will use page cookies.
+   * API testing helper associated with this page. This method returns the same instance as {@link BrowserContext#request
+   * BrowserContext.request()} on the page's context. See {@link BrowserContext#request BrowserContext.request()} for more
+   * details.
    */
   APIRequestContext request();
   /**

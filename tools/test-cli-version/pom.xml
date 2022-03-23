@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.microsoft.playwright</groupId>
   <artifactId>test-cli-version</artifactId>
-  <version>1.20.0</version>
+  <version>1.20.1</version>
   <name>Test Playwright Command Line Version</name>
   <properties>
     <compiler.version>1.8</compiler.version>
