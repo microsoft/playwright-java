@@ -18,7 +18,10 @@ package com.microsoft.playwright.impl;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.ZonedDateTime;
 import java.util.Map;
+
+import static com.microsoft.playwright.impl.DriverLogging.logWithTimestamp;
 
 /**
  * This class provides access to playwright-cli. It can be either preinstalled
@@ -31,6 +34,7 @@ public abstract class Driver {
   private static class PreinstalledDriver extends Driver {
     private final Path driverDir;
     PreinstalledDriver(Path driverDir) {
+      logMessage("created PreinstalledDriver: " + driverDir);
       this.driverDir = driverDir;
     }
 
@@ -49,7 +53,9 @@ public abstract class Driver {
     if (instance == null) {
       try {
         instance = createDriver();
+        logMessage("initializing driver");
         instance.initialize(env, installBrowsers);
+        logMessage("driver inialized.");
       } catch (Exception exception) {
         throw new RuntimeException("Failed to create driver", exception);
       }
@@ -97,4 +103,9 @@ public abstract class Driver {
   }
 
   abstract Path driverDir();
+
+  protected static void logMessage(String message) {
+    // This matches log format produced by the server.
+    logWithTimestamp("pw:install " + message);
+  }
 }
