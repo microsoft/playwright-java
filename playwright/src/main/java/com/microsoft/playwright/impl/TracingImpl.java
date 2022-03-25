@@ -28,7 +28,6 @@ import static com.microsoft.playwright.impl.Serialization.gson;
 class TracingImpl extends ChannelOwner implements Tracing {
   LocalUtils localUtils;
   boolean isRemote;
-  private boolean includeSources;
 
   TracingImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -90,7 +89,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
       options = new StartOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    includeSources = options.sources != null;
+    boolean includeSources = options.sources != null && options.sources;
     if (includeSources) {
       if (!connection.isCollectingStacks()) {
         throw new PlaywrightException("Source root directory must be specified via PLAYWRIGHT_JAVA_SRC environment variable when source collection is enabled");
