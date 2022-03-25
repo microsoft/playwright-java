@@ -37,11 +37,13 @@ public class DriverJar extends Driver {
       ? Files.createTempDirectory(prefix)
       : Files.createTempDirectory(Paths.get(alternativeTmpdir), prefix);
     driverTempDir.toFile().deleteOnExit();
+    logMessage("created DriverJar: " + driverTempDir);
   }
 
   @Override
   protected void initialize(Map<String, String> env, Boolean installBrowsers) throws Exception {
     extractDriverToTempDir();
+    logMessage("extracted driver from jar to " + driverPath());
     if (installBrowsers)
       installBrowsers(env);
   }
