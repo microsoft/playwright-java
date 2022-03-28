@@ -98,7 +98,9 @@ public abstract class Driver {
       return new PreinstalledDriver(Paths.get(pathFromProperty));
     }
 
-    Class<?> jarDriver = Class.forName("com.microsoft.playwright.impl.DriverJar");
+    String driverImpl =
+      System.getProperty("playwright.driver.impl", "com.microsoft.playwright.impl.DriverJar");
+    Class<?> jarDriver = Class.forName(driverImpl);
     return (Driver) jarDriver.getDeclaredConstructor().newInstance();
   }
 
