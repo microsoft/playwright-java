@@ -28,6 +28,9 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestInstall {
@@ -36,6 +39,8 @@ public class TestInstall {
     // Clear system property to ensure that the driver is loaded from jar.
     System.clearProperty("playwright.cli.dir");
     System.clearProperty("playwright.driver.tmpdir");
+    // Clear system property to ensure that the default driver is loaded.
+    System.clearProperty("playwright.driver.impl");
   }
 
   @Test
@@ -56,5 +61,20 @@ public class TestInstall {
     System.setProperty("playwright.driver.tmpdir", tmpdir.toString());
     DriverJar driver = new DriverJar();
     assertTrue(driver.driverPath().startsWith(tmpdir), "Driver path: " + driver.driverPath() + " tmp: " + tmpdir);
+  }
+
+  @Test
+  void playwrightDriverDefaultImpl() {
+    assertDoesNotThrow(() -> Driver.ensureDriverInstalled(Collections.emptyMap(), false));
+  }
+
+  @Test
+  void playwrightDriverAlternativeImpl() {
+    System.setProperty("playwright.driver.impl", "com.microsoft.playwright.impl.AlternativeDriver");
+    RuntimeException thrown =
+      assertThrows(
+        RuntimeException.class,
+        () -> Driver.ensureDriverInstalled(Collections.emptyMap(), false));
+    assertEquals("Failed to create driver", thrown.getMessage());
   }
 }
