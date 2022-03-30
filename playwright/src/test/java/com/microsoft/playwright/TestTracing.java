@@ -126,4 +126,10 @@ public class TestTracing extends TestBase {
     assertEquals(new String(thisFile, UTF_8), new String(sources.values().iterator().next(), UTF_8));
   }
 
+  @Test
+  void shouldNotFailWhenSourcesSetExplicitlyToFalse() throws IOException {
+    Assumptions.assumeTrue(System.getenv("PLAYWRIGHT_JAVA_SRC") == null, "PLAYWRIGHT_JAVA_SRC must not be set for this test");
+    context.tracing().start(new Tracing.StartOptions().setSources(false));
+  }
+
 }
