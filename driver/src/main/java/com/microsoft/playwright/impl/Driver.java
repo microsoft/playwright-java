@@ -55,8 +55,9 @@ public abstract class Driver {
         instance = createDriver();
         logMessage("initializing driver");
         instance.initialize(env, installBrowsers);
-        logMessage("driver inialized.");
+        logMessage("driver initialized.");
       } catch (Exception exception) {
+        instance = null;
         throw new RuntimeException("Failed to create driver", exception);
       }
     }
