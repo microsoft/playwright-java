@@ -26,6 +26,8 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -41,6 +43,15 @@ public class TestInstall {
     System.clearProperty("playwright.driver.tmpdir");
     // Clear system property to ensure that the default driver is loaded.
     System.clearProperty("playwright.driver.impl");
+  }
+
+  @Test
+  void shouldThrowWhenBrowserPathIsInvalid() {
+    Map<String,String> env = new HashMap<>();
+    env.put("PLAYWRIGHT_BROWSERS_PATH", "/some/bad/path/that/should/not/exist/i/hope");
+
+    assertThrows(RuntimeException.class, () -> Driver.ensureDriverInstalled(env, true));
+    assertThrows(RuntimeException.class, () -> Driver.ensureDriverInstalled(env, true));
   }
 
   @Test
