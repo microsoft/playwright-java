@@ -18,9 +18,7 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.impl.Driver;
 import com.microsoft.playwright.impl.DriverJar;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Files;
@@ -46,6 +44,7 @@ public class TestInstall {
   }
 
   @Test
+  @Tags({@Tag("isolated"), @Tag("driverThrowTest")})
   void shouldThrowWhenBrowserPathIsInvalid() {
     Map<String,String> env = new HashMap<>();
     env.put("PLAYWRIGHT_BROWSERS_PATH", "/some/bad/path/that/should/not/exist/i/hope");
