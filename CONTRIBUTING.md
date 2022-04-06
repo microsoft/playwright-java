@@ -8,7 +8,7 @@ Install git, Java JDK (version >= 8), Maven (tested with version 3.6.3), on Ubun
 just run the following command:
 
 ```sh
-sudo apt-get install git openjdk-11-jdk maven
+sudo apt-get install git openjdk-11-jdk maven unzip
 ```
 
 ### Getting the Code
