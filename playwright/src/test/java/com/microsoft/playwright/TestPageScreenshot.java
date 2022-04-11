@@ -18,6 +18,8 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.options.Clip;
 import com.microsoft.playwright.options.ScreenshotAnimations;
+import com.microsoft.playwright.options.ScreenshotCaret;
+import com.microsoft.playwright.options.ScreenshotScale;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -27,6 +29,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import static com.microsoft.playwright.options.ScreenshotAnimations.DISABLED;
 import static java.util.Arrays.asList;
@@ -151,6 +154,96 @@ public class TestPageScreenshot extends TestBase {
       return;
     }
     fail("Screenshots are equal");
+  }
 
+  @Test
+  void shouldWorkWithDeviceScaleFactorAndClip() {
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setViewportSize(500, 500).setDeviceScaleFactor(3))) {
+      Page page = context.newPage();
+      page.navigate(server.PREFIX + "/grid.html");
+      byte[] screenshot = page.screenshot(new Page.ScreenshotOptions().setClip(50, 100, 150, 100));
+      assertNotNull(screenshot);
+      // TODO:
+      // expect(screenshot).toMatchSnapshot("screenshot-device-scale-factor-clip.png");
+    }
+  }
+
+  @Test
+  void shouldWorkWithDeviceScaleFactorAndScaleCss() {
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setViewportSize(320, 480).setDeviceScaleFactor(2));
+    Page page = context.newPage();
+    page.navigate(server.PREFIX + "/grid.html");
+    byte[] screenshot = page.screenshot(new Page.ScreenshotOptions().setScale(ScreenshotScale.CSS));
+    assertNotNull(screenshot);
+    // TODO:
+    // expect(screenshot).toMatchSnapshot("screenshot-device-scale-factor-css-size.png");
+  }
+
+  @Test
+  void shouldWorkWithDeviceScaleFactorAndScaleDevice() {
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setViewportSize(320, 480).setDeviceScaleFactor(2));
+    Page page = context.newPage();
+    page.navigate(server.PREFIX + "/grid.html");
+    byte[] screenshot = page.screenshot(new Page.ScreenshotOptions().setScale(ScreenshotScale.DEVICE));
+    assertNotNull(screenshot);
+    // TODO:
+    // expect(screenshot).toMatchSnapshot("screenshot-device-scale-factor-device-size.png");
+  }
+
+  @Test
+  void shouldNotCaptureBlinkingCaretByDefault() {
+    page.setContent("<!-- Refer to stylesheet from other origin. Accessing this\n" +
+      "           stylesheet rules will throw.\n" +
+      "      -->\n" +
+      "      <link rel=stylesheet href=\"" + server.CROSS_PROCESS_PREFIX + "/injectedstyle.css\">\n" +
+      "      <!-- make life harder: define caret color in stylesheet -->\n" +
+      "      <style>\n" +
+      "        div {\n" +
+      "          caret-color: #000 !important;\n" +
+      "        }\n" +
+      "      </style>\n" +
+      "      <div contenteditable=\"true\"></div>\n");
+    Locator div = page.locator("div");
+    div.type("foo bar");
+    byte[] screenshot = div.screenshot();
+    for (int i = 0; i < 10; ++i) {
+      // Caret blinking time is set to 500ms.
+      // Try to capture variety of screenshots to make
+      // sure we don"t capture blinking caret.
+      page.waitForTimeout(150);
+      byte[] newScreenshot = div.screenshot();
+      assertArrayEquals(screenshot, newScreenshot);
+    }
+  }
+
+  @Test
+  void shouldCaptureBlinkingCaretIfExplicitlyAskedFor() {
+    page.setContent("      <!-- Refer to stylesheet from other origin. Accessing this\n" +
+      "           stylesheet rules will throw.\n" +
+      "      -->\n" +
+      "      <link rel=stylesheet href=\"" + server.CROSS_PROCESS_PREFIX + "/injectedstyle.css'}\">\n" +
+      "      <!-- make life harder: define caret color in stylesheet -->\n" +
+      "      <style>\n" +
+      "        div {\n" +
+      "          caret-color: #000 !important;\n" +
+      "        }\n" +
+      "      </style>\n" +
+      "      <div contenteditable=\"true\"></div>\n");
+    Locator div = page.locator("div");
+    div.type("foo bar");
+    byte[] screenshot = div.screenshot();
+    boolean hasDifferentScreenshots = false;
+    for (int i = 0; !hasDifferentScreenshots && i < 10; ++i) {
+      // Caret blinking time is set to 500ms.
+      // Try to capture variety of screenshots to make
+      // sure we capture blinking caret.
+      page.waitForTimeout(150);
+      byte[] newScreenshot = div.screenshot(new Locator.ScreenshotOptions().setCaret(ScreenshotCaret.INITIAL));
+      hasDifferentScreenshots = !Arrays.equals(newScreenshot, screenshot);
+    }
+    assertTrue(hasDifferentScreenshots);
   }
 }

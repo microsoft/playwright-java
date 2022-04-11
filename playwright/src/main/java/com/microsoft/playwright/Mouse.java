@@ -122,12 +122,12 @@ public interface Mouse {
   }
   class MoveOptions {
     /**
-     * defaults to 1. Sends intermediate {@code mousemove} events.
+     * Defaults to 1. Sends intermediate {@code mousemove} events.
      */
     public Integer steps;
 
     /**
-     * defaults to 1. Sends intermediate {@code mousemove} events.
+     * Defaults to 1. Sends intermediate {@code mousemove} events.
      */
     public MoveOptions setSteps(int steps) {
       this.steps = steps;

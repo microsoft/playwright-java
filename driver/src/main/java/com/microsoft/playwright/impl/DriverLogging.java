@@ -31,6 +31,9 @@ class DriverLogging {
     "yyyy-MM-dd'T'HH:mm:ss.SSSXXX").withZone(ZoneId.of("UTC"));
 
   static void logWithTimestamp(String message) {
+    if (!isEnabled) {
+      return;
+    }
     // This matches log format produced by the server.
     String timestamp = ZonedDateTime.now().format(timestampFormat);
     System.err.println(timestamp + " " + message);

@@ -19,7 +19,28 @@ package com.microsoft.playwright;
 import java.util.*;
 
 /**
- * {@code ConsoleMessage} objects are dispatched by page via the {@link Page#onConsoleMessage Page.onConsoleMessage()} event.
+ * {@code ConsoleMessage} objects are dispatched by page via the {@link Page#onConsoleMessage Page.onConsoleMessage()} event. For
+ * each console messages logged in the page there will be corresponding event in the Playwright context.
+ * <pre>{@code
+ * // Listen for all System.out.printlns
+ * page.onConsoleMessage(msg -> System.out.println(msg.text()));
+ *
+ * // Listen for all console events and handle errors
+ * page.onConsoleMessage(msg -> {
+ *   if ("error".equals(msg.type()))
+ *     System.out.println("Error text: " + msg.text());
+ * });
+ *
+ * // Get the next System.out.println
+ * ConsoleMessage msg = page.waitForConsoleMessage(() -> {
+ *   // Issue console.log inside the page
+ *   page.evaluate("console.log('hello', 42, { foo: 'bar' });");
+ * });
+ *
+ * // Deconstruct console.log arguments
+ * msg.args().get(0).jsonValue() // hello
+ * msg.args().get(1).jsonValue() // 42
+ * }</pre>
  */
 public interface ConsoleMessage {
   /**

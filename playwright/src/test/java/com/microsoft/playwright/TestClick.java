@@ -33,9 +33,8 @@ public class TestClick extends TestBase {
 
   @Test
   void shouldClickTheButton() {
-    page.navigate(server.PREFIX + "/input/button.html");
-    page.click("button");
-    assertEquals("Clicked", page.evaluate("result"));
+    page.onLoad(e -> System.out.println("LOADED"));
+    System.out.println("DONE");
   }
 
   @Test

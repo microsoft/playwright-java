@@ -57,8 +57,9 @@ public interface FrameLocator {
      */
     public Locator has;
     /**
-     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. For example,
-     * {@code "Playwright"} matches {@code <article><div>Playwright</div></article>}.
+     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
+     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
+     * {@code <article><div>Playwright</div></article>}.
      */
     public Object hasText;
 
@@ -73,16 +74,18 @@ public interface FrameLocator {
       return this;
     }
     /**
-     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. For example,
-     * {@code "Playwright"} matches {@code <article><div>Playwright</div></article>}.
+     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
+     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
+     * {@code <article><div>Playwright</div></article>}.
      */
     public LocatorOptions setHasText(String hasText) {
       this.hasText = hasText;
       return this;
     }
     /**
-     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. For example,
-     * {@code "Playwright"} matches {@code <article><div>Playwright</div></article>}.
+     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
+     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
+     * {@code <article><div>Playwright</div></article>}.
      */
     public LocatorOptions setHasText(Pattern hasText) {
       this.hasText = hasText;
@@ -97,8 +100,7 @@ public interface FrameLocator {
    * When working with iframes, you can create a frame locator that will enter the iframe and allow selecting elements in
    * that iframe.
    *
-   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
-   * selectors</a> for more details.
+   * @param selector A selector to use when resolving DOM element. See <a href="../selectors.md">working with selectors</a> for more details.
    */
   FrameLocator frameLocator(String selector);
   /**
@@ -108,8 +110,7 @@ public interface FrameLocator {
   /**
    * The method finds an element matching the specified selector in the FrameLocator's subtree.
    *
-   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
-   * selectors</a> for more details.
+   * @param selector A selector to use when resolving DOM element. See <a href="../selectors.md">working with selectors</a> for more details.
    */
   default Locator locator(String selector) {
     return locator(selector, null);
@@ -117,12 +118,11 @@ public interface FrameLocator {
   /**
    * The method finds an element matching the specified selector in the FrameLocator's subtree.
    *
-   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
-   * selectors</a> for more details.
+   * @param selector A selector to use when resolving DOM element. See <a href="../selectors.md">working with selectors</a> for more details.
    */
   Locator locator(String selector, LocatorOptions options);
   /**
-   * Returns locator to the n-th matching frame.
+   * Returns locator to the n-th matching frame. It's zero based, {@code nth(0)} selects the first frame.
    */
   FrameLocator nth(int index);
 }
