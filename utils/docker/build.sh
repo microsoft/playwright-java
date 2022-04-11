@@ -32,4 +32,6 @@ else
   exit 1
 fi
 
-docker build --platform "${PLATFORM}" -t "$3" -f "Dockerfile.$2" ../../
+PW_TARGET_ARCH=$(echo $1 | cut -c3-)
+
+docker build --platform "${PLATFORM}" --build-arg "PW_TARGET_ARCH=${PW_TARGET_ARCH}" -t "$3" -f "Dockerfile.$2" ../../
