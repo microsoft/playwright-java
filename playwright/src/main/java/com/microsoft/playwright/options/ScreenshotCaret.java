@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright.options;
 
-public enum ScreenshotAnimations {
-  DISABLED,
-  ALLOW
+public enum ScreenshotCaret {
+  HIDE,
+  INITIAL
 }

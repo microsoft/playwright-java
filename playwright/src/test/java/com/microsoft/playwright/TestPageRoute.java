@@ -534,9 +534,7 @@ public class TestPageRoute extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars*", route -> {
       Map<String, String> headers = new HashMap<>();
-      if (route.request().url().endsWith("allow")) {
-        headers.put("access-control-allow-origin", "*");
-      }
+      headers.put("access-control-allow-origin", route.request().url().endsWith("allow") ? "*" : "none");
       route.fulfill(new Route.FulfillOptions()
         .setStatus(200)
         .setContentType("application/json")
@@ -699,5 +697,30 @@ public class TestPageRoute extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     page.navigate(server.EMPTY_PAGE);
     assertEquals(1, intercepted[0]);
+  }
+
+  @Test
+  void shouldAddAccessControlAllowOriginByDefaultWhenFulfill() {
+    page.navigate(server.EMPTY_PAGE);
+    page.route("**/cars", route -> {
+      route.fulfill(new Route.FulfillOptions()
+        .setContentType("application/json")
+        .setStatus(200)
+        .setBody("[\"electric\",\"gas\"]"));
+    });
+
+    Response response = page.waitForResponse("https://example.com/cars", () -> {
+      Object result = page.evaluate("async () => {\n" +
+        "      const response = await fetch('https://example.com/cars', {\n" +
+        "        method: 'POST',\n" +
+        "        headers: { 'Content-Type': 'application/json' },\n" +
+        "        mode: 'cors',\n" +
+        "        body: JSON.stringify({ 'number': 1 })\n" +
+        "      });\n" +
+        "      return response.text();\n" +
+        "    }");
+      assertEquals("[\"electric\",\"gas\"]", result);
+    });
+    assertEquals(server.PREFIX, response.headerValue("Access-Control-Allow-Origin"));
   }
 }
