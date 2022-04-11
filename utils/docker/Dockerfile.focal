@@ -1,5 +1,7 @@
 FROM ubuntu:focal
 
+ARG DOCKER_IMAGE_NAME_TEMPLATE="mcr.microsoft.com/playwright/java:v%version%-focal"
+
 # === INSTALL JDK and Maven ===
 
 RUN apt-get update && \
@@ -36,5 +38,7 @@ RUN cd /tmp/pw-java && \
                      -D exec.args="install-deps" -f playwright/pom.xml --no-transfer-progress && \
     mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
                      -D exec.args="install" -f playwright/pom.xml --no-transfer-progress && \
+    mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
+                     -D exec.args="mark-docker-image '${DOCKER_IMAGE_NAME_TEMPLATE}'" -f playwright/pom.xml --no-transfer-progress && \
     rm -rf /tmp/pw-java && \
     chmod -R 777 $PLAYWRIGHT_BROWSERS_PATH
