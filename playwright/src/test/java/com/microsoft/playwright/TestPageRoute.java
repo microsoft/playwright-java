@@ -534,9 +534,7 @@ public class TestPageRoute extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     page.route("**/cars*", route -> {
       Map<String, String> headers = new HashMap<>();
-      if (route.request().url().endsWith("allow")) {
-        headers.put("access-control-allow-origin", "*");
-      }
+      headers.put("access-control-allow-origin", route.request().url().endsWith("allow") ? "*" : "none");
       route.fulfill(new Route.FulfillOptions()
         .setStatus(200)
         .setContentType("application/json")
