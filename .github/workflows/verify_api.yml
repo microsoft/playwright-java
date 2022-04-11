@@ -20,13 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: microsoft/playwright-github-action@v1.5.0
-      - name: Cache Maven packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+      - uses: microsoft/playwright-github-action@v1
       - name: Download drivers
         run: scripts/download_driver_for_all_platforms.sh
       - name: Regenerate APIs
