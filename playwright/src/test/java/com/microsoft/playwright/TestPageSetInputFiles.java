@@ -18,14 +18,20 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.options.FilePayload;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
@@ -47,6 +53,45 @@ public class TestPageSetInputFiles extends TestBase {
       "  reader.readAsText(e.files[0]);\n" +
       "  return promise.then(() => reader.result);\n" +
       "}", input));
+  }
+
+  @Test
+  void shouldUploadLargeFile(@TempDir Path tmpDir) throws IOException, ExecutionException, InterruptedException {
+    page.navigate(server.PREFIX + "/input/fileupload.html");
+    Path uploadFile = tmpDir.resolve("200MB.zip");
+    String str = String.join("", Collections.nCopies(4 * 1024, "A"));
+
+    try (Writer stream = new OutputStreamWriter(Files.newOutputStream(uploadFile))) {
+      for (int i = 0; i < 50 * 1024; i++) {
+        stream.write(str);
+      }
+    }
+    Locator input = page.locator("input[type='file']");
+    JSHandle events = input.evaluateHandle("e => {\n" +
+      "    const events = [];\n" +
+      "    e.addEventListener('input', () => events.push('input'));\n" +
+      "    e.addEventListener('change', () => events.push('change'));\n" +
+      "    return events;\n" +
+      "  }");
+    input.setInputFiles(uploadFile);
+    assertEquals("200MB.zip", input.evaluate("e => e.files[0].name"));
+    assertEquals(asList("input", "change"), events.evaluate("e => e"));
+    CompletableFuture<MultipartFormData> formData = new CompletableFuture<>();
+    server.setRoute("/upload", exchange -> {
+      try {
+        MultipartFormData multipartFormData = MultipartFormData.parseRequest(exchange);
+        formData.complete(multipartFormData);
+      } catch (Exception e) {
+        e.printStackTrace();
+        formData.completeExceptionally(e);
+      }
+      exchange.sendResponseHeaders(200, -1);
+    });
+    page.click("input[type=submit]");
+    List<MultipartFormData.Field> fields = formData.get().fields;
+    assertEquals(1, fields.size());
+    assertEquals("200MB.zip", fields.get(0).filename);
+    assertEquals(200 * 1024 * 1024, fields.get(0).content.length());
   }
 
   @Test

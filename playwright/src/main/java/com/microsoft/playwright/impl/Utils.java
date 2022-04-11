@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.FilePayload;
 import com.microsoft.playwright.options.HttpHeader;
@@ -23,12 +25,15 @@ import com.microsoft.playwright.options.HttpHeader;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Pattern;
+
+import static com.microsoft.playwright.impl.Serialization.toJsonArray;
 
 class Utils {
   static <F, T> T convertType(F f, Class<T> t) {
@@ -142,6 +147,49 @@ class Utils {
       mimeType = "application/octet-stream";
     }
     return mimeType;
+  }
+
+  static final int maxUplodBufferSize = 50 * 1024 * 1024;
+
+  static boolean hasLargeFile(Path[] files) {
+    for (Path file: files) {
+      try {
+        if (Files.size(file)> maxUplodBufferSize) {
+          return true;
+        }
+      } catch (IOException e) {
+        throw new PlaywrightException("Cannot get file size.", e);
+      }
+    }
+    return false;
+  }
+
+  static void addLargeFileUploadParams(Path[] files, JsonObject params, BrowserContextImpl context) {
+    if (context.browser().isRemote) {
+      List<WritableStream> streams = new ArrayList<>();
+      JsonArray jsonStreams = new JsonArray();
+      for (Path path : files) {
+        WritableStream temp = context.createTempFile(path.getFileName().toString());
+        streams.add(temp);
+        try (OutputStream out = temp.stream()) {
+          Files.copy(path, out);
+        } catch (IOException e) {
+          throw new PlaywrightException("Failed to copy file to remote server.", e);
+        }
+        jsonStreams.add(temp.toProtocol());
+      }
+      params.add("streams", jsonStreams);
+    } else {
+      params.add("localPaths", toJsonArray(files));
+    }
+  }
+
+  static void checkFilePayloadSize(FilePayload[] files) {
+    for (FilePayload file: files) {
+      if (file.buffer.length > maxUplodBufferSize) {
+        throw new PlaywrightException("Cannot set buffer larger than 50Mb, please write it to a file and pass its path instead.");
+      }
+    }
   }
 
   static FilePayload[] toFilePayloads(Path[] files) {

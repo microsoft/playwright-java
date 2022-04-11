@@ -30,6 +30,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.Utils.*;
@@ -517,5 +519,44 @@ public class TestBrowserTypeConnect extends TestBase {
     Response response = page.navigate(server.EMPTY_PAGE);
     assertEquals(200, response.status());
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
+  }
+
+  @Test
+  void shouldUploadLargeFile(@TempDir Path tmpDir) throws IOException, ExecutionException, InterruptedException {
+    page.navigate(server.PREFIX + "/input/fileupload.html");
+    Path uploadFile = tmpDir.resolve("200MB.zip");
+    String str = String.join("", Collections.nCopies(4 * 1024, "A"));
+
+    try (Writer stream = new OutputStreamWriter(Files.newOutputStream(uploadFile))) {
+      for (int i = 0; i < 50 * 1024; i++) {
+        stream.write(str);
+      }
+    }
+    Locator input = page.locator("input[type='file']");
+    JSHandle events = input.evaluateHandle("e => {\n" +
+      "    const events = [];\n" +
+      "    e.addEventListener('input', () => events.push('input'));\n" +
+      "    e.addEventListener('change', () => events.push('change'));\n" +
+      "    return events;\n" +
+      "  }");
+    input.setInputFiles(uploadFile);
+    assertEquals("200MB.zip", input.evaluate("e => e.files[0].name"));
+    assertEquals(asList("input", "change"), events.evaluate("e => e"));
+    CompletableFuture<MultipartFormData> formData = new CompletableFuture<>();
+    server.setRoute("/upload", exchange -> {
+      try {
+        MultipartFormData multipartFormData = MultipartFormData.parseRequest(exchange);
+        formData.complete(multipartFormData);
+      } catch (Exception e) {
+        e.printStackTrace();
+        formData.completeExceptionally(e);
+      }
+      exchange.sendResponseHeaders(200, -1);
+    });
+    page.click("input[type=submit]");
+    List<MultipartFormData.Field> fields = formData.get().fields;
+    assertEquals(1, fields.size());
+    assertEquals("200MB.zip", fields.get(0).filename);
+    assertEquals(200 * 1024 * 1024, fields.get(0).content.length());
   }
 }

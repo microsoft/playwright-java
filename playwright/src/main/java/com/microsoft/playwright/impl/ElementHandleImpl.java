@@ -33,7 +33,8 @@ import java.util.Base64;
 import java.util.List;
 
 import static com.microsoft.playwright.impl.Serialization.*;
-import static com.microsoft.playwright.impl.Utils.convertType;
+import static com.microsoft.playwright.impl.Utils.*;
+import static com.microsoft.playwright.impl.Utils.addLargeFileUploadParams;
 import static com.microsoft.playwright.options.ScreenshotType.JPEG;
 import static com.microsoft.playwright.options.ScreenshotType.PNG;
 
@@ -299,7 +300,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   }
 
   @Override
-  public Frame ownerFrame() {
+  public FrameImpl ownerFrame() {
     return withLogging("ElementHandle.ownerFrame", () -> {
       JsonObject json = sendMessage("ownerFrame").getAsJsonObject();
       if (!json.has("frame")) {
@@ -455,7 +456,24 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public void setInputFiles(Path[] files, SetInputFilesOptions options) {
-    setInputFiles(Utils.toFilePayloads(files), options);
+    withLogging("ElementHandle.setInputFiles", () -> setInputFilesImpl(files, options));
+  }
+
+  void setInputFilesImpl(Path[] files, SetInputFilesOptions options) {
+    FrameImpl frame = ownerFrame();
+    if (frame == null) {
+      throw new Error("Cannot set input files to detached element");
+    }
+    if (hasLargeFile(files)) {
+      if (options == null) {
+        options = new SetInputFilesOptions();
+      }
+      JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+      addLargeFileUploadParams(files, params, frame.page().context());
+      sendMessage("setInputFilePaths", params);
+    } else {
+      setInputFilesImpl(Utils.toFilePayloads(files), options);
+    }
   }
 
   @Override
@@ -469,6 +487,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
   }
 
   void setInputFilesImpl(FilePayload[] files, SetInputFilesOptions options) {
+    checkFilePayloadSize(files);
     if (options == null) {
       options = new SetInputFilesOptions();
     }
