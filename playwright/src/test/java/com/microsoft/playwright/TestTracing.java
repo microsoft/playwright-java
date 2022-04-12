@@ -43,7 +43,6 @@ public class TestTracing extends TestBase {
 
   @BeforeAll
   void launchBrowser(@TempDir Path tempDir) {
-    System.out.println("new launchBrowser(");
     BrowserType.LaunchOptions options = createLaunchOptions();
     options.setTracesDir(tempDir.resolve("trace-dir"));
     launchBrowser(options);
