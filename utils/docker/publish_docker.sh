@@ -7,10 +7,13 @@ trap "cd $(pwd -P)" EXIT
 cd "$(dirname "$0")"
 
 MCR_IMAGE_NAME="playwright/java"
-# GITHUB_REF has a form of `refs/tags/v1.3.0`.
-# TAG_NAME would be `v1.3.0`
-TAG_NAME=${GITHUB_REF#refs/tags/}
-PW_VERSION="${TAG_NAME#v}"
+
+POM_FILE=../../pom.xml
+if [[ ! -f ${POM_FILE} ]]; then
+  echo "ERROR: pom.xml not found at ${POM_FILE}"
+  exit 1;
+fi
+PW_VERSION=$(mvn exec:exec -Dexec.executable='echo' -Dexec.args='${project.version}' -f ${POM_FILE} --non-recursive -q 2>/dev/null)
 
 RELEASE_CHANNEL="$1"
 if [[ "${RELEASE_CHANNEL}" == "stable" ]]; then
