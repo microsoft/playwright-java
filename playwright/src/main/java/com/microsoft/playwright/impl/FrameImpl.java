@@ -23,6 +23,7 @@ import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,7 +32,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.Utils.convertType;
+import static com.microsoft.playwright.impl.Utils.*;
 import static com.microsoft.playwright.options.WaitUntilState.*;
 import static com.microsoft.playwright.impl.Serialization.*;
 
@@ -686,13 +687,23 @@ public class FrameImpl extends ChannelOwner implements Frame {
     withLogging("Frame.setInputFiles", () -> setInputFilesImpl(selector, files, options));
   }
 
+  void setInputFilesImpl(String selector, Path[] files, SetInputFilesOptions options) {
+    if (hasLargeFile(files)) {
+      if (options == null) {
+        options = new SetInputFilesOptions();
+      }
+      JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+      addLargeFileUploadParams(files, params, page.context());
+      params.addProperty("selector", selector);
+      sendMessage("setInputFilePaths", params);
+    } else {
+      setInputFilesImpl(selector, Utils.toFilePayloads(files), options);
+    }
+  }
+
   @Override
   public void setInputFiles(String selector, FilePayload files, SetInputFilesOptions options) {
     setInputFiles(selector, new FilePayload[]{files}, options);
-  }
-
-  void setInputFilesImpl(String selector, Path[] files, SetInputFilesOptions options) {
-    setInputFiles(selector, Utils.toFilePayloads(files), options);
   }
 
   @Override
@@ -701,6 +712,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   void setInputFilesImpl(String selector, FilePayload[] files, SetInputFilesOptions options) {
+    checkFilePayloadSize(files);
     if (options == null) {
       options = new SetInputFilesOptions();
     }

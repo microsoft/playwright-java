@@ -212,6 +212,14 @@ class Serialization {
     }
   }
 
+  static JsonArray toJsonArray(Path[] files) {
+    JsonArray jsonFiles = new JsonArray();
+    for (Path p : files) {
+      jsonFiles.add(p.toString());
+    }
+    return jsonFiles;
+  }
+
   static JsonArray toJsonArray(FilePayload[] files) {
     JsonArray jsonFiles = new JsonArray();
     for (FilePayload p : files) {

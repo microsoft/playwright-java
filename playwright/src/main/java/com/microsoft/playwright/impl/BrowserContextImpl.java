@@ -560,4 +560,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
     listeners.notify(EventType.CLOSE, this);
   }
+
+  WritableStream createTempFile(String name) {
+    JsonObject params = new JsonObject();
+    params.addProperty("name", name);
+    JsonObject json = sendMessage("createTempFile", params).getAsJsonObject();
+    return connection.getExistingObject(json.getAsJsonObject("writableStream").get("guid").getAsString());
+  }
 }
