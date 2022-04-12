@@ -17,6 +17,7 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.options.FilePayload;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -57,6 +58,7 @@ public class TestPageSetInputFiles extends TestBase {
 
   @Test
   void shouldUploadLargeFile(@TempDir Path tmpDir) throws IOException, ExecutionException, InterruptedException {
+    Assumptions.assumeTrue(3 <= (Runtime.getRuntime().maxMemory() >> 30), "Fails if max heap size is < 3Gb");
     page.navigate(server.PREFIX + "/input/fileupload.html");
     Path uploadFile = tmpDir.resolve("200MB.zip");
     String str = String.join("", Collections.nCopies(4 * 1024, "A"));
