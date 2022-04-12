@@ -181,10 +181,15 @@ abstract class Element {
     int start = 0;
     while (matcher.find()) {
       String url = matcher.group(2);
-      if (url.startsWith("./")) {
-        // ./actionability.md#editable => https://playwright.dev/java/docs/actionability/#editable
+      if (url.startsWith("../")) {
+        // ../actionability.md#editable => https://playwright.dev/java/docs/actionability/#editable
         url = url.replace(".md", "");
-        url = url.replace("./", "https://playwright.dev/java/docs/");
+        url = url.replace("../", "https://playwright.dev/java/docs/");
+      }
+      if (url.startsWith("./")) {
+        // ./class-tracing.md => https://playwright.dev/java/docs/api/class-tracing
+        url = url.replace(".md", "");
+        url = url.replace("./", "https://playwright.dev/java/docs/api/");
       }
       String link = "<a href=\"" + url + "\">" + matcher.group(1) + "</a>";
       linkified += paragraph.substring(start, matcher.start());

@@ -69,8 +69,8 @@ public interface Playwright extends AutoCloseable {
    */
   APIRequest request();
   /**
-   * Selectors can be used to install custom selector engines. See <a href="../selectors.md">Working with selectors</a> for
-   * more information.
+   * Selectors can be used to install custom selector engines. See <a
+   * href="https://playwright.dev/java/docs/selectors">Working with selectors</a> for more information.
    */
   Selectors selectors();
   /**
