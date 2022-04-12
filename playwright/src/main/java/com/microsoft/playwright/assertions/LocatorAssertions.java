@@ -409,7 +409,7 @@ public interface LocatorAssertions {
   void isFocused(IsFocusedOptions options);
   /**
    * Ensures the {@code Locator} points to a hidden DOM node, which is the opposite of <a
-   * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
+   * href="https://playwright.dev/java/docs/api/actionability#visible">visible</a>.
    * <pre>{@code
    * assertThat(page.locator(".my-element")).isHidden();
    * }</pre>
@@ -419,14 +419,15 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} points to a hidden DOM node, which is the opposite of <a
-   * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
+   * href="https://playwright.dev/java/docs/api/actionability#visible">visible</a>.
    * <pre>{@code
    * assertThat(page.locator(".my-element")).isHidden();
    * }</pre>
    */
   void isHidden(IsHiddenOptions options);
   /**
-   * Ensures the {@code Locator} points to a <a href="https://playwright.dev/java/docs/actionability#visible">visible</a> DOM node.
+   * Ensures the {@code Locator} points to a <a href="https://playwright.dev/java/docs/api/actionability#visible">visible</a> DOM
+   * node.
    * <pre>{@code
    * assertThat(page.locator(".my-element")).toBeVisible();
    * }</pre>
@@ -435,7 +436,8 @@ public interface LocatorAssertions {
     isVisible(null);
   }
   /**
-   * Ensures the {@code Locator} points to a <a href="https://playwright.dev/java/docs/actionability#visible">visible</a> DOM node.
+   * Ensures the {@code Locator} points to a <a href="https://playwright.dev/java/docs/api/actionability#visible">visible</a> DOM
+   * node.
    * <pre>{@code
    * assertThat(page.locator(".my-element")).toBeVisible();
    * }</pre>

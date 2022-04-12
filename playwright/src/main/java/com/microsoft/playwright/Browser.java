@@ -1017,8 +1017,9 @@ public interface Browser extends AutoCloseable {
   Page newPage(NewPageOptions options);
   /**
    * <strong>NOTE:</strong> This API controls <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chromium Tracing</a>
-   * which is a low-level chromium-specific debugging tool. API to control <a href="../trace-viewer">Playwright Tracing</a>
-   * could be found <a href="https://playwright.dev/java/docs/class-tracing">here</a>.
+   * which is a low-level chromium-specific debugging tool. API to control <a
+   * href="https://playwright.dev/java/docs/trace-viewer">Playwright Tracing</a> could be found <a
+   * href="https://playwright.dev/java/docs/api/class-tracing">here</a>.
    *
    * <p> You can use {@link Browser#startTracing Browser.startTracing()} and {@link Browser#stopTracing Browser.stopTracing()} to
    * create a trace file that can be opened in Chrome DevTools performance panel.
@@ -1036,8 +1037,9 @@ public interface Browser extends AutoCloseable {
   }
   /**
    * <strong>NOTE:</strong> This API controls <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chromium Tracing</a>
-   * which is a low-level chromium-specific debugging tool. API to control <a href="../trace-viewer">Playwright Tracing</a>
-   * could be found <a href="https://playwright.dev/java/docs/class-tracing">here</a>.
+   * which is a low-level chromium-specific debugging tool. API to control <a
+   * href="https://playwright.dev/java/docs/trace-viewer">Playwright Tracing</a> could be found <a
+   * href="https://playwright.dev/java/docs/api/class-tracing">here</a>.
    *
    * <p> You can use {@link Browser#startTracing Browser.startTracing()} and {@link Browser#stopTracing Browser.stopTracing()} to
    * create a trace file that can be opened in Chrome DevTools performance panel.
@@ -1053,8 +1055,9 @@ public interface Browser extends AutoCloseable {
   }
   /**
    * <strong>NOTE:</strong> This API controls <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chromium Tracing</a>
-   * which is a low-level chromium-specific debugging tool. API to control <a href="../trace-viewer">Playwright Tracing</a>
-   * could be found <a href="https://playwright.dev/java/docs/class-tracing">here</a>.
+   * which is a low-level chromium-specific debugging tool. API to control <a
+   * href="https://playwright.dev/java/docs/trace-viewer">Playwright Tracing</a> could be found <a
+   * href="https://playwright.dev/java/docs/api/class-tracing">here</a>.
    *
    * <p> You can use {@link Browser#startTracing Browser.startTracing()} and {@link Browser#stopTracing Browser.stopTracing()} to
    * create a trace file that can be opened in Chrome DevTools performance panel.
@@ -1070,8 +1073,9 @@ public interface Browser extends AutoCloseable {
   void startTracing(Page page, StartTracingOptions options);
   /**
    * <strong>NOTE:</strong> This API controls <a href="https://www.chromium.org/developers/how-tos/trace-event-profiling-tool">Chromium Tracing</a>
-   * which is a low-level chromium-specific debugging tool. API to control <a href="../trace-viewer">Playwright Tracing</a>
-   * could be found <a href="https://playwright.dev/java/docs/class-tracing">here</a>.
+   * which is a low-level chromium-specific debugging tool. API to control <a
+   * href="https://playwright.dev/java/docs/trace-viewer">Playwright Tracing</a> could be found <a
+   * href="https://playwright.dev/java/docs/api/class-tracing">here</a>.
    *
    * <p> Returns the buffer with trace data.
    */
