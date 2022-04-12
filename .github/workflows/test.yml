@@ -34,6 +34,7 @@ jobs:
       run: mvn test -DexcludedGroups=isolated --no-transfer-progress --fail-at-end
       env:
         BROWSER: ${{ matrix.browser }}
+        MAVEN_OPTS: -Xmx4G
     - name: Run tracing tests w/ sources
       run: mvn test -DexcludedGroups=isolated --no-transfer-progress --fail-at-end -D test=*TestTracing*
       env:
@@ -87,6 +88,7 @@ jobs:
         env:
           BROWSER: chromium
           BROWSER_CHANNEL: ${{ matrix.browser-channel }}
+          MAVEN_OPTS: -Xmx4G
       - name: Run driver throw tests
         run: mvn test -Dgroups=driverThrowTest --no-transfer-progress --fail-at-end
         env:
@@ -117,6 +119,7 @@ jobs:
         run: mvn test --no-transfer-progress --fail-at-end
         env:
           BROWSER: ${{ matrix.browser }}
+          MAVEN_OPTS: -Xmx4G
       - name: Test Spring Boot Starter
         shell: bash
         env:

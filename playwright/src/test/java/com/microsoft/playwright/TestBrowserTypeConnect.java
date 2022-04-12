@@ -553,7 +553,7 @@ public class TestBrowserTypeConnect extends TestBase {
       }
       exchange.sendResponseHeaders(200, -1);
     });
-    page.click("input[type=submit]");
+    page.click("input[type=submit]", new Page.ClickOptions().setTimeout(90_000));
     List<MultipartFormData.Field> fields = formData.get().fields;
     assertEquals(1, fields.size());
     assertEquals("200MB.zip", fields.get(0).filename);
