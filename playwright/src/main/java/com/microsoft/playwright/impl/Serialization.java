@@ -215,7 +215,7 @@ class Serialization {
   static JsonArray toJsonArray(Path[] files) {
     JsonArray jsonFiles = new JsonArray();
     for (Path p : files) {
-      jsonFiles.add(p.toString());
+      jsonFiles.add(p.toAbsolutePath().toString());
     }
     return jsonFiles;
   }
