@@ -119,6 +119,13 @@ public class TestLocatorAssertions extends TestBase {
   }
 
   @Test
+  void hasTextWTextInnerTextPass() {
+    page.setContent("<div id=node>Text <span hidden>garbage</span> content</div>");
+    Locator locator = page.locator("#node");
+    assertThat(locator).hasText("Text content", new LocatorAssertions.HasTextOptions().setUseInnerText(true));
+  }
+
+  @Test
   void hasTextWTextArrayPass() {
     page.setContent("<div>Text    \n1</div><div>Text   2a</div>");
     Locator locator = page.locator("div");
@@ -575,6 +582,13 @@ public class TestLocatorAssertions extends TestBase {
       assertNull(e.getActual());
       assertTrue(e.getMessage().contains("Locator expected not to be checked"), e.getMessage());
     }
+  }
+
+  @Test
+  void isCheckedFalsePass() {
+    page.setContent("<input type=checkbox></input>");
+    Locator locator = page.locator("input");
+    assertThat(locator).isChecked(new LocatorAssertions.IsCheckedOptions().setChecked(false));
   }
 
   @Test
