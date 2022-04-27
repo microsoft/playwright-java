@@ -257,7 +257,8 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
 
   @Override
   public void isChecked(IsCheckedOptions options) {
-    expectTrue("to.be.checked", "Locator expected to be checked", convertType(options, FrameExpectOptions.class));
+    String expression = (options != null && options.checked != null && !options.checked) ? "to.be.unchecked" : "to.be.checked";
+    expectTrue(expression, "Locator expected to be checked", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
