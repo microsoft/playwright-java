@@ -13,7 +13,8 @@ RUN apt-get update && \
     # Create the pwuser
     adduser pwuser
 
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ARG PW_TARGET_ARCH
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-${PW_TARGET_ARCH}
 
 # === BAKE BROWSERS INTO IMAGE ===
 
