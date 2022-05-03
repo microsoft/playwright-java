@@ -33,7 +33,7 @@ fi
 mkdir -p driver
 cd driver
 
-for PLATFORM in mac linux linux-arm64 win32_x64
+for PLATFORM in mac mac-arm64 linux linux-arm64 win32_x64
 do
   FILE_NAME=$FILE_PREFIX-$PLATFORM.zip
   if [[ -d $PLATFORM ]]; then
