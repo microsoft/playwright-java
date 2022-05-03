@@ -45,9 +45,11 @@ public class TestInstall {
 
   @Test
   @Tags({@Tag("isolated"), @Tag("driverThrowTest")})
-  void shouldThrowWhenBrowserPathIsInvalid() {
+  void shouldThrowWhenBrowserPathIsInvalid(@TempDir Path tmpDir) {
     Map<String,String> env = new HashMap<>();
-    env.put("PLAYWRIGHT_BROWSERS_PATH", "/some/bad/path/that/should/not/exist/i/hope");
+    env.put("PLAYWRIGHT_DOWNLOAD_HOST", "https://127.0.0.127");
+    // Make sure the browsers are not installed yet by pointing at an empty dir.
+    env.put("PLAYWRIGHT_BROWSERS_PATH", tmpDir.toString());
 
     assertThrows(RuntimeException.class, () -> Driver.ensureDriverInstalled(env, true));
     assertThrows(RuntimeException.class, () -> Driver.ensureDriverInstalled(env, true));
