@@ -590,6 +590,145 @@ public interface Locator {
       return this;
     }
   }
+  class FilterOptions {
+    /**
+     * Matches elements that are above any of the elements matching the inner locator, at any horizontal position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator above;
+    /**
+     * Matches elements that are below any of the elements matching the inner locator, at any horizontal position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator below;
+    /**
+     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
+     * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator has;
+    /**
+     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
+     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
+     * {@code <article><div>Playwright</div></article>}.
+     */
+    public Object hasText;
+    /**
+     * Matches elements that are to the left of any element matching the inner locator, at any vertical position. Inner locator
+     * is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator leftOf;
+    /**
+     * Matches elements that are near (<= 50 css pixels) any of the elements matching the inner locator. Inner locator is
+     * queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator near;
+    /**
+     * Matches elements that are to the right of any element matching the inner locator, at any vertical position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator rightOf;
+
+    /**
+     * Matches elements that are above any of the elements matching the inner locator, at any horizontal position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public FilterOptions setAbove(Locator above) {
+      this.above = above;
+      return this;
+    }
+    /**
+     * Matches elements that are below any of the elements matching the inner locator, at any horizontal position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public FilterOptions setBelow(Locator below) {
+      this.below = below;
+      return this;
+    }
+    /**
+     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
+     * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public FilterOptions setHas(Locator has) {
+      this.has = has;
+      return this;
+    }
+    /**
+     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
+     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
+     * {@code <article><div>Playwright</div></article>}.
+     */
+    public FilterOptions setHasText(String hasText) {
+      this.hasText = hasText;
+      return this;
+    }
+    /**
+     * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
+     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
+     * {@code <article><div>Playwright</div></article>}.
+     */
+    public FilterOptions setHasText(Pattern hasText) {
+      this.hasText = hasText;
+      return this;
+    }
+    /**
+     * Matches elements that are to the left of any element matching the inner locator, at any vertical position. Inner locator
+     * is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public FilterOptions setLeftOf(Locator leftOf) {
+      this.leftOf = leftOf;
+      return this;
+    }
+    /**
+     * Matches elements that are near (<= 50 css pixels) any of the elements matching the inner locator. Inner locator is
+     * queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public FilterOptions setNear(Locator near) {
+      this.near = near;
+      return this;
+    }
+    /**
+     * Matches elements that are to the right of any element matching the inner locator, at any vertical position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public FilterOptions setRightOf(Locator rightOf) {
+      this.rightOf = rightOf;
+      return this;
+    }
+  }
   class FocusOptions {
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
@@ -865,6 +1004,22 @@ public interface Locator {
   }
   class LocatorOptions {
     /**
+     * Matches elements that are above any of the elements matching the inner locator, at any horizontal position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator above;
+    /**
+     * Matches elements that are below any of the elements matching the inner locator, at any horizontal position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator below;
+    /**
      * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
      * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
      *
@@ -877,7 +1032,53 @@ public interface Locator {
      * {@code <article><div>Playwright</div></article>}.
      */
     public Object hasText;
+    /**
+     * Matches elements that are to the left of any element matching the inner locator, at any vertical position. Inner locator
+     * is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator leftOf;
+    /**
+     * Matches elements that are near (<= 50 css pixels) any of the elements matching the inner locator. Inner locator is
+     * queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator near;
+    /**
+     * Matches elements that are to the right of any element matching the inner locator, at any vertical position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator rightOf;
 
+    /**
+     * Matches elements that are above any of the elements matching the inner locator, at any horizontal position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setAbove(Locator above) {
+      this.above = above;
+      return this;
+    }
+    /**
+     * Matches elements that are below any of the elements matching the inner locator, at any horizontal position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setBelow(Locator below) {
+      this.below = below;
+      return this;
+    }
     /**
      * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
      * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
@@ -904,6 +1105,39 @@ public interface Locator {
      */
     public LocatorOptions setHasText(Pattern hasText) {
       this.hasText = hasText;
+      return this;
+    }
+    /**
+     * Matches elements that are to the left of any element matching the inner locator, at any vertical position. Inner locator
+     * is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setLeftOf(Locator leftOf) {
+      this.leftOf = leftOf;
+      return this;
+    }
+    /**
+     * Matches elements that are near (<= 50 css pixels) any of the elements matching the inner locator. Inner locator is
+     * queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setNear(Locator near) {
+      this.near = near;
+      return this;
+    }
+    /**
+     * Matches elements that are to the right of any element matching the inner locator, at any vertical position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setRightOf(Locator rightOf) {
+      this.rightOf = rightOf;
       return this;
     }
   }
@@ -2075,6 +2309,16 @@ public interface Locator {
    */
   void fill(String value, FillOptions options);
   /**
+   * This method narrows existing locator according to the options, for example filters by text.
+   */
+  default Locator filter() {
+    return filter(null);
+  }
+  /**
+   * This method narrows existing locator according to the options, for example filters by text.
+   */
+  Locator filter(FilterOptions options);
+  /**
    * Returns locator to the first matching element.
    */
   Locator first();
@@ -2174,13 +2418,21 @@ public interface Locator {
    */
   String innerText(InnerTextOptions options);
   /**
-   * Returns {@code input.value} for {@code <input>} or {@code <textarea>} or {@code <select>} element. Throws for non-input elements.
+   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} or {@code <select>} element.
+   *
+   * <p> Throws for non-input elements. However, if the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, returns the value of the
+   * control.
    */
   default String inputValue() {
     return inputValue(null);
   }
   /**
-   * Returns {@code input.value} for {@code <input>} or {@code <textarea>} or {@code <select>} element. Throws for non-input elements.
+   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} or {@code <select>} element.
+   *
+   * <p> Throws for non-input elements. However, if the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, returns the value of the
+   * control.
    */
   String inputValue(InputValueOptions options);
   /**
@@ -2252,7 +2504,8 @@ public interface Locator {
    */
   Locator last();
   /**
-   * The method finds an element matching the specified selector in the {@code Locator}'s subtree.
+   * The method finds an element matching the specified selector in the {@code Locator}'s subtree. It also accepts filter options,
+   * similar to {@link Locator#filter Locator.filter()} method.
    *
    * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
    * selectors</a> for more details.
@@ -2261,7 +2514,8 @@ public interface Locator {
     return locator(selector, null);
   }
   /**
-   * The method finds an element matching the specified selector in the {@code Locator}'s subtree.
+   * The method finds an element matching the specified selector in the {@code Locator}'s subtree. It also accepts filter options,
+   * similar to {@link Locator#filter Locator.filter()} method.
    *
    * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
    * selectors</a> for more details.
@@ -2326,19 +2580,27 @@ public interface Locator {
    */
   void press(String key, PressOptions options);
   /**
-   * Returns the buffer with the captured screenshot.
+   * This method captures a screenshot of the page, clipped to the size and position of a particular element matching the
+   * locator. If the element is covered by other elements, it will not be actually visible on the screenshot. If the element
+   * is a scrollable container, only the currently scrolled content will be visible on the screenshot.
    *
    * <p> This method waits for the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then
    * scrolls element into view before taking a screenshot. If the element is detached from DOM, the method throws an error.
+   *
+   * <p> Returns the buffer with the captured screenshot.
    */
   default byte[] screenshot() {
     return screenshot(null);
   }
   /**
-   * Returns the buffer with the captured screenshot.
+   * This method captures a screenshot of the page, clipped to the size and position of a particular element matching the
+   * locator. If the element is covered by other elements, it will not be actually visible on the screenshot. If the element
+   * is a scrollable container, only the currently scrolled content will be visible on the screenshot.
    *
    * <p> This method waits for the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then
    * scrolls element into view before taking a screenshot. If the element is detached from DOM, the method throws an error.
+   *
+   * <p> Returns the buffer with the captured screenshot.
    */
   byte[] screenshot(ScreenshotOptions options);
   /**
@@ -2682,6 +2944,10 @@ public interface Locator {
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then focuses
    * the element and selects all its text content.
+   *
+   * <p> If the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, focuses and selects text
+   * in the control instead.
    */
   default void selectText() {
     selectText(null);
@@ -2689,6 +2955,10 @@ public interface Locator {
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then focuses
    * the element and selects all its text content.
+   *
+   * <p> If the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, focuses and selects text
+   * in the control instead.
    */
   void selectText(SelectTextOptions options);
   /**
@@ -2732,75 +3002,99 @@ public interface Locator {
    */
   void setChecked(boolean checked, SetCheckedOptions options);
   /**
-   * This method expects {@code element} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code Locator} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    */
   default void setInputFiles(Path files) {
     setInputFiles(files, null);
   }
   /**
-   * This method expects {@code element} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code Locator} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    */
   void setInputFiles(Path files, SetInputFilesOptions options);
   /**
-   * This method expects {@code element} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code Locator} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    */
   default void setInputFiles(Path[] files) {
     setInputFiles(files, null);
   }
   /**
-   * This method expects {@code element} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code Locator} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    */
   void setInputFiles(Path[] files, SetInputFilesOptions options);
   /**
-   * This method expects {@code element} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code Locator} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    */
   default void setInputFiles(FilePayload files) {
     setInputFiles(files, null);
   }
   /**
-   * This method expects {@code element} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code Locator} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    */
   void setInputFiles(FilePayload files, SetInputFilesOptions options);
   /**
-   * This method expects {@code element} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code Locator} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    */
   default void setInputFiles(FilePayload[] files) {
     setInputFiles(files, null);
   }
   /**
-   * This method expects {@code element} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code Locator} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    */
   void setInputFiles(FilePayload[] files, SetInputFilesOptions options);
   /**

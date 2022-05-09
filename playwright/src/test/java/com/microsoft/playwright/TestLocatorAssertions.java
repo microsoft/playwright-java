@@ -127,7 +127,7 @@ public class TestLocatorAssertions extends TestBase {
 
   @Test
   void hasTextWTextArrayPass() {
-    page.setContent("<div>Text    \n1</div><div>Text   2a</div>");
+    page.setContent("<div>Text    \n1</div><d`iv>Text   2a</div>");
     Locator locator = page.locator("div");
     // Should normalize whitespace.
     assertThat(locator).hasText(new String[] {"Text  1", "Text   2a"});

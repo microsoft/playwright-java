@@ -1,6 +1,5 @@
 package com.microsoft.playwright.impl;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
@@ -9,8 +8,11 @@ import com.microsoft.playwright.options.FilePayload;
 import com.microsoft.playwright.options.SelectOption;
 import com.microsoft.playwright.options.WaitForSelectorState;
 
+import java.lang.reflect.Field;
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
@@ -21,6 +23,43 @@ import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 class LocatorImpl implements Locator {
   private final FrameImpl frame;
   private final String selector;
+
+  private static class Filters {
+    private final Map<Field, String> filterFieldToEngine = new LinkedHashMap<>();
+    private void addFilter(String name, String engine) throws NoSuchFieldException {
+      filterFieldToEngine.put(LocatorOptions.class.getField(name), engine);
+    }
+    {
+      try {
+        addFilter("has", "has");
+        addFilter("leftOf", "left-of");
+        addFilter("rightOf", "right-of");
+        addFilter("above", "above");
+        addFilter("below", "below");
+        addFilter("near", "near");
+      } catch (NoSuchFieldException e) {
+        throw new InternalError(e);
+      }
+    }
+    String addFiltersToSelector(String selector, LocatorOptions options, Frame frame) {
+      try {
+        for (Map.Entry<Field, String> p : filterFieldToEngine.entrySet()) {
+          LocatorImpl filter = (LocatorImpl) p.getKey().get(options);
+          if (filter == null) {
+            continue;
+          }
+          if (filter.frame != frame) {
+            throw new PlaywrightException("Inner '" + p.getKey().getName() + "' locator must belong to the same frame.");
+          }
+          selector += " >> " +  p.getValue() + "=" + gson().toJson(filter.selector);
+        }
+      } catch (IllegalAccessException e) {
+        throw new PlaywrightException("Unexpected options", e);
+      }
+      return selector;
+    }
+  }
+  private static final Filters filters = new Filters();
 
   public LocatorImpl(FrameImpl frame, String selector, LocatorOptions options) {
     this.frame = frame;
@@ -34,14 +73,7 @@ class LocatorImpl implements Locator {
           selector += " >> :scope:has-text(" + escapeWithQuotes(text) + ")";
         }
       }
-      if (options.has != null) {
-        LocatorImpl has = (LocatorImpl) options.has;
-        if (has.frame != frame) {
-          throw new PlaywrightException("Inner 'has' locator must belong to the same frame.");
-        }
-        selector += " >> has=" + gson().toJson(has.selector);
-      }
-
+      selector = filters.addFiltersToSelector(selector, options, frame);
     }
     this.selector = selector;
   }
@@ -168,6 +200,11 @@ class LocatorImpl implements Locator {
       options = new FillOptions();
     }
     frame.fill(selector, value, convertType(options, Frame.FillOptions.class).setStrict(true));
+  }
+
+  @Override
+  public Locator filter(FilterOptions options) {
+    return null;
   }
 
   @Override

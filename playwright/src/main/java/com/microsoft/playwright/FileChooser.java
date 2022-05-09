@@ -74,50 +74,50 @@ public interface FileChooser {
   Page page();
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files.
    */
   default void setFiles(Path files) {
     setFiles(files, null);
   }
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files.
    */
   void setFiles(Path files, SetFilesOptions options);
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files.
    */
   default void setFiles(Path[] files) {
     setFiles(files, null);
   }
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files.
    */
   void setFiles(Path[] files, SetFilesOptions options);
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files.
    */
   default void setFiles(FilePayload files) {
     setFiles(files, null);
   }
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files.
    */
   void setFiles(FilePayload files, SetFilesOptions options);
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files.
    */
   default void setFiles(FilePayload[] files) {
     setFiles(files, null);
   }
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files.
    */
   void setFiles(FilePayload[] files, SetFilesOptions options);
 }

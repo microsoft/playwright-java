@@ -50,6 +50,22 @@ import java.util.regex.Pattern;
 public interface FrameLocator {
   class LocatorOptions {
     /**
+     * Matches elements that are above any of the elements matching the inner locator, at any horizontal position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator above;
+    /**
+     * Matches elements that are below any of the elements matching the inner locator, at any horizontal position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator below;
+    /**
      * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
      * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
      *
@@ -62,7 +78,53 @@ public interface FrameLocator {
      * {@code <article><div>Playwright</div></article>}.
      */
     public Object hasText;
+    /**
+     * Matches elements that are to the left of any element matching the inner locator, at any vertical position. Inner locator
+     * is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator leftOf;
+    /**
+     * Matches elements that are near (<= 50 css pixels) any of the elements matching the inner locator. Inner locator is
+     * queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator near;
+    /**
+     * Matches elements that are to the right of any element matching the inner locator, at any vertical position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator rightOf;
 
+    /**
+     * Matches elements that are above any of the elements matching the inner locator, at any horizontal position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setAbove(Locator above) {
+      this.above = above;
+      return this;
+    }
+    /**
+     * Matches elements that are below any of the elements matching the inner locator, at any horizontal position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setBelow(Locator below) {
+      this.below = below;
+      return this;
+    }
     /**
      * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
      * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
@@ -89,6 +151,39 @@ public interface FrameLocator {
      */
     public LocatorOptions setHasText(Pattern hasText) {
       this.hasText = hasText;
+      return this;
+    }
+    /**
+     * Matches elements that are to the left of any element matching the inner locator, at any vertical position. Inner locator
+     * is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setLeftOf(Locator leftOf) {
+      this.leftOf = leftOf;
+      return this;
+    }
+    /**
+     * Matches elements that are near (<= 50 css pixels) any of the elements matching the inner locator. Inner locator is
+     * queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setNear(Locator near) {
+      this.near = near;
+      return this;
+    }
+    /**
+     * Matches elements that are to the right of any element matching the inner locator, at any vertical position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setRightOf(Locator rightOf) {
+      this.rightOf = rightOf;
       return this;
     }
   }

@@ -328,7 +328,11 @@ public interface LocatorAssertions {
    */
   void isChecked(IsCheckedOptions options);
   /**
-   * Ensures the {@code Locator} points to a disabled element.
+   * Ensures the {@code Locator} points to a disabled element. Element is disabled if it has "disabled" attribute or is disabled
+   * via <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled">'aria-disabled'</a>.
+   * Note that only native control elements such as HTML {@code button}, {@code input}, {@code select}, {@code textarea}, {@code option}, {@code optgroup} can be
+   * disabled by setting "disabled" attribute. "disabled" attribute on other elements is ignored by the browser.
    * <pre>{@code
    * assertThat(page.locator("button.submit")).isDisabled();
    * }</pre>
@@ -337,7 +341,11 @@ public interface LocatorAssertions {
     isDisabled(null);
   }
   /**
-   * Ensures the {@code Locator} points to a disabled element.
+   * Ensures the {@code Locator} points to a disabled element. Element is disabled if it has "disabled" attribute or is disabled
+   * via <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled">'aria-disabled'</a>.
+   * Note that only native control elements such as HTML {@code button}, {@code input}, {@code select}, {@code textarea}, {@code option}, {@code optgroup} can be
+   * disabled by setting "disabled" attribute. "disabled" attribute on other elements is ignored by the browser.
    * <pre>{@code
    * assertThat(page.locator("button.submit")).isDisabled();
    * }</pre>
@@ -429,7 +437,7 @@ public interface LocatorAssertions {
    * Ensures the {@code Locator} points to a <a href="https://playwright.dev/java/docs/api/actionability#visible">visible</a> DOM
    * node.
    * <pre>{@code
-   * assertThat(page.locator(".my-element")).toBeVisible();
+   * assertThat(page.locator(".my-element")).isVisible();
    * }</pre>
    */
   default void isVisible() {
@@ -439,7 +447,7 @@ public interface LocatorAssertions {
    * Ensures the {@code Locator} points to a <a href="https://playwright.dev/java/docs/api/actionability#visible">visible</a> DOM
    * node.
    * <pre>{@code
-   * assertThat(page.locator(".my-element")).toBeVisible();
+   * assertThat(page.locator(".my-element")).isVisible();
    * }</pre>
    */
   void isVisible(IsVisibleOptions options);

@@ -1659,6 +1659,22 @@ public interface Page extends AutoCloseable {
   }
   class LocatorOptions {
     /**
+     * Matches elements that are above any of the elements matching the inner locator, at any horizontal position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator above;
+    /**
+     * Matches elements that are below any of the elements matching the inner locator, at any horizontal position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator below;
+    /**
      * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
      * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
      *
@@ -1671,7 +1687,53 @@ public interface Page extends AutoCloseable {
      * {@code <article><div>Playwright</div></article>}.
      */
     public Object hasText;
+    /**
+     * Matches elements that are to the left of any element matching the inner locator, at any vertical position. Inner locator
+     * is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator leftOf;
+    /**
+     * Matches elements that are near (<= 50 css pixels) any of the elements matching the inner locator. Inner locator is
+     * queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator near;
+    /**
+     * Matches elements that are to the right of any element matching the inner locator, at any vertical position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator rightOf;
 
+    /**
+     * Matches elements that are above any of the elements matching the inner locator, at any horizontal position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setAbove(Locator above) {
+      this.above = above;
+      return this;
+    }
+    /**
+     * Matches elements that are below any of the elements matching the inner locator, at any horizontal position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setBelow(Locator below) {
+      this.below = below;
+      return this;
+    }
     /**
      * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
      * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
@@ -1698,6 +1760,39 @@ public interface Page extends AutoCloseable {
      */
     public LocatorOptions setHasText(Pattern hasText) {
       this.hasText = hasText;
+      return this;
+    }
+    /**
+     * Matches elements that are to the left of any element matching the inner locator, at any vertical position. Inner locator
+     * is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setLeftOf(Locator leftOf) {
+      this.leftOf = leftOf;
+      return this;
+    }
+    /**
+     * Matches elements that are near (<= 50 css pixels) any of the elements matching the inner locator. Inner locator is
+     * queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setNear(Locator near) {
+      this.near = near;
+      return this;
+    }
+    /**
+     * Matches elements that are to the right of any element matching the inner locator, at any vertical position. Inner
+     * locator is queried against the same root as the outer one. More details in <a
+     * href="https://playwright.dev/java/docs/selectors#selecting-elements-based-on-layout">layout selectors</a> guide.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setRightOf(Locator rightOf) {
+      this.rightOf = rightOf;
       return this;
     }
   }
@@ -4201,8 +4296,8 @@ public interface Page extends AutoCloseable {
    */
   Response goForward(GoForwardOptions options);
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * last redirect.
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the first
+   * non-redirect response.
    *
    * <p> The method will throw an error if:
    * <ul>
@@ -4233,8 +4328,8 @@ public interface Page extends AutoCloseable {
     return navigate(url, null);
   }
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * last redirect.
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the first
+   * non-redirect response.
    *
    * <p> The method will throw an error if:
    * <ul>
@@ -4337,7 +4432,11 @@ public interface Page extends AutoCloseable {
    */
   String innerText(String selector, InnerTextOptions options);
   /**
-   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} or {@code <select>} element. Throws for non-input elements.
+   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} or {@code <select>} element.
+   *
+   * <p> Throws for non-input elements. However, if the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, returns the value of the
+   * control.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
    * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
@@ -4346,7 +4445,11 @@ public interface Page extends AutoCloseable {
     return inputValue(selector, null);
   }
   /**
-   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} or {@code <select>} element. Throws for non-input elements.
+   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} or {@code <select>} element.
+   *
+   * <p> Throws for non-input elements. However, if the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, returns the value of the
+   * control.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
    * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
@@ -4466,6 +4569,8 @@ public interface Page extends AutoCloseable {
    * element immediately before performing an action, so a series of actions on the same locator can in fact be performed on
    * different DOM elements. That would happen if the DOM structure between those actions has changed.
    *
+   * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
+   *
    * <p> Shortcut for main frame's {@link Frame#locator Frame.locator()}.
    *
    * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
@@ -4478,6 +4583,8 @@ public interface Page extends AutoCloseable {
    * The method returns an element locator that can be used to perform actions on the page. Locator is resolved to the
    * element immediately before performing an action, so a series of actions on the same locator can in fact be performed on
    * different DOM elements. That would happen if the DOM structure between those actions has changed.
+   *
+   * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
    * <p> Shortcut for main frame's {@link Frame#locator Frame.locator()}.
    *
@@ -5552,11 +5659,14 @@ public interface Page extends AutoCloseable {
    */
   void setExtraHTTPHeaders(Map<String, String> headers);
   /**
-   * This method expects {@code selector} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code selector} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
    * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
@@ -5565,22 +5675,28 @@ public interface Page extends AutoCloseable {
     setInputFiles(selector, files, null);
   }
   /**
-   * This method expects {@code selector} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code selector} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
    * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
    */
   void setInputFiles(String selector, Path files, SetInputFilesOptions options);
   /**
-   * This method expects {@code selector} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code selector} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
    * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
@@ -5589,22 +5705,28 @@ public interface Page extends AutoCloseable {
     setInputFiles(selector, files, null);
   }
   /**
-   * This method expects {@code selector} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code selector} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
    * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
    */
   void setInputFiles(String selector, Path[] files, SetInputFilesOptions options);
   /**
-   * This method expects {@code selector} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code selector} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
    * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
@@ -5613,22 +5735,28 @@ public interface Page extends AutoCloseable {
     setInputFiles(selector, files, null);
   }
   /**
-   * This method expects {@code selector} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code selector} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
    * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
    */
   void setInputFiles(String selector, FilePayload files, SetInputFilesOptions options);
   /**
-   * This method expects {@code selector} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code selector} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
    * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
@@ -5637,11 +5765,14 @@ public interface Page extends AutoCloseable {
     setInputFiles(selector, files, null);
   }
   /**
-   * This method expects {@code selector} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code selector} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
    * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
