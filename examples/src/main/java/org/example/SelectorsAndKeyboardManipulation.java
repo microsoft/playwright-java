@@ -24,14 +24,12 @@ public class SelectorsAndKeyboardManipulation {
       Browser browser = playwright.firefox().launch();
       BrowserContext context = browser.newContext();
       Page page = context.newPage();
-      page.navigate("https://playwright.dev/");
-      page.click("#__docusaurus > nav > div.navbar__inner > div.navbar__items.navbar__items--right > div.searchBox_qEbK > button");
-      page.waitForSelector("#docsearch-input");
-      page.type("#docsearch-input", "getting started");
-      page.waitForSelector("#docsearch-item-0 > a > div");
-      page.click("#docsearch-item-0 > a > div");
-      page.waitForSelector("#__docusaurus > div.main-wrapper > div > main > div > div > div.col.docItemCol_DM6M > div > article > div.theme-doc-markdown.markdown > header > h1");
-      page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("screenshot.png")));
+      page.navigate("https://playwright.dev/java/");
+      page.locator("text=SearchK").click();
+      page.locator("[placeholder=\"Search docs\"]").fill("getting started");
+      page.locator("div[role=\"button\"]:has-text(\"CancelIntroductionGetting startedInstallation​Getting startedUsage​Getting start\")").click();
+      page.waitForSelector("h1:has-text(\"Getting started\")"); // Waits for the new page to load before screenshotting.
+      page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("Screenshot.png")));
     }
   }
 }
