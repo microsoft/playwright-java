@@ -1601,13 +1601,21 @@ public interface ElementHandle extends JSHandle {
    */
   String innerText();
   /**
-   * Returns {@code input.value} for {@code <input>} or {@code <textarea>} or {@code <select>} element. Throws for non-input elements.
+   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} or {@code <select>} element.
+   *
+   * <p> Throws for non-input elements. However, if the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, returns the value of the
+   * control.
    */
   default String inputValue() {
     return inputValue(null);
   }
   /**
-   * Returns {@code input.value} for {@code <input>} or {@code <textarea>} or {@code <select>} element. Throws for non-input elements.
+   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} or {@code <select>} element.
+   *
+   * <p> Throws for non-input elements. However, if the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, returns the value of the
+   * control.
    */
   String inputValue(InputValueOptions options);
   /**
@@ -1709,19 +1717,27 @@ public interface ElementHandle extends JSHandle {
    */
   List<ElementHandle> querySelectorAll(String selector);
   /**
-   * Returns the buffer with the captured screenshot.
+   * This method captures a screenshot of the page, clipped to the size and position of this particular element. If the
+   * element is covered by other elements, it will not be actually visible on the screenshot. If the element is a scrollable
+   * container, only the currently scrolled content will be visible on the screenshot.
    *
    * <p> This method waits for the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then
    * scrolls element into view before taking a screenshot. If the element is detached from DOM, the method throws an error.
+   *
+   * <p> Returns the buffer with the captured screenshot.
    */
   default byte[] screenshot() {
     return screenshot(null);
   }
   /**
-   * Returns the buffer with the captured screenshot.
+   * This method captures a screenshot of the page, clipped to the size and position of this particular element. If the
+   * element is covered by other elements, it will not be actually visible on the screenshot. If the element is a scrollable
+   * container, only the currently scrolled content will be visible on the screenshot.
    *
    * <p> This method waits for the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then
    * scrolls element into view before taking a screenshot. If the element is detached from DOM, the method throws an error.
+   *
+   * <p> Returns the buffer with the captured screenshot.
    */
   byte[] screenshot(ScreenshotOptions options);
   /**
@@ -2071,6 +2087,10 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then focuses
    * the element and selects all its text content.
+   *
+   * <p> If the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, focuses and selects text
+   * in the control instead.
    */
   default void selectText() {
     selectText(null);
@@ -2078,6 +2098,10 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then focuses
    * the element and selects all its text content.
+   *
+   * <p> If the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, focuses and selects text
+   * in the control instead.
    */
   void selectText(SelectTextOptions options);
   /**
@@ -2121,75 +2145,99 @@ public interface ElementHandle extends JSHandle {
    */
   void setChecked(boolean checked, SetCheckedOptions options);
   /**
-   * This method expects {@code elementHandle} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code ElementHandle} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    */
   default void setInputFiles(Path files) {
     setInputFiles(files, null);
   }
   /**
-   * This method expects {@code elementHandle} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code ElementHandle} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    */
   void setInputFiles(Path files, SetInputFilesOptions options);
   /**
-   * This method expects {@code elementHandle} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code ElementHandle} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    */
   default void setInputFiles(Path[] files) {
     setInputFiles(files, null);
   }
   /**
-   * This method expects {@code elementHandle} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code ElementHandle} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    */
   void setInputFiles(Path[] files, SetInputFilesOptions options);
   /**
-   * This method expects {@code elementHandle} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code ElementHandle} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    */
   default void setInputFiles(FilePayload files) {
     setInputFiles(files, null);
   }
   /**
-   * This method expects {@code elementHandle} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code ElementHandle} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    */
   void setInputFiles(FilePayload files, SetInputFilesOptions options);
   /**
-   * This method expects {@code elementHandle} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code ElementHandle} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    */
   default void setInputFiles(FilePayload[] files) {
     setInputFiles(files, null);
   }
   /**
-   * This method expects {@code elementHandle} to point to an <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
+   * are resolved relative to the current working directory. For empty array, clears the selected files.
    *
-   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the the current working directory. For empty array, clears the selected files.
+   * <p> This method expects {@code ElementHandle} to point to an <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
+   * inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
+   * instead.
    */
   void setInputFiles(FilePayload[] files, SetInputFilesOptions options);
   /**

@@ -256,7 +256,7 @@ public class TestPageRoute extends TestBase {
     }
     assertNotNull(failedRequest[0]);
     if (isWebKit()) {
-      assertEquals("Request intercepted", failedRequest[0].failure());
+      assertEquals("Blocked by Web Inspector", failedRequest[0].failure());
     } else if (isFirefox()) {
       assertEquals("NS_ERROR_OFFLINE", failedRequest[0].failure());
     } else {
@@ -281,7 +281,7 @@ public class TestPageRoute extends TestBase {
       fail("did not throw");
     } catch (PlaywrightException e) {
       if (isWebKit())
-        assertTrue(e.getMessage().contains("Request intercepted"));
+        assertTrue(e.getMessage().contains("Blocked by Web Inspector"), e.getMessage());
       else if (isFirefox())
         assertTrue(e.getMessage().contains("NS_ERROR_FAILURE"));
       else
