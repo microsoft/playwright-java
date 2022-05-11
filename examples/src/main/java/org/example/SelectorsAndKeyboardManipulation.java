@@ -19,7 +19,7 @@ package org.example;
 import com.microsoft.playwright.*;
 
 public class SelectorsAndKeyboardManipulation {
-  public class void main(String[] args) {
+  public static void main(String[] args) {
     try(Playwright playwright = Playwright.create()) {
       Browser browser = playwright.firefox().launch();
       BrowserContext context = browser.newContext();
