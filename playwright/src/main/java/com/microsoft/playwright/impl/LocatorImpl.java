@@ -204,7 +204,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator filter(FilterOptions options) {
-    return null;
+    return new LocatorImpl(frame, selector, convertType(options,LocatorOptions.class));
   }
 
   @Override
