@@ -134,4 +134,19 @@ public class TestPageLocatorQuery extends TestBase {
     assertThat(page.locator("div", new Page.LocatorOptions()
         .setHas(page.locator("span")).setHasText("wor"))).hasCount(1);
   }
+
+  @Test
+  void shouldSupportLocatorFilter() {
+    page.setContent("<section><div><span>hello</span></div><div><span>world</span></div></section>");
+    assertThat(page.locator("div").filter(new Locator.FilterOptions().setHasText("hello"))).hasCount(1);
+    assertThat(page.locator("div", new Page.LocatorOptions().setHasText("hello")).filter(new Locator.FilterOptions().setHasText("hello"))).hasCount(1);
+    assertThat(page.locator("div", new Page.LocatorOptions().setHasText("hello")).filter(new Locator.FilterOptions().setHasText("world"))).hasCount(0);
+    assertThat(page.locator("section", new Page.LocatorOptions().setHasText("hello")).filter(new Locator.FilterOptions().setHasText("world"))).hasCount(1);
+    assertThat(page.locator("div").filter(new Locator.FilterOptions().setHasText("hello")).locator("span")).hasCount(1);
+    assertThat(page.locator("div").filter(new Locator.FilterOptions().setHas(page.locator("span", new Page.LocatorOptions().setHasText("world"))))).hasCount(1);
+    assertThat(page.locator("div").filter(new Locator.FilterOptions().setHas(page.locator("span")))).hasCount(2);
+    assertThat(page.locator("div").filter(new Locator.FilterOptions()
+      .setHas(page.locator("span"))
+      .setHasText("world"))).hasCount(1);
+  }
 }
