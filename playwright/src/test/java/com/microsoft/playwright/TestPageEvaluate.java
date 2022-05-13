@@ -351,15 +351,7 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldBeAbleToThrowATrickyError() {
-    JSHandle windowHandle = page.evaluateHandle("() => window");
-    String errorText = null;
-    try {
-      windowHandle.jsonValue();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      errorText = e.getMessage();
-    }
-    assertNotNull(errorText);
+    String errorText = "My error";
     try {
       page.evaluate("errorText => {\n" +
         "  throw new Error(errorText);\n" +
