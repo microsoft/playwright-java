@@ -43,6 +43,8 @@ class SerializedValue{
   }
   O[] o;
   Number h;
+  Integer id;
+  Integer ref;
 }
 
 class SerializedArgument{

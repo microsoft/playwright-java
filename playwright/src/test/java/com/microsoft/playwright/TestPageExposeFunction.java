@@ -227,5 +227,15 @@ public class TestPageExposeFunction extends TestBase {
       assertTrue(e.getMessage().contains("exposeBindingHandle supports a single argument, 2 received"));
     }
   }
+
+  @Test
+  void shouldSerializeCycles() {
+    Object[] object = { null };
+    page.exposeBinding("log", (source, obj) -> object[0] = obj[0]);
+    page.evaluate("const a = {}; a.b = a; window.log(a)");
+    Map<String, Object> map = (Map<String, Object>) object[0];
+    assertEquals(1, map.size());
+    assertTrue(map == map.get("b"));
+  }
 }
 

@@ -71,82 +71,128 @@ class Serialization {
     return result;
   }
 
-  private static SerializedValue serializeValue(Object value, List<JSHandleImpl> handles, int depth) {
-    if (depth > 100) {
-      throw new PlaywrightException("Maximum argument depth exceeded");
+  private static class ValueSerializer {
+    // hashCode() of a map containing itself as a key will throw stackoverflow exception,
+    // so we user wrappers.
+    private static class HashableValue {
+      final Object value;
+      HashableValue(Object value) {
+        this.value = value;
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        return value == ((HashableValue) o).value;
+      }
+
+      @Override
+      public int hashCode() {
+        return System.identityHashCode(value);
+      }
     }
-    SerializedValue result = new SerializedValue();
-    if (value instanceof JSHandleImpl) {
-      result.h = handles.size();
-      handles.add((JSHandleImpl) value);
+    private final Map<HashableValue, Integer> valueToId = new HashMap<>();
+    private int lastId = 0;
+    private final List<JSHandleImpl> handles = new ArrayList<>();
+    private final SerializedValue serializedValue;
+
+    ValueSerializer(Object value) {
+      serializedValue = serializeValue(value);
+    }
+
+    SerializedArgument toSerializedArgument() {
+      SerializedArgument result = new SerializedArgument();
+      result.value = serializedValue;
+      result.handles = new Channel[handles.size()];
+      int i = 0;
+      for (JSHandleImpl handle : handles) {
+        result.handles[i] = new Channel();
+        result.handles[i].guid = handle.guid;
+        ++i;
+      }
       return result;
     }
-    if (value == null) {
-      result.v = "undefined";
-    } else if (value instanceof Double) {
-      double d = ((Double) value);
-      if (d == Double.POSITIVE_INFINITY) {
-        result.v = "Infinity";
-      } else if (d == Double.NEGATIVE_INFINITY) {
-        result.v = "-Infinity";
-      } else if (d == -0) {
-        result.v = "-0";
-      } else if (Double.isNaN(d)) {
-        result.v = "NaN";
+
+    private SerializedValue serializeValue(Object value) {
+      SerializedValue result = new SerializedValue();
+      if (value instanceof JSHandleImpl) {
+        result.h = handles.size();
+        handles.add((JSHandleImpl) value);
+        return result;
+      }
+      if (value == null) {
+        result.v = "undefined";
+      } else if (value instanceof Double) {
+        double d = ((Double) value);
+        if (d == Double.POSITIVE_INFINITY) {
+          result.v = "Infinity";
+        } else if (d == Double.NEGATIVE_INFINITY) {
+          result.v = "-Infinity";
+        } else if (d == -0) {
+          result.v = "-0";
+        } else if (Double.isNaN(d)) {
+          result.v = "NaN";
+        } else {
+          result.n = d;
+        }
+      } else if (value instanceof Boolean) {
+        result.b = (Boolean) value;
+      } else if (value instanceof Integer) {
+        result.n = (Integer) value;
+      } else if (value instanceof String) {
+        result.s = (String) value;
       } else {
-        result.n = d;
+        HashableValue mapKey = new HashableValue(value);
+        Integer id = valueToId.get(mapKey);
+        if (id != null) {
+          result.ref = id;
+        } else {
+          result.id = ++lastId;
+          valueToId.put(mapKey, lastId);
+          if (value instanceof List) {
+            List<SerializedValue> list = new ArrayList<>();
+            for (Object o : (List<?>) value) {
+              list.add(serializeValue(o));
+            }
+            result.a = list.toArray(new SerializedValue[0]);
+          } else if (value instanceof Map) {
+            List<SerializedValue.O> list = new ArrayList<>();
+            @SuppressWarnings("unchecked")
+            Map<String, ?> map = (Map<String, ?>) value;
+            for (Map.Entry<String, ?> e : map.entrySet()) {
+              SerializedValue.O o = new SerializedValue.O();
+              o.k = e.getKey();
+              o.v = serializeValue(e.getValue());
+              list.add(o);
+            }
+            result.o = list.toArray(new SerializedValue.O[0]);
+          } else if (value instanceof Object[]) {
+            List<SerializedValue> list = new ArrayList<>();
+            for (Object o : (Object[]) value) {
+              list.add(serializeValue(o));
+            }
+            result.a = list.toArray(new SerializedValue[0]);
+          } else {
+            throw new PlaywrightException("Unsupported type of argument: " + value);
+          }
+        }
       }
-    } else if (value instanceof Boolean) {
-      result.b = (Boolean) value;
-    } else if (value instanceof Integer) {
-      result.n = (Integer) value;
-    } else if (value instanceof String) {
-      result.s = (String) value;
-    } else if (value instanceof List) {
-      List<SerializedValue> list = new ArrayList<>();
-      for (Object o : (List<?>) value) {
-        list.add(serializeValue(o, handles, depth + 1));
-      }
-      result.a = list.toArray(new SerializedValue[0]);
-    } else if (value instanceof Map) {
-      List<SerializedValue.O> list = new ArrayList<>();
-      @SuppressWarnings("unchecked")
-      Map<String, ?> map = (Map<String, ?>) value;
-      for (Map.Entry<String, ?> e : map.entrySet()) {
-        SerializedValue.O o = new SerializedValue.O();
-        o.k = e.getKey();
-        o.v = serializeValue(e.getValue(), handles, depth + 1);
-        list.add(o);
-      }
-      result.o = list.toArray(new SerializedValue.O[0]);
-    } else if (value instanceof Object[]) {
-      List<SerializedValue> list = new ArrayList<>();
-      for (Object o : (Object[]) value) {
-        list.add(serializeValue(o, handles, depth + 1));
-      }
-      result.a = list.toArray(new SerializedValue[0]);
-    } else {
-      throw new PlaywrightException("Unsupported type of argument: " + value);
+      return result;
     }
-    return result;
   }
 
   static SerializedArgument serializeArgument(Object arg) {
-    SerializedArgument result = new SerializedArgument();
-    List<JSHandleImpl> handles = new ArrayList<>();
-    result.value = serializeValue(arg, handles, 0);
-    result.handles = new Channel[handles.size()];
-    int i = 0;
-    for (JSHandleImpl handle : handles) {
-      result.handles[i] = new Channel();
-      result.handles[i].guid = handle.guid;
-      ++i;
-    }
-    return result;
+    return new ValueSerializer(arg).toSerializedArgument();
+  }
+
+  static <T> T deserialize(SerializedValue value) {
+    return deserialize(value, new HashMap<>());
   }
 
   @SuppressWarnings("unchecked")
-  static <T> T deserialize(SerializedValue value) {
+  private static <T> T deserialize(SerializedValue value, Map<Integer, Object> idToValue) {
+    if (value.ref != null) {
+      return (T) idToValue.get(value.ref);
+    }
     if (value.n != null) {
       if (value.n.doubleValue() == (double) value.n.intValue()) {
         return (T) Integer.valueOf(value.n.intValue());
@@ -177,15 +223,17 @@ class Serialization {
     }
     if (value.a != null) {
       List<Object> list = new ArrayList<>();
+      idToValue.put(value.id, list);
       for (SerializedValue v : value.a) {
-        list.add(deserialize(v));
+        list.add(deserialize(v, idToValue));
       }
       return (T) list;
     }
     if (value.o != null) {
       Map<String, Object> map = new LinkedHashMap<>();
+      idToValue.put(value.id, map);
       for (SerializedValue.O o : value.o) {
-        map.put(o.k, deserialize(o.v));
+        map.put(o.k, deserialize(o.v, idToValue));
       }
       return (T) map;
     }
