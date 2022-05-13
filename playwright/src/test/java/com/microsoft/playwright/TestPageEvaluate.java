@@ -619,4 +619,23 @@ public class TestPageEvaluate extends TestBase {
     JSHandle resultHandle = page.evaluateHandle("() => ({ toJSON: () => 'string', data: 'data' })");
     assertEquals(mapOf("data", "data", "toJSON", emptyMap()), resultHandle.jsonValue());
   }
+
+  @Test
+  void shouldAliasWindowDocumentAndNode() {
+    Object object = page.evaluate("[window, document, document.body]");
+    assertEquals(asList("ref: <Window>", "ref: <Document>", "ref: <Node>"), object);
+  }
+
+  @Test
+  void shouldWorkForCircularObject() {
+    Object result = page.evaluate("() => {\n" +
+      "    const a = {};\n" +
+      "    a.b = a;\n" +
+      "    return a;\n" +
+      "  }");
+
+    Map<String, Object> map = (Map<String, Object>) result;
+    assertEquals(1, map.size());
+    assertTrue(map == map.get("b"));
+  }
 }
