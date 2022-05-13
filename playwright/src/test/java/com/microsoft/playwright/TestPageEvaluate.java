@@ -345,18 +345,8 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldReturnUndefinedForNonSerializableObjects() {
-    assertEquals(null, page.evaluate("() => window"));
-  }
-
-  @Test
-  void shouldFailForCircularObject() {
-    Object result = page.evaluate("() => {\n" +
-      "  const a = {};\n" +
-      "  const b = { a };\n" +
-      "  a.b = b;\n" +
-      "  return a;\n" +
-      "}");
-    assertNull(result);
+    assertEquals(null, page.evaluate("() => () => {}"));
+    assertEquals("ref: <Window>", page.evaluate("() => window"));
   }
 
   @Test
