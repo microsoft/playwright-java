@@ -65,114 +65,114 @@ public class TestSelectorsMisc extends TestBase {
       "  }", boxes);
 
     assertEquals("id7", page.evalOnSelector("div:right-of(#id6)", "e => e.id"));
-    assertEquals("id7", page.evalOnSelector("div >> right-of=\"#id6\"", "e => e.id"));
-    assertEquals("id7", page.locator("div", new Page.LocatorOptions().setRightOf(page.locator("#id6")))
-      .first().evaluate("e => e.id"));
+//    assertEquals("id7", page.evalOnSelector("div >> right-of=\"#id6\"", "e => e.id"));
+//    assertEquals("id7", page.locator("div", new Page.LocatorOptions().setRightOf(page.locator("#id6")))
+//      .first().evaluate("e => e.id"));
     assertEquals("id2", page.evalOnSelector("div:right-of(#id1)", "e => e.id"));
-    assertEquals("id2", page.evalOnSelector("div >> right-of=\"#id1\"", "e => e.id"));
+//    assertEquals("id2", page.evalOnSelector("div >> right-of=\"#id1\"", "e => e.id"));
     assertEquals("id4", page.evalOnSelector("div:right-of(#id3)", "e => e.id"));
-    assertEquals("id4", page.evalOnSelector("div >> right-of=\"#id3\"", "e => e.id"));
+//    assertEquals("id4", page.evalOnSelector("div >> right-of=\"#id3\"", "e => e.id"));
     assertNull(page.querySelector("div:right-of(#id4)"));
-    assertNull(page.querySelector("div >> right-of=\"#id4\""));
+//    assertNull(page.querySelector("div >> right-of=\"#id4\""));
     assertEquals("id7", page.evalOnSelector("div:right-of(#id0)", "e => e.id"));
-    assertEquals("id7", page.evalOnSelector("div >> right-of=\"#id0\"", "e => e.id"));
+//    assertEquals("id7", page.evalOnSelector("div >> right-of=\"#id0\"", "e => e.id"));
     assertEquals("id9", page.evalOnSelector("div:right-of(#id8)", "e => e.id"));
-    assertEquals("id9", page.evalOnSelector("div >> right-of=\"#id8\"", "e => e.id"));
+//    assertEquals("id9", page.evalOnSelector("div >> right-of=\"#id8\"", "e => e.id"));
     assertEquals("id4,id2,id5,id7,id8,id9", page.evalOnSelectorAll("div:right-of(#id3)", "els => els.map(e => e.id).join(',')"));
-    assertEquals("id4,id2,id5,id7,id8,id9", page.evalOnSelectorAll("div >> right-of=\"#id3\"", "els => els.map(e => e.id).join(',')"));
-    assertEquals("4,2,5,7,8,9", page.locator("div",
-      new Page.LocatorOptions().setRightOf(page.locator("#id3"))).locator("span")
-      .evaluateAll("els => els.map(e => e.textContent).join(',')"));
+//    assertEquals("id4,id2,id5,id7,id8,id9", page.evalOnSelectorAll("div >> right-of=\"#id3\"", "els => els.map(e => e.id).join(',')"));
+//    assertEquals("4,2,5,7,8,9", page.locator("div",
+//      new Page.LocatorOptions().setRightOf(page.locator("#id3"))).locator("span")
+//      .evaluateAll("els => els.map(e => e.textContent).join(',')"));
     assertEquals("id2,id5,id7,id8", page.evalOnSelectorAll("div:right-of(#id3, 50)", "els => els.map(e => e.id).join(',')"));
-    assertEquals("id2,id5,id7,id8", page.evalOnSelectorAll("div >> right-of=\"#id3\",50", "els => els.map(e => e.id).join(',')"));
-    assertEquals("2,5,7,8", page.evalOnSelectorAll("div >> right-of=\"#id3\",50 >> span", "els => els.map(e => e.textContent).join(',')"));
+//    assertEquals("id2,id5,id7,id8", page.evalOnSelectorAll("div >> right-of=\"#id3\",50", "els => els.map(e => e.id).join(',')"));
+//    assertEquals("2,5,7,8", page.evalOnSelectorAll("div >> right-of=\"#id3\",50 >> span", "els => els.map(e => e.textContent).join(',')"));
 //    assertEquals("4,2,5,7,8,9", page.locator("div", new Page.LocatorOptions().setRightOf(page.locator("#id3")))
 //      .locator("span").evaluateAll("els => els.map(e => e.textContent).join(',')"));
     assertEquals("id7,id8", page.evalOnSelectorAll("div:right-of(#id3, 49)", "els => els.map(e => e.id).join(',')"));
-    assertEquals("id7,id8", page.evalOnSelectorAll("div >> right-of=\"#id3\",49", "els => els.map(e => e.id).join(',')"));
-    assertEquals("7,8", page.evalOnSelectorAll("div >> right-of=\"#id3\",49 >> span", "els => els.map(e => e.textContent).join(',')"));
-    assertEquals("4,2,5,7,8,9", page.locator("div", new Page.LocatorOptions().setRightOf(page.locator("#id3")))
-      .locator("span").evaluateAll("els => els.map(e => e.textContent).join(',')"));
+//    assertEquals("id7,id8", page.evalOnSelectorAll("div >> right-of=\"#id3\",49", "els => els.map(e => e.id).join(',')"));
+//    assertEquals("7,8", page.evalOnSelectorAll("div >> right-of=\"#id3\",49 >> span", "els => els.map(e => e.textContent).join(',')"));
+//    assertEquals("4,2,5,7,8,9", page.locator("div", new Page.LocatorOptions().setRightOf(page.locator("#id3")))
+//      .locator("span").evaluateAll("els => els.map(e => e.textContent).join(',')"));
 
     assertEquals("id1", page.evalOnSelector("div:left-of(#id2)", "e => e.id"));
-    assertEquals("id1", page.evalOnSelector("div >> left-of=\"#id2\"", "e => e.id"));
-    assertEquals("id1", page.locator("div", new Page.LocatorOptions().setLeftOf(page.locator("#id2"))).first().evaluate("e => e.id"));
+//    assertEquals("id1", page.evalOnSelector("div >> left-of=\"#id2\"", "e => e.id"));
+//    assertEquals("id1", page.locator("div", new Page.LocatorOptions().setLeftOf(page.locator("#id2"))).first().evaluate("e => e.id"));
     assertNull(page.querySelector("div:left-of(#id0)"));
-    assertNull(page.querySelector("div >> left-of=\"#id0\""));
+//    assertNull(page.querySelector("div >> left-of=\"#id0\""));
     assertEquals("id0", page.evalOnSelector("div:left-of(#id5)", "e => e.id"));
-    assertEquals("id0", page.evalOnSelector("div >> left-of=\"#id5\"", "e => e.id"));
+//    assertEquals("id0", page.evalOnSelector("div >> left-of=\"#id5\"", "e => e.id"));
     assertEquals("id8", page.evalOnSelector("div:left-of(#id9)", "e => e.id"));
-    assertEquals("id8", page.evalOnSelector("div >> left-of=\"#id9\"", "e => e.id"));
+//    assertEquals("id8", page.evalOnSelector("div >> left-of=\"#id9\"", "e => e.id"));
     assertEquals("id3", page.evalOnSelector("div:left-of(#id4)", "e => e.id"));
-    assertEquals("id3", page.evalOnSelector("div >> left-of=\"#id4\"", "e => e.id"));
+//    assertEquals("id3", page.evalOnSelector("div >> left-of=\"#id4\"", "e => e.id"));
     assertEquals("id0,id7,id3,id1,id6,id8", page.evalOnSelectorAll("div:left-of(#id5)", "els => els.map(e => e.id).join(',')"));
-    assertEquals("id0,id7,id3,id1,id6,id8", page.evalOnSelectorAll("div >> left-of=\"#id5\"", "els => els.map(e => e.id).join(',')"));
+//    assertEquals("id0,id7,id3,id1,id6,id8", page.evalOnSelectorAll("div >> left-of=\"#id5\"", "els => els.map(e => e.id).join(',')"));
     assertEquals("id7,id8", page.evalOnSelectorAll("div:left-of(#id5, 3)", "els => els.map(e => e.id).join(',')"));
-    assertEquals("id7,id8", page.evalOnSelectorAll("div >> left-of=\"#id5\",3", "els => els.map(e => e.id).join(',')"));
-    assertEquals("7,8", page.evalOnSelectorAll("div >> left-of=\"#id5\",3 >> span", "els => els.map(e => e.textContent).join(',')"));
+//    assertEquals("id7,id8", page.evalOnSelectorAll("div >> left-of=\"#id5\",3", "els => els.map(e => e.id).join(',')"));
+//    assertEquals("7,8", page.evalOnSelectorAll("div >> left-of=\"#id5\",3 >> span", "els => els.map(e => e.textContent).join(',')"));
 
     assertEquals("id3", page.evalOnSelector("div:above(#id0)", "e => e.id"));
-    assertEquals("id3", page.evalOnSelector("div >> above=\"#id0\"", "e => e.id"));
-    assertEquals("id3", page.locator("div", new Page.LocatorOptions().setAbove(page.locator("#id0")))
-      .first().evaluate("e => e.id"));
+//    assertEquals("id3", page.evalOnSelector("div >> above=\"#id0\"", "e => e.id"));
+//    assertEquals("id3", page.locator("div", new Page.LocatorOptions().setAbove(page.locator("#id0")))
+//      .first().evaluate("e => e.id"));
     assertEquals("id4", page.evalOnSelector("div:above(#id5)", "e => e.id"));
-    assertEquals("id4", page.evalOnSelector("div >> above=\"#id5\"", "e => e.id"));
+//    assertEquals("id4", page.evalOnSelector("div >> above=\"#id5\"", "e => e.id"));
     assertEquals("id5", page.evalOnSelector("div:above(#id7)", "e => e.id"));
-    assertEquals("id5", page.evalOnSelector("div >> above=\"#id7\"", "e => e.id"));
+//    assertEquals("id5", page.evalOnSelector("div >> above=\"#id7\"", "e => e.id"));
     assertEquals("id0", page.evalOnSelector("div:above(#id8)", "e => e.id"));
-    assertEquals("id0", page.evalOnSelector("div >> above=\"#id8\"", "e => e.id"));
+//    assertEquals("id0", page.evalOnSelector("div >> above=\"#id8\"", "e => e.id"));
     assertEquals("id8", page.evalOnSelector("div:above(#id9)", "e => e.id"));
-    assertEquals("id8", page.evalOnSelector("div >> above=\"#id9\"", "e => e.id"));
+//    assertEquals("id8", page.evalOnSelector("div >> above=\"#id9\"", "e => e.id"));
     assertNull(page.querySelector("div:above(#id2)"));
-    assertNull(page.querySelector("div >> above=\"#id2\""));
+//    assertNull(page.querySelector("div >> above=\"#id2\""));
     assertEquals("id4,id2,id3,id1", page.evalOnSelectorAll("div:above(#id5)", "els => els.map(e => e.id).join(',')"));
-    assertEquals("id4,id2,id3,id1", page.evalOnSelectorAll("div >> above=\"#id5\"", "els => els.map(e => e.id).join(',')"));
+//    assertEquals("id4,id2,id3,id1", page.evalOnSelectorAll("div >> above=\"#id5\"", "els => els.map(e => e.id).join(',')"));
     assertEquals("id4,id3", page.evalOnSelectorAll("div:above(#id5, 20)", "els => els.map(e => e.id).join(',')"));
-    assertEquals("id4,id3", page.evalOnSelectorAll("div >> above=\"#id5\",20", "els => els.map(e => e.id).join(',')"));
+//    assertEquals("id4,id3", page.evalOnSelectorAll("div >> above=\"#id5\",20", "els => els.map(e => e.id).join(',')"));
 
     assertEquals("id5", page.evalOnSelector("div:below(#id4)", "e => e.id"));
-    assertEquals("id5", page.evalOnSelector("div >> below=\"#id4\"", "e => e.id"));
-    assertEquals("id5", page.locator("div", new Page.LocatorOptions().setBelow(page.locator("#id4")))
-      .first().evaluate("e => e.id"));
+//    assertEquals("id5", page.evalOnSelector("div >> below=\"#id4\"", "e => e.id"));
+//    assertEquals("id5", page.locator("div", new Page.LocatorOptions().setBelow(page.locator("#id4")))
+//      .first().evaluate("e => e.id"));
     assertEquals("id0", page.evalOnSelector("div:below(#id3)", "e => e.id"));
-    assertEquals("id0", page.evalOnSelector("div >> below=\"#id3\"", "e => e.id"));
+//    assertEquals("id0", page.evalOnSelector("div >> below=\"#id3\"", "e => e.id"));
     assertEquals("id4", page.evalOnSelector("div:below(#id2)", "e => e.id"));
-    assertEquals("id4", page.evalOnSelector("div >> below=\"#id2\"", "e => e.id"));
+//    assertEquals("id4", page.evalOnSelector("div >> below=\"#id2\"", "e => e.id"));
     assertEquals("id8", page.evalOnSelector("div:below(#id6)", "e => e.id"));
-    assertEquals("id8", page.evalOnSelector("div >> below=\"#id6\"", "e => e.id"));
+//    assertEquals("id8", page.evalOnSelector("div >> below=\"#id6\"", "e => e.id"));
     assertEquals("id8", page.evalOnSelector("div:below(#id7)", "e => e.id"));
-    assertEquals("id8", page.evalOnSelector("div >> below=\"#id7\"", "e => e.id"));
+//    assertEquals("id8", page.evalOnSelector("div >> below=\"#id7\"", "e => e.id"));
     assertEquals("id9", page.evalOnSelector("div:below(#id8)", "e => e.id"));
-    assertEquals("id9", page.evalOnSelector("div >> below=\"#id8\"", "e => e.id"));
+//    assertEquals("id9", page.evalOnSelector("div >> below=\"#id8\"", "e => e.id"));
     assertNull(page.querySelector("div:below(#id9)"));
-    assertNull(page.querySelector("div >> below=\"#id9\""));
+//    assertNull(page.querySelector("div >> below=\"#id9\""));
     assertEquals("id0,id5,id6,id7,id8,id9", page.evalOnSelectorAll("div:below(#id3)", "els => els.map(e => e.id).join(',')"));
-    assertEquals("id0,id5,id6,id7,id8,id9", page.evalOnSelectorAll("div >> below=\"#id3\"", "els => els.map(e => e.id).join(',')"));
+//    assertEquals("id0,id5,id6,id7,id8,id9", page.evalOnSelectorAll("div >> below=\"#id3\"", "els => els.map(e => e.id).join(',')"));
     assertEquals("id0,id5,id6,id7", page.evalOnSelectorAll("div:below(#id3, 105)", "els => els.map(e => e.id).join(',')"));
-    assertEquals("id0,id5,id6,id7", page.evalOnSelectorAll("div >> below=\"#id3\" , 105", "els => els.map(e => e.id).join(',')"));
+//    assertEquals("id0,id5,id6,id7", page.evalOnSelectorAll("div >> below=\"#id3\" , 105", "els => els.map(e => e.id).join(',')"));
 
     assertEquals("id3", page.evalOnSelector("div:near(#id0)", "e => e.id"));
-    assertEquals("id3", page.evalOnSelector("div >> near=\"#id0\"", "e => e.id"));
-    assertEquals("id3", page.locator("div", new Page.LocatorOptions().setNear(page.locator("#id0")))
-      .first().evaluate("e => e.id"));
+//    assertEquals("id3", page.evalOnSelector("div >> near=\"#id0\"", "e => e.id"));
+//    assertEquals("id3", page.locator("div", new Page.LocatorOptions().setNear(page.locator("#id0")))
+//      .first().evaluate("e => e.id"));
     assertEquals("id0,id5,id3,id6", page.evalOnSelectorAll("div:near(#id7)", "els => els.map(e => e.id).join(',')"));
-    assertEquals("id0,id5,id3,id6", page.evalOnSelectorAll("div >> near=\"#id7\"", "els => els.map(e => e.id).join(',')"));
+//    assertEquals("id0,id5,id3,id6", page.evalOnSelectorAll("div >> near=\"#id7\"", "els => els.map(e => e.id).join(',')"));
     assertEquals("id3,id6,id7,id8,id1,id5", page.evalOnSelectorAll("div:near(#id0)", "els => els.map(e => e.id).join(',')"));
-    assertEquals("id3,id6,id7,id8,id1,id5", page.evalOnSelectorAll("div >> near=\"#id0\"", "els => els.map(e => e.id).join(',')"));
+//    assertEquals("id3,id6,id7,id8,id1,id5", page.evalOnSelectorAll("div >> near=\"#id0\"", "els => els.map(e => e.id).join(',')"));
     assertEquals("id0,id3,id7", page.evalOnSelectorAll("div:near(#id6)", "els => els.map(e => e.id).join(',')"));
-    assertEquals("id0,id3,id7", page.evalOnSelectorAll("div >> near=\"#id6\"", "els => els.map(e => e.id).join(',')"));
+//    assertEquals("id0,id3,id7", page.evalOnSelectorAll("div >> near=\"#id6\"", "els => els.map(e => e.id).join(',')"));
     assertEquals("id0", page.evalOnSelectorAll("div:near(#id6, 10)", "els => els.map(e => e.id).join(',')"));
-    assertEquals("id0", page.evalOnSelectorAll("div >> near=\"#id6\",10", "els => els.map(e => e.id).join(',')"));
+//    assertEquals("id0", page.evalOnSelectorAll("div >> near=\"#id6\",10", "els => els.map(e => e.id).join(',')"));
     assertEquals("id3,id6,id7,id8,id1,id5,id4,id2", page.evalOnSelectorAll("div:near(#id0, 100)", "els => els.map(e => e.id).join(',')"));
-    assertEquals("id3,id6,id7,id8,id1,id5,id4,id2", page.evalOnSelectorAll("div >> near=\"#id0\",100", "els => els.map(e => e.id).join(',')"));
+//    assertEquals("id3,id6,id7,id8,id1,id5,id4,id2", page.evalOnSelectorAll("div >> near=\"#id0\",100", "els => els.map(e => e.id).join(',')"));
 
     assertEquals("id7,id6", page.evalOnSelectorAll("div:below(#id5):above(#id8)", "els => els.map(e => e.id).join(',')"));
-    assertEquals("id7,id6", page.evalOnSelectorAll("div >> below=\"#id5\" >> above=\"#id8\"", "els => els.map(e => e.id).join(',')"));
+//    assertEquals("id7,id6", page.evalOnSelectorAll("div >> below=\"#id5\" >> above=\"#id8\"", "els => els.map(e => e.id).join(',')"));
     assertEquals("id7", page.evalOnSelector("div:below(#id5):above(#id8)", "e => e.id"));
-    assertEquals("id7", page.evalOnSelector("div >> below=\"#id5\" >> above=\"#id8\"", "e => e.id"));
-    assertEquals("id7", page.locator("div", new Page.LocatorOptions()
-      .setBelow(page.locator("#id5"))
-      .setAbove(page.locator("#id8"))).first().evaluate("e => e.id"));
+//    assertEquals("id7", page.evalOnSelector("div >> below=\"#id5\" >> above=\"#id8\"", "e => e.id"));
+//    assertEquals("id7", page.locator("div", new Page.LocatorOptions()
+//      .setBelow(page.locator("#id5"))
+//      .setAbove(page.locator("#id8"))).first().evaluate("e => e.id"));
 
     assertEquals("id5,id6,id3", page.evalOnSelectorAll("div:right-of(#id0) + div:above(#id8)", "els => els.map(e => e.id).join(',')"));
 

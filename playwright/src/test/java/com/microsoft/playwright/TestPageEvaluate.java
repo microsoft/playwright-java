@@ -345,31 +345,13 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldReturnUndefinedForNonSerializableObjects() {
-    assertEquals(null, page.evaluate("() => window"));
-  }
-
-  @Test
-  void shouldFailForCircularObject() {
-    Object result = page.evaluate("() => {\n" +
-      "  const a = {};\n" +
-      "  const b = { a };\n" +
-      "  a.b = b;\n" +
-      "  return a;\n" +
-      "}");
-    assertNull(result);
+    assertEquals(null, page.evaluate("() => () => {}"));
+    assertEquals("ref: <Window>", page.evaluate("() => window"));
   }
 
   @Test
   void shouldBeAbleToThrowATrickyError() {
-    JSHandle windowHandle = page.evaluateHandle("() => window");
-    String errorText = null;
-    try {
-      windowHandle.jsonValue();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      errorText = e.getMessage();
-    }
-    assertNotNull(errorText);
+    String errorText = "My error";
     try {
       page.evaluate("errorText => {\n" +
         "  throw new Error(errorText);\n" +
@@ -618,5 +600,24 @@ public class TestPageEvaluate extends TestBase {
   void shouldNotUseToJSONInJsonValue() {
     JSHandle resultHandle = page.evaluateHandle("() => ({ toJSON: () => 'string', data: 'data' })");
     assertEquals(mapOf("data", "data", "toJSON", emptyMap()), resultHandle.jsonValue());
+  }
+
+  @Test
+  void shouldAliasWindowDocumentAndNode() {
+    Object object = page.evaluate("[window, document, document.body]");
+    assertEquals(asList("ref: <Window>", "ref: <Document>", "ref: <Node>"), object);
+  }
+
+  @Test
+  void shouldWorkForCircularObject() {
+    Object result = page.evaluate("() => {\n" +
+      "    const a = {};\n" +
+      "    a.b = a;\n" +
+      "    return a;\n" +
+      "  }");
+
+    Map<String, Object> map = (Map<String, Object>) result;
+    assertEquals(1, map.size());
+    assertTrue(map == map.get("b"));
   }
 }

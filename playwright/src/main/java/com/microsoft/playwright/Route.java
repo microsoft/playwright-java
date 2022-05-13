@@ -22,6 +22,8 @@ import java.util.*;
 /**
  * Whenever a network route is set up with {@link Page#route Page.route()} or {@link BrowserContext#route
  * BrowserContext.route()}, the {@code Route} object allows to handle the route.
+ *
+ * <p> Learn more about <a href="https://playwright.dev/java/docs/network">networking</a>.
  */
 public interface Route {
   class ResumeOptions {

@@ -32,11 +32,11 @@ class LocatorImpl implements Locator {
     {
       try {
         addFilter("has", "has");
-        addFilter("leftOf", "left-of");
-        addFilter("rightOf", "right-of");
-        addFilter("above", "above");
-        addFilter("below", "below");
-        addFilter("near", "near");
+//        addFilter("leftOf", "left-of");
+//        addFilter("rightOf", "right-of");
+//        addFilter("above", "above");
+//        addFilter("below", "below");
+//        addFilter("near", "near");
       } catch (NoSuchFieldException e) {
         throw new InternalError(e);
       }
