@@ -50,6 +50,7 @@ public class TestInstall {
     env.put("PLAYWRIGHT_DOWNLOAD_HOST", "https://127.0.0.127");
     // Make sure the browsers are not installed yet by pointing at an empty dir.
     env.put("PLAYWRIGHT_BROWSERS_PATH", tmpDir.toString());
+    env.put("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD", "false");
 
     assertThrows(RuntimeException.class, () -> Driver.ensureDriverInstalled(env, true));
     assertThrows(RuntimeException.class, () -> Driver.ensureDriverInstalled(env, true));
