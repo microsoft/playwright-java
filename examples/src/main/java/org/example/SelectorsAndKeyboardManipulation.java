@@ -16,6 +16,7 @@
 
 package org.example;
 
+import java.nio.file.Paths;
 import com.microsoft.playwright.*;
 
 public class SelectorsAndKeyboardManipulation {
