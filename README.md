@@ -173,7 +173,7 @@ public class InterceptNetworkRequests {
 
 ## Documentation
 
-Check out our [new documentation site](https://playwright.dev/java)!.
+Check out our [new documentation site](https://playwright.dev/java)!
 
 You can also browse [javadoc online](https://www.javadoc.io/doc/com.microsoft.playwright/playwright/latest/index.html).
 
