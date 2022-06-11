@@ -19,6 +19,7 @@ package com.microsoft.playwright.impl;
 import com.microsoft.playwright.Route;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -70,15 +71,22 @@ class Router {
     return routes.size();
   }
 
-  boolean handle(Route route) {
-    for (RouteInfo info : routes) {
+  enum HandleResult { NoMatchingHandler, MatchedHandlerButNotHandled, Handled }
+  HandleResult handle(RouteImpl route) {
+    HandleResult result = HandleResult.NoMatchingHandler;
+    for (Iterator<RouteInfo> it = routes.iterator(); it.hasNext();) {
+      RouteInfo info = it.next();
       if (info.handle(route)) {
         if (info.isDone()) {
-          routes.remove(info);
+          it.remove();
         }
-        return true;
+        if (route.takeLastHandlerGaveUp()) {
+          result = HandleResult.MatchedHandlerButNotHandled;
+          continue;
+        }
+        return HandleResult.Handled;
       }
     }
-    return false;
+    return result;
   }
 }

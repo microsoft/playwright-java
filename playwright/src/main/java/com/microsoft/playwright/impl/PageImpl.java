@@ -198,11 +198,12 @@ public class PageImpl extends ChannelOwner implements Page {
       }
       listeners.notify(EventType.FRAMEDETACHED, frame);
     } else if ("route".equals(event)) {
-      Route route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
-      boolean handled = routes.handle(route);
-      if (handled) {
+      RouteImpl route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
+      Router.HandleResult handled = routes.handle(route);
+      if (handled != Router.HandleResult.NoMatchingHandler) {
         maybeDisableNetworkInterception();
-      } else {
+      }
+      if (handled != Router.HandleResult.Handled) {
         browserContext.handleRoute(route);
       }
     } else if ("video".equals(event)) {

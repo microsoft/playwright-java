@@ -19,6 +19,7 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -78,12 +79,12 @@ public class TestBrowserContextRoute extends TestBase {
     };
     context.route("**/empty.html", handler4);
     page.navigate(server.EMPTY_PAGE);
-    assertEquals(asList(4), intercepted);
+    assertEquals(asList(4, 3, 2, 1), intercepted);
 
     intercepted.clear();
     context.unroute("**/empty.html", handler4);
     page.navigate(server.EMPTY_PAGE);
-    assertEquals(asList(3), intercepted);
+    assertEquals(asList(3, 2, 1), intercepted);
 
     intercepted.clear();
     context.unroute("**/empty.html");
@@ -207,4 +208,96 @@ public class TestBrowserContextRoute extends TestBase {
       assertTrue(e.getMessage().contains("New URL must have same protocol as overridden URL"), e.getMessage());
     }
   }
+
+
+  @Test
+  void shouldChainContinue() {
+    List<Integer> intercepted = new ArrayList<>();
+    context.route("**/empty.html", route -> {
+      intercepted.add(1);
+      route.resume();
+    });
+    context.route("**/empty.html", route -> {
+      intercepted.add(2);
+      route.resume();
+    });
+    context.route("**/empty.html", route -> {
+      intercepted.add(3);
+      route.resume();
+    });
+    page.navigate(server.EMPTY_PAGE);
+    assertEquals(asList(3, 2, 1), intercepted);
+  }
+
+  @Test
+  void shouldNotChainFulfill() {
+    boolean[] failed = {false};
+    context.route("**/empty.html", route -> {
+      failed[0] = true;
+    });
+    context.route("**/empty.html", route -> {
+      route.fulfill(new Route.FulfillOptions().setStatus(200).setBody("fulfilled"));
+    });
+    context.route("**/empty.html", route -> {
+      route.resume();
+    });
+    Response response = page.navigate(server.EMPTY_PAGE);
+    byte[] body = response.body();
+    assertEquals("fulfilled", new String(body, StandardCharsets.UTF_8));
+    assertFalse(failed[0]);
+  }
+
+  @Test
+  void shouldNotChainAbort() {
+    boolean[] failed = {false};
+    context.route("**/empty.html", route -> {
+      failed[0] = true;
+    });
+    context.route("**/empty.html", route -> {
+      route.abort();
+    });
+    context.route("**/empty.html", route -> {
+      route.resume();
+    });
+
+    try {
+      page.navigate(server.EMPTY_PAGE);
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertNotNull(e);
+    }
+    assertFalse(failed[0]);
+  }
+
+  @Test
+  void shouldChainContinueIntoPage() {
+    List<Integer> intercepted = new ArrayList<>();
+    context.route("**/empty.html", route -> {
+      intercepted.add(1);
+      route.resume();
+    });
+    context.route("**/empty.html", route -> {
+      intercepted.add(2);
+      route.resume();
+    });
+    context.route("**/empty.html", route -> {
+      intercepted.add(3);
+      route.resume();
+    });
+    page.route("**/empty.html", route -> {
+      intercepted.add(4);
+      route.resume();
+    });
+    page.route("**/empty.html", route -> {
+      intercepted.add(5);
+      route.resume();
+    });
+    page.route("**/empty.html", route -> {
+      intercepted.add(6);
+      route.resume();
+    });
+    page.navigate(server.EMPTY_PAGE);
+    assertEquals(asList(6, 5, 4, 3, 2, 1), intercepted);
+  }
+
 }
