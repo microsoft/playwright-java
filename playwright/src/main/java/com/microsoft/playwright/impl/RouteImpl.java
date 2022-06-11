@@ -53,6 +53,9 @@ public class RouteImpl extends ChannelOwner implements Route {
 
   @Override
   public void resume() {
+    if (lastHandlerGaveUp) {
+      throw new PlaywrightException("Route is already handled!");
+    }
     lastHandlerGaveUp = true;
   }
 
