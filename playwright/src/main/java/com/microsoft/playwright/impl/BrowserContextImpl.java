@@ -474,12 +474,13 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
   }
 
-  void handleRoute(Route route) {
-    boolean handled = routes.handle(route);
-    if (handled) {
+  void handleRoute(RouteImpl route) {
+    Router.HandleResult handled = routes.handle(route);
+    if (handled != Router.HandleResult.NoMatchingHandler) {
       maybeDisableNetworkInterception();
-    } else {
-      route.resume();
+    }
+    if (handled != Router.HandleResult.Handled){
+      route.resume(null);
     }
   }
 
@@ -490,7 +491,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   protected void handleEvent(String event, JsonObject params) {
     if ("route".equals(event)) {
-      Route route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
+      RouteImpl route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
       handleRoute(route);
     } else if ("page".equals(event)) {
       PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());

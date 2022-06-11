@@ -29,6 +29,7 @@ import java.util.Map;
 
 public class RouteImpl extends ChannelOwner implements Route {
   private boolean handled;
+  private boolean lastHandlerGaveUp;
 
   public RouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -42,6 +43,20 @@ public class RouteImpl extends ChannelOwner implements Route {
       params.addProperty("errorCode", errorCode);
       sendMessageAsync("abort", params);
     });
+  }
+
+  boolean takeLastHandlerGaveUp() {
+    boolean result = lastHandlerGaveUp;
+    lastHandlerGaveUp = false;
+    return result;
+  }
+
+  @Override
+  public void resume() {
+    if (lastHandlerGaveUp) {
+      throw new PlaywrightException("Route is already handled!");
+    }
+    lastHandlerGaveUp = true;
   }
 
   @Override

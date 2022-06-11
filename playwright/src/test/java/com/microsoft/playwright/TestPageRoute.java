@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,12 +84,12 @@ public class TestPageRoute extends TestBase {
     };
     page.route("**/empty.html", handler4);
     page.navigate(server.EMPTY_PAGE);
-    assertEquals(asList(4), intercepted);
+    assertEquals(asList(4, 3, 2, 1), intercepted);
 
     intercepted.clear();
     page.unroute("**/empty.html", handler4);
     page.navigate(server.EMPTY_PAGE);
-    assertEquals(asList(3), intercepted);
+    assertEquals(asList(3, 2, 1), intercepted);
 
     intercepted.clear();
     page.unroute("**/empty.html");
@@ -115,12 +116,12 @@ public class TestPageRoute extends TestBase {
     page.route(predicate, handler3);
 
     page.navigate(server.EMPTY_PAGE);
-    assertEquals(asList(3), intercepted);
+    assertEquals(asList(3, 2, 1), intercepted);
 
     intercepted.clear();
     page.unroute(predicate, handler3);
     page.navigate(server.EMPTY_PAGE);
-    assertEquals(asList(2), intercepted);
+    assertEquals(asList(2, 1), intercepted);
 
     intercepted.clear();
     page.unroute(predicate);
@@ -723,4 +724,91 @@ public class TestPageRoute extends TestBase {
     });
     assertEquals(server.PREFIX, response.headerValue("Access-Control-Allow-Origin"));
   }
+
+  @Test
+  void shouldChainContinue() {
+    List<Integer> intercepted = new ArrayList<>();
+    page.route("**/empty.html", route -> {
+      intercepted.add(1);
+      route.resume();
+    });
+    page.route("**/empty.html", route -> {
+      intercepted.add(2);
+      route.resume();
+    });
+    page.route("**/empty.html", route -> {
+      intercepted.add(3);
+      route.resume();
+    });
+    page.navigate(server.EMPTY_PAGE);
+    assertEquals(asList(3, 2, 1), intercepted);
+  }
+
+  @Test
+  void shouldNotChainFulfill() {
+    boolean[] failed = {false};
+    page.route("**/empty.html", route -> {
+      failed[0] = true;
+    });
+    page.route("**/empty.html", route -> {
+      route.fulfill(new Route.FulfillOptions().setStatus(200).setBody("fulfilled"));
+    });
+    page.route("**/empty.html", route -> {
+      route.resume();
+    });
+    Response response = page.navigate(server.EMPTY_PAGE);
+    byte[] body = response.body();
+    assertEquals("fulfilled", new String(body, StandardCharsets.UTF_8));
+    assertFalse(failed[0]);
+  }
+
+  @Test
+  void shouldNotChainAbort() {
+    boolean[] failed = {false};
+    page.route("**/empty.html", route -> {
+      failed[0] = true;
+    });
+    page.route("**/empty.html", route -> {
+      route.abort();
+    });
+    page.route("**/empty.html", route -> {
+      route.resume();
+    });
+    try {
+      page.navigate(server.EMPTY_PAGE);
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertNotNull(e);
+    }
+    assertFalse(failed[0]);
+  }
+
+//  @Test
+//  void shouldContinueAfterException() {
+//    page.route("**/empty.html", route -> {
+//      route.resume();
+//    });
+//    page.route("**/empty.html", route -> {
+//      try {
+//        route.fulfill(new Route.FulfillOptions().setHarPath(Paths.get("file")).setResponse(""));
+//      } catch (PlaywrightException e) {
+//        route.resume();
+//      }
+//    });
+//    page.navigate(server.EMPTY_PAGE);
+//  }
+
+  @Test
+  void shouldChainOnce() {
+    page.route("**/empty.html", route -> {
+      route.fulfill(new Route.FulfillOptions().setStatus(200).setBody("fulfilled one"));
+    }, new Page.RouteOptions().setTimes(1));
+    page.route("**/empty.html", route -> {
+      route.resume();
+    }, new Page.RouteOptions().setTimes(1));
+    Response response = page.navigate(server.EMPTY_PAGE);
+    byte[] body = response.body();
+    assertEquals("fulfilled one", new String(body, StandardCharsets.UTF_8));
+  }
+
 }
