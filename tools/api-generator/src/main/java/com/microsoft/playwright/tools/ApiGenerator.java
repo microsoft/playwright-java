@@ -944,7 +944,7 @@ class Interface extends TypeDefinition {
     if (asList("Page", "Frame", "BrowserContext", "WebSocket").contains(jsonName)) {
       output.add("import java.util.function.Predicate;");
     }
-    if (asList("Page", "Frame", "FrameLocator", "Locator", "BrowserContext", "PageAssertions", "LocatorAssertions").contains(jsonName)) {
+    if (asList("Page", "Frame", "FrameLocator", "Locator", "Browser", "BrowserType", "BrowserContext", "PageAssertions", "LocatorAssertions").contains(jsonName)) {
       output.add("import java.util.regex.Pattern;");
     }
     if ("PlaywrightAssertions".equals(jsonName)) {

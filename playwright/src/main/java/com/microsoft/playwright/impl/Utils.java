@@ -180,7 +180,14 @@ class Utils {
       }
       params.add("streams", jsonStreams);
     } else {
-      params.add("localPaths", toJsonArray(files));
+      Path[] absolute = Arrays.stream(files).map(f -> {
+        try {
+          return f.toRealPath();
+        } catch (IOException e) {
+          throw new PlaywrightException("Cannot get absolute file path", e);
+        }
+      }).toArray(Path[]::new);
+      params.add("localPaths", toJsonArray(absolute));
     }
   }
 

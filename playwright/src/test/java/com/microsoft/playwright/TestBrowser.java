@@ -97,4 +97,9 @@ public class TestBrowser extends TestBase {
     assertNotNull(browser);
     browser.close();
   }
+
+  @Test
+  void shouldReturnBrowserType() {
+    assertEquals(browserType, browser.browserType());
+  }
 }

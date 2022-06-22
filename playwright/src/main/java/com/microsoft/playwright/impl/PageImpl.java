@@ -973,6 +973,11 @@ public class PageImpl extends ChannelOwner implements Page {
     route(new UrlMatcher(url), handler, options);
   }
 
+  @Override
+  public void routeFromHAR(Path har, RouteFromHAROptions options) {
+    // TODO:
+  }
+
   private void route(UrlMatcher matcher, Consumer<Route> handler, RouteOptions options) {
     withLogging("Page.route", () -> {
       routes.add(matcher, handler, options == null ? null : options.times);

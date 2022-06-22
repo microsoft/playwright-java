@@ -52,17 +52,17 @@ public class RouteImpl extends ChannelOwner implements Route {
   }
 
   @Override
-  public void resume() {
+  public void resume(ResumeOptions options) {
+    startHandling();
+    withLogging("Route.resume", () -> resumeImpl(options));
+  }
+
+  @Override
+  public void fallback(FallbackOptions options) {
     if (lastHandlerGaveUp) {
       throw new PlaywrightException("Route is already handled!");
     }
     lastHandlerGaveUp = true;
-  }
-
-  @Override
-  public void resume(ResumeOptions options) {
-    startHandling();
-    withLogging("Route.resume", () -> resumeImpl(options));
   }
 
   private void resumeImpl(ResumeOptions options) {

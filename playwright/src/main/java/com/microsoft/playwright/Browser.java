@@ -20,6 +20,7 @@ import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 /**
  * A Browser is created via {@link BrowserType#launch BrowserType.launch()}. An example of using a {@code Browser} to create a
@@ -153,6 +154,7 @@ public interface Browser extends AutoCloseable {
      * BrowserContext.close()} for the HAR to be saved.
      */
     public Path recordHarPath;
+    public Object recordHarUrlFilter;
     /**
      * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
      * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
@@ -175,6 +177,15 @@ public interface Browser extends AutoCloseable {
      */
     public ScreenSize screenSize;
     /**
+     * Whether to allow sites to register Service workers. Defaults to {@code "allow"}.
+     * <ul>
+     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can be
+     * registered.</li>
+     * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
+     * </ul>
+     */
+    public ServiceWorkerPolicy serviceWorkers;
+    /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
      * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
@@ -186,7 +197,7 @@ public interface Browser extends AutoCloseable {
      */
     public Path storageStatePath;
     /**
-     * It specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * If specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
      * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
      * more about the strict mode.
      */
@@ -379,6 +390,14 @@ public interface Browser extends AutoCloseable {
       this.recordHarPath = recordHarPath;
       return this;
     }
+    public NewContextOptions setRecordHarUrlFilter(String recordHarUrlFilter) {
+      this.recordHarUrlFilter = recordHarUrlFilter;
+      return this;
+    }
+    public NewContextOptions setRecordHarUrlFilter(Pattern recordHarUrlFilter) {
+      this.recordHarUrlFilter = recordHarUrlFilter;
+      return this;
+    }
     /**
      * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
      * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
@@ -428,6 +447,18 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
+     * Whether to allow sites to register Service workers. Defaults to {@code "allow"}.
+     * <ul>
+     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can be
+     * registered.</li>
+     * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
+     * </ul>
+     */
+    public NewContextOptions setServiceWorkers(ServiceWorkerPolicy serviceWorkers) {
+      this.serviceWorkers = serviceWorkers;
+      return this;
+    }
+    /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
      * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
@@ -445,7 +476,7 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * It specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * If specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
      * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
      * more about the strict mode.
      */
@@ -581,6 +612,7 @@ public interface Browser extends AutoCloseable {
      * BrowserContext.close()} for the HAR to be saved.
      */
     public Path recordHarPath;
+    public Object recordHarUrlFilter;
     /**
      * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
      * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
@@ -603,6 +635,15 @@ public interface Browser extends AutoCloseable {
      */
     public ScreenSize screenSize;
     /**
+     * Whether to allow sites to register Service workers. Defaults to {@code "allow"}.
+     * <ul>
+     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can be
+     * registered.</li>
+     * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
+     * </ul>
+     */
+    public ServiceWorkerPolicy serviceWorkers;
+    /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
      * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
@@ -614,7 +655,7 @@ public interface Browser extends AutoCloseable {
      */
     public Path storageStatePath;
     /**
-     * It specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * If specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
      * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
      * more about the strict mode.
      */
@@ -807,6 +848,14 @@ public interface Browser extends AutoCloseable {
       this.recordHarPath = recordHarPath;
       return this;
     }
+    public NewPageOptions setRecordHarUrlFilter(String recordHarUrlFilter) {
+      this.recordHarUrlFilter = recordHarUrlFilter;
+      return this;
+    }
+    public NewPageOptions setRecordHarUrlFilter(Pattern recordHarUrlFilter) {
+      this.recordHarUrlFilter = recordHarUrlFilter;
+      return this;
+    }
     /**
      * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
      * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
@@ -856,6 +905,18 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
+     * Whether to allow sites to register Service workers. Defaults to {@code "allow"}.
+     * <ul>
+     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can be
+     * registered.</li>
+     * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
+     * </ul>
+     */
+    public NewPageOptions setServiceWorkers(ServiceWorkerPolicy serviceWorkers) {
+      this.serviceWorkers = serviceWorkers;
+      return this;
+    }
+    /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
      * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
@@ -873,7 +934,7 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * It specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * If specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
      * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
      * more about the strict mode.
      */
@@ -947,6 +1008,10 @@ public interface Browser extends AutoCloseable {
       return this;
     }
   }
+  /**
+   * Get the browser type (chromium, firefox or webkit) that the browser belongs to.
+   */
+  BrowserType browserType();
   /**
    * In case this browser is obtained using {@link BrowserType#launch BrowserType.launch()}, closes the browser and all of
    * its pages (if any were opened).

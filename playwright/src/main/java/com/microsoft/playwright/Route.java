@@ -80,6 +80,62 @@ public interface Route {
       return this;
     }
   }
+  class FallbackOptions {
+    /**
+     * If set changes the request HTTP headers. Header values will be converted to a string.
+     */
+    public Map<String, String> headers;
+    /**
+     * If set changes the request method (e.g. GET or POST)
+     */
+    public String method;
+    /**
+     * If set changes the post data of request
+     */
+    public Object postData;
+    /**
+     * If set changes the request URL. New URL must have same protocol as original one. Changing the URL won't affect the route
+     * matching, all the routes are matched using the original request URL.
+     */
+    public String url;
+
+    /**
+     * If set changes the request HTTP headers. Header values will be converted to a string.
+     */
+    public FallbackOptions setHeaders(Map<String, String> headers) {
+      this.headers = headers;
+      return this;
+    }
+    /**
+     * If set changes the request method (e.g. GET or POST)
+     */
+    public FallbackOptions setMethod(String method) {
+      this.method = method;
+      return this;
+    }
+    /**
+     * If set changes the post data of request
+     */
+    public FallbackOptions setPostData(String postData) {
+      this.postData = postData;
+      return this;
+    }
+    /**
+     * If set changes the post data of request
+     */
+    public FallbackOptions setPostData(byte[] postData) {
+      this.postData = postData;
+      return this;
+    }
+    /**
+     * If set changes the request URL. New URL must have same protocol as original one. Changing the URL won't affect the route
+     * matching, all the routes are matched using the original request URL.
+     */
+    public FallbackOptions setUrl(String url) {
+      this.url = url;
+      return this;
+    }
+  }
   class FulfillOptions {
     /**
      * Optional response body as text.
@@ -200,8 +256,8 @@ public interface Route {
    * page.route("**\/*", route -> {
    *   // Override headers
    *   Map<String, String> headers = new HashMap<>(route.request().headers());
-   *   headers.put("foo", "bar"); // set "foo" header
-   *   headers.remove("origin"); // remove "origin" header
+   *   headers.put("foo", "foo-value"); // set "foo" header
+   *   headers.remove("bar"); // remove "bar" header
    *   route.resume(new Route.ResumeOptions().setHeaders(headers));
    * });
    * }</pre>
@@ -215,13 +271,133 @@ public interface Route {
    * page.route("**\/*", route -> {
    *   // Override headers
    *   Map<String, String> headers = new HashMap<>(route.request().headers());
-   *   headers.put("foo", "bar"); // set "foo" header
-   *   headers.remove("origin"); // remove "origin" header
+   *   headers.put("foo", "foo-value"); // set "foo" header
+   *   headers.remove("bar"); // remove "bar" header
    *   route.resume(new Route.ResumeOptions().setHeaders(headers));
    * });
    * }</pre>
    */
   void resume(ResumeOptions options);
+  /**
+   * When several routes match the given pattern, they run in the order opposite to their registration. That way the last
+   * registered route can always override all the previos ones. In the example below, request will be handled by the
+   * bottom-most handler first, then it'll fall back to the previous one and in the end will be aborted by the first
+   * registered route.
+   * <pre>{@code
+   * page.route("**\/*", route -> {
+   *   // Runs last.
+   *   route.abort();
+   * });
+   *
+   * page.route("**\/*", route -> {
+   *   // Runs second.
+   *   route.fallback();
+   * });
+   *
+   * page.route("**\/*", route -> {
+   *   // Runs first.
+   *   route.fallback();
+   * });
+   * }</pre>
+   *
+   * <p> Registering multiple routes is useful when you want separate handlers to handle different kinds of requests, for example
+   * API calls vs page resources or GET requests vs POST requests as in the example below.
+   * <pre>{@code
+   * // Handle GET requests.
+   * page.route("**\/*", route -> {
+   *   if (!route.request().method().equals("GET")) {
+   *     route.fallback();
+   *     return;
+   *   }
+   *   // Handling GET only.
+   *   // ...
+   * });
+   *
+   * // Handle POST requests.
+   * page.route("**\/*", route -> {
+   *   if (!route.request().method().equals("POST")) {
+   *     route.fallback();
+   *     return;
+   *   }
+   *   // Handling POST only.
+   *   // ...
+   * });
+   * }</pre>
+   *
+   * <p> One can also modify request while falling back to the subsequent handler, that way intermediate route handler can modify
+   * url, method, headers and postData of the request.
+   * <pre>{@code
+   * page.route("**\/*", route -> {
+   *   // Override headers
+   *   Map<String, String> headers = new HashMap<>(route.request().headers());
+   *   headers.put("foo", "foo-value"); // set "foo" header
+   *   headers.remove("bar"); // remove "bar" header
+   *   route.fallback(new Route.ResumeOptions().setHeaders(headers));
+   * });
+   * }</pre>
+   */
+  default void fallback() {
+    fallback(null);
+  }
+  /**
+   * When several routes match the given pattern, they run in the order opposite to their registration. That way the last
+   * registered route can always override all the previos ones. In the example below, request will be handled by the
+   * bottom-most handler first, then it'll fall back to the previous one and in the end will be aborted by the first
+   * registered route.
+   * <pre>{@code
+   * page.route("**\/*", route -> {
+   *   // Runs last.
+   *   route.abort();
+   * });
+   *
+   * page.route("**\/*", route -> {
+   *   // Runs second.
+   *   route.fallback();
+   * });
+   *
+   * page.route("**\/*", route -> {
+   *   // Runs first.
+   *   route.fallback();
+   * });
+   * }</pre>
+   *
+   * <p> Registering multiple routes is useful when you want separate handlers to handle different kinds of requests, for example
+   * API calls vs page resources or GET requests vs POST requests as in the example below.
+   * <pre>{@code
+   * // Handle GET requests.
+   * page.route("**\/*", route -> {
+   *   if (!route.request().method().equals("GET")) {
+   *     route.fallback();
+   *     return;
+   *   }
+   *   // Handling GET only.
+   *   // ...
+   * });
+   *
+   * // Handle POST requests.
+   * page.route("**\/*", route -> {
+   *   if (!route.request().method().equals("POST")) {
+   *     route.fallback();
+   *     return;
+   *   }
+   *   // Handling POST only.
+   *   // ...
+   * });
+   * }</pre>
+   *
+   * <p> One can also modify request while falling back to the subsequent handler, that way intermediate route handler can modify
+   * url, method, headers and postData of the request.
+   * <pre>{@code
+   * page.route("**\/*", route -> {
+   *   // Override headers
+   *   Map<String, String> headers = new HashMap<>(route.request().headers());
+   *   headers.put("foo", "foo-value"); // set "foo" header
+   *   headers.remove("bar"); // remove "bar" header
+   *   route.fallback(new Route.ResumeOptions().setHeaders(headers));
+   * });
+   * }</pre>
+   */
+  void fallback(FallbackOptions options);
   /**
    * Fulfills route's request with given response.
    *

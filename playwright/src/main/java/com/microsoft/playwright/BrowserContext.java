@@ -174,6 +174,59 @@ public interface BrowserContext extends AutoCloseable {
       return this;
     }
   }
+  class RouteFromHAROptions {
+    /**
+     * <ul>
+     * <li> If set to 'abort' any request not found in the HAR file will be aborted.</li>
+     * <li> If set to 'fallback' falls through to the next route handler in the handler chain.</li>
+     * </ul>
+     *
+     * <p> Defaults to abort.
+     */
+    public HarNotFound notFound;
+    /**
+     * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
+     * will be surved from the HAR file. If not specified, all requests are served from the HAR file.
+     */
+    public Object url;
+
+    /**
+     * <ul>
+     * <li> If set to 'abort' any request not found in the HAR file will be aborted.</li>
+     * <li> If set to 'fallback' falls through to the next route handler in the handler chain.</li>
+     * </ul>
+     *
+     * <p> Defaults to abort.
+     */
+    public RouteFromHAROptions setNotFound(HarNotFound notFound) {
+      this.notFound = notFound;
+      return this;
+    }
+    /**
+     * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
+     * will be surved from the HAR file. If not specified, all requests are served from the HAR file.
+     */
+    public RouteFromHAROptions setUrl(String url) {
+      this.url = url;
+      return this;
+    }
+    /**
+     * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
+     * will be surved from the HAR file. If not specified, all requests are served from the HAR file.
+     */
+    public RouteFromHAROptions setUrl(Pattern url) {
+      this.url = url;
+      return this;
+    }
+    /**
+     * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
+     * will be surved from the HAR file. If not specified, all requests are served from the HAR file.
+     */
+    public RouteFromHAROptions setUrl(Predicate<String> url) {
+      this.url = url;
+      return this;
+    }
+  }
   class StorageStateOptions {
     /**
      * The file path to save the storage state to. If {@code path} is a relative path, then it is resolved relative to current
@@ -553,9 +606,9 @@ public interface BrowserContext extends AutoCloseable {
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
-   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * <p> <strong>NOTE:</strong> {@link BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by Service Worker. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
-   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
    *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
@@ -605,9 +658,9 @@ public interface BrowserContext extends AutoCloseable {
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
-   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * <p> <strong>NOTE:</strong> {@link BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by Service Worker. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
-   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
    *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
@@ -655,9 +708,9 @@ public interface BrowserContext extends AutoCloseable {
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
-   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * <p> <strong>NOTE:</strong> {@link BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by Service Worker. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
-   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
    *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
@@ -707,9 +760,9 @@ public interface BrowserContext extends AutoCloseable {
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
-   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * <p> <strong>NOTE:</strong> {@link BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by Service Worker. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
-   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
    *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
@@ -757,9 +810,9 @@ public interface BrowserContext extends AutoCloseable {
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
-   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * <p> <strong>NOTE:</strong> {@link BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by Service Worker. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
-   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
    *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
@@ -809,9 +862,9 @@ public interface BrowserContext extends AutoCloseable {
    * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
    * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
-   * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
+   * <p> <strong>NOTE:</strong> {@link BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by Service Worker. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
-   * using request interception. Via {@code await context.addInitScript(() => delete window.navigator.serviceWorker);}
+   * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
    *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
@@ -855,6 +908,32 @@ public interface BrowserContext extends AutoCloseable {
    * @param handler handler function to route the request.
    */
   void route(Predicate<String> url, Consumer<Route> handler, RouteOptions options);
+  /**
+   * If specified the network requests that are made in the context will be served from the HAR file. Read more about <a
+   * href="https://playwright.dev/java/docs/network#replaying-from-har">Replaying from HAR</a>.
+   *
+   * <p> Playwright will not serve requests intercepted by Service Worker from the HAR file. See <a
+   * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
+   * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   *
+   * @param har Path to a <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> file with prerecorded network data. If {@code path}
+   * is a relative path, then it is resolved relative to the current working directory.
+   */
+  default void routeFromHAR(Path har) {
+    routeFromHAR(har, null);
+  }
+  /**
+   * If specified the network requests that are made in the context will be served from the HAR file. Read more about <a
+   * href="https://playwright.dev/java/docs/network#replaying-from-har">Replaying from HAR</a>.
+   *
+   * <p> Playwright will not serve requests intercepted by Service Worker from the HAR file. See <a
+   * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
+   * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   *
+   * @param har Path to a <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> file with prerecorded network data. If {@code path}
+   * is a relative path, then it is resolved relative to the current working directory.
+   */
+  void routeFromHAR(Path har, RouteFromHAROptions options);
   /**
    * This setting will change the default maximum navigation time for the following methods and related shortcuts:
    * <ul>

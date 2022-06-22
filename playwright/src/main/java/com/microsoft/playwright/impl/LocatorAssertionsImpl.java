@@ -256,6 +256,28 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   }
 
   @Override
+  public void hasValues(String[] values, HasValuesOptions options) {
+    List<ExpectedTextValue> list = new ArrayList<>();
+    for (String text : values) {
+      ExpectedTextValue expected = new ExpectedTextValue();
+      expected.string = text;
+      list.add(expected);
+    }
+    expectImpl("to.have.values", list, values, "Locator expected to have values", convertType(options, FrameExpectOptions.class));
+  }
+
+  @Override
+  public void hasValues(Pattern[] patterns, HasValuesOptions options) {
+    List<ExpectedTextValue> list = new ArrayList<>();
+    for (Pattern pattern : patterns) {
+      ExpectedTextValue expected = expectedRegex(pattern);
+      expected.matchSubstring = true;
+      list.add(expected);
+    }
+    expectImpl("to.have.values", list, patterns, "Locator expected to have values matching regex", convertType(options, FrameExpectOptions.class));
+  }
+
+  @Override
   public void isChecked(IsCheckedOptions options) {
     String expression = (options != null && options.checked != null && !options.checked) ? "to.be.unchecked" : "to.be.checked";
     expectTrue(expression, "Locator expected to be checked", convertType(options, FrameExpectOptions.class));

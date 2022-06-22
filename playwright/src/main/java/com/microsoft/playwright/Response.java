@@ -40,6 +40,11 @@ public interface Response {
    */
   Frame frame();
   /**
+   * Indicates whether this Response was fullfilled by a Service Worker's Fetch Handler (i.e. via <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/FetchEvent/respondWith">FetchEvent.respondWith</a>).
+   */
+  boolean fromServiceWorker();
+  /**
    * **DEPRECATED** Incomplete list of headers as seen by the rendering engine. Use {@link Response#allHeaders
    * Response.allHeaders()} instead.
    */
