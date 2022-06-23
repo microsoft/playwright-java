@@ -28,19 +28,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TestBrowserContextLocale extends TestBase {
   @Test
   void shouldAffectAcceptLanguageHeader() throws ExecutionException, InterruptedException {
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("fr-CH"));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("fr-FR"));
     Page page = context.newPage();
     Future<Server.Request> request = server.futureRequest("/empty.html");
     page.navigate(server.EMPTY_PAGE);
-    assertEquals("fr-CH", request.get().headers.get("accept-language").get(0).substring(0, 5));
+    assertEquals("fr-FR", request.get().headers.get("accept-language").get(0).substring(0, 5));
     context.close();
   }
 
   @Test
   void shouldAffectNavigatorLanguage() {
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("fr-CH"));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("fr-FR"));
     Page page = context.newPage();
-    assertEquals("fr-CH", page.evaluate("() => navigator.language"));
+    assertEquals("fr-FR", page.evaluate("() => navigator.language"));
     context.close();
   }
 
@@ -55,7 +55,7 @@ public class TestBrowserContextLocale extends TestBase {
       context.close();
     }
     {
-      BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("fr-CH"));
+      BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("fr-FR"));
       Page page = context.newPage();
       page.navigate(server.EMPTY_PAGE);
       assertEquals("1 000 000,5", page.evaluate("() => (1000000.50).toLocaleString().replace(/\\s/g, ' ')"));
@@ -87,7 +87,7 @@ public class TestBrowserContextLocale extends TestBase {
 
   @Test
   void shouldFormatNumberInPopups() {
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("fr-CH"));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("fr-FR"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     Page popup = page.waitForPopup(() -> page.evaluate(
@@ -100,14 +100,14 @@ public class TestBrowserContextLocale extends TestBase {
 
   @Test
   void shouldAffectNavigatorLanguageInPopups() {
-    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("fr-CH"));
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale("fr-FR"));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
     Page popup = page.waitForPopup(() -> page.evaluate(
       "url => window.open(url)", server.PREFIX + "/formatted-number.html"));
     popup.waitForLoadState(LoadState.DOMCONTENTLOADED);
     Object result = popup.evaluate("window.initialNavigatorLanguage");
-    assertEquals("fr-CH", result);
+    assertEquals("fr-FR", result);
     context.close();
   }
 
@@ -155,7 +155,7 @@ public class TestBrowserContextLocale extends TestBase {
       defaultLocale = getContextLocale.apply(context);
       context.close();
     }
-    String localeOverride = "ru-RU".equals(defaultLocale) ? "de-DE" : "ru-RU";
+    String localeOverride = "es-MX".equals(defaultLocale) ? "de-DE" : "es-MX";
     {
       BrowserContext context = browser.newContext(new Browser.NewContextOptions().setLocale(localeOverride));
       assertEquals(localeOverride, getContextLocale.apply(context));
