@@ -38,11 +38,11 @@ class Router {
       this.times = times;
     }
 
-    boolean handle(Route route) {
+    boolean handle(RouteImpl route) {
       if (times != null && times <= 0) {
         return false;
       }
-      if (!matcher.test(route.request().url())) {
+      if (!matcher.test(route.request().originalUrl())) {
         return false;
       }
       if (times != null) {
@@ -80,11 +80,10 @@ class Router {
         if (info.isDone()) {
           it.remove();
         }
-        if (route.takeLastHandlerGaveUp()) {
-          result = HandleResult.MatchedHandlerButNotHandled;
-          continue;
+        if (route.isHandled()) {
+          return HandleResult.Handled;
         }
-        return HandleResult.Handled;
+        result = HandleResult.MatchedHandlerButNotHandled;
       }
     }
     return result;

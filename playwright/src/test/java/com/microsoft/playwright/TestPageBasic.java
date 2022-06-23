@@ -164,6 +164,24 @@ public class TestPageBasic extends TestBase {
     page.waitForLoadState(DOMCONTENTLOADED);
   }
 
+  @Test
+  void shouldPassSelfAsArgumentToDomcontentloadedEvent() {
+    Page[] eventPage = {null};
+    page.onDOMContentLoaded(p -> eventPage[0] = p);
+    page.navigate("about:blank");
+    page.waitForLoadState(DOMCONTENTLOADED);
+    assertEquals(page, eventPage[0]);
+  }
+
+  @Test
+  void shouldPassSelfAsArgumentToLoadEvent() {
+    Page[] eventPage = {null};
+    page.onLoad(p -> eventPage[0] = p);
+    page.navigate("about:blank");
+    page.waitForLoadState(LOAD);
+    assertEquals(page, eventPage[0]);
+  }
+
   // TODO: downloads
   void shouldFailWithErrorUponDisconnect() {
   }

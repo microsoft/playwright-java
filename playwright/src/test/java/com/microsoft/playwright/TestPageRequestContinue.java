@@ -18,10 +18,52 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import java.io.OutputStreamWriter;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPageRequestContinue extends TestBase {
+  @Test
+  void shouldDeleteHeaderWithUndefinedValue() throws ExecutionException, InterruptedException {
+    // https://github.com/microsoft/playwright/issues/13106
+    page.navigate(server.PREFIX + "/empty.html");
+    Future<Server.Request> serverRequest = server.futureRequest("/something");
+    server.setRoute("/something", exchange -> {
+      exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+      exchange.sendResponseHeaders(200, 0);
+      try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write("done");
+      }
+    });
+
+    Request[] interceptedRequest = {null};
+    page.route(server.PREFIX + "/something", route -> {
+      interceptedRequest[0] = route.request();
+      Map<String, String> headers = route.request().allHeaders();
+      headers.remove("foo");
+      route.resume(new Route.ResumeOptions().setHeaders(headers));
+    });
+
+    Object text = page.evaluate("async url => {\n" +
+      "      const data = await fetch(url, {\n" +
+      "        headers: {\n" +
+      "          foo: 'a',\n" +
+      "          bar: 'b',\n" +
+      "        }\n" +
+      "      });\n" +
+      "      return data.text();\n" +
+      "    }", server.PREFIX + "/something");
+
+    assertEquals("done", text);
+    assertNull(interceptedRequest[0].headers().get("foo"));
+    assertNull(serverRequest.get().headers.get("foo"));
+    assertEquals(asList("b"), serverRequest.get().headers.get("bar"));
+  }
+
   @Test
   void shouldNotThrowWhenContinuingAfterPageIsClosed() {
     boolean[] done = {false};

@@ -175,10 +175,6 @@ public class PageImpl extends ChannelOwner implements Page {
           }
         }
       }
-    } else if ("load".equals(event)) {
-      listeners.notify(EventType.LOAD, this);
-    } else if ("domcontentloaded".equals(event)) {
-      listeners.notify(EventType.DOMCONTENTLOADED, this);
     } else if ("frameAttached".equals(event)) {
       String guid = params.getAsJsonObject("frame").get("guid").getAsString();
       FrameImpl frame = connection.getExistingObject(guid);

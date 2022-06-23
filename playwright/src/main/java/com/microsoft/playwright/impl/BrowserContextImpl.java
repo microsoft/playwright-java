@@ -485,7 +485,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       maybeDisableNetworkInterception();
     }
     if (handled != Router.HandleResult.Handled){
-      route.resume(null);
+      route.resume();
     }
   }
 

@@ -17,6 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.Frame;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Route;
 
@@ -27,9 +28,10 @@ import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static com.microsoft.playwright.impl.Utils.convertType;
+
 public class RouteImpl extends ChannelOwner implements Route {
   private boolean handled;
-  private boolean lastHandlerGaveUp;
 
   public RouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -45,53 +47,67 @@ public class RouteImpl extends ChannelOwner implements Route {
     });
   }
 
-  boolean takeLastHandlerGaveUp() {
-    boolean result = lastHandlerGaveUp;
-    lastHandlerGaveUp = false;
-    return result;
+  boolean isHandled() {
+    return handled;
   }
 
   @Override
   public void resume(ResumeOptions options) {
     startHandling();
-    withLogging("Route.resume", () -> resumeImpl(options));
+    applyOverrides(convertType(options, FallbackOptions.class));
+    withLogging("Route.resume", () -> resumeImpl(request().fallbackOverridesForResume()));
   }
 
   @Override
   public void fallback(FallbackOptions options) {
-    if (lastHandlerGaveUp) {
+    if (handled) {
       throw new PlaywrightException("Route is already handled!");
     }
-    lastHandlerGaveUp = true;
+    applyOverrides(options);
   }
 
-  private void resumeImpl(ResumeOptions options) {
+  private void applyOverrides(FallbackOptions options) {
     if (options == null) {
-      options = new ResumeOptions();
+      return;
     }
-    JsonObject params = new JsonObject();
-    if (options.url != null) {
-      params.addProperty("url", options.url);
-    }
-    if (options.method != null) {
-      params.addProperty("method", options.method);
-    }
-    if (options.headers != null) {
-      params.add("headers", Serialization.toProtocol(options.headers));
-    }
+    RequestImpl.FallbackOverrides overrides = new RequestImpl.FallbackOverrides();
+    overrides.url = options.url;
+    overrides.method = options.method;
+    overrides.headers = options.headers;
     if (options.postData != null) {
-      byte[] bytes = null;
-      if (options.postData instanceof byte[]) {
-        bytes = (byte[]) options.postData;
-      } else if (options.postData instanceof String) {
-        bytes = ((String) options.postData).getBytes(StandardCharsets.UTF_8);
-      } else {
-        throw new PlaywrightException("postData must be either String or byte[], found: " + options.postData.getClass().getName());
+      overrides.postData = getPostDataBytes(options.postData);
+    }
+    request().applyFallbackOverrides(overrides);
+  }
+
+  private void resumeImpl(RequestImpl.FallbackOverrides options) {
+    JsonObject params = new JsonObject();
+    if (options != null) {
+      if (options.url != null) {
+        params.addProperty("url", options.url);
       }
-      String base64 = Base64.getEncoder().encodeToString(bytes);
-      params.addProperty("postData", base64);
+      if (options.method != null) {
+        params.addProperty("method", options.method);
+      }
+      if (options.headers != null) {
+        params.add("headers", Serialization.toProtocol(options.headers));
+      }
+      if (options.postData != null) {
+        String base64 = Base64.getEncoder().encodeToString(options.postData);
+        params.addProperty("postData", base64);
+      }
     }
     sendMessageAsync("continue", params);
+  }
+
+  private static byte[] getPostDataBytes(Object postData) {
+    if (postData instanceof byte[]) {
+      return (byte[]) postData;
+    }
+    if (postData instanceof String) {
+      return ((String) postData).getBytes(StandardCharsets.UTF_8);
+    }
+    throw new PlaywrightException("postData must be either String or byte[], found: " + postData.getClass().getName());
   }
 
   @Override

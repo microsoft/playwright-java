@@ -42,6 +42,14 @@ public class RequestImpl extends ChannelOwner implements Request {
   String failure;
   Timing timing;
   boolean didFailOrFinish;
+  private FallbackOverrides fallbackOverrides;
+
+  static class FallbackOverrides {
+    String url;
+    String method;
+    byte[] postData;
+    Map<String, String> headers;
+  }
 
   RequestImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -75,6 +83,9 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public Map<String, String> headers() {
+    if (fallbackOverrides != null && fallbackOverrides.headers != null) {
+      return new RawHeaders(Utils.toHeadersList(fallbackOverrides.headers)).headers();
+    }
     return headers.headers();
   }
 
@@ -95,19 +106,26 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public String method() {
+    if (fallbackOverrides != null && fallbackOverrides.method != null) {
+      return fallbackOverrides.method;
+    }
     return initializer.get("method").getAsString();
   }
 
   @Override
   public String postData() {
-    if (postData == null) {
+    byte[] buffer = postDataBuffer();
+    if (buffer == null) {
       return null;
     }
-    return new String(postData, StandardCharsets.UTF_8);
+    return new String(buffer, StandardCharsets.UTF_8);
   }
 
   @Override
   public byte[] postDataBuffer() {
+    if (fallbackOverrides != null && fallbackOverrides.postData != null) {
+      return fallbackOverrides.postData;
+    }
     return postData;
   }
 
@@ -156,6 +174,13 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public String url() {
+    if (fallbackOverrides != null && fallbackOverrides.url != null) {
+      return fallbackOverrides.url;
+    }
+    return originalUrl();
+  }
+
+  String originalUrl() {
     return initializer.get("url").getAsString();
   }
 
@@ -164,6 +189,9 @@ public class RequestImpl extends ChannelOwner implements Request {
   }
 
   private RawHeaders getRawHeaders() {
+    if (fallbackOverrides != null && fallbackOverrides.headers != null) {
+      return new RawHeaders(Utils.toHeadersList(fallbackOverrides.headers));
+    }
     if (rawHeaders != null) {
       return rawHeaders;
     }
@@ -175,5 +203,27 @@ public class RequestImpl extends ChannelOwner implements Request {
     // The field may have been initialized in a nested call but it is ok.
     rawHeaders = new RawHeaders(asList(gson().fromJson(rawHeadersJson, HttpHeader[].class)));
     return rawHeaders;
+  }
+
+  void applyFallbackOverrides(FallbackOverrides overrides) {
+    if (fallbackOverrides == null) {
+      fallbackOverrides = new FallbackOverrides();
+    }
+    if (overrides.url != null) {
+      fallbackOverrides.url = overrides.url;
+    }
+    if (overrides.method != null) {
+      fallbackOverrides.method = overrides.method;
+    }
+    if (overrides.headers != null) {
+      fallbackOverrides.headers = overrides.headers;
+    }
+    if (overrides.postData != null) {
+      fallbackOverrides.postData = overrides.postData;
+    }
+  }
+
+  FallbackOverrides fallbackOverridesForResume() {
+    return fallbackOverrides;
   }
 }
