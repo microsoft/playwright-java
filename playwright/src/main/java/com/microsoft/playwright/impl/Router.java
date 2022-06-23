@@ -71,19 +71,19 @@ class Router {
     return routes.size();
   }
 
-  enum HandleResult { NoMatchingHandler, MatchedHandlerButNotHandled, Handled }
+  enum HandleResult { NoMatchingHandler, FoundMatchingHandler}
   HandleResult handle(RouteImpl route) {
     HandleResult result = HandleResult.NoMatchingHandler;
     for (Iterator<RouteInfo> it = routes.iterator(); it.hasNext();) {
       RouteInfo info = it.next();
       if (info.handle(route)) {
+        result = HandleResult.FoundMatchingHandler;
         if (info.isDone()) {
           it.remove();
         }
         if (route.isHandled()) {
-          return HandleResult.Handled;
+          break;
         }
-        result = HandleResult.MatchedHandlerButNotHandled;
       }
     }
     return result;
