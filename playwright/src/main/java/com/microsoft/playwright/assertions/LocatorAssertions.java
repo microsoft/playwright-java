@@ -157,6 +157,11 @@ public interface LocatorAssertions {
   }
   class ContainsTextOptions {
     /**
+     * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
+     * expression flag if specified.
+     */
+    public Boolean ignoreCase;
+    /**
      * Time to retry the assertion for.
      */
     public Double timeout;
@@ -165,6 +170,14 @@ public interface LocatorAssertions {
      */
     public Boolean useInnerText;
 
+    /**
+     * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
+     * expression flag if specified.
+     */
+    public ContainsTextOptions setIgnoreCase(boolean ignoreCase) {
+      this.ignoreCase = ignoreCase;
+      return this;
+    }
     /**
      * Time to retry the assertion for.
      */
@@ -266,6 +279,11 @@ public interface LocatorAssertions {
   }
   class HasTextOptions {
     /**
+     * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
+     * expression flag if specified.
+     */
+    public Boolean ignoreCase;
+    /**
      * Time to retry the assertion for.
      */
     public Double timeout;
@@ -274,6 +292,14 @@ public interface LocatorAssertions {
      */
     public Boolean useInnerText;
 
+    /**
+     * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
+     * expression flag if specified.
+     */
+    public HasTextOptions setIgnoreCase(boolean ignoreCase) {
+      this.ignoreCase = ignoreCase;
+      return this;
+    }
     /**
      * Time to retry the assertion for.
      */
@@ -299,6 +325,20 @@ public interface LocatorAssertions {
      * Time to retry the assertion for.
      */
     public HasValueOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class HasValuesOptions {
+    /**
+     * Time to retry the assertion for.
+     */
+    public Double timeout;
+
+    /**
+     * Time to retry the assertion for.
+     */
+    public HasValuesOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -1043,5 +1083,61 @@ public interface LocatorAssertions {
    * @param value Expected value.
    */
   void hasValue(Pattern value, HasValueOptions options);
+  /**
+   * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute) and the specified
+   * values are selected.
+   *
+   * <p> For example, given the following element:
+   * <pre>{@code
+   * page.locator("id=favorite-colors").selectOption(["R", "G"]);
+   * assertThat(page.locator("id=favorite-colors")).hasValues(new Pattern[] { Pattern.compile("R"), Pattern.compile("G") });
+   * }</pre>
+   *
+   * @param values Expected options currently selected.
+   */
+  default void hasValues(String[] values) {
+    hasValues(values, null);
+  }
+  /**
+   * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute) and the specified
+   * values are selected.
+   *
+   * <p> For example, given the following element:
+   * <pre>{@code
+   * page.locator("id=favorite-colors").selectOption(["R", "G"]);
+   * assertThat(page.locator("id=favorite-colors")).hasValues(new Pattern[] { Pattern.compile("R"), Pattern.compile("G") });
+   * }</pre>
+   *
+   * @param values Expected options currently selected.
+   */
+  void hasValues(String[] values, HasValuesOptions options);
+  /**
+   * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute) and the specified
+   * values are selected.
+   *
+   * <p> For example, given the following element:
+   * <pre>{@code
+   * page.locator("id=favorite-colors").selectOption(["R", "G"]);
+   * assertThat(page.locator("id=favorite-colors")).hasValues(new Pattern[] { Pattern.compile("R"), Pattern.compile("G") });
+   * }</pre>
+   *
+   * @param values Expected options currently selected.
+   */
+  default void hasValues(Pattern[] values) {
+    hasValues(values, null);
+  }
+  /**
+   * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute) and the specified
+   * values are selected.
+   *
+   * <p> For example, given the following element:
+   * <pre>{@code
+   * page.locator("id=favorite-colors").selectOption(["R", "G"]);
+   * assertThat(page.locator("id=favorite-colors")).hasValues(new Pattern[] { Pattern.compile("R"), Pattern.compile("G") });
+   * }</pre>
+   *
+   * @param values Expected options currently selected.
+   */
+  void hasValues(Pattern[] values, HasValuesOptions options);
 }
 

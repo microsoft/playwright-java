@@ -349,6 +349,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     route(new UrlMatcher(url), handler, options);
   }
 
+  @Override
+  public void routeFromHAR(Path har, RouteFromHAROptions options) {
+    // TODO:
+  }
+
   private void route(UrlMatcher matcher, Consumer<Route> handler, RouteOptions options) {
     withLogging("BrowserContext.route", () -> {
       routes.add(matcher, handler, options == null ? null : options.times);

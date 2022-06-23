@@ -82,8 +82,8 @@ public class TestDefaultBrowserContext2 extends TestBase {
   @Test
   void shouldSupportLocaleOption() {
     Page page = launchPersistent(new BrowserType.LaunchPersistentContextOptions()
-      .setLocale("fr-CH"));
-    assertEquals("fr-CH", page.evaluate("navigator.language"));
+      .setLocale("fr-FR"));
+    assertEquals("fr-FR", page.evaluate("navigator.language"));
   }
 
   @Test

@@ -608,7 +608,9 @@ public interface ElementHandle extends JSHandle {
     /**
      * When set to {@code "css"}, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices, this will
      * keep screenshots small. Using {@code "device"} option will produce a single pixel per each device pixel, so screenhots of
-     * high-dpi devices will be twice as large or even larger. Defaults to {@code "device"}.
+     * high-dpi devices will be twice as large or even larger.
+     *
+     * <p> Defaults to {@code "device"}.
      */
     public ScreenshotScale scale;
     /**
@@ -679,7 +681,9 @@ public interface ElementHandle extends JSHandle {
     /**
      * When set to {@code "css"}, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices, this will
      * keep screenshots small. Using {@code "device"} option will produce a single pixel per each device pixel, so screenhots of
-     * high-dpi devices will be twice as large or even larger. Defaults to {@code "device"}.
+     * high-dpi devices will be twice as large or even larger.
+     *
+     * <p> Defaults to {@code "device"}.
      */
     public ScreenshotOptions setScale(ScreenshotScale scale) {
       this.scale = scale;

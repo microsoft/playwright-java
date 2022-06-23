@@ -550,6 +550,109 @@ public class TestLocatorAssertions extends TestBase {
   }
 
   @Test
+  void hasValuesWorksWithText() {
+    page.setContent("<select multiple>\n" +
+      "              <option value=\"R\">Red</option>\n" +
+      "              <option value=\"G\">Green</option>\n" +
+      "              <option value=\"B\">Blue</option>\n" +
+      "            </select>");
+    Locator locator = page.locator("select");
+    locator.selectOption(new String[] {"R", "G"});
+    assertThat(locator).hasValues(new String[]{"R", "G"});
+  }
+
+  @Test
+  void hasValuesFollowsLabels() {
+    page.setContent("<label for=\"colors\">Pick a Color</label>\n" +
+      "            <select id=\"colors\" multiple>\n" +
+      "              <option value=\"R\">Red</option>\n" +
+      "              <option value=\"G\">Green</option>\n" +
+      "              <option value=\"B\">Blue</option>\n" +
+      "            </select>");
+    Locator locator = page.locator("text=Pick a Color");
+    locator.selectOption(new String[] {"R", "G"});
+    assertThat(locator).hasValues(new String[]{"R", "G"});
+  }
+
+  @Test
+  void hasValuesExactMatchWithText() {
+    page.setContent("<select multiple>\n" +
+      "              <option value=\"RR\">Red</option>\n" +
+      "              <option value=\"GG\">Green</option>\n" +
+      "            </select>");
+    Locator locator = page.locator("select");
+    locator.selectOption(new String[] {"RR", "GG"});
+    try {
+      assertThat(locator).hasValues(new String[]{"R", "G"}, new LocatorAssertions.HasValuesOptions().setTimeout(1000));
+      fail("did not throw");
+    } catch (AssertionFailedError e) {
+      assertEquals("[R, G]", e.getExpected().getStringRepresentation());
+      assertEquals("[RR, GG]", e.getActual().getStringRepresentation());
+      assertTrue(e.getMessage().contains("Locator expected to have values"), e.getMessage());
+    }
+  }
+
+  @Test
+  void hasValuesWorksWithRegex() {
+      page.setContent("<select multiple>\n" +
+        "              <option value=\"R\">Red</option>\n" +
+        "              <option value=\"G\">Green</option>\n" +
+        "              <option value=\"B\">Blue</option>\n" +
+        "            </select>");
+    Locator locator = page.locator("select");
+    locator.selectOption(new String[] {"R", "G"});
+    assertThat(locator).hasValues(new Pattern[]{ Pattern.compile("R"), Pattern.compile("G")});
+  }
+
+  @Test
+  void hasValuesFailsWhenItemsNotSelected() {
+    page.setContent("<select multiple>\n" +
+      "              <option value=\"R\">Red</option>\n" +
+      "              <option value=\"G\">Green</option>\n" +
+      "              <option value=\"B\">Blue</option>\n" +
+      "            </select>");
+    Locator locator = page.locator("select");
+    locator.selectOption(new String[] {"B"}, new Locator.SelectOptionOptions().setTimeout(1000));
+    try {
+      assertThat(locator).hasValues(new Pattern[]{ Pattern.compile("R"), Pattern.compile("G")});
+      fail("did not throw");
+    } catch (AssertionFailedError e) {
+      assertEquals("[R, G]", e.getExpected().getStringRepresentation());
+      assertEquals("[B]", e.getActual().getStringRepresentation());
+      assertTrue(e.getMessage().contains("Locator expected to have values matching regex"), e.getMessage());
+    }
+  }
+
+  @Test
+  void hasValuesFailsWhenMultipleNotSpecified() {
+    page.setContent("<select>\n" +
+      "              <option value=\"R\">Red</option>\n" +
+      "              <option value=\"G\">Green</option>\n" +
+      "              <option value=\"B\">Blue</option>\n" +
+      "            </select>");
+    Locator locator = page.locator("select");
+    locator.selectOption(new String[] {"B"});
+    try {
+      assertThat(locator).hasValues(new Pattern[]{ Pattern.compile("R"), Pattern.compile("G")});
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Not a select element with a multiple attribute"), e.getMessage());
+    }
+  }
+
+  @Test
+  void hasValuesFailsWhenNotASelectElement() {
+    page.setContent("<input value=\"foo\" />");
+    Locator locator = page.locator("input");
+    try {
+      assertThat(locator).hasValues(new Pattern[]{ Pattern.compile("R"), Pattern.compile("G")}, new LocatorAssertions.HasValuesOptions().setTimeout(1000));
+      fail("did not throw");
+    } catch (PlaywrightException e) {
+      assertTrue(e.getMessage().contains("Not a select element with a multiple attribute"), e.getMessage());
+    }
+  }
+
+  @Test
   void isCheckedPass() {
     page.setContent("<input type=checkbox checked></input>");
     Locator locator = page.locator("input");

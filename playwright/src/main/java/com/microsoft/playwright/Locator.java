@@ -1035,7 +1035,9 @@ public interface Locator {
     /**
      * When set to {@code "css"}, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices, this will
      * keep screenshots small. Using {@code "device"} option will produce a single pixel per each device pixel, so screenhots of
-     * high-dpi devices will be twice as large or even larger. Defaults to {@code "device"}.
+     * high-dpi devices will be twice as large or even larger.
+     *
+     * <p> Defaults to {@code "device"}.
      */
     public ScreenshotScale scale;
     /**
@@ -1106,7 +1108,9 @@ public interface Locator {
     /**
      * When set to {@code "css"}, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices, this will
      * keep screenshots small. Using {@code "device"} option will produce a single pixel per each device pixel, so screenhots of
-     * high-dpi devices will be twice as large or even larger. Defaults to {@code "device"}.
+     * high-dpi devices will be twice as large or even larger.
+     *
+     * <p> Defaults to {@code "device"}.
      */
     public ScreenshotOptions setScale(ScreenshotScale scale) {
       this.scale = scale;
@@ -2119,13 +2123,35 @@ public interface Locator {
    */
   void fill(String value, FillOptions options);
   /**
-   * This method narrows existing locator according to the options, for example filters by text.
+   * This method narrows existing locator according to the options, for example filters by text. It can be chained to filter
+   * multiple times.
+   * <pre>{@code
+   * Locator rowLocator = page.locator("tr");
+   * // ...
+   * rowLocator
+   *     .filter(new Locator.FilterOptions().setHasText("text in column 1"))
+   *     .filter(new Locator.FilterOptions().setHas(
+   *         page.locator("button", new Page.LocatorOptions().setHasText("column 2 button"))
+   *     ))
+   *     .screenshot();
+   * }</pre>
    */
   default Locator filter() {
     return filter(null);
   }
   /**
-   * This method narrows existing locator according to the options, for example filters by text.
+   * This method narrows existing locator according to the options, for example filters by text. It can be chained to filter
+   * multiple times.
+   * <pre>{@code
+   * Locator rowLocator = page.locator("tr");
+   * // ...
+   * rowLocator
+   *     .filter(new Locator.FilterOptions().setHasText("text in column 1"))
+   *     .filter(new Locator.FilterOptions().setHas(
+   *         page.locator("button", new Page.LocatorOptions().setHasText("column 2 button"))
+   *     ))
+   *     .screenshot();
+   * }</pre>
    */
   Locator filter(FilterOptions options);
   /**

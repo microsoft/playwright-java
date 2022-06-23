@@ -31,6 +31,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Pattern;
 
 class Serialization {
   private static final Gson gson = new GsonBuilder()
@@ -44,6 +45,7 @@ class Serialization {
     .registerTypeAdapter(ScreenshotType.class, new ToLowerCaseSerializer<ScreenshotType>())
     .registerTypeAdapter(ScreenshotScale.class, new ToLowerCaseSerializer<ScreenshotScale>())
     .registerTypeAdapter(ScreenshotCaret.class, new ToLowerCaseSerializer<ScreenshotCaret>())
+    .registerTypeAdapter(ServiceWorkerPolicy.class, new ToLowerCaseAndDashSerializer<ServiceWorkerPolicy>())
     .registerTypeAdapter(MouseButton.class, new ToLowerCaseSerializer<MouseButton>())
     .registerTypeAdapter(LoadState.class, new ToLowerCaseSerializer<LoadState>())
     .registerTypeAdapter(WaitUntilState.class, new ToLowerCaseSerializer<WaitUntilState>())

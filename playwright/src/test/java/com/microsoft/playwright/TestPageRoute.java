@@ -67,20 +67,20 @@ public class TestPageRoute extends TestBase {
     List<Integer> intercepted = new ArrayList<>();
     page.route("**/*", route -> {
       intercepted.add(1);
-      route.resume();
+      route.fallback();
     });
 
     page.route("**/empty.html", route -> {
       intercepted.add(2);
-      route.resume();
+      route.fallback();
     });
     page.route("**/empty.html", route -> {
       intercepted.add(3);
-      route.resume();
+      route.fallback();
     });
     Consumer<Route> handler4 = route -> {
       intercepted.add(4);
-      route.resume();
+      route.fallback();
     };
     page.route("**/empty.html", handler4);
     page.navigate(server.EMPTY_PAGE);
@@ -103,15 +103,15 @@ public class TestPageRoute extends TestBase {
     Predicate<String> predicate = r -> true;
     page.route(predicate, route -> {
       intercepted.add(1);
-      route.resume();
+      route.fallback();
     });
     page.route(predicate, route -> {
       intercepted.add(2);
-      route.resume();
+      route.fallback();
     });
     Consumer<Route> handler3 = route -> {
       intercepted.add(3);
-      route.resume();
+      route.fallback();
     };
     page.route(predicate, handler3);
 
@@ -726,19 +726,19 @@ public class TestPageRoute extends TestBase {
   }
 
   @Test
-  void shouldChainContinue() {
+  void shouldChainFallback() {
     List<Integer> intercepted = new ArrayList<>();
     page.route("**/empty.html", route -> {
       intercepted.add(1);
-      route.resume();
+      route.fallback();
     });
     page.route("**/empty.html", route -> {
       intercepted.add(2);
-      route.resume();
+      route.fallback();
     });
     page.route("**/empty.html", route -> {
       intercepted.add(3);
-      route.resume();
+      route.fallback();
     });
     page.navigate(server.EMPTY_PAGE);
     assertEquals(asList(3, 2, 1), intercepted);
@@ -754,7 +754,7 @@ public class TestPageRoute extends TestBase {
       route.fulfill(new Route.FulfillOptions().setStatus(200).setBody("fulfilled"));
     });
     page.route("**/empty.html", route -> {
-      route.resume();
+      route.fallback();
     });
     Response response = page.navigate(server.EMPTY_PAGE);
     byte[] body = response.body();
@@ -772,7 +772,7 @@ public class TestPageRoute extends TestBase {
       route.abort();
     });
     page.route("**/empty.html", route -> {
-      route.resume();
+      route.fallback();
     });
     try {
       page.navigate(server.EMPTY_PAGE);
@@ -804,7 +804,7 @@ public class TestPageRoute extends TestBase {
       route.fulfill(new Route.FulfillOptions().setStatus(200).setBody("fulfilled one"));
     }, new Page.RouteOptions().setTimes(1));
     page.route("**/empty.html", route -> {
-      route.resume();
+      route.fallback();
     }, new Page.RouteOptions().setTimes(1));
     Response response = page.navigate(server.EMPTY_PAGE);
     byte[] body = response.body();

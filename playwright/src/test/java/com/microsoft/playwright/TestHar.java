@@ -17,28 +17,32 @@
 package com.microsoft.playwright;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledIf;
-import org.junit.jupiter.api.condition.EnabledIf;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
+import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.Utils.getOS;
 import static com.microsoft.playwright.options.LoadState.DOMCONTENTLOADED;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestHar extends TestBase {
   private PageWithHar pageWithHar;
+
+  private static JsonObject parseHar(Path harFile) throws IOException {
+    try (FileReader json = new FileReader(harFile.toFile())) {
+      return new Gson().fromJson(json, JsonObject.class).getAsJsonObject("log");
+    }
+  }
 
   private class PageWithHar {
     final Path harFile;
@@ -54,9 +58,7 @@ public class TestHar extends TestBase {
 
     JsonObject log() throws IOException {
       context.close();
-      try (FileReader json = new FileReader(harFile.toFile())) {
-        return new Gson().fromJson(json, JsonObject.class).getAsJsonObject("log");
-      }
+      return parseHar(harFile);
     }
 
     void dispose() throws IOException {
@@ -175,5 +177,44 @@ public class TestHar extends TestBase {
       }
     }
     assertTrue(foundUserContentType);
+  }
+
+  @Test
+  void shouldFilterByGlob(@TempDir Path tmpDir) throws IOException {
+    Path harPath = tmpDir.resolve("test.har");
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setBaseURL(server.PREFIX)
+      .setRecordHarPath(harPath)
+      .setRecordHarUrlFilter("/*.css")
+      .setIgnoreHTTPSErrors(true));
+    Page page = context.newPage();
+    page.navigate("/har.html");
+    context.close();
+    JsonObject log = parseHar(harPath);
+    JsonArray entries = log.getAsJsonArray("entries");
+    // There are 2 entries for the same .css request in firefox.
+    if (isFirefox()) {
+      assertEquals(2, entries.size());
+    } else {
+      assertEquals(1, entries.size());
+    }
+    assertTrue(entries.get(0).getAsJsonObject().getAsJsonObject("request").get("url").getAsString().endsWith("one-style.css"));
+  }
+
+  @Test
+  void shouldFilterByRegexp(@TempDir Path tmpDir) throws IOException {
+    Path harPath = tmpDir.resolve("test.har");
+    BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setBaseURL(server.PREFIX)
+      .setRecordHarPath(harPath)
+      .setRecordHarUrlFilter(Pattern.compile("HAR.X?HTML", Pattern.CASE_INSENSITIVE))
+      .setIgnoreHTTPSErrors(true));
+    Page page = context.newPage();
+    page.navigate(server.PREFIX + "/har.html");
+    context.close();
+    JsonObject log = parseHar(harPath);
+    JsonArray entries = log.getAsJsonArray("entries");
+    assertEquals(1, entries.size());
+    assertTrue(entries.get(0).getAsJsonObject().getAsJsonObject("request").get("url").getAsString().endsWith("har.html"));
   }
 }

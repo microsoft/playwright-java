@@ -84,6 +84,11 @@ public class ResponseImpl extends ChannelOwner implements Response {
   }
 
   @Override
+  public boolean fromServiceWorker() {
+    return initializer.get("fromServiceWorker").getAsBoolean();
+  }
+
+  @Override
   public Map<String, String> headers() {
     return headers.headers();
   }

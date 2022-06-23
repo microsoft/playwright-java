@@ -19,20 +19,19 @@ package com.microsoft.playwright.impl;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.*;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Utils.*;
 import static com.microsoft.playwright.impl.Utils.convertType;
-import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
 
 class BrowserImpl extends ChannelOwner implements Browser {
   final Set<BrowserContextImpl> contexts = new HashSet<>();
@@ -41,6 +40,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
   boolean isConnectedOverWebSocket;
   private boolean isConnected = true;
   LocalUtils localUtils;
+  BrowserTypeImpl browserType;
 
   enum EventType {
     DISCONNECTED,
@@ -58,6 +58,11 @@ class BrowserImpl extends ChannelOwner implements Browser {
   @Override
   public void offDisconnected(Consumer<Browser> handler) {
     listeners.remove(EventType.DISCONNECTED, handler);
+  }
+
+  @Override
+  public BrowserType browserType() {
+    return browserType;
   }
 
   @Override
@@ -112,6 +117,9 @@ class BrowserImpl extends ChannelOwner implements Browser {
   private BrowserContextImpl newContextImpl(NewContextOptions options) {
     if (options == null) {
       options = new NewContextOptions();
+    } else {
+      // Make a copy so that we can nullify some fields below.
+      options = convertType(options, NewContextOptions.class);
     }
     if (options.storageStatePath != null) {
       try {
@@ -127,21 +135,39 @@ class BrowserImpl extends ChannelOwner implements Browser {
       storageState = new Gson().fromJson(options.storageState, JsonObject.class);
       options.storageState = null;
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    if (storageState != null) {
-      params.add("storageState", storageState);
-    }
+    JsonObject recordHar = null;
+    Path recordHarPath = options.recordHarPath;
     if (options.recordHarPath != null) {
-      JsonObject recordHar = new JsonObject();
+      recordHar = new JsonObject();
       recordHar.addProperty("path", options.recordHarPath.toString());
       if (options.recordHarOmitContent != null) {
         recordHar.addProperty("omitContent", true);
       }
-      params.remove("recordHarPath");
-      params.remove("recordHarOmitContent");
+      if (options.recordHarUrlFilter instanceof String) {
+        recordHar.addProperty("urlGlob", (String) options.recordHarUrlFilter);
+      } else if (options.recordHarUrlFilter instanceof Pattern) {
+        Pattern pattern = (Pattern) options.recordHarUrlFilter;
+        recordHar.addProperty("urlRegexSource", pattern.pattern());
+        recordHar.addProperty("urlRegexFlags", toJsRegexFlags(pattern));
+      }
+      options.recordHarPath = null;
+      options.recordHarOmitContent = null;
+      options.recordHarUrlFilter = null;
+    } else {
+      if (options.recordHarOmitContent != null) {
+        throw new PlaywrightException("recordHarOmitContent is set but recordHarPath is null");
+      }
+      if (options.recordHarUrlFilter != null) {
+        throw new PlaywrightException("recordHarUrlFilter is set but recordHarPath is null");
+      }
+    }
+
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    if (storageState != null) {
+      params.add("storageState", storageState);
+    }
+    if (recordHar != null) {
       params.add("recordHar", recordHar);
-    } else if (options.recordHarOmitContent != null) {
-      throw new PlaywrightException("recordHarOmitContent is set but recordHarPath is null");
     }
     if (options.recordVideoDir != null) {
       JsonObject recordVideo = new JsonObject();
@@ -171,7 +197,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     if (options.baseURL != null) {
       context.setBaseUrl(options.baseURL);
     }
-    context.recordHarPath = options.recordHarPath;
+    context.recordHarPath = recordHarPath;
     context.tracing().localUtils = localUtils;
     contexts.add(context);
     return context;

@@ -19,6 +19,7 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * BrowserType provides methods to launch a specific browser instance or connect to an existing one. The following is a
@@ -525,6 +526,7 @@ public interface BrowserType {
      * BrowserContext.close()} for the HAR to be saved.
      */
     public Path recordHarPath;
+    public Object recordHarUrlFilter;
     /**
      * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
      * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
@@ -547,11 +549,20 @@ public interface BrowserType {
      */
     public ScreenSize screenSize;
     /**
+     * Whether to allow sites to register Service workers. Defaults to {@code "allow"}.
+     * <ul>
+     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can be
+     * registered.</li>
+     * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
+     * </ul>
+     */
+    public ServiceWorkerPolicy serviceWorkers;
+    /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      */
     public Double slowMo;
     /**
-     * It specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * If specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
      * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
      * more about the strict mode.
      */
@@ -859,6 +870,14 @@ public interface BrowserType {
       this.recordHarPath = recordHarPath;
       return this;
     }
+    public LaunchPersistentContextOptions setRecordHarUrlFilter(String recordHarUrlFilter) {
+      this.recordHarUrlFilter = recordHarUrlFilter;
+      return this;
+    }
+    public LaunchPersistentContextOptions setRecordHarUrlFilter(Pattern recordHarUrlFilter) {
+      this.recordHarUrlFilter = recordHarUrlFilter;
+      return this;
+    }
     /**
      * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
      * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
@@ -908,6 +927,18 @@ public interface BrowserType {
       return this;
     }
     /**
+     * Whether to allow sites to register Service workers. Defaults to {@code "allow"}.
+     * <ul>
+     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can be
+     * registered.</li>
+     * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
+     * </ul>
+     */
+    public LaunchPersistentContextOptions setServiceWorkers(ServiceWorkerPolicy serviceWorkers) {
+      this.serviceWorkers = serviceWorkers;
+      return this;
+    }
+    /**
      * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      */
     public LaunchPersistentContextOptions setSlowMo(double slowMo) {
@@ -915,7 +946,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * It specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * If specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
      * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
      * more about the strict mode.
      */

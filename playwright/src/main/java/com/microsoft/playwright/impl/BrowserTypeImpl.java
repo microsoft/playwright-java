@@ -49,6 +49,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     JsonElement result = sendMessage("launch", params);
     BrowserImpl browser = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("browser").get("guid").getAsString());
     browser.localUtils = localUtils;
+    browser.browserType = this;
     return browser;
   }
 
@@ -97,6 +98,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     browser.isRemote = true;
     browser.isConnectedOverWebSocket = true;
     browser.localUtils = localUtils;
+    browser.browserType = this;
     Consumer<JsonPipe> connectionCloseListener = t -> browser.notifyRemoteClosed();
     pipe.onClose(connectionCloseListener);
     browser.onDisconnected(b -> {
@@ -131,6 +133,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     BrowserImpl browser = connection.getExistingObject(json.getAsJsonObject("browser").get("guid").getAsString());
     browser.isRemote = true;
     browser.localUtils = localUtils;
+    browser.browserType = this;
     if (json.has("defaultContext")) {
       String contextId = json.getAsJsonObject("defaultContext").get("guid").getAsString();
       BrowserContextImpl defaultContext = connection.getExistingObject(contextId);

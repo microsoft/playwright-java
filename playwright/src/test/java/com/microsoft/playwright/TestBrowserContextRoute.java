@@ -63,19 +63,19 @@ public class TestBrowserContextRoute extends TestBase {
     List<Integer> intercepted = new ArrayList<>();
     context.route("**/*", route -> {
       intercepted.add(1);
-      route.resume();
+      route.fallback();
     });
     context.route("**/empty.html", route -> {
       intercepted.add(2);
-      route.resume();
+      route.fallback();
     });
     context.route("**/empty.html", route -> {
       intercepted.add(3);
-      route.resume();
+      route.fallback();
     });
     Consumer<Route> handler4 = route -> {
       intercepted.add(4);
-      route.resume();
+      route.fallback();
     };
     context.route("**/empty.html", handler4);
     page.navigate(server.EMPTY_PAGE);
@@ -211,19 +211,19 @@ public class TestBrowserContextRoute extends TestBase {
 
 
   @Test
-  void shouldChainContinue() {
+  void shouldChainFallback() {
     List<Integer> intercepted = new ArrayList<>();
     context.route("**/empty.html", route -> {
       intercepted.add(1);
-      route.resume();
+      route.fallback();
     });
     context.route("**/empty.html", route -> {
       intercepted.add(2);
-      route.resume();
+      route.fallback();
     });
     context.route("**/empty.html", route -> {
       intercepted.add(3);
-      route.resume();
+      route.fallback();
     });
     page.navigate(server.EMPTY_PAGE);
     assertEquals(asList(3, 2, 1), intercepted);
@@ -239,7 +239,7 @@ public class TestBrowserContextRoute extends TestBase {
       route.fulfill(new Route.FulfillOptions().setStatus(200).setBody("fulfilled"));
     });
     context.route("**/empty.html", route -> {
-      route.resume();
+      route.fallback();
     });
     Response response = page.navigate(server.EMPTY_PAGE);
     byte[] body = response.body();
@@ -257,7 +257,7 @@ public class TestBrowserContextRoute extends TestBase {
       route.abort();
     });
     context.route("**/empty.html", route -> {
-      route.resume();
+      route.fallback();
     });
 
     try {
@@ -270,34 +270,56 @@ public class TestBrowserContextRoute extends TestBase {
   }
 
   @Test
-  void shouldChainContinueIntoPage() {
+  void shouldChainFallbackIntoPage() {
     List<Integer> intercepted = new ArrayList<>();
     context.route("**/empty.html", route -> {
       intercepted.add(1);
-      route.resume();
+      route.fallback();
     });
     context.route("**/empty.html", route -> {
       intercepted.add(2);
-      route.resume();
+      route.fallback();
     });
     context.route("**/empty.html", route -> {
       intercepted.add(3);
-      route.resume();
+      route.fallback();
     });
     page.route("**/empty.html", route -> {
       intercepted.add(4);
-      route.resume();
+      route.fallback();
     });
     page.route("**/empty.html", route -> {
       intercepted.add(5);
-      route.resume();
+      route.fallback();
     });
     page.route("**/empty.html", route -> {
       intercepted.add(6);
-      route.resume();
+      route.fallback();
     });
     page.navigate(server.EMPTY_PAGE);
     assertEquals(asList(6, 5, 4, 3, 2, 1), intercepted);
+  }
+
+  @Test
+  void shouldFallBackAsync() {
+    List<Integer> intercepted = new ArrayList<>();
+    context.route("**/empty.html", route -> {
+      intercepted.add(1);
+      page.waitForTimeout(50);
+      route.fallback();
+    });
+    context.route("**/empty.html", route -> {
+      intercepted.add(2);
+      page.waitForTimeout(100);
+      route.fallback();
+    });
+    context.route("**/empty.html", route -> {
+      intercepted.add(3);
+      page.waitForTimeout(150);
+      route.fallback();
+    });
+    page.navigate(server.EMPTY_PAGE);
+    assertEquals(asList(3, 2, 1), intercepted);
   }
 
 }
