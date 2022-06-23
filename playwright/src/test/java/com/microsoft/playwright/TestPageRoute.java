@@ -476,7 +476,7 @@ public class TestPageRoute extends TestBase {
   }
 
   @Test
-  void shouldNotThrowInvalidInterceptionIdIfTheRequestWasCancelled() {
+  void shouldThrowIfResumeIsCalledAfterRouteHandlerFinished() {
     page.setContent("<iframe></iframe>");
     Route[] route = {null};
     page.route("**/*", r -> route[0] = r);
@@ -486,8 +486,9 @@ public class TestPageRoute extends TestBase {
     page.evalOnSelector("iframe", "frame => frame.remove()");
     try {
       route[0].resume();
+      fail("did not throw");
     } catch (PlaywrightException e) {
-      fail("Should not throw");
+      assertTrue(e.getMessage().contains("Route is already handled!"), e.getMessage());
     }
   }
 
