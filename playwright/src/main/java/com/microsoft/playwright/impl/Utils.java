@@ -277,6 +277,17 @@ class Utils {
     return map;
   }
 
+  static List<HttpHeader> toHeadersList(Map<String, String> headers) {
+    List<HttpHeader> list = new ArrayList<>();
+    for (Map.Entry<String, String> entry: headers.entrySet()) {
+      HttpHeader header = new HttpHeader();
+      header.name = entry.getKey();
+      header.value = entry.getValue();
+      list.add(header);
+    }
+    return list;
+  }
+
   static String toJsRegexFlags(Pattern pattern) {
     String regexFlags = "";
     if ((pattern.flags() & Pattern.CASE_INSENSITIVE) != 0) {

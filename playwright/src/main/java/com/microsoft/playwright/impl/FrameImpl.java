@@ -23,7 +23,6 @@ import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -1048,6 +1047,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
       if (add != null) {
         WaitUntilState state = loadStateFromProtocol(add.getAsString());
         loadStates.add(state);
+        if (parentFrame == null && page != null) {
+          if (state == LOAD) {
+            page.listeners.notify(PageImpl.EventType.LOAD, page);
+          } else if (state == DOMCONTENTLOADED) {
+            page.listeners.notify(PageImpl.EventType.DOMCONTENTLOADED, page);
+          }
+        }
         internalListeners.notify(InternalEventType.LOADSTATE, state);
       }
       JsonElement remove = params.get("remove");
