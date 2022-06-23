@@ -145,6 +145,17 @@ public interface Browser extends AutoCloseable {
      */
     public Proxy proxy;
     /**
+     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If {@code attach}
+     * is specified, resources are persistet as separate files and all of these files are archived along with the HAR file.
+     * Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
+     */
+    public HarContentPolicy recordHarContent;
+    /**
+     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page, cookies,
+     * security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code full}.
+     */
+    public HarMode recordHarMode;
+    /**
      * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
      */
     public Boolean recordHarOmitContent;
@@ -372,6 +383,23 @@ public interface Browser extends AutoCloseable {
      */
     public NewContextOptions setProxy(Proxy proxy) {
       this.proxy = proxy;
+      return this;
+    }
+    /**
+     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If {@code attach}
+     * is specified, resources are persistet as separate files and all of these files are archived along with the HAR file.
+     * Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
+     */
+    public NewContextOptions setRecordHarContent(HarContentPolicy recordHarContent) {
+      this.recordHarContent = recordHarContent;
+      return this;
+    }
+    /**
+     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page, cookies,
+     * security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code full}.
+     */
+    public NewContextOptions setRecordHarMode(HarMode recordHarMode) {
+      this.recordHarMode = recordHarMode;
       return this;
     }
     /**
@@ -603,6 +631,17 @@ public interface Browser extends AutoCloseable {
      */
     public Proxy proxy;
     /**
+     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If {@code attach}
+     * is specified, resources are persistet as separate files and all of these files are archived along with the HAR file.
+     * Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
+     */
+    public HarContentPolicy recordHarContent;
+    /**
+     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page, cookies,
+     * security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code full}.
+     */
+    public HarMode recordHarMode;
+    /**
      * Optional setting to control whether to omit request content from the HAR. Defaults to {@code false}.
      */
     public Boolean recordHarOmitContent;
@@ -830,6 +869,23 @@ public interface Browser extends AutoCloseable {
      */
     public NewPageOptions setProxy(Proxy proxy) {
       this.proxy = proxy;
+      return this;
+    }
+    /**
+     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If {@code attach}
+     * is specified, resources are persistet as separate files and all of these files are archived along with the HAR file.
+     * Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
+     */
+    public NewPageOptions setRecordHarContent(HarContentPolicy recordHarContent) {
+      this.recordHarContent = recordHarContent;
+      return this;
+    }
+    /**
+     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page, cookies,
+     * security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code full}.
+     */
+    public NewPageOptions setRecordHarMode(HarMode recordHarMode) {
+      this.recordHarMode = recordHarMode;
       return this;
     }
     /**

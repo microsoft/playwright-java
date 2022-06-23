@@ -23,6 +23,7 @@ import com.google.gson.JsonParser;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -103,6 +104,25 @@ class Utils {
     }
     return entries;
   }
+
+  static Map<String, byte[]> extractZip(Path zipPath, Path toDir) throws IOException {
+    Map<String, byte[]> entries = new HashMap<>();
+    Files.createDirectories(toDir);
+    try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipPath.toFile()))) {
+      for (ZipEntry zipEntry = zis.getNextEntry(); zipEntry != null; zipEntry = zis.getNextEntry()) {
+        System.out.println(zipEntry.getName());
+        Path toPath = toDir.resolve(zipEntry.getName());
+        if (zipEntry.isDirectory()) {
+          Files.createDirectories(toPath);
+        } else {
+          Files.copy(zis, toPath);
+        }
+        zis.closeEntry();
+      }
+    }
+    return entries;
+  }
+
 
   enum OS { WINDOWS, MAC, LINUX, UNKNOWN }
   static OS getOS() {

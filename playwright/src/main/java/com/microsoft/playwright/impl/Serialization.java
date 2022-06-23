@@ -311,6 +311,15 @@ class Serialization {
     return array;
   }
 
+  static Map<String, String> fromProtocolMap(JsonArray array) {
+    Map<String, String> map = new LinkedHashMap<>();
+    for (JsonElement element : array) {
+      JsonObject pair = element.getAsJsonObject();
+      map.put(pair.get("name").getAsString(), pair.get("value").getAsString());
+    }
+    return map;
+  }
+
   static List<String> parseStringList(JsonArray array) {
     List<String> result = new ArrayList<>();
     for (JsonElement e : array) {

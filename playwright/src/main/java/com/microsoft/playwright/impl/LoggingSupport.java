@@ -60,7 +60,7 @@ class LoggingSupport {
     System.err.println(timestamp + " " + message);
   }
 
-  private void logApi(String message) {
+  static void logApi(String message) {
     // This matches log format produced by the server.
     logWithTimestamp("pw:api " + message);
   }

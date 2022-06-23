@@ -143,6 +143,12 @@ class BrowserImpl extends ChannelOwner implements Browser {
       if (options.recordHarOmitContent != null) {
         recordHar.addProperty("omitContent", true);
       }
+      if (options.recordHarContent != null) {
+        recordHar.addProperty("mode", options.recordHarContent.toString().toLowerCase());
+      }
+      if (options.recordHarMode != null) {
+        recordHar.addProperty("mode", options.recordHarMode.toString().toLowerCase());
+      }
       if (options.recordHarUrlFilter instanceof String) {
         recordHar.addProperty("urlGlob", (String) options.recordHarUrlFilter);
       } else if (options.recordHarUrlFilter instanceof Pattern) {
@@ -151,7 +157,9 @@ class BrowserImpl extends ChannelOwner implements Browser {
         recordHar.addProperty("urlRegexFlags", toJsRegexFlags(pattern));
       }
       options.recordHarPath = null;
+      options.recordHarMode = null;
       options.recordHarOmitContent = null;
+      options.recordHarContent = null;
       options.recordHarUrlFilter = null;
     } else {
       if (options.recordHarOmitContent != null) {
@@ -159,6 +167,12 @@ class BrowserImpl extends ChannelOwner implements Browser {
       }
       if (options.recordHarUrlFilter != null) {
         throw new PlaywrightException("recordHarUrlFilter is set but recordHarPath is null");
+      }
+      if (options.recordHarMode != null) {
+        throw new PlaywrightException("recordHarMode is set but recordHarPath is null");
+      }
+      if (options.recordHarContent != null) {
+        throw new PlaywrightException("recordHarContent is set but recordHarPath is null");
       }
     }
 
