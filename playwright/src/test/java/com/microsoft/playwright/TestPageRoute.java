@@ -725,4 +725,25 @@ public class TestPageRoute extends TestBase {
     });
     assertEquals(server.PREFIX, response.headerValue("Access-Control-Allow-Origin"));
   }
+
+  @Test
+  void shouldChainFallbackWDynamicURL() {
+    List<Integer> intercepted = new ArrayList<>();
+    page.route("**/bar", route -> {
+      intercepted.add(1);
+      route.fallback(new Route.FallbackOptions().setUrl(server.EMPTY_PAGE));
+    });
+    page.route("**/foo", route -> {
+      intercepted.add(2);
+      route.fallback(new Route.FallbackOptions().setUrl("http://localhost/bar"));
+    });
+
+    page.route("**/empty.html", route -> {
+      intercepted.add(3);
+      route.fallback(new Route.FallbackOptions().setUrl("http://localhost/foo"));
+    });
+
+    page.navigate(server.EMPTY_PAGE);
+    assertEquals(asList(3, 2, 1), intercepted);
+  }
 }

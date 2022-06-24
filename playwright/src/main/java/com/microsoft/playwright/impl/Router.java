@@ -42,7 +42,7 @@ class Router {
       if (times != null && times <= 0) {
         return false;
       }
-      if (!matcher.test(route.request().originalUrl())) {
+      if (!matcher.test(route.request().url())) {
         return false;
       }
       if (times != null) {

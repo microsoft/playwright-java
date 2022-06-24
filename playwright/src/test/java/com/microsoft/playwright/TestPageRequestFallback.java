@@ -222,7 +222,7 @@ public class TestPageRequestFallback extends TestBase {
   void shouldOverrideRequestUrl() throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/global-var.html");
     String[] url = {null};
-    page.route("**/foo", route -> {
+    page.route("**/global-var.html", route -> {
       url[0] = route.request().url();
       route.resume();
     });
