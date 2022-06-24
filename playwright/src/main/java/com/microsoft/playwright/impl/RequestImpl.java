@@ -177,10 +177,6 @@ public class RequestImpl extends ChannelOwner implements Request {
     if (fallbackOverrides != null && fallbackOverrides.url != null) {
       return fallbackOverrides.url;
     }
-    return originalUrl();
-  }
-
-  String originalUrl() {
     return initializer.get("url").getAsString();
   }
 
