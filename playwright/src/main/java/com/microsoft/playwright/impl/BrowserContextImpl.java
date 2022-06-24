@@ -481,10 +481,10 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   void handleRoute(RouteImpl route) {
     Router.HandleResult handled = routes.handle(route);
-    if (handled != Router.HandleResult.NoMatchingHandler) {
+    if (handled == Router.HandleResult.FoundMatchingHandler) {
       maybeDisableNetworkInterception();
     }
-    if (handled != Router.HandleResult.Handled){
+    if (!route.isHandled()){
       route.resume();
     }
   }
