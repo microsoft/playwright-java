@@ -16,19 +16,21 @@
 
 package com.microsoft.playwright;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.microsoft.playwright.options.HarContentPolicy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.options.LoadState.DOMCONTENTLOADED;
@@ -62,6 +64,11 @@ public class TestHar extends TestBase {
     JsonObject log() throws IOException {
       context.close();
       return parseHar(harFile);
+    }
+
+    Map<String, byte[]> parseZip() throws IOException {
+      context.close();
+      return Utils.parseZip(harFile);
     }
 
     void dispose() throws IOException {
@@ -259,5 +266,55 @@ public class TestHar extends TestBase {
       .getAsJsonObject("response")
       .getAsJsonObject("content")
       .has("_file"));
+  }
+
+  @Test
+  void shouldAttachContent(@TempDir Path tmpDir) throws IOException {
+    Path harPath = tmpDir.resolve("test.har.zip");
+    PageWithHar pageWithHar = new PageWithHar(new Browser.NewContextOptions()
+      .setRecordHarContent(HarContentPolicy.ATTACH), harPath);
+    pageWithHar.page.navigate(server.PREFIX + "/har.html");
+    pageWithHar.page.evaluate("() => fetch('/pptr.png').then(r => r.arrayBuffer())");
+    Map<String, byte[]> zip = pageWithHar.parseZip();
+    JsonObject log = new Gson().fromJson(new InputStreamReader(new ByteArrayInputStream(zip.get("har.har"))), JsonObject.class).getAsJsonObject("log");
+    pageWithHar.dispose();
+
+    JsonArray entries = log.getAsJsonArray("entries");
+    {
+      JsonObject content = entries.get(0).getAsJsonObject()
+        .getAsJsonObject("response")
+        .getAsJsonObject("content");
+      assertFalse(content.has("encoding"));
+      assertEquals("text/html", content.get("mimeType").getAsString());
+      assertTrue(content.get("_file").getAsString().contains("75841480e2606c03389077304342fac2c58ccb1b"));
+      assertTrue(content.get("size").getAsInt() >= 96);
+      assertEquals(0, content.get("compression").getAsInt());
+    }
+    {
+      JsonObject content = entries.get(1).getAsJsonObject()
+        .getAsJsonObject("response")
+        .getAsJsonObject("content");
+      assertFalse(content.has("encoding"));
+      assertEquals("text/css", content.get("mimeType").getAsString());
+      assertTrue(content.get("_file").getAsString().contains("79f739d7bc88e80f55b9891a22bf13a2b4e18adb"));
+      assertTrue(content.get("size").getAsInt() >= 37);
+      assertEquals(0, content.get("compression").getAsInt());
+    }
+    {
+      JsonObject content = entries.get(2).getAsJsonObject()
+        .getAsJsonObject("response")
+        .getAsJsonObject("content");
+      assertFalse(content.has("encoding"));
+      assertEquals("image/png", content.get("mimeType").getAsString());
+      assertTrue(content.get("_file").getAsString().contains("a4c3a18f0bb83f5d9fe7ce561e065c36205762fa"));
+      assertTrue(content.get("size").getAsInt() >= 6000);
+      assertEquals(0, content.get("compression").getAsInt());
+    }
+    assertTrue(new String(zip.get("75841480e2606c03389077304342fac2c58ccb1b.html"), StandardCharsets.UTF_8).contains("HAR Page"));
+    assertTrue(new String(zip.get("79f739d7bc88e80f55b9891a22bf13a2b4e18adb.css"), StandardCharsets.UTF_8).contains("pink"));
+    assertEquals(entries.get(2).getAsJsonObject()
+      .getAsJsonObject("response")
+      .getAsJsonObject("content")
+      .get("size").getAsInt(), zip.get("a4c3a18f0bb83f5d9fe7ce561e065c36205762fa.png").length);
   }
 }

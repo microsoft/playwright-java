@@ -22,7 +22,6 @@ import com.google.gson.JsonParser;
 
 import java.io.*;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -90,7 +89,7 @@ class Utils {
     }
   }
 
-  static Map<String, byte[]> parseTrace(Path trace) throws IOException {
+  static Map<String, byte[]> parseZip(Path trace) throws IOException {
     Map<String, byte[]> entries = new HashMap<>();
     try (ZipInputStream zis = new ZipInputStream(new FileInputStream(trace.toFile()))) {
       for (ZipEntry zipEntry = zis.getNextEntry(); zipEntry != null; zipEntry = zis.getNextEntry()) {

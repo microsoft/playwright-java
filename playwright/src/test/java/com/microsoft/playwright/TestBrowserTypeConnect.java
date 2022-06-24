@@ -17,7 +17,6 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.impl.Driver;
-import com.microsoft.playwright.options.WaitForSelectorState;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
@@ -499,7 +498,7 @@ public class TestBrowserTypeConnect extends TestBase {
     Path trace = tmpDir.resolve("trace1.zip");
     context.tracing().stop(new Tracing.StopOptions().setPath(trace));
 
-    Map<String, byte[]> entries = parseTrace(trace);
+    Map<String, byte[]> entries = parseZip(trace);
     Map<String, byte[]> sources = entries.entrySet().stream().filter(e -> e.getKey().endsWith(".txt")).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     assertEquals(1, sources.size());
 
