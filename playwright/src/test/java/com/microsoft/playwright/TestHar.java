@@ -16,10 +16,7 @@
 
 package com.microsoft.playwright;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.microsoft.playwright.options.HarContentPolicy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -281,7 +278,7 @@ public class TestHar extends TestBase {
 
     JsonArray entries = log.getAsJsonArray("entries");
     {
-      JsonObject content = entries.get(0).getAsJsonObject()
+      JsonObject content = firstEntryFor(entries, "har.html")
         .getAsJsonObject("response")
         .getAsJsonObject("content");
       assertFalse(content.has("encoding"));
@@ -291,7 +288,8 @@ public class TestHar extends TestBase {
       assertEquals(0, content.get("compression").getAsInt());
     }
     {
-      JsonObject content = entries.get(1).getAsJsonObject()
+      // TODO: figure out why there is more than one entry in Firefox.
+      JsonObject content = firstEntryFor(entries, "one-style.css")
         .getAsJsonObject("response")
         .getAsJsonObject("content");
       assertFalse(content.has("encoding"));
@@ -301,7 +299,7 @@ public class TestHar extends TestBase {
       assertEquals(0, content.get("compression").getAsInt());
     }
     {
-      JsonObject content = entries.get(2).getAsJsonObject()
+      JsonObject content = firstEntryFor(entries, "pptr.png")
         .getAsJsonObject("response")
         .getAsJsonObject("content");
       assertFalse(content.has("encoding"));
@@ -312,9 +310,19 @@ public class TestHar extends TestBase {
     }
     assertTrue(new String(zip.get("75841480e2606c03389077304342fac2c58ccb1b.html"), StandardCharsets.UTF_8).contains("HAR Page"));
     assertTrue(new String(zip.get("79f739d7bc88e80f55b9891a22bf13a2b4e18adb.css"), StandardCharsets.UTF_8).contains("pink"));
-    assertEquals(entries.get(2).getAsJsonObject()
+    assertEquals(firstEntryFor(entries, "pptr.png")
       .getAsJsonObject("response")
       .getAsJsonObject("content")
       .get("size").getAsInt(), zip.get("a4c3a18f0bb83f5d9fe7ce561e065c36205762fa.png").length);
+  }
+  private static JsonObject firstEntryFor(JsonArray entries, String name) {
+    for (int i = 0; i < entries.size(); i++) {
+      JsonObject entry = entries.get(i).getAsJsonObject();
+      String url = entry.getAsJsonObject("request").get("url").getAsString();
+      if (url.endsWith(name)) {
+        return entry;
+      }
+    }
+    return null;
   }
 }
