@@ -64,6 +64,7 @@ public class Connection {
     String debug = System.getenv("DEBUG");
     isLogging = (debug != null) && debug.contains("pw:channel");
   }
+  LocalUtils localUtils;
 
   class Root extends ChannelOwner {
     Root(Connection connection) {
@@ -136,6 +137,10 @@ public class Connection {
 
   public PlaywrightImpl initializePlaywright() {
     return (PlaywrightImpl) this.root.initialize();
+  }
+
+  LocalUtils localUtils() {
+    return localUtils;
   }
 
   public <T> T getExistingObject(String guid) {
@@ -270,7 +275,8 @@ public class Connection {
         result = new JsonPipe(parent, type, guid, initializer);
         break;
       case "LocalUtils":
-        result = new LocalUtils(parent, type, guid, initializer);
+        localUtils = new LocalUtils(parent, type, guid, initializer);
+        result = localUtils;
         break;
       case "Page":
         result = new PageImpl(parent, type, guid, initializer);
