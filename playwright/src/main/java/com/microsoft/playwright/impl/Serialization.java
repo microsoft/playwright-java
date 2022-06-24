@@ -31,7 +31,6 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.regex.Pattern;
 
 class Serialization {
   private static final Gson gson = new GsonBuilder()
@@ -311,7 +310,7 @@ class Serialization {
     return array;
   }
 
-  static Map<String, String> fromProtocolMap(JsonArray array) {
+  static Map<String, String> fromNameValues(JsonArray array) {
     Map<String, String> map = new LinkedHashMap<>();
     for (JsonElement element : array) {
       JsonObject pair = element.getAsJsonObject();

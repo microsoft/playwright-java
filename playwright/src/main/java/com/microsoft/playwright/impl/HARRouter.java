@@ -27,7 +27,7 @@ import java.util.Base64;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.LoggingSupport.logApi;
-import static com.microsoft.playwright.impl.Serialization.fromProtocolMap;
+import static com.microsoft.playwright.impl.Serialization.fromNameValues;
 import static com.microsoft.playwright.impl.Serialization.gson;
 
 public class HARRouter {
@@ -73,7 +73,7 @@ public class HARRouter {
 
     if ("fulfill".equals(action)) {
       int status = response.get("status").getAsInt();
-      Map<String, String> headers = fromProtocolMap(response.getAsJsonArray("headers"));
+      Map<String, String> headers = fromNameValues(response.getAsJsonArray("headers"));
       byte[] buffer = Base64.getDecoder().decode(response.get("body").getAsString());
       route.fulfill(new Route.FulfillOptions()
         .setStatus(status)
@@ -99,9 +99,6 @@ public class HARRouter {
   void dispose() {
     JsonObject params = new JsonObject();
     params.addProperty("harId", harId);
-    try {
-      localUtils.sendMessage("harClose", params);
-    } catch (PlaywrightException e) {
-    }
+    localUtils.sendMessageAsync("harClose", params);
   }
 }

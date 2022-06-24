@@ -16,10 +16,8 @@
 
 package com.microsoft.playwright;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
+import com.microsoft.playwright.options.HarContentPolicy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +28,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.options.LoadState.DOMCONTENTLOADED;
@@ -50,8 +49,12 @@ public class TestHar extends TestBase {
     final Page page;
 
     PageWithHar() throws IOException {
-      harFile = Files.createTempFile("test-", ".har");
-      context = browser.newContext(new Browser.NewContextOptions()
+      this(new Browser.NewContextOptions(), null);
+    }
+
+    PageWithHar(Browser.NewContextOptions options, Path harFilePath) throws IOException {
+      harFile = harFilePath == null ? Files.createTempFile("test-", ".har") : harFilePath;
+      context = browser.newContext(options
         .setRecordHarPath(harFile).setIgnoreHTTPSErrors(true));
       page = context.newPage();
     }
@@ -216,5 +219,45 @@ public class TestHar extends TestBase {
     JsonArray entries = log.getAsJsonArray("entries");
     assertEquals(1, entries.size());
     assertTrue(entries.get(0).getAsJsonObject().getAsJsonObject("request").get("url").getAsString().endsWith("har.html"));
+  }
+
+  @Test
+  void shouldOmitContent(@TempDir Path tmpDir) throws IOException {
+    Path harPath = tmpDir.resolve("test.har");
+    PageWithHar pageWithHar = new PageWithHar(new Browser.NewContextOptions()
+      .setRecordHarContent(HarContentPolicy.OMIT), harPath);
+    pageWithHar.page.navigate(server.PREFIX + "/har.html");
+    pageWithHar.page.evaluate("() => fetch('/pptr.png').then(r => r.arrayBuffer())");
+    JsonObject log = pageWithHar.log();
+    pageWithHar.dispose();
+    JsonArray entries = log.getAsJsonArray("entries");
+    assertFalse(entries.get(0).getAsJsonObject()
+      .getAsJsonObject("response")
+      .getAsJsonObject("content")
+      .has("text"));
+    assertFalse(entries.get(0).getAsJsonObject()
+      .getAsJsonObject("response")
+      .getAsJsonObject("content")
+      .has("_file"));
+  }
+
+  @Test
+  void shouldOmitContentLegacy(@TempDir Path tmpDir) throws IOException {
+    Path harPath = tmpDir.resolve("test.har");
+    PageWithHar pageWithHar = new PageWithHar(new Browser.NewContextOptions()
+      .setRecordHarOmitContent(true), harPath);
+    pageWithHar.page.navigate(server.PREFIX + "/har.html");
+    pageWithHar.page.evaluate("() => fetch('/pptr.png').then(r => r.arrayBuffer())");
+    JsonObject log = pageWithHar.log();
+    pageWithHar.dispose();
+    JsonArray entries = log.getAsJsonArray("entries");
+    assertFalse(entries.get(0).getAsJsonObject()
+      .getAsJsonObject("response")
+      .getAsJsonObject("content")
+      .has("text"));
+    assertFalse(entries.get(0).getAsJsonObject()
+      .getAsJsonObject("response")
+      .getAsJsonObject("content")
+      .has("_file"));
   }
 }

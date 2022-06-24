@@ -353,8 +353,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
     UrlMatcher matcher = UrlMatcher.forOneOf(baseUrl, options.url);
     HARRouter harRouter = new HARRouter(browser.localUtils, har, options.notFound);
-    route(matcher, route -> harRouter.handle(route), null);
     onClose(context -> harRouter.dispose());
+    route(matcher, route -> harRouter.handle(route), null);
   }
 
   private void route(UrlMatcher matcher, Consumer<Route> handler, RouteOptions options) {

@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.HarContentPolicy;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -140,11 +141,10 @@ class BrowserImpl extends ChannelOwner implements Browser {
     if (options.recordHarPath != null) {
       recordHar = new JsonObject();
       recordHar.addProperty("path", options.recordHarPath.toString());
-      if (options.recordHarOmitContent != null) {
-        recordHar.addProperty("omitContent", true);
-      }
       if (options.recordHarContent != null) {
-        recordHar.addProperty("mode", options.recordHarContent.toString().toLowerCase());
+        recordHar.addProperty("content", options.recordHarContent.toString().toLowerCase());
+      } else if (options.recordHarOmitContent != null && options.recordHarOmitContent) {
+        recordHar.addProperty("content", HarContentPolicy.OMIT.toString().toLowerCase());
       }
       if (options.recordHarMode != null) {
         recordHar.addProperty("mode", options.recordHarMode.toString().toLowerCase());
