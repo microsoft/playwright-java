@@ -975,7 +975,7 @@ public class PageImpl extends ChannelOwner implements Page {
       options = new RouteFromHAROptions();
     }
     UrlMatcher matcher = UrlMatcher.forOneOf(browserContext.baseUrl, options.url);
-    HARRouter harRouter = new HARRouter(browserContext.browser().localUtils, har, options.notFound);
+    HARRouter harRouter = new HARRouter(connection.localUtils, har, options.notFound);
     onClose(context -> harRouter.dispose());
     route(matcher, route -> harRouter.handle(route), null);
   }

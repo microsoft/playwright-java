@@ -26,7 +26,6 @@ import java.nio.file.Path;
 import static com.microsoft.playwright.impl.Serialization.gson;
 
 class TracingImpl extends ChannelOwner implements Tracing {
-  LocalUtils localUtils;
   boolean isRemote;
 
   TracingImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -60,7 +59,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
     // Add local sources to the remote trace if necessary.
     if (isRemote && json.has("sourceEntries")) {
       JsonArray entries = json.getAsJsonArray("sourceEntries");
-      localUtils.zip(path, entries);
+      connection.localUtils.zip(path, entries);
     }
   }
 
