@@ -199,6 +199,14 @@ public class RouteImpl extends ChannelOwner implements Route {
     return connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());
   }
 
+  void redirectNavigationRequest(String redirectURL) {
+    startHandling();
+    JsonObject params = new JsonObject();
+    params.addProperty("url", redirectURL);
+    // TODO: _raceWithPageClose ?
+    sendMessageAsync("redirectNavigationRequest", params);
+  }
+
   private void startHandling() {
     if (handled) {
       throw new PlaywrightException("Route is already handled!");

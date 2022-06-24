@@ -971,7 +971,13 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void routeFromHAR(Path har, RouteFromHAROptions options) {
-    // TODO:
+    if (options == null) {
+      options = new RouteFromHAROptions();
+    }
+    UrlMatcher matcher = UrlMatcher.forOneOf(browserContext.baseUrl, options.url);
+    HARRouter harRouter = new HARRouter(browserContext.browser().localUtils, har, options.notFound);
+    onClose(context -> harRouter.dispose());
+    route(matcher, route -> harRouter.handle(route), null);
   }
 
   private void route(UrlMatcher matcher, Consumer<Route> handler, RouteOptions options) {

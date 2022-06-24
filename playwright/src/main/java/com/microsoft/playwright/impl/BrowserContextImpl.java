@@ -20,10 +20,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
-import com.microsoft.playwright.options.BindingCallback;
-import com.microsoft.playwright.options.Cookie;
-import com.microsoft.playwright.options.FunctionCallback;
-import com.microsoft.playwright.options.Geolocation;
+import com.microsoft.playwright.options.*;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -336,7 +333,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void route(String url, Consumer<Route> handler, RouteOptions options) {
-    route(new UrlMatcher(this.baseUrl, url), handler, options);
+    route(new UrlMatcher(baseUrl, url), handler, options);
   }
 
   @Override
@@ -351,7 +348,13 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public void routeFromHAR(Path har, RouteFromHAROptions options) {
-    // TODO:
+    if (options == null) {
+      options = new RouteFromHAROptions();
+    }
+    UrlMatcher matcher = UrlMatcher.forOneOf(baseUrl, options.url);
+    HARRouter harRouter = new HARRouter(browser.localUtils, har, options.notFound);
+    onClose(context -> harRouter.dispose());
+    route(matcher, route -> harRouter.handle(route), null);
   }
 
   private void route(UrlMatcher matcher, Consumer<Route> handler, RouteOptions options) {

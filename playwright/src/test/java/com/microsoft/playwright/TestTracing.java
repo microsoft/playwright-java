@@ -113,7 +113,7 @@ public class TestTracing extends TestBase {
     Path trace = tmpDir.resolve("trace1.zip");
     context.tracing().stop(new Tracing.StopOptions().setPath(trace));
 
-    Map<String, byte[]> entries = Utils.parseTrace(trace);
+    Map<String, byte[]> entries = Utils.parseZip(trace);
     Map<String, byte[]> sources = entries.entrySet().stream().filter(e -> e.getKey().endsWith(".txt")).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     assertEquals(1, sources.size());
 
