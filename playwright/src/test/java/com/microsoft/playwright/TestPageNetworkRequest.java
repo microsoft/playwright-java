@@ -20,7 +20,10 @@ import com.google.gson.Gson;
 import com.microsoft.playwright.options.HttpHeader;
 import org.junit.jupiter.api.Test;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 
@@ -92,5 +95,22 @@ public class TestPageNetworkRequest extends TestBase {
     Response response = page.navigate(server.EMPTY_PAGE);
     String cookie = response.request().allHeaders().get("cookie");
     assertEquals("myCookie=myValue; myOtherCookie=myOtherValue", cookie);
+  }
+
+  @Test
+  void shouldReportPostDataFor403Request() throws InterruptedException, ExecutionException {
+    server.setRoute("/upload", exchange -> {
+      exchange.sendResponseHeaders(403, 0);
+      exchange.getResponseBody().close();
+    });
+    Future<Server.Request> serverRequest = server.futureRequest("/upload");
+    page.navigate(server.EMPTY_PAGE);
+    Request request = page.waitForRequest("**/*", () -> {
+      page.evaluate("() => fetch('/upload', { method: 'POST', body: 'test'})");
+    });
+    assertEquals("test", new String(serverRequest.get().postBody, StandardCharsets.UTF_8));
+    assertEquals("test", request.postData());
+    assertEquals("POST", request.method());
+    assertEquals(403, request.response().status());
   }
 }
