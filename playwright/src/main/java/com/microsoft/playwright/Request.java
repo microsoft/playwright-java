@@ -58,8 +58,9 @@ public interface Request {
    */
   Frame frame();
   /**
-   * **DEPRECATED** Incomplete list of headers as seen by the rendering engine. Use {@link Request#allHeaders
-   * Request.allHeaders()} instead.
+   * An object with the request HTTP headers. The header names are lower-cased. Note that this method does not return
+   * security-related headers, including cookie-related ones. You can use {@link Request#allHeaders Request.allHeaders()} for
+   * complete list of headers that include {@code cookie} information.
    */
   Map<String, String> headers();
   /**

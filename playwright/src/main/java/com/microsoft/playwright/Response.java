@@ -45,8 +45,9 @@ public interface Response {
    */
   boolean fromServiceWorker();
   /**
-   * **DEPRECATED** Incomplete list of headers as seen by the rendering engine. Use {@link Response#allHeaders
-   * Response.allHeaders()} instead.
+   * An object with the response HTTP headers. The header names are lower-cased. Note that this method does not return
+   * security-related headers, including cookie-related ones. You can use {@link Response#allHeaders Response.allHeaders()}
+   * for complete list of headers that include {@code cookie} information.
    */
   Map<String, String> headers();
   /**
