@@ -19,6 +19,7 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.options.HarMode;
 import com.microsoft.playwright.options.HarNotFound;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
@@ -213,6 +214,7 @@ public class TestBrowserContextHar extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="isFirefox", disabledReason="Flaky in Firefox, upstream as well")
   void shouldGoForwardToRedirectedNavigation() {
     Path path = Paths.get("src/test/resources/har-redirect.har");
     context.routeFromHAR(path, new BrowserContext.RouteFromHAROptions().setUrl(Pattern.compile(".*theverge.*")));

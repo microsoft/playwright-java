@@ -65,13 +65,19 @@ public class TestBrowserContextCookies extends TestBase {
       "    return document.cookie;\n" +
       "  }");
     assertEquals("username=John Doe", documentCookie);
-    int timestamp = (Integer) page.evaluate("+(new Date('1/1/2038'))/1000");
     Cookie cookie = context.cookies().get(0);
     assertEquals("username", cookie.name);
     assertEquals("John Doe", cookie.value);
     assertEquals("localhost", cookie.domain);
     assertEquals("/", cookie.path);
-    assertEquals(timestamp, cookie.expires);
+    // Browsers start to cap cookies with 400 days max expires value.
+    // See https://github.com/httpwg/http-extensions/pull/1732
+    // Chromium patch: https://chromium.googlesource.com/chromium/src/+/aaa5d2b55478eac2ee642653dcd77a50ac3faff6
+    // We want to make sure that expires date is at least 400 days in future.
+    Double timestamp = (Double) page.evaluate("const FOUR_HUNDRED_DAYS = 1000 * 60 * 60 * 24 * 400;\n" +
+      "  const FIVE_MINUTES = 1000 * 60 * 5; // relax condition a bit to make sure test is not flaky.\n" +
+      "  (Date.now() + FOUR_HUNDRED_DAYS - FIVE_MINUTES) / 1000;");
+    assertTrue(cookie.expires > timestamp, cookie.expires + " > " + timestamp + " failed.");
     assertEquals(false, cookie.httpOnly);
     assertEquals(false, cookie.secure);
     if (isChromium()) {
