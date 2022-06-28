@@ -60,6 +60,10 @@ class LoggingSupport {
     System.err.println(timestamp + " " + message);
   }
 
+  static boolean isApiLoggingEnabled() {
+    return isEnabled;
+  }
+
   static void logApi(String message) {
     // This matches log format produced by the server.
     logWithTimestamp("pw:api " + message);

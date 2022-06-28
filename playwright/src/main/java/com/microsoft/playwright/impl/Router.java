@@ -39,9 +39,6 @@ class Router {
     }
 
     boolean handle(RouteImpl route) {
-      if (times != null && times <= 0) {
-        return false;
-      }
       if (!matcher.test(route.request().url())) {
         return false;
       }
