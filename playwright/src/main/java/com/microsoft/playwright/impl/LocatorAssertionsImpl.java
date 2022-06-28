@@ -19,6 +19,7 @@ package com.microsoft.playwright.impl;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.assertions.LocatorAssertions;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -39,6 +40,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   public void containsText(String text, ContainsTextOptions options) {
     ExpectedTextValue expected = new ExpectedTextValue();
     expected.string = text;
+    expected.ignoreCase = shouldIgnoreCase(options);
     expected.matchSubstring = true;
     expected.normalizeWhiteSpace = true;
     expectImpl("to.have.text", expected, text, "Locator expected to contain text", convertType(options, FrameExpectOptions.class));
@@ -47,6 +49,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   @Override
   public void containsText(Pattern pattern, ContainsTextOptions options) {
     ExpectedTextValue expected = expectedRegex(pattern);
+    expected.ignoreCase = shouldIgnoreCase(options);
     expected.matchSubstring = true;
     expected.normalizeWhiteSpace = true;
     expectImpl("to.have.text", expected, pattern, "Locator expected to contain regex", convertType(options, FrameExpectOptions.class));
@@ -58,6 +61,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     for (String text : strings) {
       ExpectedTextValue expected = new ExpectedTextValue();
       expected.string = text;
+      expected.ignoreCase = shouldIgnoreCase(options);
       expected.matchSubstring = true;
       expected.normalizeWhiteSpace = true;
       list.add(expected);
@@ -70,6 +74,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     List<ExpectedTextValue> list = new ArrayList<>();
     for (Pattern pattern : patterns) {
       ExpectedTextValue expected = expectedRegex(pattern);
+      expected.ignoreCase = shouldIgnoreCase(options);
       expected.matchSubstring = true;
       expected.normalizeWhiteSpace = true;
       list.add(expected);
@@ -203,6 +208,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   public void hasText(String text, HasTextOptions options) {
     ExpectedTextValue expected = new ExpectedTextValue();
     expected.string = text;
+    expected.ignoreCase = shouldIgnoreCase(options);
     expected.matchSubstring = false;
     expected.normalizeWhiteSpace = true;
     expectImpl("to.have.text", expected, text, "Locator expected to have text", convertType(options, FrameExpectOptions.class));
@@ -211,6 +217,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   @Override
   public void hasText(Pattern pattern, HasTextOptions options) {
     ExpectedTextValue expected = expectedRegex(pattern);
+    expected.ignoreCase = shouldIgnoreCase(options);
     // Just match substring, same as containsText.
     expected.matchSubstring = true;
     expected.normalizeWhiteSpace = true;
@@ -223,6 +230,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     for (String text : strings) {
       ExpectedTextValue expected = new ExpectedTextValue();
       expected.string = text;
+      expected.ignoreCase = shouldIgnoreCase(options);
       expected.matchSubstring = false;
       expected.normalizeWhiteSpace = true;
       list.add(expected);
@@ -235,6 +243,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     List<ExpectedTextValue> list = new ArrayList<>();
     for (Pattern pattern : patterns) {
       ExpectedTextValue expected = expectedRegex(pattern);
+      expected.ignoreCase = shouldIgnoreCase(options);
       expected.matchSubstring = true;
       expected.normalizeWhiteSpace = true;
       list.add(expected);
@@ -327,5 +336,17 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   public LocatorAssertions not() {
     return new LocatorAssertionsImpl(actualLocator, !isNot);
   }
-}
 
+  private static Boolean shouldIgnoreCase(Object options) {
+    if (options == null) {
+      return null;
+    }
+    try {
+      Field fromField = options.getClass().getDeclaredField("ignoreCase");
+      Object value = fromField.get(options);
+      return (Boolean) value;
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      return null;
+    }
+  }
+}
