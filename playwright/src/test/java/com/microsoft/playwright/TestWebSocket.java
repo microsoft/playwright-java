@@ -158,7 +158,6 @@ public class TestWebSocket extends TestBase {
     } else {
       assertTrue(error[0].contains("404"), error[0]);
     }
-    page.waitForTimeout(1000);
   }
 
   @Test
