@@ -156,7 +156,7 @@ public class TestWebSocket extends TestBase {
     if (isFirefox()) {
       assertEquals("CLOSE_ABNORMAL", error[0]);
     } else {
-      assertTrue(error[0].contains("404"), "Actual: '" + error[0] + "'");
+      assertTrue(error[0].contains("404"), error[0]);
     }
     page.waitForTimeout(1000);
   }
