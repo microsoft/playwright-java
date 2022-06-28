@@ -25,6 +25,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -139,9 +140,13 @@ public class TestWebSocket extends TestBase {
     boolean[] socketError = {false};
     String[] error = {null};
     page.onWebSocket(ws -> {
-      ws.onSocketError(e -> {
-        error[0] = e;
-        socketError[0] = true;
+      ws.onSocketError(new Consumer<String>() {
+        @Override
+        public void accept(String e) {
+          ws.offSocketError(this);
+          error[0] = e;
+          socketError[0] = true;
+        }
       });
     });
     page.evaluate("port => {\n" +
@@ -151,8 +156,9 @@ public class TestWebSocket extends TestBase {
     if (isFirefox()) {
       assertEquals("CLOSE_ABNORMAL", error[0]);
     } else {
-      assertTrue(error[0].contains("404"), error[0]);
+      assertTrue(error[0].contains("404"), "Actual: '" + error[0] + "'");
     }
+    page.waitForTimeout(1000);
   }
 
   @Test
