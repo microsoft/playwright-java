@@ -73,12 +73,38 @@ public class TestLocatorAssertions extends TestBase {
   }
 
   @Test
+  void containsTextWTextPass() {
+    page.setContent("<div id=node>Text content</div>");
+    Locator locator = page.locator("#node");
+    assertThat(locator).containsText("Text");
+    // Should normalize whitespace.
+    assertThat(locator).containsText("   ext        cont\n  ");
+    // Should support ignoreCase.
+    assertThat(locator).containsText("EXT", new LocatorAssertions.ContainsTextOptions().setIgnoreCase(true));
+    // Should support falsy ignoreCase.
+    assertThat(locator).not().containsText("TEXT", new LocatorAssertions.ContainsTextOptions().setIgnoreCase(false));
+  }
+
+  @Test
+  void containsTextWTextArrayPass() {
+    page.setContent("<div>Text \n1</div><div>Text2</div><div>Text3</div>");
+    Locator locator = page.locator("div");
+    assertThat(locator).containsText(new String[] {"ext     1", "ext3"});
+    // Should support ignoreCase.
+    assertThat(locator).containsText(new String[] {"EXT 1", "eXt3"}, new LocatorAssertions.ContainsTextOptions().setIgnoreCase(true));
+  }
+
+  @Test
   void hasTextWRegexPass() {
     page.setContent("<div id=node>Text   content</div>");
     Locator locator = page.locator("#node");
     assertThat(locator).hasText(Pattern.compile("Te.t"));
     // Should not normalize whitespace.
     assertThat(locator).hasText(Pattern.compile("Text.+content"));
+    // Should respect ignoreCase.
+    assertThat(locator).hasText(Pattern.compile("text   content"), new LocatorAssertions.HasTextOptions().setIgnoreCase(true));
+    // Should override regex flag with ignoreCase.
+    assertThat(locator).not().hasText(Pattern.compile("text   content", Pattern.CASE_INSENSITIVE), new LocatorAssertions.HasTextOptions().setIgnoreCase(false));
   }
 
   @Test
@@ -101,6 +127,10 @@ public class TestLocatorAssertions extends TestBase {
     Locator locator = page.locator("#node");
     // Should normalize whitespace.
     assertThat(locator).hasText("Text                        content");
+    // Should support ignoreCase.
+    assertThat(locator).hasText("text CONTENT", new LocatorAssertions.HasTextOptions().setIgnoreCase(true));
+    // Should support falsy ignoreCase.
+    assertThat(locator).not().hasText("TEXT", new LocatorAssertions.HasTextOptions().setIgnoreCase(false));
   }
 
   @Test
@@ -131,6 +161,8 @@ public class TestLocatorAssertions extends TestBase {
     Locator locator = page.locator("div");
     // Should normalize whitespace.
     assertThat(locator).hasText(new String[] {"Text  1", "Text   2a"});
+    // Should support ignoreCase.
+    assertThat(locator).hasText(new String[] {"tEXT 1", "TExt 2A"}, new LocatorAssertions.HasTextOptions().setIgnoreCase(true));
   }
 
   @Test
