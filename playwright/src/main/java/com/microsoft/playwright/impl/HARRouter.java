@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Map;
 
+import static com.microsoft.playwright.impl.LoggingSupport.isApiLoggingEnabled;
 import static com.microsoft.playwright.impl.LoggingSupport.logApi;
 import static com.microsoft.playwright.impl.Serialization.fromNameValues;
 import static com.microsoft.playwright.impl.Serialization.gson;
@@ -66,7 +67,9 @@ public class HARRouter {
     String action = response.get("action").getAsString();
     if ("redirect".equals(action)) {
       String redirectURL = response.get("redirectURL").getAsString();
-      logApi("HAR: " + route.request().url() + " redirected to " + redirectURL);
+      if (isApiLoggingEnabled()) {
+        logApi("HAR: " + route.request().url() + " redirected to " + redirectURL);
+      }
       ((RouteImpl) route).redirectNavigationRequest(redirectURL);
       return;
     }
@@ -83,7 +86,9 @@ public class HARRouter {
     }
 
     if ("error".equals(action)) {
-      logApi("HAR: " + response.get("message").getAsString());
+      if (isApiLoggingEnabled()) {
+        logApi("HAR: " + response.get("message").getAsString());
+      }
       // Report the error, but fall through to the default handler.
     }
 

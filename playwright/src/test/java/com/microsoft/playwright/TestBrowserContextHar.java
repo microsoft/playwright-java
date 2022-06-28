@@ -326,8 +326,7 @@ public class TestBrowserContextHar extends TestBase {
       assertEquals("3", page2.evaluate(fetchFunction, "3"));
       assertEquals("3", page2.evaluate(fetchFunction, "3"));
       try {
-        Object result = page2.evaluate(fetchFunction, "4");
-        System.out.println(result);
+        page2.evaluate(fetchFunction, "4");
         fail("did not throw");
       } catch (PlaywrightException e) {
       }
