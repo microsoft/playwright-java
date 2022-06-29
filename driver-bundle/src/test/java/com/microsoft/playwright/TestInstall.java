@@ -21,6 +21,8 @@ import com.microsoft.playwright.impl.DriverJar;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -34,6 +36,23 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestInstall {
+  private static boolean isPortAvailable(int port) {
+    try (ServerSocket ignored = new ServerSocket(port)) {
+      return true;
+    } catch (IOException ignored) {
+      return false;
+    }
+  }
+
+  private static int unusedPort() {
+    for (int i = 10000; i < 11000; i++) {
+      if (isPortAvailable(i)) {
+        return i;
+      }
+    }
+    throw new RuntimeException("Cannot find unused local port");
+  }
+
   @BeforeEach
   void clearSystemProperties() {
     // Clear system property to ensure that the driver is loaded from jar.
@@ -47,7 +66,10 @@ public class TestInstall {
   @Tags({@Tag("isolated"), @Tag("driverThrowTest")})
   void shouldThrowWhenBrowserPathIsInvalid(@TempDir Path tmpDir) {
     Map<String,String> env = new HashMap<>();
-    env.put("PLAYWRIGHT_DOWNLOAD_HOST", "https://127.0.0.127");
+
+    // On macOS we can only use 127.0.0.1, so pick unused port instead.
+    // https://superuser.com/questions/458875/how-do-you-get-loopback-addresses-other-than-127-0-0-1-to-work-on-os-x
+    env.put("PLAYWRIGHT_DOWNLOAD_HOST", "https://127.0.0.1:" + unusedPort());
     // Make sure the browsers are not installed yet by pointing at an empty dir.
     env.put("PLAYWRIGHT_BROWSERS_PATH", tmpDir.toString());
     env.put("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD", "false");
