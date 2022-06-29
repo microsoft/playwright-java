@@ -82,7 +82,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
 
     JsonObject json = sendMessage("connect", params).getAsJsonObject();
     JsonPipe pipe = connection.getExistingObject(json.getAsJsonObject("pipe").get("guid").getAsString());
-    Connection connection = new Connection(pipe);
+    Connection connection = new Connection(pipe, this.connection.env);
     PlaywrightImpl playwright = connection.initializePlaywright();
     if (!playwright.initializer.has("preLaunchedBrowser")) {
       try {

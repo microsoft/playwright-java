@@ -28,18 +28,25 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 class StackTraceCollector {
+  static final String PLAYWRIGHT_JAVA_SRC = "PLAYWRIGHT_JAVA_SRC";
   private final List<Path> srcDirs;
   private final Map<Path, String> classToSourceCache = new HashMap<>();
 
-  static StackTraceCollector createFromEnv() {
-    String srcRoots = System.getenv("PLAYWRIGHT_JAVA_SRC");
+  static StackTraceCollector createFromEnv(Map<String, String> env) {
+    String srcRoots = null;
+    if (env != null) {
+      srcRoots = env.get(PLAYWRIGHT_JAVA_SRC);
+    }
+    if (srcRoots == null) {
+      srcRoots = System.getenv(PLAYWRIGHT_JAVA_SRC);
+    }
     if (srcRoots == null) {
       return null;
     }
     List<Path> srcDirs = Arrays.stream(srcRoots.split(File.pathSeparator)).map(p -> Paths.get(p)).collect(Collectors.toList());
     for (Path srcDir: srcDirs) {
       if (!Files.exists(srcDir.toAbsolutePath())) {
-        throw new PlaywrightException("Source location specified in PLAYWRIGHT_JAVA_SRC doesn't exist: '" + srcDir.toAbsolutePath() + "'");
+        throw new PlaywrightException("Source location specified in " + PLAYWRIGHT_JAVA_SRC + " doesn't exist: '" + srcDir.toAbsolutePath() + "'");
       }
     }
     return new StackTraceCollector(srcDirs);
