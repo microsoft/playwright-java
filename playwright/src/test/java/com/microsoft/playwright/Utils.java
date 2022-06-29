@@ -109,7 +109,6 @@ class Utils {
     Files.createDirectories(toDir);
     try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipPath.toFile()))) {
       for (ZipEntry zipEntry = zis.getNextEntry(); zipEntry != null; zipEntry = zis.getNextEntry()) {
-        System.out.println(zipEntry.getName());
         Path toPath = toDir.resolve(zipEntry.getName());
         if (zipEntry.isDirectory()) {
           Files.createDirectories(toPath);
