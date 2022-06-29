@@ -72,8 +72,12 @@ public class TestBase {
     return options;
   }
 
+  Playwright.CreateOptions playwrightOptions() {
+    return null;
+  }
+
   void initBrowserType() {
-    playwright = Playwright.create();
+    playwright = Playwright.create(playwrightOptions());
     browserType = Utils.getBrowserTypeFromEnv(playwright);
   }
 

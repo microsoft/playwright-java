@@ -65,6 +65,7 @@ public class Connection {
     isLogging = (debug != null) && debug.contains("pw:channel");
   }
   LocalUtils localUtils;
+  final Map<String, String> env;
 
   class Root extends ChannelOwner {
     Root(Connection connection) {
@@ -79,13 +80,14 @@ public class Connection {
     }
   }
 
-  Connection(Transport transport) {
+  Connection(Transport transport, Map<String, String> env) {
+    this.env = env;
     if (isLogging) {
       transport = new TransportLogger(transport);
     }
     this.transport = transport;
     root = new Root(this);
-    stackTraceCollector = StackTraceCollector.createFromEnv();
+    stackTraceCollector = StackTraceCollector.createFromEnv(env);
   }
 
   boolean isCollectingStacks() {
