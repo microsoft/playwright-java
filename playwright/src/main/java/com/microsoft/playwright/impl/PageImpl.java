@@ -974,6 +974,10 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new RouteFromHAROptions();
     }
+    if (options.update != null && options.update) {
+      browserContext.recordIntoHar(this, har, convertType(options, BrowserContext.RouteFromHAROptions.class));
+      return;
+    }
     UrlMatcher matcher = UrlMatcher.forOneOf(browserContext.baseUrl, options.url);
     HARRouter harRouter = new HARRouter(connection.localUtils, har, options.notFound);
     onClose(context -> harRouter.dispose());

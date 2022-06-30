@@ -510,9 +510,7 @@ class LocatorImpl implements Locator {
 
   JsonObject toProtocol() {
     JsonObject result = new JsonObject();
-    JsonObject frameJson = new JsonObject();
-    frameJson.addProperty("guid", frame.guid);
-    result.add("frame", frameJson);
+    result.add("frame", frame.toProtocolRef());
     result.addProperty("selector", selector);
     return result;
   }
