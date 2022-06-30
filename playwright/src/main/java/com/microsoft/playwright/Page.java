@@ -2008,6 +2008,10 @@ public interface Page extends AutoCloseable {
      */
     public HarNotFound notFound;
     /**
+     * If specified, updates the given HAR with the actual network information instead of serving from file.
+     */
+    public Boolean update;
+    /**
      * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
      * will be surved from the HAR file. If not specified, all requests are served from the HAR file.
      */
@@ -2026,6 +2030,13 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
+     * If specified, updates the given HAR with the actual network information instead of serving from file.
+     */
+    public RouteFromHAROptions setUpdate(boolean update) {
+      this.update = update;
+      return this;
+    }
+    /**
      * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
      * will be surved from the HAR file. If not specified, all requests are served from the HAR file.
      */
@@ -2038,14 +2049,6 @@ public interface Page extends AutoCloseable {
      * will be surved from the HAR file. If not specified, all requests are served from the HAR file.
      */
     public RouteFromHAROptions setUrl(Pattern url) {
-      this.url = url;
-      return this;
-    }
-    /**
-     * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
-     * will be surved from the HAR file. If not specified, all requests are served from the HAR file.
-     */
-    public RouteFromHAROptions setUrl(Predicate<String> url) {
       this.url = url;
       return this;
     }
