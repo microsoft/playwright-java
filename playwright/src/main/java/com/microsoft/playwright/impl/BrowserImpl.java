@@ -30,6 +30,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.Serialization.addHarUrlFilter;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.*;
 import static com.microsoft.playwright.impl.Utils.convertType;
@@ -137,24 +138,22 @@ class BrowserImpl extends ChannelOwner implements Browser {
     }
     JsonObject recordHar = null;
     Path recordHarPath = options.recordHarPath;
+    HarContentPolicy harContentPolicy = null;
     if (options.recordHarPath != null) {
       recordHar = new JsonObject();
       recordHar.addProperty("path", options.recordHarPath.toString());
       if (options.recordHarContent != null) {
-        recordHar.addProperty("content", options.recordHarContent.toString().toLowerCase());
+        harContentPolicy = options.recordHarContent;
       } else if (options.recordHarOmitContent != null && options.recordHarOmitContent) {
-        recordHar.addProperty("content", HarContentPolicy.OMIT.toString().toLowerCase());
+        harContentPolicy = HarContentPolicy.OMIT;
+      }
+      if (harContentPolicy != null) {
+        recordHar.addProperty("content", harContentPolicy.name().toLowerCase());
       }
       if (options.recordHarMode != null) {
-        recordHar.addProperty("mode", options.recordHarMode.toString().toLowerCase());
+        recordHar.addProperty("mode", options.recordHarMode.name().toLowerCase());
       }
-      if (options.recordHarUrlFilter instanceof String) {
-        recordHar.addProperty("urlGlob", (String) options.recordHarUrlFilter);
-      } else if (options.recordHarUrlFilter instanceof Pattern) {
-        Pattern pattern = (Pattern) options.recordHarUrlFilter;
-        recordHar.addProperty("urlRegexSource", pattern.pattern());
-        recordHar.addProperty("urlRegexFlags", toJsRegexFlags(pattern));
-      }
+      addHarUrlFilter(recordHar, options.recordHarUrlFilter);
       options.recordHarPath = null;
       options.recordHarMode = null;
       options.recordHarOmitContent = null;
@@ -210,7 +209,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     if (options.baseURL != null) {
       context.setBaseUrl(options.baseURL);
     }
-    context.recordHarPath = recordHarPath;
+    context.setRecordHar(recordHarPath, harContentPolicy);
     contexts.add(context);
     return context;
   }
@@ -231,9 +230,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     if (page != null) {
-      JsonObject jsonPage = new JsonObject();
-      jsonPage.addProperty("guid", ((PageImpl) page).guid);
-      params.add("page", jsonPage);
+      params.add("page", ((PageImpl) page).toProtocolRef());
     }
     sendMessage("startTracing", params);
   }

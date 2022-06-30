@@ -108,4 +108,10 @@ class ChannelOwner extends LoggingSupport {
 
   void handleEvent(String event, JsonObject parameters) {
   }
+
+  JsonObject toProtocolRef() {
+    JsonObject json = new JsonObject();
+    json.addProperty("guid", guid);
+    return json;
+  }
 }

@@ -30,10 +30,4 @@ class WritableStream extends ChannelOwner {
       }
     };
   }
-
-  JsonObject toProtocol() {
-    JsonObject json = new JsonObject();
-    json.addProperty("guid", guid);
-    return json;
-  }
 }
