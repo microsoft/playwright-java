@@ -18,10 +18,13 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.impl.Driver;
 import com.microsoft.playwright.impl.DriverJar;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,10 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestInstall {
   private static boolean isPortAvailable(int port) {
@@ -63,8 +63,7 @@ public class TestInstall {
   }
 
   @Test
-  @Tags({@Tag("isolated"), @Tag("driverThrowTest")})
-  void shouldThrowWhenBrowserPathIsInvalid(@TempDir Path tmpDir) {
+  void shouldThrowWhenBrowserPathIsInvalid(@TempDir Path tmpDir) throws MalformedURLException, ClassNotFoundException, NoSuchMethodException, NoSuchFieldException, IllegalAccessException {
     Map<String,String> env = new HashMap<>();
 
     // On macOS we can only use 127.0.0.1, so pick unused port instead.
@@ -74,8 +73,19 @@ public class TestInstall {
     env.put("PLAYWRIGHT_BROWSERS_PATH", tmpDir.toString());
     env.put("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD", "false");
 
-    assertThrows(RuntimeException.class, () -> Driver.ensureDriverInstalled(env, true));
-    assertThrows(RuntimeException.class, () -> Driver.ensureDriverInstalled(env, true));
+    // Reset instance field value to null for the test.
+    Field field = Driver.class.getDeclaredField("instance");
+    field.setAccessible(true);
+    Object value = field.get(Driver.class);
+    field.set(Driver.class, null);
+
+    for (int i = 0; i < 2; i++){
+      RuntimeException exception = assertThrows(RuntimeException.class, () -> Driver.ensureDriverInstalled(env, true));
+      String message = exception.getMessage();
+      assertTrue(message.contains("Failed to create driver"), message);
+    }
+
+    field.set(Driver.class, value);
   }
 
   @Test
