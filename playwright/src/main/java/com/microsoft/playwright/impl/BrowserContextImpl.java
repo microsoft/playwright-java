@@ -27,13 +27,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.Serialization.addHarUrlFilter;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
+import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
@@ -51,7 +54,17 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   final TimeoutSettings timeoutSettings = new TimeoutSettings();
   Path videosDir;
   URL baseUrl;
-  Path recordHarPath;
+  final Map<String, HarRecorder> harRecorders = new HashMap<>();
+
+  static class HarRecorder {
+    final Path path;
+    final HarContentPolicy contentPolicy;
+
+    HarRecorder(Path har, HarContentPolicy policy) {
+      path = har;
+      contentPolicy = policy;
+    }
+  }
 
   enum EventType {
     CLOSE,
@@ -72,6 +85,12 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     this.tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());
     tracing.isRemote = browser != null && browser.isRemote;
     this.request = connection.getExistingObject(initializer.getAsJsonObject("APIRequestContext").get("guid").getAsString());
+  }
+
+  void setRecordHar(Path path, HarContentPolicy policy) {
+    if (path != null) {
+      harRecorders.put("", new HarRecorder(path, policy));
+    }
   }
 
   void setBaseUrl(String spec) {
@@ -178,15 +197,31 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
     isClosedOrClosing = true;
     try {
-      if (recordHarPath != null)  {
-        JsonObject json = sendMessage("harExport").getAsJsonObject();
+      for (Map.Entry<String, HarRecorder> entry : harRecorders.entrySet()) {
+        JsonObject params = new JsonObject();
+        params.addProperty("harId", entry.getKey());
+        JsonObject json = sendMessage("harExport", params).getAsJsonObject();
         ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
         // In case of CDP connection browser is null but since the connection is established by
         // the driver it is safe to consider the artifact local.
         if (browser() != null && browser().isRemote) {
           artifact.isRemote = true;
         }
-        artifact.saveAs(recordHarPath);
+
+        // Server side will compress artifact if content is attach or if file is .zip.
+        HarRecorder harParams = entry.getValue();
+        boolean isCompressed = harParams.contentPolicy == HarContentPolicy.ATTACH || harParams.path.toString().endsWith(".zip");
+        boolean needCompressed = harParams.path.toString().endsWith(".zip");
+        if (isCompressed && !needCompressed) {
+          String tmpPath = harParams.path + ".tmp";
+          artifact.saveAs(Paths.get(tmpPath));
+          JsonObject unzipParams = new JsonObject();
+          unzipParams.addProperty("zipFile", tmpPath);
+          unzipParams.addProperty("harFile", harParams.path.toString());
+          connection.localUtils.sendMessage("harUnzip", unzipParams);
+        } else {
+          artifact.saveAs(harParams.path);
+        }
         artifact.delete();
       }
 
@@ -351,6 +386,10 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     if (options == null) {
       options = new RouteFromHAROptions();
     }
+    if (options.update != null && options.update) {
+      recordIntoHar(null, har, options);
+      return;
+    }
     UrlMatcher matcher = UrlMatcher.forOneOf(baseUrl, options.url);
     HARRouter harRouter = new HARRouter(connection.localUtils, har, options.notFound);
     onClose(context -> harRouter.dispose());
@@ -366,6 +405,22 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         sendMessage("setNetworkInterceptionEnabled", params);
       }
     });
+  }
+
+  void recordIntoHar(PageImpl page, Path har, RouteFromHAROptions options) {
+    JsonObject params = new JsonObject();
+    if (page != null) {
+      params.add("page", page.toProtocolRef());
+    }
+    JsonObject jsonOptions = new JsonObject();
+    jsonOptions.addProperty("path", har.toAbsolutePath().toString());
+    jsonOptions.addProperty("content", HarContentPolicy.ATTACH.name().toLowerCase());
+    jsonOptions.addProperty("mode", HarMode.MINIMAL.name().toLowerCase());
+    addHarUrlFilter(jsonOptions, options.url);
+    params.add("options", jsonOptions);
+    JsonObject json = sendMessage("harStart", params).getAsJsonObject();
+    String harId = json.get("harId").getAsString();
+    harRecorders.put(harId, new HarRecorder(har, HarContentPolicy.ATTACH));
   }
 
   @Override

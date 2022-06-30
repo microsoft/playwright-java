@@ -176,7 +176,7 @@ class Utils {
         } catch (IOException e) {
           throw new PlaywrightException("Failed to copy file to remote server.", e);
         }
-        jsonStreams.add(temp.toProtocol());
+        jsonStreams.add(temp.toProtocolRef());
       }
       params.add("streams", jsonStreams);
     } else {

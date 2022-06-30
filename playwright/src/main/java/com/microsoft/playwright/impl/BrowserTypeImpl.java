@@ -22,12 +22,15 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.options.HarContentPolicy;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
+import static com.microsoft.playwright.impl.Serialization.addHarUrlFilter;
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Utils.convertType;
 
 class BrowserTypeImpl extends ChannelOwner implements BrowserType {
   LocalUtils localUtils;
@@ -152,20 +155,52 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
   private BrowserContextImpl launchPersistentContextImpl(Path userDataDir, LaunchPersistentContextOptions options) {
     if (options == null) {
       options = new LaunchPersistentContextOptions();
+    } else {
+      // Make a copy so that we can nullify some fields below.
+      options = convertType(options, LaunchPersistentContextOptions.class);
     }
+    JsonObject recordHar = null;
+    Path recordHarPath = options.recordHarPath;
+    HarContentPolicy harContentPolicy = null;
+    if (options.recordHarPath != null) {
+      recordHar = new JsonObject();
+      recordHar.addProperty("path", options.recordHarPath.toString());
+      if (options.recordHarContent != null) {
+        harContentPolicy = options.recordHarContent;
+      } else if (options.recordHarOmitContent != null && options.recordHarOmitContent) {
+        harContentPolicy = HarContentPolicy.OMIT;
+      }
+      if (harContentPolicy != null) {
+        recordHar.addProperty("content", harContentPolicy.name().toLowerCase());
+      }
+      if (options.recordHarMode != null) {
+        recordHar.addProperty("mode", options.recordHarMode.toString().toLowerCase());
+      }
+      addHarUrlFilter(recordHar, options.recordHarUrlFilter);
+      options.recordHarPath = null;
+      options.recordHarMode = null;
+      options.recordHarOmitContent = null;
+      options.recordHarContent = null;
+      options.recordHarUrlFilter = null;
+    } else {
+      if (options.recordHarOmitContent != null) {
+        throw new PlaywrightException("recordHarOmitContent is set but recordHarPath is null");
+      }
+      if (options.recordHarUrlFilter != null) {
+        throw new PlaywrightException("recordHarUrlFilter is set but recordHarPath is null");
+      }
+      if (options.recordHarMode != null) {
+        throw new PlaywrightException("recordHarMode is set but recordHarPath is null");
+      }
+      if (options.recordHarContent != null) {
+        throw new PlaywrightException("recordHarContent is set but recordHarPath is null");
+      }
+    }
+
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("userDataDir", userDataDir.toString());
-    if (options.recordHarPath != null) {
-      JsonObject recordHar = new JsonObject();
-      recordHar.addProperty("path", options.recordHarPath.toString());
-      if (options.recordHarOmitContent != null) {
-        recordHar.addProperty("omitContent", true);
-      }
-      params.remove("recordHarPath");
-      params.remove("recordHarOmitContent");
+    if (recordHar != null) {
       params.add("recordHar", recordHar);
-    } else if (options.recordHarOmitContent != null) {
-      throw new PlaywrightException("recordHarOmitContent is set but recordHarPath is null");
     }
     if (options.recordVideoDir != null) {
       JsonObject recordVideo = new JsonObject();
@@ -195,7 +230,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     if (options.baseURL != null) {
       context.setBaseUrl(options.baseURL);
     }
-    context.recordHarPath = options.recordHarPath;
+    context.setRecordHar(recordHarPath, harContentPolicy);
     return context;
   }
 

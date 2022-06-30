@@ -31,6 +31,9 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Pattern;
+
+import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 class Serialization {
   private static final Gson gson = new GsonBuilder()
@@ -288,15 +291,23 @@ class Serialization {
   static JsonArray toProtocol(ElementHandle[] handles) {
     JsonArray jsonElements = new JsonArray();
     for (ElementHandle handle : handles) {
-      JsonObject jsonHandle = new JsonObject();
-      jsonHandle.addProperty("guid", ((ElementHandleImpl) handle).guid);
-      jsonElements.add(jsonHandle);
+      jsonElements.add(((ElementHandleImpl) handle).toProtocolRef());
     }
     return jsonElements;
   }
 
   static JsonArray toProtocol(Map<String, String> map) {
     return toNameValueArray(map);
+  }
+
+  static void addHarUrlFilter(JsonObject options, Object urlFilter) {
+      if (urlFilter instanceof String) {
+        options.addProperty("urlGlob", (String) urlFilter);
+      } else if (urlFilter instanceof Pattern) {
+        Pattern pattern = (Pattern) urlFilter;
+        options.addProperty("urlRegexSource", pattern.pattern());
+        options.addProperty("urlRegexFlags", toJsRegexFlags(pattern));
+      }
   }
 
   static JsonArray toNameValueArray(Map<String, ?> map) {
@@ -349,9 +360,7 @@ class Serialization {
   private static class HandleSerializer implements JsonSerializer<JSHandleImpl> {
     @Override
     public JsonElement serialize(JSHandleImpl src, Type typeOfSrc, JsonSerializationContext context) {
-      JsonObject json = new JsonObject();
-      json.addProperty("guid", src.guid);
-      return json;
+      return src.toProtocolRef();
     }
   }
 

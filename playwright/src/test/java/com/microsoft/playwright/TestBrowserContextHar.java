@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.HarContentPolicy;
 import com.microsoft.playwright.options.HarMode;
 import com.microsoft.playwright.options.HarNotFound;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,6 +37,7 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.Utils.copy;
 import static com.microsoft.playwright.Utils.extractZip;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static com.microsoft.playwright.options.HarContentPolicy.ATTACH;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBrowserContextHar extends TestBase {
@@ -264,7 +267,29 @@ public class TestBrowserContextHar extends TestBase {
     }
     try (BrowserContext context2 = browser.newContext()) {
       context2.routeFromHAR(harPath, new BrowserContext.RouteFromHAROptions().setNotFound(HarNotFound.ABORT));
-      Page page2 = context.newPage();
+      Page page2 = context2.newPage();
+      page2.navigate(server.PREFIX + "/one-style.html");
+      assertTrue(page2.content().contains("hello, world!"));
+      assertThat(page2.locator("body")).hasCSS("background-color", "rgb(255, 192, 203)");
+    }
+  }
+
+  @Test
+  void shouldProduceExtractedZip(@TempDir Path tmpDir) throws IOException {
+    Path harPath = tmpDir.resolve("har.har");
+    try (BrowserContext context1 = browser.newContext(new Browser.NewContextOptions()
+      .setRecordHarPath(harPath)
+      .setRecordHarMode(HarMode.MINIMAL)
+      .setRecordHarContent(ATTACH))) {
+      Page page1 = context1.newPage();
+      page1.navigate(server.PREFIX + "/one-style.html");
+    }
+    assertTrue(Files.exists(harPath));
+    String har = new String(Files.readAllBytes(harPath), StandardCharsets.UTF_8);
+    assertFalse(har.contains("background-color"));
+    try (BrowserContext context2 = browser.newContext()) {
+      context2.routeFromHAR(harPath, new BrowserContext.RouteFromHAROptions().setNotFound(HarNotFound.ABORT));
+      Page page2 = context2.newPage();
       page2.navigate(server.PREFIX + "/one-style.html");
       assertTrue(page2.content().contains("hello, world!"));
       assertThat(page2.locator("body")).hasCSS("background-color", "rgb(255, 192, 203)");
@@ -286,7 +311,7 @@ public class TestBrowserContextHar extends TestBase {
 
     try (BrowserContext context2 = browser.newContext()) {
       context2.routeFromHAR(harDir.resolve("har.har"));
-      Page page2 = context.newPage();
+      Page page2 = context2.newPage();
       page2.navigate(server.PREFIX + "/one-style.html");
       assertTrue(page2.content().contains("hello, world!"));
       assertThat(page2.locator("body")).hasCSS("background-color", "rgb(255, 192, 203)");
@@ -379,4 +404,54 @@ public class TestBrowserContextHar extends TestBase {
     }
   }
 
+  @Test
+  void shouldUpdateHarZipForContext(@TempDir Path tmpDir) {
+    Path harPath = tmpDir.resolve("har.zip");
+    try (BrowserContext context1 = browser.newContext()) {
+      context1.routeFromHAR(harPath, new BrowserContext.RouteFromHAROptions().setUpdate(true));
+      Page page1 = context1.newPage();
+      page1.navigate(server.PREFIX + "/one-style.html");
+    }
+    try (BrowserContext context2 = browser.newContext()) {
+      context2.routeFromHAR(harPath, new BrowserContext.RouteFromHAROptions().setNotFound(HarNotFound.ABORT));
+      Page page2 = context2.newPage();
+      page2.navigate(server.PREFIX + "/one-style.html");
+      assertTrue(page2.content().contains("hello, world!"));
+      assertThat(page2.locator("body")).hasCSS("background-color", "rgb(255, 192, 203)");
+    }
+  }
+
+  @Test
+  void shouldUpdateHarZipForPage(@TempDir Path tmpDir) {
+    Path harPath = tmpDir.resolve("har.zip");
+    try (BrowserContext context1 = browser.newContext()) {
+      Page page1 = context1.newPage();
+      page1.routeFromHAR(harPath, new Page.RouteFromHAROptions().setUpdate(true));
+      page1.navigate(server.PREFIX + "/one-style.html");
+    }
+    try (BrowserContext context2 = browser.newContext()) {
+      Page page2 = context2.newPage();
+      page2.routeFromHAR(harPath, new Page.RouteFromHAROptions().setNotFound(HarNotFound.ABORT));
+      page2.navigate(server.PREFIX + "/one-style.html");
+      assertTrue(page2.content().contains("hello, world!"));
+      assertThat(page2.locator("body")).hasCSS("background-color", "rgb(255, 192, 203)");
+    }
+  }
+
+  @Test
+  void shouldUpdateExtractedHarZipForPage(@TempDir Path tmpDir) {
+    Path harPath = tmpDir.resolve("har.har");
+    try (BrowserContext context1 = browser.newContext()) {
+      Page page1 = context1.newPage();
+      page1.routeFromHAR(harPath, new Page.RouteFromHAROptions().setUpdate(true));
+      page1.navigate(server.PREFIX + "/one-style.html");
+    }
+    try (BrowserContext context2 = browser.newContext()) {
+      Page page2 = context2.newPage();
+      page2.routeFromHAR(harPath, new Page.RouteFromHAROptions().setNotFound(HarNotFound.ABORT));
+      page2.navigate(server.PREFIX + "/one-style.html");
+      assertTrue(page2.content().contains("hello, world!"));
+      assertThat(page2.locator("body")).hasCSS("background-color", "rgb(255, 192, 203)");
+    }
+  }
 }
