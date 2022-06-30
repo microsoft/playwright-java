@@ -24,7 +24,6 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,7 +62,7 @@ public class TestInstall {
   }
 
   @Test
-  void shouldThrowWhenBrowserPathIsInvalid(@TempDir Path tmpDir) throws MalformedURLException, ClassNotFoundException, NoSuchMethodException, NoSuchFieldException, IllegalAccessException {
+  void shouldThrowWhenBrowserPathIsInvalid(@TempDir Path tmpDir) throws NoSuchFieldException, IllegalAccessException {
     Map<String,String> env = new HashMap<>();
 
     // On macOS we can only use 127.0.0.1, so pick unused port instead.
@@ -114,12 +113,20 @@ public class TestInstall {
   }
 
   @Test
-  void playwrightDriverAlternativeImpl() {
+  void playwrightDriverAlternativeImpl() throws NoSuchFieldException, IllegalAccessException {
+    // Reset instance field value to null for the test.
+    Field field = Driver.class.getDeclaredField("instance");
+    field.setAccessible(true);
+    Object value = field.get(Driver.class);
+    field.set(Driver.class, null);
+
     System.setProperty("playwright.driver.impl", "com.microsoft.playwright.impl.AlternativeDriver");
     RuntimeException thrown =
       assertThrows(
         RuntimeException.class,
         () -> Driver.ensureDriverInstalled(Collections.emptyMap(), false));
     assertEquals("Failed to create driver", thrown.getMessage());
+
+    field.set(Driver.class, value);
   }
 }
