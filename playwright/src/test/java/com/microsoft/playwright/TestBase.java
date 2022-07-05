@@ -69,6 +69,9 @@ public class TestBase {
     options = new BrowserType.LaunchOptions();
     options.headless = !headful;
     options.channel = getBrowserChannelFromEnv();
+    if (isFirefox()) {
+      options.setTimeout(180000);
+    }
     return options;
   }
 
