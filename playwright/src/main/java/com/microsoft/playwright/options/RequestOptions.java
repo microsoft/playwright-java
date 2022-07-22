@@ -19,13 +19,41 @@ package com.microsoft.playwright.options;
 import com.microsoft.playwright.impl.RequestOptionsImpl;
 
 /**
- * The {@code RequestOptions} allows to create form data to be sent via {@code APIRequestContext}.
+ * The {@code RequestOptions} allows to create form data to be sent via {@code APIRequestContext}. Playwright will automatically
+ * determine content type of the request.
  * <pre>{@code
  * context.request().post(
  *   "https://example.com/submit",
  *   RequestOptions.create()
  *     .setQueryParam("page", 1)
  *     .setData("My data"));
+ * }</pre>
+ *
+ * <p> **Uploading html form data**
+ *
+ * <p> {@code FormData} class can be used to send a form to the server, by default the request will use
+ * {@code application/x-www-form-urlencoded} encoding:
+ * <pre>{@code
+ * context.request().post("https://example.com/signup", RequestOptions.create().setForm(
+ *   FormData.create()
+ *     .set("firstName", "John")
+ *     .set("lastName", "Doe")));
+ * }</pre>
+ *
+ * <p> You can also send files as fields of an html form. The data will be encoded using <a
+ * href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST">{@code multipart/form-data}</a>:
+ * <pre>{@code
+ * Path path = Paths.get("members.csv");
+ * APIResponse response = context.request().post("https://example.com/upload_members",
+ *   RequestOptions.create().setMultipart(FormData.create().set("membersList", path)));
+ * }</pre>
+ *
+ * <p> Alternatively, you can build the file payload manually:
+ * <pre>{@code
+ * FilePayload filePayload = new FilePayload("members.csv", "text/csv",
+ *   "Alice, 33\nJohn, 35\n".getBytes(StandardCharsets.UTF_8));
+ * APIResponse response = context.request().post("https://example.com/upload_members",
+ *   RequestOptions.create().setMultipart(FormData.create().set("membersList", filePayload)));
  * }</pre>
  */
 public interface RequestOptions {

@@ -67,7 +67,7 @@ public interface BrowserContext extends AutoCloseable {
    * done and its response has started loading in the popup.
    * <pre>{@code
    * Page newPage = context.waitForPage(() -> {
-   *   page.click("a[target=_blank]");
+   *   page.locator("a[target=_blank]").click();
    * });
    * System.out.println(newPage.evaluate("location.href"));
    * }</pre>
@@ -190,7 +190,7 @@ public interface BrowserContext extends AutoCloseable {
     public Boolean update;
     /**
      * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
-     * will be surved from the HAR file. If not specified, all requests are served from the HAR file.
+     * will be served from the HAR file. If not specified, all requests are served from the HAR file.
      */
     public Object url;
 
@@ -215,7 +215,7 @@ public interface BrowserContext extends AutoCloseable {
     }
     /**
      * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
-     * will be surved from the HAR file. If not specified, all requests are served from the HAR file.
+     * will be served from the HAR file. If not specified, all requests are served from the HAR file.
      */
     public RouteFromHAROptions setUrl(String url) {
       this.url = url;
@@ -223,7 +223,7 @@ public interface BrowserContext extends AutoCloseable {
     }
     /**
      * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
-     * will be surved from the HAR file. If not specified, all requests are served from the HAR file.
+     * will be served from the HAR file. If not specified, all requests are served from the HAR file.
      */
     public RouteFromHAROptions setUrl(Pattern url) {
       this.url = url;
@@ -404,7 +404,7 @@ public interface BrowserContext extends AutoCloseable {
    *         "</script>\n" +
    *         "<button onclick=\"onClick()\">Click me</button>\n" +
    *         "<div></div>");
-   *       page.click("button");
+   *       page.locator("button").click();
    *     }
    *   }
    * }
@@ -463,7 +463,7 @@ public interface BrowserContext extends AutoCloseable {
    *         "</script>\n" +
    *         "<button onclick=\"onClick()\">Click me</button>\n" +
    *         "<div></div>");
-   *       page.click("button");
+   *       page.locator("button").click();
    *     }
    *   }
    * }
@@ -533,7 +533,7 @@ public interface BrowserContext extends AutoCloseable {
    *         "</script>\n" +
    *         "<button onclick=\"onClick()\">Click me</button>\n" +
    *         "<div></div>\n");
-   *       page.click("button");
+   *       page.locator("button").click();
    *     }
    *   }
    * }

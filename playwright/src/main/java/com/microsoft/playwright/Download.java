@@ -27,14 +27,14 @@ import java.nio.file.Path;
  * <p> Download event is emitted once the download starts. Download path becomes available once download completes:
  * <pre>{@code
  * // wait for download to start
- * Download download  = page.waitForDownload(() -> page.click("a"));
+ * Download download  = page.waitForDownload(() -> page.locator("a").click());
  * // wait for download to complete
  * Path path = download.path();
  * }</pre>
  * <pre>{@code
  * // wait for download to start
  * Download download = page.waitForDownload(() -> {
- *   page.click("a");
+ *   page.locator("a").click();
  * });
  * // wait for download to complete
  * Path path = download.path();

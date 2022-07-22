@@ -1214,7 +1214,7 @@ public interface ElementHandle extends JSHandle {
    * This method returns the bounding box of the element, or {@code null} if the element is not visible. The bounding box is
    * calculated relative to the main frame viewport - which is usually the same as the browser window.
    *
-   * <p> Scrolling affects the returned bonding box, similarly to <a
+   * <p> Scrolling affects the returned bounding box, similarly to <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">Element.getBoundingClientRect</a>.
    * That means {@code x} and/or {@code y} may be negative.
    *

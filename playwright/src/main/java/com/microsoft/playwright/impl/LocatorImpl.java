@@ -67,7 +67,8 @@ class LocatorImpl implements Locator {
       if (options.hasText != null) {
         if (options.hasText instanceof Pattern) {
           Pattern pattern = (Pattern) options.hasText;
-          selector += " >> :scope:text-matches(" + escapeWithQuotes(pattern.pattern()) + ", \"" + toJsRegexFlags(pattern) + "\")";
+          String jsRegex = "/" + pattern.pattern() + "/" + toJsRegexFlags(pattern);
+          selector += " >> has=" + gson().toJson("text=" + jsRegex);
         } else if (options.hasText instanceof String) {
           String text = (String) options.hasText;
           selector += " >> :scope:has-text(" + escapeWithQuotes(text) + ")";

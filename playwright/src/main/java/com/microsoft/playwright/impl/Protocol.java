@@ -31,6 +31,7 @@ class SerializedValue{
   // Possible values: { 'null, 'undefined, 'NaN, 'Infinity, '-Infinity, '-0 }
   String v;
   String d;
+  String u;
   public static class R {
     String p;
     String f;

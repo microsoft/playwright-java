@@ -120,6 +120,27 @@ public class TestPageLocatorQuery extends TestBase {
   }
 
   @Test
+  void shouldFilterByCaseInsensitiveRegexInAChild() {
+    page.setContent("<div class=\"test\"><h5>Title Text</h5></div>");
+    Pattern pattern = Pattern.compile("^title text$", Pattern.CASE_INSENSITIVE);
+    assertThat(page.locator("div", new Page.LocatorOptions().setHasText(pattern))).hasText("Title Text");
+  }
+
+  @Test
+  void shouldFilterByCaseInsensitiveRegexInMultipleChildren() {
+    page.setContent("<div class=\"test\"><h5>Title</h5> <h2><i>Text</i></h2></div>`");
+    Pattern pattern = Pattern.compile("^title text$", Pattern.CASE_INSENSITIVE);
+    assertThat(page.locator("div", new Page.LocatorOptions().setHasText(pattern))).hasClass("test");
+  }
+
+  @Test
+  void shouldFilterByRegexWithSpecialSymbols() {
+    page.setContent("<div class=\"test\"><h5>First/\"and\"</h5><h2><i>Second\\</i></h2></div>");
+    Pattern pattern = Pattern.compile("first\\/\".*\"second\\\\$", Pattern.CASE_INSENSITIVE);
+    assertThat(page.locator("div", new Page.LocatorOptions().setHasText(pattern))).hasClass("test");
+  }
+
+  @Test
   void shouldSupportHasLocator() {
     page.setContent("<div><span>hello</span></div><div><span>world</span></div>");
     assertThat(page.locator("div", new Page.LocatorOptions().setHas(page.locator("text=world")))).hasCount(1);

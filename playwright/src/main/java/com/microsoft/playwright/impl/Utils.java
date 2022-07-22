@@ -307,4 +307,18 @@ class Utils {
     }
     return regexFlags;
   }
+
+  static int fromJsRegexFlags(String regexFlags) {
+    int flags = 0;
+    if (regexFlags.contains("i")) {
+      flags |= Pattern.CASE_INSENSITIVE;
+    }
+    if (regexFlags.contains("s")) {
+      flags |= Pattern.DOTALL;
+    }
+    if (regexFlags.contains("m")) {
+      flags |= Pattern.MULTILINE;
+    }
+    return flags;
+  }
 }

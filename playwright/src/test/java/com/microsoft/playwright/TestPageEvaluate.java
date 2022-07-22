@@ -20,6 +20,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.Date;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.ZonedDateTime;
 
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
@@ -574,20 +579,52 @@ public class TestPageEvaluate extends TestBase {
     assertTrue(((String) error).contains("Error: error message"));
   }
 
+  @Test
   void shouldEvaluateDate() {
-    // TODO: Date values are not supported in java.
+    Object result = page.evaluate("() => ({ date: new Date('2020-05-27T01:31:38.506Z') })");
+    Date expected = Date.from(ZonedDateTime.parse("2020-05-27T01:31:38.506Z").toInstant());
+    assertEquals(mapOf("date", expected), result);
   }
 
+  @Test
   void shouldRoundtripDate() {
-    // TODO: Date values are not supported in java.
+    Date date = Date.from(ZonedDateTime.parse("2020-05-27T01:31:38.506Z").toInstant());
+    Object result = page.evaluate("date => date", date);
+    assertEquals(date.toString(), result.toString());
   }
 
+  @Test
   void shouldRoundtripRegex() {
-    // Not applicable
+    Pattern regex = Pattern.compile("hello", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+    Object result = page.evaluate("regex => regex", regex);
+    assertEquals(regex.toString(), result.toString());
+    assertEquals(regex.flags(), ((Pattern)result).flags());
   }
 
+  @Test
   void shouldJsonValueDate() {
-    // TODO: Date values are not supported in java.
+    JSHandle resultHandle = page.evaluateHandle("() => ({ date: new Date('2020-05-27T01:31:38.506Z') })");
+    assertEquals(mapOf("date", Date.from(ZonedDateTime.parse("2020-05-27T01:31:38.506Z").toInstant())), resultHandle.jsonValue());
+  }
+
+  @Test
+  void shouldEvaluateUrl() throws MalformedURLException {
+    Object result = page.evaluate("() => ({ url: new URL('https://example.com/') })");
+    assertEquals(mapOf("url", new URL("https://example.com/")), result);
+  }
+
+  @Test
+  void shouldRoundtripUrl() throws MalformedURLException {
+    URL url = new URL("https://example.com");
+    Object result = page.evaluate("url => url", url);
+    assertEquals(url.toString(), result.toString());
+  }
+
+  @Test
+  void shouldRoundtripComplexUrl() throws MalformedURLException {
+    URL url = new URL("https://user:password@www.contoso.com:80/Home/Index.htm?q1=v1&q2=v2#FragmentName");
+    Object result = page.evaluate("url => url", url);
+    assertEquals(url.toString(), result.toString());
   }
 
   @Test

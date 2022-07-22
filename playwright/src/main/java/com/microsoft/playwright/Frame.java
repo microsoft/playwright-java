@@ -2366,9 +2366,25 @@ public interface Frame {
    * @param eventInit Optional event-specific initialization properties.
    */
   void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options);
+  /**
+   *
+   *
+   * @param source A selector to search for an element to drag. If there are multiple elements satisfying the selector, the first will be
+   * used. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param target A selector to search for an element to drop onto. If there are multiple elements satisfying the selector, the first will
+   * be used. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   */
   default void dragAndDrop(String source, String target) {
     dragAndDrop(source, target, null);
   }
+  /**
+   *
+   *
+   * @param source A selector to search for an element to drag. If there are multiple elements satisfying the selector, the first will be
+   * used. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param target A selector to search for an element to drop onto. If there are multiple elements satisfying the selector, the first will
+   * be used. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   */
   void dragAndDrop(String source, String target, DragAndDropOptions options);
   /**
    * Returns the return value of {@code expression}.
