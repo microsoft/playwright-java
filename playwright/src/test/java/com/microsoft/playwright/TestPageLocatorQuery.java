@@ -139,6 +139,12 @@ public class TestPageLocatorQuery extends TestBase {
     Pattern pattern = Pattern.compile("first\\/\".*\"second\\\\$", Pattern.CASE_INSENSITIVE);
     assertThat(page.locator("div", new Page.LocatorOptions().setHasText(pattern))).hasClass("test");
   }
+  @Test
+  void shouldFilterByTextWithAmpersand() {
+    page.setContent("<div>Save & Continue</div>");
+    assertEquals("Save & Continue", page.locator("div",
+      new Page.LocatorOptions().setHasText("Save & Continue")).textContent());
+  }
 
   @Test
   void shouldSupportHasLocator() {
