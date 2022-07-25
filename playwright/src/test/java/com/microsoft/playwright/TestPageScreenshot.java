@@ -22,6 +22,7 @@ import com.microsoft.playwright.options.ScreenshotCaret;
 import com.microsoft.playwright.options.ScreenshotScale;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.opentest4j.AssertionFailedError;
 
 import javax.imageio.ImageIO;
@@ -220,6 +221,7 @@ public class TestPageScreenshot extends TestBase {
   }
 
   @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="fixme")
   void shouldCaptureBlinkingCaretIfExplicitlyAskedFor() {
     page.setContent("      <!-- Refer to stylesheet from other origin. Accessing this\n" +
       "           stylesheet rules will throw.\n" +

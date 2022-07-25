@@ -37,7 +37,7 @@ import com.microsoft.playwright.impl.PageAssertionsImpl;
  *   @Test
  *   void statusBecomesSubmitted() {
  *     ...
- *     page.click("#submit-button");
+ *     page.locator("#submit-button").click();
  *     assertThat(page.locator(".status")).hasText("Submitted");
  *   }
  * }

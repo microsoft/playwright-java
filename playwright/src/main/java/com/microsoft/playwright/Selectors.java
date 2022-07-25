@@ -63,7 +63,7 @@ public interface Selectors {
    * // Use the selector prefixed with its name.
    * Locator button = page.locator("tag=button");
    * // Combine it with other selector engines.
-   * page.click("tag=div >> text=\"Click me\"");
+   * page.locator("tag=div >> text=\"Click me\"").click();
    * // Can use it in any methods supporting selectors.
    * int buttonCount = (int) page.locator("tag=button").count();
    * browser.close();
@@ -98,7 +98,7 @@ public interface Selectors {
    * // Use the selector prefixed with its name.
    * Locator button = page.locator("tag=button");
    * // Combine it with other selector engines.
-   * page.click("tag=div >> text=\"Click me\"");
+   * page.locator("tag=div >> text=\"Click me\"").click();
    * // Can use it in any methods supporting selectors.
    * int buttonCount = (int) page.locator("tag=button").count();
    * browser.close();
@@ -131,7 +131,7 @@ public interface Selectors {
    * // Use the selector prefixed with its name.
    * Locator button = page.locator("tag=button");
    * // Combine it with other selector engines.
-   * page.click("tag=div >> text=\"Click me\"");
+   * page.locator("tag=div >> text=\"Click me\"").click();
    * // Can use it in any methods supporting selectors.
    * int buttonCount = (int) page.locator("tag=button").count();
    * browser.close();
@@ -166,7 +166,7 @@ public interface Selectors {
    * // Use the selector prefixed with its name.
    * Locator button = page.locator("tag=button");
    * // Combine it with other selector engines.
-   * page.click("tag=div >> text=\"Click me\"");
+   * page.locator("tag=div >> text=\"Click me\"").click();
    * // Can use it in any methods supporting selectors.
    * int buttonCount = (int) page.locator("tag=button").count();
    * browser.close();

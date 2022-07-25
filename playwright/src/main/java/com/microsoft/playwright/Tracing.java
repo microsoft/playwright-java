@@ -192,7 +192,7 @@ public interface Tracing {
    * page.navigate("https://playwright.dev");
    *
    * context.tracing().startChunk();
-   * page.click("text=Get Started");
+   * page.locator("text=Get Started").click();
    * // Everything between startChunk and stopChunk will be recorded in the trace.
    * context.tracing().stopChunk(new Tracing.StopChunkOptions()
    *   .setPath(Paths.get("trace1.zip")));
@@ -219,7 +219,7 @@ public interface Tracing {
    * page.navigate("https://playwright.dev");
    *
    * context.tracing().startChunk();
-   * page.click("text=Get Started");
+   * page.locator("text=Get Started").click();
    * // Everything between startChunk and stopChunk will be recorded in the trace.
    * context.tracing().stopChunk(new Tracing.StopChunkOptions()
    *   .setPath(Paths.get("trace1.zip")));

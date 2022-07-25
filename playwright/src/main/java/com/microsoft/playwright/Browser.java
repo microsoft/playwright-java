@@ -1075,6 +1075,10 @@ public interface Browser extends AutoCloseable {
    * <p> In case this browser is connected to, clears all created contexts belonging to this browser and disconnects from the
    * browser server.
    *
+   * <p> <strong>NOTE:</strong> This is similar to force quitting the browser. Therefore, you should call {@link BrowserContext#close
+   * BrowserContext.close()} on any {@code BrowserContext}'s you explicitly created earlier with {@link Browser#newContext
+   * Browser.newContext()} **before** calling {@link Browser#close Browser.close()}.
+   *
    * <p> The {@code Browser} object itself is considered to be disposed and cannot be used anymore.
    */
   void close();
@@ -1094,6 +1098,11 @@ public interface Browser extends AutoCloseable {
   boolean isConnected();
   /**
    * Creates a new browser context. It won't share cookies/cache with other browser contexts.
+   *
+   * <p> <strong>NOTE:</strong> If directly using this method to create {@code BrowserContext}s, it is best practice to explicilty close the returned context
+   * via {@link BrowserContext#close BrowserContext.close()} when your code is done with the {@code BrowserContext}, and before
+   * calling {@link Browser#close Browser.close()}. This will ensure the {@code context} is closed gracefully and any
+   * artifacts—like HARs and videos—are fully flushed and saved.
    * <pre>{@code
    * Browser browser = playwright.firefox().launch();  // Or 'chromium' or 'webkit'.
    * // Create a new incognito browser context.
@@ -1101,6 +1110,10 @@ public interface Browser extends AutoCloseable {
    * // Create a new page in a pristine context.
    * Page page = context.newPage();
    * page.navigate('https://example.com');
+   *
+   * // Gracefull close up everything
+   * context.close();
+   * browser.close();
    * }</pre>
    */
   default BrowserContext newContext() {
@@ -1108,6 +1121,11 @@ public interface Browser extends AutoCloseable {
   }
   /**
    * Creates a new browser context. It won't share cookies/cache with other browser contexts.
+   *
+   * <p> <strong>NOTE:</strong> If directly using this method to create {@code BrowserContext}s, it is best practice to explicilty close the returned context
+   * via {@link BrowserContext#close BrowserContext.close()} when your code is done with the {@code BrowserContext}, and before
+   * calling {@link Browser#close Browser.close()}. This will ensure the {@code context} is closed gracefully and any
+   * artifacts—like HARs and videos—are fully flushed and saved.
    * <pre>{@code
    * Browser browser = playwright.firefox().launch();  // Or 'chromium' or 'webkit'.
    * // Create a new incognito browser context.
@@ -1115,6 +1133,10 @@ public interface Browser extends AutoCloseable {
    * // Create a new page in a pristine context.
    * Page page = context.newPage();
    * page.navigate('https://example.com');
+   *
+   * // Gracefull close up everything
+   * context.close();
+   * browser.close();
    * }</pre>
    */
   BrowserContext newContext(NewContextOptions options);

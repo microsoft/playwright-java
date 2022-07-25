@@ -28,12 +28,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.*;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
+import static com.microsoft.playwright.impl.Utils.fromJsRegexFlags;
 
 class Serialization {
   private static final Gson gson = new GsonBuilder()
@@ -144,6 +148,14 @@ class Serialization {
         result.n = (Integer) value;
       } else if (value instanceof String) {
         result.s = (String) value;
+      } else if (value instanceof Date) {
+        result.d = ((Date)value).toInstant().toString();
+      } else if (value instanceof URL) {
+        result.u = ((URL)value).toString();
+      } else if (value instanceof Pattern) {
+        result.r = new SerializedValue.R();
+        result.r.p = ((Pattern)value).pattern();
+        result.r.f = toJsRegexFlags(((Pattern)value));
       } else {
         HashableValue mapKey = new HashableValue(value);
         Integer id = valueToId.get(mapKey);
@@ -207,6 +219,17 @@ class Serialization {
       return (T) value.b;
     if (value.s != null)
       return (T) value.s;
+    if (value.u != null) {
+      try {
+        return (T)(new URL(value.u));
+      } catch (MalformedURLException e) {
+        throw new PlaywrightException("Unexpected value: " + value.u, e);
+      }
+    }
+    if (value.d != null)
+      return (T)(Date.from(Instant.parse(value.d)));
+    if (value.r != null)
+      return (T)(Pattern.compile(value.r.p, fromJsRegexFlags(value.r.f)));
     if (value.v != null) {
       switch (value.v) {
         case "undefined":

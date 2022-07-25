@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  *   @Test
  *   void statusBecomesSubmitted() {
  *     ...
- *     page.click("#submit-button");
+ *     page.locator("#submit-button").click();
  *     assertThat(page.locator(".status")).hasText("Submitted");
  *   }
  * }
@@ -664,9 +664,11 @@ public interface LocatorAssertions {
    */
   void hasAttribute(String name, Pattern value, HasAttributeOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with given CSS class.
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
+   * regular expression.
    * <pre>{@code
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
+   * assertThat(page.locator("#component")).hasClass("selected row");
    * }</pre>
    *
    * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
@@ -680,9 +682,11 @@ public interface LocatorAssertions {
     hasClass(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with given CSS class.
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
+   * regular expression.
    * <pre>{@code
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
+   * assertThat(page.locator("#component")).hasClass("selected row");
    * }</pre>
    *
    * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
@@ -694,9 +698,11 @@ public interface LocatorAssertions {
    */
   void hasClass(String expected, HasClassOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with given CSS class.
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
+   * regular expression.
    * <pre>{@code
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
+   * assertThat(page.locator("#component")).hasClass("selected row");
    * }</pre>
    *
    * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
@@ -710,9 +716,11 @@ public interface LocatorAssertions {
     hasClass(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with given CSS class.
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
+   * regular expression.
    * <pre>{@code
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
+   * assertThat(page.locator("#component")).hasClass("selected row");
    * }</pre>
    *
    * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
@@ -724,9 +732,11 @@ public interface LocatorAssertions {
    */
   void hasClass(Pattern expected, HasClassOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with given CSS class.
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
+   * regular expression.
    * <pre>{@code
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
+   * assertThat(page.locator("#component")).hasClass("selected row");
    * }</pre>
    *
    * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
@@ -740,9 +750,11 @@ public interface LocatorAssertions {
     hasClass(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with given CSS class.
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
+   * regular expression.
    * <pre>{@code
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
+   * assertThat(page.locator("#component")).hasClass("selected row");
    * }</pre>
    *
    * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
@@ -754,9 +766,11 @@ public interface LocatorAssertions {
    */
   void hasClass(String[] expected, HasClassOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with given CSS class.
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
+   * regular expression.
    * <pre>{@code
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
+   * assertThat(page.locator("#component")).hasClass("selected row");
    * }</pre>
    *
    * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
@@ -770,9 +784,11 @@ public interface LocatorAssertions {
     hasClass(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with given CSS class.
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
+   * regular expression.
    * <pre>{@code
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
+   * assertThat(page.locator("#component")).hasClass("selected row");
    * }</pre>
    *
    * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:

@@ -36,7 +36,6 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.impl.Serialization.addHarUrlFilter;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
-import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;

@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  *   @Test
  *   void navigatesToLoginPage() {
  *     ...
- *     page.click("#login");
+ *     page.locator("#login").click();
  *     assertThat(page).hasURL(Pattern.compile(".*\/login"));
  *   }
  * }
@@ -120,7 +120,7 @@ public interface PageAssertions {
    * assertThat(page).hasURL(".com");
    * }</pre>
    *
-   * @param urlOrRegExp Expected substring or RegExp.
+   * @param urlOrRegExp Expected URL string or RegExp.
    */
   default void hasURL(String urlOrRegExp) {
     hasURL(urlOrRegExp, null);
@@ -131,7 +131,7 @@ public interface PageAssertions {
    * assertThat(page).hasURL(".com");
    * }</pre>
    *
-   * @param urlOrRegExp Expected substring or RegExp.
+   * @param urlOrRegExp Expected URL string or RegExp.
    */
   void hasURL(String urlOrRegExp, HasURLOptions options);
   /**
@@ -140,7 +140,7 @@ public interface PageAssertions {
    * assertThat(page).hasURL(".com");
    * }</pre>
    *
-   * @param urlOrRegExp Expected substring or RegExp.
+   * @param urlOrRegExp Expected URL string or RegExp.
    */
   default void hasURL(Pattern urlOrRegExp) {
     hasURL(urlOrRegExp, null);
@@ -151,7 +151,7 @@ public interface PageAssertions {
    * assertThat(page).hasURL(".com");
    * }</pre>
    *
-   * @param urlOrRegExp Expected substring or RegExp.
+   * @param urlOrRegExp Expected URL string or RegExp.
    */
   void hasURL(Pattern urlOrRegExp, HasURLOptions options);
 }

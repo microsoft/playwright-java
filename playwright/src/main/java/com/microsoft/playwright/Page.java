@@ -2013,7 +2013,7 @@ public interface Page extends AutoCloseable {
     public Boolean update;
     /**
      * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
-     * will be surved from the HAR file. If not specified, all requests are served from the HAR file.
+     * will be served from the HAR file. If not specified, all requests are served from the HAR file.
      */
     public Object url;
 
@@ -2038,7 +2038,7 @@ public interface Page extends AutoCloseable {
     }
     /**
      * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
-     * will be surved from the HAR file. If not specified, all requests are served from the HAR file.
+     * will be served from the HAR file. If not specified, all requests are served from the HAR file.
      */
     public RouteFromHAROptions setUrl(String url) {
       this.url = url;
@@ -2046,7 +2046,7 @@ public interface Page extends AutoCloseable {
     }
     /**
      * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
-     * will be surved from the HAR file. If not specified, all requests are served from the HAR file.
+     * will be served from the HAR file. If not specified, all requests are served from the HAR file.
      */
     public RouteFromHAROptions setUrl(Pattern url) {
       this.url = url;
@@ -3581,9 +3581,25 @@ public interface Page extends AutoCloseable {
    * @param eventInit Optional event-specific initialization properties.
    */
   void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options);
+  /**
+   *
+   *
+   * @param source A selector to search for an element to drag. If there are multiple elements satisfying the selector, the first will be
+   * used. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param target A selector to search for an element to drop onto. If there are multiple elements satisfying the selector, the first will
+   * be used. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   */
   default void dragAndDrop(String source, String target) {
     dragAndDrop(source, target, null);
   }
+  /**
+   *
+   *
+   * @param source A selector to search for an element to drag. If there are multiple elements satisfying the selector, the first will be
+   * used. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param target A selector to search for an element to drop onto. If there are multiple elements satisfying the selector, the first will
+   * be used. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   */
   void dragAndDrop(String source, String target, DragAndDropOptions options);
   /**
    * This method changes the {@code CSS media type} through the {@code media} argument, and/or the {@code "prefers-colors-scheme"} media
