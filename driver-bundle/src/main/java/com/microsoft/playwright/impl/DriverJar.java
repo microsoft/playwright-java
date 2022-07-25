@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DriverJar extends Driver {
   private static final String PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD";
+  private static final String SELENIUM_REMOTE_URL = "SELENIUM_REMOTE_URL";
   private final Path driverTempDir;
 
   public DriverJar() throws IOException {
@@ -55,6 +56,10 @@ public class DriverJar extends Driver {
     }
     if (skip != null && !"0".equals(skip) && !"false".equals(skip)) {
       System.out.println("Skipping browsers download because `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD` env variable is set");
+      return;
+    }
+    if (env.get(SELENIUM_REMOTE_URL) != null || System.getenv(SELENIUM_REMOTE_URL) != null) {
+      logMessage("Skipping browsers download because `SELENIUM_REMOTE_URL` env variable is set");
       return;
     }
     Path driver = driverPath();
