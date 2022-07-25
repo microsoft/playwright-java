@@ -590,6 +590,7 @@ public class TestPageEvaluate extends TestBase {
   void shouldRoundtripDate() {
     Date date = Date.from(ZonedDateTime.parse("2020-05-27T01:31:38.506Z").toInstant());
     Object result = page.evaluate("date => date", date);
+    assertTrue(result instanceof Date);
     assertEquals(date.toString(), result.toString());
   }
 
@@ -597,6 +598,7 @@ public class TestPageEvaluate extends TestBase {
   void shouldRoundtripRegex() {
     Pattern regex = Pattern.compile("hello", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
     Object result = page.evaluate("regex => regex", regex);
+    assertTrue(result instanceof Pattern);
     assertEquals(regex.toString(), result.toString());
     assertEquals(regex.flags(), ((Pattern)result).flags());
   }
@@ -615,8 +617,9 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldRoundtripUrl() throws MalformedURLException {
-    URL url = new URL("https://example.com");
+    URL url = new URL("https://example.com/");
     Object result = page.evaluate("url => url", url);
+    assertTrue(result instanceof URL);
     assertEquals(url.toString(), result.toString());
   }
 
@@ -624,6 +627,7 @@ public class TestPageEvaluate extends TestBase {
   void shouldRoundtripComplexUrl() throws MalformedURLException {
     URL url = new URL("https://user:password@www.contoso.com:80/Home/Index.htm?q1=v1&q2=v2#FragmentName");
     Object result = page.evaluate("url => url", url);
+    assertTrue(result instanceof URL);
     assertEquals(url.toString(), result.toString());
   }
 

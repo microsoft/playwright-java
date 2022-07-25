@@ -151,7 +151,7 @@ class Serialization {
       } else if (value instanceof Date) {
         result.d = ((Date)value).toInstant().toString();
       } else if (value instanceof URL) {
-        result.s = ((URL)value).toString();
+        result.u = ((URL)value).toString();
       } else if (value instanceof Pattern) {
         result.r = new SerializedValue.R();
         result.r.p = ((Pattern)value).pattern();
@@ -223,7 +223,7 @@ class Serialization {
       try {
         return (T)(new URL(value.u));
       } catch (MalformedURLException e) {
-        return null;
+        throw new PlaywrightException("Unexpected value: " + value.u, e);
       }
     }
     if (value.d != null)
