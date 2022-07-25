@@ -11,6 +11,8 @@ RUN apt-get update && \
     curl \
     # Install utilities required for downloading driver
     unzip && \
+    # For the MSEdge install script
+    gpg &&  \
     rm -rf /var/lib/apt/lists/* && \
     # Create the pwuser
     adduser pwuser
