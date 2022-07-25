@@ -40,7 +40,7 @@ import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 import static com.microsoft.playwright.impl.Utils.fromJsRegexFlags;
 
 class Serialization {
-  private static final Gson gson = new GsonBuilder()
+  private static final Gson gson = new GsonBuilder().disableHtmlEscaping()
     .registerTypeAdapter(SameSiteAttribute.class, new SameSiteAdapter().nullSafe())
     .registerTypeAdapter(BrowserChannel.class, new ToLowerCaseAndDashSerializer<BrowserChannel>())
     .registerTypeAdapter(ColorScheme.class, new ToLowerCaseAndDashSerializer<ColorScheme>())
