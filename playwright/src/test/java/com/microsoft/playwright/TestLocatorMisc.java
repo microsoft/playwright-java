@@ -19,8 +19,9 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.options.WaitForSelectorState;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestLocatorMisc extends TestBase{
   @Test
@@ -48,5 +49,23 @@ public class TestLocatorMisc extends TestBase{
     Locator locator = page.locator("span");
     page.evalOnSelector("div", "div => setTimeout(() => div.innerHTML = '', 500)");
     locator.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.HIDDEN));
+  }
+
+  @Test
+  void locatorsHasDoesNotEncodeUnicode() {
+    page.navigate(server.EMPTY_PAGE);
+    Locator[] locators = new Locator[]{
+      page.locator("button", new Page.LocatorOptions().setHasText("Драматург")),
+      page.locator("button", new Page.LocatorOptions().setHasText(Pattern.compile("Драматург"))),
+      page.locator("button", new Page.LocatorOptions().setHas(page.locator("text=Драматург")))
+    };
+    for (Locator locator: locators) {
+      try {
+        locator.click(new Locator.ClickOptions().setTimeout(100));
+        fail("did not throw");
+      } catch (PlaywrightException e) {
+        assertTrue(e.getMessage().contains("Драматург"), e.getMessage());
+      }
+    }
   }
 }
