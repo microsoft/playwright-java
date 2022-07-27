@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright.impl;
+package com.microsoft.playwright.impl.driver;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.ZonedDateTime;
 import java.util.Map;
 
-import static com.microsoft.playwright.impl.DriverLogging.logWithTimestamp;
+import static com.microsoft.playwright.impl.driver.DriverLogging.logWithTimestamp;
 
 /**
  * This class provides access to playwright-cli. It can be either preinstalled
@@ -44,7 +43,7 @@ public abstract class Driver {
     }
 
     @Override
-    Path driverDir() {
+    protected Path driverDir() {
       return driverDir;
     }
   }
@@ -100,12 +99,12 @@ public abstract class Driver {
     }
 
     String driverImpl =
-      System.getProperty("playwright.driver.impl", "com.microsoft.playwright.impl.DriverJar");
+      System.getProperty("playwright.driver.impl", "com.microsoft.playwright.impl.driver.jar.DriverJar");
     Class<?> jarDriver = Class.forName(driverImpl);
     return (Driver) jarDriver.getDeclaredConstructor().newInstance();
   }
 
-  abstract Path driverDir();
+  protected abstract Path driverDir();
 
   protected static void logMessage(String message) {
     // This matches log format produced by the server.

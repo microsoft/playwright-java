@@ -21,6 +21,7 @@ import com.microsoft.playwright.APIRequest;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Selectors;
+import com.microsoft.playwright.impl.driver.Driver;
 
 import java.io.IOException;
 import java.nio.file.Path;

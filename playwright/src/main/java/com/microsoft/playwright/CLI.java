@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.impl.Driver;
+import com.microsoft.playwright.impl.driver.Driver;
 
 import java.io.IOException;
 import java.nio.file.Path;

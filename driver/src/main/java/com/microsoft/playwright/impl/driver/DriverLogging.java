@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright.impl;
+package com.microsoft.playwright.impl.driver;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
