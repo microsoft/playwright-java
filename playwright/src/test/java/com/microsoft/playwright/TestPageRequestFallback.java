@@ -133,14 +133,10 @@ public class TestPageRequestFallback extends TestBase {
   @Test
   void shouldChainOnce() {
     page.route("**/empty.html", route -> {
-      System.out.println("before fulfill");
       route.fulfill(new Route.FulfillOptions().setStatus(200).setBody("fulfilled one"));
-      System.out.println("after fulfill");
     }, new Page.RouteOptions().setTimes(1));
     page.route("**/empty.html", route -> {
-      System.out.println("before fallback");
       route.fallback();
-      System.out.println("after fallback");
     }, new Page.RouteOptions().setTimes(1));
     Response response = page.navigate(server.EMPTY_PAGE);
     assertEquals("fulfilled one", response.text());

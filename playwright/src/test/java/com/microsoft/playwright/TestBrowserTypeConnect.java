@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.impl.Driver;
+import com.microsoft.playwright.impl.driver.Driver;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;

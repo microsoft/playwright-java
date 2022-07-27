@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright.impl;
+package com.microsoft.playwright.impl.driver.jar;
+
+import com.microsoft.playwright.impl.driver.Driver;
 
 import java.io.IOException;
 import java.net.URI;
@@ -163,7 +165,7 @@ public class DriverJar extends Driver {
   }
 
   @Override
-  Path driverDir() {
+  protected Path driverDir() {
     return driverTempDir;
   }
 }

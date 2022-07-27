@@ -16,8 +16,8 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.impl.Driver;
-import com.microsoft.playwright.impl.DriverJar;
+import com.microsoft.playwright.impl.driver.Driver;
+import com.microsoft.playwright.impl.driver.jar.DriverJar;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
