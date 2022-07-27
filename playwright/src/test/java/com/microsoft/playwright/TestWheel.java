@@ -132,8 +132,8 @@ public class TestWheel extends TestBase {
       "altKey", false,
       "metaKey", false);
     expectEvent(expected);
-    // give the page a chacne to scroll
-    page.waitForTimeout(100);
+    // give the page a chance to scroll
+    page.waitForFunction("!!window['lastEvent']");
     // ensure that it did not.
     assertEquals(0, page.evaluate("window.scrollY"));
   }
