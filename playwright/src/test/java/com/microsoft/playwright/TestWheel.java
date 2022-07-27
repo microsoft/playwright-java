@@ -108,8 +108,8 @@ public class TestWheel extends TestBase {
       "shiftKey", false,
       "altKey", false,
       "metaKey", false);
-    expectEvent(expected);
     page.waitForFunction("window.scrollX === 100");
+    expectEvent(expected);
   }
 
   @Test
@@ -121,6 +121,8 @@ public class TestWheel extends TestBase {
       "    document.querySelector('div').addEventListener('wheel', e => e.preventDefault());\n" +
       "  }");
     page.mouse().wheel(0, 100);
+    // give the page a chance to scroll
+    page.waitForFunction("!!window['lastEvent']");
     Map<String, Object> expected = mapOf(
       "deltaX", 0,
       "deltaY", 100,
@@ -132,8 +134,6 @@ public class TestWheel extends TestBase {
       "altKey", false,
       "metaKey", false);
     expectEvent(expected);
-    // give the page a chacne to scroll
-    page.waitForTimeout(100);
     // ensure that it did not.
     assertEquals(0, page.evaluate("window.scrollY"));
   }
