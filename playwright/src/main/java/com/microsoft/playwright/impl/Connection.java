@@ -201,17 +201,23 @@ public class Connection {
       createRemoteObject(message.guid, message.params);
       return;
     }
-    if (message.method.equals("__dispose__")) {
-      ChannelOwner object = objects.get(message.guid);
-      if (object == null) {
-        throw new PlaywrightException("Cannot find object to dispose: " + message.guid);
-      }
-      object.disconnect();
-      return;
-    }
+
     ChannelOwner object = objects.get(message.guid);
     if (object == null) {
       throw new PlaywrightException("Cannot find object to call " + message.method + ": " + message.guid);
+    }
+    if (message.method.equals("__adopt__")) {
+      String childGuid = message.params.get("guid").getAsString();
+      ChannelOwner child = objects.get(childGuid);
+      if (child == null) {
+        throw new PlaywrightException("Unknown new child:  " + childGuid);
+      }
+      object.adopt(child);
+      return;
+    }
+    if (message.method.equals("__dispose__")) {
+      object.disconnect();
+      return;
     }
     object.handleEvent(message.method, message.params);
   }

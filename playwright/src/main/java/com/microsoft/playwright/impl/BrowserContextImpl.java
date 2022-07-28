@@ -83,7 +83,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
     this.tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());
     tracing.isRemote = browser != null && browser.isRemote;
-    this.request = connection.getExistingObject(initializer.getAsJsonObject("APIRequestContext").get("guid").getAsString());
+    this.request = connection.getExistingObject(initializer.getAsJsonObject("requestContext").get("guid").getAsString());
   }
 
   void setRecordHar(Path path, HarContentPolicy policy) {

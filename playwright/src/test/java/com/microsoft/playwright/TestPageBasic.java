@@ -39,7 +39,7 @@ public class TestPageBasic extends TestBase {
       newPage.evaluate("() => new Promise(r => {})");
       fail("evaluate should throw");
     } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Target closed"), e.getMessage());
+      assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
     }
   }
 

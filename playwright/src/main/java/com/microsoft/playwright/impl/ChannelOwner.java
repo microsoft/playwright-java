@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 
 class ChannelOwner extends LoggingSupport {
   final Connection connection;
-  private final ChannelOwner parent;
+  private ChannelOwner parent;
   private final Map<String, ChannelOwner> objects = new HashMap<>();
 
   final String type;
@@ -66,6 +66,12 @@ class ChannelOwner extends LoggingSupport {
       child.disconnect();
     }
     objects.clear();
+  }
+
+  void adopt(ChannelOwner child) {
+    child.parent.objects.remove(child.guid);
+    objects.put(child.guid, child);
+    child.parent = this;
   }
 
   <T> T withWaitLogging(String apiName, Supplier<T> code) {
