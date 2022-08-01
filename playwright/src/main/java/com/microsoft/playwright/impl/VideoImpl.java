@@ -72,6 +72,9 @@ class VideoImpl implements Video {
   @Override
   public void saveAs(Path path) {
     page.withLogging("Video.saveAs", () -> {
+      if (!page.isClosed()) {
+        throw new PlaywrightException("Page is not yet closed. Close the page prior to calling saveAs");
+      }
       try {
         waitForArtifact().saveAs(path);
       } catch (PlaywrightException e) {

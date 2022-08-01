@@ -127,4 +127,17 @@ public class TestScreencast extends TestBase {
     assertTrue(Files.exists(files.get(0)));
     assertTrue(Files.size(files.get(0)) > 0);
   }
+
+  @Test
+  void shouldErrorIfPageNotClosedBeforeSaveAs(@TempDir Path tmpDir) {
+    try (Page page = browser.newPage(new Browser.NewPageOptions().setRecordVideoDir(tmpDir))) {
+      page.navigate(server.PREFIX + "/grid.html");
+      Path outPath = tmpDir.resolve("some-video.webm");
+      Video video = page.video();
+      PlaywrightException exception = assertThrows(PlaywrightException.class, () -> video.saveAs(outPath));
+      assertTrue(
+        exception.getMessage().contains("Page is not yet closed. Close the page prior to calling saveAs"),
+        exception.getMessage());
+    }
+  }
 }
