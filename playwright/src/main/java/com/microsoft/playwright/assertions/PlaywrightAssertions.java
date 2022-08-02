@@ -20,6 +20,7 @@ import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.impl.APIResponseAssertionsImpl;
+import com.microsoft.playwright.impl.AssertionsTimeout;
 import com.microsoft.playwright.impl.LocatorAssertionsImpl;
 import com.microsoft.playwright.impl.PageAssertionsImpl;
 
@@ -84,6 +85,18 @@ public interface PlaywrightAssertions {
    */
   static PageAssertions assertThat(Page page) {
     return new PageAssertionsImpl(page);
+  }
+
+  /**
+   * Changes default timeout for Playwright assertions from 5 seconds to the speicified value.
+   * <pre>{@code
+   * PlaywrightAssertions.setDefaultTimeout(30_000);
+   * }</pre>
+   *
+   * @param timeout Timeout in milliseconds.
+   */
+  static void setDefaultTimeout(double milliseconds) {
+    AssertionsTimeout.setDefaultTimeout(milliseconds);
   }
 
 }

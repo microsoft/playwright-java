@@ -1028,7 +1028,9 @@ public interface BrowserType {
     }
   }
   /**
-   * This method attaches Playwright to an existing browser instance.
+   * This method attaches Playwright to an existing browser instance. When connecting to another browser launched via
+   * {@code BrowserType.launchServer} in Node.js, the major and minor version needs to match the client version (1.2.3 → is
+   * compatible with 1.2.x).
    *
    * @param wsEndpoint A browser websocket endpoint to connect to.
    */
@@ -1036,7 +1038,9 @@ public interface BrowserType {
     return connect(wsEndpoint, null);
   }
   /**
-   * This method attaches Playwright to an existing browser instance.
+   * This method attaches Playwright to an existing browser instance. When connecting to another browser launched via
+   * {@code BrowserType.launchServer} in Node.js, the major and minor version needs to match the client version (1.2.3 → is
+   * compatible with 1.2.x).
    *
    * @param wsEndpoint A browser websocket endpoint to connect to.
    */
