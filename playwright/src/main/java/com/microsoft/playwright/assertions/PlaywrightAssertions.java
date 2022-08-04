@@ -90,12 +90,12 @@ public interface PlaywrightAssertions {
   /**
    * Changes default timeout for Playwright assertions from 5 seconds to the speicified value.
    * <pre>{@code
-   * PlaywrightAssertions.setDefaultTimeout(30_000);
+   * PlaywrightAssertions.setDefaultAssertionTimeout(30_000);
    * }</pre>
    *
    * @param timeout Timeout in milliseconds.
    */
-  static void setDefaultTimeout(double milliseconds) {
+  static void setDefaultAssertionTimeout(double milliseconds) {
     AssertionsTimeout.setDefaultTimeout(milliseconds);
   }
 

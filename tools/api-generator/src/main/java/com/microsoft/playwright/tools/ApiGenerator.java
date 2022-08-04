@@ -675,9 +675,9 @@ class Method extends Element {
       }
       return;
     }
-    if ("PlaywrightAssertions.setDefaultTimeout".equals(jsonPath)) {
+    if ("PlaywrightAssertions.setDefaultAssertionTimeout".equals(jsonPath)) {
       writeJavadoc(params, output, offset);
-      output.add(offset + "static void setDefaultTimeout(double milliseconds) {");
+      output.add(offset + "static void setDefaultAssertionTimeout(double milliseconds) {");
       output.add(offset + "  AssertionsTimeout.setDefaultTimeout(milliseconds);");
       output.add(offset + "}");
       output.add("");

@@ -986,30 +986,30 @@ public class TestLocatorAssertions extends TestBase {
   void defaultTimeoutHasTextFail() {
     page.setContent("<div></div>");
     Locator locator = page.locator("div");
-    PlaywrightAssertions.setDefaultTimeout(1000);
+    PlaywrightAssertions.setDefaultAssertionTimeout(1000);
     AssertionFailedError exception = assertThrows(AssertionFailedError.class, () -> assertThat(locator).hasText("foo"));
     assertTrue(exception.getMessage().contains("Locator.expect with timeout 1000ms"), exception.getMessage());
     // Restore default.
-    PlaywrightAssertions.setDefaultTimeout(5_000);
+    PlaywrightAssertions.setDefaultAssertionTimeout(5_000);
   }
 
   @Test
   void defaultTimeoutHasTextPass() {
     page.setContent("<div>foo</div>");
     Locator locator = page.locator("div");
-    PlaywrightAssertions.setDefaultTimeout(1000);
+    PlaywrightAssertions.setDefaultAssertionTimeout(1000);
     assertThat(locator).hasText("foo");
     // Restore default.
-    PlaywrightAssertions.setDefaultTimeout(5_000);
+    PlaywrightAssertions.setDefaultAssertionTimeout(5_000);
   }
 
   @Test
   void defaultTimeoutZeroHasTextPass() {
     page.setContent("<div>foo</div>");
     Locator locator = page.locator("div");
-    PlaywrightAssertions.setDefaultTimeout(0);
+    PlaywrightAssertions.setDefaultAssertionTimeout(0);
     assertThat(locator).hasText("foo");
     // Restore default.
-    PlaywrightAssertions.setDefaultTimeout(5_000);
+    PlaywrightAssertions.setDefaultAssertionTimeout(5_000);
   }
 }
