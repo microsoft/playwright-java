@@ -675,6 +675,14 @@ class Method extends Element {
       }
       return;
     }
+    if ("PlaywrightAssertions.setDefaultAssertionTimeout".equals(jsonPath)) {
+      writeJavadoc(params, output, offset);
+      output.add(offset + "static void setDefaultAssertionTimeout(double milliseconds) {");
+      output.add(offset + "  AssertionsTimeout.setDefaultTimeout(milliseconds);");
+      output.add(offset + "}");
+      output.add("");
+      return;
+    }
     int numOverloads = 1;
     for (int i = 0; i < params.size(); i++) {
       if (params.get(i).type.isTypeUnion()) {
@@ -952,6 +960,7 @@ class Interface extends TypeDefinition {
       output.add("import com.microsoft.playwright.Locator;");
       output.add("import com.microsoft.playwright.Page;");
       output.add("import com.microsoft.playwright.impl.APIResponseAssertionsImpl;");
+      output.add("import com.microsoft.playwright.impl.AssertionsTimeout;");
       output.add("import com.microsoft.playwright.impl.LocatorAssertionsImpl;");
       output.add("import com.microsoft.playwright.impl.PageAssertionsImpl;");
     }

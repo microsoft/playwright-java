@@ -52,7 +52,7 @@ class AssertionsBase {
 
   void expectImpl(String expression, FrameExpectOptions expectOptions, Object expected, String message) {
     if (expectOptions.timeout == null) {
-      expectOptions.timeout = 5_000.0;
+      expectOptions.timeout = AssertionsTimeout.defaultTimeout;
     }
     if (expectOptions.isNot) {
       message = message.replace("expected to", "expected not to");
