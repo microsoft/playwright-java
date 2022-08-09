@@ -498,9 +498,29 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
+   * <p> If you pass an array as an expected value, the expectations are:
+   * <ol>
+   * <li> Locator resolves to a list of elements.</li>
+   * <li> Elements from a **subset** of this list contain text from the expected array, respectively.</li>
+   * <li> The matching subset of elements has the same order as the expected array.</li>
+   * <li> Each text value from the expected array is matched by some element from the list.</li>
+   * </ol>
+   *
+   * <p> For example, consider the following list:
+   *
+   * <p> Let's see how we can use the assertion:
    * <pre>{@code
-   * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
+   * // ✓ Contains the right items in the right order
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3", "Text 4"});
+   *
+   * // ✖ Wrong order
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 3", "Text 2"});
+   *
+   * // ✖ No item contains this text
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Some 33"});
+   *
+   * // ✖ Locator points to the outer list element, not to the list items
+   * assertThat(page.locator("ul")).containsText(new String[] {"Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -515,9 +535,29 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
+   * <p> If you pass an array as an expected value, the expectations are:
+   * <ol>
+   * <li> Locator resolves to a list of elements.</li>
+   * <li> Elements from a **subset** of this list contain text from the expected array, respectively.</li>
+   * <li> The matching subset of elements has the same order as the expected array.</li>
+   * <li> Each text value from the expected array is matched by some element from the list.</li>
+   * </ol>
+   *
+   * <p> For example, consider the following list:
+   *
+   * <p> Let's see how we can use the assertion:
    * <pre>{@code
-   * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
+   * // ✓ Contains the right items in the right order
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3", "Text 4"});
+   *
+   * // ✖ Wrong order
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 3", "Text 2"});
+   *
+   * // ✖ No item contains this text
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Some 33"});
+   *
+   * // ✖ Locator points to the outer list element, not to the list items
+   * assertThat(page.locator("ul")).containsText(new String[] {"Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -530,9 +570,29 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
+   * <p> If you pass an array as an expected value, the expectations are:
+   * <ol>
+   * <li> Locator resolves to a list of elements.</li>
+   * <li> Elements from a **subset** of this list contain text from the expected array, respectively.</li>
+   * <li> The matching subset of elements has the same order as the expected array.</li>
+   * <li> Each text value from the expected array is matched by some element from the list.</li>
+   * </ol>
+   *
+   * <p> For example, consider the following list:
+   *
+   * <p> Let's see how we can use the assertion:
    * <pre>{@code
-   * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
+   * // ✓ Contains the right items in the right order
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3", "Text 4"});
+   *
+   * // ✖ Wrong order
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 3", "Text 2"});
+   *
+   * // ✖ No item contains this text
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Some 33"});
+   *
+   * // ✖ Locator points to the outer list element, not to the list items
+   * assertThat(page.locator("ul")).containsText(new String[] {"Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -547,9 +607,29 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
+   * <p> If you pass an array as an expected value, the expectations are:
+   * <ol>
+   * <li> Locator resolves to a list of elements.</li>
+   * <li> Elements from a **subset** of this list contain text from the expected array, respectively.</li>
+   * <li> The matching subset of elements has the same order as the expected array.</li>
+   * <li> Each text value from the expected array is matched by some element from the list.</li>
+   * </ol>
+   *
+   * <p> For example, consider the following list:
+   *
+   * <p> Let's see how we can use the assertion:
    * <pre>{@code
-   * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
+   * // ✓ Contains the right items in the right order
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3", "Text 4"});
+   *
+   * // ✖ Wrong order
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 3", "Text 2"});
+   *
+   * // ✖ No item contains this text
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Some 33"});
+   *
+   * // ✖ Locator points to the outer list element, not to the list items
+   * assertThat(page.locator("ul")).containsText(new String[] {"Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -562,9 +642,29 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
+   * <p> If you pass an array as an expected value, the expectations are:
+   * <ol>
+   * <li> Locator resolves to a list of elements.</li>
+   * <li> Elements from a **subset** of this list contain text from the expected array, respectively.</li>
+   * <li> The matching subset of elements has the same order as the expected array.</li>
+   * <li> Each text value from the expected array is matched by some element from the list.</li>
+   * </ol>
+   *
+   * <p> For example, consider the following list:
+   *
+   * <p> Let's see how we can use the assertion:
    * <pre>{@code
-   * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
+   * // ✓ Contains the right items in the right order
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3", "Text 4"});
+   *
+   * // ✖ Wrong order
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 3", "Text 2"});
+   *
+   * // ✖ No item contains this text
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Some 33"});
+   *
+   * // ✖ Locator points to the outer list element, not to the list items
+   * assertThat(page.locator("ul")).containsText(new String[] {"Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -579,9 +679,29 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
+   * <p> If you pass an array as an expected value, the expectations are:
+   * <ol>
+   * <li> Locator resolves to a list of elements.</li>
+   * <li> Elements from a **subset** of this list contain text from the expected array, respectively.</li>
+   * <li> The matching subset of elements has the same order as the expected array.</li>
+   * <li> Each text value from the expected array is matched by some element from the list.</li>
+   * </ol>
+   *
+   * <p> For example, consider the following list:
+   *
+   * <p> Let's see how we can use the assertion:
    * <pre>{@code
-   * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
+   * // ✓ Contains the right items in the right order
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3", "Text 4"});
+   *
+   * // ✖ Wrong order
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 3", "Text 2"});
+   *
+   * // ✖ No item contains this text
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Some 33"});
+   *
+   * // ✖ Locator points to the outer list element, not to the list items
+   * assertThat(page.locator("ul")).containsText(new String[] {"Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -594,9 +714,29 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
+   * <p> If you pass an array as an expected value, the expectations are:
+   * <ol>
+   * <li> Locator resolves to a list of elements.</li>
+   * <li> Elements from a **subset** of this list contain text from the expected array, respectively.</li>
+   * <li> The matching subset of elements has the same order as the expected array.</li>
+   * <li> Each text value from the expected array is matched by some element from the list.</li>
+   * </ol>
+   *
+   * <p> For example, consider the following list:
+   *
+   * <p> Let's see how we can use the assertion:
    * <pre>{@code
-   * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
+   * // ✓ Contains the right items in the right order
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3", "Text 4"});
+   *
+   * // ✖ Wrong order
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 3", "Text 2"});
+   *
+   * // ✖ No item contains this text
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Some 33"});
+   *
+   * // ✖ Locator points to the outer list element, not to the list items
+   * assertThat(page.locator("ul")).containsText(new String[] {"Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -611,9 +751,29 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
+   * <p> If you pass an array as an expected value, the expectations are:
+   * <ol>
+   * <li> Locator resolves to a list of elements.</li>
+   * <li> Elements from a **subset** of this list contain text from the expected array, respectively.</li>
+   * <li> The matching subset of elements has the same order as the expected array.</li>
+   * <li> Each text value from the expected array is matched by some element from the list.</li>
+   * </ol>
+   *
+   * <p> For example, consider the following list:
+   *
+   * <p> Let's see how we can use the assertion:
    * <pre>{@code
-   * assertThat(page.locator("list > .list-item")).containsText(new String[] {"Text 1", "Text 4", "Text 5"});
+   * // ✓ Contains the right items in the right order
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 1", "Text 3", "Text 4"});
+   *
+   * // ✖ Wrong order
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Text 3", "Text 2"});
+   *
+   * // ✖ No item contains this text
+   * assertThat(page.locator("ul > li")).containsText(new String[] {"Some 33"});
+   *
+   * // ✖ Locator points to the outer list element, not to the list items
+   * assertThat(page.locator("ul")).containsText(new String[] {"Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -934,9 +1094,28 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
+   * <p> If you pass an array as an expected value, the expectations are:
+   * <ol>
+   * <li> Locator resolves to a list of elements.</li>
+   * <li> The number of elements equals the number of expected values in the array.</li>
+   * <li> Elements from the list have text matching expected array values, one by one, in order.</li>
+   * </ol>
+   *
+   * <p> For example, consider the following list:
+   *
+   * <p> Let's see how we can use the assertion:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
+   * // ✓ Has the right items in the right order
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
+   *
+   * // ✖ Wrong order
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 3", "Text 2", "Text 1"});
+   *
+   * // ✖ Last item does not match
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 1", "Text 2", "Text"});
+   *
+   * // ✖ Locator points to the outer list element, not to the list items
+   * assertThat(page.locator("ul")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -951,9 +1130,28 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
+   * <p> If you pass an array as an expected value, the expectations are:
+   * <ol>
+   * <li> Locator resolves to a list of elements.</li>
+   * <li> The number of elements equals the number of expected values in the array.</li>
+   * <li> Elements from the list have text matching expected array values, one by one, in order.</li>
+   * </ol>
+   *
+   * <p> For example, consider the following list:
+   *
+   * <p> Let's see how we can use the assertion:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
+   * // ✓ Has the right items in the right order
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
+   *
+   * // ✖ Wrong order
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 3", "Text 2", "Text 1"});
+   *
+   * // ✖ Last item does not match
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 1", "Text 2", "Text"});
+   *
+   * // ✖ Locator points to the outer list element, not to the list items
+   * assertThat(page.locator("ul")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -966,9 +1164,28 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
+   * <p> If you pass an array as an expected value, the expectations are:
+   * <ol>
+   * <li> Locator resolves to a list of elements.</li>
+   * <li> The number of elements equals the number of expected values in the array.</li>
+   * <li> Elements from the list have text matching expected array values, one by one, in order.</li>
+   * </ol>
+   *
+   * <p> For example, consider the following list:
+   *
+   * <p> Let's see how we can use the assertion:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
+   * // ✓ Has the right items in the right order
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
+   *
+   * // ✖ Wrong order
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 3", "Text 2", "Text 1"});
+   *
+   * // ✖ Last item does not match
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 1", "Text 2", "Text"});
+   *
+   * // ✖ Locator points to the outer list element, not to the list items
+   * assertThat(page.locator("ul")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -983,9 +1200,28 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
+   * <p> If you pass an array as an expected value, the expectations are:
+   * <ol>
+   * <li> Locator resolves to a list of elements.</li>
+   * <li> The number of elements equals the number of expected values in the array.</li>
+   * <li> Elements from the list have text matching expected array values, one by one, in order.</li>
+   * </ol>
+   *
+   * <p> For example, consider the following list:
+   *
+   * <p> Let's see how we can use the assertion:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
+   * // ✓ Has the right items in the right order
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
+   *
+   * // ✖ Wrong order
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 3", "Text 2", "Text 1"});
+   *
+   * // ✖ Last item does not match
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 1", "Text 2", "Text"});
+   *
+   * // ✖ Locator points to the outer list element, not to the list items
+   * assertThat(page.locator("ul")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -998,9 +1234,28 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
+   * <p> If you pass an array as an expected value, the expectations are:
+   * <ol>
+   * <li> Locator resolves to a list of elements.</li>
+   * <li> The number of elements equals the number of expected values in the array.</li>
+   * <li> Elements from the list have text matching expected array values, one by one, in order.</li>
+   * </ol>
+   *
+   * <p> For example, consider the following list:
+   *
+   * <p> Let's see how we can use the assertion:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
+   * // ✓ Has the right items in the right order
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
+   *
+   * // ✖ Wrong order
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 3", "Text 2", "Text 1"});
+   *
+   * // ✖ Last item does not match
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 1", "Text 2", "Text"});
+   *
+   * // ✖ Locator points to the outer list element, not to the list items
+   * assertThat(page.locator("ul")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -1015,9 +1270,28 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
+   * <p> If you pass an array as an expected value, the expectations are:
+   * <ol>
+   * <li> Locator resolves to a list of elements.</li>
+   * <li> The number of elements equals the number of expected values in the array.</li>
+   * <li> Elements from the list have text matching expected array values, one by one, in order.</li>
+   * </ol>
+   *
+   * <p> For example, consider the following list:
+   *
+   * <p> Let's see how we can use the assertion:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
+   * // ✓ Has the right items in the right order
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
+   *
+   * // ✖ Wrong order
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 3", "Text 2", "Text 1"});
+   *
+   * // ✖ Last item does not match
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 1", "Text 2", "Text"});
+   *
+   * // ✖ Locator points to the outer list element, not to the list items
+   * assertThat(page.locator("ul")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -1030,9 +1304,28 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
+   * <p> If you pass an array as an expected value, the expectations are:
+   * <ol>
+   * <li> Locator resolves to a list of elements.</li>
+   * <li> The number of elements equals the number of expected values in the array.</li>
+   * <li> Elements from the list have text matching expected array values, one by one, in order.</li>
+   * </ol>
+   *
+   * <p> For example, consider the following list:
+   *
+   * <p> Let's see how we can use the assertion:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
+   * // ✓ Has the right items in the right order
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
+   *
+   * // ✖ Wrong order
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 3", "Text 2", "Text 1"});
+   *
+   * // ✖ Last item does not match
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 1", "Text 2", "Text"});
+   *
+   * // ✖ Locator points to the outer list element, not to the list items
+   * assertThat(page.locator("ul")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
@@ -1047,9 +1340,28 @@ public interface LocatorAssertions {
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
    * }</pre>
    *
-   * <p> Note that if array is passed as an expected value, entire lists of elements can be asserted:
+   * <p> If you pass an array as an expected value, the expectations are:
+   * <ol>
+   * <li> Locator resolves to a list of elements.</li>
+   * <li> The number of elements equals the number of expected values in the array.</li>
+   * <li> Elements from the list have text matching expected array values, one by one, in order.</li>
+   * </ol>
+   *
+   * <p> For example, consider the following list:
+   *
+   * <p> Let's see how we can use the assertion:
    * <pre>{@code
-   * assertThat(page.locator("list > .component")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
+   * // ✓ Has the right items in the right order
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
+   *
+   * // ✖ Wrong order
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 3", "Text 2", "Text 1"});
+   *
+   * // ✖ Last item does not match
+   * assertThat(page.locator("ul > li")).hasText(new String[] {"Text 1", "Text 2", "Text"});
+   *
+   * // ✖ Locator points to the outer list element, not to the list items
+   * assertThat(page.locator("ul")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
