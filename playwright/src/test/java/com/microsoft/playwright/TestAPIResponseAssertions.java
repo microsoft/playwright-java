@@ -19,8 +19,11 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestAPIResponseAssertions extends TestBase {
   @Test
@@ -38,14 +41,62 @@ public class TestAPIResponseAssertions extends TestBase {
   @Test
   void fail() {
     APIResponse res = page.request().get(server.PREFIX + "/unknown");
-    boolean didThrow = false;
-    try {
-      assertThat(res).isOK();
-    } catch (AssertionFailedError e) {
-      didThrow = true;
-      assertTrue(e.getMessage().contains("→ GET " + server.PREFIX + "/unknown"), "Actual error: " + e.toString());
-      assertTrue(e.getMessage().contains("← 404 Not Found"), "Actual error: " + e.toString());
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(res).isOK());
+    assertTrue(e.getMessage().contains("→ GET " + server.PREFIX + "/unknown"), "Actual error: " + e.toString());
+    assertTrue(e.getMessage().contains("← 404 Not Found"), "Actual error: " + e.toString());
+  }
+
+  @Test
+  void shouldPrintResponseTextIfIdOkFails() {
+    APIResponse res = page.request().get(server.PREFIX + "/unknown");
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(res).isOK());
+    assertTrue(e.getMessage().contains("File not found"), "Actual error: " + e.toString());
+  }
+
+  @Test
+  void shouldOnlyPrintResponseWithTextContentTypeIfIsOkFails() {
+    {
+      server.setRoute("/text-content-type", exchange -> {
+        exchange.getResponseHeaders().set("Content-type", "text/plain");
+        exchange.sendResponseHeaders(404, 0);
+        try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
+          writer.write("Text error");
+        }
+      });
+      AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(page.request().get(server.PREFIX + "/text-content-type")).isOK());
+      assertTrue(e.getMessage().contains("Text error"), "Actual error: " + e);
     }
-    assertTrue(didThrow);
+    {
+      server.setRoute("/svg-xml-content-type", exchange -> {
+        exchange.getResponseHeaders().set("Content-type", "image/svg+xml");
+        exchange.sendResponseHeaders(404, 0);
+        try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
+          writer.write("Json error");
+        }
+      });
+      AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(page.request().get(server.PREFIX + "/svg-xml-content-type")).isOK());
+      assertTrue(e.getMessage().contains("Json error"), "Actual error: " + e);
+    }
+    {
+      server.setRoute("/no-content-type", exchange -> {
+        exchange.sendResponseHeaders(404, 0);
+        try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
+          writer.write("No content type error");
+        }
+      });
+      AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(page.request().get(server.PREFIX + "/no-content-type")).isOK());
+      assertFalse(e.getMessage().contains("No content type error"), "Actual error: " + e);
+    }
+    {
+      server.setRoute("/image-content-type", exchange -> {
+        exchange.getResponseHeaders().set("Content-type", "image/bmp");
+        exchange.sendResponseHeaders(404, 0);
+        try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
+          writer.write("Image type error");
+        }
+      });
+      AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(page.request().get(server.PREFIX + "/image-content-type")).isOK());
+      assertFalse(e.getMessage().contains("Image type error"), "Actual error: " + e);
+    }
   }
 }

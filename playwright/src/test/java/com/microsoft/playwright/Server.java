@@ -195,6 +195,7 @@ public class Server implements HttpHandler {
     String resourcePath = "resources" + path;
     InputStream resource = getClass().getClassLoader().getResourceAsStream(resourcePath);
     if (resource == null) {
+      exchange.getResponseHeaders().add("Content-Type", "text/plain");
       exchange.sendResponseHeaders(404, 0);
       try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
         writer.write("File not found: " + resourcePath);

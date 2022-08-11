@@ -1013,7 +1013,7 @@ public interface Locator {
      */
     public ScreenshotCaret caret;
     /**
-     * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlayed with a pink box
+     * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlaid with a pink box
      * {@code #FF00FF} that completely covers its bounding box.
      */
     public List<Locator> mask;
@@ -1074,7 +1074,7 @@ public interface Locator {
       return this;
     }
     /**
-     * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlayed with a pink box
+     * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlaid with a pink box
      * {@code #FF00FF} that completely covers its bounding box.
      */
     public ScreenshotOptions setMask(List<Locator> mask) {
