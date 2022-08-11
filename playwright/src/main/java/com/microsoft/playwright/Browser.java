@@ -1099,7 +1099,7 @@ public interface Browser extends AutoCloseable {
   /**
    * Creates a new browser context. It won't share cookies/cache with other browser contexts.
    *
-   * <p> <strong>NOTE:</strong> If directly using this method to create {@code BrowserContext}s, it is best practice to explicilty close the returned context
+   * <p> <strong>NOTE:</strong> If directly using this method to create {@code BrowserContext}s, it is best practice to explicitly close the returned context
    * via {@link BrowserContext#close BrowserContext.close()} when your code is done with the {@code BrowserContext}, and before
    * calling {@link Browser#close Browser.close()}. This will ensure the {@code context} is closed gracefully and any
    * artifacts—like HARs and videos—are fully flushed and saved.
@@ -1111,7 +1111,7 @@ public interface Browser extends AutoCloseable {
    * Page page = context.newPage();
    * page.navigate('https://example.com');
    *
-   * // Gracefull close up everything
+   * // Graceful close up everything
    * context.close();
    * browser.close();
    * }</pre>
@@ -1122,7 +1122,7 @@ public interface Browser extends AutoCloseable {
   /**
    * Creates a new browser context. It won't share cookies/cache with other browser contexts.
    *
-   * <p> <strong>NOTE:</strong> If directly using this method to create {@code BrowserContext}s, it is best practice to explicilty close the returned context
+   * <p> <strong>NOTE:</strong> If directly using this method to create {@code BrowserContext}s, it is best practice to explicitly close the returned context
    * via {@link BrowserContext#close BrowserContext.close()} when your code is done with the {@code BrowserContext}, and before
    * calling {@link Browser#close Browser.close()}. This will ensure the {@code context} is closed gracefully and any
    * artifacts—like HARs and videos—are fully flushed and saved.
@@ -1134,7 +1134,7 @@ public interface Browser extends AutoCloseable {
    * Page page = context.newPage();
    * page.navigate('https://example.com');
    *
-   * // Gracefull close up everything
+   * // Graceful close up everything
    * context.close();
    * browser.close();
    * }</pre>

@@ -21,6 +21,7 @@ import com.microsoft.playwright.assertions.APIResponseAssertions;
 import org.opentest4j.AssertionFailedError;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class APIResponseAssertionsImpl implements APIResponseAssertions {
   private final APIResponse actual;
@@ -54,6 +55,20 @@ public class APIResponseAssertionsImpl implements APIResponseAssertions {
     if (!log.isEmpty()) {
       log = "\nCall log:\n" + log;
     }
-    throw new AssertionFailedError(message + log);
+
+    String contentType = actual.headers().get("content-type");
+    boolean isTextEncoding = contentType == null ? false : isTextualMimeType(contentType);
+    String responseText = "";
+    if (isTextEncoding) {
+      String text = actual.text();
+      if (text != null) {
+        responseText = "\nResponse text:\n" + (text.length() > 1000 ? text.substring(0, 1000) : text);
+      }
+    }
+
+    throw new AssertionFailedError(message + log + responseText);
+  }
+  static boolean isTextualMimeType(String mimeType) {
+    return Pattern.matches("^(text/.*?|application/(json|(x-)?javascript|xml.*?|ecmascript|graphql|x-www-form-urlencoded)|image/svg(\\+xml)?|application/.*?(\\+json|\\+xml))(;\\s*charset=.*)?$", mimeType);
   }
 }
