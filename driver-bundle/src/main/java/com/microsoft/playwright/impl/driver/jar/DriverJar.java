@@ -29,7 +29,9 @@ import java.util.concurrent.TimeUnit;
 public class DriverJar extends Driver {
   private static final String PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD";
   private static final String SELENIUM_REMOTE_URL = "SELENIUM_REMOTE_URL";
+  static final String PLAYWRIGHT_NODEJS_PATH = "PLAYWRIGHT_NODEJS_PATH";
   private final Path driverTempDir;
+  private Path preinstalledNodePath;
 
   public DriverJar() throws IOException {
     // Allow specifying custom path for the driver installation
@@ -40,11 +42,27 @@ public class DriverJar extends Driver {
       ? Files.createTempDirectory(prefix)
       : Files.createTempDirectory(Paths.get(alternativeTmpdir), prefix);
     driverTempDir.toFile().deleteOnExit();
+    String nodePath = System.getProperty("playwright.nodejs.path");
+    if (nodePath != null) {
+      preinstalledNodePath = Paths.get(nodePath);
+      if (!Files.exists(preinstalledNodePath)) {
+        throw new RuntimeException("Invalid Node.js path specified: " + nodePath);
+      }
+    }
     logMessage("created DriverJar: " + driverTempDir);
   }
 
   @Override
-  protected void initialize(Map<String, String> env, Boolean installBrowsers) throws Exception {
+  protected void initialize(Boolean installBrowsers) throws Exception {
+    if (preinstalledNodePath == null && env.containsKey(PLAYWRIGHT_NODEJS_PATH)) {
+      preinstalledNodePath = Paths.get(env.get(PLAYWRIGHT_NODEJS_PATH));
+      if (!Files.exists(preinstalledNodePath)) {
+        throw new RuntimeException("Invalid Node.js path specified: " + preinstalledNodePath);
+      }
+    } else if (preinstalledNodePath != null) {
+      // Pass the env variable to the driver process.
+      env.put(PLAYWRIGHT_NODEJS_PATH, preinstalledNodePath.toString());
+    }
     extractDriverToTempDir();
     logMessage("extracted driver from jar to " + driverPath());
     if (installBrowsers)
@@ -68,9 +86,8 @@ public class DriverJar extends Driver {
     if (!Files.exists(driver)) {
       throw new RuntimeException("Failed to find driver: " + driver);
     }
-    ProcessBuilder pb = new ProcessBuilder(driver.toString(), "install");
-    pb.environment().putAll(env);
-    setRequiredEnvironmentVariables(pb);
+    ProcessBuilder pb = createProcessBuilder();
+    pb.command().add("install");
     pb.redirectError(ProcessBuilder.Redirect.INHERIT);
     pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
     Process p = pb.start();
@@ -89,9 +106,10 @@ public class DriverJar extends Driver {
     return name.endsWith(".sh") || name.endsWith(".exe") || !name.contains(".");
   }
 
-  private void extractDriverToTempDir() throws URISyntaxException, IOException {
+  void extractDriverToTempDir() throws URISyntaxException, IOException {
     ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-    URI originalUri = classloader.getResource("driver/" + platformDir()).toURI();
+    URI originalUri = classloader.getResource(
+      "driver/" + platformDir()).toURI();
     URI uri = maybeExtractNestedJar(originalUri);
 
     // Create zip filesystem if loading from jar.
@@ -103,6 +121,12 @@ public class DriverJar extends Driver {
       // See https://github.com/microsoft/playwright-java/issues/306
       Path srcRootDefaultFs = Paths.get(srcRoot.toString());
       Files.walk(srcRoot).forEach(fromPath -> {
+        if (preinstalledNodePath != null) {
+          String fileName = fromPath.getFileName().toString();
+          if ("node.exe".equals(fileName) || "node".equals(fileName)) {
+            return;
+          }
+        }
         Path relative = srcRootDefaultFs.relativize(Paths.get(fromPath.toString()));
         Path toPath = driverTempDir.resolve(relative.toString());
         try {

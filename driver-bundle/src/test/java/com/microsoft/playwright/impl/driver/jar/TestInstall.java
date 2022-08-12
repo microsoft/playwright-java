@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright;
+package com.microsoft.playwright.impl.driver.jar;
 
 import com.microsoft.playwright.impl.driver.Driver;
-import com.microsoft.playwright.impl.driver.jar.DriverJar;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -25,6 +25,8 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.ServerSocket;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -32,6 +34,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.microsoft.playwright.impl.driver.jar.DriverJar.PLAYWRIGHT_NODEJS_PATH;
+import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestInstall {
@@ -57,8 +61,18 @@ public class TestInstall {
     // Clear system property to ensure that the driver is loaded from jar.
     System.clearProperty("playwright.cli.dir");
     System.clearProperty("playwright.driver.tmpdir");
+    System.clearProperty("playwright.nodejs.path");
     // Clear system property to ensure that the default driver is loaded.
     System.clearProperty("playwright.driver.impl");
+  }
+
+  @AfterEach
+  void resetDriverSingleton() throws NoSuchFieldException, IllegalAccessException {
+    // Reset instance field value to null after each test.
+    Field field = Driver.class.getDeclaredField("instance");
+    field.setAccessible(true);
+    Object value = field.get(Driver.class);
+    field.set(Driver.class, null);
   }
 
   @Test
@@ -72,27 +86,19 @@ public class TestInstall {
     env.put("PLAYWRIGHT_BROWSERS_PATH", tmpDir.toString());
     env.put("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD", "false");
 
-    // Reset instance field value to null for the test.
-    Field field = Driver.class.getDeclaredField("instance");
-    field.setAccessible(true);
-    Object value = field.get(Driver.class);
-    field.set(Driver.class, null);
-
     for (int i = 0; i < 2; i++){
       RuntimeException exception = assertThrows(RuntimeException.class, () -> Driver.ensureDriverInstalled(env, true));
       String message = exception.getMessage();
       assertTrue(message.contains("Failed to create driver"), message);
     }
-
-    field.set(Driver.class, value);
   }
 
   @Test
   void playwrightCliInstalled() throws Exception {
-    Path cli = Driver.ensureDriverInstalled(Collections.emptyMap(), false);
-    assertTrue(Files.exists(cli));
+    Driver driver = Driver.createAndInstall(Collections.emptyMap(), false);
+    assertTrue(Files.exists(driver.driverPath()));
 
-    ProcessBuilder pb = new ProcessBuilder(cli.toString(), "install");
+    ProcessBuilder pb = new ProcessBuilder(driver.driverPath().toString(), "install");
     pb.redirectError(ProcessBuilder.Redirect.INHERIT);
     pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
     Process p = pb.start();
@@ -114,19 +120,51 @@ public class TestInstall {
 
   @Test
   void playwrightDriverAlternativeImpl() throws NoSuchFieldException, IllegalAccessException {
-    // Reset instance field value to null for the test.
-    Field field = Driver.class.getDeclaredField("instance");
-    field.setAccessible(true);
-    Object value = field.get(Driver.class);
-    field.set(Driver.class, null);
-
     System.setProperty("playwright.driver.impl", "com.microsoft.playwright.impl.AlternativeDriver");
     RuntimeException thrown =
       assertThrows(
         RuntimeException.class,
         () -> Driver.ensureDriverInstalled(Collections.emptyMap(), false));
     assertEquals("Failed to create driver", thrown.getMessage());
+  }
 
-    field.set(Driver.class, value);
+  @Test
+  void canPassPreinstalledNodeJsAsSystemProperty(@TempDir Path tmpDir) throws IOException, URISyntaxException, InterruptedException {
+    String nodePath = extractNodeJsToTemp();
+    System.setProperty("playwright.nodejs.path", nodePath);
+    Driver driver = Driver.createAndInstall(Collections.emptyMap(), false);
+    canSpecifyPreinstalledNodeJsShared(driver, tmpDir);
+  }
+
+  @Test
+  void canSpecifyPreinstalledNodeJsAsEnv(@TempDir Path tmpDir) throws IOException, URISyntaxException, InterruptedException {
+    String nodePath = extractNodeJsToTemp();
+    Driver driver = Driver.createAndInstall(singletonMap(PLAYWRIGHT_NODEJS_PATH, nodePath), false);
+    canSpecifyPreinstalledNodeJsShared(driver, tmpDir);
+  }
+
+  private static String extractNodeJsToTemp() throws URISyntaxException, IOException {
+    DriverJar auxDriver = new DriverJar();
+    auxDriver.extractDriverToTempDir();
+    String nodePath = auxDriver.driverPath().getParent().resolve("node").toString();
+    return nodePath;
+  }
+
+  private static void canSpecifyPreinstalledNodeJsShared(Driver driver, Path tmpDir) throws IOException, URISyntaxException, InterruptedException {
+    Path builtinNode = driver.driverPath().getParent().resolve("node");
+    assertFalse(Files.exists(builtinNode), builtinNode.toString());
+    Path builtinNodeExe = driver.driverPath().getParent().resolve("node.exe");
+    assertFalse(Files.exists(builtinNodeExe), builtinNodeExe.toString());
+
+    ProcessBuilder pb = driver.createProcessBuilder();
+    pb.command().add("--version");
+    pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+    Path out = tmpDir.resolve("out.txt");
+    pb.redirectOutput(out.toFile());
+    Process p = pb.start();
+    boolean result = p.waitFor(1, TimeUnit.MINUTES);
+    assertTrue(result, "Timed out waiting for version to be printed");
+    String stdout = new String(Files.readAllBytes(out), StandardCharsets.UTF_8);
+    assertTrue(stdout.contains("Version "), stdout);
   }
 }

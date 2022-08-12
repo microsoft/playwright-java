@@ -33,16 +33,19 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private Process driverProcess;
 
   public static PlaywrightImpl create(CreateOptions options) {
+    Map<String, String> env = Collections.emptyMap();
+    if (options != null && options.env != null) {
+      env = options.env;
+    }
+    Driver driver = Driver.ensureDriverInstalled(env, true);
+    return create(driver, env);
+  }
+
+  public static PlaywrightImpl create(Driver driver, Map<String, String> env) {
     try {
-      Map<String, String> env = Collections.emptyMap();
-      if (options != null && options.env != null) {
-        env = options.env;
-      }
-      Path driver = Driver.ensureDriverInstalled(env, true);
-      ProcessBuilder pb = new ProcessBuilder(driver.toString(), "run-driver");
+      ProcessBuilder pb = driver.createProcessBuilder();
+      pb.command().add("run-driver");
       pb.redirectError(ProcessBuilder.Redirect.INHERIT);
-      pb.environment().putAll(env);
-      Driver.setRequiredEnvironmentVariables(pb);
       Process p = pb.start();
       Connection connection = new Connection(new PipeTransport(p.getInputStream(), p.getOutputStream()), env);
       PlaywrightImpl result = connection.initializePlaywright();

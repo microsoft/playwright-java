@@ -29,10 +29,9 @@ import static java.util.Arrays.asList;
  */
 public class CLI {
   public static void main(String[] args) throws IOException, InterruptedException {
-    Path driver = Driver.ensureDriverInstalled(Collections.emptyMap(), false);
-    ProcessBuilder pb = new ProcessBuilder(driver.toString());
+    Driver driver = Driver.ensureDriverInstalled(Collections.emptyMap(), false);
+    ProcessBuilder pb = driver.createProcessBuilder();
     pb.command().addAll(asList(args));
-    Driver.setRequiredEnvironmentVariables(pb);
     String version = Playwright.class.getPackage().getImplementationVersion();
     if (version != null) {
       pb.environment().put("PW_CLI_DISPLAY_VERSION", version);
