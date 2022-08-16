@@ -24,7 +24,6 @@ import com.microsoft.playwright.Selectors;
 import com.microsoft.playwright.impl.driver.Driver;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -33,15 +32,17 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private Process driverProcess;
 
   public static PlaywrightImpl create(CreateOptions options) {
+    return createImpl(options, false);
+  }
+
+  public static PlaywrightImpl createImpl(CreateOptions options, boolean forceNewDriverInstanceForTests) {
     Map<String, String> env = Collections.emptyMap();
     if (options != null && options.env != null) {
       env = options.env;
     }
-    Driver driver = Driver.ensureDriverInstalled(env, true);
-    return create(driver, env);
-  }
-
-  public static PlaywrightImpl create(Driver driver, Map<String, String> env) {
+    Driver driver = forceNewDriverInstanceForTests ?
+      Driver.createAndInstall(env, true) :
+      Driver.ensureDriverInstalled(env, true);
     try {
       ProcessBuilder pb = driver.createProcessBuilder();
       pb.command().add("run-driver");

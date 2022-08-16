@@ -66,15 +66,6 @@ public class TestInstall {
     System.clearProperty("playwright.driver.impl");
   }
 
-  @AfterEach
-  void resetDriverSingleton() throws NoSuchFieldException, IllegalAccessException {
-    // Reset instance field value to null after each test.
-    Field field = Driver.class.getDeclaredField("instance");
-    field.setAccessible(true);
-    Object value = field.get(Driver.class);
-    field.set(Driver.class, null);
-  }
-
   @Test
   void shouldThrowWhenBrowserPathIsInvalid(@TempDir Path tmpDir) throws NoSuchFieldException, IllegalAccessException {
     Map<String,String> env = new HashMap<>();
@@ -98,7 +89,8 @@ public class TestInstall {
     Driver driver = Driver.createAndInstall(Collections.emptyMap(), false);
     assertTrue(Files.exists(driver.driverPath()));
 
-    ProcessBuilder pb = new ProcessBuilder(driver.driverPath().toString(), "install");
+    ProcessBuilder pb = driver.createProcessBuilder();
+    pb.command().add("install");
     pb.redirectError(ProcessBuilder.Redirect.INHERIT);
     pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
     Process p = pb.start();
@@ -115,7 +107,7 @@ public class TestInstall {
 
   @Test
   void playwrightDriverDefaultImpl() {
-    assertDoesNotThrow(() -> Driver.ensureDriverInstalled(Collections.emptyMap(), false));
+    assertDoesNotThrow(() -> Driver.createAndInstall(Collections.emptyMap(), false));
   }
 
   @Test
@@ -143,11 +135,17 @@ public class TestInstall {
     canSpecifyPreinstalledNodeJsShared(driver, tmpDir);
   }
 
+
   private static String extractNodeJsToTemp() throws URISyntaxException, IOException {
     DriverJar auxDriver = new DriverJar();
     auxDriver.extractDriverToTempDir();
-    String nodePath = auxDriver.driverPath().getParent().resolve("node").toString();
+    String nodePath = auxDriver.driverPath().getParent().resolve(isWindows() ? "node.exe" : "node").toString();
     return nodePath;
+  }
+
+  private static boolean isWindows() {
+    String name = System.getProperty("os.name").toLowerCase();
+    return name.contains("win");
   }
 
   private static void canSpecifyPreinstalledNodeJsShared(Driver driver, Path tmpDir) throws IOException, URISyntaxException, InterruptedException {
