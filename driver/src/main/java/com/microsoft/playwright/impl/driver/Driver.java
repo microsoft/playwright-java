@@ -18,6 +18,8 @@ package com.microsoft.playwright.impl.driver;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.driver.DriverLogging.logWithTimestamp;
@@ -28,6 +30,8 @@ import static com.microsoft.playwright.impl.driver.DriverLogging.logWithTimestam
  * loaded from the driver-bundle module if that module is in the classpath.
  */
 public abstract class Driver {
+  protected final Map<String, String> env = new LinkedHashMap<>();
+
   private static Driver instance;
 
   private static class PreinstalledDriver extends Driver {
@@ -38,7 +42,7 @@ public abstract class Driver {
     }
 
     @Override
-    protected void initialize(Map<String, String> env, Boolean installBrowsers) {
+    protected void initialize(Boolean installBrowsers) {
       // no-op
     }
 
@@ -48,22 +52,18 @@ public abstract class Driver {
     }
   }
 
-  public static synchronized Path ensureDriverInstalled(Map<String, String> env, Boolean installBrowsers) {
+  public static synchronized Driver ensureDriverInstalled(Map<String, String> env, Boolean installBrowsers) {
     if (instance == null) {
-      try {
-        instance = createDriver();
-        logMessage("initializing driver");
-        instance.initialize(env, installBrowsers);
-        logMessage("driver initialized.");
-      } catch (Exception exception) {
-        instance = null;
-        throw new RuntimeException("Failed to create driver", exception);
-      }
+      instance = createAndInstall(env, installBrowsers);
     }
-    return instance.driverPath();
+    return instance;
   }
 
-  protected abstract void initialize(Map<String, String> env, Boolean installBrowsers) throws Exception;
+  private void initialize(Map<String, String> env, Boolean installBrowsers) throws Exception {
+    this.env.putAll(env);
+    initialize(installBrowsers);
+  }
+  protected abstract void initialize(Boolean installBrowsers) throws Exception;
 
   public Path driverPath() {
     String cliFileName = System.getProperty("os.name").toLowerCase().contains("windows") ?
@@ -71,13 +71,16 @@ public abstract class Driver {
     return driverDir().resolve(cliFileName);
   }
 
-  public static void setRequiredEnvironmentVariables(ProcessBuilder pb) {
+  public ProcessBuilder createProcessBuilder() {
+    ProcessBuilder pb = new ProcessBuilder(driverPath().toString());
+    pb.environment().putAll(env);
     pb.environment().put("PW_LANG_NAME", "java");
     pb.environment().put("PW_LANG_NAME_VERSION", getMajorJavaVersion());
     String version = Driver.class.getPackage().getImplementationVersion();
     if (version != null) {
       pb.environment().put("PW_CLI_DISPLAY_VERSION", version);
     }
+    return pb;
   }
 
   private static String getMajorJavaVersion() {
@@ -91,8 +94,19 @@ public abstract class Driver {
     }
     return version;
   }
+  public static Driver createAndInstall(Map<String, String> env, Boolean installBrowsers) {
+    try {
+      Driver instance = newInstance();
+      logMessage("initializing driver");
+      instance.initialize(env, installBrowsers);
+      logMessage("driver initialized.");
+      return instance;
+    } catch (Exception exception) {
+      throw new RuntimeException("Failed to create driver", exception);
+    }
+  }
 
-  private static Driver createDriver() throws Exception {
+  private static Driver newInstance() throws Exception {
     String pathFromProperty = System.getProperty("playwright.cli.dir");
     if (pathFromProperty != null) {
       return new PreinstalledDriver(Paths.get(pathFromProperty));

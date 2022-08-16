@@ -60,8 +60,8 @@ public class TestBrowserTypeConnect extends TestBase {
 
   private static BrowserServer launchBrowserServer(BrowserType browserType) {
     try {
-      Path driver = Driver.ensureDriverInstalled(Collections.emptyMap(), false);
-      Path dir = driver.getParent();
+      Driver driver = Driver.ensureDriverInstalled(Collections.emptyMap(), false);
+      Path dir = driver.driverPath().getParent();
       String node = dir.resolve(isWindows ? "node.exe" : "node").toString();
       String cliJs = dir.resolve("package/lib/cli/cli.js").toString();
       // We launch node process directly instead of using playwright.sh script as killing the script
