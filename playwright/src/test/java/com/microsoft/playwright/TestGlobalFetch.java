@@ -146,12 +146,8 @@ public class TestGlobalFetch extends TestBase {
     APIResponse response = request.get(server.PREFIX + "/simple.json");
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
     request.dispose();
-    try {
-      response.body();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Response has been disposed"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> response.body());
+    assertTrue(e.getMessage().contains("Response has been disposed"), e.getMessage());
   }
 
   @Test
@@ -168,12 +164,8 @@ public class TestGlobalFetch extends TestBase {
   void shouldSupportGlobalTimeoutOption() {
     APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setTimeout(1));
     server.setRoute("/empty.html", exchange -> {});
-    try {
-      request.get(server.EMPTY_PAGE);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Request timed out after 1ms"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> request.get(server.EMPTY_PAGE));
+    assertTrue(e.getMessage().contains("Request timed out after 1ms"), e.getMessage());
   }
 
 
@@ -265,12 +257,8 @@ public class TestGlobalFetch extends TestBase {
     assertEquals(0, body.length);
     assertEquals("", response.text());
     request.dispose();
-    try {
-      response.body();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-     assertTrue(e.getMessage().contains("Response has been disposed"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> response.body());
+    assertTrue(e.getMessage().contains("Response has been disposed"), e.getMessage());
   }
 
   @Test

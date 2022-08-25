@@ -251,10 +251,7 @@ public class TestPageRoute extends TestBase {
     page.route("**/*", route -> route.abort("internetdisconnected"));
     Request[] failedRequest = {null};
     page.onRequestFailed(r -> failedRequest[0] = r);
-    try {
-      page.navigate(server.EMPTY_PAGE);
-    } catch (PlaywrightException e) {
-    }
+    assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
     assertNotNull(failedRequest[0]);
     if (isWebKit()) {
       assertEquals("Blocked by Web Inspector", failedRequest[0].failure());
@@ -277,17 +274,13 @@ public class TestPageRoute extends TestBase {
   @Test
   void shouldFailNavigationWhenAbortingMainResource() {
     page.route("**/*", route -> route.abort());
-    try {
-      page.navigate(server.EMPTY_PAGE);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      if (isWebKit())
-        assertTrue(e.getMessage().contains("Blocked by Web Inspector"), e.getMessage());
-      else if (isFirefox())
-        assertTrue(e.getMessage().contains("NS_ERROR_FAILURE"));
-      else
-        assertTrue(e.getMessage().contains("net::ERR_FAILED"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
+    if (isWebKit())
+      assertTrue(e.getMessage().contains("Blocked by Web Inspector"), e.getMessage());
+    else if (isFirefox())
+      assertTrue(e.getMessage().contains("NS_ERROR_FAILURE"));
+    else
+      assertTrue(e.getMessage().contains("net::ERR_FAILED"));
   }
 
 
@@ -484,12 +477,8 @@ public class TestPageRoute extends TestBase {
     page.waitForRequest("**", () -> page.evalOnSelector("iframe", "(frame, url) => frame.src = url", server.EMPTY_PAGE));
     // Delete frame to cause request to be canceled.
     page.evalOnSelector("iframe", "frame => frame.remove()");
-    try {
-      route[0].resume();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Route is already handled!"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> route[0].resume());
+    assertTrue(e.getMessage().contains("Route is already handled!"), e.getMessage());
   }
 
   @Test
@@ -555,20 +544,18 @@ public class TestPageRoute extends TestBase {
     }
     {
       // Should be rejected
-      try {
+      PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
         page.evaluate("async () => {\n" +
           "  const response = await fetch('https://example.com/cars?reject', { mode: 'cors' });\n" +
           "  return response.json();\n" +
           "}");
-        fail("did not throw");
-      } catch (PlaywrightException e) {
-        if (isChromium()) {
-          assertTrue(e.getMessage().contains("Failed"), e.getMessage());
-        } else if (isWebKit()) {
-          assertTrue(e.getMessage().contains("TypeError"), e.getMessage());
-        } else if (isFirefox()) {
-          assertTrue(e.getMessage().contains("NetworkError"), e.getMessage());
-        }
+      });
+      if (isChromium()) {
+        assertTrue(e.getMessage().contains("Failed"), e.getMessage());
+      } else if (isWebKit()) {
+        assertTrue(e.getMessage().contains("TypeError"), e.getMessage());
+      } else if (isFirefox()) {
+        assertTrue(e.getMessage().contains("NetworkError"), e.getMessage());
       }
     }
   }
@@ -633,7 +620,7 @@ public class TestPageRoute extends TestBase {
         .setHeaders(mapOf("Access-Control-Allow-Origin", server.PREFIX))
         .setBody("[\"electric\",\"gas\"]"));
     });
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evaluate("async () => {\n" +
         "  const response = await fetch('https://example.com/cars', {\n" +
         "    method: 'POST',\n" +
@@ -644,9 +631,7 @@ public class TestPageRoute extends TestBase {
         "  });\n" +
         "  return response.json();\n" +
         "}");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-    }
+    });
   }
 
   @Test

@@ -63,12 +63,10 @@ public class TestPageWaitForResponse extends TestBase {
   @Test
   void shouldRespectDefaultTimeout() {
     page.setDefaultTimeout(1);
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForResponse(response -> false, () -> {});
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
   }
 
   @Test

@@ -182,12 +182,10 @@ public class TestWebSocket extends TestBase {
         "}", webSocketServer.getPort());
     });
     ws.waitForFrameReceived(() -> {});
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       ws.waitForFrameSent(() -> page.evaluate("window.ws.close()"));
-      fail("did not throw");
-    } catch (PlaywrightException exception) {
-      assertTrue(exception.getMessage().contains("Socket closed"));
-    }
+    });
+    assertTrue(exception.getMessage().contains("Socket closed"));
   }
 
   @Test
@@ -198,12 +196,10 @@ public class TestWebSocket extends TestBase {
         "}", webSocketServer.getPort());
     });
     ws.waitForFrameReceived(() -> {});
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       ws.waitForFrameSent(() -> page.close());
-      fail("did not throw");
-    } catch (PlaywrightException exception) {
-      assertTrue(exception.getMessage().contains("Page closed"));
-    }
+    });
+    assertTrue(exception.getMessage().contains("Page closed"));
   }
 
   @Test
@@ -258,13 +254,11 @@ public class TestWebSocket extends TestBase {
         "}", webSocketServer.getPort());
     });
 
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       ws.waitForFrameReceived(new WebSocket.WaitForFrameReceivedOptions()
         .setPredicate(webSocketFrame -> false).setTimeout(1), () -> {});
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
   }
 
   @Test
@@ -276,12 +270,10 @@ public class TestWebSocket extends TestBase {
         "}", webSocketServer.getPort());
     });
 
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       ws.waitForFrameSent(new WebSocket.WaitForFrameSentOptions()
         .setPredicate(webSocketFrame -> false).setTimeout(1), () -> page.evaluate("ws.send('outgoing');"));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
   }
 }

@@ -176,46 +176,22 @@ public class TestSelectorsMisc extends TestBase {
 
     assertEquals("id5,id6,id3", page.evalOnSelectorAll("div:right-of(#id0) + div:above(#id8)", "els => els.map(e => e.id).join(',')"));
 
-    try {
-      ElementHandle error = page.querySelector(":near(50)");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("\"near\" engine expects a selector list and optional maximum distance in pixels"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.querySelector(":near(50)"));
+    assertTrue(e.getMessage().contains("\"near\" engine expects a selector list and optional maximum distance in pixels"), e.getMessage());
 
-    try {
-      ElementHandle error1 = page.querySelector("div >> left-of=abc");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Malformed selector: left-of=abc"));
-    }
+    e = assertThrows(PlaywrightException.class, () -> page.querySelector("div >> left-of=abc"));
+    assertTrue(e.getMessage().contains("Malformed selector: left-of=abc"));
 
-    try {
-      ElementHandle error2 = page.querySelector("left-of=\"div\"");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("\"left-of\" selector cannot be first"), e.getMessage());
-    }
+    e = assertThrows(PlaywrightException.class, () -> page.querySelector("left-of=\"div\""));
+    assertTrue(e.getMessage().contains("\"left-of\" selector cannot be first"), e.getMessage());
 
-    try {
-      ElementHandle error3 = page.querySelector("div >> left-of=33");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Malformed selector: left-of=33"));
-    }
+    e = assertThrows(PlaywrightException.class, () -> page.querySelector("div >> left-of=33"));
+    assertTrue(e.getMessage().contains("Malformed selector: left-of=33"));
 
-    try {
-      ElementHandle error4 = page.querySelector("div >> left-of='span','foo'");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Malformed selector: left-of='span','foo'"));
-    }
+    e = assertThrows(PlaywrightException.class, () -> page.querySelector("div >> left-of='span','foo'"));
+    assertTrue(e.getMessage().contains("Malformed selector: left-of='span','foo'"));
 
-    try {
-      ElementHandle error5 = page.querySelector("div >> left-of='span',3,4");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Malformed selector: left-of='span',3,4"));
-    }
+    e = assertThrows(PlaywrightException.class, () -> page.querySelector("div >> left-of='span',3,4"));
+    assertTrue(e.getMessage().contains("Malformed selector: left-of='span',3,4"));
   }
 }

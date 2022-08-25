@@ -80,12 +80,10 @@ public class TestChromiumTracing extends TestBase {
       browser.startTracing(page, new Browser.StartTracingOptions()
         .setPath(outputTraceFile));
       Page newPage = browser.newPage();
-      try {
+      assertThrows(PlaywrightException.class, () -> {
         browser.startTracing(newPage, new Browser.StartTracingOptions()
           .setPath(outputTraceFile));
-        fail("did not throw");
-      } catch (PlaywrightException e) {
-      }
+      });
       newPage.close();
       browser.stopTracing();
     }

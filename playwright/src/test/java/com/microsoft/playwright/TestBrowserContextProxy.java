@@ -47,9 +47,9 @@ public class TestBrowserContextProxy extends TestBase {
   @EnabledIf(value="isChromiumWindows", disabledReason="Platform-specific")
   void shouldThrowForMissingGlobalProxyOnChromiumWindows() {
     try (Browser browser = browserType.launch(createLaunchOptions())) {
-      browser.newContext(new Browser.NewContextOptions().setProxy("localhost:" + server.PORT));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
+      PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
+        browser.newContext(new Browser.NewContextOptions().setProxy("localhost:" + server.PORT));
+      });
       assertTrue(e.getMessage().contains("Browser needs to be launched with the global proxy"));
     }
   }
@@ -179,23 +179,9 @@ public class TestBrowserContextProxy extends TestBase {
     page.navigate("http://0.non.existent.domain.for.the.test/target.html");
     assertEquals("Served by the proxy", page.title());
 
-    try {
-      page.navigate("http://1.non.existent.domain.for.the.test/target.html");
-      fail("did not throw");
-    } catch (PlaywrightException exception) {
-    }
-
-    try {
-      page.navigate("http://2.non.existent.domain.for.the.test/target.html");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-    }
-
-    try {
-      page.navigate("http://foo.is.the.another.test/target.html");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-    }
+    assertThrows(PlaywrightException.class, () -> page.navigate("http://1.non.existent.domain.for.the.test/target.html"));
+    assertThrows(PlaywrightException.class, () -> page.navigate("http://2.non.existent.domain.for.the.test/target.html"));
+    assertThrows(PlaywrightException.class, () -> page.navigate("http://foo.is.the.another.test/target.html"));
 
     page.navigate("http://3.non.existent.domain.for.the.test/target.html");
     assertEquals("Served by the proxy", page.title());

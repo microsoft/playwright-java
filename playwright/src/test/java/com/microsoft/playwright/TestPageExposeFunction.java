@@ -196,12 +196,10 @@ public class TestPageExposeFunction extends TestBase {
   @Test
   void shouldThrowForDuplicateRegistrations() {
     page.exposeFunction("foo", args -> null);
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.exposeFunction("foo", args -> null);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Function \"foo\" has been already registered"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Function \"foo\" has been already registered"));
   }
 
   @Test
@@ -218,14 +216,12 @@ public class TestPageExposeFunction extends TestBase {
     assertEquals(17, page.evaluate("async function() {\n" +
       "  return window['logme'](undefined, undefined, undefined);\n" +
       "}"));
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evaluate("async function() {\n" +
         "  return window['logme'](1, 2);\n" +
         "}");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("exposeBindingHandle supports a single argument, 2 received"));
-    }
+    });
+    assertTrue(e.getMessage().contains("exposeBindingHandle supports a single argument, 2 received"));
   }
 
   @Test

@@ -53,13 +53,11 @@ public class TestSelectorsRegister extends TestBase {
     assertEquals("DIV", page.evalOnSelector("tag2=DIV", "e => e.nodeName"));
     assertEquals("SPAN", page.evalOnSelector("tag2=SPAN", "e => e.nodeName"));
     assertEquals(2, page.evalOnSelectorAll("tag2=DIV", "es => es.length"));
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       // Selector names are case-sensitive.
       page.querySelector("tAG=DIV");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Unknown engine \"tAG\" while parsing selector tAG=DIV"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Unknown engine \"tAG\" while parsing selector tAG=DIV"));
     context.close();
   }
 
@@ -105,12 +103,10 @@ public class TestSelectorsRegister extends TestBase {
 
   @Test
   void shouldHandleErrors() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.querySelector("neverregister=ignored");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Unknown engine \"neverregister\" while parsing selector neverregister=ignored"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Unknown engine \"neverregister\" while parsing selector neverregister=ignored"));
     String createDummySelector = "{\n" +
       "  create(root, target) {\n" +
       "    return target.nodeName;\n" +
@@ -122,26 +118,20 @@ public class TestSelectorsRegister extends TestBase {
       "    return Array.from(root.querySelectorAll(\"dummy\"));\n" +
       "  }\n" +
       "}";
-    try {
+    e = assertThrows(PlaywrightException.class, () -> {
       playwright.selectors().register("$", createDummySelector);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Selector engine name may only contain [a-zA-Z0-9_] characters"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Selector engine name may only contain [a-zA-Z0-9_] characters"));
     // Selector names are case-sensitive.
     playwright.selectors().register("dummy", createDummySelector);
     playwright.selectors().register("duMMy", createDummySelector);
-    try {
+    e = assertThrows(PlaywrightException.class, () -> {
       playwright.selectors().register("dummy", createDummySelector);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("\"dummy\" selector engine has been already registered"));
-    }
-    try {
+    });
+    assertTrue(e.getMessage().contains("\"dummy\" selector engine has been already registered"));
+    e = assertThrows(PlaywrightException.class, () -> {
       playwright.selectors().register("css", createDummySelector);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("\"css\" is a predefined selector engine"));
-    }
+    });
+    assertTrue(e.getMessage().contains("\"css\" is a predefined selector engine"));
   }
 }

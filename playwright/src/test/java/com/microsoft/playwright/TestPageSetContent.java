@@ -70,11 +70,9 @@ public class TestPageSetContent extends TestBase {
     String imgPath = "/img.png";
     // stall for image
     server.setRoute(imgPath, exchange -> {});
-    try {
+    assertThrows(PlaywrightException.class, () -> {
       page.setContent("<img src='" + server.PREFIX + imgPath + "'></img>", new Page.SetContentOptions().setTimeout(100));
-      fail("did not throw");
-    } catch (TimeoutError e) {
-    }
+    });
   }
 
   @Test
@@ -83,12 +81,10 @@ public class TestPageSetContent extends TestBase {
      String imgPath = "/img.png";
     // stall for image
     server.setRoute(imgPath, exchange -> {});
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.setContent("<img src='" + server.PREFIX + imgPath + "'></img>");
-      fail("did not throw");
-    } catch (TimeoutError e) {
-      assertTrue(e.getMessage().contains("Timeout 100ms exceeded."), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout 100ms exceeded."), e.getMessage());
   }
 
   @Test

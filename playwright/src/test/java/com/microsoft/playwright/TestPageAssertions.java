@@ -35,14 +35,12 @@ public class TestPageAssertions extends TestBase {
   @Test
   void hasURLTextFail() {
     page.navigate("data:text/html,<div>B</div>");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(page).hasURL("foo", new PageAssertions.HasURLOptions().setTimeout(1_000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("foo", e.getExpected().getValue());
-      assertEquals("data:text/html,<div>B</div>", e.getActual().getValue());
-      assertTrue(e.getMessage().contains("Page URL expected to be"), e.getMessage());
-    }
+    });
+    assertEquals("foo", e.getExpected().getValue());
+    assertEquals("data:text/html,<div>B</div>", e.getActual().getValue());
+    assertTrue(e.getMessage().contains("Page URL expected to be"), e.getMessage());
   }
 
   @Test
@@ -69,14 +67,12 @@ public class TestPageAssertions extends TestBase {
   @Test
   void hasURLRegexFail() {
     page.navigate(server.EMPTY_PAGE);
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(page).hasURL(Pattern.compile(".*foo.*"), new PageAssertions.HasURLOptions().setTimeout(1_000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals(".*foo.*", e.getExpected().getStringRepresentation());
-      assertEquals(server.EMPTY_PAGE, e.getActual().getValue());
-      assertTrue(e.getMessage().contains("Page URL expected to match regex"), e.getMessage());
-    }
+    });
+    assertEquals(".*foo.*", e.getExpected().getStringRepresentation());
+    assertEquals(server.EMPTY_PAGE, e.getActual().getValue());
+    assertTrue(e.getMessage().contains("Page URL expected to match regex"), e.getMessage());
   }
 
   @Test
@@ -100,14 +96,12 @@ public class TestPageAssertions extends TestBase {
   @Test
   void hasTitleTextFail() {
     page.navigate(server.PREFIX + "/title.html");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(page).hasTitle("foo", new PageAssertions.HasTitleOptions().setTimeout(1_000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("foo", e.getExpected().getValue());
-      assertEquals("Woof-Woof", e.getActual().getValue());
-      assertTrue(e.getMessage().contains("Page title expected to be: foo\nReceived: Woof-Woof"), e.getMessage());
-    }
+    });
+    assertEquals("foo", e.getExpected().getValue());
+    assertEquals("Woof-Woof", e.getActual().getValue());
+    assertTrue(e.getMessage().contains("Page title expected to be: foo\nReceived: Woof-Woof"), e.getMessage());
   }
 
   @Test
@@ -119,14 +113,12 @@ public class TestPageAssertions extends TestBase {
   @Test
   void hasTitleRegexFail() {
     page.navigate(server.PREFIX + "/title.html");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(page).hasTitle(Pattern.compile("^foo[AB]"), new PageAssertions.HasTitleOptions().setTimeout(1_000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("^foo[AB]", e.getExpected().getStringRepresentation());
-      assertEquals("Woof-Woof", e.getActual().getValue());
-      assertTrue(e.getMessage().contains("Page title expected to match regex: ^foo[AB]\nReceived: Woof-Woof"), e.getMessage());
-    }
+    });
+    assertEquals("^foo[AB]", e.getExpected().getStringRepresentation());
+    assertEquals("Woof-Woof", e.getActual().getValue());
+    assertTrue(e.getMessage().contains("Page title expected to match regex: ^foo[AB]\nReceived: Woof-Woof"), e.getMessage());
   }
 
   @Test

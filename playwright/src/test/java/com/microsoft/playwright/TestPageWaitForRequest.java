@@ -52,23 +52,19 @@ public class TestPageWaitForRequest extends TestBase {
 
   @Test
   void shouldRespectTimeout() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForRequest(url -> false, new Page.WaitForRequestOptions().setTimeout(1), () -> {});
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
   }
 
   @Test
   void shouldRespectDefaultTimeout() {
     page.setDefaultTimeout(1);
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForRequest(request -> false, () -> {});
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
   }
 
   @Test

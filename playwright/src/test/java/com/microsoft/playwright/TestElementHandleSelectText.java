@@ -47,12 +47,10 @@ public class TestElementHandleSelectText extends TestBase {
     page.navigate(server.PREFIX + "/input/textarea.html");
     ElementHandle textarea = page.querySelector("textarea");
     textarea.evaluate("e => e.style.display = 'none'");
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       textarea.selectText(new ElementHandle.SelectTextOptions().setTimeout(3000));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("element is not visible"));
-    }
+    });
+    assertTrue(e.getMessage().contains("element is not visible"));
   }
 
 //  @Test

@@ -217,34 +217,28 @@ public class TestPageSetInputFiles extends TestBase {
 
   @Test
   void shouldRespectTimeout() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForFileChooser(new Page.WaitForFileChooserOptions().setTimeout(1), () -> {});
-      fail("did not throw");
-    } catch (TimeoutError e) {
-      assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
   }
 
   @Test
   void shouldRespectDefaultTimeoutWhenThereIsNoCustomTimeout() {
     page.setDefaultTimeout(1);
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForFileChooser(() -> {});
-      fail("did not throw");
-    } catch (TimeoutError e) {
-      assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
   }
 
   @Test
   void shouldPrioritizeExactTimeoutOverDefaultTimeout() {
     page.setDefaultTimeout(0);
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForFileChooser(new Page.WaitForFileChooserOptions().setTimeout(1), () -> {});
-      fail("did not throw");
-    } catch (TimeoutError e) {
-      assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
   }
 
   @Test
@@ -340,13 +334,12 @@ public class TestPageSetInputFiles extends TestBase {
   void shouldNotAcceptMultipleFilesForSingleFileInput() {
     page.setContent("<input type=file>");
     FileChooser fileChooser = page.waitForFileChooser(() -> page.click("input"));
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       fileChooser.setFiles(new Path[]{FILE_TO_UPLOAD, Paths.get("src/test/resources/pptr.png")});
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Non-multiple file input can only accept single file"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Non-multiple file input can only accept single file"));
   }
+
   @Test
   void shouldEmitInputAndChangeEvents() {
     List<Object> events = new ArrayList<>();

@@ -99,12 +99,10 @@ public class TestLocatorFrame extends TestBase {
   @Test
   void shouldWaitForFrame() {
     page.navigate(server.EMPTY_PAGE);
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.frameLocator("iframe").locator("span").click(new Locator.ClickOptions().setTimeout(300));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("waiting for frame \"iframe\""), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("waiting for frame \"iframe\""), e.getMessage());
   }
 
   @Test
@@ -206,13 +204,9 @@ public class TestLocatorFrame extends TestBase {
     routeIframe(page);
     page.setContent("<div></div>");
     Locator button = page.frameLocator("div").locator("button");
-    try {
-      button.waitFor();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("<div></div>"), e.getMessage());
-      assertTrue(e.getMessage().contains("<iframe> was expected"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> button.waitFor());
+    assertTrue(e.getMessage().contains("<div></div>"), e.getMessage());
+    assertTrue(e.getMessage().contains("<iframe> was expected"), e.getMessage());
   }
 
   @Test
@@ -231,12 +225,8 @@ public class TestLocatorFrame extends TestBase {
     routeAmbiguous(page);
     page.navigate(server.EMPTY_PAGE);
     Locator button = page.locator("body").frameLocator("iframe").locator("button");
-    try {
-      button.waitFor();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Error: strict mode violation: \"body >> iframe\" resolved to 3 elements"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> button.waitFor());
+    assertTrue(e.getMessage().contains("Error: strict mode violation: \"body >> iframe\" resolved to 3 elements"), e.getMessage());
   }
 
   @Test

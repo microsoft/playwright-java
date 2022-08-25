@@ -37,12 +37,10 @@ public class TestPageWaitForUrl extends TestBase {
   @Test
   void shouldRespectTimeout() {
     page.navigate(server.EMPTY_PAGE);
-    try {
+    TimeoutError e = assertThrows(TimeoutError.class, () -> {
       page.waitForURL("**/frame.html", new Page.WaitForURLOptions().setTimeout(2500));
-      fail("did not throw");
-    } catch (TimeoutError e) {
-      assertTrue(e.getMessage().contains("Timeout 2500ms exceeded"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout 2500ms exceeded"));
   }
 
   @Test

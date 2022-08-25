@@ -106,12 +106,7 @@ public class TestPageRequestFallback extends TestBase {
     page.route("**/empty.html", route -> {
       route.fallback();
     });
-    try {
-      Response response = page.navigate(server.EMPTY_PAGE);
-      fail("did not throw");
-      assertEquals("fulfilled", response.text());
-    } catch (PlaywrightException e) {
-    }
+    assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
     assertFalse(failed[0]);
   }
 

@@ -41,13 +41,9 @@ public class TestPlaywrightCreate {
     Playwright.CreateOptions options = new Playwright.CreateOptions().setEnv(env);
 
     try (Playwright playwright = PlaywrightImpl.createImpl(options, true)) {
-      try {
-        getBrowserTypeFromEnv(playwright).launch();
-        fail("Did not throw");
-      } catch (PlaywrightException e) {
-        assertTrue(e.getMessage().contains("Looks like Playwright Test or Playwright was just installed or updated") ||
-          e.getMessage().contains("Looks like Playwright was just installed or updated."), e.getMessage());
-      }
+      PlaywrightException e = assertThrows(PlaywrightException.class, () -> getBrowserTypeFromEnv(playwright).launch());
+      assertTrue(e.getMessage().contains("Looks like Playwright Test or Playwright was just installed or updated") ||
+        e.getMessage().contains("Looks like Playwright was just installed or updated."), e.getMessage());
 
       try (DirectoryStream<Path> ds = Files.newDirectoryStream(browsersDir)) {
         for (Path child : ds) {

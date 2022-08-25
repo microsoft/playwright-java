@@ -70,11 +70,9 @@ public class TestPageSetExtraHttpHeaders extends TestBase {
 
   @Test
   void shouldThrowForNonStringHeaderValues() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       browser.newContext(new Browser.NewContextOptions().setExtraHTTPHeaders(mapOf("foo", null)));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("expected string, got undefined"));
-    }
+    });
+    assertTrue(e.getMessage().contains("expected string, got undefined"));
   }
 }

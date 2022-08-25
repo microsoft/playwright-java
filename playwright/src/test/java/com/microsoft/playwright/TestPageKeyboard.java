@@ -295,24 +295,14 @@ public class TestPageKeyboard extends TestBase {
 
   @Test
   void shouldThrowOnUnknownKeys() {
-    try {
-      page.keyboard().press("NotARealKey");
-      fail("did not throw");
-    } catch (Exception e) {
-      assertTrue(e.getMessage().contains("Unknown key: \"NotARealKey\""), "Expecting Exception: " + e.getMessage() + " contain: Unknown key: \"NotARealKey\"");
-    }
-    try {
-      page.keyboard().press("ё");
-      fail("did not throw");
-    } catch (Exception e) {
-      assertTrue(e.getMessage().contains("Unknown key: \"ё\""), "Expecting Exception: " + e.getMessage() + " contain: Unknown key: \"ё\"");
-    }
-    try {
-      page.keyboard().press("😊");
-      fail("did not throw");
-    } catch (Exception e) {
-      assertTrue(e.getMessage().contains("Unknown key: \"😊\""), "Expecting Exception: " + e.getMessage() + " contain: Unknown key: \"😊\"");
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.keyboard().press("NotARealKey"));
+    assertTrue(e.getMessage().contains("Unknown key: \"NotARealKey\""), "Expecting Exception: " + e.getMessage() + " contain: Unknown key: \"NotARealKey\"");
+
+    e = assertThrows(PlaywrightException.class, () -> page.keyboard().press("ё"));
+    assertTrue(e.getMessage().contains("Unknown key: \"ё\""), "Expecting Exception: " + e.getMessage() + " contain: Unknown key: \"ё\"");
+
+    e = assertThrows(PlaywrightException.class, () -> page.keyboard().press("😊"));
+    assertTrue(e.getMessage().contains("Unknown key: \"😊\""), "Expecting Exception: " + e.getMessage() + " contain: Unknown key: \"😊\"");
   }
 
   @Test

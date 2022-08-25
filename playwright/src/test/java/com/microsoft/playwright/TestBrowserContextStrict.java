@@ -38,12 +38,8 @@ public class TestBrowserContextStrict extends TestBase {
   @Test
   void shouldFailPageTextContentInStrictMode() {
     page.setContent("<span>span1</span><div><span>target</span></div>");
-    try {
-      page.textContent("span");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("strict mode violation"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.textContent("span"));
+    assertTrue(e.getMessage().contains("strict mode violation"));
   }
 
   @Test

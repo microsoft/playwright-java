@@ -20,8 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
 import static com.microsoft.playwright.options.ElementState.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestElementHandleWaitForElementState extends TestBase {
 
@@ -51,12 +50,10 @@ public class TestElementHandleWaitForElementState extends TestBase {
   void shouldTimeoutWaitingForVisible() {
     page.setContent("<div style='display:none'>content</div>");
     ElementHandle div = page.querySelector("div");
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       div.waitForElementState(VISIBLE, new ElementHandle.WaitForElementStateOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (TimeoutError e) {
-      assertTrue(e.getMessage().contains("Timeout 1000ms exceeded"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout 1000ms exceeded"));
   }
 
   @Test
@@ -64,12 +61,8 @@ public class TestElementHandleWaitForElementState extends TestBase {
     page.setContent("<div style='display:none'>content</div>");
     ElementHandle div = page.querySelector("div");
     div.evaluate("div => div.remove()");
-    try {
-      div.waitForElementState(VISIBLE);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> div.waitForElementState(VISIBLE));
+    assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
   }
 
   @Test
@@ -111,12 +104,8 @@ public class TestElementHandleWaitForElementState extends TestBase {
     page.setContent("<button disabled>Target</button>");
     ElementHandle button = page.querySelector("button");
     button.evaluate("button => button.remove()");
-    try {
-      button.waitForElementState(ENABLED);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> button.waitForElementState(ENABLED));
+    assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
   }
 
   @Test

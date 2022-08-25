@@ -74,15 +74,13 @@ public class TestWaitForFunction extends TestBase {
     int[] counter = { 0 };
     page.onConsoleMessage(message -> ++counter[0]);
 
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       JSHandle result = page.waitForFunction("() => {\n" +
         "  window['counter'] = (window['counter'] || 0) + 1;\n" +
         "  console.log(window['counter']);\n" +
         "}", null, new Page.WaitForFunctionOptions().setPollingInterval(1).setTimeout(1000));
-      fail("did not throw");
-    } catch (TimeoutError e) {
-      assertTrue(e.getMessage().contains("Timeout 1000ms exceeded"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout 1000ms exceeded"));
 
     int savedCounter = counter[0];
     page.waitForTimeout(2000); // Give it some time to produce more logs.
@@ -101,37 +99,31 @@ public class TestWaitForFunction extends TestBase {
 
   @Test
   void shouldFailWithPredicateThrowingOnFirstCall() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForFunction("() => { throw new Error('oh my'); }");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("oh my"));
-    }
+    });
+    assertTrue(e.getMessage().contains("oh my"));
   }
 
   @Test
   void shouldFailWithPredicateThrowingSometimes() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForFunction("() => {\n" +
         "  window['counter'] = (window['counter'] || 0) + 1;\n" +
         "  if (window['counter'] === 3)\n" +
         "    throw new Error('Bad counter!');\n" +
         "  return window['counter'] === 5 ? 'result' : false;\n" +
         "}");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Bad counter!"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Bad counter!"));
   }
 
   @Test
   void shouldFailWithReferenceErrorOnWrongPage() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForFunction("() => globalVar === 123");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("globalVar"));
-    }
+    });
+    assertTrue(e.getMessage().contains("globalVar"));
   }
 
   @Test
@@ -149,12 +141,10 @@ public class TestWaitForFunction extends TestBase {
 
   @Test
   void shouldThrowNegativePollingInterval() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForFunction("() => !!document.body", null, new Page.WaitForFunctionOptions().setPollingInterval(-10));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Cannot poll with non-positive interval"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Cannot poll with non-positive interval"));
   }
 
   @Test
@@ -177,23 +167,19 @@ public class TestWaitForFunction extends TestBase {
 
   @Test
   void shouldRespectTimeout() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForFunction("false", null, new Page.WaitForFunctionOptions().setTimeout(10));
-      fail("did not throw");
-    } catch (TimeoutError e) {
-      assertTrue(e.getMessage().contains("Timeout 10ms exceeded"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout 10ms exceeded"));
   }
 
   @Test
   void shouldRespectDefaultTimeout() {
     page.setDefaultTimeout(1);
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForFunction("false");
-      fail("did not throw");
-    } catch (TimeoutError e) {
-      assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout 1ms exceeded"));
   }
 
   @Test
@@ -269,33 +255,29 @@ public class TestWaitForFunction extends TestBase {
         messages.add(msg.text());
       }
     });
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForFunction("() => {\n" +
         "  console.log('waitForFunction1');\n" +
         "  throw new Error('waitForFunction1');\n" +
         "}");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("waitForFunction1"));
-    }
+    });
+    assertTrue(e.getMessage().contains("waitForFunction1"));
     page.reload();
-    try {
+    e = assertThrows(PlaywrightException.class, () -> {
       page.waitForFunction("() => {\n" +
         "  console.log('waitForFunction2');\n" +
         "  throw new Error('waitForFunction2');\n" +
         "}");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("waitForFunction2"));
-    }
+    });
+    assertTrue(e.getMessage().contains("waitForFunction2"));
     page.reload();
-    try {
+    e = assertThrows(PlaywrightException.class, () -> {
       page.waitForFunction("() => {\n" +
         "  console.log('waitForFunction3');\n" +
         "  throw new Error('waitForFunction3');\n" +
         "}");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("waitForFunction3"));
-    }
+    });
+    assertTrue(e.getMessage().contains("waitForFunction3"));
     assertEquals(asList("waitForFunction1", "waitForFunction2", "waitForFunction3"), messages);
   }
 }

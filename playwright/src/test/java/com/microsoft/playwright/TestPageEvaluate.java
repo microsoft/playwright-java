@@ -157,15 +157,13 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldThrowWhenEvaluationTriggersReload() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evaluate("() => {\n" +
         "  location.reload();\n" +
         "  return new Promise(() => { });\n" +
         "}");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("navigation"));
-    }
+    });
+    assertTrue(e.getMessage().contains("navigation"));
   }
 
   @Test
@@ -208,32 +206,20 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldRejectPromiseWithException() {
-    try {
-      page.evaluate("() => not_existing_object.property");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("not_existing_object"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.evaluate("() => not_existing_object.property"));
+    assertTrue(e.getMessage().contains("not_existing_object"));
   }
 
   @Test
   void shouldSupportThrownStringsAsErrorMessages() {
-    try {
-      page.evaluate("() => { throw 'qwerty'; }");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("qwerty"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.evaluate("() => { throw 'qwerty'; }"));
+    assertTrue(e.getMessage().contains("qwerty"));
   }
 
   @Test
   void shouldSupportThrownNumbersAsErrorMessages() {
-    try {
-      page.evaluate("() => { throw 100500; }");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("100500"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.evaluate("() => { throw 100500; }"));
+    assertTrue(e.getMessage().contains("100500"));
   }
 
   @Test
@@ -357,14 +343,12 @@ public class TestPageEvaluate extends TestBase {
   @Test
   void shouldBeAbleToThrowATrickyError() {
     String errorText = "My error";
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evaluate("errorText => {\n" +
         "  throw new Error(errorText);\n" +
         "}", errorText);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains(errorText));
-    }
+    });
+    assertTrue(e.getMessage().contains(errorText));
   }
 
   @Test
@@ -399,12 +383,8 @@ public class TestPageEvaluate extends TestBase {
     ElementHandle element = page.querySelector("section");
     assertNotNull(element);
     element.dispose();
-    try {
-      page.evaluate("e => e.textContent", element);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("JSHandle is disposed"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.evaluate("e => e.textContent", element));
+    assertTrue(e.getMessage().contains("JSHandle is disposed"));
   }
 
   @Test
@@ -418,7 +398,7 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldThrowANiceErrorAfterANavigation() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForNavigation(() -> {
         page.evaluate("() => {\n" +
           "  const promise = new Promise(f => window['__resolve'] = f);\n" +
@@ -427,9 +407,8 @@ public class TestPageEvaluate extends TestBase {
           "  return promise;\n" +
           "}");
       });
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("navigation"));
-    }
+    });
+    assertTrue(e.getMessage().contains("navigation"));
   }
 
   @Test
@@ -478,14 +457,12 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldThrowErrorWithDetailedInformationOnExceptionInsidePromise() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evaluate("() => new Promise(() => {\n" +
         "  throw new Error('Error in promise');\n" +
         "})");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Error in promise"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Error in promise"));
   }
 
   @Test
@@ -523,7 +500,7 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldRespectUseStrictExpression() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evaluate("() => {\n" +
         "  'use strict';\n" +
         "  // @ts-ignore\n" +
@@ -531,10 +508,8 @@ public class TestPageEvaluate extends TestBase {
         "  // @ts-ignore\n" +
         "  return variableY;\n" +
         "}");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("variableY"));
-    }
+    });
+    assertTrue(e.getMessage().contains("variableY"));
   }
 
   @Test
@@ -544,12 +519,8 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldNotLeakHandles() {
-    try {
-      page.evaluate("handles.length");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains(" handles"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.evaluate("handles.length"));
+    assertTrue(e.getMessage().contains(" handles"));
   }
 
   @Test

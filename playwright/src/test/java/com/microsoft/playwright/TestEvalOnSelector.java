@@ -119,12 +119,10 @@ public class TestEvalOnSelector extends TestBase {
 
   @Test
   void shouldThrowErrorIfNoElementIsFound() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evalOnSelector("section", "e => e.id");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("failed to find element matching selector \"section\""));
-    }
+    });
+    assertTrue(e.getMessage().contains("failed to find element matching selector \"section\""));
   }
 
   @Test
@@ -166,23 +164,20 @@ public class TestEvalOnSelector extends TestBase {
 
   @Test
   void shouldThrowOnMultipleCaptures() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evalOnSelector("*css=div >> *css=span", "e => e.outerHTML");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Only one of the selectors can capture using * modifier"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Only one of the selectors can capture using * modifier"));
   }
 
   @Test
   void shouldThrowOnMalformedCapture() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evalOnSelector("*=div", "e => e.outerHTML");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Unknown engine \"\" while parsing selector *=div"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Unknown engine \"\" while parsing selector *=div"));
   }
+
   @Test
   void shouldWorkWithSpacesInCssAttributes() {
     page.setContent("<div><input placeholder='Select date'></div>");
