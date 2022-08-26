@@ -50,16 +50,8 @@ public class TestPdf extends TestBase {
 
   @Test
   @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
-  void shouldOnlyHavePdfInChromium() {
-    try {
-      page.pdf();
-      if (isChromium()) {
-        return;
-      }
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertFalse(e.getMessage().contains("did not throw"));
-    }
+  void shouldThrowInNonChromium() {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.pdf());
+    assertFalse(e.getMessage().contains("did not throw"));
   }
-
 }
