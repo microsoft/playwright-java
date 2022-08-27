@@ -169,7 +169,7 @@ public class TestBrowserContextRoute extends TestBase {
       throw new RuntimeException("My Exception");
     });
 
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> browser.newContext(new Browser.NewContextOptions().setProxy("localhost:" + server.PORT)));
+    RuntimeException e = assertThrows(RuntimeException.class, () -> browser.newContext(new Browser.NewContextOptions().setProxy("localhost:" + server.PORT)));
     assertTrue(e.getMessage().contains("My Exception"), e.getMessage());
   }
 
