@@ -87,7 +87,7 @@ public class TestElementHandleConvenience extends TestBase {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.innerText("svg"));
     assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
     ElementHandle handle = page.querySelector("svg");
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> handle.innerText());
+    e = assertThrows(PlaywrightException.class, () -> handle.innerText());
     assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
   }
 

@@ -61,7 +61,7 @@ public class TestLocatorConvenience extends TestBase {
     Locator locator = page.locator("#input");
     assertEquals("input value", locator.inputValue());
 
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.inputValue("#inner"););
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.inputValue("#inner"));
     assertTrue(e.getMessage().contains("Node is not an <input>, <textarea> or <select> element"), e.getMessage());
     e = assertThrows(PlaywrightException.class, () -> {
       Locator locator2 = page.locator("#inner");
