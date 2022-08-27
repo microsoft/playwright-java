@@ -52,6 +52,6 @@ public class TestPdf extends TestBase {
   @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
   void shouldThrowInNonChromium() {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.pdf());
-    assertFalse(e.getMessage().contains("Page.pdf only supported in headless Chromium"));
+    assertTrue(e.getMessage().contains("Page.pdf only supported in headless Chromium"));
   }
 }
