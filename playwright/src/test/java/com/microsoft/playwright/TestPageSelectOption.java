@@ -79,12 +79,11 @@ public class TestPageSelectOption extends TestBase {
   void shouldNotSelectSingleOptionWhenSomeAttributesDoNotMatch() {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evalOnSelector("select", "s => s.value = undefined");
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.selectOption("select", new SelectOption()
         .setValue("green").setLabel("Brown"), new Page.SelectOptionOptions().setTimeout(300));
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Timeout"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout"));
     assertEquals("", page.evaluate("() => document.querySelector('select').value"));
   }
 
@@ -137,12 +136,8 @@ public class TestPageSelectOption extends TestBase {
   @Test
   void shouldThrowWhenElementIsNotASelect() {
     page.navigate(server.PREFIX + "/input/select.html");
-    try {
-      page.selectOption("body", "");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Element is not a <select> element"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.selectOption("body", ""));
+    assertTrue(e.getMessage().contains("Element is not a <select> element"), e.getMessage());
   }
 
   @Test
@@ -181,12 +176,10 @@ public class TestPageSelectOption extends TestBase {
   void shouldNotAllowNullItems() {
     page.navigate(server.PREFIX + "/input/select.html");
     page.evaluate("() => window['makeMultiple']()");
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.selectOption("select", new String[]{"blue", null, "black","magenta"});
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("options.get(1): expected object, got null"));
-    }
+    });
+    assertTrue(e.getMessage().contains("options.get(1): expected object, got null"));
   }
 
   @Test

@@ -43,12 +43,8 @@ public class TestPageFill extends TestBase {
     page.navigate(server.PREFIX + "/input/textarea.html");
     for (String type : new String[]{"button", "checkbox", "file", "image", "radio", "reset", "submit"}) {
       page.evalOnSelector("input", "(input, type) => input.setAttribute('type', type)", type);
-      try {
-        page.fill("input", "");
-        fail("fill should throw");
-      } catch (PlaywrightException e) {
-        assertTrue(e.getMessage().contains("input of type \"" + type + "\" cannot be filled"), "type = " + type + e.getMessage());
-      }
+      PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("input", ""));
+      assertTrue(e.getMessage().contains("input of type \"" + type + "\" cannot be filled"), "type = " + type + e.getMessage());
     }
   }
 
@@ -62,24 +58,14 @@ public class TestPageFill extends TestBase {
   @Test
   void shouldThrowOnIncorrectRangeValue() {
     page.setContent("<input type=range min=0 max=100 value=50>");
-    try {
-      page.fill("input", "foo");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Malformed value"), e.getMessage());
-    }
-    try {
-      page.fill("input", "200");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Malformed value"), e.getMessage());
-    }
-    try {
-      page.fill("input", "15.43");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Malformed value"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("input", "foo"));
+    assertTrue(e.getMessage().contains("Malformed value"), e.getMessage());
+
+    e = assertThrows(PlaywrightException.class, () -> page.fill("input", "200"));
+    assertTrue(e.getMessage().contains("Malformed value"), e.getMessage());
+
+    e = assertThrows(PlaywrightException.class, () ->  page.fill("input", "15.43"));
+    assertTrue(e.getMessage().contains("Malformed value"), e.getMessage());
   }
 
 
@@ -105,12 +91,8 @@ public class TestPageFill extends TestBase {
   @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="skip")
   void shouldThrowOnIncorrectDate() {
     page.setContent("<input type=date>");
-    try {
-      page.fill("input", "2020-13-05");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Malformed value"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("input", "2020-13-05"));
+    assertTrue(e.getMessage().contains("Malformed value"));
   }
 
   @Test
@@ -124,12 +106,8 @@ public class TestPageFill extends TestBase {
   @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="skip")
   void shouldThrowOnIncorrectTime() {
     page.setContent("<input type=time>");
-    try {
-      page.fill("input", "25:05");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Malformed value"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("input", "25:05"));
+    assertTrue(e.getMessage().contains("Malformed value"));
   }
 
   @Test
@@ -143,12 +121,8 @@ public class TestPageFill extends TestBase {
   @EnabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="skip")
   void shouldThrowOnIncorrectDatetimeLocal() {
     page.setContent("<input type=datetime-local>");
-    try {
-      page.fill("input", "abc");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Malformed value"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("input", "abc"));
+    assertTrue(e.getMessage().contains("Malformed value"));
   }
 
   @Test
@@ -188,12 +162,8 @@ public class TestPageFill extends TestBase {
   @Test
   void shouldThrowWhenElementIsNotAnInputTextareaOrContenteditable() {
     page.navigate(server.PREFIX + "/input/textarea.html");
-    try {
-      page.fill("body", "");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Element is not an <input>"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("body", ""));
+    assertTrue(e.getMessage().contains("Element is not an <input>"));
   }
 
   void shouldThrowIfPassedANonStringValue() {
@@ -252,12 +222,8 @@ public class TestPageFill extends TestBase {
   @Test
   void shouldNotBeAbleToFillTextIntoTheInputTypeNumber() {
     page.setContent("<input id='input' type='number'></input>");
-    try {
-      page.fill("input", "abc");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Cannot type text into input[type=number]"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("input", "abc"));
+    assertTrue(e.getMessage().contains("Cannot type text into input[type=number]"));
   }
 
   @Test

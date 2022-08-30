@@ -52,34 +52,28 @@ public class TestPageLocatorQuery extends TestBase {
   @Test
   void shouldThrowOnCaptureWNth() {
     page.setContent("<section><div><p>A</p></div></section>");
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.locator("*css=div >> p").nth(1).click();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Can't query n-th element"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Can't query n-th element"), e.getMessage());
   }
 
   @Test
   void shouldThrowOnDueToStrictness() {
     page.setContent("<div>A</div><div>B</div>");
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.locator("div").isVisible();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("strict mode violation"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("strict mode violation"), e.getMessage());
   }
 
   @Test
   void shouldThrowOnDueToStrictness2() {
     page.setContent("<select><option>One</option><option>Two</option></select>");
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.locator("option").evaluate("e => {}");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("strict mode violation"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("strict mode violation"), e.getMessage());
   }
 
   @Test

@@ -564,12 +564,10 @@ public class TestClick extends TestBase {
     page.evaluate("addButton()");
     ElementHandle handle = page.querySelector("button");
     page.evaluate("stopButton(true)");
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       handle.click(new ElementHandle.ClickOptions().setForce(true));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
     assertEquals(null, page.evaluate("window.clicked"));
   }
 

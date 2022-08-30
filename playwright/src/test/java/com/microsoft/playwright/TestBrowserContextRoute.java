@@ -169,12 +169,8 @@ public class TestBrowserContextRoute extends TestBase {
       throw new RuntimeException("My Exception");
     });
 
-    try {
-      page.navigate(server.EMPTY_PAGE);
-      fail("did not throw");
-    } catch (RuntimeException e) {
-      assertTrue(e.getMessage().contains("My Exception"), e.getMessage());
-    }
+    RuntimeException e = assertThrows(RuntimeException.class, () -> page.navigate(server.EMPTY_PAGE));
+    assertTrue(e.getMessage().contains("My Exception"), e.getMessage());
   }
 
   @Test
@@ -187,12 +183,8 @@ public class TestBrowserContextRoute extends TestBase {
       // Fulfilling with dsiposed response will lead to a server-side exception.
       route.fulfill(new Route.FulfillOptions().setResponse(response));
     });
-    try {
-      page.navigate(server.EMPTY_PAGE);
-      fail("did not throw");
-    } catch (RuntimeException e) {
-      assertTrue(e.getMessage().contains("Fetch response has been disposed"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
+    assertTrue(e.getMessage().contains("Fetch response has been disposed"), e.getMessage());
   }
 
   @Test
@@ -201,12 +193,8 @@ public class TestBrowserContextRoute extends TestBase {
     page.route("**/*", route -> {
       route.resume(new Route.ResumeOptions().setUrl("file:///tmp"));
     });
-    try {
-      page.navigate(server.EMPTY_PAGE);
-      fail("did not throw");
-    } catch (RuntimeException e) {
-      assertTrue(e.getMessage().contains("New URL must have same protocol as overridden URL"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
+    assertTrue(e.getMessage().contains("New URL must have same protocol as overridden URL"), e.getMessage());
   }
 
 
@@ -260,12 +248,7 @@ public class TestBrowserContextRoute extends TestBase {
       route.fallback();
     });
 
-    try {
-      page.navigate(server.EMPTY_PAGE);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertNotNull(e);
-    }
+    assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
     assertFalse(failed[0]);
   }
 

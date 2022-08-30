@@ -61,19 +61,13 @@ public class TestLocatorConvenience extends TestBase {
     Locator locator = page.locator("#input");
     assertEquals("input value", locator.inputValue());
 
-    try {
-      page.inputValue("#inner");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Node is not an <input>, <textarea> or <select> element"), e.getMessage());
-    }
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.inputValue("#inner"));
+    assertTrue(e.getMessage().contains("Node is not an <input>, <textarea> or <select> element"), e.getMessage());
+    e = assertThrows(PlaywrightException.class, () -> {
       Locator locator2 = page.locator("#inner");
       locator2.inputValue();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Node is not an <input>, <textarea> or <select> element"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Node is not an <input>, <textarea> or <select> element"), e.getMessage());
   }
 
   @Test
@@ -95,19 +89,12 @@ public class TestLocatorConvenience extends TestBase {
   @Test
   void innerTextShouldThrow() {
     page.setContent("<svg>text</svg>");
-    try {
-      page.innerText("svg");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.innerText("svg"));
+    assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
+
     Locator locator = page.locator("svg");
-    try {
-      locator.innerText();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
-    }
+    e = assertThrows(PlaywrightException.class, () -> locator.innerText());
+    assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
   }
 
   @Test
@@ -184,12 +171,8 @@ public class TestLocatorConvenience extends TestBase {
     element.evaluate("input => input.checked = false");
     assertFalse(element.isChecked());
     assertFalse(page.isChecked("input"));
-    try {
-      page.isChecked("div");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Not a checkbox or radio button"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.isChecked("div"));
+    assertTrue(e.getMessage().contains("Not a checkbox or radio button"));
   }
 
   @Test

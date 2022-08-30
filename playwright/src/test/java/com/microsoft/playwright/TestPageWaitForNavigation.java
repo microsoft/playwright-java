@@ -44,14 +44,12 @@ public class TestPageWaitForNavigation extends TestBase {
 
   @Test
   void shouldRespectTimeout() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForNavigation(
         new Page.WaitForNavigationOptions().setUrl("**/frame.html").setTimeout(5000),
           () -> page.navigate(server.EMPTY_PAGE));
-      fail("did not throw");
-    } catch (TimeoutError e) {
-      assertTrue(e.getMessage().contains("Timeout 5000ms exceeded"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout 5000ms exceeded"));
   }
 
   // Skipped in sync API.
@@ -92,14 +90,12 @@ public class TestPageWaitForNavigation extends TestBase {
   void shouldWorkWithClickingOnLinksWhichDoNotCommitNavigation() throws InterruptedException {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a href='" + httpsServer.EMPTY_PAGE + "'>foobar</a>");
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.waitForNavigation(() -> page.click("a"));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      // TODO: figure out why it is inconsistent on Linux WebKit.
-      List<String> possibleErrorMessages = expectedSSLError(browserType.name());
-      assertTrue(checkSSLErrorMessage(e.getMessage(), possibleErrorMessages), "Unexpected exception: '" + e.getMessage() + "' check message(s): " + String.join(",", possibleErrorMessages));
-    }
+    });
+    // TODO: figure out why it is inconsistent on Linux WebKit.
+    List<String> possibleErrorMessages = expectedSSLError(browserType.name());
+    assertTrue(checkSSLErrorMessage(e.getMessage(), possibleErrorMessages), "Unexpected exception: '" + e.getMessage() + "' check message(s): " + String.join(",", possibleErrorMessages));
   }
 
   @Test
@@ -239,7 +235,7 @@ public class TestPageWaitForNavigation extends TestBase {
     page.navigate(server.PREFIX + "/frames/one-frame.html");
     Frame frame = page.frames().get(1);
     server.setRoute("/empty.html", exchange -> {});
-    try {
+    PlaywrightException ex = assertThrows(PlaywrightException.class, () -> {
       frame.waitForNavigation(() -> {
         Future<Server.Request> req = server.futureRequest("/empty.html");
         page.evalOnSelector("iframe", "frame => { frame.contentWindow.location.href = '/empty.html'; }");
@@ -250,35 +246,29 @@ public class TestPageWaitForNavigation extends TestBase {
         }
         page.evaluate("setTimeout(() => document.querySelector('iframe').remove());");
       });
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("frame was detached"), e.getMessage());
-    }
+    });
+    assertTrue(ex.getMessage().contains("frame was detached"), ex.getMessage());
   }
 
   @Test
   void shouldThrowOnInvalidUrlMatcherTypeInPage() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       Page.WaitForNavigationOptions options = new Page.WaitForNavigationOptions();
       options.url = new Object();
       page.waitForNavigation(options, () -> {});
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Url must be String, Pattern or Predicate<String>"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Url must be String, Pattern or Predicate<String>"));
   }
 
   @Test
   void shouldThrowOnInvalidUrlMatcherTypeInFrame() {
     page.navigate(server.PREFIX + "/frames/one-frame.html");
     Frame frame = page.frames().get(1);
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       Frame.WaitForNavigationOptions options = new Frame.WaitForNavigationOptions();
       options.url = new Object();
       frame.waitForNavigation(options, () -> {});
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Url must be String, Pattern or Predicate<String>"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Url must be String, Pattern or Predicate<String>"));
   }
 }

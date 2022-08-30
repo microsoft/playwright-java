@@ -192,12 +192,8 @@ public class TestBrowserTypeConnect extends TestBase {
 
     remote.kill();
     assertEquals(1, disconnected1[0]);
-    try {
-      // Tickle connection so that it gets a chance to dispatch disconnect event.
-      page2.title();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-    }
+    // Tickle connection so that it gets a chance to dispatch disconnect event.
+    assertThrows(PlaywrightException.class, () -> page2.title());
     assertEquals(1, disconnected2[0]);
   }
 
@@ -262,12 +258,8 @@ public class TestBrowserTypeConnect extends TestBase {
       }
     }
     assertFalse(browser.isConnected());
-    try {
-      page.waitForNavigation(() -> {});
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Page closed") || e.getMessage().contains("Browser has been closed"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.waitForNavigation(() -> {}));
+    assertTrue(e.getMessage().contains("Page closed") || e.getMessage().contains("Browser has been closed"), e.getMessage());
   }
 
   @Test
@@ -277,12 +269,10 @@ public class TestBrowserTypeConnect extends TestBase {
 
     server.setRoute("/one-style.css", r -> {});
     page.onRequest(r -> remote.close());
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.navigate(server.PREFIX + "/one-style.html", new Page.NavigateOptions().setTimeout(60000));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Browser has been closed"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Browser has been closed"));
   }
 
   @Test
@@ -408,12 +398,8 @@ public class TestBrowserTypeConnect extends TestBase {
     Path savedAsPath = tempDir.resolve("my-video.webm");
     page.video().saveAs(savedAsPath);
     assertTrue(Files.exists(savedAsPath));
-    try {
-      page.video().path();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Path is not available when using browserType.connect(). Use saveAs() to save a local copy."));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.video().path());
+    assertTrue(e.getMessage().contains("Path is not available when using browserType.connect(). Use saveAs() to save a local copy."));
   }
 
 
@@ -435,12 +421,8 @@ public class TestBrowserTypeConnect extends TestBase {
     download.saveAs(nestedPath);
     assertTrue(Files.exists(nestedPath));
     assertEquals("Hello world", new String(Files.readAllBytes(nestedPath), StandardCharsets.UTF_8));
-    try {
-      download.path();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Path is not available when using browserType.connect(). Use download.saveAs() to save a local copy."));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> download.path());
+    assertTrue(e.getMessage().contains("Path is not available when using browserType.connect(). Use download.saveAs() to save a local copy."));
     page.close();
   }
 
@@ -459,12 +441,8 @@ public class TestBrowserTypeConnect extends TestBase {
     Download download = page.waitForDownload(() -> page.click("a"));
     Path userPath = tempDir.resolve("download.txt");
     download.delete();
-    try {
-      download.saveAs(userPath);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Target page, context or browser has been closed"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> download.saveAs(userPath));
+    assertTrue(e.getMessage().contains("Target page, context or browser has been closed"));
     page.close();
   }
 

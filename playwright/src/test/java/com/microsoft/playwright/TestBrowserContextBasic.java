@@ -116,22 +116,18 @@ public class TestBrowserContextBasic extends TestBase {
 
   @Test
   void shouldNotAllowDeviceScaleFactorWithNullViewport() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       browser.newContext(new Browser.NewContextOptions().setDeviceScaleFactor(1.0).setViewportSize(null));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("\"deviceScaleFactor\" option is not supported with null \"viewport\""));
-    }
+    });
+    assertTrue(e.getMessage().contains("\"deviceScaleFactor\" option is not supported with null \"viewport\""));
   }
 
   @Test
   void shouldNotAllowIsMobileWithNullViewport() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       browser.newContext(new Browser.NewContextOptions().setIsMobile(true).setViewportSize(null));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("\"isMobile\" option is not supported with null \"viewport\""));
-    }
+    });
+    assertTrue(e.getMessage().contains("\"isMobile\" option is not supported with null \"viewport\""));
   }
 
   @Test
@@ -143,12 +139,10 @@ public class TestBrowserContextBasic extends TestBase {
   @Test
   void closeShouldAbortFutureEvent() {
     BrowserContext context = browser.newContext();
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       context.waitForPage(() -> context.close());
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Context closed"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Context closed"));
   }
 
   @Test
@@ -211,15 +205,11 @@ public class TestBrowserContextBasic extends TestBase {
       BrowserContext context = browser.newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
       Page page = context.newPage();
       page.navigate("data:text/html, <script>var something = 'forbidden'</script>");
-      try {
-        page.evaluate("something");
-        fail("did not throw");
-      } catch (PlaywrightException e) {
-        if (isWebKit())
-          assertTrue(e.getMessage().contains("Can\'t find variable: something"));
-        else
-          assertTrue(e.getMessage().contains("something is not defined"));
-      }
+      PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.evaluate("something"));
+      if (isWebKit())
+        assertTrue(e.getMessage().contains("Can\'t find variable: something"));
+      else
+        assertTrue(e.getMessage().contains("something is not defined"));
       context.close();
     }
 
@@ -244,11 +234,7 @@ public class TestBrowserContextBasic extends TestBase {
   void shouldWorkWithOfflineOption() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setOffline(true));
     Page page = context.newPage();
-    try {
-      page.navigate(server.EMPTY_PAGE);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-    }
+    assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
 
     context.setOffline(false);
     Response response = page.navigate(server.EMPTY_PAGE);

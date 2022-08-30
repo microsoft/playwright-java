@@ -79,11 +79,7 @@ public class TestBrowserContextHar extends TestBase {
     Path path = Paths.get("src/test/resources/har-fulfill.har");
     context.routeFromHAR(path);
     Page page = context.newPage();
-    try {
-      page.navigate(server.EMPTY_PAGE);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-    }
+    assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
   }
 
   @Test
@@ -350,11 +346,7 @@ public class TestBrowserContextHar extends TestBase {
       assertEquals("2", page2.evaluate(fetchFunction, "2"));
       assertEquals("3", page2.evaluate(fetchFunction, "3"));
       assertEquals("3", page2.evaluate(fetchFunction, "3"));
-      try {
-        page2.evaluate(fetchFunction, "4");
-        fail("did not throw");
-      } catch (PlaywrightException e) {
-      }
+      assertThrows(PlaywrightException.class, () -> page2.evaluate(fetchFunction, "4"));
     }
   }
 

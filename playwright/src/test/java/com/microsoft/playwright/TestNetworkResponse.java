@@ -67,12 +67,8 @@ public class TestNetworkResponse extends TestBase {
     assertNotNull(redirectedFrom);
     Response redirected = redirectedFrom.response();
     assertEquals(302, redirected.status());
-    try {
-      redirected.text();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Response body is unavailable for redirect responses"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> redirected.text());
+    assertTrue(e.getMessage().contains("Response body is unavailable for redirect responses"));
   }
 
   @Test

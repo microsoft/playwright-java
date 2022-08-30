@@ -57,19 +57,12 @@ public class TestElementHandleConvenience extends TestBase {
     ElementHandle handle = page.querySelector("#input");
     assertEquals("input value", handle.inputValue());
 
-    try {
-      page.inputValue("#inner");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Node is not an <input>, <textarea> or <select> element"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.inputValue("#inner"));
+    assertTrue(e.getMessage().contains("Node is not an <input>, <textarea> or <select> element"), e.getMessage());
+
     ElementHandle handle2 = page.querySelector("#inner");
-    try {
-      handle2.inputValue();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Node is not an <input>, <textarea> or <select> element"), e.getMessage());
-    }
+    e = assertThrows(PlaywrightException.class, () -> handle2.inputValue());
+    assertTrue(e.getMessage().contains("Node is not an <input>, <textarea> or <select> element"), e.getMessage());
   }
 
   @Test
@@ -91,19 +84,11 @@ public class TestElementHandleConvenience extends TestBase {
   @Test
   void innerTextShouldThrow() {
     page.setContent("<svg>text</svg>");
-    try {
-      page.innerText("svg");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.innerText("svg"));
+    assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
     ElementHandle handle = page.querySelector("svg");
-    try {
-      handle.innerText();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
-    }
+    e = assertThrows(PlaywrightException.class, () -> handle.innerText());
+    assertTrue(e.getMessage().contains("Node is not an HTMLElement"), e.getMessage());
   }
 
   @Test
@@ -267,11 +252,7 @@ public class TestElementHandleConvenience extends TestBase {
     handle.evaluate("input => input.checked = false");
     assertFalse(handle.isChecked());
     assertFalse(page.isChecked("input"));
-    try {
-      page.isChecked("div");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Not a checkbox or radio button"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.isChecked("div"));
+    assertTrue(e.getMessage().contains("Not a checkbox or radio button"));
   }
 }

@@ -132,17 +132,13 @@ public class TestPageNavigate extends TestBase {
       exchange.sendResponseHeaders(204, -1);
       exchange.getResponseBody().close();
     });
-    try {
-      page.navigate(server.EMPTY_PAGE);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      if (isChromium())
-        assertTrue(e.getMessage().contains("net::ERR_ABORTED"));
-      else if (isWebKit())
-        assertTrue(e.getMessage().contains("Aborted: 204 No Content"));
-      else
-        assertTrue(e.getMessage().contains("NS_BINDING_ABORTED"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
+    if (isChromium())
+      assertTrue(e.getMessage().contains("net::ERR_ABORTED"));
+    else if (isWebKit())
+      assertTrue(e.getMessage().contains("Aborted: 204 No Content"));
+    else
+      assertTrue(e.getMessage().contains("NS_BINDING_ABORTED"));
   }
 
   @Test

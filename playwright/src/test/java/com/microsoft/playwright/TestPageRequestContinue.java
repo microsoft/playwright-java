@@ -72,13 +72,9 @@ public class TestPageRequestContinue extends TestBase {
       route.resume();
       done[0] = true;
     });
-    try {
-      page.navigate(server.EMPTY_PAGE);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Navigation failed because page was closed") ||
-        e.getMessage().contains("frame was detached"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
+    assertTrue(e.getMessage().contains("Navigation failed because page was closed") ||
+      e.getMessage().contains("frame was detached"), e.getMessage());
     assertTrue(done[0]);
   }
 }

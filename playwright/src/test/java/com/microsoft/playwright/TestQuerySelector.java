@@ -29,12 +29,8 @@ public class TestQuerySelector extends TestBase {
 
   @Test
   void shouldThrowForNonStringSelector() {
-    try {
-      page.querySelector(null);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("selector: expected string, got undefined"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.querySelector(null));
+    assertTrue(e.getMessage().contains("selector: expected string, got undefined"));
   }
 
   @Test

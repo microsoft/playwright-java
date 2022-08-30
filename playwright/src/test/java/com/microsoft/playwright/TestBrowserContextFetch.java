@@ -51,24 +51,16 @@ public class TestBrowserContextFetch extends TestBase {
   @Test
   void shouldThrowOnNetworkError() {
     server.setRoute("/test", exchange -> exchange.getResponseBody().close());
-    try {
-      context.request().get(server.PREFIX + "/test");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("socket hang up"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.request().get(server.PREFIX + "/test"));
+    assertTrue(e.getMessage().contains("socket hang up"), e.getMessage());
   }
 
   @Test
   void shouldThrowOnNetworkErrorAfterRedirect() {
     server.setRedirect("/redirect", "/test");
     server.setRoute("/test", exchange -> exchange.getResponseBody().close());
-    try {
-      context.request().get(server.PREFIX + "/redirect");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("socket hang up"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.request().get(server.PREFIX + "/redirect"));
+    assertTrue(e.getMessage().contains("socket hang up"), e.getMessage());
   }
 
   @Test
@@ -80,12 +72,8 @@ public class TestBrowserContextFetch extends TestBase {
         writer.write("<title>A");
       }
     });
-    try {
-      context.request().get(server.PREFIX + "/test");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("aborted"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.request().get(server.PREFIX + "/test"));
+    assertTrue(e.getMessage().contains("aborted"), e.getMessage());
   }
 
   @Test
@@ -98,12 +86,8 @@ public class TestBrowserContextFetch extends TestBase {
         writer.write("<title>A");
       }
     });
-    try {
-      context.request().get(server.PREFIX + "/redirect");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("aborted"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.request().get(server.PREFIX + "/redirect"));
+    assertTrue(e.getMessage().contains("aborted"), e.getMessage());
   }
 
   @Test
@@ -134,12 +118,10 @@ public class TestBrowserContextFetch extends TestBase {
 
   @Test
   void getShouldSupportFailOnStatusCode() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       context.request().get(server.PREFIX + "/does-not-exist.html", RequestOptions.create().setFailOnStatusCode(true));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("404 Not Found"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("404 Not Found"), e.getMessage());
   }
 
   @Test
@@ -385,29 +367,20 @@ public class TestBrowserContextFetch extends TestBase {
 
   @Test
   void shouldThrowOnInvalidHeaderValue() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       context.request().get(server.EMPTY_PAGE, RequestOptions.create()
         .setHeader("foo", "недопустимое значение"));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Invalid character in header content"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Invalid character in header content"), e.getMessage());
   }
 
   @Test
   void shouldThrowOnNonHttpSProtocol() {
-    try {
-      context.request().get("data:text/plain,test");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Protocol \"data:\" not supported"), e.getMessage());
-    }
-    try {
-      context.request().get("file:///tmp/foo");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Protocol \"file:\" not supported"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.request().get("data:text/plain,test"));
+    assertTrue(e.getMessage().contains("Protocol \"data:\" not supported"), e.getMessage());
+
+    e = assertThrows(PlaywrightException.class, () -> context.request().get("file:///tmp/foo"));
+    assertTrue(e.getMessage().contains("Protocol \"file:\" not supported"), e.getMessage());
   }
 
   @Test
@@ -417,12 +390,10 @@ public class TestBrowserContextFetch extends TestBase {
       exchange.sendResponseHeaders(200, 4096);
     });
 
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       context.request().get(server.PREFIX + "/slow", RequestOptions.create().setTimeout(100));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Request timed out after 100ms"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Request timed out after 100ms"), e.getMessage());
   }
 
   @Test
@@ -453,12 +424,8 @@ public class TestBrowserContextFetch extends TestBase {
     });
 
     context.setDefaultTimeout(100);
-    try {
-      context.request().get(server.PREFIX + "/redirect");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Request timed out after 100ms"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.request().get(server.PREFIX + "/redirect"));
+    assertTrue(e.getMessage().contains("Request timed out after 100ms"), e.getMessage());
   }
 
   @Test
@@ -466,12 +433,8 @@ public class TestBrowserContextFetch extends TestBase {
     APIResponse response = context.request().get(server.PREFIX + "/simple.json");
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
     response.dispose();
-    try {
-      response.body();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Response has been disposed"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> response.body());
+    assertTrue(e.getMessage().contains("Response has been disposed"), e.getMessage());
   }
 
   @Test
@@ -479,13 +442,9 @@ public class TestBrowserContextFetch extends TestBase {
     APIResponse response = context.request().get(server.PREFIX + "/simple.json");
     assertEquals("{\"foo\": \"bar\"}\n", response.text());
     context.close();
-    try {
-      response.body();
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Response has been disposed") ||
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> response.body());
+    assertTrue(e.getMessage().contains("Response has been disposed") ||
         e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
-    }
   }
   @Test
   void shouldOverrideRequestParameters() throws ExecutionException, InterruptedException {
@@ -615,15 +574,12 @@ public class TestBrowserContextFetch extends TestBase {
 
   @Test
   void shouldThrowWhenDataPassedForUnsupportedRequest() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       context.request().fetch(server.EMPTY_PAGE, RequestOptions.create()
         .setMethod("GET").setData("bar"));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Method GET does not accept post data"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Method GET does not accept post data"), e.getMessage());
   }
-
 
   @Test
   void contextRequestShouldExportSameStorageStateAsContext() {
@@ -666,18 +622,10 @@ public class TestBrowserContextFetch extends TestBase {
       return null;
     });
     page.evaluate("() => setTimeout(closeContext, 1000);");
-    try {
-      context.request().get(server.EMPTY_PAGE);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Request context disposed"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.request().get(server.EMPTY_PAGE));
+    assertTrue(e.getMessage().contains("Request context disposed"), e.getMessage());
 
-    try {
-      context.request().post(server.EMPTY_PAGE);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
-    }
+    e = assertThrows(PlaywrightException.class, () ->  context.request().post(server.EMPTY_PAGE));
+    assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
   }
 }

@@ -43,11 +43,7 @@ public class TestBrowserTypeBasic extends TestBase {
   @Test
   @DisabledIf(value="com.microsoft.playwright.TestBase#isChromium", disabledReason="Non-chromium behavior")
   void shouldThrowWhenTryingToConnectWithNotChromium() {
-    try {
-      browserType.connectOverCDP("foo");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Connecting over CDP is only supported in Chromium."));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> browserType.connectOverCDP("foo"));
+    assertTrue(e.getMessage().contains("Connecting over CDP is only supported in Chromium."));
   }
 }

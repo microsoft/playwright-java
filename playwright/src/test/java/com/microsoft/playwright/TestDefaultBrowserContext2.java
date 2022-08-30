@@ -192,12 +192,10 @@ public class TestDefaultBrowserContext2 extends TestBase {
     BrowserType.LaunchPersistentContextOptions options = new BrowserType.LaunchPersistentContextOptions()
       .setArgs(asList(server.EMPTY_PAGE));
     Path userDataDir = Files.createTempDirectory("user-data-dir-");
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       browserType.launchPersistentContext(userDataDir, options);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("can not specify page"));
-    }
+    });
+    assertTrue(e.getMessage().contains("can not specify page"));
   }
 
   @Test

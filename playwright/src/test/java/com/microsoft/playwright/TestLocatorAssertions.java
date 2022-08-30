@@ -63,14 +63,12 @@ public class TestLocatorAssertions extends TestBase {
   void containsTextWRegexFail() {
     page.setContent("<div id=node>Text   content</div>");
     Locator locator = page.locator("#node");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).containsText(Pattern.compile("ex2"), new LocatorAssertions.ContainsTextOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("ex2", e.getExpected().getStringRepresentation());
-      assertEquals("Text   content", e.getActual().getValue());
-      assertTrue(e.getMessage().contains("Locator expected to contain regex"), e.getMessage());
-    }
+    });
+    assertEquals("ex2", e.getExpected().getStringRepresentation());
+    assertEquals("Text   content", e.getActual().getValue());
+    assertTrue(e.getMessage().contains("Locator expected to contain regex"), e.getMessage());
   }
 
   @Test
@@ -112,14 +110,12 @@ public class TestLocatorAssertions extends TestBase {
   void hasTextWRegexFail() {
     page.setContent("<div id=node>Text   content</div>");
     Locator locator = page.locator("#node");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasText(Pattern.compile("Text 2"), new LocatorAssertions.HasTextOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("Text 2", e.getExpected().getStringRepresentation());
-      assertEquals("Text   content", e.getActual().getValue());
-      assertTrue(e.getMessage().contains("Locator expected to have text matching regex"), e.getMessage());
-    }
+    });
+    assertEquals("Text 2", e.getExpected().getStringRepresentation());
+    assertEquals("Text   content", e.getActual().getValue());
+    assertTrue(e.getMessage().contains("Locator expected to have text matching regex"), e.getMessage());
   }
 
   @Test
@@ -139,14 +135,12 @@ public class TestLocatorAssertions extends TestBase {
     page.setContent("<div id=node>Text content</div>");
     Locator locator = page.locator("#node");
     // Should normalize whitespace.
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasText("Text", new LocatorAssertions.HasTextOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("Text", e.getExpected().getStringRepresentation());
-      assertEquals("Text content", e.getActual().getValue());
-      assertTrue(e.getMessage().contains("Locator expected to have text"), e.getMessage());
-    }
+    });
+    assertEquals("Text", e.getExpected().getStringRepresentation());
+    assertEquals("Text content", e.getActual().getValue());
+    assertTrue(e.getMessage().contains("Locator expected to have text"), e.getMessage());
   }
 
   @Test
@@ -195,14 +189,12 @@ public class TestLocatorAssertions extends TestBase {
     page.setContent("<div></div>");
     Locator locator = page.locator("p");
     // Should normalize whitespace.
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().hasText(new String[] {}, new LocatorAssertions.HasTextOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("[]", e.getExpected().getStringRepresentation());
-      assertEquals("null", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected not to have text"), e.getMessage());
-    }
+    });
+    assertEquals("[]", e.getExpected().getStringRepresentation());
+    assertEquals("null", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected not to have text"), e.getMessage());
   }
 
   @Test
@@ -223,16 +215,14 @@ public class TestLocatorAssertions extends TestBase {
     page.evaluate("setTimeout(() => {\n" +
       "  div.innerHTML = \"<p>Text 1</p><p>Text 2</p>\";\n" +
       "}, 100);");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       // Should normalize whitespace.
       assertThat(locator).hasText(new String[] {"Text 1", "Text 3", "Extra"}, new LocatorAssertions.HasTextOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("[Text 1, Text 3, Extra]", e.getExpected().getStringRepresentation());
-      assertEquals("[Text 1, Text 3]", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have text: [Text 1, Text 3, Extra]"), e.getMessage());
-      assertTrue(e.getMessage().contains("Received: [Text 1, Text 3]"), e.getMessage());
-    }
+    });
+    assertEquals("[Text 1, Text 3, Extra]", e.getExpected().getStringRepresentation());
+    assertEquals("[Text 1, Text 3]", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have text: [Text 1, Text 3, Extra]"), e.getMessage());
+    assertTrue(e.getMessage().contains("Received: [Text 1, Text 3]"), e.getMessage());
   }
 
   @Test
@@ -247,15 +237,13 @@ public class TestLocatorAssertions extends TestBase {
   void hasTextWRegExArrayFail() {
     page.setContent("<div>Text 1</div><div>Text 3</div>");
     Locator locator = page.locator("div");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       // Should normalize whitespace.
       assertThat(locator).hasText(new Pattern[] {Pattern.compile( "Text 1"), Pattern.compile("Text   \\d"), Pattern.compile("Extra")}, new LocatorAssertions.HasTextOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("[Text 1, Text   \\d, Extra]", e.getExpected().getStringRepresentation());
-      assertEquals("[Text 1, Text 3]", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have text"), e.getMessage());
-    }
+    });
+    assertEquals("[Text 1, Text   \\d, Extra]", e.getExpected().getStringRepresentation());
+    assertEquals("[Text 1, Text 3]", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have text"), e.getMessage());
   }
 
   @Test
@@ -269,14 +257,12 @@ public class TestLocatorAssertions extends TestBase {
   void hasAttributeTextFail() {
     page.setContent("<div id=node>Text content</div>");
     Locator locator = page.locator("#node");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasAttribute("id", "foo", new LocatorAssertions.HasAttributeOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("foo", e.getExpected().getStringRepresentation());
-      assertEquals("node", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have attribute 'id': foo\nReceived: node"), e.getMessage());
-    }
+    });
+    assertEquals("foo", e.getExpected().getStringRepresentation());
+    assertEquals("node", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have attribute 'id': foo\nReceived: node"), e.getMessage());
   }
 
   @Test
@@ -290,14 +276,12 @@ public class TestLocatorAssertions extends TestBase {
   void hasAttributeRegExpFail() {
     page.setContent("<div id=node>Text content</div>");
     Locator locator = page.locator("#node");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasAttribute("id", Pattern.compile(".Nod.."), new LocatorAssertions.HasAttributeOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals(".Nod..", e.getExpected().getStringRepresentation());
-      assertEquals("node", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have attribute 'id' matching regex: .Nod..\nReceived: node"), e.getMessage());
-    }
+    });
+    assertEquals(".Nod..", e.getExpected().getStringRepresentation());
+    assertEquals("node", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have attribute 'id' matching regex: .Nod..\nReceived: node"), e.getMessage());
   }
 
   @Test
@@ -311,14 +295,12 @@ public class TestLocatorAssertions extends TestBase {
   void hasClassTextFail() {
     page.setContent("<div class=\"bar baz\"></div>");
     Locator locator = page.locator("div");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasClass("foo bar baz", new LocatorAssertions.HasClassOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("foo bar baz", e.getExpected().getStringRepresentation());
-      assertEquals("bar baz", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have class"), e.getMessage());
-    }
+    });
+    assertEquals("foo bar baz", e.getExpected().getStringRepresentation());
+    assertEquals("bar baz", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have class"), e.getMessage());
   }
 
   @Test
@@ -332,14 +314,12 @@ public class TestLocatorAssertions extends TestBase {
   void hasClassRegExpFail() {
     page.setContent("<div class=\"bar baz\"></div>");
     Locator locator = page.locator("div");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasClass(Pattern.compile("foo Z.*"), new LocatorAssertions.HasClassOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("foo Z.*", e.getExpected().getStringRepresentation());
-      assertEquals("bar baz", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have class matching regex"), e.getMessage());
-    }
+    });
+    assertEquals("foo Z.*", e.getExpected().getStringRepresentation());
+    assertEquals("bar baz", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have class matching regex"), e.getMessage());
   }
 
   @Test
@@ -353,14 +333,12 @@ public class TestLocatorAssertions extends TestBase {
   void hasClassTextArrayFail() {
     page.setContent("<div class=\"foo\"></div><div class=\"bar\"></div><div class=\"baz\"></div>");
     Locator locator = page.locator("div");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasClass(new String[] {"foo", "bar", "missing"}, new LocatorAssertions.HasClassOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("[foo, bar, missing]", e.getExpected().getStringRepresentation());
-      assertEquals("[foo, bar, baz]", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have class"), e.getMessage());
-    }
+    });
+    assertEquals("[foo, bar, missing]", e.getExpected().getStringRepresentation());
+    assertEquals("[foo, bar, baz]", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have class"), e.getMessage());
   }
 
   @Test
@@ -374,14 +352,12 @@ public class TestLocatorAssertions extends TestBase {
   void hasClassRegExpArrayFail() {
     page.setContent("<div class=\"foo\"></div><div class=\"bar\"></div><div class=\"baz\"></div>");
     Locator locator = page.locator("div");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasClass(new Pattern[] {Pattern.compile("fo.*"), Pattern.compile(".ar"), Pattern.compile("baz"), Pattern.compile("extra")}, new LocatorAssertions.HasClassOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("[fo.*, .ar, baz, extra]", e.getExpected().getStringRepresentation());
-      assertEquals("[foo, bar, baz]", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have class matching regex"), e.getMessage());
-    }
+    });
+    assertEquals("[fo.*, .ar, baz, extra]", e.getExpected().getStringRepresentation());
+    assertEquals("[foo, bar, baz]", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have class matching regex"), e.getMessage());
   }
 
   @Test
@@ -395,14 +371,12 @@ public class TestLocatorAssertions extends TestBase {
   void hasCountFail() {
     page.setContent("<select><option>One</option><option>Two</option></select>");
     Locator locator = page.locator("option");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasCount(1, new LocatorAssertions.HasCountOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("1", e.getExpected().getStringRepresentation());
-      assertEquals("2", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have count"), e.getMessage());
-    }
+    });
+    assertEquals("1", e.getExpected().getStringRepresentation());
+    assertEquals("2", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have count"), e.getMessage());
   }
 
   @Test
@@ -424,14 +398,12 @@ public class TestLocatorAssertions extends TestBase {
   void hasCSSFail() {
     page.setContent("<div id=node style='color: rgb(255, 0, 0)'>Text content</div>");
     Locator locator = page.locator("#node");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasCSS("color", "red", new LocatorAssertions.HasCSSOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("red", e.getExpected().getStringRepresentation());
-      assertEquals("rgb(255, 0, 0)", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have CSS property 'color'"), e.getMessage());
-    }
+    });
+    assertEquals("red", e.getExpected().getStringRepresentation());
+    assertEquals("rgb(255, 0, 0)", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have CSS property 'color'"), e.getMessage());
   }
 
   @Test
@@ -445,14 +417,12 @@ public class TestLocatorAssertions extends TestBase {
   void hasCSSRegExFail() {
     page.setContent("<div id=node style='color: rgb(255, 0, 0)'>Text content</div>");
     Locator locator = page.locator("#node");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasCSS("color", Pattern.compile("red"), new LocatorAssertions.HasCSSOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("red", e.getExpected().getStringRepresentation());
-      assertEquals("rgb(255, 0, 0)", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have CSS property 'color' matching regex"), e.getMessage());
-    }
+    });
+    assertEquals("red", e.getExpected().getStringRepresentation());
+    assertEquals("rgb(255, 0, 0)", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have CSS property 'color' matching regex"), e.getMessage());
   }
 
   @Test
@@ -466,14 +436,12 @@ public class TestLocatorAssertions extends TestBase {
   void hasIdFail() {
     page.setContent("<div id=node>Text content</div>");
     Locator locator = page.locator("#node");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasId("foo", new LocatorAssertions.HasIdOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("foo", e.getExpected().getStringRepresentation());
-      assertEquals("node", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have ID"), e.getMessage());
-    }
+    });
+    assertEquals("foo", e.getExpected().getStringRepresentation());
+    assertEquals("node", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have ID"), e.getMessage());
   }
 
   @Test
@@ -489,14 +457,12 @@ public class TestLocatorAssertions extends TestBase {
     page.setContent("<div id=node>Text content</div>");
     Locator locator = page.locator("#node");
     page.evalOnSelector("div", "e => e.foo = 2021");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasJSProperty("foo", 1, new LocatorAssertions.HasJSPropertyOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("1", e.getExpected().getStringRepresentation());
-      assertEquals("2021", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have JavaScript property 'foo'"), e.getMessage());
-    }
+    });
+    assertEquals("1", e.getExpected().getStringRepresentation());
+    assertEquals("2021", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have JavaScript property 'foo'"), e.getMessage());
   }
 
   @Test
@@ -504,28 +470,24 @@ public class TestLocatorAssertions extends TestBase {
     page.setContent("<div id=node>Text content</div>");
     Locator locator = page.locator("#node");
     page.evalOnSelector("div", "e => e.foo = { a: 1, b: 'string' }");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasJSProperty("foo", mapOf("a", 2), new LocatorAssertions.HasJSPropertyOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("{a=2}", e.getExpected().getStringRepresentation());
-      assertEquals("{a=1, b=string}", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have JavaScript property 'foo'"), e.getMessage());
-    }
+    });
+    assertEquals("{a=2}", e.getExpected().getStringRepresentation());
+    assertEquals("{a=1, b=string}", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have JavaScript property 'foo'"), e.getMessage());
   }
 
   @Test
   void hasJSPropertyStringFail() {
     page.setContent("<div id=node>Text content</div>");
     Locator locator = page.locator("#node");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasJSProperty("id", "foo", new LocatorAssertions.HasJSPropertyOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("foo", e.getExpected().getStringRepresentation());
-      assertEquals("node", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have JavaScript property 'id'"), e.getMessage());
-    }
+    });
+    assertEquals("foo", e.getExpected().getStringRepresentation());
+    assertEquals("node", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have JavaScript property 'id'"), e.getMessage());
   }
 
   @Test
@@ -541,14 +503,12 @@ public class TestLocatorAssertions extends TestBase {
     page.setContent("<input id=node></input>");
     Locator locator = page.locator("#node");
     locator.fill("Text content");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasValue("Text2", new LocatorAssertions.HasValueOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("Text2", e.getExpected().getStringRepresentation());
-      assertEquals("Text content", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have value"), e.getMessage());
-    }
+    });
+    assertEquals("Text2", e.getExpected().getStringRepresentation());
+    assertEquals("Text content", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have value"), e.getMessage());
   }
 
   @Test
@@ -572,14 +532,12 @@ public class TestLocatorAssertions extends TestBase {
     page.setContent("<input id=node></input>");
     Locator locator = page.locator("#node");
     locator.fill("Text content");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasValue(Pattern.compile("Text2"), new LocatorAssertions.HasValueOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("Text2", e.getExpected().getStringRepresentation());
-      assertEquals("Text content", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have value matching regex"), e.getMessage());
-    }
+    });
+    assertEquals("Text2", e.getExpected().getStringRepresentation());
+    assertEquals("Text content", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have value matching regex"), e.getMessage());
   }
 
   @Test
@@ -615,14 +573,12 @@ public class TestLocatorAssertions extends TestBase {
       "            </select>");
     Locator locator = page.locator("select");
     locator.selectOption(new String[] {"RR", "GG"});
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasValues(new String[]{"R", "G"}, new LocatorAssertions.HasValuesOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("[R, G]", e.getExpected().getStringRepresentation());
-      assertEquals("[RR, GG]", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have values"), e.getMessage());
-    }
+    });
+    assertEquals("[R, G]", e.getExpected().getStringRepresentation());
+    assertEquals("[RR, GG]", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have values"), e.getMessage());
   }
 
   @Test
@@ -646,14 +602,12 @@ public class TestLocatorAssertions extends TestBase {
       "            </select>");
     Locator locator = page.locator("select");
     locator.selectOption(new String[] {"B"}, new Locator.SelectOptionOptions().setTimeout(1000));
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).hasValues(new Pattern[]{ Pattern.compile("R"), Pattern.compile("G")});
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertEquals("[R, G]", e.getExpected().getStringRepresentation());
-      assertEquals("[B]", e.getActual().getStringRepresentation());
-      assertTrue(e.getMessage().contains("Locator expected to have values matching regex"), e.getMessage());
-    }
+    });
+    assertEquals("[R, G]", e.getExpected().getStringRepresentation());
+    assertEquals("[B]", e.getActual().getStringRepresentation());
+    assertTrue(e.getMessage().contains("Locator expected to have values matching regex"), e.getMessage());
   }
 
   @Test
@@ -665,24 +619,20 @@ public class TestLocatorAssertions extends TestBase {
       "            </select>");
     Locator locator = page.locator("select");
     locator.selectOption(new String[] {"B"});
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       assertThat(locator).hasValues(new Pattern[]{ Pattern.compile("R"), Pattern.compile("G")});
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Not a select element with a multiple attribute"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Not a select element with a multiple attribute"), e.getMessage());
   }
 
   @Test
   void hasValuesFailsWhenNotASelectElement() {
     page.setContent("<input value=\"foo\" />");
     Locator locator = page.locator("input");
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       assertThat(locator).hasValues(new Pattern[]{ Pattern.compile("R"), Pattern.compile("G")}, new LocatorAssertions.HasValuesOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Not a select element with a multiple attribute"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Not a select element with a multiple attribute"), e.getMessage());
   }
 
   @Test
@@ -696,28 +646,24 @@ public class TestLocatorAssertions extends TestBase {
   void isCheckedFail() {
     page.setContent("<input type=checkbox></input>");
     Locator locator = page.locator("input");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).isChecked(new LocatorAssertions.IsCheckedOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertNull(e.getExpected());
-      assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected to be checked"), e.getMessage());
-    }
+    });
+    assertNull(e.getExpected());
+    assertNull(e.getActual());
+    assertTrue(e.getMessage().contains("Locator expected to be checked"), e.getMessage());
   }
 
   @Test
   void notIsCheckedFail() {
     page.setContent("<input type=checkbox checked></input>");
     Locator locator = page.locator("input");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().isChecked(new LocatorAssertions.IsCheckedOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertNull(e.getExpected());
-      assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected not to be checked"), e.getMessage());
-    }
+    });
+    assertNull(e.getExpected());
+    assertNull(e.getActual());
+    assertTrue(e.getMessage().contains("Locator expected not to be checked"), e.getMessage());
   }
 
   @Test
@@ -738,28 +684,24 @@ public class TestLocatorAssertions extends TestBase {
   void isDisabledFail() {
     page.setContent("<button>Text</button>");
     Locator locator = page.locator("button");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).isDisabled(new LocatorAssertions.IsDisabledOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertNull(e.getExpected());
-      assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected to be disabled"), e.getMessage());
-    }
+    });
+    assertNull(e.getExpected());
+    assertNull(e.getActual());
+    assertTrue(e.getMessage().contains("Locator expected to be disabled"), e.getMessage());
   }
 
   @Test
   void notIsDisabledFail() {
     page.setContent("<button disabled>Text</button>");
     Locator locator = page.locator("button");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().isDisabled(new LocatorAssertions.IsDisabledOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertNull(e.getExpected());
-      assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected not to be disabled"), e.getMessage());
-    }
+    });
+    assertNull(e.getExpected());
+    assertNull(e.getActual());
+    assertTrue(e.getMessage().contains("Locator expected not to be disabled"), e.getMessage());
   }
 
   @Test
@@ -773,28 +715,24 @@ public class TestLocatorAssertions extends TestBase {
   void isEditableFail() {
     page.setContent("<input disabled></input>");
     Locator locator = page.locator("input");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).isEditable(new LocatorAssertions.IsEditableOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertNull(e.getExpected());
-      assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected to be editable"), e.getMessage());
-    }
+    });
+    assertNull(e.getExpected());
+    assertNull(e.getActual());
+    assertTrue(e.getMessage().contains("Locator expected to be editable"), e.getMessage());
   }
 
   @Test
   void notIsEditableFail() {
     page.setContent("<input></input>");
     Locator locator = page.locator("input");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().isEditable(new LocatorAssertions.IsEditableOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertNull(e.getExpected());
-      assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected not to be editable"), e.getMessage());
-    }
+    });
+    assertNull(e.getExpected());
+    assertNull(e.getActual());
+    assertTrue(e.getMessage().contains("Locator expected not to be editable"), e.getMessage());
   }
 
 
@@ -809,28 +747,24 @@ public class TestLocatorAssertions extends TestBase {
   void isEmptyFail() {
     page.setContent("<input value=text></input>");
     Locator locator = page.locator("input");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).isEmpty(new LocatorAssertions.IsEmptyOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertNull(e.getExpected());
-      assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected to be empty"), e.getMessage());
-    }
+    });
+    assertNull(e.getExpected());
+    assertNull(e.getActual());
+    assertTrue(e.getMessage().contains("Locator expected to be empty"), e.getMessage());
   }
 
   @Test
   void notIsEmptyFail() {
     page.setContent("<input></input>");
     Locator locator = page.locator("input");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().isEmpty(new LocatorAssertions.IsEmptyOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertNull(e.getExpected());
-      assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected not to be empty"), e.getMessage());
-    }
+    });
+    assertNull(e.getExpected());
+    assertNull(e.getActual());
+    assertTrue(e.getMessage().contains("Locator expected not to be empty"), e.getMessage());
   }
 
   @Test
@@ -844,28 +778,24 @@ public class TestLocatorAssertions extends TestBase {
   void isEnabledFail() {
     page.setContent("<button disabled>Text</button>");
     Locator locator = page.locator("button");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).isEnabled(new LocatorAssertions.IsEnabledOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertNull(e.getExpected());
-      assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected to be enabled"), e.getMessage());
-    }
+    });
+    assertNull(e.getExpected());
+    assertNull(e.getActual());
+    assertTrue(e.getMessage().contains("Locator expected to be enabled"), e.getMessage());
   }
 
   @Test
   void notIsEnabledFail() {
     page.setContent("<button>Text</button>");
     Locator locator = page.locator("button");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().isEnabled(new LocatorAssertions.IsEnabledOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertNull(e.getExpected());
-      assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected not to be enabled"), e.getMessage());
-    }
+    });
+    assertNull(e.getExpected());
+    assertNull(e.getActual());
+    assertTrue(e.getMessage().contains("Locator expected not to be enabled"), e.getMessage());
   }
 
   @Test
@@ -880,14 +810,12 @@ public class TestLocatorAssertions extends TestBase {
   void isFocusedFail() {
     page.setContent("<input></input>");
     Locator locator = page.locator("input");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).isFocused(new LocatorAssertions.IsFocusedOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertNull(e.getExpected());
-      assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected to be focused"), e.getMessage());
-    }
+    });
+    assertNull(e.getExpected());
+    assertNull(e.getActual());
+    assertTrue(e.getMessage().contains("Locator expected to be focused"), e.getMessage());
   }
 
   @Test
@@ -895,14 +823,12 @@ public class TestLocatorAssertions extends TestBase {
     page.setContent("<input></input>");
     Locator locator = page.locator("input");
     locator.focus();
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().isFocused(new LocatorAssertions.IsFocusedOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertNull(e.getExpected());
-      assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected not to be focused"), e.getMessage());
-    }
+    });
+    assertNull(e.getExpected());
+    assertNull(e.getActual());
+    assertTrue(e.getMessage().contains("Locator expected not to be focused"), e.getMessage());
   }
 
   @Test
@@ -916,28 +842,24 @@ public class TestLocatorAssertions extends TestBase {
   void isHiddenFail() {
     page.setContent("<button></button>");
     Locator locator = page.locator("button");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).isHidden(new LocatorAssertions.IsHiddenOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertNull(e.getExpected());
-      assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected to be hidden"), e.getMessage());
-    }
+    });
+    assertNull(e.getExpected());
+    assertNull(e.getActual());
+    assertTrue(e.getMessage().contains("Locator expected to be hidden"), e.getMessage());
   }
 
   @Test
   void notIsHiddenFail() {
     page.setContent("<button style='display: none'></button>");
     Locator locator = page.locator("button");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().isHidden(new LocatorAssertions.IsHiddenOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertNull(e.getExpected());
-      assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected not to be hidden"), e.getMessage());
-    }
+    });
+    assertNull(e.getExpected());
+    assertNull(e.getActual());
+    assertTrue(e.getMessage().contains("Locator expected not to be hidden"), e.getMessage());
   }
 
   @Test
@@ -951,28 +873,24 @@ public class TestLocatorAssertions extends TestBase {
   void isVisibleFail() {
     page.setContent("<input style='display: none'></input>");
     Locator locator = page.locator("input");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).isVisible(new LocatorAssertions.IsVisibleOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertNull(e.getExpected());
-      assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected to be visible"), e.getMessage());
-    }
+    });
+    assertNull(e.getExpected());
+    assertNull(e.getActual());
+    assertTrue(e.getMessage().contains("Locator expected to be visible"), e.getMessage());
   }
 
   @Test
   void notIsVisibleFail() {
     page.setContent("<input></input>");
     Locator locator = page.locator("input");
-    try {
+    AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> {
       assertThat(locator).not().isVisible(new LocatorAssertions.IsVisibleOptions().setTimeout(1000));
-      fail("did not throw");
-    } catch (AssertionFailedError e) {
-      assertNull(e.getExpected());
-      assertNull(e.getActual());
-      assertTrue(e.getMessage().contains("Locator expected not to be visible"), e.getMessage());
-    }
+    });
+    assertNull(e.getExpected());
+    assertNull(e.getActual());
+    assertTrue(e.getMessage().contains("Locator expected not to be visible"), e.getMessage());
   }
 
   @Test

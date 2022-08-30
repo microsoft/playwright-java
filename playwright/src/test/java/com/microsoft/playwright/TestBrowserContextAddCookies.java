@@ -248,27 +248,19 @@ public class TestBrowserContextAddCookies extends TestBase {
 
   @Test
   void shouldNotSetACookieWithBlankPageURL() {
-    try {
-      context.addCookies(asList(
-        new Cookie("example-cookie", "best").setUrl(server.EMPTY_PAGE),
-        new Cookie("example-cookie-blank", "best").setUrl("about:blank")
-      ));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Blank page can not have cookie \"example-cookie-blank\""));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () ->  context.addCookies(asList(
+      new Cookie("example-cookie", "best").setUrl(server.EMPTY_PAGE),
+      new Cookie("example-cookie-blank", "best").setUrl("about:blank")
+    )));
+    assertTrue(e.getMessage().contains("Blank page can not have cookie \"example-cookie-blank\""));
   }
 
   @Test
   void shouldNotSetACookieOnADataURLPage() {
-    try {
-      context.addCookies(asList(
-        new Cookie("example-cookie", "best").setUrl("data:,Hello%2C%20World!")
-      ));
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Data URL page can not have cookie \"example-cookie\""));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.addCookies(asList(
+      new Cookie("example-cookie", "best").setUrl("data:,Hello%2C%20World!")
+    )));
+    assertTrue(e.getMessage().contains("Data URL page can not have cookie \"example-cookie\""));
   }
 
   @Test

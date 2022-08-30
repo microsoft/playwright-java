@@ -58,28 +58,16 @@ public class TestBrowserContextExposeFunction extends TestBase {
   void shouldThrowForDuplicateRegistrations() {
     context.exposeFunction("foo", args -> null);
     context.exposeFunction("bar", args -> null);
-    try {
-      context.exposeFunction("foo", args -> null);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Function \"foo\" has been already registered"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.exposeFunction("foo", args -> null));
+    assertTrue(e.getMessage().contains("Function \"foo\" has been already registered"));
 
     Page page = context.newPage();
-    try {
-      page.exposeFunction("foo", args -> null);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Function \"foo\" has been already registered in the browser context"));
-    }
+    e = assertThrows(PlaywrightException.class, () -> page.exposeFunction("foo", args -> null));
+    assertTrue(e.getMessage().contains("Function \"foo\" has been already registered in the browser context"));
 
     page.exposeFunction("baz", args -> null);
-    try {
-      context.exposeFunction("baz", args -> null);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Function \"baz\" has been already registered in one of the pages"));
-    }
+    e = assertThrows(PlaywrightException.class, () -> context.exposeFunction("baz", args -> null));
+    assertTrue(e.getMessage().contains("Function \"baz\" has been already registered in one of the pages"));
   }
 
   @Test

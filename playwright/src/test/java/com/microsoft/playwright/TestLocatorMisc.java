@@ -60,12 +60,10 @@ public class TestLocatorMisc extends TestBase{
       page.locator("button", new Page.LocatorOptions().setHas(page.locator("text=Драматург")))
     };
     for (Locator locator: locators) {
-      try {
+      PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
         locator.click(new Locator.ClickOptions().setTimeout(100));
-        fail("did not throw");
-      } catch (PlaywrightException e) {
-        assertTrue(e.getMessage().contains("Драматург"), e.getMessage());
-      }
+      });
+      assertTrue(e.getMessage().contains("Драматург"), e.getMessage());
     }
   }
 }

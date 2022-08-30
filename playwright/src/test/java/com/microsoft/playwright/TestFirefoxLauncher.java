@@ -21,8 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 
 import static com.microsoft.playwright.Utils.mapOf;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestFirefoxLauncher extends TestBase {
 
@@ -47,11 +46,7 @@ public class TestFirefoxLauncher extends TestBase {
         "network.proxy.http_port", 3333));
     launchBrowser(options);
     Page page = browser.newPage();
-    try {
-      page.navigate("http://example.com");
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("NS_ERROR_PROXY_CONNECTION_REFUSED"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.navigate("http://example.com"));
+    assertTrue(e.getMessage().contains("NS_ERROR_PROXY_CONNECTION_REFUSED"));
   }
 }

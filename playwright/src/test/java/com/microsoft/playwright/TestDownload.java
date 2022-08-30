@@ -116,13 +116,9 @@ public class TestDownload extends TestBase {
       Download download = page.waitForDownload(() -> page.click("a"));
       assertEquals(server.PREFIX + "/downloadWithFilename", download.url());
       assertEquals("file.txt", download.suggestedFilename());
-      try {
-        download.path();
-        fail("did not throw");
-      } catch (PlaywrightException e) {
-        assertTrue(download.failure().contains("acceptDownloads"));
-        assertTrue(e.getMessage().contains("acceptDownloads: true"));
-      }
+      PlaywrightException e = assertThrows(PlaywrightException.class, () -> download.path());
+      assertTrue(download.failure().contains("acceptDownloads"));
+      assertTrue(e.getMessage().contains("acceptDownloads: true"));
     }
   }
   @Test
@@ -243,12 +239,8 @@ public class TestDownload extends TestBase {
     Download download = page.waitForDownload(() -> page.click("a"));
 
     Path userPath = Files.createTempFile("download-", ".txt");
-    try {
-      download.saveAs(userPath);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Pass { acceptDownloads: true } when you are creating your browser context"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> download.saveAs(userPath));
+    assertTrue(e.getMessage().contains("Pass { acceptDownloads: true } when you are creating your browser context"));
     page.close();
   }
 
@@ -260,12 +252,8 @@ public class TestDownload extends TestBase {
 
     Path userPath = Files.createTempFile("download-", ".txt");
     download.delete();
-    try {
-      download.saveAs(userPath);
-      fail("did not throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> download.saveAs(userPath));
+    assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
     page.close();
   }
 
