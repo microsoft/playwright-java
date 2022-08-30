@@ -725,7 +725,12 @@ class Method extends Element {
           String type = p.type.formatTypeFromUnion(overloadIndex);
           argList.add("int".equals(type) ? "0" : "(" + type + ") null");
         } else {
-          argList.add("int".equals(p.toJava()) ? "0" : "null");
+          String defaultValue = "null";
+          // TODO: it should probably be done for all methods that have name#1, name#2 etc overloads.
+          if ("LocatorAssertions.hasAttribute".equals(jsonPath)) {
+            defaultValue = "(" + p.type.toJava() + ") " + defaultValue;
+          }
+          argList.add(defaultValue);
         }
         continue;
       }

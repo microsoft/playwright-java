@@ -442,9 +442,6 @@ public interface BrowserType {
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link Page#emulateMedia
      * Page.emulateMedia()} for more details. Defaults to {@code "none"}.
-     *
-     * <p> <strong>NOTE:</strong> It's not supported in WebKit, see <a href="https://bugs.webkit.org/show_bug.cgi?id=225281">here</a> in their issue
-     * tracker.
      */
     public ForcedColors forcedColors;
     public Geolocation geolocation;
@@ -725,9 +722,6 @@ public interface BrowserType {
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link Page#emulateMedia
      * Page.emulateMedia()} for more details. Defaults to {@code "none"}.
-     *
-     * <p> <strong>NOTE:</strong> It's not supported in WebKit, see <a href="https://bugs.webkit.org/show_bug.cgi?id=225281">here</a> in their issue
-     * tracker.
      */
     public LaunchPersistentContextOptions setForcedColors(ForcedColors forcedColors) {
       this.forcedColors = forcedColors;

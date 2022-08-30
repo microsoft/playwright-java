@@ -44,7 +44,7 @@ public interface Selectors {
   /**
    * An example of registering selector engine that queries elements based on a tag name:
    * <pre>{@code
-   * // Script that evaluates to a selector engine instance.
+   * // Script that evaluates to a selector engine instance. The script is evaluated in the page context.
    * String createTagNameEngine = "{\n" +
    *   "  // Returns the first element matching given selector in the root's subtree.\n" +
    *   "  query(root, selector) {\n" +
@@ -71,7 +71,7 @@ public interface Selectors {
    *
    * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May only
    * contain {@code [a-zA-Z0-9_]} characters.
-   * @param script Script that evaluates to a selector engine instance.
+   * @param script Script that evaluates to a selector engine instance. The script is evaluated in the page context.
    */
   default void register(String name, String script) {
     register(name, script, null);
@@ -79,7 +79,7 @@ public interface Selectors {
   /**
    * An example of registering selector engine that queries elements based on a tag name:
    * <pre>{@code
-   * // Script that evaluates to a selector engine instance.
+   * // Script that evaluates to a selector engine instance. The script is evaluated in the page context.
    * String createTagNameEngine = "{\n" +
    *   "  // Returns the first element matching given selector in the root's subtree.\n" +
    *   "  query(root, selector) {\n" +
@@ -106,13 +106,13 @@ public interface Selectors {
    *
    * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May only
    * contain {@code [a-zA-Z0-9_]} characters.
-   * @param script Script that evaluates to a selector engine instance.
+   * @param script Script that evaluates to a selector engine instance. The script is evaluated in the page context.
    */
   void register(String name, String script, RegisterOptions options);
   /**
    * An example of registering selector engine that queries elements based on a tag name:
    * <pre>{@code
-   * // Script that evaluates to a selector engine instance.
+   * // Script that evaluates to a selector engine instance. The script is evaluated in the page context.
    * String createTagNameEngine = "{\n" +
    *   "  // Returns the first element matching given selector in the root's subtree.\n" +
    *   "  query(root, selector) {\n" +
@@ -139,7 +139,7 @@ public interface Selectors {
    *
    * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May only
    * contain {@code [a-zA-Z0-9_]} characters.
-   * @param script Script that evaluates to a selector engine instance.
+   * @param script Script that evaluates to a selector engine instance. The script is evaluated in the page context.
    */
   default void register(String name, Path script) {
     register(name, script, null);
@@ -147,7 +147,7 @@ public interface Selectors {
   /**
    * An example of registering selector engine that queries elements based on a tag name:
    * <pre>{@code
-   * // Script that evaluates to a selector engine instance.
+   * // Script that evaluates to a selector engine instance. The script is evaluated in the page context.
    * String createTagNameEngine = "{\n" +
    *   "  // Returns the first element matching given selector in the root's subtree.\n" +
    *   "  query(root, selector) {\n" +
@@ -174,7 +174,7 @@ public interface Selectors {
    *
    * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May only
    * contain {@code [a-zA-Z0-9_]} characters.
-   * @param script Script that evaluates to a selector engine instance.
+   * @param script Script that evaluates to a selector engine instance. The script is evaluated in the page context.
    */
   void register(String name, Path script, RegisterOptions options);
 }
