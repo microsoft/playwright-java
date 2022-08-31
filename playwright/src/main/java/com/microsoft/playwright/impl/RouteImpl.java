@@ -31,10 +31,12 @@ import java.util.Map;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
 public class RouteImpl extends ChannelOwner implements Route {
+  private final RequestImpl request;
   private boolean handled;
 
   public RouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    request = connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());
   }
 
   @Override
@@ -196,7 +198,7 @@ public class RouteImpl extends ChannelOwner implements Route {
 
   @Override
   public RequestImpl request() {
-    return connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());
+    return request;
   }
 
   void redirectNavigationRequest(String redirectURL) {
