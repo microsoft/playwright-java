@@ -167,7 +167,7 @@ public interface Frame {
      */
     public Position position;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -217,7 +217,7 @@ public interface Frame {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public CheckOptions setStrict(boolean strict) {
@@ -278,7 +278,7 @@ public interface Frame {
      */
     public Position position;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -357,7 +357,7 @@ public interface Frame {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public ClickOptions setStrict(boolean strict) {
@@ -414,7 +414,7 @@ public interface Frame {
      */
     public Position position;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -486,7 +486,7 @@ public interface Frame {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public DblclickOptions setStrict(boolean strict) {
@@ -514,7 +514,7 @@ public interface Frame {
   }
   class DispatchEventOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -526,7 +526,7 @@ public interface Frame {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public DispatchEventOptions setStrict(boolean strict) {
@@ -561,7 +561,7 @@ public interface Frame {
      */
     public Position sourcePosition;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -616,7 +616,7 @@ public interface Frame {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public DragAndDropOptions setStrict(boolean strict) {
@@ -659,13 +659,13 @@ public interface Frame {
   }
   class EvalOnSelectorOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public EvalOnSelectorOptions setStrict(boolean strict) {
@@ -686,7 +686,7 @@ public interface Frame {
      */
     public Boolean noWaitAfter;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -715,7 +715,7 @@ public interface Frame {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public FillOptions setStrict(boolean strict) {
@@ -734,7 +734,7 @@ public interface Frame {
   }
   class FocusOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -746,7 +746,7 @@ public interface Frame {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public FocusOptions setStrict(boolean strict) {
@@ -765,7 +765,7 @@ public interface Frame {
   }
   class GetAttributeOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -777,7 +777,7 @@ public interface Frame {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public GetAttributeOptions setStrict(boolean strict) {
@@ -867,7 +867,7 @@ public interface Frame {
      */
     public Position position;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -916,7 +916,7 @@ public interface Frame {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public HoverOptions setStrict(boolean strict) {
@@ -944,7 +944,7 @@ public interface Frame {
   }
   class InnerHTMLOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -956,7 +956,7 @@ public interface Frame {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public InnerHTMLOptions setStrict(boolean strict) {
@@ -975,7 +975,7 @@ public interface Frame {
   }
   class InnerTextOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -987,7 +987,7 @@ public interface Frame {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public InnerTextOptions setStrict(boolean strict) {
@@ -1006,7 +1006,7 @@ public interface Frame {
   }
   class InputValueOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1018,7 +1018,7 @@ public interface Frame {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public InputValueOptions setStrict(boolean strict) {
@@ -1037,7 +1037,7 @@ public interface Frame {
   }
   class IsCheckedOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1049,7 +1049,7 @@ public interface Frame {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public IsCheckedOptions setStrict(boolean strict) {
@@ -1068,7 +1068,7 @@ public interface Frame {
   }
   class IsDisabledOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1080,7 +1080,7 @@ public interface Frame {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public IsDisabledOptions setStrict(boolean strict) {
@@ -1099,7 +1099,7 @@ public interface Frame {
   }
   class IsEditableOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1111,7 +1111,7 @@ public interface Frame {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public IsEditableOptions setStrict(boolean strict) {
@@ -1130,7 +1130,7 @@ public interface Frame {
   }
   class IsEnabledOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1142,7 +1142,7 @@ public interface Frame {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public IsEnabledOptions setStrict(boolean strict) {
@@ -1161,7 +1161,7 @@ public interface Frame {
   }
   class IsHiddenOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1172,7 +1172,7 @@ public interface Frame {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public IsHiddenOptions setStrict(boolean strict) {
@@ -1190,7 +1190,7 @@ public interface Frame {
   }
   class IsVisibleOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1201,7 +1201,7 @@ public interface Frame {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public IsVisibleOptions setStrict(boolean strict) {
@@ -1273,7 +1273,7 @@ public interface Frame {
      */
     public Boolean noWaitAfter;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1301,7 +1301,7 @@ public interface Frame {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public PressOptions setStrict(boolean strict) {
@@ -1320,13 +1320,13 @@ public interface Frame {
   }
   class QuerySelectorOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public QuerySelectorOptions setStrict(boolean strict) {
@@ -1347,7 +1347,7 @@ public interface Frame {
      */
     public Boolean noWaitAfter;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1376,7 +1376,7 @@ public interface Frame {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public SelectOptionOptions setStrict(boolean strict) {
@@ -1411,7 +1411,7 @@ public interface Frame {
      */
     public Position position;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1461,7 +1461,7 @@ public interface Frame {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public SetCheckedOptions setStrict(boolean strict) {
@@ -1538,7 +1538,7 @@ public interface Frame {
      */
     public Boolean noWaitAfter;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1559,7 +1559,7 @@ public interface Frame {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public SetInputFilesOptions setStrict(boolean strict) {
@@ -1599,7 +1599,7 @@ public interface Frame {
      */
     public Position position;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1657,7 +1657,7 @@ public interface Frame {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public TapOptions setStrict(boolean strict) {
@@ -1685,7 +1685,7 @@ public interface Frame {
   }
   class TextContentOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1697,7 +1697,7 @@ public interface Frame {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public TextContentOptions setStrict(boolean strict) {
@@ -1726,7 +1726,7 @@ public interface Frame {
      */
     public Boolean noWaitAfter;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1754,7 +1754,7 @@ public interface Frame {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public TypeOptions setStrict(boolean strict) {
@@ -1789,7 +1789,7 @@ public interface Frame {
      */
     public Position position;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1839,7 +1839,7 @@ public interface Frame {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public UncheckOptions setStrict(boolean strict) {
@@ -2004,7 +2004,7 @@ public interface Frame {
      */
     public WaitForSelectorState state;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -2031,7 +2031,7 @@ public interface Frame {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public WaitForSelectorOptions setStrict(boolean strict) {

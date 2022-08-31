@@ -428,7 +428,7 @@ public interface Page extends AutoCloseable {
      */
     public Position position;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -478,7 +478,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public CheckOptions setStrict(boolean strict) {
@@ -539,7 +539,7 @@ public interface Page extends AutoCloseable {
      */
     public Position position;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -618,7 +618,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public ClickOptions setStrict(boolean strict) {
@@ -691,7 +691,7 @@ public interface Page extends AutoCloseable {
      */
     public Position position;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -763,7 +763,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public DblclickOptions setStrict(boolean strict) {
@@ -791,7 +791,7 @@ public interface Page extends AutoCloseable {
   }
   class DispatchEventOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -803,7 +803,7 @@ public interface Page extends AutoCloseable {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public DispatchEventOptions setStrict(boolean strict) {
@@ -838,7 +838,7 @@ public interface Page extends AutoCloseable {
      */
     public Position sourcePosition;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -893,7 +893,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public DragAndDropOptions setStrict(boolean strict) {
@@ -943,9 +943,6 @@ public interface Page extends AutoCloseable {
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"} and {@code "none"}. Passing {@code null} disables forced
      * colors emulation.
-     *
-     * <p> <strong>NOTE:</strong> It's not supported in WebKit, see <a href="https://bugs.webkit.org/show_bug.cgi?id=225281">here</a> in their issue
-     * tracker.
      */
     public Optional<ForcedColors> forcedColors;
     /**
@@ -970,9 +967,6 @@ public interface Page extends AutoCloseable {
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"} and {@code "none"}. Passing {@code null} disables forced
      * colors emulation.
-     *
-     * <p> <strong>NOTE:</strong> It's not supported in WebKit, see <a href="https://bugs.webkit.org/show_bug.cgi?id=225281">here</a> in their issue
-     * tracker.
      */
     public EmulateMediaOptions setForcedColors(ForcedColors forcedColors) {
       this.forcedColors = Optional.ofNullable(forcedColors);
@@ -997,13 +991,13 @@ public interface Page extends AutoCloseable {
   }
   class EvalOnSelectorOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public EvalOnSelectorOptions setStrict(boolean strict) {
@@ -1040,7 +1034,7 @@ public interface Page extends AutoCloseable {
      */
     public Boolean noWaitAfter;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1069,7 +1063,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public FillOptions setStrict(boolean strict) {
@@ -1088,7 +1082,7 @@ public interface Page extends AutoCloseable {
   }
   class FocusOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1100,7 +1094,7 @@ public interface Page extends AutoCloseable {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public FocusOptions setStrict(boolean strict) {
@@ -1119,7 +1113,7 @@ public interface Page extends AutoCloseable {
   }
   class GetAttributeOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1131,7 +1125,7 @@ public interface Page extends AutoCloseable {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public GetAttributeOptions setStrict(boolean strict) {
@@ -1307,7 +1301,7 @@ public interface Page extends AutoCloseable {
      */
     public Position position;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1356,7 +1350,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public HoverOptions setStrict(boolean strict) {
@@ -1384,7 +1378,7 @@ public interface Page extends AutoCloseable {
   }
   class InnerHTMLOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1396,7 +1390,7 @@ public interface Page extends AutoCloseable {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public InnerHTMLOptions setStrict(boolean strict) {
@@ -1415,7 +1409,7 @@ public interface Page extends AutoCloseable {
   }
   class InnerTextOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1427,7 +1421,7 @@ public interface Page extends AutoCloseable {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public InnerTextOptions setStrict(boolean strict) {
@@ -1446,7 +1440,7 @@ public interface Page extends AutoCloseable {
   }
   class InputValueOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1458,7 +1452,7 @@ public interface Page extends AutoCloseable {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public InputValueOptions setStrict(boolean strict) {
@@ -1477,7 +1471,7 @@ public interface Page extends AutoCloseable {
   }
   class IsCheckedOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1489,7 +1483,7 @@ public interface Page extends AutoCloseable {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public IsCheckedOptions setStrict(boolean strict) {
@@ -1508,7 +1502,7 @@ public interface Page extends AutoCloseable {
   }
   class IsDisabledOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1520,7 +1514,7 @@ public interface Page extends AutoCloseable {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public IsDisabledOptions setStrict(boolean strict) {
@@ -1539,7 +1533,7 @@ public interface Page extends AutoCloseable {
   }
   class IsEditableOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1551,7 +1545,7 @@ public interface Page extends AutoCloseable {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public IsEditableOptions setStrict(boolean strict) {
@@ -1570,7 +1564,7 @@ public interface Page extends AutoCloseable {
   }
   class IsEnabledOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1582,7 +1576,7 @@ public interface Page extends AutoCloseable {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public IsEnabledOptions setStrict(boolean strict) {
@@ -1601,7 +1595,7 @@ public interface Page extends AutoCloseable {
   }
   class IsHiddenOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1612,7 +1606,7 @@ public interface Page extends AutoCloseable {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public IsHiddenOptions setStrict(boolean strict) {
@@ -1630,7 +1624,7 @@ public interface Page extends AutoCloseable {
   }
   class IsVisibleOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1641,7 +1635,7 @@ public interface Page extends AutoCloseable {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public IsVisibleOptions setStrict(boolean strict) {
@@ -1879,7 +1873,7 @@ public interface Page extends AutoCloseable {
      */
     public Boolean noWaitAfter;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1907,7 +1901,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public PressOptions setStrict(boolean strict) {
@@ -1926,13 +1920,13 @@ public interface Page extends AutoCloseable {
   }
   class QuerySelectorOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public QuerySelectorOptions setStrict(boolean strict) {
@@ -2234,7 +2228,7 @@ public interface Page extends AutoCloseable {
      */
     public Boolean noWaitAfter;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -2263,7 +2257,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public SelectOptionOptions setStrict(boolean strict) {
@@ -2298,7 +2292,7 @@ public interface Page extends AutoCloseable {
      */
     public Position position;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -2348,7 +2342,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public SetCheckedOptions setStrict(boolean strict) {
@@ -2425,7 +2419,7 @@ public interface Page extends AutoCloseable {
      */
     public Boolean noWaitAfter;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -2446,7 +2440,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public SetInputFilesOptions setStrict(boolean strict) {
@@ -2486,7 +2480,7 @@ public interface Page extends AutoCloseable {
      */
     public Position position;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -2544,7 +2538,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public TapOptions setStrict(boolean strict) {
@@ -2572,7 +2566,7 @@ public interface Page extends AutoCloseable {
   }
   class TextContentOptions {
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -2584,7 +2578,7 @@ public interface Page extends AutoCloseable {
     public Double timeout;
 
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public TextContentOptions setStrict(boolean strict) {
@@ -2613,7 +2607,7 @@ public interface Page extends AutoCloseable {
      */
     public Boolean noWaitAfter;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -2641,7 +2635,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public TypeOptions setStrict(boolean strict) {
@@ -2676,7 +2670,7 @@ public interface Page extends AutoCloseable {
      */
     public Position position;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -2726,7 +2720,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public UncheckOptions setStrict(boolean strict) {
@@ -3076,7 +3070,7 @@ public interface Page extends AutoCloseable {
      */
     public WaitForSelectorState state;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -3103,7 +3097,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public WaitForSelectorOptions setStrict(boolean strict) {
@@ -6645,7 +6639,7 @@ public interface Page extends AutoCloseable {
    * {@code detached}.
    *
    * <p> <strong>NOTE:</strong> Playwright automatically waits for element to be ready before performing an action. Using {@code Locator} objects and
-   * web-first assertions make the code wait-for-selector-free.
+   * web-first assertions makes the code wait-for-selector-free.
    *
    * <p> Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at
    * the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the
@@ -6683,7 +6677,7 @@ public interface Page extends AutoCloseable {
    * {@code detached}.
    *
    * <p> <strong>NOTE:</strong> Playwright automatically waits for element to be ready before performing an action. Using {@code Locator} objects and
-   * web-first assertions make the code wait-for-selector-free.
+   * web-first assertions makes the code wait-for-selector-free.
    *
    * <p> Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at
    * the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the

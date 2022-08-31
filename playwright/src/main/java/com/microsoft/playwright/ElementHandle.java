@@ -1166,7 +1166,7 @@ public interface ElementHandle extends JSHandle {
      */
     public WaitForSelectorState state;
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public Boolean strict;
@@ -1193,7 +1193,7 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more then one
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
      * element, the call throws an exception.
      */
     public WaitForSelectorOptions setStrict(boolean strict) {
