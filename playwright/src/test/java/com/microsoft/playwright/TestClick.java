@@ -428,8 +428,8 @@ public class TestClick extends TestBase {
     int expectedY = 18;
     if (isWebKit()) {
       // WebKit rounds up during css -> dip -> css conversion.
-      expectedX = 29;
-      expectedY = 19;
+      expectedX = 26;
+      expectedY = 17;
     } else if (isChromium() && !headful) {
       // Headless Chromium rounds down during css -> dip -> css conversion.
       expectedX = 27;
