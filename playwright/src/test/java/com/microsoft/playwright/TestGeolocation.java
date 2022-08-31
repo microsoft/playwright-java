@@ -24,8 +24,7 @@ import java.util.List;
 
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGeolocation extends TestBase {
   @Test
@@ -41,11 +40,10 @@ public class TestGeolocation extends TestBase {
 
   @Test
   void shouldThrowWhenInvalidLongitude() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       context.setGeolocation(new Geolocation(10, 200));
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("geolocation.longitude: precondition -180 <= LONGITUDE <= 180 failed."));
-    }
+    });
+    assertTrue(e.getMessage().contains("geolocation.longitude: precondition -180 <= LONGITUDE <= 180 failed."));
   }
 
   @Test

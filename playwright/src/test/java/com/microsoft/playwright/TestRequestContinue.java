@@ -75,18 +75,14 @@ public class TestRequestContinue extends TestBase {
   @Test
   @Disabled("resume() method is now asynchronous")
   void shouldNotAllowChangingProtocolWhenOverridingUrl() {
-    PlaywrightException[] error = {null};
     page.route("**/*", route -> {
-      try {
+      PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
         route.resume(new Route.ResumeOptions().setUrl("file:///tmp/foo"));
-      } catch (PlaywrightException e) {
-        error[0] = e;
-        route.resume();
-      }
+      });
+      assertTrue(e.getMessage().contains("New URL must have same protocol as overridden URL"), e.getMessage());
+      route.resume();
     });
     page.navigate(server.EMPTY_PAGE);
-    assertNotNull(error[0]);
-    assertTrue(error[0].getMessage().contains("New URL must have same protocol as overridden URL"), error[0].getMessage());
   }
 
   @Test

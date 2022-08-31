@@ -172,14 +172,10 @@ public class TestClick extends TestBase {
   void shouldNotWaitWithForce() {
     page.navigate(server.PREFIX + "/input/button.html");
     page.evalOnSelector("button", "b => b.style.display = 'none'");
-    Exception exception = null;
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.click("button", new Page.ClickOptions().setForce(true));
-    } catch (PlaywrightException e) {
-      exception = e;
-    }
-    assertNotNull(exception);
-    assertTrue(exception.getMessage().contains("Element is not visible"));
+    });
+    assertTrue(e.getMessage().contains("Element is not visible"));
     assertEquals("Was not clicked", page.evaluate("result"));
   }
 

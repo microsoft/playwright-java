@@ -48,12 +48,8 @@ public class TestBrowser extends TestBase {
   @Test
   void shouldThrowUponSecondCreateNewPage() {
     Page page = browser.newPage();
-    try {
-      page.context().newPage();
-      fail("newPage should throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Please use browser.newContext()"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.context().newPage());
+    assertTrue(e.getMessage().contains("Please use browser.newContext()"));
     page.close();
   }
 

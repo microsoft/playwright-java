@@ -234,11 +234,8 @@ public class TestBrowserTypeConnect extends TestBase {
       }
     }
     assertFalse(remote.isConnected());
-    try {
-      page.evaluate("1 + 1");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Browser has been closed"), e.getMessage());
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.evaluate("1 + 1"));
+    assertTrue(e.getMessage().contains("Browser has been closed"), e.getMessage());
     assertFalse(remote.isConnected());
   }
 

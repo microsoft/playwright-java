@@ -60,12 +60,8 @@ public class TestElementHandleClick extends TestBase {
     page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     page.evaluate("button => button.remove()", button);
-    try {
-      button.click();
-      fail("click should throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
-    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> button.click());
+    assertTrue(e.getMessage().contains("Element is not attached to the DOM"));
   }
 
   @Test
@@ -73,12 +69,10 @@ public class TestElementHandleClick extends TestBase {
     page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     page.evaluate("button => button.style.display = 'none'", button);
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       button.click(new ElementHandle.ClickOptions().setForce(true));
-      fail("click should throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Element is not visible"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Element is not visible"));
   }
 
   @Test
@@ -86,24 +80,20 @@ public class TestElementHandleClick extends TestBase {
     page.navigate(server.PREFIX + "/input/button.html");
     ElementHandle button = page.querySelector("button");
     page.evaluate("button => button.parentElement.style.display = 'none'", button);
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       button.click(new ElementHandle.ClickOptions().setForce(true));
-      fail("click should throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Element is not visible"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Element is not visible"));
   }
 
   @Test
   void shouldThrowForBrElementsWithForce() {
     page.setContent("hello<br>goodbye");
     ElementHandle br = page.querySelector("br");
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       br.click(new ElementHandle.ClickOptions().setForce(true));
-      fail("click should throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Element is outside of the viewport"));
-    }
+    });
+    assertTrue(e.getMessage().contains("Element is outside of the viewport"));
   }
 
   @Test

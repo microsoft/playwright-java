@@ -35,12 +35,10 @@ public class TestPageBasic extends TestBase {
   void shouldRejectAllPromisesWhenPageIsClosed() {
     Page newPage = context.newPage();
     newPage.close();
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       newPage.evaluate("() => new Promise(r => {})");
-      fail("evaluate should throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
   }
 
   @Test
@@ -108,21 +106,17 @@ public class TestPageBasic extends TestBase {
   @Test
   void shouldTerminateNetworkWaiters() {
     Page newPage = context.newPage();
-    try {
+    PlaywrightException e1 = assertThrows(PlaywrightException.class, () -> {
       newPage.waitForResponse("**", () -> {
-        try {
+        PlaywrightException e2 = assertThrows(PlaywrightException.class, () -> {
           newPage.waitForRequest(server.EMPTY_PAGE, () -> newPage.close());
-          fail("waitForRequest() should throw");
-        } catch (PlaywrightException e) {
-          assertTrue(e.getMessage().contains("Page closed"));
-          assertFalse(e.getMessage().contains("Timeout"));
-        }
+        });
+        assertTrue(e2.getMessage().contains("Page closed"));
+        assertFalse(e2.getMessage().contains("Timeout"));
       });
-      fail("waitForResponse() should throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Page closed"));
-      assertFalse(e.getMessage().contains("Timeout"));
-    }
+    });
+    assertTrue(e1.getMessage().contains("Page closed"));
+    assertFalse(e1.getMessage().contains("Timeout"));
   }
 
   @Test
