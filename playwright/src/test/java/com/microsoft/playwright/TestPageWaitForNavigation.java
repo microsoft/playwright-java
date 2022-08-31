@@ -157,7 +157,11 @@ public class TestPageWaitForNavigation extends TestBase {
         }
       });
     });
-    page.navigate(server.PREFIX + "/frames/one-frame.html");
+    try {
+      page.navigate(server.PREFIX + "/frames/one-frame.html", new Page.NavigateOptions().setTimeout(2000));
+    } catch (TimeoutError e) {
+      assertTrue(isWebKit()); // Chromium and Firefox issue load event in this case.
+    }
     assertTrue(frameWindowStopCalled[0]);
   }
 
