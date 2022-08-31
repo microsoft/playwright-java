@@ -76,13 +76,12 @@ public class TestScreencast extends TestBase {
       page.close();
 
       Path saveAsPath = videosDir.resolve("my-video.webm");
-      PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
-        popup.video().saveAs(saveAsPath);
-      });
       // WebKit pauses renderer before win.close() and actually writes something.
       if (isWebKit()) {
+        popup.video().saveAs(saveAsPath);
         assertTrue(Files.exists(saveAsPath));
       } else {
+        PlaywrightException e = assertThrows(PlaywrightException.class, () -> popup.video().saveAs(saveAsPath));
         assertTrue(e.getMessage().contains("Page did not produce any video frames"), e.getMessage());
       }
     }
