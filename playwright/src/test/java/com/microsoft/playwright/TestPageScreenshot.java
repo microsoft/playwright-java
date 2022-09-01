@@ -111,12 +111,7 @@ public class TestPageScreenshot extends TestBase {
     byte[] buffer1 = page.screenshot();
     rafraf(page);
     byte[] buffer2 = page.screenshot();
-    try {
-      assertArrayEquals(buffer1, buffer2);
-    } catch (AssertionFailedError e) {
-      return;
-    }
-    fail("Screenshots are equal");
+    assertThrows(AssertionFailedError.class, () -> assertArrayEquals(buffer1, buffer2));
   }
 
   @Test
@@ -133,12 +128,7 @@ public class TestPageScreenshot extends TestBase {
     byte[] buffer1 = page.screenshot();
     rafraf(page);
     byte[] buffer2 = page.screenshot();
-    try {
-      assertArrayEquals(buffer1, buffer2);
-    } catch (AssertionFailedError e) {
-      return;
-    }
-    fail("Screenshots are equal");
+    assertThrows(AssertionFailedError.class, () -> assertArrayEquals(buffer1, buffer2));
   }
 
   @Test
@@ -149,12 +139,7 @@ public class TestPageScreenshot extends TestBase {
       .setMask(asList(page.locator("div").nth(5))));
     // TODO: toMatchSnapshot is not present in java, so we only checks that masked screenshot is different.
     byte[] originalScreenshot = page.screenshot();
-    try {
-      assertArrayEquals(screenshot, originalScreenshot);
-    } catch (AssertionFailedError e) {
-      return;
-    }
-    fail("Screenshots are equal");
+    assertThrows(AssertionFailedError.class, () -> assertArrayEquals(screenshot, originalScreenshot));
   }
 
   @Test

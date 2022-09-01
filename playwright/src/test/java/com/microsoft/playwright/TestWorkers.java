@@ -48,11 +48,11 @@ public class TestWorkers extends TestBase {
     Worker closedWorker = worker.waitForClose(() ->
       page.evaluate("workerObj => workerObj.terminate()", workerObj[0]));
     assertEquals(worker, closedWorker);
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       workerThisObj.getProperty("self");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Target closed") || e.getMessage().contains("Worker was closed"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Target closed") || e.getMessage().contains("Worker was closed"), e.getMessage());
+
   }
 
   @Test

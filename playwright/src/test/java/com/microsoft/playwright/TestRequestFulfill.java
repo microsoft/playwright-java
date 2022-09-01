@@ -106,43 +106,37 @@ public class TestRequestFulfill extends TestBase {
 
   @Test
   void fulfillShouldThrowIfHandledTwice() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.route("**/*", route -> {
         route.fulfill();
         route.fulfill();
       });
       page.navigate(server.EMPTY_PAGE);
-      fail("didn't throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Route is already handled!"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Route is already handled!"), e.getMessage());
   }
 
   @Test
   void abortShouldThrowIfHandledTwice() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.route("**/*", route -> {
         route.abort();
         route.abort();
       });
       page.navigate(server.EMPTY_PAGE);
-      fail("didn't throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Route is already handled!"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Route is already handled!"), e.getMessage());
   }
 
   @Test
   void resumeShouldThrowIfHandledTwice() {
-    try {
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.route("**/*", route -> {
         route.resume();
         route.resume();
       });
       page.navigate(server.EMPTY_PAGE);
-      fail("didn't throw");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Route is already handled!"), e.getMessage());
-    }
+    });
+    assertTrue(e.getMessage().contains("Route is already handled!"), e.getMessage());
   }
 }

@@ -27,6 +27,7 @@ import java.util.concurrent.Semaphore;
 import static com.microsoft.playwright.options.KeyboardModifier.ALT;
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestTap extends TestBase {
@@ -103,11 +104,7 @@ public class TestTap extends TestBase {
     List<String> events = Collections.synchronizedList(new ArrayList<>());
     server.setRoute("/intercept-this.html", exchange -> {
       // make sure the tap doesnt resolve too early
-      try {
-        Thread.sleep(100);
-      } catch (InterruptedException e) {
-        events.add("interrupted");
-      }
+      assertDoesNotThrow(() -> Thread.sleep(100));
       exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
       exchange.sendResponseHeaders(200, 0);
       try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {

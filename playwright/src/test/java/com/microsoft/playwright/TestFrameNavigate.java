@@ -19,8 +19,7 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.options.WaitUntilState.NETWORKIDLE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestFrameNavigate extends TestBase {
 
@@ -43,12 +42,11 @@ public class TestFrameNavigate extends TestBase {
   void shouldContinueAfterClientRedirect() {
     server.setRoute("/frames/script.js", (httpExchange) -> {});
     String url = server.PREFIX + "/frames/child-redirect.html";
-    try {
+    TimeoutError e = assertThrows(TimeoutError.class, () ->  {
       page.navigate(url, new Page.NavigateOptions().setTimeout(5000).setWaitUntil(NETWORKIDLE));
-    } catch (TimeoutError e) {
-      assertTrue(e.getMessage().contains("Timeout 5000ms exceeded."));
-      assertTrue(e.getMessage().contains("navigating to \"" + url +"\", waiting until \"networkidle\""));
-    }
+    });
+    assertTrue(e.getMessage().contains("Timeout 5000ms exceeded."));
+    assertTrue(e.getMessage().contains("navigating to \"" + url +"\", waiting until \"networkidle\""));
   }
 
   // TODO: not supported in sync api

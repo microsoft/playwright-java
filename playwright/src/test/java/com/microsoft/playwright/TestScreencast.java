@@ -76,15 +76,16 @@ public class TestScreencast extends TestBase {
       page.close();
 
       Path saveAsPath = videosDir.resolve("my-video.webm");
-      try {
+      if (!popup.isClosed()) {
+        popup.waitForClose(() -> {});
+      }
+      // WebKit pauses renderer before win.close() and actually writes something.
+      if (isWebKit()) {
         popup.video().saveAs(saveAsPath);
-      } catch (PlaywrightException e) {
-        // WebKit pauses renderer before win.close() and actually writes something.
-        if (isWebKit()) {
-          assertTrue(Files.exists(saveAsPath));
-        } else {
-          assertTrue(e.getMessage().contains("Page did not produce any video frames"), e.getMessage());
-        }
+        assertTrue(Files.exists(saveAsPath));
+      } else {
+        PlaywrightException e = assertThrows(PlaywrightException.class, () -> popup.video().saveAs(saveAsPath));
+        assertTrue(e.getMessage().contains("Page did not produce any video frames"), e.getMessage());
       }
     }
   }

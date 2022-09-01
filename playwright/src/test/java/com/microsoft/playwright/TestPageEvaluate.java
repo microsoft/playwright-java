@@ -532,16 +532,13 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldEvaluateException() {
-    try {
-      page.evaluate("() => {\n" +
-        "  return (function functionOnStack() {\n" +
-        "    return new Error('error message');\n" +
-        "  })();\n" +
-        "}");
-    } catch (PlaywrightException e) {
-      assertTrue(e.getMessage().contains("Error: error message"));
-      assertTrue(e.getMessage().contains("functionOnStack"));
-    }
+    String result = (String) page.evaluate("() => {\n" +
+      "  return (function functionOnStack() {\n" +
+      "    return new Error('error message');\n" +
+      "  })();\n" +
+      "}");
+    assertTrue(result.contains("Error: error message"));
+    assertTrue(result.contains("functionOnStack"));
   }
 
   @Test
