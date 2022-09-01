@@ -76,6 +76,9 @@ public class TestScreencast extends TestBase {
       page.close();
 
       Path saveAsPath = videosDir.resolve("my-video.webm");
+      if (!popup.isClosed()) {
+        popup.waitForClose(() -> {});
+      }
       // WebKit pauses renderer before win.close() and actually writes something.
       if (isWebKit()) {
         popup.video().saveAs(saveAsPath);
