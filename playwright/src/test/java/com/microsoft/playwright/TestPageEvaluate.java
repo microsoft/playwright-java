@@ -535,7 +535,7 @@ public class TestPageEvaluate extends TestBase {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evaluate("() => {\n" +
         "  return (function functionOnStack() {\n" +
-        "    return new Error('error message');\n" +
+        "    throw new Error('error message');\n" +
         "  })();\n" +
         "}");
     });
