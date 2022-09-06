@@ -20,7 +20,6 @@ import com.microsoft.playwright.options.Cookie;
 import com.microsoft.playwright.options.SameSiteAttribute;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
-import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.util.Comparator;
 import java.util.List;
@@ -29,8 +28,7 @@ import java.util.stream.Collectors;
 import static com.microsoft.playwright.Utils.assertJsonEquals;
 import static com.microsoft.playwright.Utils.getOS;
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBrowserContextCookies extends TestBase {
   @Test
@@ -60,31 +58,28 @@ public class TestBrowserContextCookies extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     // @see https://en.wikipedia.org/wiki/Year_2038_problem
     Object documentCookie = page.evaluate("() => {\n" +
-      "    const date= new Date('1/1/2038');\n" +
-      "    document.cookie = `username=John Doe;expires=${date.toUTCString()}`;\n" +
-      "    return document.cookie;\n" +
-      "  }");
+      "  const date = new Date('1/1/2038');\n" +
+      "  document.cookie = `username=John Doe;expires=${date.toUTCString()}`;\n" +
+      "  return document.cookie;\n" +
+      "}");
     assertEquals("username=John Doe", documentCookie);
-    Cookie cookie = context.cookies().get(0);
-    assertEquals("username", cookie.name);
-    assertEquals("John Doe", cookie.value);
-    assertEquals("localhost", cookie.domain);
-    assertEquals("/", cookie.path);
+    List<Cookie> cookies = context.cookies();
+    assertEquals(1, cookies.size());
+    assertEquals("username", cookies.get(0).name);
+    assertEquals("John Doe", cookies.get(0).value);
+    assertEquals("localhost", cookies.get(0).domain);
+    assertEquals("/", cookies.get(0).path);
+    assertFalse(cookies.get(0).httpOnly);
+    assertFalse(cookies.get(0).secure);
+    assertEquals(defaultSameSiteCookieValue, cookies.get(0).sameSite);
+
     // Browsers start to cap cookies with 400 days max expires value.
     // See https://github.com/httpwg/http-extensions/pull/1732
     // Chromium patch: https://chromium.googlesource.com/chromium/src/+/aaa5d2b55478eac2ee642653dcd77a50ac3faff6
     // We want to make sure that expires date is at least 400 days in future.
-    Double timestamp = (Double) page.evaluate("const FOUR_HUNDRED_DAYS = 1000 * 60 * 60 * 24 * 400;\n" +
-      "  const FIVE_MINUTES = 1000 * 60 * 5; // relax condition a bit to make sure test is not flaky.\n" +
-      "  (Date.now() + FOUR_HUNDRED_DAYS - FIVE_MINUTES) / 1000;");
-    assertTrue(cookie.expires > timestamp, cookie.expires + " > " + timestamp + " failed.");
-    assertEquals(false, cookie.httpOnly);
-    assertEquals(false, cookie.secure);
-    if (isChromium()) {
-      assertEquals(SameSiteAttribute.LAX, cookie.sameSite);
-    } else {
-      assertEquals(SameSiteAttribute.NONE, cookie.sameSite);
-    }
+    int FOUR_HUNDRED_DAYS = 1000 * 60 * 60 * 24 * 400;
+    int FIVE_MINUTES = 1000 * 60 * 5; // relax condition a bit to make sure test is not flaky.
+    assertTrue(cookies.get(0).expires > ((System.currentTimeMillis() + FOUR_HUNDRED_DAYS - FIVE_MINUTES) / 1000));
   }
 
   @Test

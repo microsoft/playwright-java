@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright;
 
-import com.google.gson.Gson;
 import com.microsoft.playwright.options.Cookie;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +26,6 @@ import java.util.concurrent.Future;
 
 import static com.microsoft.playwright.Utils.assertJsonEquals;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,34 +36,6 @@ public class TestBrowserContextAddCookies extends TestBase {
     context.addCookies(asList(
       new Cookie("password", "123456").setUrl(server.EMPTY_PAGE)));
     assertEquals("password=123456", page.evaluate("document.cookie"));
-  }
-
-  @Test
-  void shouldRoundtripCookie() {
-    page.navigate(server.EMPTY_PAGE);
-    // @see https://en.wikipedia.org/wiki/Year_2038_problem
-    Object documentCookie = page.evaluate("() => {\n" +
-      "  const date = new Date('1/1/2038');\n" +
-      "  document.cookie = `username=John Doe;expires=${date.toUTCString()}`;\n" +
-      "  return document.cookie;\n" +
-      "}");
-    assertEquals("username=John Doe", documentCookie);
-    List<Cookie> cookies = context.cookies();
-    assertEquals(1, cookies.size());
-    assertEquals("username", cookies.get(0).name);
-    assertEquals("John Doe", cookies.get(0).value);
-    assertEquals("localhost", cookies.get(0).domain);
-    assertEquals("/", cookies.get(0).path);
-    assertFalse(cookies.get(0).httpOnly);
-    assertEquals(defaultSameSiteCookieValue, cookies.get(0).sameSite);
-
-    // Browsers start to cap cookies with 400 days max expires value.
-    // See https://github.com/httpwg/http-extensions/pull/1732
-    // Chromium patch: https://chromium.googlesource.com/chromium/src/+/aaa5d2b55478eac2ee642653dcd77a50ac3faff6
-    // We want to make sure that expires date is at least 400 days in future.
-    int FOUR_HUNDRED_DAYS = 1000 * 60 * 60 * 24 * 400;
-    int FIVE_MINUTES = 1000 * 60 * 5; // relax condition a bit to make sure test is not flaky.
-    assertTrue(cookies.get(0).expires > ((System.currentTimeMillis() + FOUR_HUNDRED_DAYS - FIVE_MINUTES) / 1000));
   }
 
   @Test
