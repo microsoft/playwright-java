@@ -18,6 +18,8 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.*;
 
+import com.microsoft.playwright.options.SameSiteAttribute;
+
 import java.io.IOException;
 
 import static com.microsoft.playwright.Utils.getBrowserNameFromEnv;
@@ -35,9 +37,11 @@ public class TestBase {
   static final boolean isMac = Utils.getOS() == Utils.OS.MAC;
   static final boolean isWindows = Utils.getOS() == Utils.OS.WINDOWS;
   static final boolean headful;
+  static final SameSiteAttribute defaultSameSiteCookieValue;
   static {
     String headfulEnv = System.getenv("HEADFUL");
     headful = headfulEnv != null && !"0".equals(headfulEnv) && !"false".equals(headfulEnv);
+    defaultSameSiteCookieValue = initSameSiteAttribute();
   }
 
   // Fields reset before each test.
@@ -144,5 +148,12 @@ public class TestBase {
       context = null;
       page = null;
     }
+  }
+
+  private static SameSiteAttribute initSameSiteAttribute() {
+    if (isChromium()) return SameSiteAttribute.LAX;
+    if (isWebKit()) return SameSiteAttribute.NONE;
+    // for firefox version >= 103 'None' is used.
+    return SameSiteAttribute.NONE;
   }
 }
