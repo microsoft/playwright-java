@@ -39,6 +39,24 @@ public class TestBrowserContextAddCookies extends TestBase {
   }
 
   @Test
+  void shouldRoundtripCookie() {
+    page.navigate(server.EMPTY_PAGE);
+    // @see https://en.wikipedia.org/wiki/Year_2038_problem
+    Object documentCookie = page.evaluate("() => {\n" +
+      "  const date = new Date('1/1/2038');\n" +
+      "  document.cookie = `username=John Doe;expires=${date.toUTCString()}`;\n" +
+      "  return document.cookie;\n" +
+      "}");
+    assertEquals("username=John Doe", documentCookie);
+    List<Cookie> cookies = context.cookies();
+    assertEquals(1, cookies.size());
+    context.clearCookies();
+    assertEquals(0, context.cookies().size());
+    context.addCookies(cookies);
+    assertJsonEquals(cookies, context.cookies());
+  }
+
+  @Test
   void shouldSendCookieHeader() throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/empty.html");
     context.addCookies(asList(

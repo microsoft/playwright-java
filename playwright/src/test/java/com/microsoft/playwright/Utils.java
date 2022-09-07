@@ -55,6 +55,10 @@ class Utils {
     throw new RuntimeException("Cannot find free port: " + nextUnusedPort.get());
   }
 
+  static void assertJsonEquals(Object expected, Object actual) {
+    assertJsonEquals(new Gson().toJson(expected), actual);
+  }
+
   static void assertJsonEquals(String expected, Object actual) {
     JsonElement actualJson = JsonParser.parseString(new Gson().toJson(actual));
     assertEquals(JsonParser.parseString(expected), actualJson);
