@@ -18,38 +18,52 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.microsoft.playwright.impl.Utils.createGuid;
 
-public class WaitForEventLogger<T> implements Supplier<T> {
-  private final Supplier<T> supplier;
+public class WaitForEventLogger<T> implements Supplier<T>, Logger {
+  private final Function<Logger, T> supplier;
   private final ChannelOwner channel;
   private final String waitId;
   private final String apiName;
 
-  WaitForEventLogger(ChannelOwner channelOwner, String apiName, Supplier<T> supplier) {
+  WaitForEventLogger(ChannelOwner channelOwner, String apiName, Function<Logger, T> supplier) {
     this.supplier = supplier;
     this.channel = channelOwner;
     this.apiName = apiName;
     this.waitId = createGuid();
-    JsonObject info = new JsonObject();
-    info.addProperty("phase", "before");
-    sendWaitForEventInfo(info);
   }
 
   @Override
   public T get() {
+    return channel.withLogging(apiName, () -> {
+      {
+        JsonObject info = new JsonObject();
+        info.addProperty("phase", "before");
+        sendWaitForEventInfo(info);
+      }
+      JsonObject info = new JsonObject();
+      info.addProperty("phase", "after");
+      try {
+        return supplier.apply(this);
+      } catch (RuntimeException e) {
+        info.addProperty("error", e.getMessage());
+        throw e;
+      } finally {
+        sendWaitForEventInfo(info);
+      }
+    });
+  }
+
+  @Override
+  public void log(String message) {
+    LoggingSupport.logApiIfEnabled(message);
     JsonObject info = new JsonObject();
-    info.addProperty("phase", "after");
-    try {
-      return supplier.get();
-    } catch (RuntimeException e) {
-      info.addProperty("error", e.getMessage());
-      throw e;
-    } finally {
-      sendWaitForEventInfo(info);
-    }
+    info.addProperty("phase", "log");
+    info.addProperty("message", message);
+    sendWaitForEventInfo(info);
   }
 
   private void sendWaitForEventInfo(JsonObject info) {
@@ -57,6 +71,6 @@ public class WaitForEventLogger<T> implements Supplier<T> {
     info.addProperty("waitId", waitId);
     JsonObject params = new JsonObject();
     params.add("info", info);
-    channel.withLogging(apiName, () -> channel.sendMessageAsync("waitForEventInfo", params));
+    channel.sendMessageAsync("waitForEventInfo", params);
   }
 }

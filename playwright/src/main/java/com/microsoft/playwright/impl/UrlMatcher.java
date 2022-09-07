@@ -97,4 +97,13 @@ class UrlMatcher {
   public int hashCode() {
     return Objects.hash(rawSource);
   }
+
+  @Override
+  public String toString() {
+    if (rawSource == null)
+      return "<any>";
+    if (rawSource instanceof Predicate)
+      return "matching predicate";
+    return rawSource.toString();
+  }
 }

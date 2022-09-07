@@ -59,7 +59,7 @@ class WorkerImpl extends ChannelOwner implements Worker {
 
   @Override
   public Worker waitForClose(WaitForCloseOptions options, Runnable code) {
-    return withWaitLogging("Worker.waitForClose", () -> waitForCloseImpl(options, code));
+    return withWaitLogging("Worker.waitForClose", logger -> waitForCloseImpl(options, code));
   }
 
   private Worker waitForCloseImpl(WaitForCloseOptions options, Runnable code) {
