@@ -34,23 +34,27 @@ public class WaitForEventLogger<T> implements Supplier<T>, Logger {
     this.channel = channelOwner;
     this.apiName = apiName;
     this.waitId = createGuid();
-    JsonObject info = new JsonObject();
-    info.addProperty("phase", "before");
-    sendWaitForEventInfo(info);
   }
 
   @Override
   public T get() {
-    JsonObject info = new JsonObject();
-    info.addProperty("phase", "after");
-    try {
-      return channel.withLogging(apiName, () -> supplier.apply(this));
-    } catch (RuntimeException e) {
-      info.addProperty("error", e.getMessage());
-      throw e;
-    } finally {
-      sendWaitForEventInfo(info);
-    }
+    return channel.withLogging(apiName, () -> {
+      {
+        JsonObject info = new JsonObject();
+        info.addProperty("phase", "before");
+        sendWaitForEventInfo(info);
+      }
+      JsonObject info = new JsonObject();
+      info.addProperty("phase", "after");
+      try {
+        return supplier.apply(this);
+      } catch (RuntimeException e) {
+        info.addProperty("error", e.getMessage());
+        throw e;
+      } finally {
+        sendWaitForEventInfo(info);
+      }
+    });
   }
 
   @Override
