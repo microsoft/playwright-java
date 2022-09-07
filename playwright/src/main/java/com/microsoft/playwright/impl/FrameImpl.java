@@ -811,17 +811,17 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
-    withWaitLogging("Frame.waitForLoadState", () -> {
-      waitForLoadStateImpl(state, options);
+    withWaitLogging("Frame.waitForLoadState", logger -> {
+      waitForLoadStateImpl(state, options, logger);
       return null;
     });
   }
 
-  void waitForLoadStateImpl(LoadState state, WaitForLoadStateOptions options) {
-    waitForLoadStateImpl(convertType(state, WaitUntilState.class), options);
+  void waitForLoadStateImpl(LoadState state, WaitForLoadStateOptions options, Logger logger) {
+    waitForLoadStateImpl(convertType(state, WaitUntilState.class), options, logger);
   }
 
-  private void waitForLoadStateImpl(WaitUntilState state, WaitForLoadStateOptions options) {
+  private void waitForLoadStateImpl(WaitUntilState state, WaitForLoadStateOptions options, Logger logger) {
     if (options == null) {
       options = new WaitForLoadStateOptions();
     }
@@ -830,7 +830,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
 
     List<Waitable<Void>> waitables = new ArrayList<>();
-    waitables.add(new WaitForLoadStateHelper(state));
+    waitables.add(new WaitForLoadStateHelper(state, logger));
     waitables.add(page.createWaitForCloseHelper());
     waitables.add(page.createWaitableTimeout(options.timeout));
     runUntil(() -> {}, new WaitableRace<>(waitables));
@@ -838,10 +838,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   private class WaitForLoadStateHelper implements Waitable<Void>, Consumer<WaitUntilState> {
     private final WaitUntilState expectedState;
+    private final Logger logger;
     private boolean isDone;
 
-    WaitForLoadStateHelper(WaitUntilState state) {
+    WaitForLoadStateHelper(WaitUntilState state, Logger logger) {
       expectedState = state;
+      this.logger = logger;
       isDone = loadStates.contains(state);
       if (!isDone) {
         internalListeners.add(InternalEventType.LOADSTATE, this);
@@ -850,6 +852,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
     @Override
     public void accept(WaitUntilState state) {
+      logger.log("  load state changed to " + state);
       if (expectedState.equals(state)) {
         isDone = true;
         dispose();
@@ -873,20 +876,24 @@ public class FrameImpl extends ChannelOwner implements Frame {
   private class WaitForNavigationHelper implements Waitable<Response>, Consumer<JsonObject> {
     private final UrlMatcher matcher;
     private final WaitUntilState expectedLoadState;
+    private final Logger logger;
     private WaitForLoadStateHelper loadStateHelper;
 
     private RequestImpl request;
     private RuntimeException exception;
 
-    WaitForNavigationHelper(UrlMatcher matcher, WaitUntilState expectedLoadState) {
+    WaitForNavigationHelper(UrlMatcher matcher, WaitUntilState expectedLoadState, Logger logger) {
       this.matcher = matcher;
       this.expectedLoadState = expectedLoadState;
+      this.logger = logger;
       internalListeners.add(InternalEventType.NAVIGATED, this);
     }
 
     @Override
     public void accept(JsonObject params) {
-      if (!matcher.test(params.get("url").getAsString())) {
+      String url = params.get("url").getAsString();
+      logger.log("  navigated to " + url);
+      if (!matcher.test(url)) {
         return;
       }
       if (params.has("error")) {
@@ -898,7 +905,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
             request = connection.getExistingObject(jsonReq.get("guid").getAsString());
           }
         }
-        loadStateHelper = new WaitForLoadStateHelper(expectedLoadState);
+        loadStateHelper = new WaitForLoadStateHelper(expectedLoadState, logger);
       }
       internalListeners.remove(InternalEventType.NAVIGATED, this);
     }
@@ -937,14 +944,14 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public Response waitForNavigation(WaitForNavigationOptions options, Runnable code) {
-    return withLogging("Frame.waitForNavigation", () -> waitForNavigationImpl(code, options, null));
+    return withWaitLogging("Frame.waitForNavigation", logger -> waitForNavigationImpl(logger, code, options, null));
   }
 
-  Response waitForNavigationImpl(Runnable code, WaitForNavigationOptions options) {
-    return waitForNavigationImpl(code, options, null);
+  Response waitForNavigationImpl(Logger logger, Runnable code, WaitForNavigationOptions options) {
+    return waitForNavigationImpl(logger, code, options, null);
   }
 
-  private Response waitForNavigationImpl(Runnable code, WaitForNavigationOptions options, UrlMatcher matcher) {
+  private Response waitForNavigationImpl(Logger logger, Runnable code, WaitForNavigationOptions options, UrlMatcher matcher) {
     if (options == null) {
       options = new WaitForNavigationOptions();
     }
@@ -956,7 +963,8 @@ public class FrameImpl extends ChannelOwner implements Frame {
     if (matcher == null) {
       matcher = UrlMatcher.forOneOf(page.context().baseUrl, options.url);
     }
-    waitables.add(new WaitForNavigationHelper(matcher, options.waitUntil));
+    logger.log("waiting for navigation " + matcher);
+    waitables.add(new WaitForNavigationHelper(matcher, options.waitUntil, logger));
     waitables.add(page.createWaitForCloseHelper());
     waitables.add(page.createWaitableFrameDetach(this));
     waitables.add(page.createWaitableNavigationTimeout(options.timeout));
@@ -1014,18 +1022,22 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   private void waitForURL(UrlMatcher matcher, WaitForURLOptions options) {
-    withLogging("Frame.waitForURL", () -> waitForURLImpl(matcher, options));
+    withWaitLogging("Frame.waitForURL", logger -> {
+      waitForURLImpl(logger, matcher, options);
+      return null;
+    });
   }
 
-  void waitForURLImpl(UrlMatcher matcher, WaitForURLOptions options) {
+  void waitForURLImpl(Logger logger, UrlMatcher matcher, WaitForURLOptions options) {
+    logger.log("waiting for url " + matcher);
     if (options == null) {
       options = new WaitForURLOptions();
     }
     if (matcher.test(url())) {
-      waitForLoadStateImpl(options.waitUntil, convertType(options, WaitForLoadStateOptions.class));
+      waitForLoadStateImpl(options.waitUntil, convertType(options, WaitForLoadStateOptions.class), logger);
       return;
     }
-    waitForNavigationImpl(() -> {}, convertType(options, WaitForNavigationOptions.class), matcher);
+    waitForNavigationImpl(logger, () -> {}, convertType(options, WaitForNavigationOptions.class), matcher);
   }
 
   int queryCount(String selector) {

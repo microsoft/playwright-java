@@ -22,6 +22,8 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 class ChannelOwner extends LoggingSupport {
@@ -74,7 +76,7 @@ class ChannelOwner extends LoggingSupport {
     child.parent = this;
   }
 
-  <T> T withWaitLogging(String apiName, Supplier<T> code) {
+  <T> T withWaitLogging(String apiName, Function<Logger, T> code) {
     return new WaitForEventLogger<>(this, apiName, code).get();
   }
 

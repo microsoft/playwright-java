@@ -443,7 +443,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Page waitForClose(WaitForCloseOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForClose", () -> waitForCloseImpl(options, code));
+    return withWaitLogging("Page.waitForClose", logger -> waitForCloseImpl(options, code));
   }
 
   private Page waitForCloseImpl(WaitForCloseOptions options, Runnable code) {
@@ -455,7 +455,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForConsoleMessage", () -> waitForConsoleMessageImpl(options, code));
+    return withWaitLogging("Page.waitForConsoleMessage", logger -> waitForConsoleMessageImpl(options, code));
   }
 
   private ConsoleMessage waitForConsoleMessageImpl(WaitForConsoleMessageOptions options, Runnable code) {
@@ -467,7 +467,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Download waitForDownload(WaitForDownloadOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForDownload", () -> waitForDownloadImpl(options, code));
+    return withWaitLogging("Page.waitForDownload", logger -> waitForDownloadImpl(options, code));
   }
 
   private Download waitForDownloadImpl(WaitForDownloadOptions options, Runnable code) {
@@ -479,7 +479,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public FileChooser waitForFileChooser(WaitForFileChooserOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForFileChooser", () -> waitForFileChooserImpl(options, code));
+    return withWaitLogging("Page.waitForFileChooser", logger -> waitForFileChooserImpl(options, code));
   }
 
   private FileChooser waitForFileChooserImpl(WaitForFileChooserOptions options, Runnable code) {
@@ -492,7 +492,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Page waitForPopup(WaitForPopupOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForPopup", () -> waitForPopupImpl(options, code));
+    return withWaitLogging("Page.waitForPopup", logger -> waitForPopupImpl(options, code));
   }
 
   private Page waitForPopupImpl(WaitForPopupOptions options, Runnable code) {
@@ -504,7 +504,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public WebSocket waitForWebSocket(WaitForWebSocketOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForWebSocket", () -> waitForWebSocketImpl(options, code));
+    return withWaitLogging("Page.waitForWebSocket", logger -> waitForWebSocketImpl(options, code));
   }
 
   private WebSocket waitForWebSocketImpl(WaitForWebSocketOptions options, Runnable code) {
@@ -516,7 +516,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Worker waitForWorker(WaitForWorkerOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForWorker", () -> waitForWorkerImpl(options, code));
+    return withWaitLogging("Page.waitForWorker", logger -> waitForWorkerImpl(options, code));
   }
 
   private Worker waitForWorkerImpl(WaitForWorkerOptions options, Runnable code) {
@@ -1268,25 +1268,25 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void waitForLoadState(LoadState state, WaitForLoadStateOptions options) {
-    withWaitLogging("Page.waitForLoadState", () -> {
-      mainFrame.waitForLoadStateImpl(state, convertType(options, Frame.WaitForLoadStateOptions.class));
+    withWaitLogging("Page.waitForLoadState", logger -> {
+      mainFrame.waitForLoadStateImpl(state, convertType(options, Frame.WaitForLoadStateOptions.class), logger);
       return null;
     });
   }
 
   @Override
   public Response waitForNavigation(WaitForNavigationOptions options, Runnable code) {
-    return withLogging("Page.waitForNavigation", () -> waitForNavigationImpl(code, options));
+    return withWaitLogging("Page.waitForNavigation", logger -> waitForNavigationImpl(logger, code, options));
   }
 
-  Response waitForNavigationImpl(Runnable code, WaitForNavigationOptions options) {
+  private Response waitForNavigationImpl(Logger logger, Runnable code, WaitForNavigationOptions options) {
     Frame.WaitForNavigationOptions frameOptions = new Frame.WaitForNavigationOptions();
     if (options != null) {
       frameOptions.timeout = options.timeout;
       frameOptions.waitUntil = options.waitUntil;
       frameOptions.url = options.url;
     }
-    return mainFrame.waitForNavigationImpl(code, frameOptions);
+    return mainFrame.waitForNavigationImpl(logger, code, frameOptions);
   }
 
   void frameNavigated(FrameImpl frame) {
@@ -1338,21 +1338,28 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Request waitForRequest(String urlGlob, WaitForRequestOptions options, Runnable code) {
-    return waitForRequest(toRequestPredicate(new UrlMatcher(browserContext.baseUrl, urlGlob)), options, code);
+    return waitForRequest(new UrlMatcher(browserContext.baseUrl, urlGlob), null, options, code);
   }
 
   @Override
   public Request waitForRequest(Pattern urlPattern, WaitForRequestOptions options, Runnable code) {
-    return waitForRequest(toRequestPredicate(new UrlMatcher(urlPattern)), options, code);
+    return waitForRequest(new UrlMatcher(urlPattern), null, options, code);
   }
 
   @Override
   public Request waitForRequest(Predicate<Request> predicate, WaitForRequestOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForRequest", () -> waitForRequestImpl(predicate, options, code));
+    return waitForRequest(null, predicate, options, code);
   }
 
-  private static Predicate<Request> toRequestPredicate(UrlMatcher matcher) {
-    return request -> matcher.test(request.url());
+  private Request waitForRequest(UrlMatcher urlMatcher, Predicate<Request> predicate, WaitForRequestOptions options, Runnable code) {
+    return withWaitLogging("Page.waitForRequest", logger -> {
+      logger.log("waiting for request " + ((urlMatcher == null) ? "matching predicate" : urlMatcher.toString()));
+      Predicate<Request> requestPredicate = predicate;
+      if (requestPredicate == null) {
+        requestPredicate = request -> urlMatcher.test(request.url());;
+      }
+      return waitForRequestImpl(requestPredicate, options, code);
+    });
   }
 
   private Request waitForRequestImpl(Predicate<Request> predicate, WaitForRequestOptions options, Runnable code) {
@@ -1364,7 +1371,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Request waitForRequestFinished(WaitForRequestFinishedOptions options, Runnable code) {
-    return withWaitLogging("Page.waitForRequestFinished", () -> waitForRequestFinishedImpl(options, code));
+    return withWaitLogging("Page.waitForRequestFinished", logger -> waitForRequestFinishedImpl(options, code));
   }
 
   private Request waitForRequestFinishedImpl(WaitForRequestFinishedOptions options, Runnable code) {
@@ -1376,21 +1383,28 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public Response waitForResponse(String urlGlob, WaitForResponseOptions options, Runnable code) {
-    return waitForResponse(toResponsePredicate(new UrlMatcher(browserContext.baseUrl, urlGlob)), options, code);
+    return waitForResponse(new UrlMatcher(browserContext.baseUrl, urlGlob), null, options, code);
   }
 
   @Override
   public Response waitForResponse(Pattern urlPattern, WaitForResponseOptions options, Runnable code) {
-    return waitForResponse(toResponsePredicate(new UrlMatcher(urlPattern)), options, code);
+    return waitForResponse(new UrlMatcher(urlPattern), null, options, code);
   }
 
   @Override
   public Response waitForResponse(Predicate<Response> predicate, WaitForResponseOptions options, Runnable code) {
-    return withLogging("Page.waitForResponse", () -> waitForResponseImpl(predicate, options, code));
+    return waitForResponse(null, predicate, options, code);
   }
 
-  private static Predicate<Response> toResponsePredicate(UrlMatcher matcher) {
-    return response -> matcher.test(response.url());
+  private Response waitForResponse(UrlMatcher urlMatcher, Predicate<Response> predicate, WaitForResponseOptions options, Runnable code) {
+    return withWaitLogging("Page.waitForResponse", logger -> {
+      logger.log("waiting for response " + ((urlMatcher == null) ? "matching predicate" : urlMatcher.toString()));
+      Predicate<Response> responsePredicate = predicate;
+      if (responsePredicate == null) {
+        responsePredicate = response -> urlMatcher.test(response.url());;
+      }
+      return waitForResponseImpl(responsePredicate, options, code);
+    });
   }
 
   private Response waitForResponseImpl(Predicate<Response> predicate, WaitForResponseOptions options, Runnable code) {
@@ -1427,7 +1441,10 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   private void waitForURL(UrlMatcher matcher, WaitForURLOptions options) {
-    withLogging("Page.waitForURL", () -> mainFrame.waitForURLImpl(matcher, convertType(options, Frame.WaitForURLOptions.class)));
+    withWaitLogging("Page.waitForURL", logger -> {
+      mainFrame.waitForURLImpl(logger, matcher, convertType(options, Frame.WaitForURLOptions.class));
+      return null;
+    });
   }
 
   @Override

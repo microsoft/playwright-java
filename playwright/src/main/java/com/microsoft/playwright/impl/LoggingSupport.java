@@ -60,8 +60,10 @@ class LoggingSupport {
     System.err.println(timestamp + " " + message);
   }
 
-  static boolean isApiLoggingEnabled() {
-    return isEnabled;
+  static void logApiIfEnabled(String message) {
+    if (isEnabled) {
+      logApi(message);
+    }
   }
 
   static void logApi(String message) {

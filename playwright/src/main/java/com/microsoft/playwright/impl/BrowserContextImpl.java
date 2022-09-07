@@ -170,7 +170,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   public Page waitForPage(WaitForPageOptions options, Runnable code) {
-    return withWaitLogging("BrowserContext.close", () -> waitForPageImpl(options, code));
+    return withWaitLogging("BrowserContext.close", logger -> waitForPageImpl(options, code));
   }
 
   private Page waitForPageImpl(WaitForPageOptions options, Runnable code) {
