@@ -33,6 +33,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -150,6 +152,8 @@ class Serialization {
         result.s = (String) value;
       } else if (value instanceof Date) {
         result.d = ((Date)value).toInstant().toString();
+      } else if (value instanceof LocalDateTime) {
+        result.d = ((LocalDateTime)value).atZone(ZoneId.systemDefault()).toInstant().toString();
       } else if (value instanceof URL) {
         result.u = ((URL)value).toString();
       } else if (value instanceof Pattern) {

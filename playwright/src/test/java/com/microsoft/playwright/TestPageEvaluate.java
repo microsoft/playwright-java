@@ -19,12 +19,12 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
+import java.time.*;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.Date;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.ZonedDateTime;
 
 import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
@@ -628,5 +628,14 @@ public class TestPageEvaluate extends TestBase {
     Map<String, Object> map = (Map<String, Object>) result;
     assertEquals(1, map.size());
     assertTrue(map == map.get("b"));
+  }
+
+  @Test
+  void shouldAcceptParameter() {
+    Instant instant = Instant.now();
+    LocalDateTime localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+    Object object = page.evaluate("p => p", localDateTime);
+    assertTrue(object instanceof Date);
+    assertEquals(Date.from(instant), object);
   }
 }
