@@ -224,7 +224,8 @@ public class TestPageRequestFallback extends TestBase {
     page.route("**/foo", route -> route.fallback(new Route.FallbackOptions().setUrl(server.PREFIX + "/global-var.html")));
     Response response = page.waitForResponse("**/*", () -> page.navigate(server.PREFIX + "/foo"));
     assertEquals(server.PREFIX + "/global-var.html", url[0]);
-    assertEquals(server.PREFIX + "/foo", response.url());
+    assertEquals(server.PREFIX + "/global-var.html", response.url());
+    assertEquals(server.PREFIX + "/global-var.html", response.request().url());
     assertEquals(123, page.evaluate("() => window['globalVar']"));
     assertEquals("GET", request.get().method);
   }
