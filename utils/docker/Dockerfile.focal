@@ -6,7 +6,7 @@ ARG DOCKER_IMAGE_NAME_TEMPLATE="mcr.microsoft.com/playwright/java:v%version%-foc
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    openjdk-11-jdk maven \
+    openjdk-17-jdk maven \
     # Install utilities required for downloading browsers
     curl \
     # Install utilities required for downloading driver
