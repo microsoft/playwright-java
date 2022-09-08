@@ -573,12 +573,9 @@ public class TestBrowserContextFetch extends TestBase {
   }
 
   @Test
-  void shouldThrowWhenDataPassedForUnsupportedRequest() {
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
-      context.request().fetch(server.EMPTY_PAGE, RequestOptions.create()
-        .setMethod("GET").setData("bar"));
-    });
-    assertTrue(e.getMessage().contains("Method GET does not accept post data"), e.getMessage());
+  void shouldNotThrowWhenDataPassedForUnsupportedRequest() {
+    context.request().fetch(server.EMPTY_PAGE, RequestOptions.create()
+      .setMethod("GET").setData("bar"));
   }
 
   @Test

@@ -67,7 +67,8 @@ public class TestRequestContinue extends TestBase {
       route.resume(new Route.ResumeOptions().setUrl(server.PREFIX + "/global-var.html"));
     });
     Response response = page.navigate(server.PREFIX + "/foo");
-    assertEquals(server.PREFIX + "/foo", response.url());
+    assertEquals(server.PREFIX + "/global-var.html", response.url());
+    assertEquals(server.PREFIX + "/global-var.html", response.request().url());
     assertEquals(123, page.evaluate("window['globalVar']"));
     assertEquals("GET", serverRequest.get().method);
   }

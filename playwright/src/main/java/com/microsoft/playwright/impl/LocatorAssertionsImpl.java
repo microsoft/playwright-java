@@ -310,7 +310,9 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
 
   @Override
   public void isEditable(IsEditableOptions options) {
-    expectTrue("to.be.editable", "Locator expected to be editable", convertType(options, FrameExpectOptions.class));
+    FrameExpectOptions frameOptions = convertType(options, FrameExpectOptions.class);
+    boolean editable = options == null || options.editable == null || options.editable == true;
+    expectTrue(editable ? "to.be.editable" : "to.be.readonly", "Locator expected to be editable", frameOptions);
   }
 
   @Override
@@ -320,7 +322,9 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
 
   @Override
   public void isEnabled(IsEnabledOptions options) {
-    expectTrue("to.be.enabled", "Locator expected to be enabled", convertType(options, FrameExpectOptions.class));
+    FrameExpectOptions frameOptions = convertType(options, FrameExpectOptions.class);
+    boolean enabled = options == null || options.enabled == null || options.enabled == true;
+    expectTrue(enabled ? "to.be.enabled" : "to.be.disabled", "Locator expected to be enabled", frameOptions);
   }
 
   @Override

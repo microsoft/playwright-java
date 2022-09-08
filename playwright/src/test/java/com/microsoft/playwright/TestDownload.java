@@ -102,9 +102,8 @@ public class TestDownload extends TestBase {
       assertTrue(error[0].getMessage().contains("Download is starting"));
       assertEquals("about:blank", page.url());
     } else {
-      assertNotNull(response[0]);
-      assertEquals(200, response[0].status());
-      assertEquals(server.PREFIX + "/download", page.url());
+      assertNotNull(error[0]);
+      assertTrue(error[0].getMessage().contains("Download is starting"));
     }
     page.close();
   }

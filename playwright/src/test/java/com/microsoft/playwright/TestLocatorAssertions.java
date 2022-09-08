@@ -757,6 +757,33 @@ public class TestLocatorAssertions extends TestBase {
     assertTrue(e.getMessage().contains("Locator expected not to be editable"), e.getMessage());
   }
 
+  @Test
+  void isEditableWithNot() {
+    page.setContent("<input readonly></input>");
+    Locator locator = page.locator("input");
+    assertThat(locator).not().isEditable();
+  }
+
+  @Test
+  void isEditableWithEditableTrue() {
+    page.setContent("<input></input>");
+    Locator locator = page.locator("input");
+    assertThat(locator).isEditable(new LocatorAssertions.IsEditableOptions().setEditable(true));
+  }
+
+  @Test
+  void isEditableWithEditableFalse() {
+    page.setContent("<input readonly></input>");
+    Locator locator = page.locator("input");
+    assertThat(locator).isEditable(new LocatorAssertions.IsEditableOptions().setEditable(false));
+  }
+
+  @Test
+  void isEditableWithNotAndEditableFalse() {
+    page.setContent("<input></input>");
+    Locator locator = page.locator("input");
+    assertThat(locator).not().isEditable(new LocatorAssertions.IsEditableOptions().setEditable(false));
+  }
 
   @Test
   void isEmptyPass() {
@@ -818,6 +845,47 @@ public class TestLocatorAssertions extends TestBase {
     assertNull(e.getExpected());
     assertNull(e.getActual());
     assertTrue(e.getMessage().contains("Locator expected not to be enabled"), e.getMessage());
+  }
+
+  @Test
+  void isEnabledTrue() {
+    page.setContent("<button>Text</button>");
+    Locator locator = page.locator("button");
+    assertThat(locator).isEnabled(new LocatorAssertions.IsEnabledOptions().setEnabled(true));
+  }
+
+  @Test
+  void isEnabledFalse() {
+    page.setContent("<button disabled>Text</button>");
+    Locator locator = page.locator("button");
+    assertThat(locator).isEnabled(new LocatorAssertions.IsEnabledOptions().setEnabled(false));
+  }
+
+  @Test
+  void isEnabledEventually() {
+    page.setContent("<button disabled>Text</button>");
+    Locator locator = page.locator("button");
+    locator.evaluate("e => setTimeout(() => {\n" +
+      "  e.removeAttribute('disabled');\n" +
+      "}, 500);\n");
+    assertThat(locator).isEnabled();
+  }
+
+  @Test
+  void isEnabledEventuallyWithNot() {
+    page.setContent("<button>Text</button>");
+    Locator locator = page.locator("button");
+    locator.evaluate("e => setTimeout(() => {\n" +
+      "  e.setAttribute('disabled', '');\n" +
+      "}, 500);\n");
+    assertThat(locator).not().isEnabled();
+  }
+
+  @Test
+  void isEnabledWithNotAndEnabledFalse() {
+    page.setContent("<button>Text</button>");
+    Locator locator = page.locator("button");
+    assertThat(locator).not().isEnabled(new LocatorAssertions.IsEnabledOptions().setEnabled(false));
   }
 
   @Test
