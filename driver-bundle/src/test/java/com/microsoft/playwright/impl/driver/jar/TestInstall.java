@@ -77,11 +77,9 @@ public class TestInstall {
     env.put("PLAYWRIGHT_BROWSERS_PATH", tmpDir.toString());
     env.put("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD", "false");
 
-    for (int i = 0; i < 2; i++){
-      RuntimeException exception = assertThrows(RuntimeException.class, () -> Driver.ensureDriverInstalled(env, true));
-      String message = exception.getMessage();
-      assertTrue(message.contains("Failed to create driver"), message);
-    }
+    RuntimeException exception = assertThrows(RuntimeException.class, () -> Driver.createAndInstall(env, true));
+    String message = exception.getMessage();
+    assertTrue(message.contains("Failed to create driver"), message);
   }
 
   @Test
@@ -116,7 +114,7 @@ public class TestInstall {
     RuntimeException thrown =
       assertThrows(
         RuntimeException.class,
-        () -> Driver.ensureDriverInstalled(Collections.emptyMap(), false));
+        () -> Driver.createAndInstall(Collections.emptyMap(), false));
     assertEquals("Failed to create driver", thrown.getMessage());
   }
 
