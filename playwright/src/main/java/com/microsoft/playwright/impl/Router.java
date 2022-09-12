@@ -42,7 +42,7 @@ class Router {
       handler.accept(route);
     }
 
-    boolean beforeCall() {
+    boolean decrementRemainingCallCount() {
       if (times == null) {
         return false;
       }
@@ -73,7 +73,7 @@ class Router {
       if (!info.matcher.test(route.request().url())) {
         continue;
       }
-      if (info.beforeCall()) {
+      if (info.decrementRemainingCallCount()) {
         it.remove();
       }
       result = HandleResult.FoundMatchingHandler;
