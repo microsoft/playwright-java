@@ -38,19 +38,16 @@ class Router {
       this.times = times;
     }
 
-    boolean handle(RouteImpl route) {
-      if (!matcher.test(route.request().url())) {
-        return false;
-      }
-      if (times != null) {
-        --times;
-      }
+    void handle(RouteImpl route) {
       handler.accept(route);
-      return true;
     }
 
-    boolean isDone() {
-      return times != null && times <= 0;
+    boolean decrementRemainingCallCount() {
+      if (times == null) {
+        return false;
+      }
+      --times;
+      return times <= 0;
     }
   }
 
@@ -73,14 +70,16 @@ class Router {
     HandleResult result = HandleResult.NoMatchingHandler;
     for (Iterator<RouteInfo> it = routes.iterator(); it.hasNext();) {
       RouteInfo info = it.next();
-      if (info.handle(route)) {
-        result = HandleResult.FoundMatchingHandler;
-        if (info.isDone()) {
-          it.remove();
-        }
-        if (route.isHandled()) {
-          break;
-        }
+      if (!info.matcher.test(route.request().url())) {
+        continue;
+      }
+      if (info.decrementRemainingCallCount()) {
+        it.remove();
+      }
+      result = HandleResult.FoundMatchingHandler;
+      info.handle(route);
+      if (route.isHandled()) {
+        break;
       }
     }
     return result;
