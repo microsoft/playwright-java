@@ -156,12 +156,17 @@ public interface LocatorAssertions {
      * Time to retry the assertion for.
      */
     public Double timeout;
+    public Boolean visible;
 
     /**
      * Time to retry the assertion for.
      */
     public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
+      return this;
+    }
+    public IsVisibleOptions setVisible(boolean visible) {
+      this.visible = visible;
       return this;
     }
   }

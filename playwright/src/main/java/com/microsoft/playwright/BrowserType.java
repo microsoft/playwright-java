@@ -1045,6 +1045,11 @@ public interface BrowserType {
    * <p> The default browser context is accessible via {@link Browser#contexts Browser.contexts()}.
    *
    * <p> <strong>NOTE:</strong> Connecting over the Chrome DevTools Protocol is only supported for Chromium-based browsers.
+   * <pre>{@code
+   * Browser browser = playwright.chromium().connectOverCDP("http://localhost:9222");
+   * BrowserContext defaultContext = browser.contexts().get(0);
+   * Page page = defaultContext.pages().get(0);
+   * }</pre>
    *
    * @param endpointURL A CDP websocket endpoint or http url to connect to. For example {@code http://localhost:9222/} or
    * {@code ws://127.0.0.1:9222/devtools/browser/387adf4c-243f-4051-a181-46798f4a46f4}.
@@ -1058,6 +1063,11 @@ public interface BrowserType {
    * <p> The default browser context is accessible via {@link Browser#contexts Browser.contexts()}.
    *
    * <p> <strong>NOTE:</strong> Connecting over the Chrome DevTools Protocol is only supported for Chromium-based browsers.
+   * <pre>{@code
+   * Browser browser = playwright.chromium().connectOverCDP("http://localhost:9222");
+   * BrowserContext defaultContext = browser.contexts().get(0);
+   * Page page = defaultContext.pages().get(0);
+   * }</pre>
    *
    * @param endpointURL A CDP websocket endpoint or http url to connect to. For example {@code http://localhost:9222/} or
    * {@code ws://127.0.0.1:9222/devtools/browser/387adf4c-243f-4051-a181-46798f4a46f4}.

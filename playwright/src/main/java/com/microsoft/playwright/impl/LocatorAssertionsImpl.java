@@ -339,7 +339,9 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
 
   @Override
   public void isVisible(IsVisibleOptions options) {
-    expectTrue("to.be.visible", "Locator expected to be visible", convertType(options, FrameExpectOptions.class));
+    FrameExpectOptions frameOptions = convertType(options, FrameExpectOptions.class);
+    boolean visible = options == null || options.visible == null || options.visible == true;
+    expectTrue(visible ? "to.be.visible" : "to.be.hidden", "Locator expected to be visible", frameOptions);
   }
 
   private void expectTrue(String expression, String message, FrameExpectOptions options) {
