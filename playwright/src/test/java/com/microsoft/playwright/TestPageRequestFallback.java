@@ -19,6 +19,7 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.Test;
 
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -127,13 +128,16 @@ public class TestPageRequestFallback extends TestBase {
 
   @Test
   void shouldChainOnce() {
-    page.route("**/empty.html", route -> {
+    boolean didFulfill[] = {false};
+    page.route("**/title.html", route -> {
       route.fulfill(new Route.FulfillOptions().setStatus(200).setBody("fulfilled one"));
+      didFulfill[0] = true;
     }, new Page.RouteOptions().setTimes(1));
-    page.route("**/empty.html", route -> {
+    page.route("**/title.html", route -> {
       route.fallback();
     }, new Page.RouteOptions().setTimes(1));
-    Response response = page.navigate(server.EMPTY_PAGE);
+    Response response = page.navigate(server.PREFIX + "/title.html");
+    assertTrue(didFulfill[0]);
     assertEquals("fulfilled one", response.text());
   }
 
