@@ -110,6 +110,12 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
     if (options.ignoreHTTPSErrors != null) {
       params.addProperty("ignoreHTTPSErrors", options.ignoreHTTPSErrors);
     }
+    if (options.maxRedirects != null) {
+      if (options.maxRedirects < 0) {
+        throw new PlaywrightException("'maxRedirects' should be greater than or equal to '0'");
+      }
+      params.addProperty("maxRedirects", options.maxRedirects);
+    }
     JsonObject json = sendMessage("fetch", params).getAsJsonObject();
     return new APIResponseImpl(this, json.getAsJsonObject("response"));
   }

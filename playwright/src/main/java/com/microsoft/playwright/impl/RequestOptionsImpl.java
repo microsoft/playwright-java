@@ -32,6 +32,7 @@ public class RequestOptionsImpl implements RequestOptions {
   Boolean failOnStatusCode;
   Boolean ignoreHTTPSErrors;
   Double timeout;
+  Integer maxRedirects;
 
   @Override
   public RequestOptions setHeader(String name, String value) {
@@ -116,6 +117,12 @@ public class RequestOptionsImpl implements RequestOptions {
   @Override
   public RequestOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors) {
     this.ignoreHTTPSErrors = ignoreHTTPSErrors;
+    return this;
+  }
+
+  @Override
+  public RequestOptions setMaxRedirects(int maxRedirects) {
+    this.maxRedirects = maxRedirects;
     return this;
   }
 }

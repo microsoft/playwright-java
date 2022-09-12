@@ -116,6 +116,13 @@ public interface RequestOptions {
    */
   RequestOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors);
   /**
+   *
+   *
+   * @param maxRedirects Maximum number of request redirects that will be followed automatically. An error will be thrown if the number is
+   * exceeded. Defaults to {@code 20}. Pass {@code 0} to not follow redirects.
+   */
+  RequestOptions setMaxRedirects(int maxRedirects);
+  /**
    * Changes the request method (e.g. <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT">PUT</a> or <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST">POST</a>).
    *

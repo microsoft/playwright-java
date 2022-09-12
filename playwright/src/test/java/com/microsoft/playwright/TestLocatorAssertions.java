@@ -984,6 +984,47 @@ public class TestLocatorAssertions extends TestBase {
   }
 
   @Test
+  void isVisibleWithTrue() {
+    page.setContent("<button>hello</button>");
+    Locator locator = page.locator("button");
+    assertThat(locator).isVisible(new LocatorAssertions.IsVisibleOptions().setVisible(true));
+  }
+
+  @Test
+  void isVisibleWithFalse() {
+    page.setContent("<button hidden>hello</button>");
+    Locator locator = page.locator("button");
+    assertThat(locator).isVisible(new LocatorAssertions.IsVisibleOptions().setVisible(false));
+  }
+
+  @Test
+  void isVisibleWithNotAndFalse() {
+    page.setContent("<button>hello</button>");
+    Locator locator = page.locator("button");
+    assertThat(locator).not().isVisible(new LocatorAssertions.IsVisibleOptions().setVisible(false));
+  }
+
+  @Test
+  void isVisibleEventually() {
+    page.setContent("<div></div>");
+    Locator locator = page.locator("span");
+    page.evalOnSelector("div", "div => setTimeout(() => {\n" +
+      "      div.innerHTML = '<span>Hello</span>';\n" +
+      "    }, 10);");
+    assertThat(locator).isVisible();
+  }
+
+  @Test
+  void isVisibleEventuallyWithNot() {
+    page.setContent("<div><span>Hello</span></div>");
+    Locator locator = page.locator("span");
+    page.evalOnSelector("span", "span => setTimeout(() => {\n" +
+      "      span.textContent = '';\n" +
+      "    }, 10);");
+    assertThat(locator).not().isVisible();
+  }
+
+  @Test
   void locatorCountShouldWorkWithDeletedMapInMainWorld() {
     page.evaluate("Map = 1");
     page.locator("#searchResultTableDiv .x-grid3-row").count();
