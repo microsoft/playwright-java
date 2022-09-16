@@ -47,6 +47,14 @@ To run Playwright simply add following dependency to your Maven project:
 </dependency>
 ```
 
+To run Playwright using Gradle add following dependency to your build.gradle file:
+
+```json lines
+dependencies {
+implementation group: 'com.microsoft.playwright', name: 'playwright', version: '1.25.0'
+}
+```
+
 #### Is Playwright thread-safe?
 
 No, Playwright is not thread safe, i.e. all its methods as well as methods on all objects created by it (such as BrowserContext, Browser, Page etc.) are expected to be called on the same thread where Playwright object was created or proper synchronization should be implemented to ensure only one thread calls Playwright methods at any given time. Having said that it's okay to create multiple Playwright instances each on its own thread.
