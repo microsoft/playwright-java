@@ -49,9 +49,9 @@ To run Playwright simply add following dependency to your Maven project:
 
 To run Playwright using Gradle add following dependency to your build.gradle file:
 
-```json lines
+```gradle
 dependencies {
-implementation group: 'com.microsoft.playwright', name: 'playwright', version: '1.25.0'
+  implementation group: 'com.microsoft.playwright', name: 'playwright', version: '1.26.0'
 }
 ```
 
