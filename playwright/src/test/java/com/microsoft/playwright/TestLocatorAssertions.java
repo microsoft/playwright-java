@@ -285,28 +285,6 @@ public class TestLocatorAssertions extends TestBase {
   }
 
   @Test
-  void hasAttributeBooleanPass() {
-    page.setContent("<div checked id=node>Text content</div>");
-    Locator locator = page.locator("#node");
-    assertThat(locator).hasAttribute("id");
-    assertThat(locator).hasAttribute("checked");
-    assertThat(locator).not().hasAttribute("open");
-    assertThat(locator).hasAttribute("id", Pattern.compile("n..e"));
-  }
-
-  @Test
-  void hasAttributeBooleanFail() {
-    page.setContent("<div checked id=node>Text content</div>");
-    Locator locator = page.locator("#node");
-    AssertionFailedError e = assertThrows(AssertionFailedError.class,
-      () -> assertThat(locator).hasAttribute("disabled", new LocatorAssertions.HasAttributeOptions().setTimeout(100)));
-    assertTrue(e.getMessage().contains("Locator expected to have attribute 'disabled'"), e.getMessage());
-    e = assertThrows(AssertionFailedError.class,
-      () -> assertThat(locator).not().hasAttribute("checked", new LocatorAssertions.HasAttributeOptions().setTimeout(100)));
-    assertTrue(e.getMessage().contains("Locator expected not to have attribute 'checked'"), e.getMessage());
-  }
-
-  @Test
   void hasClassTextPass() {
     page.setContent("<div class=\"foo bar baz\"></div>");
     Locator locator = page.locator("div");

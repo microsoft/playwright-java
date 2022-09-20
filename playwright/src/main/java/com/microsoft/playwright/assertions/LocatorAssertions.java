@@ -795,7 +795,7 @@ public interface LocatorAssertions {
    */
   void containsText(Pattern[] expected, ContainsTextOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with given attribute value.
+   * Ensures the {@code Locator} points to an element with given attribute.
    * <pre>{@code
    * assertThat(page.locator("input")).hasAttribute("type", "text");
    * }</pre>
@@ -807,7 +807,7 @@ public interface LocatorAssertions {
     hasAttribute(name, value, (HasAttributeOptions) null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with given attribute value.
+   * Ensures the {@code Locator} points to an element with given attribute.
    * <pre>{@code
    * assertThat(page.locator("input")).hasAttribute("type", "text");
    * }</pre>
@@ -817,7 +817,7 @@ public interface LocatorAssertions {
    */
   void hasAttribute(String name, String value, HasAttributeOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with given attribute value.
+   * Ensures the {@code Locator} points to an element with given attribute.
    * <pre>{@code
    * assertThat(page.locator("input")).hasAttribute("type", "text");
    * }</pre>
@@ -829,7 +829,7 @@ public interface LocatorAssertions {
     hasAttribute(name, value, (HasAttributeOptions) null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with given attribute value.
+   * Ensures the {@code Locator} points to an element with given attribute.
    * <pre>{@code
    * assertThat(page.locator("input")).hasAttribute("type", "text");
    * }</pre>
@@ -838,28 +838,6 @@ public interface LocatorAssertions {
    * @param value Expected attribute value.
    */
   void hasAttribute(String name, Pattern value, HasAttributeOptions options);
-  /**
-   * Ensures the {@code Locator} points to an element with given attribute. The method will assert attribute presence.
-   * <pre>{@code
-   * assertThat(page.locator("input")).hasAttribute("disabled");
-   * assertThat(page.locator("input")).not().hasAttribute("open");
-   * }</pre>
-   *
-   * @param name Attribute name.
-   */
-  default void hasAttribute(String name) {
-    hasAttribute(name, (HasAttributeOptions) null);
-  }
-  /**
-   * Ensures the {@code Locator} points to an element with given attribute. The method will assert attribute presence.
-   * <pre>{@code
-   * assertThat(page.locator("input")).hasAttribute("disabled");
-   * assertThat(page.locator("input")).not().hasAttribute("open");
-   * }</pre>
-   *
-   * @param name Attribute name.
-   */
-  void hasAttribute(String name, HasAttributeOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.

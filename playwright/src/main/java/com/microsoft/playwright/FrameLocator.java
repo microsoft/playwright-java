@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  * <p> **Strictness**
  *
  * <p> Frame locators are strict. This means that all operations on frame locators will throw if more than one element matches
- * given selector.
+ * a given selector.
  * <pre>{@code
  * // Throws if there are several frames in DOM:
  * page.frame_locator(".result-frame").locator("button").click();
