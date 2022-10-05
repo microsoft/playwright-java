@@ -235,6 +235,66 @@ class LocatorImpl implements Locator {
   }
 
   @Override
+  public Locator getByAltText(String text, GetByAltTextOptions options) {
+    return null;
+  }
+
+  @Override
+  public Locator getByAltText(Pattern text, GetByAltTextOptions options) {
+    return null;
+  }
+
+  @Override
+  public Locator getByLabel(String text, GetByLabelOptions options) {
+    return null;
+  }
+
+  @Override
+  public Locator getByLabel(Pattern text, GetByLabelOptions options) {
+    return null;
+  }
+
+  @Override
+  public Locator getByPlaceholder(String text, GetByPlaceholderOptions options) {
+    return null;
+  }
+
+  @Override
+  public Locator getByPlaceholder(Pattern text, GetByPlaceholderOptions options) {
+    return null;
+  }
+
+  @Override
+  public Locator getByRole(String role, GetByRoleOptions options) {
+    return null;
+  }
+
+  @Override
+  public Locator getByTestId(String testId) {
+    return null;
+  }
+
+  @Override
+  public Locator getByText(String text, GetByTextOptions options) {
+    return null;
+  }
+
+  @Override
+  public Locator getByText(Pattern text, GetByTextOptions options) {
+    return null;
+  }
+
+  @Override
+  public Locator getByTitle(String text, GetByTitleOptions options) {
+    return null;
+  }
+
+  @Override
+  public Locator getByTitle(Pattern text, GetByTitleOptions options) {
+    return null;
+  }
+
+  @Override
   public void highlight() {
     frame.highlightImpl(selector);
   }

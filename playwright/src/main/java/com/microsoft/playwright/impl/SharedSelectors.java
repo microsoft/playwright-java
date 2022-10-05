@@ -61,6 +61,11 @@ public class SharedSelectors extends LoggingSupport implements Selectors {
     });
   }
 
+  @Override
+  public void setTestIdAttribute(String attributeName) {
+
+  }
+
   void addChannel(SelectorsImpl channel) {
     registrations.forEach(r -> channel.registerImpl(r.name, r.script, r.options));
     channels.add(channel);
