@@ -404,7 +404,7 @@ public interface BrowserContext extends AutoCloseable {
    *         "</script>\n" +
    *         "<button onclick=\"onClick()\">Click me</button>\n" +
    *         "<div></div>");
-   *       page.locator("button").click();
+   *       page.getByRole("button").click();
    *     }
    *   }
    * }
@@ -463,7 +463,7 @@ public interface BrowserContext extends AutoCloseable {
    *         "</script>\n" +
    *         "<button onclick=\"onClick()\">Click me</button>\n" +
    *         "<div></div>");
-   *       page.locator("button").click();
+   *       page.getByRole("button").click();
    *     }
    *   }
    * }
@@ -533,7 +533,7 @@ public interface BrowserContext extends AutoCloseable {
    *         "</script>\n" +
    *         "<button onclick=\"onClick()\">Click me</button>\n" +
    *         "<div></div>\n");
-   *       page.locator("button").click();
+   *       page.getByRole("button").click();
    *     }
    *   }
    * }

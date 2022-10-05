@@ -1142,6 +1142,216 @@ public interface Page extends AutoCloseable {
       return this;
     }
   }
+  class GetByAltTextOptions {
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public Boolean exact;
+
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public GetByAltTextOptions setExact(boolean exact) {
+      this.exact = exact;
+      return this;
+    }
+  }
+  class GetByLabelOptions {
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public Boolean exact;
+
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public GetByLabelOptions setExact(boolean exact) {
+      this.exact = exact;
+      return this;
+    }
+  }
+  class GetByPlaceholderOptions {
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public Boolean exact;
+
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public GetByPlaceholderOptions setExact(boolean exact) {
+      this.exact = exact;
+      return this;
+    }
+  }
+  class GetByRoleOptions {
+    /**
+     * An attribute that is usually set by {@code aria-checked} or native {@code <input type=checkbox>} controls. Available values for
+     * checked are {@code true}, {@code false} and {@code "mixed"}.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-checked">{@code aria-checked}</a>.
+     */
+    public Boolean checked;
+    /**
+     * A boolean attribute that is usually set by {@code aria-disabled} or {@code disabled}.
+     *
+     * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
+     * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
+     */
+    public Boolean disabled;
+    /**
+     * A boolean attribute that is usually set by {@code aria-expanded}.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-expanded">{@code aria-expanded}</a>.
+     */
+    public Boolean expanded;
+    /**
+     * A boolean attribute that controls whether hidden elements are matched. By default, only non-hidden elements, as <a
+     * href="https://www.w3.org/TR/wai-aria-1.2/#tree_exclusion">defined by ARIA</a>, are matched by role selector.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-hidden">{@code aria-hidden}</a>.
+     */
+    public Boolean includeHidden;
+    /**
+     * A number attribute that is usually present for roles {@code heading}, {@code listitem}, {@code row}, {@code treeitem}, with default values for
+     * {@code <h1>-<h6>} elements.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-level">{@code aria-level}</a>.
+     */
+    public Integer level;
+    /**
+     * A string attribute that matches <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     *
+     * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     */
+    public Object name;
+    /**
+     * An attribute that is usually set by {@code aria-pressed}. Available values for pressed are {@code true}, {@code false} and {@code "mixed"}.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-pressed">{@code aria-pressed}</a>.
+     */
+    public Boolean pressed;
+    /**
+     * A boolean attribute that is usually set by {@code aria-selected}.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-selected">{@code aria-selected}</a>.
+     */
+    public Boolean selected;
+
+    /**
+     * An attribute that is usually set by {@code aria-checked} or native {@code <input type=checkbox>} controls. Available values for
+     * checked are {@code true}, {@code false} and {@code "mixed"}.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-checked">{@code aria-checked}</a>.
+     */
+    public GetByRoleOptions setChecked(boolean checked) {
+      this.checked = checked;
+      return this;
+    }
+    /**
+     * A boolean attribute that is usually set by {@code aria-disabled} or {@code disabled}.
+     *
+     * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
+     * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
+     */
+    public GetByRoleOptions setDisabled(boolean disabled) {
+      this.disabled = disabled;
+      return this;
+    }
+    /**
+     * A boolean attribute that is usually set by {@code aria-expanded}.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-expanded">{@code aria-expanded}</a>.
+     */
+    public GetByRoleOptions setExpanded(boolean expanded) {
+      this.expanded = expanded;
+      return this;
+    }
+    /**
+     * A boolean attribute that controls whether hidden elements are matched. By default, only non-hidden elements, as <a
+     * href="https://www.w3.org/TR/wai-aria-1.2/#tree_exclusion">defined by ARIA</a>, are matched by role selector.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-hidden">{@code aria-hidden}</a>.
+     */
+    public GetByRoleOptions setIncludeHidden(boolean includeHidden) {
+      this.includeHidden = includeHidden;
+      return this;
+    }
+    /**
+     * A number attribute that is usually present for roles {@code heading}, {@code listitem}, {@code row}, {@code treeitem}, with default values for
+     * {@code <h1>-<h6>} elements.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-level">{@code aria-level}</a>.
+     */
+    public GetByRoleOptions setLevel(int level) {
+      this.level = level;
+      return this;
+    }
+    /**
+     * A string attribute that matches <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     *
+     * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     */
+    public GetByRoleOptions setName(String name) {
+      this.name = name;
+      return this;
+    }
+    /**
+     * A string attribute that matches <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     *
+     * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     */
+    public GetByRoleOptions setName(Pattern name) {
+      this.name = name;
+      return this;
+    }
+    /**
+     * An attribute that is usually set by {@code aria-pressed}. Available values for pressed are {@code true}, {@code false} and {@code "mixed"}.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-pressed">{@code aria-pressed}</a>.
+     */
+    public GetByRoleOptions setPressed(boolean pressed) {
+      this.pressed = pressed;
+      return this;
+    }
+    /**
+     * A boolean attribute that is usually set by {@code aria-selected}.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-selected">{@code aria-selected}</a>.
+     */
+    public GetByRoleOptions setSelected(boolean selected) {
+      this.selected = selected;
+      return this;
+    }
+  }
+  class GetByTextOptions {
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public Boolean exact;
+
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public GetByTextOptions setExact(boolean exact) {
+      this.exact = exact;
+      return this;
+    }
+  }
+  class GetByTitleOptions {
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public Boolean exact;
+
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public GetByTitleOptions setExact(boolean exact) {
+      this.exact = exact;
+      return this;
+    }
+  }
   class GoBackOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
@@ -3576,7 +3786,14 @@ public interface Page extends AutoCloseable {
    */
   void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options);
   /**
-   *
+   * This method drags the source element to the target element. It will first move to the source element, perform a
+   * {@code mousedown}, then move to the target element and perform a {@code mouseup}.
+   * <pre>{@code
+   * page.dragAndDrop("#source", '#target');
+   * // or specify exact positions relative to the top-left corners of the elements:
+   * page.dragAndDrop("#source", '#target', new Page.DragAndDropOptions()
+   *   .setSourcePosition(34, 7).setTargetPosition(10, 20));
+   * }</pre>
    *
    * @param source A selector to search for an element to drag. If there are multiple elements satisfying the selector, the first will be
    * used. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
@@ -3587,7 +3804,14 @@ public interface Page extends AutoCloseable {
     dragAndDrop(source, target, null);
   }
   /**
-   *
+   * This method drags the source element to the target element. It will first move to the source element, perform a
+   * {@code mousedown}, then move to the target element and perform a {@code mouseup}.
+   * <pre>{@code
+   * page.dragAndDrop("#source", '#target');
+   * // or specify exact positions relative to the top-left corners of the elements:
+   * page.dragAndDrop("#source", '#target', new Page.DragAndDropOptions()
+   *   .setSourcePosition(34, 7).setTargetPosition(10, 20));
+   * }</pre>
    *
    * @param source A selector to search for an element to drag. If there are multiple elements satisfying the selector, the first will be
    * used. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
@@ -3683,8 +3907,8 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
   default Object evalOnSelector(String selector, String expression, Object arg) {
@@ -3712,8 +3936,8 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    */
   default Object evalOnSelector(String selector, String expression) {
     return evalOnSelector(selector, expression, null);
@@ -3740,8 +3964,8 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
   Object evalOnSelector(String selector, String expression, Object arg, EvalOnSelectorOptions options);
@@ -3763,8 +3987,8 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    */
   default Object evalOnSelectorAll(String selector, String expression) {
     return evalOnSelectorAll(selector, expression, null);
@@ -3787,8 +4011,8 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
   Object evalOnSelectorAll(String selector, String expression, Object arg);
@@ -3825,8 +4049,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#evaluate Frame.evaluate()}.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    */
   default Object evaluate(String expression) {
     return evaluate(expression, null);
@@ -3864,8 +4088,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#evaluate Frame.evaluate()}.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
   Object evaluate(String expression, Object arg);
@@ -3896,8 +4120,8 @@ public interface Page extends AutoCloseable {
    * resultHandle.dispose();
    * }</pre>
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    */
   default JSHandle evaluateHandle(String expression) {
     return evaluateHandle(expression, null);
@@ -3929,8 +4153,8 @@ public interface Page extends AutoCloseable {
    * resultHandle.dispose();
    * }</pre>
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
   JSHandle evaluateHandle(String expression, Object arg);
@@ -4208,7 +4432,7 @@ public interface Page extends AutoCloseable {
    * that iframe. Following snippet locates element with text "Submit" in the iframe with id {@code my-frame}, like {@code <iframe
    * id="my-frame">}:
    * <pre>{@code
-   * Locator locator = page.frameLocator("#my-iframe").locator("text=Submit");
+   * Locator locator = page.frameLocator("#my-iframe").getByText("Submit");
    * locator.click();
    * }</pre>
    *
@@ -4238,6 +4462,193 @@ public interface Page extends AutoCloseable {
    * @param name Attribute name to get the value for.
    */
   String getAttribute(String selector, String name, GetAttributeOptions options);
+  /**
+   * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByAltText(String text) {
+    return getByAltText(text, null);
+  }
+  /**
+   * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByAltText(String text, GetByAltTextOptions options);
+  /**
+   * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByAltText(Pattern text) {
+    return getByAltText(text, null);
+  }
+  /**
+   * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByAltText(Pattern text, GetByAltTextOptions options);
+  /**
+   * Allows locating input elements by the text of the associated label. For example, this method will find the input by
+   * label text Password in the following DOM:
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByLabel(String text) {
+    return getByLabel(text, null);
+  }
+  /**
+   * Allows locating input elements by the text of the associated label. For example, this method will find the input by
+   * label text Password in the following DOM:
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByLabel(String text, GetByLabelOptions options);
+  /**
+   * Allows locating input elements by the text of the associated label. For example, this method will find the input by
+   * label text Password in the following DOM:
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByLabel(Pattern text) {
+    return getByLabel(text, null);
+  }
+  /**
+   * Allows locating input elements by the text of the associated label. For example, this method will find the input by
+   * label text Password in the following DOM:
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByLabel(Pattern text, GetByLabelOptions options);
+  /**
+   * Allows locating input elements by the placeholder text. For example, this method will find the input by placeholder
+   * "Country":
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByPlaceholder(String text) {
+    return getByPlaceholder(text, null);
+  }
+  /**
+   * Allows locating input elements by the placeholder text. For example, this method will find the input by placeholder
+   * "Country":
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByPlaceholder(String text, GetByPlaceholderOptions options);
+  /**
+   * Allows locating input elements by the placeholder text. For example, this method will find the input by placeholder
+   * "Country":
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByPlaceholder(Pattern text) {
+    return getByPlaceholder(text, null);
+  }
+  /**
+   * Allows locating input elements by the placeholder text. For example, this method will find the input by placeholder
+   * "Country":
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByPlaceholder(Pattern text, GetByPlaceholderOptions options);
+  /**
+   * Allows locating elements by their <a href="https://www.w3.org/TR/wai-aria-1.2/#roles">ARIA role</a>, <a
+   * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a
+   * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>. Note that role selector **does not
+   * replace** accessibility audits and conformance tests, but rather gives early feedback about the ARIA guidelines.
+   *
+   * <p> Note that many html elements have an implicitly <a
+   * href="https://w3c.github.io/html-aam/#html-element-role-mappings">defined role</a> that is recognized by the role
+   * selector. You can find all the <a href="https://www.w3.org/TR/wai-aria-1.2/#role_definitions">supported roles here</a>.
+   * ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code aria-*}
+   * attributes to default values.
+   *
+   * @param role Required aria role.
+   */
+  default Locator getByRole(String role) {
+    return getByRole(role, null);
+  }
+  /**
+   * Allows locating elements by their <a href="https://www.w3.org/TR/wai-aria-1.2/#roles">ARIA role</a>, <a
+   * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a
+   * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>. Note that role selector **does not
+   * replace** accessibility audits and conformance tests, but rather gives early feedback about the ARIA guidelines.
+   *
+   * <p> Note that many html elements have an implicitly <a
+   * href="https://w3c.github.io/html-aam/#html-element-role-mappings">defined role</a> that is recognized by the role
+   * selector. You can find all the <a href="https://www.w3.org/TR/wai-aria-1.2/#role_definitions">supported roles here</a>.
+   * ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code aria-*}
+   * attributes to default values.
+   *
+   * @param role Required aria role.
+   */
+  Locator getByRole(String role, GetByRoleOptions options);
+  /**
+   * Locate element by the test id. By default, the {@code data-testid} attribute is used as a test id. Use {@link
+   * Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
+   *
+   * @param testId Id to locate the element by.
+   */
+  Locator getByTestId(String testId);
+  /**
+   * Allows locating elements that contain given text.
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByText(String text) {
+    return getByText(text, null);
+  }
+  /**
+   * Allows locating elements that contain given text.
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByText(String text, GetByTextOptions options);
+  /**
+   * Allows locating elements that contain given text.
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByText(Pattern text) {
+    return getByText(text, null);
+  }
+  /**
+   * Allows locating elements that contain given text.
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByText(Pattern text, GetByTextOptions options);
+  /**
+   * Allows locating elements by their title. For example, this method will find the button by its title "Submit":
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByTitle(String text) {
+    return getByTitle(text, null);
+  }
+  /**
+   * Allows locating elements by their title. For example, this method will find the button by its title "Submit":
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByTitle(String text, GetByTitleOptions options);
+  /**
+   * Allows locating elements by their title. For example, this method will find the button by its title "Submit":
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByTitle(Pattern text) {
+    return getByTitle(text, null);
+  }
+  /**
+   * Allows locating elements by their title. For example, this method will find the button by its title "Submit":
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByTitle(Pattern text, GetByTitleOptions options);
   /**
    * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
    * last redirect. If can not go back, returns {@code null}.
@@ -4540,13 +4951,11 @@ public interface Page extends AutoCloseable {
   boolean isVisible(String selector, IsVisibleOptions options);
   Keyboard keyboard();
   /**
-   * The method returns an element locator that can be used to perform actions on the page. Locator is resolved to the
-   * element immediately before performing an action, so a series of actions on the same locator can in fact be performed on
-   * different DOM elements. That would happen if the DOM structure between those actions has changed.
+   * The method returns an element locator that can be used to perform actions on this page / frame. Locator is resolved to
+   * the element immediately before performing an action, so a series of actions on the same locator can in fact be performed
+   * on different DOM elements. That would happen if the DOM structure between those actions has changed.
    *
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
-   *
-   * <p> Shortcut for main frame's {@link Frame#locator Frame.locator()}.
    *
    * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
    * selectors</a> for more details.
@@ -4555,13 +4964,11 @@ public interface Page extends AutoCloseable {
     return locator(selector, null);
   }
   /**
-   * The method returns an element locator that can be used to perform actions on the page. Locator is resolved to the
-   * element immediately before performing an action, so a series of actions on the same locator can in fact be performed on
-   * different DOM elements. That would happen if the DOM structure between those actions has changed.
+   * The method returns an element locator that can be used to perform actions on this page / frame. Locator is resolved to
+   * the element immediately before performing an action, so a series of actions on the same locator can in fact be performed
+   * on different DOM elements. That would happen if the DOM structure between those actions has changed.
    *
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
-   *
-   * <p> Shortcut for main frame's {@link Frame#locator Frame.locator()}.
    *
    * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
    * selectors</a> for more details.
@@ -6106,8 +6513,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#waitForFunction Frame.waitForFunction()}.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
   default JSHandle waitForFunction(String expression, Object arg) {
@@ -6142,8 +6549,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#waitForFunction Frame.waitForFunction()}.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    */
   default JSHandle waitForFunction(String expression) {
     return waitForFunction(expression, null);
@@ -6177,8 +6584,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#waitForFunction Frame.waitForFunction()}.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
   JSHandle waitForFunction(String expression, Object arg, WaitForFunctionOptions options);
@@ -6188,12 +6595,12 @@ public interface Page extends AutoCloseable {
    * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been committed
    * when this method is called. If current document has already reached the required state, resolves immediately.
    * <pre>{@code
-   * page.click("button"); // Click triggers navigation.
+   * page.getByRole("button").click(); // Click triggers navigation.
    * page.waitForLoadState(); // The promise resolves after "load" event.
    * }</pre>
    * <pre>{@code
    * Page popup = page.waitForPopup(() -> {
-   *   page.click("button"); // Click triggers a popup.
+   *   page.getByRole("button").click(); // Click triggers a popup.
    * });
    * popup.waitForLoadState(LoadState.DOMCONTENTLOADED);
    * System.out.println(popup.title()); // Popup is ready to use.
@@ -6218,12 +6625,12 @@ public interface Page extends AutoCloseable {
    * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been committed
    * when this method is called. If current document has already reached the required state, resolves immediately.
    * <pre>{@code
-   * page.click("button"); // Click triggers navigation.
+   * page.getByRole("button").click(); // Click triggers navigation.
    * page.waitForLoadState(); // The promise resolves after "load" event.
    * }</pre>
    * <pre>{@code
    * Page popup = page.waitForPopup(() -> {
-   *   page.click("button"); // Click triggers a popup.
+   *   page.getByRole("button").click(); // Click triggers a popup.
    * });
    * popup.waitForLoadState(LoadState.DOMCONTENTLOADED);
    * System.out.println(popup.title()); // Popup is ready to use.
@@ -6240,12 +6647,12 @@ public interface Page extends AutoCloseable {
    * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been committed
    * when this method is called. If current document has already reached the required state, resolves immediately.
    * <pre>{@code
-   * page.click("button"); // Click triggers navigation.
+   * page.getByRole("button").click(); // Click triggers navigation.
    * page.waitForLoadState(); // The promise resolves after "load" event.
    * }</pre>
    * <pre>{@code
    * Page popup = page.waitForPopup(() -> {
-   *   page.click("button"); // Click triggers a popup.
+   *   page.getByRole("button").click(); // Click triggers a popup.
    * });
    * popup.waitForLoadState(LoadState.DOMCONTENTLOADED);
    * System.out.println(popup.title()); // Popup is ready to use.

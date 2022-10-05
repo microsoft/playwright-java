@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  *   @Test
  *   void statusBecomesSubmitted() {
  *     ...
- *     page.locator("#submit-button").click();
+ *     page.getByRole("button").click();
  *     assertThat(page.locator(".status")).hasText("Submitted");
  *   }
  * }
@@ -369,7 +369,7 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to a checked input.
    * <pre>{@code
-   * assertThat(page.locator(".subscribe")).isChecked();
+   * assertThat(page.getByLabel("Subscribe to newsletter")).isChecked();
    * }</pre>
    */
   default void isChecked() {
@@ -378,7 +378,7 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to a checked input.
    * <pre>{@code
-   * assertThat(page.locator(".subscribe")).isChecked();
+   * assertThat(page.getByLabel("Subscribe to newsletter")).isChecked();
    * }</pre>
    */
   void isChecked(IsCheckedOptions options);
@@ -409,7 +409,7 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an editable element.
    * <pre>{@code
-   * assertThat(page.locator("input")).isEditable();
+   * assertThat(page.getByRole("textbox")).isEditable();
    * }</pre>
    */
   default void isEditable() {
@@ -418,7 +418,7 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an editable element.
    * <pre>{@code
-   * assertThat(page.locator("input")).isEditable();
+   * assertThat(page.getByRole("textbox")).isEditable();
    * }</pre>
    */
   void isEditable(IsEditableOptions options);
@@ -457,7 +457,7 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to a focused DOM node.
    * <pre>{@code
-   * assertThat(page.locator("input")).isFocused();
+   * assertThat(page.getByRole("textbox")).isFocused();
    * }</pre>
    */
   default void isFocused() {
@@ -466,7 +466,7 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to a focused DOM node.
    * <pre>{@code
-   * assertThat(page.locator("input")).isFocused();
+   * assertThat(page.getByRole("textbox")).isFocused();
    * }</pre>
    */
   void isFocused(IsFocusedOptions options);
@@ -489,7 +489,7 @@ public interface LocatorAssertions {
    */
   void isHidden(IsHiddenOptions options);
   /**
-   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/api/actionability#visible">attached</a>
+   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/api/actionability#attached">attached</a>
    * and <a href="https://playwright.dev/java/docs/api/actionability#visible">visible</a> DOM node.
    * <pre>{@code
    * assertThat(page.locator(".my-element")).isVisible();
@@ -499,7 +499,7 @@ public interface LocatorAssertions {
     isVisible(null);
   }
   /**
-   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/api/actionability#visible">attached</a>
+   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/api/actionability#attached">attached</a>
    * and <a href="https://playwright.dev/java/docs/api/actionability#visible">visible</a> DOM node.
    * <pre>{@code
    * assertThat(page.locator(".my-element")).isVisible();
@@ -997,7 +997,7 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} resolves to an element with the given computed CSS style.
    * <pre>{@code
-   * assertThat(page.locator("button")).hasCSS("display", "flex");
+   * assertThat(page.getByRole("button")).hasCSS("display", "flex");
    * }</pre>
    *
    * @param name CSS property name.
@@ -1009,7 +1009,7 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} resolves to an element with the given computed CSS style.
    * <pre>{@code
-   * assertThat(page.locator("button")).hasCSS("display", "flex");
+   * assertThat(page.getByRole("button")).hasCSS("display", "flex");
    * }</pre>
    *
    * @param name CSS property name.
@@ -1019,7 +1019,7 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} resolves to an element with the given computed CSS style.
    * <pre>{@code
-   * assertThat(page.locator("button")).hasCSS("display", "flex");
+   * assertThat(page.getByRole("button")).hasCSS("display", "flex");
    * }</pre>
    *
    * @param name CSS property name.
@@ -1031,7 +1031,7 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} resolves to an element with the given computed CSS style.
    * <pre>{@code
-   * assertThat(page.locator("button")).hasCSS("display", "flex");
+   * assertThat(page.getByRole("button")).hasCSS("display", "flex");
    * }</pre>
    *
    * @param name CSS property name.
@@ -1041,7 +1041,7 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given DOM Node ID.
    * <pre>{@code
-   * assertThat(page.locator("input")).hasId("lastname");
+   * assertThat(page.getByRole("textbox")).hasId("lastname");
    * }</pre>
    *
    * @param id Element id.
@@ -1052,7 +1052,7 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given DOM Node ID.
    * <pre>{@code
-   * assertThat(page.locator("input")).hasId("lastname");
+   * assertThat(page.getByRole("textbox")).hasId("lastname");
    * }</pre>
    *
    * @param id Element id.
@@ -1061,7 +1061,7 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given DOM Node ID.
    * <pre>{@code
-   * assertThat(page.locator("input")).hasId("lastname");
+   * assertThat(page.getByRole("textbox")).hasId("lastname");
    * }</pre>
    *
    * @param id Element id.
@@ -1072,7 +1072,7 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given DOM Node ID.
    * <pre>{@code
-   * assertThat(page.locator("input")).hasId("lastname");
+   * assertThat(page.getByRole("textbox")).hasId("lastname");
    * }</pre>
    *
    * @param id Element id.

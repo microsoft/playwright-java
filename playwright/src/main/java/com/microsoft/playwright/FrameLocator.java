@@ -33,10 +33,10 @@ import java.util.regex.Pattern;
  * a given selector.
  * <pre>{@code
  * // Throws if there are several frames in DOM:
- * page.frame_locator(".result-frame").locator("button").click();
+ * page.frame_locator(".result-frame").getByRole("button").click();
  *
  * // Works because we explicitly tell locator to pick the first frame:
- * page.frame_locator(".result-frame").first().locator("button").click();
+ * page.frame_locator(".result-frame").first().getByRole("button").click();
  * }</pre>
  *
  * <p> **Converting Locator to FrameLocator**
@@ -48,6 +48,216 @@ import java.util.regex.Pattern;
  * }</pre>
  */
 public interface FrameLocator {
+  class GetByAltTextOptions {
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public Boolean exact;
+
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public GetByAltTextOptions setExact(boolean exact) {
+      this.exact = exact;
+      return this;
+    }
+  }
+  class GetByLabelOptions {
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public Boolean exact;
+
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public GetByLabelOptions setExact(boolean exact) {
+      this.exact = exact;
+      return this;
+    }
+  }
+  class GetByPlaceholderOptions {
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public Boolean exact;
+
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public GetByPlaceholderOptions setExact(boolean exact) {
+      this.exact = exact;
+      return this;
+    }
+  }
+  class GetByRoleOptions {
+    /**
+     * An attribute that is usually set by {@code aria-checked} or native {@code <input type=checkbox>} controls. Available values for
+     * checked are {@code true}, {@code false} and {@code "mixed"}.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-checked">{@code aria-checked}</a>.
+     */
+    public Boolean checked;
+    /**
+     * A boolean attribute that is usually set by {@code aria-disabled} or {@code disabled}.
+     *
+     * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
+     * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
+     */
+    public Boolean disabled;
+    /**
+     * A boolean attribute that is usually set by {@code aria-expanded}.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-expanded">{@code aria-expanded}</a>.
+     */
+    public Boolean expanded;
+    /**
+     * A boolean attribute that controls whether hidden elements are matched. By default, only non-hidden elements, as <a
+     * href="https://www.w3.org/TR/wai-aria-1.2/#tree_exclusion">defined by ARIA</a>, are matched by role selector.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-hidden">{@code aria-hidden}</a>.
+     */
+    public Boolean includeHidden;
+    /**
+     * A number attribute that is usually present for roles {@code heading}, {@code listitem}, {@code row}, {@code treeitem}, with default values for
+     * {@code <h1>-<h6>} elements.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-level">{@code aria-level}</a>.
+     */
+    public Integer level;
+    /**
+     * A string attribute that matches <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     *
+     * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     */
+    public Object name;
+    /**
+     * An attribute that is usually set by {@code aria-pressed}. Available values for pressed are {@code true}, {@code false} and {@code "mixed"}.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-pressed">{@code aria-pressed}</a>.
+     */
+    public Boolean pressed;
+    /**
+     * A boolean attribute that is usually set by {@code aria-selected}.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-selected">{@code aria-selected}</a>.
+     */
+    public Boolean selected;
+
+    /**
+     * An attribute that is usually set by {@code aria-checked} or native {@code <input type=checkbox>} controls. Available values for
+     * checked are {@code true}, {@code false} and {@code "mixed"}.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-checked">{@code aria-checked}</a>.
+     */
+    public GetByRoleOptions setChecked(boolean checked) {
+      this.checked = checked;
+      return this;
+    }
+    /**
+     * A boolean attribute that is usually set by {@code aria-disabled} or {@code disabled}.
+     *
+     * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
+     * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
+     */
+    public GetByRoleOptions setDisabled(boolean disabled) {
+      this.disabled = disabled;
+      return this;
+    }
+    /**
+     * A boolean attribute that is usually set by {@code aria-expanded}.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-expanded">{@code aria-expanded}</a>.
+     */
+    public GetByRoleOptions setExpanded(boolean expanded) {
+      this.expanded = expanded;
+      return this;
+    }
+    /**
+     * A boolean attribute that controls whether hidden elements are matched. By default, only non-hidden elements, as <a
+     * href="https://www.w3.org/TR/wai-aria-1.2/#tree_exclusion">defined by ARIA</a>, are matched by role selector.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-hidden">{@code aria-hidden}</a>.
+     */
+    public GetByRoleOptions setIncludeHidden(boolean includeHidden) {
+      this.includeHidden = includeHidden;
+      return this;
+    }
+    /**
+     * A number attribute that is usually present for roles {@code heading}, {@code listitem}, {@code row}, {@code treeitem}, with default values for
+     * {@code <h1>-<h6>} elements.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-level">{@code aria-level}</a>.
+     */
+    public GetByRoleOptions setLevel(int level) {
+      this.level = level;
+      return this;
+    }
+    /**
+     * A string attribute that matches <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     *
+     * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     */
+    public GetByRoleOptions setName(String name) {
+      this.name = name;
+      return this;
+    }
+    /**
+     * A string attribute that matches <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     *
+     * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     */
+    public GetByRoleOptions setName(Pattern name) {
+      this.name = name;
+      return this;
+    }
+    /**
+     * An attribute that is usually set by {@code aria-pressed}. Available values for pressed are {@code true}, {@code false} and {@code "mixed"}.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-pressed">{@code aria-pressed}</a>.
+     */
+    public GetByRoleOptions setPressed(boolean pressed) {
+      this.pressed = pressed;
+      return this;
+    }
+    /**
+     * A boolean attribute that is usually set by {@code aria-selected}.
+     *
+     * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-selected">{@code aria-selected}</a>.
+     */
+    public GetByRoleOptions setSelected(boolean selected) {
+      this.selected = selected;
+      return this;
+    }
+  }
+  class GetByTextOptions {
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public Boolean exact;
+
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public GetByTextOptions setExact(boolean exact) {
+      this.exact = exact;
+      return this;
+    }
+  }
+  class GetByTitleOptions {
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public Boolean exact;
+
+    /**
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     */
+    public GetByTitleOptions setExact(boolean exact) {
+      this.exact = exact;
+      return this;
+    }
+  }
   class LocatorOptions {
     /**
      * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
@@ -105,11 +315,201 @@ public interface FrameLocator {
    */
   FrameLocator frameLocator(String selector);
   /**
+   * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByAltText(String text) {
+    return getByAltText(text, null);
+  }
+  /**
+   * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByAltText(String text, GetByAltTextOptions options);
+  /**
+   * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByAltText(Pattern text) {
+    return getByAltText(text, null);
+  }
+  /**
+   * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByAltText(Pattern text, GetByAltTextOptions options);
+  /**
+   * Allows locating input elements by the text of the associated label. For example, this method will find the input by
+   * label text Password in the following DOM:
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByLabel(String text) {
+    return getByLabel(text, null);
+  }
+  /**
+   * Allows locating input elements by the text of the associated label. For example, this method will find the input by
+   * label text Password in the following DOM:
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByLabel(String text, GetByLabelOptions options);
+  /**
+   * Allows locating input elements by the text of the associated label. For example, this method will find the input by
+   * label text Password in the following DOM:
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByLabel(Pattern text) {
+    return getByLabel(text, null);
+  }
+  /**
+   * Allows locating input elements by the text of the associated label. For example, this method will find the input by
+   * label text Password in the following DOM:
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByLabel(Pattern text, GetByLabelOptions options);
+  /**
+   * Allows locating input elements by the placeholder text. For example, this method will find the input by placeholder
+   * "Country":
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByPlaceholder(String text) {
+    return getByPlaceholder(text, null);
+  }
+  /**
+   * Allows locating input elements by the placeholder text. For example, this method will find the input by placeholder
+   * "Country":
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByPlaceholder(String text, GetByPlaceholderOptions options);
+  /**
+   * Allows locating input elements by the placeholder text. For example, this method will find the input by placeholder
+   * "Country":
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByPlaceholder(Pattern text) {
+    return getByPlaceholder(text, null);
+  }
+  /**
+   * Allows locating input elements by the placeholder text. For example, this method will find the input by placeholder
+   * "Country":
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByPlaceholder(Pattern text, GetByPlaceholderOptions options);
+  /**
+   * Allows locating elements by their <a href="https://www.w3.org/TR/wai-aria-1.2/#roles">ARIA role</a>, <a
+   * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a
+   * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>. Note that role selector **does not
+   * replace** accessibility audits and conformance tests, but rather gives early feedback about the ARIA guidelines.
+   *
+   * <p> Note that many html elements have an implicitly <a
+   * href="https://w3c.github.io/html-aam/#html-element-role-mappings">defined role</a> that is recognized by the role
+   * selector. You can find all the <a href="https://www.w3.org/TR/wai-aria-1.2/#role_definitions">supported roles here</a>.
+   * ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code aria-*}
+   * attributes to default values.
+   *
+   * @param role Required aria role.
+   */
+  default Locator getByRole(String role) {
+    return getByRole(role, null);
+  }
+  /**
+   * Allows locating elements by their <a href="https://www.w3.org/TR/wai-aria-1.2/#roles">ARIA role</a>, <a
+   * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a
+   * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>. Note that role selector **does not
+   * replace** accessibility audits and conformance tests, but rather gives early feedback about the ARIA guidelines.
+   *
+   * <p> Note that many html elements have an implicitly <a
+   * href="https://w3c.github.io/html-aam/#html-element-role-mappings">defined role</a> that is recognized by the role
+   * selector. You can find all the <a href="https://www.w3.org/TR/wai-aria-1.2/#role_definitions">supported roles here</a>.
+   * ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code aria-*}
+   * attributes to default values.
+   *
+   * @param role Required aria role.
+   */
+  Locator getByRole(String role, GetByRoleOptions options);
+  /**
+   * Locate element by the test id. By default, the {@code data-testid} attribute is used as a test id. Use {@link
+   * Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
+   *
+   * @param testId Id to locate the element by.
+   */
+  Locator getByTestId(String testId);
+  /**
+   * Allows locating elements that contain given text.
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByText(String text) {
+    return getByText(text, null);
+  }
+  /**
+   * Allows locating elements that contain given text.
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByText(String text, GetByTextOptions options);
+  /**
+   * Allows locating elements that contain given text.
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByText(Pattern text) {
+    return getByText(text, null);
+  }
+  /**
+   * Allows locating elements that contain given text.
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByText(Pattern text, GetByTextOptions options);
+  /**
+   * Allows locating elements by their title. For example, this method will find the button by its title "Submit":
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByTitle(String text) {
+    return getByTitle(text, null);
+  }
+  /**
+   * Allows locating elements by their title. For example, this method will find the button by its title "Submit":
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByTitle(String text, GetByTitleOptions options);
+  /**
+   * Allows locating elements by their title. For example, this method will find the button by its title "Submit":
+   *
+   * @param text Text to locate the element for.
+   */
+  default Locator getByTitle(Pattern text) {
+    return getByTitle(text, null);
+  }
+  /**
+   * Allows locating elements by their title. For example, this method will find the button by its title "Submit":
+   *
+   * @param text Text to locate the element for.
+   */
+  Locator getByTitle(Pattern text, GetByTitleOptions options);
+  /**
    * Returns locator to the last matching frame.
    */
   FrameLocator last();
   /**
-   * The method finds an element matching the specified selector in the FrameLocator's subtree.
+   * The method finds an element matching the specified selector in the locator's subtree. It also accepts filter options,
+   * similar to {@link Locator#filter Locator.filter()} method.
+   *
+   * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
    * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
    * selectors</a> for more details.
@@ -118,7 +518,10 @@ public interface FrameLocator {
     return locator(selector, null);
   }
   /**
-   * The method finds an element matching the specified selector in the FrameLocator's subtree.
+   * The method finds an element matching the specified selector in the locator's subtree. It also accepts filter options,
+   * similar to {@link Locator#filter Locator.filter()} method.
+   *
+   * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
    * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
    * selectors</a> for more details.

@@ -71,8 +71,8 @@ public interface Worker {
    * Worker#evaluate Worker.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values
    * that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    */
   default Object evaluate(String expression) {
     return evaluate(expression, null);
@@ -88,8 +88,8 @@ public interface Worker {
    * Worker#evaluate Worker.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values
    * that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
   Object evaluate(String expression, Object arg);
@@ -103,8 +103,8 @@ public interface Worker {
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
    * Worker#evaluateHandle Worker.evaluateHandle()} would wait for the promise to resolve and return its value.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    */
   default JSHandle evaluateHandle(String expression) {
     return evaluateHandle(expression, null);
@@ -119,8 +119,8 @@ public interface Worker {
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
    * Worker#evaluateHandle Worker.evaluateHandle()} would wait for the promise to resolve and return its value.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
   JSHandle evaluateHandle(String expression, Object arg);
