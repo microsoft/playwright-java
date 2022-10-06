@@ -1,8 +1,9 @@
 package com.microsoft.playwright.impl;
 
+import com.microsoft.playwright.Locator;
+
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 public class LocatorUtils {
@@ -16,7 +17,7 @@ public class LocatorUtils {
       return "/" + pattern.pattern() + "/" + toJsRegexFlags(pattern);
     }
     if (!(param instanceof String)) {
-      throw new IllegalArgumentException("text parameter must be Pattern or String: " + text);
+      throw new IllegalArgumentException("text parameter must be Pattern or String: " + param);
     }
     String text = (String) param;
     if (exact) {
@@ -24,19 +25,21 @@ public class LocatorUtils {
     }
 
     if (text.contains("\"") || text.contains(">>") || text.startsWith("/")) {
-      return "/" + escapeForRegex(text).replace(/\s+/, '\\s+')}/` + (caseSensitive ? '' : 'i');
+      return "/" + escapeForRegex(text).replaceAll("\\s+", "\\\\s+") + "/" + (caseSensitive ? "" : "i");
     }
     return text;
-
-//    if (typeof text !== 'string')
-//    return String(text);
-//    if (exact)
-//      return '"' + text.replace(/["]/g, '\\"') + '"';
-//    if (text.includes('"') || text.includes('>>') || text[0] === '/')
-//      return `/.*${escapeForRegex(text).replace(/\s+/, '\\s+')}.*/` + (caseSensitive ? '' : 'i');
-//    return text;
   }
   static String escapeForRegex(String text) {
-    return text;
+    return text.replaceAll("[.*+?^>${}()|\\[\\]\\\\]", "\\\\\\\\$0");
+  }
+
+  static String getByTextSelector(String text, Locator.GetByTextOptions options) {
+    boolean exact = options != null && options.exact != null && options.exact;
+    return "text=" + escapeForTextSelector(text, exact);
+  }
+
+  static String getByTextSelector(Pattern text, Locator.GetByTextOptions options) {
+    boolean exact = options != null && options.exact != null && options.exact;
+    return "text=" + escapeForTextSelector(text, exact);
   }
 }

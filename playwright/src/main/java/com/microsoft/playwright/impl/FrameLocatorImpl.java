@@ -21,6 +21,7 @@ import com.microsoft.playwright.Locator;
 
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.LocatorUtils.getByTextSelector;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
 class FrameLocatorImpl implements FrameLocator {
@@ -84,12 +85,12 @@ class FrameLocatorImpl implements FrameLocator {
 
   @Override
   public Locator getByText(String text, GetByTextOptions options) {
-    return null;
+    return locator(getByTextSelector(text, convertType(options, Locator.GetByTextOptions.class)));
   }
 
   @Override
   public Locator getByText(Pattern text, GetByTextOptions options) {
-    return null;
+    return locator(getByTextSelector(text, convertType(options, Locator.GetByTextOptions.class)));
   }
 
   @Override

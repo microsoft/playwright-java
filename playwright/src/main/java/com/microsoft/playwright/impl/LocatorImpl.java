@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.LocatorUtils.getByTextSelector;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
@@ -276,12 +277,12 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator getByText(String text, GetByTextOptions options) {
-    return null;
+    return locator(getByTextSelector(text, options));
   }
 
   @Override
   public Locator getByText(Pattern text, GetByTextOptions options) {
-    return null;
+    return locator(getByTextSelector(text, options));
   }
 
   @Override
