@@ -762,6 +762,77 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public Locator getByAltText(String text, GetByAltTextOptions options) {
+    return withLogging("Page.getAttribute",
+      () -> mainFrame.getByAltText(text, convertType(options, Frame.GetByAltTextOptions.class)));
+  }
+
+  @Override
+  public Locator getByAltText(Pattern text, GetByAltTextOptions options) {
+    return withLogging("Page.getByAltText",
+      () -> mainFrame.getByAltText(text, convertType(options, Frame.GetByAltTextOptions.class)));
+  }
+
+  @Override
+  public Locator getByLabel(String text, GetByLabelOptions options) {
+    return withLogging("Page.getByLabel",
+      () -> mainFrame.getByLabel(text, convertType(options, Frame.GetByLabelOptions.class)));
+  }
+
+  @Override
+  public Locator getByLabel(Pattern text, GetByLabelOptions options) {
+    return withLogging("Page.getByLabel",
+      () -> mainFrame.getByLabel(text, convertType(options, Frame.GetByLabelOptions.class)));
+  }
+
+  @Override
+  public Locator getByPlaceholder(String text, GetByPlaceholderOptions options) {
+    return withLogging("Page.getByPlaceholder",
+      () -> mainFrame.getByPlaceholder(text, convertType(options, Frame.GetByPlaceholderOptions.class)));
+  }
+
+  @Override
+  public Locator getByPlaceholder(Pattern text, GetByPlaceholderOptions options) {
+    return withLogging("Page.getByPlaceholder",
+      () -> mainFrame.getByPlaceholder(text, convertType(options, Frame.GetByPlaceholderOptions.class)));
+  }
+
+  @Override
+  public Locator getByRole(AriaRole role, GetByRoleOptions options) {
+    return withLogging("Page.getByRole",
+      () -> mainFrame.getByRole(role, convertType(options, Frame.GetByRoleOptions.class)));
+  }
+
+  @Override
+  public Locator getByTestId(String testId) {
+    return withLogging("Page.getByTestId", () -> mainFrame.getByTestId(testId));
+  }
+
+  @Override
+  public Locator getByText(String text, GetByTextOptions options) {
+    return withLogging("Page.getByText",
+      () -> mainFrame.getByText(text, convertType(options, Frame.GetByTextOptions.class)));
+  }
+
+  @Override
+  public Locator getByText(Pattern text, GetByTextOptions options) {
+    return withLogging("Page.getByText",
+      () -> mainFrame.getByText(text, convertType(options, Frame.GetByTextOptions.class)));
+  }
+
+  @Override
+  public Locator getByTitle(String text, GetByTitleOptions options) {
+    return withLogging("Page.getByTitle",
+      () -> mainFrame.getByTitle(text, convertType(options, Frame.GetByTitleOptions.class)));
+  }
+
+  @Override
+  public Locator getByTitle(Pattern text, GetByTitleOptions options) {
+    return withLogging("Page.getByTitle",
+      () -> mainFrame.getByTitle(text, convertType(options, Frame.GetByTitleOptions.class)));
+  }
+
+  @Override
   public Response goBack(GoBackOptions options) {
     return withLogging("Page.goBack", () -> goBackImpl(options));
   }

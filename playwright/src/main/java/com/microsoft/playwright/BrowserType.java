@@ -515,7 +515,7 @@ public interface BrowserType {
     public Proxy proxy;
     /**
      * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If {@code attach}
-     * is specified, resources are persistet as separate files and all of these files are archived along with the HAR file.
+     * is specified, resources are persisted as separate files and all of these files are archived along with the HAR file.
      * Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
      */
     public HarContentPolicy recordHarContent;
@@ -861,7 +861,7 @@ public interface BrowserType {
     }
     /**
      * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If {@code attach}
-     * is specified, resources are persistet as separate files and all of these files are archived along with the HAR file.
+     * is specified, resources are persisted as separate files and all of these files are archived along with the HAR file.
      * Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
      */
     public LaunchPersistentContextOptions setRecordHarContent(HarContentPolicy recordHarContent) {

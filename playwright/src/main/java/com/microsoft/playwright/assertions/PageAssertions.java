@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  *   @Test
  *   void navigatesToLoginPage() {
  *     ...
- *     page.locator("#login").click();
+ *     page.getByText("Sign in").click();
  *     assertThat(page).hasURL(Pattern.compile(".*\/login"));
  *   }
  * }

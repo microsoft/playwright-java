@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.microsoft.playwright.impl.LocatorUtils.setTestIdAttributeName;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class SharedSelectors extends LoggingSupport implements Selectors {
@@ -59,6 +60,12 @@ public class SharedSelectors extends LoggingSupport implements Selectors {
       }
       registerImpl(name, new String(buffer, UTF_8), options);
     });
+  }
+
+  @Override
+  public void setTestIdAttribute(String attributeName) {
+    // TODO: set it per playwright insttance
+    setTestIdAttributeName(attributeName);
   }
 
   void addChannel(SelectorsImpl channel) {

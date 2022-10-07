@@ -51,7 +51,7 @@ import java.util.*;
  * <p> With the locator, every time the {@code element} is used, up-to-date DOM element is located in the page using the selector. So
  * in the snippet below, underlying DOM element is going to be located twice.
  * <pre>{@code
- * Locator locator = page.locator("text=Submit");
+ * Locator locator = page.getByText("Submit");
  * locator.hover();
  * locator.click();
  * }</pre>
@@ -1438,8 +1438,8 @@ public interface ElementHandle extends JSHandle {
    *
    * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    */
   default Object evalOnSelector(String selector, String expression) {
     return evalOnSelector(selector, expression, null);
@@ -1464,8 +1464,8 @@ public interface ElementHandle extends JSHandle {
    *
    * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
   Object evalOnSelector(String selector, String expression, Object arg);
@@ -1489,8 +1489,8 @@ public interface ElementHandle extends JSHandle {
    *
    * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    */
   default Object evalOnSelectorAll(String selector, String expression) {
     return evalOnSelectorAll(selector, expression, null);
@@ -1515,8 +1515,8 @@ public interface ElementHandle extends JSHandle {
    *
    * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
-   * @param expression JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted
-   * as a function. Otherwise, evaluated as an expression.
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
   Object evalOnSelectorAll(String selector, String expression, Object arg);

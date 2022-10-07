@@ -287,6 +287,27 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals("/simple.json", request.get().url);
   }
 
+  @Test
+  void getShouldSupportPostData() throws ExecutionException, InterruptedException {
+    Future<Server.Request> request = server.futureRequest("/simple.json");
+    APIResponse response = context.request().get(server.PREFIX + "/simple.json",
+      RequestOptions.create().setData("My request"));
+    assertEquals("GET", request.get().method);
+    assertEquals("My request", new String(request.get().postBody));
+    assertEquals(200, response.status());
+    assertEquals("/simple.json", request.get().url);
+  }
+
+  @Test
+  void headShouldSupportPostData() throws ExecutionException, InterruptedException {
+    Future<Server.Request> request = server.futureRequest("/simple.json");
+    APIResponse response = context.request().head(server.PREFIX + "/simple.json",
+      RequestOptions.create().setData("My request"));
+    assertEquals("HEAD", request.get().method);
+    assertEquals("My request", new String(request.get().postBody));
+    assertEquals(200, response.status());
+    assertEquals("/simple.json", request.get().url);
+  }
 
   @Test
   void shouldAddDefaultHeaders() throws ExecutionException, InterruptedException {

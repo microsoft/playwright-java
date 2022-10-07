@@ -177,5 +177,12 @@ public interface Selectors {
    * @param script Script that evaluates to a selector engine instance. The script is evaluated in the page context.
    */
   void register(String name, Path script, RegisterOptions options);
+  /**
+   * Defines custom attribute name to be used in {@link Page#getByTestId Page.getByTestId()}. {@code data-testid} is used by
+   * default.
+   *
+   * @param attributeName Test id attribute name.
+   */
+  void setTestIdAttribute(String attributeName);
 }
 

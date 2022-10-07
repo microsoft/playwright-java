@@ -22,7 +22,7 @@ import java.nio.file.Path;
 /**
  * {@code FileChooser} objects are dispatched by the page in the {@link Page#onFileChooser Page.onFileChooser()} event.
  * <pre>{@code
- * FileChooser fileChooser = page.waitForFileChooser(() -> page.locator("upload").click());
+ * FileChooser fileChooser = page.waitForFileChooser(() -> page.getByText("Upload").click());
  * fileChooser.setFiles(Paths.get("myfile.pdf"));
  * }</pre>
  */

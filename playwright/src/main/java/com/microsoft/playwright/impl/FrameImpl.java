@@ -31,6 +31,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.LocatorUtils.*;
 import static com.microsoft.playwright.impl.Utils.*;
 import static com.microsoft.playwright.options.WaitUntilState.*;
 import static com.microsoft.playwright.impl.Serialization.*;
@@ -371,6 +372,66 @@ public class FrameImpl extends ChannelOwner implements Frame {
   @Override
   public String getAttribute(String selector, String name, GetAttributeOptions options) {
     return withLogging("Frame.getAttribute", () -> getAttributeImpl(selector, name, options));
+  }
+
+  @Override
+  public Locator getByAltText(String text, GetByAltTextOptions options) {
+    return locator(getByAltTextSelector(text, convertType(options, Locator.GetByAltTextOptions.class)));
+  }
+
+  @Override
+  public Locator getByAltText(Pattern text, GetByAltTextOptions options) {
+    return locator(getByAltTextSelector(text, convertType(options, Locator.GetByAltTextOptions.class)));
+  }
+
+  @Override
+  public Locator getByLabel(String text, GetByLabelOptions options) {
+    return locator(getByLabelSelector(text, convertType(options, Locator.GetByLabelOptions.class)));
+  }
+
+  @Override
+  public Locator getByLabel(Pattern text, GetByLabelOptions options) {
+    return locator(getByLabelSelector(text, convertType(options, Locator.GetByLabelOptions.class)));
+  }
+
+  @Override
+  public Locator getByPlaceholder(String text, GetByPlaceholderOptions options) {
+    return locator(getByPlaceholderSelector(text, convertType(options, Locator.GetByPlaceholderOptions.class)));
+  }
+
+  @Override
+  public Locator getByPlaceholder(Pattern text, GetByPlaceholderOptions options) {
+    return locator(getByPlaceholderSelector(text, convertType(options, Locator.GetByPlaceholderOptions.class)));
+  }
+
+  @Override
+  public Locator getByRole(AriaRole role, GetByRoleOptions options) {
+    return locator(getByRoleSelector(role, convertType(options, Locator.GetByRoleOptions.class)));
+  }
+
+  @Override
+  public Locator getByTestId(String testId) {
+    return locator(getByTestIdSelector(testId));
+  }
+
+  @Override
+  public Locator getByText(String text, GetByTextOptions options) {
+    return locator(getByTextSelector(text, convertType(options, Locator.GetByTextOptions.class)));
+  }
+
+  @Override
+  public Locator getByText(Pattern text, GetByTextOptions options) {
+    return locator(getByTextSelector(text, convertType(options, Locator.GetByTextOptions.class)));
+  }
+
+  @Override
+  public Locator getByTitle(String text, GetByTitleOptions options) {
+    return locator(getByTitleSelector(text, convertType(options, Locator.GetByTitleOptions.class)));
+  }
+
+  @Override
+  public Locator getByTitle(Pattern text, GetByTitleOptions options) {
+    return locator(getByTitleSelector(text, convertType(options, Locator.GetByTitleOptions.class)));
   }
 
   String getAttributeImpl(String selector, String name, GetAttributeOptions options) {
