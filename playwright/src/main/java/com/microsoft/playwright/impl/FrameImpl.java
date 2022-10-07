@@ -31,8 +31,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.LocatorUtils.getByLabelSelector;
-import static com.microsoft.playwright.impl.LocatorUtils.getByTextSelector;
+import static com.microsoft.playwright.impl.LocatorUtils.*;
 import static com.microsoft.playwright.impl.Utils.*;
 import static com.microsoft.playwright.options.WaitUntilState.*;
 import static com.microsoft.playwright.impl.Serialization.*;
@@ -412,7 +411,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public Locator getByTestId(String testId) {
-    return null;
+    return locator(getByTestIdSelector(testId));
   }
 
   @Override
@@ -427,12 +426,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public Locator getByTitle(String text, GetByTitleOptions options) {
-    return null;
+    return locator(getByTitleSelector(text, convertType(options, Locator.GetByTitleOptions.class)));
   }
 
   @Override
   public Locator getByTitle(Pattern text, GetByTitleOptions options) {
-    return null;
+    return locator(getByTitleSelector(text, convertType(options, Locator.GetByTitleOptions.class)));
   }
 
   String getAttributeImpl(String selector, String name, GetAttributeOptions options) {

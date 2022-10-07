@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.AriaRole;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
@@ -239,6 +240,26 @@ public class TestLocatorFrame extends TestBase {
     assertThat(button2).hasText("Hello from iframe-2.html");
     Locator button3 = page.locator("body").frameLocator("iframe").last().locator("button");
     assertThat(button3).hasText("Hello from iframe-3.html");
+  }
+
+  @Test
+  void getByCoverage() {
+    routeIframe(page);
+    page.navigate(server.EMPTY_PAGE);
+    Locator button1 = page.frameLocator("iframe").getByRole(AriaRole.BUTTON);
+    Locator button2 = page.frameLocator("iframe").getByText("Hello");
+    Locator button3 = page.frameLocator("iframe").getByTestId("buttonId");
+    assertThat(button1).hasText("Hello iframe");
+    assertThat(button2).hasText("Hello iframe");
+    assertThat(button3).hasText("Hello iframe");
+    Locator input1 = page.frameLocator("iframe").getByLabel("Name");
+    assertThat(input1).hasValue("");
+    Locator input2 = page.frameLocator("iframe").getByPlaceholder("Placeholder");
+    assertThat(input2).hasValue("");
+    Locator input3 = page.frameLocator("iframe").getByAltText("Alternative");
+    assertThat(input3).hasValue("");
+    Locator input4 = page.frameLocator("iframe").getByTitle("Title");
+    assertThat(input4).hasValue("");
   }
 
 }

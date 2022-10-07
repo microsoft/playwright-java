@@ -22,8 +22,7 @@ import com.microsoft.playwright.options.AriaRole;
 
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.LocatorUtils.getByLabelSelector;
-import static com.microsoft.playwright.impl.LocatorUtils.getByTextSelector;
+import static com.microsoft.playwright.impl.LocatorUtils.*;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
 class FrameLocatorImpl implements FrameLocator {
@@ -82,7 +81,7 @@ class FrameLocatorImpl implements FrameLocator {
 
   @Override
   public Locator getByTestId(String testId) {
-    return null;
+    return locator(getByTestIdSelector(testId));
   }
 
   @Override
@@ -97,12 +96,12 @@ class FrameLocatorImpl implements FrameLocator {
 
   @Override
   public Locator getByTitle(String text, GetByTitleOptions options) {
-    return null;
+    return locator(getByTitleSelector(text, convertType(options, Locator.GetByTitleOptions.class)));
   }
 
   @Override
   public Locator getByTitle(Pattern text, GetByTitleOptions options) {
-    return null;
+    return locator(getByTitleSelector(text, convertType(options, Locator.GetByTitleOptions.class)));
   }
 
   @Override

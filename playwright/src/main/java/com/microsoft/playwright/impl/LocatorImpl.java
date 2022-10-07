@@ -13,8 +13,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.impl.LocatorUtils.getByLabelSelector;
-import static com.microsoft.playwright.impl.LocatorUtils.getByTextSelector;
+import static com.microsoft.playwright.impl.LocatorUtils.*;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
@@ -270,7 +269,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator getByTestId(String testId) {
-    return null;
+    return locator(getByTestIdSelector(testId));
   }
 
   @Override
@@ -285,12 +284,12 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator getByTitle(String text, GetByTitleOptions options) {
-    return null;
+    return locator(getByTitleSelector(text, options));
   }
 
   @Override
   public Locator getByTitle(Pattern text, GetByTitleOptions options) {
-    return null;
+    return locator(getByTitleSelector(text, options));
   }
 
   @Override
