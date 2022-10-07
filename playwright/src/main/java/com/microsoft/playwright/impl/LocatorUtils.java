@@ -8,9 +8,9 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 public class LocatorUtils {
-  private static String testIdAttributeName = "data-testid";;
+  private static volatile String testIdAttributeName = "data-testid";;
 
-  static synchronized void setTestIdAttributeName(String name) {
+  static void setTestIdAttributeName(String name) {
     testIdAttributeName = name;
   }
 
