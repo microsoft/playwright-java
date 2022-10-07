@@ -42,4 +42,9 @@ public class LocatorUtils {
     boolean exact = options != null && options.exact != null && options.exact;
     return "text=" + escapeForTextSelector(text, exact);
   }
+
+  static String getByLabelSelector(Object text, Locator.GetByLabelOptions options) {
+    boolean exact = options != null && options.exact != null && options.exact;
+    return "internal:label=" + escapeForTextSelector(text, exact);
+  }
 }

@@ -3,10 +3,7 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
-import com.microsoft.playwright.options.BoundingBox;
-import com.microsoft.playwright.options.FilePayload;
-import com.microsoft.playwright.options.SelectOption;
-import com.microsoft.playwright.options.WaitForSelectorState;
+import com.microsoft.playwright.options.*;
 
 import java.lang.reflect.Field;
 import java.nio.file.Path;
@@ -16,6 +13,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.LocatorUtils.getByLabelSelector;
 import static com.microsoft.playwright.impl.LocatorUtils.getByTextSelector;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertType;
@@ -247,12 +245,12 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator getByLabel(String text, GetByLabelOptions options) {
-    return null;
+    return locator(getByLabelSelector(text, options));
   }
 
   @Override
   public Locator getByLabel(Pattern text, GetByLabelOptions options) {
-    return null;
+    return locator(getByLabelSelector(text, options));
   }
 
   @Override
@@ -266,7 +264,7 @@ class LocatorImpl implements Locator {
   }
 
   @Override
-  public Locator getByRole(String role, GetByRoleOptions options) {
+  public Locator getByRole(AriaRole role, GetByRoleOptions options) {
     return null;
   }
 

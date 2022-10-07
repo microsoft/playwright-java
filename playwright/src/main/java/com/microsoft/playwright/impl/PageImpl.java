@@ -798,7 +798,7 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Locator getByRole(String role, GetByRoleOptions options) {
+  public Locator getByRole(AriaRole role, GetByRoleOptions options) {
     return withLogging("Page.getByRole",
       () -> mainFrame.getByRole(role, convertType(options, Frame.GetByRoleOptions.class)));
   }

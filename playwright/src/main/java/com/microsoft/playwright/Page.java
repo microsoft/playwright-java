@@ -4568,7 +4568,7 @@ public interface Page extends AutoCloseable {
    *
    * @param role Required aria role.
    */
-  default Locator getByRole(String role) {
+  default Locator getByRole(AriaRole role) {
     return getByRole(role, null);
   }
   /**
@@ -4585,7 +4585,7 @@ public interface Page extends AutoCloseable {
    *
    * @param role Required aria role.
    */
-  Locator getByRole(String role, GetByRoleOptions options);
+  Locator getByRole(AriaRole role, GetByRoleOptions options);
   /**
    * Locate element by the test id. By default, the {@code data-testid} attribute is used as a test id. Use {@link
    * Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.

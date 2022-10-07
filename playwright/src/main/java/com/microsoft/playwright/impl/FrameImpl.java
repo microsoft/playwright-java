@@ -31,6 +31,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.LocatorUtils.getByLabelSelector;
 import static com.microsoft.playwright.impl.LocatorUtils.getByTextSelector;
 import static com.microsoft.playwright.impl.Utils.*;
 import static com.microsoft.playwright.options.WaitUntilState.*;
@@ -386,12 +387,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public Locator getByLabel(String text, GetByLabelOptions options) {
-    return null;
+    return locator(getByLabelSelector(text, convertType(options, Locator.GetByLabelOptions.class)));
   }
 
   @Override
   public Locator getByLabel(Pattern text, GetByLabelOptions options) {
-    return null;
+    return locator(getByLabelSelector(text, convertType(options, Locator.GetByLabelOptions.class)));
   }
 
   @Override
@@ -405,7 +406,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
-  public Locator getByRole(String role, GetByRoleOptions options) {
+  public Locator getByRole(AriaRole role, GetByRoleOptions options) {
     return null;
   }
 
