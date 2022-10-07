@@ -22,57 +22,19 @@ class LocatorImpl implements Locator {
   private final FrameImpl frame;
   private final String selector;
 
-  private static class Filters {
-    private final Map<Field, String> filterFieldToEngine = new LinkedHashMap<>();
-    private void addFilter(String name, String engine) throws NoSuchFieldException {
-      filterFieldToEngine.put(LocatorOptions.class.getField(name), engine);
-    }
-    {
-      try {
-        addFilter("has", "has");
-//        addFilter("leftOf", "left-of");
-//        addFilter("rightOf", "right-of");
-//        addFilter("above", "above");
-//        addFilter("below", "below");
-//        addFilter("near", "near");
-      } catch (NoSuchFieldException e) {
-        throw new InternalError(e);
-      }
-    }
-    String addFiltersToSelector(String selector, LocatorOptions options, Frame frame) {
-      try {
-        for (Map.Entry<Field, String> p : filterFieldToEngine.entrySet()) {
-          LocatorImpl filter = (LocatorImpl) p.getKey().get(options);
-          if (filter == null) {
-            continue;
-          }
-          if (filter.frame != frame) {
-            throw new PlaywrightException("Inner '" + p.getKey().getName() + "' locator must belong to the same frame.");
-          }
-          selector += " >> " +  p.getValue() + "=" + gson().toJson(filter.selector);
-        }
-      } catch (IllegalAccessException e) {
-        throw new PlaywrightException("Unexpected options", e);
-      }
-      return selector;
-    }
-  }
-  private static final Filters filters = new Filters();
-
   public LocatorImpl(FrameImpl frame, String selector, LocatorOptions options) {
     this.frame = frame;
     if (options != null) {
       if (options.hasText != null) {
-        if (options.hasText instanceof Pattern) {
-          Pattern pattern = (Pattern) options.hasText;
-          String jsRegex = "/" + pattern.pattern() + "/" + toJsRegexFlags(pattern);
-          selector += " >> has=" + gson().toJson("text=" + jsRegex);
-        } else if (options.hasText instanceof String) {
-          String text = (String) options.hasText;
-          selector += " >> :scope:has-text(" + escapeWithQuotes(text) + ")";
-        }
+        String textSelector = "text=" + escapeForTextSelector(options.hasText, false);
+        selector += " >> internal:has=" + gson().toJson(textSelector);
       }
-      selector = filters.addFiltersToSelector(selector, options, frame);
+      if (options.has != null) {
+        LocatorImpl locator = (LocatorImpl) options.has;
+        if (locator.frame != frame)
+          throw new Error("Inner 'has' locator must belong to the same frame.");
+        selector += " >> internal:has=" + gson().toJson(locator.selector);
+      }
     }
     this.selector = selector;
   }

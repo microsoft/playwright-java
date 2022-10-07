@@ -92,7 +92,7 @@ public class LocatorUtils {
     return result.toString();
   }
 
-  private static String escapeForTextSelector(Object text, boolean exact) {
+  static String escapeForTextSelector(Object text, boolean exact) {
     return escapeForTextSelector(text, exact, false);
   }
 

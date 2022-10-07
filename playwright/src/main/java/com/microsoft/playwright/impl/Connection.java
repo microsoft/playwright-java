@@ -80,6 +80,11 @@ public class Connection {
     }
   }
 
+  Connection(Transport pipe, Map<String, String> env, LocalUtils localUtils) {
+    this(pipe, env);
+    this.localUtils = localUtils;
+  }
+
   Connection(Transport transport, Map<String, String> env) {
     this.env = env;
     if (isLogging) {
@@ -283,8 +288,10 @@ public class Connection {
         result = new JsonPipe(parent, type, guid, initializer);
         break;
       case "LocalUtils":
-        localUtils = new LocalUtils(parent, type, guid, initializer);
-        result = localUtils;
+        result = new LocalUtils(parent, type, guid, initializer);
+        if (localUtils == null) {
+          localUtils = (LocalUtils) result;
+        }
         break;
       case "Page":
         result = new PageImpl(parent, type, guid, initializer);
