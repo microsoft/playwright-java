@@ -234,12 +234,12 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator getByAltText(String text, GetByAltTextOptions options) {
-    return null;
+    return locator(getByAltTextSelector(text, options));
   }
 
   @Override
   public Locator getByAltText(Pattern text, GetByAltTextOptions options) {
-    return null;
+    return locator(getByAltTextSelector(text, options));
   }
 
   @Override
@@ -254,12 +254,12 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator getByPlaceholder(String text, GetByPlaceholderOptions options) {
-    return null;
+    return locator(getByPlaceholderSelector(text, options));
   }
 
   @Override
   public Locator getByPlaceholder(Pattern text, GetByPlaceholderOptions options) {
-    return null;
+    return locator(getByPlaceholderSelector(text, options));
   }
 
   @Override

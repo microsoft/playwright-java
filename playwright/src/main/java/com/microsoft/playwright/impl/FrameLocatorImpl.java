@@ -46,12 +46,12 @@ class FrameLocatorImpl implements FrameLocator {
 
   @Override
   public Locator getByAltText(String text, GetByAltTextOptions options) {
-    return null;
+    return locator(getByAltTextSelector(text, convertType(options, Locator.GetByAltTextOptions.class)));
   }
 
   @Override
   public Locator getByAltText(Pattern text, GetByAltTextOptions options) {
-    return null;
+    return locator(getByAltTextSelector(text, convertType(options, Locator.GetByAltTextOptions.class)));
   }
 
   @Override
@@ -66,12 +66,12 @@ class FrameLocatorImpl implements FrameLocator {
 
   @Override
   public Locator getByPlaceholder(String text, GetByPlaceholderOptions options) {
-    return null;
+    return locator(getByPlaceholderSelector(text, convertType(options, Locator.GetByPlaceholderOptions.class)));
   }
 
   @Override
   public Locator getByPlaceholder(Pattern text, GetByPlaceholderOptions options) {
-    return null;
+    return locator(getByPlaceholderSelector(text, convertType(options, Locator.GetByPlaceholderOptions.class)));
   }
 
   @Override
