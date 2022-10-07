@@ -31,13 +31,14 @@ public class TestLocatorFrame extends TestBase {
       .setBody("<iframe src='iframe.html'></iframe>").setContentType("text/html")));
     page.route("**/iframe.html", route -> {
       route.fulfill(new Route.FulfillOptions().setBody("<html>\n" +
-        "          <div>\n" +
-        "            <button>Hello iframe</button>\n" +
-        "            <iframe src='iframe-2.html'></iframe>\n" +
-        "          </div>\n" +
-        "          <span>1</span>\n" +
-        "          <span>2</span>\n" +
-        "        </html>").setContentType("text/html"));
+        "  <div>\n" +
+        "    <button data-testid=\"buttonId\">Hello iframe</button>\n" +
+        "    <iframe src=\"iframe-2.html\"></iframe>\n" +
+        "  </div>\n" +
+        "  <span>1</span>\n" +
+        "  <span>2</span>\n" +
+        "  <label for=target>Name</label><input id=target type=text placeholder=Placeholder title=Title alt=Alternative>\n" +
+        "</html>").setContentType("text/html"));
     });
     page.route("**/iframe-2.html", route -> {
       route.fulfill(new Route.FulfillOptions().setBody("<html><button>Hello nested iframe</button></html>").setContentType("text/html"));

@@ -41,7 +41,7 @@ class FrameLocatorImpl implements FrameLocator {
 
   @Override
   public FrameLocatorImpl frameLocator(String selector) {
-    return new FrameLocatorImpl(frame, frameSelector + " >> control=enter-frame >> " + selector);
+    return new FrameLocatorImpl(frame, frameSelector + " >> internal:control=enter-frame >> " + selector);
   }
 
   @Override
@@ -76,7 +76,7 @@ class FrameLocatorImpl implements FrameLocator {
 
   @Override
   public Locator getByRole(AriaRole role, GetByRoleOptions options) {
-    return null;
+    return locator(getByRoleSelector(role, convertType(options, Locator.GetByRoleOptions.class)));
   }
 
   @Override
@@ -111,7 +111,7 @@ class FrameLocatorImpl implements FrameLocator {
 
   @Override
   public Locator locator(String selector, LocatorOptions options) {
-    return new LocatorImpl(frame, frameSelector + " >> control=enter-frame >> " + selector, convertType(options, Locator.LocatorOptions.class));
+    return new LocatorImpl(frame, frameSelector + " >> internal:control=enter-frame >> " + selector, convertType(options, Locator.LocatorOptions.class));
   }
 
   @Override

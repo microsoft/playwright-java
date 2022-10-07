@@ -406,7 +406,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public Locator getByRole(AriaRole role, GetByRoleOptions options) {
-    return null;
+    return locator(getByRoleSelector(role, convertType(options, Locator.GetByRoleOptions.class)));
   }
 
   @Override
