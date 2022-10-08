@@ -114,6 +114,9 @@ class Utils {
     try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipPath.toFile()))) {
       for (ZipEntry zipEntry = zis.getNextEntry(); zipEntry != null; zipEntry = zis.getNextEntry()) {
         Path toPath = toDir.resolve(zipEntry.getName());
+        if (!toPath.normalize().startsWith(toDir.normalize())) {
+          throw new IOException("Bad zip entry");
+        }
         if (zipEntry.isDirectory()) {
           Files.createDirectories(toPath);
         } else {
