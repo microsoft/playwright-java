@@ -51,12 +51,14 @@ import java.util.regex.Pattern;
 public interface FrameLocator {
   class GetByAltTextOptions {
     /**
-     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
+     * expression.
      */
     public Boolean exact;
 
     /**
-     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
+     * expression.
      */
     public GetByAltTextOptions setExact(boolean exact) {
       this.exact = exact;
@@ -65,12 +67,14 @@ public interface FrameLocator {
   }
   class GetByLabelOptions {
     /**
-     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
+     * expression.
      */
     public Boolean exact;
 
     /**
-     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
+     * expression.
      */
     public GetByLabelOptions setExact(boolean exact) {
       this.exact = exact;
@@ -79,12 +83,14 @@ public interface FrameLocator {
   }
   class GetByPlaceholderOptions {
     /**
-     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
+     * expression.
      */
     public Boolean exact;
 
     /**
-     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
+     * expression.
      */
     public GetByPlaceholderOptions setExact(boolean exact) {
       this.exact = exact;
@@ -233,12 +239,14 @@ public interface FrameLocator {
   }
   class GetByTextOptions {
     /**
-     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
+     * expression.
      */
     public Boolean exact;
 
     /**
-     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
+     * expression.
      */
     public GetByTextOptions setExact(boolean exact) {
       this.exact = exact;
@@ -247,12 +255,14 @@ public interface FrameLocator {
   }
   class GetByTitleOptions {
     /**
-     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
+     * expression.
      */
     public Boolean exact;
 
     /**
-     * Whether to find an exact match: case-sensitive and whole-string. Default to false.
+     * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
+     * expression.
      */
     public GetByTitleOptions setExact(boolean exact) {
       this.exact = exact;
