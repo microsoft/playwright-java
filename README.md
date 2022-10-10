@@ -43,7 +43,7 @@ To run Playwright simply add following dependency to your Maven project:
 <dependency>
   <groupId>com.microsoft.playwright</groupId>
   <artifactId>playwright</artifactId>
-  <version>1.26.0</version>
+  <version>1.27.0</version>
 </dependency>
 ```
 
@@ -51,7 +51,7 @@ To run Playwright using Gradle add following dependency to your build.gradle fil
 
 ```gradle
 dependencies {
-  implementation group: 'com.microsoft.playwright', name: 'playwright', version: '1.26.0'
+  implementation group: 'com.microsoft.playwright', name: 'playwright', version: '1.27.0'
 }
 ```
 
