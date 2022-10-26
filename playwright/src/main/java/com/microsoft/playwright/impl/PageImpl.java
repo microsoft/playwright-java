@@ -621,6 +621,12 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public void clear(String selector, ClearOptions options) {
+    withLogging("Page.clear",
+      () -> mainFrame.clearImpl(selector, convertType(options, Frame.ClearOptions.class)));
+  }
+
+  @Override
   public void click(String selector, ClickOptions options) {
     withLogging("Page.click",
       () -> mainFrame.clickImpl(selector, convertType(options, Frame.ClickOptions.class)));

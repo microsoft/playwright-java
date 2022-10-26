@@ -142,8 +142,16 @@ public class TestPopup extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     Object[] size = {null};
     Page popup = page.waitForPopup(() -> {
-      size[0] = page.evaluate("() => {\n" +
+      size[0] = page.evaluate("async () => {\n" +
         "  const win = window.open(window.location.href, 'Title', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=600,height=300,top=0,left=0');\n" +
+        "  await new Promise(resolve => {\n" +
+        "    const interval = setInterval(() => {\n" +
+        "      if (win.innerWidth === 600 && win.innerHeight === 300) {\n" +
+        "        clearInterval(interval);\n" +
+        "        resolve();\n" +
+        "      }\n" +
+        "    }, 10);\n" +
+        "  });\n" +
         "  return { width: win.innerWidth, height: win.innerHeight };\n" +
         "}");
     });

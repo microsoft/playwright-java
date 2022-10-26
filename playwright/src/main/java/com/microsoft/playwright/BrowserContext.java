@@ -185,7 +185,8 @@ public interface BrowserContext extends AutoCloseable {
      */
     public HarNotFound notFound;
     /**
-     * If specified, updates the given HAR with the actual network information instead of serving from file.
+     * If specified, updates the given HAR with the actual network information instead of serving from file. The file is
+     * written to disk when {@link BrowserContext#close BrowserContext.close()} is called.
      */
     public Boolean update;
     /**
@@ -207,7 +208,8 @@ public interface BrowserContext extends AutoCloseable {
       return this;
     }
     /**
-     * If specified, updates the given HAR with the actual network information instead of serving from file.
+     * If specified, updates the given HAR with the actual network information instead of serving from file. The file is
+     * written to disk when {@link BrowserContext#close BrowserContext.close()} is called.
      */
     public RouteFromHAROptions setUpdate(boolean update) {
       this.update = update;

@@ -73,6 +73,21 @@ class LocatorImpl implements Locator {
   }
 
   @Override
+  public void blur(BlurOptions options) {
+    frame.withLogging("Locator.blur", () -> blurImpl(options));
+  }
+
+  private void blurImpl(BlurOptions options) {
+    if (options == null) {
+      options = new BlurOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    params.addProperty("strict", true);
+    frame.sendMessage("blur", params);
+  }
+
+  @Override
   public BoundingBox boundingBox(BoundingBoxOptions options) {
     return withElement((h, o) -> h.boundingBox(), options);
   }
@@ -83,6 +98,11 @@ class LocatorImpl implements Locator {
       options = new CheckOptions();
     }
     frame.check(selector, convertType(options, Frame.CheckOptions.class).setStrict(true));
+  }
+
+  @Override
+  public void clear(ClearOptions options) {
+    fill("", convertType(options, FillOptions.class));
   }
 
   @Override
