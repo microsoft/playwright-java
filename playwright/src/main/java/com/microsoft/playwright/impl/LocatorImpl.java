@@ -26,8 +26,7 @@ class LocatorImpl implements Locator {
     this.frame = frame;
     if (options != null) {
       if (options.hasText != null) {
-        String textSelector = "text=" + escapeForTextSelector(options.hasText, false);
-        selector += " >> internal:has=" + gson().toJson(textSelector);
+        selector += " >> internal:has-text=" + escapeForTextSelector(options.hasText, false);
       }
       if (options.has != null) {
         LocatorImpl locator = (LocatorImpl) options.has;
