@@ -14,14 +14,9 @@ public class LocatorUtils {
     testIdAttributeName = name;
   }
 
-  static String getByTextSelector(String text, Locator.GetByTextOptions options) {
+  static String getByTextSelector(Object text, Locator.GetByTextOptions options) {
     boolean exact = options != null && options.exact != null && options.exact;
-    return "text=" + escapeForTextSelector(text, exact);
-  }
-
-  static String getByTextSelector(Pattern text, Locator.GetByTextOptions options) {
-    boolean exact = options != null && options.exact != null && options.exact;
-    return "text=" + escapeForTextSelector(text, exact);
+    return "internal:text=" + escapeForTextSelector(text, exact);
   }
 
   static String getByLabelSelector(Object text, Locator.GetByLabelOptions options) {
@@ -61,7 +56,7 @@ public class LocatorUtils {
 
   static String getByRoleSelector(AriaRole role, Locator.GetByRoleOptions options) {
     StringBuilder result = new StringBuilder();
-    result.append("role=").append(role.name().toLowerCase());
+    result.append("internal:role=").append(role.name().toLowerCase());
     if (options != null) {
       if (options.checked != null)
         addAttr(result, "checked", options.checked.toString());
