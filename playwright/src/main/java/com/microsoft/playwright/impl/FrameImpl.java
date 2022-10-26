@@ -243,6 +243,15 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
+  public void clear(String selector, ClearOptions options) {
+    withLogging("Frame.clear", () -> clearImpl(selector, options));
+  }
+
+  void clearImpl(String selector, ClearOptions options) {
+    fillImpl(selector, "", convertType(options, FillOptions.class));
+  }
+
+  @Override
   public void click(String selector, ClickOptions options) {
     withLogging("Frame.click", () -> clickImpl(selector, options));
   }

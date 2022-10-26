@@ -243,4 +243,39 @@ public class TestPageFill extends TestBase {
     page.fill("input", "");
     assertEquals("", page.inputValue("input"));
   }
+
+  @Test
+  void shouldThrowOnUnsupportedInputsWhenClear() {
+    page.navigate(server.PREFIX + "/input/textarea.html");
+    for (String type : new String[]{"button", "checkbox", "file", "image", "radio", "reset", "submit"}) {
+      page.evalOnSelector("input", "(input, type) => input.setAttribute('type', type)", type);
+      PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.clear("input"));
+      assertTrue(e.getMessage().contains("input of type \"" + type + "\" cannot be filled"), e.getMessage());
+    }
+  }
+
+  @Test
+  void shouldThrowNiceErrorWithoutInjectedScriptStackWhenElementIsNotAnInputWhenClear() {
+    page.navigate(server.PREFIX + "/input/textarea.html");
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.clear("body"));
+    assertTrue(e.getMessage().contains("Error: Element is not an <input>, <textarea> or [contenteditable] element\n=========================== logs"), e.getMessage());
+  }
+
+  @Test
+  void shouldBeAbleToClearUsingFill() {
+    page.navigate(server.PREFIX + "/input/textarea.html");
+    page.fill("input", "some value");
+    assertEquals("some value", page.evaluate("() => window['result']"));
+    page.fill("input", "");
+    assertEquals("", page.evaluate("() => window['result']"));
+  }
+
+  @Test
+  void shouldBeAbleToClearUsingClear() {
+    page.navigate(server.PREFIX + "/input/textarea.html");
+    page.fill("input", "some value");
+    assertEquals("some value", page.evaluate("() => window['result']"));
+    page.clear("input");
+    assertEquals("", page.evaluate("() => window['result']"));
+  }
 }

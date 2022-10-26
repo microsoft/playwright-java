@@ -20,7 +20,7 @@ import com.microsoft.playwright.options.*;
 
 /**
  * Keyboard provides an api for managing a virtual keyboard. The high level api is {@link Keyboard#type Keyboard.type()},
- * which takes raw characters and generates proper keydown, keypress/input, and keyup events on your page.
+ * which takes raw characters and generates proper {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} events on your page.
  *
  * <p> For finer control, you can use {@link Keyboard#down Keyboard.down()}, {@link Keyboard#up Keyboard.up()}, and {@link
  * Keyboard#insertText Keyboard.insertText()} to manually fire events as if they were generated from a real keyboard.

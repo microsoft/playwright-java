@@ -57,7 +57,7 @@ public interface JSHandle {
    * assertEquals("10 retweets", tweetHandle.evaluate("node => node.innerText"));
    * }</pre>
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    */
   default Object evaluate(String expression) {
@@ -78,7 +78,7 @@ public interface JSHandle {
    * assertEquals("10 retweets", tweetHandle.evaluate("node => node.innerText"));
    * }</pre>
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
@@ -97,7 +97,7 @@ public interface JSHandle {
    *
    * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    */
   default JSHandle evaluateHandle(String expression) {
@@ -117,7 +117,7 @@ public interface JSHandle {
    *
    * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */

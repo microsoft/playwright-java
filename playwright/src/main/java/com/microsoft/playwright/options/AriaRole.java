@@ -98,5 +98,5 @@ public enum AriaRole {
   TOOLTIP,
   TREE,
   TREEGRID,
-  TREEITE
+  TREEITEM
 }

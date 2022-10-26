@@ -122,6 +122,11 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     withLogging("ElementHandle.check", () -> checkImpl(options));
   }
 
+  @Override
+  public void clear(ClearOptions options) {
+    withLogging("ElementHandle.clear", () -> fillImpl("", convertType(options, FillOptions.class)));
+  }
+
   private void checkImpl(CheckOptions options) {
     if (options == null) {
       options = new CheckOptions();

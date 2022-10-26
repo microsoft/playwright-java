@@ -355,7 +355,7 @@ public interface FrameLocator {
   Locator getByAltText(Pattern text, GetByAltTextOptions options);
   /**
    * Allows locating input elements by the text of the associated label. For example, this method will find the input by
-   * label text Password in the following DOM:
+   * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
    */
@@ -364,14 +364,14 @@ public interface FrameLocator {
   }
   /**
    * Allows locating input elements by the text of the associated label. For example, this method will find the input by
-   * label text Password in the following DOM:
+   * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
    */
   Locator getByLabel(String text, GetByLabelOptions options);
   /**
    * Allows locating input elements by the text of the associated label. For example, this method will find the input by
-   * label text Password in the following DOM:
+   * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
    */
@@ -380,7 +380,7 @@ public interface FrameLocator {
   }
   /**
    * Allows locating input elements by the text of the associated label. For example, this method will find the input by
-   * label text Password in the following DOM:
+   * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
    */
@@ -485,7 +485,7 @@ public interface FrameLocator {
    */
   Locator getByText(Pattern text, GetByTextOptions options);
   /**
-   * Allows locating elements by their title. For example, this method will find the button by its title "Submit":
+   * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
    */
@@ -493,13 +493,13 @@ public interface FrameLocator {
     return getByTitle(text, null);
   }
   /**
-   * Allows locating elements by their title. For example, this method will find the button by its title "Submit":
+   * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
    */
   Locator getByTitle(String text, GetByTitleOptions options);
   /**
-   * Allows locating elements by their title. For example, this method will find the button by its title "Submit":
+   * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
    */
@@ -507,7 +507,7 @@ public interface FrameLocator {
     return getByTitle(text, null);
   }
   /**
-   * Allows locating elements by their title. For example, this method will find the button by its title "Submit":
+   * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
    */

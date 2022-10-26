@@ -66,4 +66,40 @@ public class TestLocatorMisc extends TestBase{
       assertTrue(e.getMessage().contains("Драматург"), e.getMessage());
     }
   }
+
+  @Test
+  void shouldClearInput() {
+    page.navigate(server.PREFIX + "/input/textarea.html");
+    Locator handle = page.locator("input");
+    handle.fill("some value");
+    assertEquals("some value", page.evaluate("() => window['result']"));
+    handle.clear();
+    assertEquals("", page.evaluate("() => window['result']"));
+  }
+
+  @Test
+  void shouldFocusAndBlurAButton() {
+    page.navigate(server.PREFIX + "/input/button.html");
+    Locator button = page.locator("button");
+    assertEquals(false, button.evaluate("button => document.activeElement === button"));
+
+    boolean[] focused = {false};
+    boolean[] blurred = {false};
+    page.exposeFunction("focusEvent", e -> focused[0] = true);
+    page.exposeFunction("blurEvent", e -> blurred[0] = true);
+    button.evaluate("button => {\n" +
+      "    button.addEventListener('focus', window['focusEvent']);\n" +
+      "    button.addEventListener('blur', window['blurEvent']);\n" +
+      "  }");
+
+    button.focus();
+    assertTrue(focused[0]);
+    assertFalse(blurred[0]);
+    assertEquals(true, button.evaluate("button => document.activeElement === button"));
+
+    button.blur();
+    assertTrue(focused[0]);
+    assertTrue(blurred[0]);
+    assertEquals(false, button.evaluate("button => document.activeElement === button"));
+  }
 }

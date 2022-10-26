@@ -504,6 +504,65 @@ public interface Page extends AutoCloseable {
       return this;
     }
   }
+  class ClearOptions {
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
+    public Boolean force;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
+    public Boolean noWaitAfter;
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
+     * element, the call throws an exception.
+     */
+    public Boolean strict;
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public Double timeout;
+
+    /**
+     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
+     * {@code false}.
+     */
+    public ClearOptions setForce(boolean force) {
+      this.force = force;
+      return this;
+    }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
+    public ClearOptions setNoWaitAfter(boolean noWaitAfter) {
+      this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    /**
+     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
+     * element, the call throws an exception.
+     */
+    public ClearOptions setStrict(boolean strict) {
+      this.strict = strict;
+      return this;
+    }
+    /**
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
+     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
+     * Page.setDefaultTimeout()} methods.
+     */
+    public ClearOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class ClickOptions {
     /**
      * Defaults to {@code left}.
@@ -1516,6 +1575,12 @@ public interface Page extends AutoCloseable {
      */
     public List<KeyboardModifier> modifiers;
     /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
+    public Boolean noWaitAfter;
+    /**
      * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
      * element.
      */
@@ -1552,6 +1617,15 @@ public interface Page extends AutoCloseable {
      */
     public HoverOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
+      return this;
+    }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
+    public HoverOptions setNoWaitAfter(boolean noWaitAfter) {
+      this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
@@ -2222,7 +2296,8 @@ public interface Page extends AutoCloseable {
      */
     public HarNotFound notFound;
     /**
-     * If specified, updates the given HAR with the actual network information instead of serving from file.
+     * If specified, updates the given HAR with the actual network information instead of serving from file. The file is
+     * written to disk when {@link BrowserContext#close BrowserContext.close()} is called.
      */
     public Boolean update;
     /**
@@ -2244,7 +2319,8 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * If specified, updates the given HAR with the actual network information instead of serving from file.
+     * If specified, updates the given HAR with the actual network information instead of serving from file. The file is
+     * written to disk when {@link BrowserContext#close BrowserContext.close()} is called.
      */
     public RouteFromHAROptions setUpdate(boolean update) {
       this.update = update;
@@ -2315,7 +2391,7 @@ public interface Page extends AutoCloseable {
     public Integer quality;
     /**
      * When set to {@code "css"}, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices, this will
-     * keep screenshots small. Using {@code "device"} option will produce a single pixel per each device pixel, so screenhots of
+     * keep screenshots small. Using {@code "device"} option will produce a single pixel per each device pixel, so screenshots of
      * high-dpi devices will be twice as large or even larger.
      *
      * <p> Defaults to {@code "device"}.
@@ -2409,7 +2485,7 @@ public interface Page extends AutoCloseable {
     }
     /**
      * When set to {@code "css"}, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices, this will
-     * keep screenshots small. Using {@code "device"} option will produce a single pixel per each device pixel, so screenhots of
+     * keep screenshots small. Using {@code "device"} option will produce a single pixel per each device pixel, so screenshots of
      * high-dpi devices will be twice as large or even larger.
      *
      * <p> Defaults to {@code "device"}.
@@ -3562,6 +3638,36 @@ public interface Page extends AutoCloseable {
    */
   void check(String selector, CheckOptions options);
   /**
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the element, clears it and
+   * triggers an {@code input} event after clearing. Note that you can pass an empty string to clear the input field.
+   *
+   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
+   * However, if the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be
+   * cleared instead.
+   *
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   */
+  default void clear(String selector) {
+    clear(selector, null);
+  }
+  /**
+   * This method waits for an element matching {@code selector}, waits for <a
+   * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the element, clears it and
+   * triggers an {@code input} event after clearing. Note that you can pass an empty string to clear the input field.
+   *
+   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
+   * However, if the element is inside the {@code <label>} element that has an associated <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be
+   * cleared instead.
+   *
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
+   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   */
+  void clear(String selector, ClearOptions options);
+  /**
    * This method clicks an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
@@ -3917,7 +4023,7 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
@@ -3946,7 +4052,7 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    */
   default Object evalOnSelector(String selector, String expression) {
@@ -3974,7 +4080,7 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
@@ -3997,7 +4103,7 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    */
   default Object evalOnSelectorAll(String selector, String expression) {
@@ -4021,7 +4127,7 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
    * details.
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
@@ -4059,7 +4165,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#evaluate Frame.evaluate()}.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    */
   default Object evaluate(String expression) {
@@ -4098,7 +4204,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#evaluate Frame.evaluate()}.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
@@ -4130,7 +4236,7 @@ public interface Page extends AutoCloseable {
    * resultHandle.dispose();
    * }</pre>
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    */
   default JSHandle evaluateHandle(String expression) {
@@ -4163,7 +4269,7 @@ public interface Page extends AutoCloseable {
    * resultHandle.dispose();
    * }</pre>
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
@@ -4502,7 +4608,7 @@ public interface Page extends AutoCloseable {
   Locator getByAltText(Pattern text, GetByAltTextOptions options);
   /**
    * Allows locating input elements by the text of the associated label. For example, this method will find the input by
-   * label text Password in the following DOM:
+   * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
    */
@@ -4511,14 +4617,14 @@ public interface Page extends AutoCloseable {
   }
   /**
    * Allows locating input elements by the text of the associated label. For example, this method will find the input by
-   * label text Password in the following DOM:
+   * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
    */
   Locator getByLabel(String text, GetByLabelOptions options);
   /**
    * Allows locating input elements by the text of the associated label. For example, this method will find the input by
-   * label text Password in the following DOM:
+   * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
    */
@@ -4527,7 +4633,7 @@ public interface Page extends AutoCloseable {
   }
   /**
    * Allows locating input elements by the text of the associated label. For example, this method will find the input by
-   * label text Password in the following DOM:
+   * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
    */
@@ -4632,7 +4738,7 @@ public interface Page extends AutoCloseable {
    */
   Locator getByText(Pattern text, GetByTextOptions options);
   /**
-   * Allows locating elements by their title. For example, this method will find the button by its title "Submit":
+   * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
    */
@@ -4640,13 +4746,13 @@ public interface Page extends AutoCloseable {
     return getByTitle(text, null);
   }
   /**
-   * Allows locating elements by their title. For example, this method will find the button by its title "Submit":
+   * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
    */
   Locator getByTitle(String text, GetByTitleOptions options);
   /**
-   * Allows locating elements by their title. For example, this method will find the button by its title "Submit":
+   * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
    */
@@ -4654,7 +4760,7 @@ public interface Page extends AutoCloseable {
     return getByTitle(text, null);
   }
   /**
-   * Allows locating elements by their title. For example, this method will find the button by its title "Submit":
+   * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
    */
@@ -6523,7 +6629,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#waitForFunction Frame.waitForFunction()}.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
@@ -6559,7 +6665,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#waitForFunction Frame.waitForFunction()}.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    */
   default JSHandle waitForFunction(String expression) {
@@ -6594,7 +6700,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> Shortcut for main frame's {@link Frame#waitForFunction Frame.waitForFunction()}.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expresion evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
