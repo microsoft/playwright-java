@@ -82,7 +82,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       browser = null;
     }
     this.tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());
-    tracing.isRemote = browser != null && browser.isRemote;
     this.request = connection.getExistingObject(initializer.getAsJsonObject("requestContext").get("guid").getAsString());
   }
 
@@ -201,12 +200,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         params.addProperty("harId", entry.getKey());
         JsonObject json = sendMessage("harExport", params).getAsJsonObject();
         ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
-        // In case of CDP connection browser is null but since the connection is established by
-        // the driver it is safe to consider the artifact local.
-        if (browser() != null && browser().isRemote) {
-          artifact.isRemote = true;
-        }
-
         // Server side will compress artifact if content is attach or if file is .zip.
         HarRecorder harParams = entry.getValue();
         boolean isCompressed = harParams.contentPolicy == HarContentPolicy.ATTACH || harParams.path.toString().endsWith(".zip");

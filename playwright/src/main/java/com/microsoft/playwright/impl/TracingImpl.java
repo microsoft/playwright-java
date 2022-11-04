@@ -26,8 +26,6 @@ import java.nio.file.Path;
 import static com.microsoft.playwright.impl.Serialization.gson;
 
 class TracingImpl extends ChannelOwner implements Tracing {
-  boolean isRemote;
-
   TracingImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
@@ -36,7 +34,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
     JsonObject params = new JsonObject();
     String mode = "doNotSave";
     if (path != null) {
-      if (isRemote) {
+      if (connection.isRemote) {
         mode = "compressTrace";
       } else {
         mode = "compressTraceAndSources";
@@ -48,16 +46,13 @@ class TracingImpl extends ChannelOwner implements Tracing {
       return;
     }
     ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
-    // In case of CDP connection browser is null but since the connection is established by
-    // the driver it is safe to consider the artifact local.
-    if (isRemote) {
-      artifact.isRemote = true;
-    }
     artifact.saveAs(path);
     artifact.delete();
 
     // Add local sources to the remote trace if necessary.
-    if (isRemote && json.has("sourceEntries")) {
+    // In case of CDP connection since the connection is established by
+    // the driver it is safe to consider the artifact local.
+    if (connection.isRemote && json.has("sourceEntries")) {
       JsonArray entries = json.getAsJsonArray("sourceEntries");
       connection.localUtils.zip(path, entries);
     }

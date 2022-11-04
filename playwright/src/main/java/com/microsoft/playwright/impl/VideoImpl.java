@@ -27,16 +27,13 @@ import static java.util.Arrays.asList;
 class VideoImpl implements Video {
   private final PageImpl page;
   private final WaitableResult<ArtifactImpl> waitableArtifact = new WaitableResult<>();
-  private final boolean isRemote;
 
   VideoImpl(PageImpl page) {
     this.page = page;
     BrowserImpl browser = page.context().browser();
-    isRemote = browser != null && browser.isRemote;
   }
 
   void setArtifact(ArtifactImpl artifact) {
-    artifact.isRemote = isRemote;
     waitableArtifact.complete(artifact);
   }
 
@@ -58,7 +55,7 @@ class VideoImpl implements Video {
   @Override
   public Path path() {
     return page.withLogging("Video.path", () -> {
-      if (isRemote) {
+      if (page.connection.isRemote) {
         throw new PlaywrightException("Path is not available when using browserType.connect(). Use saveAs() to save a local copy.");
       }
       try {

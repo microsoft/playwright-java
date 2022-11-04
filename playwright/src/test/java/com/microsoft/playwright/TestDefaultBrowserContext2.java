@@ -2,14 +2,19 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.options.Geolocation;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -251,4 +256,43 @@ public class TestDefaultBrowserContext2 extends TestBase {
     assertEquals("hello", page.innerHTML("defaultContextCSS=div"));
   }
 
-}
+  @Test
+  void shouldUploadLargeFile(@TempDir Path tmpDir) throws IOException, ExecutionException, InterruptedException {
+    Assumptions.assumeTrue(3 <= (Runtime.getRuntime().maxMemory() >> 30), "Fails if max heap size is < 3Gb");
+    Page page = launchPersistent();
+    page.navigate(server.PREFIX + "/input/fileupload.html");
+    Path uploadFile = tmpDir.resolve("200MB.zip");
+    String str = String.join("", Collections.nCopies(4 * 1024, "A"));
+
+    try (Writer stream = new OutputStreamWriter(Files.newOutputStream(uploadFile))) {
+      for (int i = 0; i < 50 * 1024; i++) {
+        stream.write(str);
+      }
+    }
+    Locator input = page.locator("input[type='file']");
+    JSHandle events = input.evaluateHandle("e => {\n" +
+      "    const events = [];\n" +
+      "    e.addEventListener('input', () => events.push('input'));\n" +
+      "    e.addEventListener('change', () => events.push('change'));\n" +
+      "    return events;\n" +
+      "  }");
+    input.setInputFiles(uploadFile);
+    assertEquals("200MB.zip", input.evaluate("e => e.files[0].name"));
+    assertEquals(asList("input", "change"), events.evaluate("e => e"));
+    CompletableFuture<MultipartFormData> formData = new CompletableFuture<>();
+    server.setRoute("/upload", exchange -> {
+      try {
+        MultipartFormData multipartFormData = MultipartFormData.parseRequest(exchange);
+        formData.complete(multipartFormData);
+      } catch (Exception e) {
+        e.printStackTrace();
+        formData.completeExceptionally(e);
+      }
+      exchange.sendResponseHeaders(200, -1);
+    });
+    page.click("input[type=submit]", new Page.ClickOptions().setTimeout(90_000));
+    List<MultipartFormData.Field> fields = formData.get().fields;
+    assertEquals(1, fields.size());
+    assertEquals("200MB.zip", fields.get(0).filename);
+    assertEquals(200 * 1024 * 1024, fields.get(0).content.length());
+  }}

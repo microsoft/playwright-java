@@ -151,7 +151,6 @@ public class PageImpl extends ChannelOwner implements Page {
     } else if ("download".equals(event)) {
       String artifactGuid = params.getAsJsonObject("artifact").get("guid").getAsString();
       ArtifactImpl artifact = connection.getExistingObject(artifactGuid);
-      artifact.isRemote = browserContext.browser() != null && browserContext.browser().isRemote;
       DownloadImpl download = new DownloadImpl(this, artifact, params);
       listeners.notify(EventType.DOWNLOAD, download);
     } else if ("fileChooser".equals(event)) {
