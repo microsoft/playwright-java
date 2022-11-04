@@ -4,6 +4,7 @@ import com.microsoft.playwright.options.Geolocation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,6 +23,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
 
 
   private BrowserContext persistentContext;
+  @TempDir Path tempDir;
 
   @AfterEach
   private void closePersistentContext() {
@@ -36,12 +38,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
   }
 
   private Page launchPersistent(BrowserType.LaunchPersistentContextOptions options) {
-    Path userDataDir = null;
-    try {
-      userDataDir = Files.createTempDirectory("user-data-dir-");
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    Path userDataDir = tempDir.resolve("user-data-dir");
     assertNull(persistentContext);
     persistentContext = browserType.launchPersistentContext(userDataDir, options);
     return persistentContext.pages().get(0);
@@ -118,7 +115,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
   @Test
   void shouldAcceptUserDataDir() throws IOException {
 // TODO:   test.flaky(browserName === "chromium");
-    Path userDataDir = Files.createTempDirectory("user-data-dir-");
+    Path userDataDir = tempDir.resolve("user-data-dir");
     BrowserContext context = browserType.launchPersistentContext(userDataDir);
     assertTrue(userDataDir.toFile().listFiles().length > 0);
     context.close();
@@ -128,7 +125,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
   @Test
   void shouldRestoreStateFromUserDataDir() throws IOException {
 //  TODO:  test.slow();
-    Path userDataDir = Files.createTempDirectory("user-data-dir-");
+    Path userDataDir = tempDir.resolve("user-data-dir");
     BrowserType.LaunchPersistentContextOptions browserOptions = null;
     BrowserContext browserContext = browserType.launchPersistentContext(userDataDir, browserOptions);
     Page page = browserContext.newPage();
@@ -142,7 +139,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
     assertEquals("hello", page2.evaluate("localStorage.hey"));
     browserContext2.close();
 
-    Path userDataDir2 = Files.createTempDirectory("user-data-dir-");
+    Path userDataDir2 = tempDir.resolve("user-data-dir-2");
     BrowserContext browserContext3 = browserType.launchPersistentContext(userDataDir2, browserOptions);
     Page page3 = browserContext3.newPage();
     page3.navigate(server.EMPTY_PAGE);
@@ -153,7 +150,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
   @Test
   void shouldRestoreCookiesFromUserDataDir() throws IOException {
 // TODO:   test.flaky(browserName === "chromium");
-    Path userDataDir = Files.createTempDirectory("user-data-dir-");
+    Path userDataDir = tempDir.resolve("user-data-dir");
     BrowserType.LaunchPersistentContextOptions browserOptions = null;
     BrowserContext browserContext = browserType.launchPersistentContext(userDataDir, browserOptions);
     Page page = browserContext.newPage();
@@ -171,7 +168,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
     assertEquals("doSomethingOnlyOnce=true", page2.evaluate("() => document.cookie"));
     browserContext2.close();
 
-    Path userDataDir2 = Files.createTempDirectory("user-data-dir-");
+    Path userDataDir2 = tempDir.resolve("user-data-dir-2");
     BrowserContext browserContext3 = browserType.launchPersistentContext(userDataDir2, browserOptions);
     Page page3 = browserContext3.newPage();
     page3.navigate(server.EMPTY_PAGE);
@@ -191,7 +188,7 @@ public class TestDefaultBrowserContext2 extends TestBase {
   void shouldThrowIfPageArgumentIsPassed() throws IOException {
     BrowserType.LaunchPersistentContextOptions options = new BrowserType.LaunchPersistentContextOptions()
       .setArgs(asList(server.EMPTY_PAGE));
-    Path userDataDir = Files.createTempDirectory("user-data-dir-");
+    Path userDataDir = tempDir.resolve("user-data-dir");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       browserType.launchPersistentContext(userDataDir, options);
     });
