@@ -97,7 +97,6 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     }
     playwright.initSharedSelectors(this.connection.getExistingObject("Playwright"));
     BrowserImpl browser = connection.getExistingObject(playwright.initializer.getAsJsonObject("preLaunchedBrowser").get("guid").getAsString());
-    browser.isRemote = true;
     browser.isConnectedOverWebSocket = true;
     browser.browserType = this;
     Consumer<JsonPipe> connectionCloseListener = t -> browser.notifyRemoteClosed();
@@ -132,7 +131,6 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     JsonObject json = sendMessage("connectOverCDP", params).getAsJsonObject();
 
     BrowserImpl browser = connection.getExistingObject(json.getAsJsonObject("browser").get("guid").getAsString());
-    browser.isRemote = true;
     browser.browserType = this;
     if (json.has("defaultContext")) {
       String contextId = json.getAsJsonObject("defaultContext").get("guid").getAsString();

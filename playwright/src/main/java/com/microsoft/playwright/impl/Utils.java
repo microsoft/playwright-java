@@ -165,7 +165,7 @@ class Utils {
   }
 
   static void addLargeFileUploadParams(Path[] files, JsonObject params, BrowserContextImpl context) {
-    if (context.browser().isRemote) {
+    if (context.connection.isRemote) {
       List<WritableStream> streams = new ArrayList<>();
       JsonArray jsonStreams = new JsonArray();
       for (Path path : files) {

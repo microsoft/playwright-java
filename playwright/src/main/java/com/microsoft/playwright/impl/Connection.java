@@ -55,6 +55,7 @@ public class Connection {
   private final Transport transport;
   private final Map<String, ChannelOwner> objects = new HashMap<>();
   private final Root root;
+  final boolean isRemote;
   private int lastId = 0;
   private final StackTraceCollector stackTraceCollector;
   private final Map<Integer, WaitableResult<JsonElement>> callbacks = new HashMap<>();
@@ -81,12 +82,17 @@ public class Connection {
   }
 
   Connection(Transport pipe, Map<String, String> env, LocalUtils localUtils) {
-    this(pipe, env);
+    this(pipe, env, true);
     this.localUtils = localUtils;
   }
 
   Connection(Transport transport, Map<String, String> env) {
+    this(transport, env, false);
+  }
+
+  private Connection(Transport transport, Map<String, String> env, boolean isRemote) {
     this.env = env;
+    this.isRemote = isRemote;
     if (isLogging) {
       transport = new TransportLogger(transport);
     }

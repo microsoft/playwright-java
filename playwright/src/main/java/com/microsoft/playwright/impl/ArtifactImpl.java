@@ -26,7 +26,6 @@ import java.nio.file.Path;
 import static com.microsoft.playwright.impl.Utils.writeToFile;
 
 class ArtifactImpl extends ChannelOwner {
-  boolean isRemote;
   public ArtifactImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
@@ -57,7 +56,7 @@ class ArtifactImpl extends ChannelOwner {
   }
 
   public Path pathAfterFinished() {
-    if (isRemote) {
+    if (connection.isRemote) {
       throw new PlaywrightException("Path is not available when using browserType.connect(). Use download.saveAs() to save a local copy.");
     }
     JsonObject json = sendMessage("pathAfterFinished").getAsJsonObject();
@@ -65,7 +64,7 @@ class ArtifactImpl extends ChannelOwner {
   }
 
   public void saveAs(Path path) {
-    if (isRemote) {
+    if (connection.isRemote) {
       JsonObject jsonObject = sendMessage("saveAsStream").getAsJsonObject();
       Stream stream = connection.getExistingObject(jsonObject.getAsJsonObject("stream").get("guid").getAsString());
       writeToFile(stream.stream(), path);
