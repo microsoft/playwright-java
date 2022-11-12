@@ -69,7 +69,13 @@ class StackTraceCollector {
     if (file == null) {
       return "";
     }
-    return resolveSourcePath(Paths.get(pkg).resolve(file));
+    try {
+      // The file name can contain an arbitrary string which may cause Path implementation
+      // to throw. See https://github.com/microsoft/playwright-java/issues/1115
+      return resolveSourcePath(Paths.get(pkg).resolve(file));
+    } catch (RuntimeException e) {
+      return "";
+    }
   }
 
   private String resolveSourcePath(Path relativePath) {
