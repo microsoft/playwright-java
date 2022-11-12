@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
  * and locate elements in that iframe. FrameLocator can be created with either {@link Page#frameLocator
  * Page.frameLocator()} or {@link Locator#frameLocator Locator.frameLocator()} method.
  * <pre>{@code
- * Locator locator = page.frameLocator("#my-frame").locator("text=Submit");
+ * Locator locator = page.frameLocator("#my-frame").getByText("Submit");
  * locator.click();
  * }</pre>
  *
@@ -52,13 +52,13 @@ public interface FrameLocator {
   class GetByAltTextOptions {
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public GetByAltTextOptions setExact(boolean exact) {
       this.exact = exact;
@@ -68,13 +68,13 @@ public interface FrameLocator {
   class GetByLabelOptions {
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public GetByLabelOptions setExact(boolean exact) {
       this.exact = exact;
@@ -84,13 +84,13 @@ public interface FrameLocator {
   class GetByPlaceholderOptions {
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public GetByPlaceholderOptions setExact(boolean exact) {
       this.exact = exact;
@@ -240,13 +240,13 @@ public interface FrameLocator {
   class GetByTextOptions {
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public GetByTextOptions setExact(boolean exact) {
       this.exact = exact;
@@ -256,13 +256,13 @@ public interface FrameLocator {
   class GetByTitleOptions {
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public GetByTitleOptions setExact(boolean exact) {
       this.exact = exact;
@@ -457,7 +457,34 @@ public interface FrameLocator {
    */
   Locator getByTestId(String testId);
   /**
-   * Allows locating elements that contain given text.
+   * Allows locating elements that contain given text. Consider the following DOM structure:
+   *
+   * <p> You can locate by text substring, exact string, or a regular expression:
+   * <pre>{@code
+   * // Matches <span>
+   * page.getByText("world")
+   *
+   * // Matches first <div>
+   * page.getByText("Hello world")
+   *
+   * // Matches second <div>
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   *
+   * // Matches both <div>s
+   * page.getByText(Pattern.compile("Hello"))
+   *
+   * // Matches second <div>
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * }</pre>
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * turns line breaks into spaces and ignores leading and trailing whitespace.
+   *
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
+   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
@@ -465,13 +492,67 @@ public interface FrameLocator {
     return getByText(text, null);
   }
   /**
-   * Allows locating elements that contain given text.
+   * Allows locating elements that contain given text. Consider the following DOM structure:
+   *
+   * <p> You can locate by text substring, exact string, or a regular expression:
+   * <pre>{@code
+   * // Matches <span>
+   * page.getByText("world")
+   *
+   * // Matches first <div>
+   * page.getByText("Hello world")
+   *
+   * // Matches second <div>
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   *
+   * // Matches both <div>s
+   * page.getByText(Pattern.compile("Hello"))
+   *
+   * // Matches second <div>
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * }</pre>
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * turns line breaks into spaces and ignores leading and trailing whitespace.
+   *
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
+   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
   Locator getByText(String text, GetByTextOptions options);
   /**
-   * Allows locating elements that contain given text.
+   * Allows locating elements that contain given text. Consider the following DOM structure:
+   *
+   * <p> You can locate by text substring, exact string, or a regular expression:
+   * <pre>{@code
+   * // Matches <span>
+   * page.getByText("world")
+   *
+   * // Matches first <div>
+   * page.getByText("Hello world")
+   *
+   * // Matches second <div>
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   *
+   * // Matches both <div>s
+   * page.getByText(Pattern.compile("Hello"))
+   *
+   * // Matches second <div>
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * }</pre>
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * turns line breaks into spaces and ignores leading and trailing whitespace.
+   *
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
+   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
@@ -479,7 +560,34 @@ public interface FrameLocator {
     return getByText(text, null);
   }
   /**
-   * Allows locating elements that contain given text.
+   * Allows locating elements that contain given text. Consider the following DOM structure:
+   *
+   * <p> You can locate by text substring, exact string, or a regular expression:
+   * <pre>{@code
+   * // Matches <span>
+   * page.getByText("world")
+   *
+   * // Matches first <div>
+   * page.getByText("Hello world")
+   *
+   * // Matches second <div>
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   *
+   * // Matches both <div>s
+   * page.getByText(Pattern.compile("Hello"))
+   *
+   * // Matches second <div>
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * }</pre>
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * turns line breaks into spaces and ignores leading and trailing whitespace.
+   *
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
+   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */

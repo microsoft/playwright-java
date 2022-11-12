@@ -407,9 +407,10 @@ public interface BrowserType {
     public Boolean chromiumSandbox;
     /**
      * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "light"}.
+     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Defaults to {@code "light"}.
      */
-    public ColorScheme colorScheme;
+    public Optional<ColorScheme> colorScheme;
     /**
      * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
      */
@@ -441,9 +442,9 @@ public interface BrowserType {
     public Map<String, String> extraHTTPHeaders;
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link Page#emulateMedia
-     * Page.emulateMedia()} for more details. Defaults to {@code "none"}.
+     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code "none"}.
      */
-    public ForcedColors forcedColors;
+    public Optional<ForcedColors> forcedColors;
     public Geolocation geolocation;
     /**
      * Close the browser process on SIGHUP. Defaults to {@code true}.
@@ -548,9 +549,10 @@ public interface BrowserType {
     public RecordVideoSize recordVideoSize;
     /**
      * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
-     * Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "no-preference"}.
+     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to
+     * {@code "no-preference"}.
      */
-    public ReducedMotion reducedMotion;
+    public Optional<ReducedMotion> reducedMotion;
     /**
      * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
      * is set.
@@ -666,10 +668,11 @@ public interface BrowserType {
     }
     /**
      * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "light"}.
+     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Defaults to {@code "light"}.
      */
     public LaunchPersistentContextOptions setColorScheme(ColorScheme colorScheme) {
-      this.colorScheme = colorScheme;
+      this.colorScheme = Optional.ofNullable(colorScheme);
       return this;
     }
     /**
@@ -721,10 +724,10 @@ public interface BrowserType {
     }
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link Page#emulateMedia
-     * Page.emulateMedia()} for more details. Defaults to {@code "none"}.
+     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code "none"}.
      */
     public LaunchPersistentContextOptions setForcedColors(ForcedColors forcedColors) {
-      this.forcedColors = forcedColors;
+      this.forcedColors = Optional.ofNullable(forcedColors);
       return this;
     }
     public LaunchPersistentContextOptions setGeolocation(double latitude, double longitude) {
@@ -927,10 +930,11 @@ public interface BrowserType {
     }
     /**
      * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
-     * Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "no-preference"}.
+     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to
+     * {@code "no-preference"}.
      */
     public LaunchPersistentContextOptions setReducedMotion(ReducedMotion reducedMotion) {
-      this.reducedMotion = reducedMotion;
+      this.reducedMotion = Optional.ofNullable(reducedMotion);
       return this;
     }
     /**

@@ -378,7 +378,7 @@ class Serialization {
     public JsonElement serialize(Optional<?> src, Type typeOfSrc, JsonSerializationContext context) {
       assert isSupported(typeOfSrc) : "Unexpected optional type: " + typeOfSrc.getTypeName();
       if (!src.isPresent()) {
-        return new JsonPrimitive("null");
+        return new JsonPrimitive("no-override");
       }
       return context.serialize(src.get());
     }

@@ -48,7 +48,16 @@ public class PageImpl extends ChannelOwner implements Page {
   private ViewportSize viewport;
   private final Router routes = new Router();
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
-  final ListenerCollection<EventType> listeners = new ListenerCollection<EventType>() {
+  private static final Map<EventType, String> eventSubscriptions() {
+    Map<EventType, String> result = new HashMap<>();
+    result.put(EventType.REQUEST, "request");
+    result.put(EventType.RESPONSE, "response");
+    result.put(EventType.REQUESTFINISHED, "requestFinished");
+    result.put(EventType.REQUESTFAILED, "requestFailed");
+    result.put(EventType.FILECHOOSER, "fileChooser");
+    return result;
+  }
+  final ListenerCollection<EventType> listeners = new ListenerCollection<EventType>(eventSubscriptions(), this) {
     @Override
     void add(EventType eventType, Consumer<?> listener) {
       if (eventType == EventType.FILECHOOSER) {
@@ -617,12 +626,6 @@ public class PageImpl extends ChannelOwner implements Page {
   public void check(String selector, CheckOptions options) {
     withLogging("Page.check",
       () -> mainFrame.checkImpl(selector, convertType(options, Frame.CheckOptions.class)));
-  }
-
-  @Override
-  public void clear(String selector, ClearOptions options) {
-    withLogging("Page.clear",
-      () -> mainFrame.clearImpl(selector, convertType(options, Frame.ClearOptions.class)));
   }
 
   @Override

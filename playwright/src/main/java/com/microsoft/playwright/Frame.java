@@ -243,65 +243,6 @@ public interface Frame {
       return this;
     }
   }
-  class ClearOptions {
-    /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
-     * {@code false}.
-     */
-    public Boolean force;
-    /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
-     */
-    public Boolean noWaitAfter;
-    /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
-     * element, the call throws an exception.
-     */
-    public Boolean strict;
-    /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
-     */
-    public Double timeout;
-
-    /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
-     * {@code false}.
-     */
-    public ClearOptions setForce(boolean force) {
-      this.force = force;
-      return this;
-    }
-    /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
-     */
-    public ClearOptions setNoWaitAfter(boolean noWaitAfter) {
-      this.noWaitAfter = noWaitAfter;
-      return this;
-    }
-    /**
-     * When true, the call requires selector to resolve to a single element. If given selector resolves to more than one
-     * element, the call throws an exception.
-     */
-    public ClearOptions setStrict(boolean strict) {
-      this.strict = strict;
-      return this;
-    }
-    /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
-     */
-    public ClearOptions setTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
   class ClickOptions {
     /**
      * Defaults to {@code left}.
@@ -856,13 +797,13 @@ public interface Frame {
   class GetByAltTextOptions {
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public GetByAltTextOptions setExact(boolean exact) {
       this.exact = exact;
@@ -872,13 +813,13 @@ public interface Frame {
   class GetByLabelOptions {
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public GetByLabelOptions setExact(boolean exact) {
       this.exact = exact;
@@ -888,13 +829,13 @@ public interface Frame {
   class GetByPlaceholderOptions {
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public GetByPlaceholderOptions setExact(boolean exact) {
       this.exact = exact;
@@ -1044,13 +985,13 @@ public interface Frame {
   class GetByTextOptions {
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public GetByTextOptions setExact(boolean exact) {
       this.exact = exact;
@@ -1060,13 +1001,13 @@ public interface Frame {
   class GetByTitleOptions {
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public GetByTitleOptions setExact(boolean exact) {
       this.exact = exact;
@@ -2461,36 +2402,6 @@ public interface Frame {
   void check(String selector, CheckOptions options);
   List<Frame> childFrames();
   /**
-   * This method waits for an element matching {@code selector}, waits for <a
-   * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the element, clears it and
-   * triggers an {@code input} event after clearing.
-   *
-   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
-   * However, if the element is inside the {@code <label>} element that has an associated <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be
-   * cleared instead.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
-   */
-  default void clear(String selector) {
-    clear(selector, null);
-  }
-  /**
-   * This method waits for an element matching {@code selector}, waits for <a
-   * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the element, clears it and
-   * triggers an {@code input} event after clearing.
-   *
-   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
-   * However, if the element is inside the {@code <label>} element that has an associated <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be
-   * cleared instead.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
-   */
-  void clear(String selector, ClearOptions options);
-  /**
    * This method clicks an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
@@ -3215,7 +3126,34 @@ public interface Frame {
    */
   Locator getByTestId(String testId);
   /**
-   * Allows locating elements that contain given text.
+   * Allows locating elements that contain given text. Consider the following DOM structure:
+   *
+   * <p> You can locate by text substring, exact string, or a regular expression:
+   * <pre>{@code
+   * // Matches <span>
+   * page.getByText("world")
+   *
+   * // Matches first <div>
+   * page.getByText("Hello world")
+   *
+   * // Matches second <div>
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   *
+   * // Matches both <div>s
+   * page.getByText(Pattern.compile("Hello"))
+   *
+   * // Matches second <div>
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * }</pre>
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * turns line breaks into spaces and ignores leading and trailing whitespace.
+   *
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
+   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
@@ -3223,13 +3161,67 @@ public interface Frame {
     return getByText(text, null);
   }
   /**
-   * Allows locating elements that contain given text.
+   * Allows locating elements that contain given text. Consider the following DOM structure:
+   *
+   * <p> You can locate by text substring, exact string, or a regular expression:
+   * <pre>{@code
+   * // Matches <span>
+   * page.getByText("world")
+   *
+   * // Matches first <div>
+   * page.getByText("Hello world")
+   *
+   * // Matches second <div>
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   *
+   * // Matches both <div>s
+   * page.getByText(Pattern.compile("Hello"))
+   *
+   * // Matches second <div>
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * }</pre>
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * turns line breaks into spaces and ignores leading and trailing whitespace.
+   *
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
+   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
   Locator getByText(String text, GetByTextOptions options);
   /**
-   * Allows locating elements that contain given text.
+   * Allows locating elements that contain given text. Consider the following DOM structure:
+   *
+   * <p> You can locate by text substring, exact string, or a regular expression:
+   * <pre>{@code
+   * // Matches <span>
+   * page.getByText("world")
+   *
+   * // Matches first <div>
+   * page.getByText("Hello world")
+   *
+   * // Matches second <div>
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   *
+   * // Matches both <div>s
+   * page.getByText(Pattern.compile("Hello"))
+   *
+   * // Matches second <div>
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * }</pre>
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * turns line breaks into spaces and ignores leading and trailing whitespace.
+   *
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
+   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
@@ -3237,7 +3229,34 @@ public interface Frame {
     return getByText(text, null);
   }
   /**
-   * Allows locating elements that contain given text.
+   * Allows locating elements that contain given text. Consider the following DOM structure:
+   *
+   * <p> You can locate by text substring, exact string, or a regular expression:
+   * <pre>{@code
+   * // Matches <span>
+   * page.getByText("world")
+   *
+   * // Matches first <div>
+   * page.getByText("Hello world")
+   *
+   * // Matches second <div>
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   *
+   * // Matches both <div>s
+   * page.getByText(Pattern.compile("Hello"))
+   *
+   * // Matches second <div>
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * }</pre>
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * turns line breaks into spaces and ignores leading and trailing whitespace.
+   *
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
+   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
