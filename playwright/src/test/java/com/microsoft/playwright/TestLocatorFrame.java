@@ -104,7 +104,7 @@ public class TestLocatorFrame extends TestBase {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.frameLocator("iframe").locator("span").click(new Locator.ClickOptions().setTimeout(300));
     });
-    assertTrue(e.getMessage().contains("waiting for frame \"iframe\""), e.getMessage());
+    assertTrue(e.getMessage().contains("waiting for frameLocator('iframe')"), e.getMessage());
   }
 
   @Test
@@ -228,7 +228,7 @@ public class TestLocatorFrame extends TestBase {
     page.navigate(server.EMPTY_PAGE);
     Locator button = page.locator("body").frameLocator("iframe").locator("button");
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> button.waitFor());
-    assertTrue(e.getMessage().contains("Error: strict mode violation: \"body >> iframe\" resolved to 3 elements"), e.getMessage());
+    assertTrue(e.getMessage().contains("Error: strict mode violation: locator(\"body\").locator(\"iframe\") resolved to 3 elements"), e.getMessage());
   }
 
   @Test

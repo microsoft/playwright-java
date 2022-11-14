@@ -1192,27 +1192,31 @@ public interface Page extends AutoCloseable {
   }
   class GetByRoleOptions {
     /**
-     * An attribute that is usually set by {@code aria-checked} or native {@code <input type=checkbox>} controls. Available values for
-     * checked are {@code true}, {@code false} and {@code "mixed"}.
+     * An attribute that is usually set by {@code aria-checked} or native {@code <input type=checkbox>} controls.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-checked">{@code aria-checked}</a>.
      */
     public Boolean checked;
     /**
-     * A boolean attribute that is usually set by {@code aria-disabled} or {@code disabled}.
+     * An attribute that is usually set by {@code aria-disabled} or {@code disabled}.
      *
      * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
      */
     public Boolean disabled;
     /**
-     * A boolean attribute that is usually set by {@code aria-expanded}.
+     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name} is a regular
+     * expression. Note that exact match still trims whitespace.
+     */
+    public Boolean exact;
+    /**
+     * An attribute that is usually set by {@code aria-expanded}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-expanded">{@code aria-expanded}</a>.
      */
     public Boolean expanded;
     /**
-     * A boolean attribute that controls whether hidden elements are matched. By default, only non-hidden elements, as <a
+     * Option that controls whether hidden elements are matched. By default, only non-hidden elements, as <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#tree_exclusion">defined by ARIA</a>, are matched by role selector.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-hidden">{@code aria-hidden}</a>.
@@ -1226,27 +1230,27 @@ public interface Page extends AutoCloseable {
      */
     public Integer level;
     /**
-     * A string attribute that matches <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>. By default,
+     * matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
      */
     public Object name;
     /**
-     * An attribute that is usually set by {@code aria-pressed}. Available values for pressed are {@code true}, {@code false} and {@code "mixed"}.
+     * An attribute that is usually set by {@code aria-pressed}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-pressed">{@code aria-pressed}</a>.
      */
     public Boolean pressed;
     /**
-     * A boolean attribute that is usually set by {@code aria-selected}.
+     * An attribute that is usually set by {@code aria-selected}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-selected">{@code aria-selected}</a>.
      */
     public Boolean selected;
 
     /**
-     * An attribute that is usually set by {@code aria-checked} or native {@code <input type=checkbox>} controls. Available values for
-     * checked are {@code true}, {@code false} and {@code "mixed"}.
+     * An attribute that is usually set by {@code aria-checked} or native {@code <input type=checkbox>} controls.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-checked">{@code aria-checked}</a>.
      */
@@ -1255,7 +1259,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * A boolean attribute that is usually set by {@code aria-disabled} or {@code disabled}.
+     * An attribute that is usually set by {@code aria-disabled} or {@code disabled}.
      *
      * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
@@ -1265,7 +1269,15 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * A boolean attribute that is usually set by {@code aria-expanded}.
+     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name} is a regular
+     * expression. Note that exact match still trims whitespace.
+     */
+    public GetByRoleOptions setExact(boolean exact) {
+      this.exact = exact;
+      return this;
+    }
+    /**
+     * An attribute that is usually set by {@code aria-expanded}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-expanded">{@code aria-expanded}</a>.
      */
@@ -1274,7 +1286,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * A boolean attribute that controls whether hidden elements are matched. By default, only non-hidden elements, as <a
+     * Option that controls whether hidden elements are matched. By default, only non-hidden elements, as <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#tree_exclusion">defined by ARIA</a>, are matched by role selector.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-hidden">{@code aria-hidden}</a>.
@@ -1294,7 +1306,8 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * A string attribute that matches <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>. By default,
+     * matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
      */
@@ -1303,7 +1316,8 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * A string attribute that matches <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>. By default,
+     * matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
      */
@@ -1312,7 +1326,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * An attribute that is usually set by {@code aria-pressed}. Available values for pressed are {@code true}, {@code false} and {@code "mixed"}.
+     * An attribute that is usually set by {@code aria-pressed}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-pressed">{@code aria-pressed}</a>.
      */
@@ -1321,7 +1335,7 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * A boolean attribute that is usually set by {@code aria-selected}.
+     * An attribute that is usually set by {@code aria-selected}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-selected">{@code aria-selected}</a>.
      */
