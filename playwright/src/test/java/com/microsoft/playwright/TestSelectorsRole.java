@@ -297,16 +297,19 @@ public class TestSelectorsRole extends TestBase {
 
   @Test
   void shouldSupportName() {
-    page.setContent("<div role=\"button\" aria-label=\"Hello\"></div>\n" +
+    page.setContent("<div role=\"button\" aria-label=\" Hello \"></div>\n" +
       "    <div role=\"button\" aria-label=\"Hallo\"></div>\n" +
       "    <div role=\"button\" aria-label=\"Hello\" aria-hidden=\"true\"></div>\n" +
       "    <div role=\"button\" aria-label=\"123\" aria-hidden=\"true\"></div>\n" +
       "    <div role=\"button\" aria-label='foo\"bar' aria-hidden=\"true\"></div>");
     assertEquals(asList(
-      "<div role=\"button\" aria-label=\"Hello\"></div>"
+      "<div role=\"button\" aria-label=\" Hello \"></div>"
       ), page.locator("role=button[name='Hello']").evaluateAll("els => els.map(e => e.outerHTML)"));
     assertEquals(asList(
-      "<div role=\"button\" aria-label=\"Hello\"></div>"
+      "<div role=\"button\" aria-label=\" Hello \"></div>"
+    ), page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(" \n Hello ")).evaluateAll("els => els.map(e => e.outerHTML)"));
+    assertEquals(asList(
+      "<div role=\"button\" aria-label=\" Hello \"></div>"
     ), page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Hello")).evaluateAll("els => els.map(e => e.outerHTML)"));
 
     assertEquals(asList(
@@ -314,38 +317,38 @@ public class TestSelectorsRole extends TestBase {
     ), page.locator("role=button[name*='all']").evaluateAll("els => els.map(e => e.outerHTML)"));
 
     assertEquals(asList(
-      "<div role=\"button\" aria-label=\"Hello\"></div>",
+      "<div role=\"button\" aria-label=\" Hello \"></div>",
       "<div role=\"button\" aria-label=\"Hallo\"></div>"
     ), page.locator("role=button[name=/^H[ae]llo$/]").evaluateAll("els => els.map(e => e.outerHTML)"));
     assertEquals(asList(
-      "<div role=\"button\" aria-label=\"Hello\"></div>",
+      "<div role=\"button\" aria-label=\" Hello \"></div>",
       "<div role=\"button\" aria-label=\"Hallo\"></div>"
     ), page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(Pattern.compile("^H[ae]llo$"))).evaluateAll("els => els.map(e => e.outerHTML)"));
 
     assertEquals(asList(
-      "<div role=\"button\" aria-label=\"Hello\"></div>",
+      "<div role=\"button\" aria-label=\" Hello \"></div>",
       "<div role=\"button\" aria-label=\"Hallo\"></div>"
     ), page.locator("role=button[name=/h.*o/i]").evaluateAll("els => els.map(e => e.outerHTML)"));
     assertEquals(asList(
-      "<div role=\"button\" aria-label=\"Hello\"></div>",
+      "<div role=\"button\" aria-label=\" Hello \"></div>",
       "<div role=\"button\" aria-label=\"Hallo\"></div>"
     ), page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(Pattern.compile("h.*o", Pattern.CASE_INSENSITIVE))).evaluateAll("els => els.map(e => e.outerHTML)"));
 
     assertEquals(asList(
-      "<div role=\"button\" aria-label=\"Hello\"></div>",
+      "<div role=\"button\" aria-label=\" Hello \"></div>",
       "<div role=\"button\" aria-label=\"Hello\" aria-hidden=\"true\"></div>"
       ), page.locator("role=button[name='Hello'][include-hidden]").evaluateAll("els => els.map(e => e.outerHTML)"));
     assertEquals(asList(
-      "<div role=\"button\" aria-label=\"Hello\"></div>",
+      "<div role=\"button\" aria-label=\" Hello \"></div>",
       "<div role=\"button\" aria-label=\"Hello\" aria-hidden=\"true\"></div>"
       ), page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Hello").setIncludeHidden(true)).evaluateAll("els => els.map(e => e.outerHTML)"));
     assertEquals(asList(
-      "<div role=\"button\" aria-label=\"Hello\"></div>",
+      "<div role=\"button\" aria-label=\" Hello \"></div>",
       "<div role=\"button\" aria-label=\"Hello\" aria-hidden=\"true\"></div>"
       ), page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("hello").setIncludeHidden(true)).evaluateAll("els => els.map(e => e.outerHTML)"));
 
     assertEquals(asList(
-      "<div role=\"button\" aria-label=\"Hello\"></div>"
+      "<div role=\"button\" aria-label=\" Hello \"></div>"
       ), page.locator("role=button[name=Hello]").evaluateAll("els => els.map(e => e.outerHTML)"));
     assertEquals(asList(
       "<div role=\"button\" aria-label=\"123\" aria-hidden=\"true\"></div>"
