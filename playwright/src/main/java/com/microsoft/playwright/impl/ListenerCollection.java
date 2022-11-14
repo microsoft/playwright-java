@@ -16,14 +16,23 @@
 
 package com.microsoft.playwright.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import com.google.gson.JsonObject;
+
+import java.util.*;
 import java.util.function.Consumer;
 
 class ListenerCollection <EventType> {
   private final HashMap<EventType, List<Consumer<?>>> listeners = new HashMap<>();
+  private final Map<EventType, String> eventSubscriptions;
+  private final ChannelOwner channelOwner;
+
+  ListenerCollection() {
+    this(null, null);
+  }
+  ListenerCollection(Map<EventType, String> eventSubscriptions, ChannelOwner channelOwner) {
+    this.eventSubscriptions = eventSubscriptions;
+    this.channelOwner = channelOwner;
+  }
 
   <T> void notify(EventType eventType, T param) {
     List<Consumer<?>> list = listeners.get(eventType);
@@ -41,6 +50,7 @@ class ListenerCollection <EventType> {
     if (list == null) {
       list = new ArrayList<>();
       listeners.put(type, list);
+      updateSubscription(type, true);
     }
     list.add(listener);
   }
@@ -52,11 +62,26 @@ class ListenerCollection <EventType> {
     }
     list.removeAll(Collections.singleton(listener));
     if (list.isEmpty()) {
+      updateSubscription(type, false);
       listeners.remove(type);
     }
   }
 
   boolean hasListeners(EventType type) {
     return listeners.containsKey(type);
+  }
+
+  private void updateSubscription(EventType eventType, boolean enabled) {
+    if (eventSubscriptions == null) {
+      return;
+    }
+    String protocolEvent = eventSubscriptions.get(eventType);
+    if (protocolEvent == null) {
+      return;
+    }
+    JsonObject params = new JsonObject();
+    params.addProperty("event", protocolEvent);
+    params.addProperty("enabled", enabled);
+    channelOwner.sendMessageAsync("updateSubscription", params);
   }
 }

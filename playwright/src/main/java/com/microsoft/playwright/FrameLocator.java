@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
  * and locate elements in that iframe. FrameLocator can be created with either {@link Page#frameLocator
  * Page.frameLocator()} or {@link Locator#frameLocator Locator.frameLocator()} method.
  * <pre>{@code
- * Locator locator = page.frameLocator("#my-frame").locator("text=Submit");
+ * Locator locator = page.frameLocator("#my-frame").getByText("Submit");
  * locator.click();
  * }</pre>
  *
@@ -52,13 +52,13 @@ public interface FrameLocator {
   class GetByAltTextOptions {
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public GetByAltTextOptions setExact(boolean exact) {
       this.exact = exact;
@@ -68,13 +68,13 @@ public interface FrameLocator {
   class GetByLabelOptions {
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public GetByLabelOptions setExact(boolean exact) {
       this.exact = exact;
@@ -84,13 +84,13 @@ public interface FrameLocator {
   class GetByPlaceholderOptions {
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public GetByPlaceholderOptions setExact(boolean exact) {
       this.exact = exact;
@@ -99,27 +99,31 @@ public interface FrameLocator {
   }
   class GetByRoleOptions {
     /**
-     * An attribute that is usually set by {@code aria-checked} or native {@code <input type=checkbox>} controls. Available values for
-     * checked are {@code true}, {@code false} and {@code "mixed"}.
+     * An attribute that is usually set by {@code aria-checked} or native {@code <input type=checkbox>} controls.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-checked">{@code aria-checked}</a>.
      */
     public Boolean checked;
     /**
-     * A boolean attribute that is usually set by {@code aria-disabled} or {@code disabled}.
+     * An attribute that is usually set by {@code aria-disabled} or {@code disabled}.
      *
      * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
      */
     public Boolean disabled;
     /**
-     * A boolean attribute that is usually set by {@code aria-expanded}.
+     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name} is a regular
+     * expression. Note that exact match still trims whitespace.
+     */
+    public Boolean exact;
+    /**
+     * An attribute that is usually set by {@code aria-expanded}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-expanded">{@code aria-expanded}</a>.
      */
     public Boolean expanded;
     /**
-     * A boolean attribute that controls whether hidden elements are matched. By default, only non-hidden elements, as <a
+     * Option that controls whether hidden elements are matched. By default, only non-hidden elements, as <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#tree_exclusion">defined by ARIA</a>, are matched by role selector.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-hidden">{@code aria-hidden}</a>.
@@ -133,27 +137,27 @@ public interface FrameLocator {
      */
     public Integer level;
     /**
-     * A string attribute that matches <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>. By default,
+     * matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
      */
     public Object name;
     /**
-     * An attribute that is usually set by {@code aria-pressed}. Available values for pressed are {@code true}, {@code false} and {@code "mixed"}.
+     * An attribute that is usually set by {@code aria-pressed}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-pressed">{@code aria-pressed}</a>.
      */
     public Boolean pressed;
     /**
-     * A boolean attribute that is usually set by {@code aria-selected}.
+     * An attribute that is usually set by {@code aria-selected}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-selected">{@code aria-selected}</a>.
      */
     public Boolean selected;
 
     /**
-     * An attribute that is usually set by {@code aria-checked} or native {@code <input type=checkbox>} controls. Available values for
-     * checked are {@code true}, {@code false} and {@code "mixed"}.
+     * An attribute that is usually set by {@code aria-checked} or native {@code <input type=checkbox>} controls.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-checked">{@code aria-checked}</a>.
      */
@@ -162,7 +166,7 @@ public interface FrameLocator {
       return this;
     }
     /**
-     * A boolean attribute that is usually set by {@code aria-disabled} or {@code disabled}.
+     * An attribute that is usually set by {@code aria-disabled} or {@code disabled}.
      *
      * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
@@ -172,7 +176,15 @@ public interface FrameLocator {
       return this;
     }
     /**
-     * A boolean attribute that is usually set by {@code aria-expanded}.
+     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name} is a regular
+     * expression. Note that exact match still trims whitespace.
+     */
+    public GetByRoleOptions setExact(boolean exact) {
+      this.exact = exact;
+      return this;
+    }
+    /**
+     * An attribute that is usually set by {@code aria-expanded}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-expanded">{@code aria-expanded}</a>.
      */
@@ -181,7 +193,7 @@ public interface FrameLocator {
       return this;
     }
     /**
-     * A boolean attribute that controls whether hidden elements are matched. By default, only non-hidden elements, as <a
+     * Option that controls whether hidden elements are matched. By default, only non-hidden elements, as <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#tree_exclusion">defined by ARIA</a>, are matched by role selector.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-hidden">{@code aria-hidden}</a>.
@@ -201,7 +213,8 @@ public interface FrameLocator {
       return this;
     }
     /**
-     * A string attribute that matches <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>. By default,
+     * matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
      */
@@ -210,7 +223,8 @@ public interface FrameLocator {
       return this;
     }
     /**
-     * A string attribute that matches <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+     * Option to match the <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>. By default,
+     * matching is case-insensitive and searches for a substring, use {@code exact} to control this behavior.
      *
      * <p> Learn more about <a href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
      */
@@ -219,7 +233,7 @@ public interface FrameLocator {
       return this;
     }
     /**
-     * An attribute that is usually set by {@code aria-pressed}. Available values for pressed are {@code true}, {@code false} and {@code "mixed"}.
+     * An attribute that is usually set by {@code aria-pressed}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-pressed">{@code aria-pressed}</a>.
      */
@@ -228,7 +242,7 @@ public interface FrameLocator {
       return this;
     }
     /**
-     * A boolean attribute that is usually set by {@code aria-selected}.
+     * An attribute that is usually set by {@code aria-selected}.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-selected">{@code aria-selected}</a>.
      */
@@ -240,13 +254,13 @@ public interface FrameLocator {
   class GetByTextOptions {
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public GetByTextOptions setExact(boolean exact) {
       this.exact = exact;
@@ -256,13 +270,13 @@ public interface FrameLocator {
   class GetByTitleOptions {
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
 
     /**
      * Whether to find an exact match: case-sensitive and whole-string. Default to false. Ignored when locating by a regular
-     * expression.
+     * expression. Note that exact match still trims whitespace.
      */
     public GetByTitleOptions setExact(boolean exact) {
       this.exact = exact;
@@ -457,7 +471,34 @@ public interface FrameLocator {
    */
   Locator getByTestId(String testId);
   /**
-   * Allows locating elements that contain given text.
+   * Allows locating elements that contain given text. Consider the following DOM structure:
+   *
+   * <p> You can locate by text substring, exact string, or a regular expression:
+   * <pre>{@code
+   * // Matches <span>
+   * page.getByText("world")
+   *
+   * // Matches first <div>
+   * page.getByText("Hello world")
+   *
+   * // Matches second <div>
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   *
+   * // Matches both <div>s
+   * page.getByText(Pattern.compile("Hello"))
+   *
+   * // Matches second <div>
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * }</pre>
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * turns line breaks into spaces and ignores leading and trailing whitespace.
+   *
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
+   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
@@ -465,13 +506,67 @@ public interface FrameLocator {
     return getByText(text, null);
   }
   /**
-   * Allows locating elements that contain given text.
+   * Allows locating elements that contain given text. Consider the following DOM structure:
+   *
+   * <p> You can locate by text substring, exact string, or a regular expression:
+   * <pre>{@code
+   * // Matches <span>
+   * page.getByText("world")
+   *
+   * // Matches first <div>
+   * page.getByText("Hello world")
+   *
+   * // Matches second <div>
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   *
+   * // Matches both <div>s
+   * page.getByText(Pattern.compile("Hello"))
+   *
+   * // Matches second <div>
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * }</pre>
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * turns line breaks into spaces and ignores leading and trailing whitespace.
+   *
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
+   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
   Locator getByText(String text, GetByTextOptions options);
   /**
-   * Allows locating elements that contain given text.
+   * Allows locating elements that contain given text. Consider the following DOM structure:
+   *
+   * <p> You can locate by text substring, exact string, or a regular expression:
+   * <pre>{@code
+   * // Matches <span>
+   * page.getByText("world")
+   *
+   * // Matches first <div>
+   * page.getByText("Hello world")
+   *
+   * // Matches second <div>
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   *
+   * // Matches both <div>s
+   * page.getByText(Pattern.compile("Hello"))
+   *
+   * // Matches second <div>
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * }</pre>
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * turns line breaks into spaces and ignores leading and trailing whitespace.
+   *
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
+   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
@@ -479,7 +574,34 @@ public interface FrameLocator {
     return getByText(text, null);
   }
   /**
-   * Allows locating elements that contain given text.
+   * Allows locating elements that contain given text. Consider the following DOM structure:
+   *
+   * <p> You can locate by text substring, exact string, or a regular expression:
+   * <pre>{@code
+   * // Matches <span>
+   * page.getByText("world")
+   *
+   * // Matches first <div>
+   * page.getByText("Hello world")
+   *
+   * // Matches second <div>
+   * page.getByText("Hello", new Page.GetByTextOptions().setExact(true))
+   *
+   * // Matches both <div>s
+   * page.getByText(Pattern.compile("Hello"))
+   *
+   * // Matches second <div>
+   * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
+   * }</pre>
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * turns line breaks into spaces and ignores leading and trailing whitespace.
+   *
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
+   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */

@@ -1,13 +1,14 @@
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.AriaRole;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSelectorsGetBy extends TestBase {
   @Test
@@ -138,5 +139,36 @@ public class TestSelectorsGetBy extends TestBase {
     assertThat(page.getByPlaceholder("hello my\nworld")).hasAttribute("id", "control");
     assertThat(page.getByAltText("hello my\nworld")).hasAttribute("id", "control");
     assertThat(page.getByTitle("hello my\nworld")).hasAttribute("id", "control");
+  }
+
+  @Test
+  void getByRoleEscaping() {
+    page.setContent("<a href=\"https://playwright.dev\">issues 123</a>\n" +
+      "    <a href=\"https://playwright.dev\">he llo 56</a>\n" +
+      "    <button>Click me</button>");
+    assertEquals(
+      asList("<button>Click me</button>"),
+      page.getByRole(AriaRole.BUTTON).evaluateAll("els => els.map(e => e.outerHTML)"));
+    assertEquals(
+      asList("<a href=\"https://playwright.dev\">issues 123</a>", "<a href=\"https://playwright.dev\">he llo 56</a>"),
+      page.getByRole(AriaRole.LINK).evaluateAll("els => els.map(e => e.outerHTML)"));
+    assertEquals(
+      asList("<a href=\"https://playwright.dev\">issues 123</a>"),
+      page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("issues 123")).evaluateAll("els => els.map(e => e.outerHTML)"));
+    assertEquals(
+      asList("<a href=\"https://playwright.dev\">issues 123</a>"),
+      page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("sues")).evaluateAll("els => els.map(e => e.outerHTML)"));
+    assertEquals(
+      asList("<a href=\"https://playwright.dev\">he llo 56</a>"),
+        page.getByRole( AriaRole.LINK, new Page.GetByRoleOptions().setName("  he    \n  llo ")).evaluateAll("els => els.map(e => e.outerHTML)"));
+    assertEquals(
+      asList(),
+      page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("issues")).evaluateAll("els => els.map(e => e.outerHTML)"));
+    assertEquals(
+      asList(),
+      page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("sues").setExact(true)).evaluateAll("els => els.map(e => e.outerHTML)"));
+    assertEquals(
+      asList("<a href=\"https://playwright.dev\">he llo 56</a>"),
+      page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("   he \n llo 56 ").setExact(true)).evaluateAll("els => els.map(e => e.outerHTML)"));
   }
 }

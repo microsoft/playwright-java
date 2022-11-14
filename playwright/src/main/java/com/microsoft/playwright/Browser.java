@@ -81,9 +81,10 @@ public interface Browser extends AutoCloseable {
     public Boolean bypassCSP;
     /**
      * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "light"}.
+     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Defaults to {@code "light"}.
      */
-    public ColorScheme colorScheme;
+    public Optional<ColorScheme> colorScheme;
     /**
      * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
      */
@@ -94,9 +95,9 @@ public interface Browser extends AutoCloseable {
     public Map<String, String> extraHTTPHeaders;
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link Page#emulateMedia
-     * Page.emulateMedia()} for more details. Defaults to {@code "none"}.
+     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code "none"}.
      */
-    public ForcedColors forcedColors;
+    public Optional<ForcedColors> forcedColors;
     public Geolocation geolocation;
     /**
      * Specifies if viewport supports touch events. Defaults to false.
@@ -176,9 +177,10 @@ public interface Browser extends AutoCloseable {
     public RecordVideoSize recordVideoSize;
     /**
      * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
-     * Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "no-preference"}.
+     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to
+     * {@code "no-preference"}.
      */
-    public ReducedMotion reducedMotion;
+    public Optional<ReducedMotion> reducedMotion;
     /**
      * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
      * is set.
@@ -258,10 +260,11 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "light"}.
+     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Defaults to {@code "light"}.
      */
     public NewContextOptions setColorScheme(ColorScheme colorScheme) {
-      this.colorScheme = colorScheme;
+      this.colorScheme = Optional.ofNullable(colorScheme);
       return this;
     }
     /**
@@ -280,10 +283,10 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link Page#emulateMedia
-     * Page.emulateMedia()} for more details. Defaults to {@code "none"}.
+     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code "none"}.
      */
     public NewContextOptions setForcedColors(ForcedColors forcedColors) {
-      this.forcedColors = forcedColors;
+      this.forcedColors = Optional.ofNullable(forcedColors);
       return this;
     }
     public NewContextOptions setGeolocation(double latitude, double longitude) {
@@ -447,10 +450,11 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
-     * Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "no-preference"}.
+     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to
+     * {@code "no-preference"}.
      */
     public NewContextOptions setReducedMotion(ReducedMotion reducedMotion) {
-      this.reducedMotion = reducedMotion;
+      this.reducedMotion = Optional.ofNullable(reducedMotion);
       return this;
     }
     /**
@@ -561,9 +565,10 @@ public interface Browser extends AutoCloseable {
     public Boolean bypassCSP;
     /**
      * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "light"}.
+     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Defaults to {@code "light"}.
      */
-    public ColorScheme colorScheme;
+    public Optional<ColorScheme> colorScheme;
     /**
      * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
      */
@@ -574,9 +579,9 @@ public interface Browser extends AutoCloseable {
     public Map<String, String> extraHTTPHeaders;
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link Page#emulateMedia
-     * Page.emulateMedia()} for more details. Defaults to {@code "none"}.
+     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code "none"}.
      */
-    public ForcedColors forcedColors;
+    public Optional<ForcedColors> forcedColors;
     public Geolocation geolocation;
     /**
      * Specifies if viewport supports touch events. Defaults to false.
@@ -656,9 +661,10 @@ public interface Browser extends AutoCloseable {
     public RecordVideoSize recordVideoSize;
     /**
      * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
-     * Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "no-preference"}.
+     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to
+     * {@code "no-preference"}.
      */
-    public ReducedMotion reducedMotion;
+    public Optional<ReducedMotion> reducedMotion;
     /**
      * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
      * is set.
@@ -738,10 +744,11 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "light"}.
+     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Defaults to {@code "light"}.
      */
     public NewPageOptions setColorScheme(ColorScheme colorScheme) {
-      this.colorScheme = colorScheme;
+      this.colorScheme = Optional.ofNullable(colorScheme);
       return this;
     }
     /**
@@ -760,10 +767,10 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link Page#emulateMedia
-     * Page.emulateMedia()} for more details. Defaults to {@code "none"}.
+     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code "none"}.
      */
     public NewPageOptions setForcedColors(ForcedColors forcedColors) {
-      this.forcedColors = forcedColors;
+      this.forcedColors = Optional.ofNullable(forcedColors);
       return this;
     }
     public NewPageOptions setGeolocation(double latitude, double longitude) {
@@ -927,10 +934,11 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
-     * Page#emulateMedia Page.emulateMedia()} for more details. Defaults to {@code "no-preference"}.
+     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to
+     * {@code "no-preference"}.
      */
     public NewPageOptions setReducedMotion(ReducedMotion reducedMotion) {
-      this.reducedMotion = reducedMotion;
+      this.reducedMotion = Optional.ofNullable(reducedMotion);
       return this;
     }
     /**

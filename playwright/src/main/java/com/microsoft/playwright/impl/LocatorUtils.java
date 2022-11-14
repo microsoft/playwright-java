@@ -73,7 +73,7 @@ public class LocatorUtils {
       if (options.name != null) {
         String name;
         if (options.name instanceof String) {
-          name = escapeForAttributeSelector((String) options.name, false);
+          name = escapeForAttributeSelector((String) options.name, options.exact != null && options.exact);
         } else if (options.name instanceof Pattern) {
           name = toJsRegExp((Pattern) options.name);
         } else {

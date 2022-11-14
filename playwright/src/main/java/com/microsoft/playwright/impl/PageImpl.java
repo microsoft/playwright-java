@@ -48,23 +48,16 @@ public class PageImpl extends ChannelOwner implements Page {
   private ViewportSize viewport;
   private final Router routes = new Router();
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
-  final ListenerCollection<EventType> listeners = new ListenerCollection<EventType>() {
-    @Override
-    void add(EventType eventType, Consumer<?> listener) {
-      if (eventType == EventType.FILECHOOSER) {
-        willAddFileChooserListener();
-      }
-      super.add(eventType, listener);
-    }
-
-    @Override
-    void remove(EventType eventType, Consumer<?> listener) {
-      super.remove(eventType, listener);
-      if (eventType == EventType.FILECHOOSER) {
-        didRemoveFileChooserListener();
-      }
-    }
-  };
+  private static final Map<EventType, String> eventSubscriptions() {
+    Map<EventType, String> result = new HashMap<>();
+    result.put(EventType.REQUEST, "request");
+    result.put(EventType.RESPONSE, "response");
+    result.put(EventType.REQUESTFINISHED, "requestFinished");
+    result.put(EventType.REQUESTFAILED, "requestFailed");
+    result.put(EventType.FILECHOOSER, "fileChooser");
+    return result;
+  }
+  final ListenerCollection<EventType> listeners = new ListenerCollection<EventType>(eventSubscriptions(), this);
   final Map<String, BindingCallback> bindings = new HashMap<>();
   BrowserContextImpl ownedContext;
   private boolean isClosed;
@@ -230,24 +223,6 @@ public class PageImpl extends ChannelOwner implements Page {
     isClosed = true;
     browserContext.pages.remove(this);
     listeners.notify(EventType.CLOSE, this);
-  }
-
-  private void willAddFileChooserListener() {
-    if (!listeners.hasListeners(EventType.FILECHOOSER)) {
-      updateFileChooserInterception(true);
-    }
-  }
-
-  private void didRemoveFileChooserListener() {
-    if (!listeners.hasListeners(EventType.FILECHOOSER)) {
-      updateFileChooserInterception(false);
-    }
-  }
-
-  private void updateFileChooserInterception(boolean enabled) {
-    JsonObject params = new JsonObject();
-    params.addProperty("intercepted", enabled);
-    sendMessage("setFileChooserInterceptedNoReply", params);
   }
 
   @Override
@@ -617,12 +592,6 @@ public class PageImpl extends ChannelOwner implements Page {
   public void check(String selector, CheckOptions options) {
     withLogging("Page.check",
       () -> mainFrame.checkImpl(selector, convertType(options, Frame.CheckOptions.class)));
-  }
-
-  @Override
-  public void clear(String selector, ClearOptions options) {
-    withLogging("Page.clear",
-      () -> mainFrame.clearImpl(selector, convertType(options, Frame.ClearOptions.class)));
   }
 
   @Override

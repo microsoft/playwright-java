@@ -83,14 +83,4 @@ public class TestElementHandleMisc extends TestBase {
     input.setChecked(false);
     assertEquals(false, page.evaluate("checkbox.checked"));
   }
-
-  @Test
-  void shouldClearInput() {
-    page.navigate(server.PREFIX + "/input/textarea.html");
-    ElementHandle handle = page.querySelector("input");
-    handle.fill("some value");
-    assertEquals("some value", page.evaluate("() => window['result']"));
-    handle.clear();
-    assertEquals("", page.evaluate("() => window['result']"));
-  }
 }

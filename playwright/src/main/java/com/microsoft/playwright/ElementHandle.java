@@ -138,52 +138,6 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
   }
-  class ClearOptions {
-    /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
-     * {@code false}.
-     */
-    public Boolean force;
-    /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
-     */
-    public Boolean noWaitAfter;
-    /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
-     */
-    public Double timeout;
-
-    /**
-     * Whether to bypass the <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks. Defaults to
-     * {@code false}.
-     */
-    public ClearOptions setForce(boolean force) {
-      this.force = force;
-      return this;
-    }
-    /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
-     */
-    public ClearOptions setNoWaitAfter(boolean noWaitAfter) {
-      this.noWaitAfter = noWaitAfter;
-      return this;
-    }
-    /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
-     */
-    public ClearOptions setTimeout(double timeout) {
-      this.timeout = timeout;
-      return this;
-    }
-  }
   class ClickOptions {
     /**
      * Defaults to {@code left}.
@@ -1330,28 +1284,6 @@ public interface ElementHandle extends JSHandle {
    * zero timeout disables this.
    */
   void check(CheckOptions options);
-  /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
-   * element, clears it and triggers an {@code input} event after clearing.
-   *
-   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
-   * However, if the element is inside the {@code <label>} element that has an associated <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be
-   * cleared instead.
-   */
-  default void clear() {
-    clear(null);
-  }
-  /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
-   * element, clears it and triggers an {@code input} event after clearing.
-   *
-   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
-   * However, if the element is inside the {@code <label>} element that has an associated <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be
-   * cleared instead.
-   */
-  void clear(ClearOptions options);
   /**
    * This method clicks the element by performing the following steps:
    * <ol>

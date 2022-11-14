@@ -49,7 +49,15 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private boolean isClosedOrClosing;
   final Map<String, BindingCallback> bindings = new HashMap<>();
   PageImpl ownerPage;
-  private final ListenerCollection<EventType> listeners = new ListenerCollection<>();
+  private static final Map<EventType, String> eventSubscriptions() {
+    Map<EventType, String> result = new HashMap<>();
+    result.put(EventType.REQUEST, "request");
+    result.put(EventType.RESPONSE, "response");
+    result.put(EventType.REQUESTFINISHED, "requestFinished");
+    result.put(EventType.REQUESTFAILED, "requestFailed");
+    return result;
+  }
+  private final ListenerCollection<EventType> listeners = new ListenerCollection<>(eventSubscriptions(), this);
   final TimeoutSettings timeoutSettings = new TimeoutSettings();
   Path videosDir;
   URL baseUrl;
