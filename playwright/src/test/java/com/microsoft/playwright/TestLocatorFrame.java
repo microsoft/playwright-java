@@ -104,7 +104,7 @@ public class TestLocatorFrame extends TestBase {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.frameLocator("iframe").locator("span").click(new Locator.ClickOptions().setTimeout(300));
     });
-    assertTrue(e.getMessage().contains("waiting for frameLocator('iframe')"), e.getMessage());
+    assertTrue(e.getMessage().contains("waiting for frameLocator(\"iframe\")"), e.getMessage());
   }
 
   @Test
