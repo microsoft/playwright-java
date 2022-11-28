@@ -245,7 +245,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator getByRole(AriaRole role, GetByRoleOptions options) {
-    return null;
+    return locator(getByRoleSelector(role, options));
   }
 
   @Override
