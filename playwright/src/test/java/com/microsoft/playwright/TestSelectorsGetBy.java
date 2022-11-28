@@ -171,4 +171,12 @@ public class TestSelectorsGetBy extends TestBase {
       asList("<a href=\"https://playwright.dev\">he llo 56</a>"),
       page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("   he \n llo 56 ").setExact(true)).evaluateAll("els => els.map(e => e.outerHTML)"));
   }
+
+  @Test
+  void locatorGetByRole() {
+    page.setContent("<div><button>Click me</button></div>");
+    assertEquals(
+      asList("<button>Click me</button>"),
+      page.locator("div").getByRole(AriaRole.BUTTON).evaluateAll("els => els.map(e => e.outerHTML)"));
+  }
 }
