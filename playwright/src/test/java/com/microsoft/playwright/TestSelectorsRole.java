@@ -153,26 +153,35 @@ public class TestSelectorsRole extends TestBase {
 
   @Test
   void shouldSupportExpanded() {
-    page.setContent("<button>Hi</button>\n" +
-      "    <button aria-expanded=\"true\">Hello</button>\n" +
-      "    <button aria-expanded=\"false\">Bye</button>");
+    page.setContent("<div role=\"treeitem\">Hi</div>\n" +
+      "    <div role=\"treeitem\" aria-expanded=\"true\">Hello</div>\n" +
+      "    <div role=\"treeitem\" aria-expanded=\"false\">Bye</div>");
     assertEquals(asList(
-      "<button aria-expanded=\"true\">Hello</button>"
-    ), page.locator("role=button[expanded]").evaluateAll("els => els.map(e => e.outerHTML)"));
+      "<div role=\"treeitem\">Hi</div>",
+      "<div role=\"treeitem\" aria-expanded=\"true\">Hello</div>",
+      "<div role=\"treeitem\" aria-expanded=\"false\">Bye</div>"
+    ), page.locator("role=treeitem").evaluateAll("els => els.map(e => e.outerHTML)"));
     assertEquals(asList(
-      "<button aria-expanded=\"true\">Hello</button>"
-    ), page.locator("role=button[expanded=true]").evaluateAll("els => els.map(e => e.outerHTML)"));
-    assertEquals(asList(
-      "<button aria-expanded=\"true\">Hello</button>"
-    ), page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setExpanded(true)).evaluateAll("els => els.map(e => e.outerHTML)"));
-    assertEquals(asList(
-      "<button>Hi</button>",
-      "<button aria-expanded=\"false\">Bye</button>"
-    ), page.locator("role=button[expanded=false]").evaluateAll("els => els.map(e => e.outerHTML)"));
-    assertEquals(asList(
-      "<button>Hi</button>",
-      "<button aria-expanded=\"false\">Bye</button>"
-    ), page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setExpanded(false)).evaluateAll("els => els.map(e => e.outerHTML)"));
+      "<div role=\"treeitem\">Hi</div>",
+      "<div role=\"treeitem\" aria-expanded=\"true\">Hello</div>",
+      "<div role=\"treeitem\" aria-expanded=\"false\">Bye</div>"
+    ), page.getByRole(AriaRole.TREEITEM).evaluateAll("els => els.map(e => e.outerHTML)"));
+
+    assertEquals(asList("<div role=\"treeitem\" aria-expanded=\"true\">Hello</div>"),
+      page.locator("role=treeitem[expanded]").evaluateAll("els => els.map(e => e.outerHTML)"));
+    assertEquals(asList("<div role=\"treeitem\" aria-expanded=\"true\">Hello</div>"),
+      page.locator("role=treeitem[expanded=true]").evaluateAll("els => els.map(e => e.outerHTML)"));
+    assertEquals(asList("<div role=\"treeitem\" aria-expanded=\"true\">Hello</div>"),
+      page.getByRole(AriaRole.TREEITEM, new Page.GetByRoleOptions().setExpanded(true)).evaluateAll("els => els.map(e => e.outerHTML)"));
+
+    assertEquals(asList("<div role=\"treeitem\" aria-expanded=\"false\">Bye</div>"),
+      page.locator("role=treeitem[expanded=false]").evaluateAll("els => els.map(e => e.outerHTML)"));
+    assertEquals(asList("<div role=\"treeitem\" aria-expanded=\"false\">Bye</div>"),
+      page.getByRole(AriaRole.TREEITEM, new Page.GetByRoleOptions().setExpanded(false)).evaluateAll("els => els.map(e => e.outerHTML)"));
+
+    // Workaround for expanded='none'.
+    assertEquals(asList("<div role=\"treeitem\">Hi</div>"),
+      page.locator("[role=treeitem]:not([aria-expanded])").evaluateAll("els => els.map(e => e.outerHTML)"));
   }
 
   @Test
