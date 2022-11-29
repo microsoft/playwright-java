@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.microsoft.playwright</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>1.28.0</version>
+    <version>1.28.1</version>
   </parent>
 
   <artifactId>driver-bundle</artifactId>
