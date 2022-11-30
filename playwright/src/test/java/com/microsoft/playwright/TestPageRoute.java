@@ -469,7 +469,7 @@ public class TestPageRoute extends TestBase {
   }
 
   @Test
-  void shouldThrowIfResumeIsCalledAfterRouteHandlerFinished() {
+  void shouldNotThrowIfResumeIsCalledAfterRouteHandlerFinished() {
     page.setContent("<iframe></iframe>");
     Route[] route = {null};
     page.route("**/*", r -> route[0] = r);
@@ -477,8 +477,7 @@ public class TestPageRoute extends TestBase {
     page.waitForRequest("**", () -> page.evalOnSelector("iframe", "(frame, url) => frame.src = url", server.EMPTY_PAGE));
     // Delete frame to cause request to be canceled.
     page.evalOnSelector("iframe", "frame => frame.remove()");
-    PlaywrightException e = assertThrows(PlaywrightException.class, () -> route[0].resume());
-    assertTrue(e.getMessage().contains("Route is already handled!"), e.getMessage());
+    route[0].resume();
   }
 
   @Test
@@ -730,5 +729,78 @@ public class TestPageRoute extends TestBase {
 
     page.navigate(server.EMPTY_PAGE);
     assertEquals(asList(3, 2, 1), intercepted);
+  }
+
+  @Test
+  void shouldAllowToCallRouteAsynchronously() {
+    page.navigate(server.EMPTY_PAGE);
+    Route[] route = new Route[] { null };
+    page.route("**/cars", r -> {
+      route[0] = r;
+    });
+    page.evaluate("async () => {\n" +
+      "      window.didReceiveResponse = false;\n" +
+      "      window.pendingFetch = fetch('/cars', {\n" +
+      "        method: 'POST',\n" +
+      "        headers: { 'Content-Type': 'application/json' },\n" +
+      "        mode: 'cors',\n" +
+      "        body: JSON.stringify({ 'number': 1 })\n" +
+      "      }).then(r => { window.didReceiveResponse = true; return r; });\n" +
+      "    }");
+    while (route[0] == null) {
+      page.waitForTimeout(10);
+    }
+    assertNotNull(route[0]);
+    page.waitForTimeout(1000); // Allow some time for didReceiveResponse to be updated.
+    assertEquals(false, page.evaluate("window.didReceiveResponse"));
+    route[0].fulfill(new Route.FulfillOptions()
+      .setContentType("text/plain")
+      .setStatus(200)
+      .setBody("Hi!"));
+    Object response = page.evaluate("async () => (await pendingFetch).text()\n");
+    assertEquals("Hi!", response);
+  }
+
+  @Test
+  void shouldResumeIfFallbackIsCalledAsynchronously() {
+    page.navigate(server.EMPTY_PAGE);
+    Route[] route = new Route[] { null };
+    page.route("**/simple.json", r -> {
+      route[0] = r;
+    });
+    page.evaluate("async () => {\n" +
+      "      window.didReceiveResponse = false;\n" +
+      "      window.pendingFetch = fetch('" + server.PREFIX + "/simple.json', {\n" +
+      "        method: 'POST',\n" +
+      "        headers: { 'Content-Type': 'application/json' },\n" +
+      "        mode: 'cors',\n" +
+      "        body: JSON.stringify({ 'number': 1 })\n" +
+      "      }).then(r => { window.didReceiveResponse = true; return r; });\n" +
+      "    }");
+    while (route[0] == null) {
+      page.waitForTimeout(10);
+    }
+    assertNotNull(route[0]);
+    page.waitForTimeout(1000); // Allow some time for didReceiveResponse to be updated.
+    assertEquals(false, page.evaluate("window.didReceiveResponse"));
+    route[0].fallback();
+    Object response = page.evaluate("async () => (await pendingFetch).text()\n");
+    assertEquals("{\"foo\": \"bar\"}\n", response);
+  }
+
+  @Test
+  void shouldContinueIfAllHandlersCalledFallback() {
+    List<Integer> intercepted = new ArrayList<>();
+    Predicate<String> predicate = r -> true;
+    page.route(predicate, route -> {
+      intercepted.add(1);
+      route.fallback();
+    });
+    context.route(predicate, route -> {
+      intercepted.add(2);
+      route.fallback();
+    });
+    page.navigate(server.EMPTY_PAGE);
+    assertEquals(asList(1, 2), intercepted);
   }
 }

@@ -65,7 +65,7 @@ class Router {
     return routes.size();
   }
 
-  enum HandleResult { NoMatchingHandler, FoundMatchingHandler}
+  enum HandleResult { NoMatchingHandler, Handled, Fallback, PendingHandler }
   HandleResult handle(RouteImpl route) {
     HandleResult result = HandleResult.NoMatchingHandler;
     for (Iterator<RouteInfo> it = routes.iterator(); it.hasNext();) {
@@ -76,11 +76,19 @@ class Router {
       if (info.decrementRemainingCallCount()) {
         it.remove();
       }
-      result = HandleResult.FoundMatchingHandler;
+      route.fallbackCalled = false;
       info.handle(route);
       if (route.isHandled()) {
-        break;
+        return HandleResult.Handled;
       }
+      // Not immediately handled and fallback() was not called => the route
+      // must be handled asynchronously.
+      if (!route.fallbackCalled) {
+        route.shouldResumeIfFallbackIsCalled = true;
+        return HandleResult.PendingHandler;
+      }
+      // Fallback was called, continue to the remaining handlers.
+      result = HandleResult.Fallback;
     }
     return result;
   }

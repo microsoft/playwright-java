@@ -34,6 +34,9 @@ public class RouteImpl extends ChannelOwner implements Route {
   private final RequestImpl request;
   private boolean handled;
 
+  boolean fallbackCalled;
+  boolean shouldResumeIfFallbackIsCalled;
+
   public RouteImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
     request = connection.getExistingObject(initializer.getAsJsonObject("request").get("guid").getAsString());
@@ -62,10 +65,14 @@ public class RouteImpl extends ChannelOwner implements Route {
 
   @Override
   public void fallback(FallbackOptions options) {
+    fallbackCalled = true;
     if (handled) {
       throw new PlaywrightException("Route is already handled!");
     }
     applyOverrides(options);
+    if (shouldResumeIfFallbackIsCalled) {
+      resume();
+    }
   }
 
   private void applyOverrides(FallbackOptions options) {
