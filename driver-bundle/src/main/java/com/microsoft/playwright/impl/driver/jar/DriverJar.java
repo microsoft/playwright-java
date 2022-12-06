@@ -106,6 +106,14 @@ public class DriverJar extends Driver {
     return name.endsWith(".sh") || name.endsWith(".exe") || !name.contains(".");
   }
 
+private FileSystem initFileSystem(URI uri) throws IOException {
+    try {
+      return FileSystems.newFileSystem(uri, Collections.emptyMap());
+    } catch (FileSystemAlreadyExistsException e) {
+      return null;
+    }
+  }
+
   void extractDriverToTempDir() throws URISyntaxException, IOException {
     ClassLoader classloader = Thread.currentThread().getContextClassLoader();
     URI originalUri = classloader.getResource(
@@ -113,7 +121,7 @@ public class DriverJar extends Driver {
     URI uri = maybeExtractNestedJar(originalUri);
 
     // Create zip filesystem if loading from jar.
-    try (FileSystem fileSystem = "jar".equals(uri.getScheme()) ? FileSystems.newFileSystem(uri, Collections.emptyMap()) : null) {
+    try (FileSystem fileSystem = "jar".equals(uri.getScheme()) ? initFileSystem(uri) : null) {
       Path srcRoot = Paths.get(uri);
       // jar file system's .relativize gives wrong results when used with
       // spring-boot-maven-plugin, convert to the default filesystem to
@@ -145,7 +153,7 @@ public class DriverJar extends Driver {
       });
     }
   }
-
+ 
   private URI maybeExtractNestedJar(final URI uri) throws URISyntaxException {
     if (!"jar".equals(uri.getScheme())) {
       return uri;
