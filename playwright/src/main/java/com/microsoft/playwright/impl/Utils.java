@@ -21,6 +21,7 @@ import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.FilePayload;
 import com.microsoft.playwright.options.HttpHeader;
+import com.microsoft.playwright.options.SelectOption;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

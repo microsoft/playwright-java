@@ -20,18 +20,18 @@ import java.util.*;
 
 /**
  * JSHandle represents an in-page JavaScript object. JSHandles can be created with the {@link Page#evaluateHandle
- * Page.evaluateHandle()} method.
+ * Page.evaluateHandle()}↵method.
  * <pre>{@code
  * JSHandle windowHandle = page.evaluateHandle("() => window");
  * // ...
  * }</pre>
  *
- * <p> JSHandle prevents the referenced JavaScript object being garbage collected unless the handle is exposed with {@link
+ * <p> JSHandle prevents the referenced JavaScript object being garbage collected unless the handle is exposed with↵{@link
  * JSHandle#dispose JSHandle.dispose()}. JSHandles are auto-disposed when their origin frame gets navigated or the parent
- * context gets destroyed.
+ * context↵gets destroyed.
  *
  * <p> JSHandle instances can be used as an argument in {@link Page#evalOnSelector Page.evalOnSelector()}, {@link Page#evaluate
- * Page.evaluate()} and {@link Page#evaluateHandle Page.evaluateHandle()} methods.
+ * Page.evaluate()} and↵{@link Page#evaluateHandle Page.evaluateHandle()} methods.
  */
 public interface JSHandle {
   /**
@@ -49,15 +49,15 @@ public interface JSHandle {
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
-   * {@code handle.evaluate} would wait for the promise to resolve and return its value.
+   * {@code handle.evaluate} would wait for the promise to resolve and return↵its value.
    *
-   * <p> Examples:
+   * <p> **Usage**
    * <pre>{@code
    * ElementHandle tweetHandle = page.querySelector(".tweet .retweets");
    * assertEquals("10 retweets", tweetHandle.evaluate("node => node.innerText"));
    * }</pre>
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates↵to a function, the function is
    * automatically invoked.
    */
   default Object evaluate(String expression) {
@@ -70,15 +70,15 @@ public interface JSHandle {
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
-   * {@code handle.evaluate} would wait for the promise to resolve and return its value.
+   * {@code handle.evaluate} would wait for the promise to resolve and return↵its value.
    *
-   * <p> Examples:
+   * <p> **Usage**
    * <pre>{@code
    * ElementHandle tweetHandle = page.querySelector(".tweet .retweets");
    * assertEquals("10 retweets", tweetHandle.evaluate("node => node.innerText"));
    * }</pre>
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates↵to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
@@ -93,11 +93,11 @@ public interface JSHandle {
    *
    * <p> If the function passed to the {@code jsHandle.evaluateHandle} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
-   * {@code jsHandle.evaluateHandle} would wait for the promise to resolve and return its value.
+   * {@code jsHandle.evaluateHandle} would wait↵for the promise to resolve and return its value.
    *
    * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates↵to a function, the function is
    * automatically invoked.
    */
   default JSHandle evaluateHandle(String expression) {
@@ -113,17 +113,19 @@ public interface JSHandle {
    *
    * <p> If the function passed to the {@code jsHandle.evaluateHandle} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
-   * {@code jsHandle.evaluateHandle} would wait for the promise to resolve and return its value.
+   * {@code jsHandle.evaluateHandle} would wait↵for the promise to resolve and return its value.
    *
    * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates↵to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
   JSHandle evaluateHandle(String expression, Object arg);
   /**
    * The method returns a map with **own property names** as keys and JSHandle instances for the property values.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * JSHandle handle = page.evaluateHandle("() => ({window, document}"););
    * Map<String, JSHandle> properties = handle.getProperties();
@@ -142,8 +144,8 @@ public interface JSHandle {
   /**
    * Returns a JSON representation of the object. If the object has a {@code toJSON} function, it **will not be called**.
    *
-   * <p> <strong>NOTE:</strong> The method will return an empty JSON object if the referenced object is not stringifiable. It will throw an error if the
-   * object has circular references.
+   * <p> <strong>NOTE:</strong> The method will return an empty JSON object if the referenced object is not stringifiable. It will throw an error if
+   * the↵object has circular references.
    */
   Object jsonValue();
 }

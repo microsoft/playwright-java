@@ -44,8 +44,8 @@ import com.microsoft.playwright.impl.PageAssertionsImpl;
  * }
  * }</pre>
  *
- * <p> Playwright will be re-testing the node with the selector {@code .status} until fetched Node has the {@code "Submitted"} text. It
- * will be re-fetching the node and checking it over and over, until the condition is met or until the timeout is reached.
+ * <p> Playwright will be re-testing the node with the selector {@code .status} until fetched Node has the {@code "Submitted"}↵text. It
+ * will be re-fetching the node and checking it over and over, until the condition is met or until the timeout is↵reached.
  * You can pass this timeout as an option.
  *
  * <p> By default, the timeout for assertions is set to 5 seconds.
@@ -53,6 +53,8 @@ import com.microsoft.playwright.impl.PageAssertionsImpl;
 public interface PlaywrightAssertions {
   /**
    * Creates a {@code APIResponseAssertions} object for the given {@code APIResponse}.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * PlaywrightAssertions.assertThat(response).isOK();
    * }</pre>
@@ -65,6 +67,8 @@ public interface PlaywrightAssertions {
 
   /**
    * Creates a {@code LocatorAssertions} object for the given {@code Locator}.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * PlaywrightAssertions.assertThat(locator).isVisible();
    * }</pre>
@@ -77,6 +81,8 @@ public interface PlaywrightAssertions {
 
   /**
    * Creates a {@code PageAssertions} object for the given {@code Page}.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * PlaywrightAssertions.assertThat(page).hasTitle("News");
    * }</pre>
@@ -89,6 +95,8 @@ public interface PlaywrightAssertions {
 
   /**
    * Changes default timeout for Playwright assertions from 5 seconds to the specified value.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * PlaywrightAssertions.setDefaultAssertionTimeout(30_000);
    * }</pre>

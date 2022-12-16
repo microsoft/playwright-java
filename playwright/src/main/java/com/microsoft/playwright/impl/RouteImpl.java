@@ -17,9 +17,8 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.Frame;
-import com.microsoft.playwright.PlaywrightException;
-import com.microsoft.playwright.Route;
+import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.RequestOptions;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -75,6 +74,28 @@ public class RouteImpl extends ChannelOwner implements Route {
     }
   }
 
+  @Override
+  public APIResponse fetch(FetchOptions fetchOptions) {
+    RequestOptionsImpl options = convertType(fetchOptions, RequestOptionsImpl.class);
+    if (options == null) {
+      options = new RequestOptionsImpl();
+    }
+    if (options.method == null) {
+      options.method = request.method();
+    }
+    if (options.headers == null) {
+      options.headers = request.headers();
+    }
+    if (fetchOptions != null && fetchOptions.postData != null) {
+      options.data = fetchOptions.postData;
+    } else {
+      options.data = request.postDataBuffer();
+    }
+    APIRequestContextImpl apiRequest = request.frame().page().context().request();
+    String url = (fetchOptions == null || fetchOptions.url == null) ? request().url() : fetchOptions.url;
+    return apiRequest.fetch(url, options);
+  }
+  
   private void applyOverrides(FallbackOptions options) {
     if (options == null) {
       return;

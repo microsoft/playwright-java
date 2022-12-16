@@ -34,10 +34,10 @@ import java.util.regex.Pattern;
  * a given selector.
  * <pre>{@code
  * // Throws if there are several frames in DOM:
- * page.frame_locator(".result-frame").getByRole("button").click();
+ * page.frame_locator(".result-frame").getByRole(AriaRole.BUTTON).click();
  *
  * // Works because we explicitly tell locator to pick the first frame:
- * page.frame_locator(".result-frame").first().getByRole("button").click();
+ * page.frame_locator(".result-frame").first().getByRole(AriaRole.BUTTON).click();
  * }</pre>
  *
  * <p> **Converting Locator to FrameLocator**
@@ -107,7 +107,7 @@ public interface FrameLocator {
     /**
      * An attribute that is usually set by {@code aria-disabled} or {@code disabled}.
      *
-     * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
+     * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy.↵Learn more about <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
      */
     public Boolean disabled;
@@ -168,7 +168,7 @@ public interface FrameLocator {
     /**
      * An attribute that is usually set by {@code aria-disabled} or {@code disabled}.
      *
-     * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
+     * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy.↵Learn more about <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
      */
     public GetByRoleOptions setDisabled(boolean disabled) {
@@ -285,22 +285,22 @@ public interface FrameLocator {
   }
   class LocatorOptions {
     /**
-     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
-     * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer
+     * one.↵For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
     public Locator has;
     /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
-     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
+     * [string], matching is case-insensitive and searches for a substring.↵For example, {@code "Playwright"} matches
      * {@code <article><div>Playwright</div></article>}.
      */
     public Object hasText;
 
     /**
-     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
-     * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer
+     * one.↵For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
@@ -310,7 +310,7 @@ public interface FrameLocator {
     }
     /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
-     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
+     * [string], matching is case-insensitive and searches for a substring.↵For example, {@code "Playwright"} matches
      * {@code <article><div>Playwright</div></article>}.
      */
     public LocatorOptions setHasText(String hasText) {
@@ -319,7 +319,7 @@ public interface FrameLocator {
     }
     /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
-     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
+     * [string], matching is case-insensitive and searches for a substring.↵For example, {@code "Playwright"} matches
      * {@code <article><div>Playwright</div></article>}.
      */
     public LocatorOptions setHasText(Pattern hasText) {
@@ -332,11 +332,10 @@ public interface FrameLocator {
    */
   FrameLocator first();
   /**
-   * When working with iframes, you can create a frame locator that will enter the iframe and allow selecting elements in
+   * When working with iframes, you can create a frame locator that will enter the iframe and allow selecting elements↵in
    * that iframe.
    *
-   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
-   * selectors</a> for more details.
+   * @param selector A selector to use when resolving DOM element.
    */
   FrameLocator frameLocator(String selector);
   /**
@@ -470,6 +469,13 @@ public interface FrameLocator {
    * @param testId Id to locate the element by.
    */
   Locator getByTestId(String testId);
+  /**
+   * Locate element by the test id. By default, the {@code data-testid} attribute is used as a test id. Use {@link
+   * Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
+   *
+   * @param testId Id to locate the element by.
+   */
+  Locator getByTestId(Pattern testId);
   /**
    * Allows locating elements that contain given text. Consider the following DOM structure:
    *
@@ -644,8 +650,7 @@ public interface FrameLocator {
    *
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
-   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
-   * selectors</a> for more details.
+   * @param selector A selector to use when resolving DOM element.
    */
   default Locator locator(String selector) {
     return locator(selector, null);
@@ -656,8 +661,7 @@ public interface FrameLocator {
    *
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
-   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
-   * selectors</a> for more details.
+   * @param selector A selector to use when resolving DOM element.
    */
   Locator locator(String selector, LocatorOptions options);
   /**

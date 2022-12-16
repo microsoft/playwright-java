@@ -30,12 +30,12 @@ public interface Video {
    */
   void delete();
   /**
-   * Returns the file system path this video will be recorded to. The video is guaranteed to be written to the filesystem
-   * upon closing the browser context. This method throws when connected remotely.
+   * Returns the file system path this video will be recorded to. The video is guaranteed to be written to the
+   * filesystem↵upon closing the browser context. This method throws when connected remotely.
    */
   Path path();
   /**
-   * Saves the video to a user-specified path. It is safe to call this method while the video is still in progress, or after
+   * Saves the video to a user-specified path. It is safe to call this method while the video↵is still in progress, or after
    * the page has closed. This method waits until the page is closed and the video is fully saved.
    *
    * @param path Path where the video should be saved.

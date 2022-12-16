@@ -110,11 +110,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public List<String> selectOption(String selector, String[] values, SelectOptionOptions options) {
-    if (values == null) {
-      return selectOption(selector, new SelectOption[0], options);
-    }
-    return selectOption(selector, Arrays.asList(values).stream().map(
-      v -> new SelectOption().setValue(v)).toArray(SelectOption[]::new), options);
+    return withLogging("Frame.selectOption", () -> selectOptionImpl(selector, values, options));
   }
 
   @Override
@@ -415,6 +411,11 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   @Override
+  public Locator getByTestId(Pattern testId) {
+    return locator(getByTestIdSelector(testId));
+  }
+
+  @Override
   public Locator getByText(String text, GetByTextOptions options) {
     return locator(getByTextSelector(text, convertType(options, Locator.GetByTextOptions.class)));
   }
@@ -684,6 +685,18 @@ public class FrameImpl extends ChannelOwner implements Frame {
     params.addProperty("selector", selector);
     if (values != null) {
       params.add("options", gson().toJsonTree(values));
+    }
+    return selectOption(params);
+  }
+
+  List<String> selectOptionImpl(String selector, String[] values, SelectOptionOptions options) {
+    if (options == null) {
+      options = new SelectOptionOptions();
+    }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    params.addProperty("selector", selector);
+    if (values != null) {
+      params.add("options", toSelectValueOrLabel(values));
     }
     return selectOption(params);
   }

@@ -7,6 +7,7 @@ import com.microsoft.playwright.options.*;
 
 import java.lang.reflect.Field;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +60,16 @@ class LocatorImpl implements Locator {
         handle.dispose();
       }
     }
+  }
+
+  @Override
+  public List<Locator> all() {
+    List<Locator> result = new ArrayList<>();
+    int count = this.count();
+    for (int i = 0; i < count; i++) {
+      result.add(nth(i));
+    }
+    return result;
   }
 
   @Override
@@ -250,6 +261,11 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator getByTestId(String testId) {
+    return locator(getByTestIdSelector(testId));
+  }
+
+  @Override
+  public Locator getByTestId(Pattern testId) {
     return locator(getByTestIdSelector(testId));
   }
 

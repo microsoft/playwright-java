@@ -28,14 +28,14 @@ import java.util.*;
  * complete.</li>
  * </ul>
  *
- * <p> If request fails at some point, then instead of {@code "requestfinished"} event (and possibly instead of 'response' event),
- * the  {@link Page#onRequestFailed Page.onRequestFailed()} event is emitted.
+ * <p> If request fails at some point, then instead of {@code "requestfinished"} event (and possibly instead of 'response'
+ * event),↵the  {@link Page#onRequestFailed Page.onRequestFailed()} event is emitted.
  *
- * <p> <strong>NOTE:</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will complete
- * with {@code "requestfinished"} event.
+ * <p> <strong>NOTE:</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will
+ * complete↵with {@code "requestfinished"} event.
  *
- * <p> If request gets a 'redirect' response, the request is successfully finished with the {@code requestfinished} event, and a new
- * request is  issued to a redirected url.
+ * <p> If request gets a 'redirect' response, the request is successfully finished with the {@code requestfinished} event, and a
+ * new↵request is  issued to a redirected url.
  */
 public interface Request {
   /**
@@ -44,6 +44,8 @@ public interface Request {
   Map<String, String> allHeaders();
   /**
    * The method returns {@code null} unless this request has failed, as reported by {@code requestfailed} event.
+   *
+   * <p> **Usage**
    *
    * <p> Example of logging of all the failed requests:
    * <pre>{@code
@@ -58,14 +60,14 @@ public interface Request {
    */
   Frame frame();
   /**
-   * An object with the request HTTP headers. The header names are lower-cased. Note that this method does not return
-   * security-related headers, including cookie-related ones. You can use {@link Request#allHeaders Request.allHeaders()} for
+   * An object with the request HTTP headers. The header names are lower-cased.↵Note that this method does not return
+   * security-related headers, including cookie-related ones.↵You can use {@link Request#allHeaders Request.allHeaders()} for
    * complete list of headers that include {@code cookie} information.
    */
   Map<String, String> headers();
   /**
    * An array with all the request HTTP headers associated with this request. Unlike {@link Request#allHeaders
-   * Request.allHeaders()}, header names are NOT lower-cased. Headers with multiple entries, such as {@code Set-Cookie}, appear in
+   * Request.allHeaders()}, header names are NOT lower-cased.↵Headers with multiple entries, such as {@code Set-Cookie}, appear in
    * the array multiple times.
    */
   List<HttpHeader> headersArray();
@@ -94,9 +96,11 @@ public interface Request {
   /**
    * Request that was redirected by the server to this one, if any.
    *
-   * <p> When the server responds with a redirect, Playwright creates a new {@code Request} object. The two requests are connected by
-   * {@code redirectedFrom()} and {@code redirectedTo()} methods. When multiple server redirects has happened, it is possible to
-   * construct the whole redirect chain by repeatedly calling {@code redirectedFrom()}.
+   * <p> When the server responds with a redirect, Playwright creates a new {@code Request} object. The two requests are connected
+   * by↵{@code redirectedFrom()} and {@code redirectedTo()} methods. When multiple server redirects has happened, it is possible
+   * to↵construct the whole redirect chain by repeatedly calling {@code redirectedFrom()}.
+   *
+   * <p> **Usage**
    *
    * <p> For example, if the website {@code http://example.com} redirects to {@code https://example.com}:
    * <pre>{@code
@@ -114,6 +118,8 @@ public interface Request {
   /**
    * New request issued by the browser if the server responded with redirect.
    *
+   * <p> **Usage**
+   *
    * <p> This method is the opposite of {@link Request#redirectedFrom Request.redirectedFrom()}:
    * <pre>{@code
    * System.out.println(request.redirectedFrom().redirectedTo() == request); // true
@@ -121,9 +127,9 @@ public interface Request {
    */
   Request redirectedTo();
   /**
-   * Contains the request's resource type as it was perceived by the rendering engine. ResourceType will be one of the
-   * following: {@code document}, {@code stylesheet}, {@code image}, {@code media}, {@code font}, {@code script}, {@code texttrack}, {@code xhr}, {@code fetch}, {@code eventsource},
-   * {@code websocket}, {@code manifest}, {@code other}.
+   * Contains the request's resource type as it was perceived by the rendering engine. ResourceType will be one of
+   * the↵following: {@code document}, {@code stylesheet}, {@code image}, {@code media}, {@code font}, {@code script}, {@code texttrack}, {@code xhr}, {@code fetch},
+   * {@code eventsource},↵{@code websocket}, {@code manifest}, {@code other}.
    */
   String resourceType();
   /**
@@ -135,9 +141,11 @@ public interface Request {
    */
   Sizes sizes();
   /**
-   * Returns resource timing information for given request. Most of the timing values become available upon the response,
-   * {@code responseEnd} becomes available when request finishes. Find more information at <a
+   * Returns resource timing information for given request. Most of the timing values become available upon the
+   * response,↵{@code responseEnd} becomes available when request finishes. Find more information at↵<a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming">Resource Timing API</a>.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.onRequestFinished(request -> {
    *   Timing timing = request.timing();

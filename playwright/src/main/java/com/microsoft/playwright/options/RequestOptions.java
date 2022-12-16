@@ -19,8 +19,8 @@ package com.microsoft.playwright.options;
 import com.microsoft.playwright.impl.RequestOptionsImpl;
 
 /**
- * The {@code RequestOptions} allows to create form data to be sent via {@code APIRequestContext}. Playwright will automatically
- * determine content type of the request.
+ * The {@code RequestOptions} allows to create form data to be sent via {@code APIRequestContext}. Playwright will
+ * automatically↵determine content type of the request.
  * <pre>{@code
  * context.request().post(
  *   "https://example.com/submit",
@@ -66,39 +66,39 @@ public interface RequestOptions {
   /**
    * Sets the request's post data.
    *
-   * @param data Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string and
+   * @param data Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string↵and
    * {@code content-type} header will be set to {@code application/json} if not explicitly set. Otherwise the {@code content-type} header will
-   * be set to {@code application/octet-stream} if not explicitly set.
+   * be↵set to {@code application/octet-stream} if not explicitly set.
    */
   RequestOptions setData(String data);
   /**
    * Sets the request's post data.
    *
-   * @param data Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string and
+   * @param data Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string↵and
    * {@code content-type} header will be set to {@code application/json} if not explicitly set. Otherwise the {@code content-type} header will
-   * be set to {@code application/octet-stream} if not explicitly set.
+   * be↵set to {@code application/octet-stream} if not explicitly set.
    */
   RequestOptions setData(byte[] data);
   /**
    * Sets the request's post data.
    *
-   * @param data Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string and
+   * @param data Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string↵and
    * {@code content-type} header will be set to {@code application/json} if not explicitly set. Otherwise the {@code content-type} header will
-   * be set to {@code application/octet-stream} if not explicitly set.
+   * be↵set to {@code application/octet-stream} if not explicitly set.
    */
   RequestOptions setData(Object data);
   /**
    *
    *
-   * @param failOnStatusCode Whether to throw on response codes other than 2xx and 3xx. By default response object is returned for all status codes.
+   * @param failOnStatusCode Whether to throw on response codes other than 2xx and 3xx. By default response object is returned↵for all status codes.
    */
   RequestOptions setFailOnStatusCode(boolean failOnStatusCode);
   /**
    * Provides {@code FormData} object that will be serialized as html form using {@code application/x-www-form-urlencoded} encoding and
-   * sent as this request body. If this parameter is specified {@code content-type} header will be set to
-   * {@code application/x-www-form-urlencoded} unless explicitly provided.
+   * sent as↵this request body. If this parameter is specified {@code content-type} header will be set to
+   * {@code application/x-www-form-urlencoded}↵unless explicitly provided.
    *
-   * @param form Form data to be serialized as html form using {@code application/x-www-form-urlencoded} encoding and sent as this request
+   * @param form Form data to be serialized as html form using {@code application/x-www-form-urlencoded} encoding and sent as↵this request
    * body.
    */
   RequestOptions setForm(FormData form);
@@ -119,22 +119,22 @@ public interface RequestOptions {
    *
    *
    * @param maxRedirects Maximum number of request redirects that will be followed automatically. An error will be thrown if the number is
-   * exceeded. Defaults to {@code 20}. Pass {@code 0} to not follow redirects.
+   * exceeded.↵Defaults to {@code 20}. Pass {@code 0} to not follow redirects.
    */
   RequestOptions setMaxRedirects(int maxRedirects);
   /**
-   * Changes the request method (e.g. <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT">PUT</a> or <a
+   * Changes the request method (e.g. <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT">PUT</a> or↵<a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST">POST</a>).
    *
    * @param method Request method, e.g. <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST">POST</a>.
    */
   RequestOptions setMethod(String method);
   /**
-   * Provides {@code FormData} object that will be serialized as html form using {@code multipart/form-data} encoding and sent as this
-   * request body. If this parameter is specified {@code content-type} header will be set to {@code multipart/form-data} unless
+   * Provides {@code FormData} object that will be serialized as html form using {@code multipart/form-data} encoding and sent as↵this
+   * request body. If this parameter is specified {@code content-type} header will be set to {@code multipart/form-data}↵unless
    * explicitly provided.
    *
-   * @param form Form data to be serialized as html form using {@code multipart/form-data} encoding and sent as this request body.
+   * @param form Form data to be serialized as html form using {@code multipart/form-data} encoding and sent as↵this request body.
    */
   RequestOptions setMultipart(FormData form);
   /**

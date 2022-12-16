@@ -171,14 +171,14 @@ public interface Mouse {
   void click(double x, double y, ClickOptions options);
   /**
    * Shortcut for {@link Mouse#move Mouse.move()}, {@link Mouse#down Mouse.down()}, {@link Mouse#up Mouse.up()}, {@link
-   * Mouse#down Mouse.down()} and {@link Mouse#up Mouse.up()}.
+   * Mouse#down Mouse.down()} and↵{@link Mouse#up Mouse.up()}.
    */
   default void dblclick(double x, double y) {
     dblclick(x, y, null);
   }
   /**
    * Shortcut for {@link Mouse#move Mouse.move()}, {@link Mouse#down Mouse.down()}, {@link Mouse#up Mouse.up()}, {@link
-   * Mouse#down Mouse.down()} and {@link Mouse#up Mouse.up()}.
+   * Mouse#down Mouse.down()} and↵{@link Mouse#up Mouse.up()}.
    */
   void dblclick(double x, double y, DblclickOptions options);
   /**
@@ -214,7 +214,7 @@ public interface Mouse {
   /**
    * Dispatches a {@code wheel} event.
    *
-   * <p> <strong>NOTE:</strong> Wheel events may cause scrolling if they are not handled, and this method does not wait for the scrolling to finish
+   * <p> <strong>NOTE:</strong> Wheel events may cause scrolling if they are not handled, and this method does not↵wait for the scrolling to finish
    * before returning.
    *
    * @param deltaX Pixels to scroll horizontally.

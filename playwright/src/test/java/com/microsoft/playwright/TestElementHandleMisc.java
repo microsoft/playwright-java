@@ -83,4 +83,13 @@ public class TestElementHandleMisc extends TestBase {
     input.setChecked(false);
     assertEquals(false, page.evaluate("checkbox.checked"));
   }
+
+  @Test
+  void shouldFallBackToSelectingByLabel() {
+    page.navigate(server.PREFIX + "/input/select.html");
+    page.querySelector("select").selectOption("Blue");
+    assertEquals(asList("blue"), page.evaluate("() => window['result'].onInput"));
+    assertEquals(asList("blue"), page.evaluate("() => window['result'].onChange"));
+  }
+
 }

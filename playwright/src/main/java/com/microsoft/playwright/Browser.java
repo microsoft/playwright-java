@@ -80,8 +80,8 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean bypassCSP;
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
+     * See↵{@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
      * Defaults to {@code "light"}.
      */
     public Optional<ColorScheme> colorScheme;
@@ -112,8 +112,8 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean ignoreHTTPSErrors;
     /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported
-     * in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
+     * supported↵in Firefox.
      */
     public Boolean isMobile;
     /**
@@ -121,8 +121,8 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean javaScriptEnabled;
     /**
-     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language}
-     * request header value as well as number and date formatting rules.
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
+     * {@code Accept-Language}↵request header value as well as number and date formatting rules.
      */
     public String locale;
     /**
@@ -130,15 +130,15 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean offline;
     /**
-     * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
+     * A list of permissions to grant to all pages in this context. See↵{@link BrowserContext#grantPermissions
      * BrowserContext.grantPermissions()} for more details.
      */
     public List<String> permissions;
     /**
      * Network proxy settings to use with this context.
      *
-     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
-     * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
+     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all↵contexts
+     * override the proxy, global proxy will be never used and can be any string, for example↵{@code launch({ proxy: { server:
      * 'http://per-context' } })}.
      */
     public Proxy proxy;
@@ -158,20 +158,20 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean recordHarOmitContent;
     /**
-     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
-     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link BrowserContext#close
+     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the↵specified HAR
+     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to↵call {@link BrowserContext#close
      * BrowserContext.close()} for the HAR to be saved.
      */
     public Path recordHarPath;
     public Object recordHarUrlFilter;
     /**
-     * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
+     * Enables video recording for all pages into the specified directory. If not specified videos are↵not recorded. Make sure
      * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
     public Path recordVideoDir;
     /**
-     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport}↵scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450.↵Actual picture of each page will
      * be scaled down if necessary to fit the specified size.
      */
     public RecordVideoSize recordVideoSize;
@@ -182,7 +182,7 @@ public interface Browser extends AutoCloseable {
      */
     public Optional<ReducedMotion> reducedMotion;
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the↵{@code viewport}
      * is set.
      */
     public ScreenSize screenSize;
@@ -196,26 +196,26 @@ public interface Browser extends AutoCloseable {
      */
     public ServiceWorkerPolicy serviceWorkers;
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information↵obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
     public String storageState;
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
-     * state.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information↵obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved
+     * storage state.
      */
     public Path storageStatePath;
     /**
-     * If specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
-     * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
-     * more about the strict mode.
+     * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations↵on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector.↵This option does not
+     * affect any Locator APIs (Locators are always strict).↵See {@code Locator} to learn more about the strict mode.
      */
     public Boolean strictSelectors;
     /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
-     * metaZones.txt</a> for a list of supported timezone IDs.
+     * metaZones.txt</a>↵for a list of supported timezone IDs.
      */
     public String timezoneId;
     /**
@@ -259,8 +259,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
+     * See↵{@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
      * Defaults to {@code "light"}.
      */
     public NewContextOptions setColorScheme(ColorScheme colorScheme) {
@@ -324,8 +324,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported
-     * in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
+     * supported↵in Firefox.
      */
     public NewContextOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
@@ -339,8 +339,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language}
-     * request header value as well as number and date formatting rules.
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
+     * {@code Accept-Language}↵request header value as well as number and date formatting rules.
      */
     public NewContextOptions setLocale(String locale) {
       this.locale = locale;
@@ -354,7 +354,7 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
+     * A list of permissions to grant to all pages in this context. See↵{@link BrowserContext#grantPermissions
      * BrowserContext.grantPermissions()} for more details.
      */
     public NewContextOptions setPermissions(List<String> permissions) {
@@ -364,8 +364,8 @@ public interface Browser extends AutoCloseable {
     /**
      * Network proxy settings to use with this context.
      *
-     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
-     * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
+     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all↵contexts
+     * override the proxy, global proxy will be never used and can be any string, for example↵{@code launch({ proxy: { server:
      * 'http://per-context' } })}.
      */
     public NewContextOptions setProxy(String server) {
@@ -374,8 +374,8 @@ public interface Browser extends AutoCloseable {
     /**
      * Network proxy settings to use with this context.
      *
-     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
-     * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
+     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all↵contexts
+     * override the proxy, global proxy will be never used and can be any string, for example↵{@code launch({ proxy: { server:
      * 'http://per-context' } })}.
      */
     public NewContextOptions setProxy(Proxy proxy) {
@@ -407,8 +407,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
-     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link BrowserContext#close
+     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the↵specified HAR
+     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to↵call {@link BrowserContext#close
      * BrowserContext.close()} for the HAR to be saved.
      */
     public NewContextOptions setRecordHarPath(Path recordHarPath) {
@@ -424,7 +424,7 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
+     * Enables video recording for all pages into the specified directory. If not specified videos are↵not recorded. Make sure
      * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
     public NewContextOptions setRecordVideoDir(Path recordVideoDir) {
@@ -432,16 +432,16 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport}↵scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450.↵Actual picture of each page will
      * be scaled down if necessary to fit the specified size.
      */
     public NewContextOptions setRecordVideoSize(int width, int height) {
       return setRecordVideoSize(new RecordVideoSize(width, height));
     }
     /**
-     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport}↵scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450.↵Actual picture of each page will
      * be scaled down if necessary to fit the specified size.
      */
     public NewContextOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
@@ -458,14 +458,14 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the↵{@code viewport}
      * is set.
      */
     public NewContextOptions setScreenSize(int width, int height) {
       return setScreenSize(new ScreenSize(width, height));
     }
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the↵{@code viewport}
      * is set.
      */
     public NewContextOptions setScreenSize(ScreenSize screenSize) {
@@ -485,26 +485,26 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information↵obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
     public NewContextOptions setStorageState(String storageState) {
       this.storageState = storageState;
       return this;
     }
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
-     * state.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information↵obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved
+     * storage state.
      */
     public NewContextOptions setStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
       return this;
     }
     /**
-     * If specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
-     * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
-     * more about the strict mode.
+     * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations↵on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector.↵This option does not
+     * affect any Locator APIs (Locators are always strict).↵See {@code Locator} to learn more about the strict mode.
      */
     public NewContextOptions setStrictSelectors(boolean strictSelectors) {
       this.strictSelectors = strictSelectors;
@@ -513,7 +513,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
-     * metaZones.txt</a> for a list of supported timezone IDs.
+     * metaZones.txt</a>↵for a list of supported timezone IDs.
      */
     public NewContextOptions setTimezoneId(String timezoneId) {
       this.timezoneId = timezoneId;
@@ -564,8 +564,8 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean bypassCSP;
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
+     * See↵{@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
      * Defaults to {@code "light"}.
      */
     public Optional<ColorScheme> colorScheme;
@@ -596,8 +596,8 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean ignoreHTTPSErrors;
     /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported
-     * in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
+     * supported↵in Firefox.
      */
     public Boolean isMobile;
     /**
@@ -605,8 +605,8 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean javaScriptEnabled;
     /**
-     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language}
-     * request header value as well as number and date formatting rules.
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
+     * {@code Accept-Language}↵request header value as well as number and date formatting rules.
      */
     public String locale;
     /**
@@ -614,15 +614,15 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean offline;
     /**
-     * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
+     * A list of permissions to grant to all pages in this context. See↵{@link BrowserContext#grantPermissions
      * BrowserContext.grantPermissions()} for more details.
      */
     public List<String> permissions;
     /**
      * Network proxy settings to use with this context.
      *
-     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
-     * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
+     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all↵contexts
+     * override the proxy, global proxy will be never used and can be any string, for example↵{@code launch({ proxy: { server:
      * 'http://per-context' } })}.
      */
     public Proxy proxy;
@@ -642,20 +642,20 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean recordHarOmitContent;
     /**
-     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
-     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link BrowserContext#close
+     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the↵specified HAR
+     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to↵call {@link BrowserContext#close
      * BrowserContext.close()} for the HAR to be saved.
      */
     public Path recordHarPath;
     public Object recordHarUrlFilter;
     /**
-     * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
+     * Enables video recording for all pages into the specified directory. If not specified videos are↵not recorded. Make sure
      * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
     public Path recordVideoDir;
     /**
-     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport}↵scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450.↵Actual picture of each page will
      * be scaled down if necessary to fit the specified size.
      */
     public RecordVideoSize recordVideoSize;
@@ -666,7 +666,7 @@ public interface Browser extends AutoCloseable {
      */
     public Optional<ReducedMotion> reducedMotion;
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the↵{@code viewport}
      * is set.
      */
     public ScreenSize screenSize;
@@ -680,26 +680,26 @@ public interface Browser extends AutoCloseable {
      */
     public ServiceWorkerPolicy serviceWorkers;
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information↵obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
     public String storageState;
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
-     * state.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information↵obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved
+     * storage state.
      */
     public Path storageStatePath;
     /**
-     * If specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
-     * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
-     * more about the strict mode.
+     * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations↵on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector.↵This option does not
+     * affect any Locator APIs (Locators are always strict).↵See {@code Locator} to learn more about the strict mode.
      */
     public Boolean strictSelectors;
     /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
-     * metaZones.txt</a> for a list of supported timezone IDs.
+     * metaZones.txt</a>↵for a list of supported timezone IDs.
      */
     public String timezoneId;
     /**
@@ -743,8 +743,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
+     * See↵{@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
      * Defaults to {@code "light"}.
      */
     public NewPageOptions setColorScheme(ColorScheme colorScheme) {
@@ -808,8 +808,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported
-     * in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
+     * supported↵in Firefox.
      */
     public NewPageOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
@@ -823,8 +823,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language}
-     * request header value as well as number and date formatting rules.
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
+     * {@code Accept-Language}↵request header value as well as number and date formatting rules.
      */
     public NewPageOptions setLocale(String locale) {
       this.locale = locale;
@@ -838,7 +838,7 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
+     * A list of permissions to grant to all pages in this context. See↵{@link BrowserContext#grantPermissions
      * BrowserContext.grantPermissions()} for more details.
      */
     public NewPageOptions setPermissions(List<String> permissions) {
@@ -848,8 +848,8 @@ public interface Browser extends AutoCloseable {
     /**
      * Network proxy settings to use with this context.
      *
-     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
-     * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
+     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all↵contexts
+     * override the proxy, global proxy will be never used and can be any string, for example↵{@code launch({ proxy: { server:
      * 'http://per-context' } })}.
      */
     public NewPageOptions setProxy(String server) {
@@ -858,8 +858,8 @@ public interface Browser extends AutoCloseable {
     /**
      * Network proxy settings to use with this context.
      *
-     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
-     * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
+     * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all↵contexts
+     * override the proxy, global proxy will be never used and can be any string, for example↵{@code launch({ proxy: { server:
      * 'http://per-context' } })}.
      */
     public NewPageOptions setProxy(Proxy proxy) {
@@ -891,8 +891,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
-     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link BrowserContext#close
+     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the↵specified HAR
+     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to↵call {@link BrowserContext#close
      * BrowserContext.close()} for the HAR to be saved.
      */
     public NewPageOptions setRecordHarPath(Path recordHarPath) {
@@ -908,7 +908,7 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
+     * Enables video recording for all pages into the specified directory. If not specified videos are↵not recorded. Make sure
      * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
     public NewPageOptions setRecordVideoDir(Path recordVideoDir) {
@@ -916,16 +916,16 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport}↵scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450.↵Actual picture of each page will
      * be scaled down if necessary to fit the specified size.
      */
     public NewPageOptions setRecordVideoSize(int width, int height) {
       return setRecordVideoSize(new RecordVideoSize(width, height));
     }
     /**
-     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport}↵scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450.↵Actual picture of each page will
      * be scaled down if necessary to fit the specified size.
      */
     public NewPageOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
@@ -942,14 +942,14 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the↵{@code viewport}
      * is set.
      */
     public NewPageOptions setScreenSize(int width, int height) {
       return setScreenSize(new ScreenSize(width, height));
     }
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the↵{@code viewport}
      * is set.
      */
     public NewPageOptions setScreenSize(ScreenSize screenSize) {
@@ -969,26 +969,26 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information↵obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
     public NewPageOptions setStorageState(String storageState) {
       this.storageState = storageState;
       return this;
     }
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
-     * state.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information↵obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved
+     * storage state.
      */
     public NewPageOptions setStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
       return this;
     }
     /**
-     * If specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
-     * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
-     * more about the strict mode.
+     * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations↵on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector.↵This option does not
+     * affect any Locator APIs (Locators are always strict).↵See {@code Locator} to learn more about the strict mode.
      */
     public NewPageOptions setStrictSelectors(boolean strictSelectors) {
       this.strictSelectors = strictSelectors;
@@ -997,7 +997,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
-     * metaZones.txt</a> for a list of supported timezone IDs.
+     * metaZones.txt</a>↵for a list of supported timezone IDs.
      */
     public NewPageOptions setTimezoneId(String timezoneId) {
       this.timezoneId = timezoneId;
@@ -1066,10 +1066,10 @@ public interface Browser extends AutoCloseable {
   BrowserType browserType();
   /**
    * In case this browser is obtained using {@link BrowserType#launch BrowserType.launch()}, closes the browser and all of
-   * its pages (if any were opened).
+   * its pages (if any↵were opened).
    *
-   * <p> In case this browser is connected to, clears all created contexts belonging to this browser and disconnects from the
-   * browser server.
+   * <p> In case this browser is connected to, clears all created contexts belonging to this browser and disconnects from
+   * the↵browser server.
    *
    * <p> <strong>NOTE:</strong> This is similar to force quitting the browser. Therefore, you should call {@link BrowserContext#close
    * BrowserContext.close()} on any {@code BrowserContext}'s you explicitly created earlier with {@link Browser#newContext
@@ -1080,6 +1080,8 @@ public interface Browser extends AutoCloseable {
   void close();
   /**
    * Returns an array of all open browser contexts. In a newly created browser, this will return zero browser contexts.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * Browser browser = pw.webkit().launch();
    * System.out.println(browser.contexts().size()); // prints "0"
@@ -1096,9 +1098,11 @@ public interface Browser extends AutoCloseable {
    * Creates a new browser context. It won't share cookies/cache with other browser contexts.
    *
    * <p> <strong>NOTE:</strong> If directly using this method to create {@code BrowserContext}s, it is best practice to explicitly close the returned context
-   * via {@link BrowserContext#close BrowserContext.close()} when your code is done with the {@code BrowserContext}, and before
+   * via {@link BrowserContext#close BrowserContext.close()} when your code is done with the {@code BrowserContext},↵and before
    * calling {@link Browser#close Browser.close()}. This will ensure the {@code context} is closed gracefully and any
    * artifacts—like HARs and videos—are fully flushed and saved.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * Browser browser = playwright.firefox().launch();  // Or 'chromium' or 'webkit'.
    * // Create a new incognito browser context.
@@ -1119,9 +1123,11 @@ public interface Browser extends AutoCloseable {
    * Creates a new browser context. It won't share cookies/cache with other browser contexts.
    *
    * <p> <strong>NOTE:</strong> If directly using this method to create {@code BrowserContext}s, it is best practice to explicitly close the returned context
-   * via {@link BrowserContext#close BrowserContext.close()} when your code is done with the {@code BrowserContext}, and before
+   * via {@link BrowserContext#close BrowserContext.close()} when your code is done with the {@code BrowserContext},↵and before
    * calling {@link Browser#close Browser.close()}. This will ensure the {@code context} is closed gracefully and any
    * artifacts—like HARs and videos—are fully flushed and saved.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * Browser browser = playwright.firefox().launch();  // Or 'chromium' or 'webkit'.
    * // Create a new incognito browser context.
@@ -1139,8 +1145,8 @@ public interface Browser extends AutoCloseable {
   /**
    * Creates a new page in a new browser context. Closing this page will close the context as well.
    *
-   * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and
-   * testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the {@link
+   * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code
+   * and↵testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the↵{@link
    * BrowserContext#newPage BrowserContext.newPage()} to control their exact life times.
    */
   default Page newPage() {
@@ -1149,8 +1155,8 @@ public interface Browser extends AutoCloseable {
   /**
    * Creates a new page in a new browser context. Closing this page will close the context as well.
    *
-   * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and
-   * testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the {@link
+   * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code
+   * and↵testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the↵{@link
    * BrowserContext#newPage BrowserContext.newPage()} to control their exact life times.
    */
   Page newPage(NewPageOptions options);
@@ -1161,7 +1167,9 @@ public interface Browser extends AutoCloseable {
    * href="https://playwright.dev/java/docs/api/class-tracing">here</a>.
    *
    * <p> You can use {@link Browser#startTracing Browser.startTracing()} and {@link Browser#stopTracing Browser.stopTracing()} to
-   * create a trace file that can be opened in Chrome DevTools performance panel.
+   * create a trace file that can↵be opened in Chrome DevTools performance panel.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * browser.startTracing(page, new Browser.StartTracingOptions()
    *   .setPath(Paths.get("trace.json")));
@@ -1181,7 +1189,9 @@ public interface Browser extends AutoCloseable {
    * href="https://playwright.dev/java/docs/api/class-tracing">here</a>.
    *
    * <p> You can use {@link Browser#startTracing Browser.startTracing()} and {@link Browser#stopTracing Browser.stopTracing()} to
-   * create a trace file that can be opened in Chrome DevTools performance panel.
+   * create a trace file that can↵be opened in Chrome DevTools performance panel.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * browser.startTracing(page, new Browser.StartTracingOptions()
    *   .setPath(Paths.get("trace.json")));
@@ -1199,7 +1209,9 @@ public interface Browser extends AutoCloseable {
    * href="https://playwright.dev/java/docs/api/class-tracing">here</a>.
    *
    * <p> You can use {@link Browser#startTracing Browser.startTracing()} and {@link Browser#stopTracing Browser.stopTracing()} to
-   * create a trace file that can be opened in Chrome DevTools performance panel.
+   * create a trace file that can↵be opened in Chrome DevTools performance panel.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * browser.startTracing(page, new Browser.StartTracingOptions()
    *   .setPath(Paths.get("trace.json")));

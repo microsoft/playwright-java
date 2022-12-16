@@ -20,8 +20,8 @@ import java.util.function.Consumer;
 
 /**
  * The Worker class represents a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API">WebWorker</a>.
- * {@code worker} event is emitted on the page object to signal a worker creation. {@code close} event is emitted on the worker object
- * when the worker is gone.
+ * {@code worker}↵event is emitted on the page object to signal a worker creation. {@code close} event is emitted on the worker object
+ * when the↵worker is gone.
  * <pre>{@code
  * page.onWorker(worker -> {
  *   System.out.println("Worker created: " + worker.url());
@@ -46,13 +46,13 @@ public interface Worker {
 
   class WaitForCloseOptions {
     /**
-     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.↵The default
      * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
      */
     public Double timeout;
 
     /**
-     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.↵The default
      * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
      */
     public WaitForCloseOptions setTimeout(double timeout) {
@@ -65,13 +65,13 @@ public interface Worker {
    *
    * <p> If the function passed to the {@link Worker#evaluate Worker.evaluate()} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Worker#evaluate Worker.evaluate()} would wait for the promise to resolve and return its value.
+   * Worker#evaluate Worker.evaluate()} would wait for the promise↵to resolve and return its value.
    *
    * <p> If the function passed to the {@link Worker#evaluate Worker.evaluate()} returns a non-[Serializable] value, then {@link
-   * Worker#evaluate Worker.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values
+   * Worker#evaluate Worker.evaluate()} returns {@code undefined}. Playwright also supports transferring some↵additional values
    * that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates↵to a function, the function is
    * automatically invoked.
    */
   default Object evaluate(String expression) {
@@ -82,13 +82,13 @@ public interface Worker {
    *
    * <p> If the function passed to the {@link Worker#evaluate Worker.evaluate()} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Worker#evaluate Worker.evaluate()} would wait for the promise to resolve and return its value.
+   * Worker#evaluate Worker.evaluate()} would wait for the promise↵to resolve and return its value.
    *
    * <p> If the function passed to the {@link Worker#evaluate Worker.evaluate()} returns a non-[Serializable] value, then {@link
-   * Worker#evaluate Worker.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values
+   * Worker#evaluate Worker.evaluate()} returns {@code undefined}. Playwright also supports transferring some↵additional values
    * that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates↵to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
@@ -96,14 +96,14 @@ public interface Worker {
   /**
    * Returns the return value of {@code expression} as a {@code JSHandle}.
    *
-   * <p> The only difference between {@link Worker#evaluate Worker.evaluate()} and {@link Worker#evaluateHandle
-   * Worker.evaluateHandle()} is that {@link Worker#evaluateHandle Worker.evaluateHandle()} returns {@code JSHandle}.
+   * <p> The only difference between {@link Worker#evaluate Worker.evaluate()} and↵{@link Worker#evaluateHandle
+   * Worker.evaluateHandle()} is that {@link Worker#evaluateHandle Worker.evaluateHandle()}↵returns {@code JSHandle}.
    *
    * <p> If the function passed to the {@link Worker#evaluateHandle Worker.evaluateHandle()} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Worker#evaluateHandle Worker.evaluateHandle()} would wait for the promise to resolve and return its value.
+   * Worker#evaluateHandle Worker.evaluateHandle()} would wait for↵the promise to resolve and return its value.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates↵to a function, the function is
    * automatically invoked.
    */
   default JSHandle evaluateHandle(String expression) {
@@ -112,14 +112,14 @@ public interface Worker {
   /**
    * Returns the return value of {@code expression} as a {@code JSHandle}.
    *
-   * <p> The only difference between {@link Worker#evaluate Worker.evaluate()} and {@link Worker#evaluateHandle
-   * Worker.evaluateHandle()} is that {@link Worker#evaluateHandle Worker.evaluateHandle()} returns {@code JSHandle}.
+   * <p> The only difference between {@link Worker#evaluate Worker.evaluate()} and↵{@link Worker#evaluateHandle
+   * Worker.evaluateHandle()} is that {@link Worker#evaluateHandle Worker.evaluateHandle()}↵returns {@code JSHandle}.
    *
    * <p> If the function passed to the {@link Worker#evaluateHandle Worker.evaluateHandle()} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Worker#evaluateHandle Worker.evaluateHandle()} would wait for the promise to resolve and return its value.
+   * Worker#evaluateHandle Worker.evaluateHandle()} would wait for↵the promise to resolve and return its value.
    *
-   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
+   * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates↵to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */

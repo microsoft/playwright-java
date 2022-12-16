@@ -31,7 +31,7 @@ public class LocatorUtils {
     return "internal:attr=[" + attrName + "=" + escapeForAttributeSelector((String) value, exact) + "]";
   }
 
-  static String getByTestIdSelector(String testId) {
+  static String getByTestIdSelector(Object testId) {
     return getByAttributeTextSelector(testIdAttributeName, testId, true);
   }
 

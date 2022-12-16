@@ -20,8 +20,8 @@ import com.microsoft.playwright.impl.PlaywrightImpl;
 import java.util.*;
 
 /**
- * Playwright module provides a method to launch a browser instance. The following is a typical example of using Playwright
- * to drive automation:
+ * Playwright module provides a method to launch a browser instance. The following is a typical example of using
+ * Playwright↵to drive automation:
  * <pre>{@code
  * import com.microsoft.playwright.*;
  *
@@ -42,13 +42,13 @@ import java.util.*;
 public interface Playwright extends AutoCloseable {
   class CreateOptions {
     /**
-     * Additional environment variables that will be passed to the driver process. By default driver process inherits
+     * Additional environment variables that will be passed to the driver process. By default driver↵process inherits
      * environment variables of the Playwright process.
      */
     public Map<String, String> env;
 
     /**
-     * Additional environment variables that will be passed to the driver process. By default driver process inherits
+     * Additional environment variables that will be passed to the driver process. By default driver↵process inherits
      * environment variables of the Playwright process.
      */
     public CreateOptions setEnv(Map<String, String> env) {
@@ -69,8 +69,8 @@ public interface Playwright extends AutoCloseable {
    */
   APIRequest request();
   /**
-   * Selectors can be used to install custom selector engines. See <a
-   * href="https://playwright.dev/java/docs/selectors">Working with selectors</a> for more information.
+   * Selectors can be used to install custom selector engines. See↵<a
+   * href="https://playwright.dev/java/docs/extensibility">extensibility</a> for more information.
    */
   Selectors selectors();
   /**
