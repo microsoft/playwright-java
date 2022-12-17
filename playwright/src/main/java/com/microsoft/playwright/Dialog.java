@@ -41,7 +41,7 @@ package com.microsoft.playwright;
  * }
  * }</pre>
  *
- * <p> <strong>NOTE:</strong> Dialogs are dismissed automatically, unless there is a {@link Page#onDialog Page.onDialog()} listener.↵When listener is
+ * <p> <strong>NOTE:</strong> Dialogs are dismissed automatically, unless there is a {@link Page#onDialog Page.onDialog()} listener. When listener is
  * present, it **must** either {@link Dialog#accept Dialog.accept()} or {@link Dialog#dismiss Dialog.dismiss()} the dialog
  * - otherwise the page will <a
  * href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop#never_blocking">freeze</a> waiting for the

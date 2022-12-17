@@ -387,11 +387,11 @@ public interface LocatorAssertions {
    */
   void isChecked(IsCheckedOptions options);
   /**
-   * Ensures the {@code Locator} points to a disabled element. Element is disabled if it has "disabled" attribute↵or is disabled
+   * Ensures the {@code Locator} points to a disabled element. Element is disabled if it has "disabled" attribute or is disabled
    * via <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled">'aria-disabled'</a>.↵Note
-   * that only native control elements such as HTML {@code button}, {@code input}, {@code select}, {@code textarea}, {@code option}, {@code optgroup}↵can be
-   * disabled by setting "disabled" attribute. "disabled" attribute on other elements is ignored↵by the browser.
+   * href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled">'aria-disabled'</a>. Note
+   * that only native control elements such as HTML {@code button}, {@code input}, {@code select}, {@code textarea}, {@code option}, {@code optgroup} can be
+   * disabled by setting "disabled" attribute. "disabled" attribute on other elements is ignored by the browser.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -402,11 +402,11 @@ public interface LocatorAssertions {
     isDisabled(null);
   }
   /**
-   * Ensures the {@code Locator} points to a disabled element. Element is disabled if it has "disabled" attribute↵or is disabled
+   * Ensures the {@code Locator} points to a disabled element. Element is disabled if it has "disabled" attribute or is disabled
    * via <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled">'aria-disabled'</a>.↵Note
-   * that only native control elements such as HTML {@code button}, {@code input}, {@code select}, {@code textarea}, {@code option}, {@code optgroup}↵can be
-   * disabled by setting "disabled" attribute. "disabled" attribute on other elements is ignored↵by the browser.
+   * href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled">'aria-disabled'</a>. Note
+   * that only native control elements such as HTML {@code button}, {@code input}, {@code select}, {@code textarea}, {@code option}, {@code optgroup} can be
+   * disabled by setting "disabled" attribute. "disabled" attribute on other elements is ignored by the browser.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -895,7 +895,7 @@ public interface LocatorAssertions {
    */
   void hasAttribute(String name, Pattern value, HasAttributeOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match↵or using a relaxed
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.
    *
    * <p> **Usage**
@@ -915,7 +915,7 @@ public interface LocatorAssertions {
     hasClass(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match↵or using a relaxed
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.
    *
    * <p> **Usage**
@@ -933,7 +933,7 @@ public interface LocatorAssertions {
    */
   void hasClass(String expected, HasClassOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match↵or using a relaxed
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.
    *
    * <p> **Usage**
@@ -953,7 +953,7 @@ public interface LocatorAssertions {
     hasClass(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match↵or using a relaxed
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.
    *
    * <p> **Usage**
@@ -971,7 +971,7 @@ public interface LocatorAssertions {
    */
   void hasClass(Pattern expected, HasClassOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match↵or using a relaxed
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.
    *
    * <p> **Usage**
@@ -991,7 +991,7 @@ public interface LocatorAssertions {
     hasClass(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match↵or using a relaxed
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.
    *
    * <p> **Usage**
@@ -1009,7 +1009,7 @@ public interface LocatorAssertions {
    */
   void hasClass(String[] expected, HasClassOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match↵or using a relaxed
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.
    *
    * <p> **Usage**
@@ -1029,7 +1029,7 @@ public interface LocatorAssertions {
     hasClass(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match↵or using a relaxed
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.
    *
    * <p> **Usage**
@@ -1171,7 +1171,7 @@ public interface LocatorAssertions {
    */
   void hasId(Pattern id, HasIdOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with given JavaScript property. Note that this property can be↵of a primitive
+   * Ensures the {@code Locator} points to an element with given JavaScript property. Note that this property can be of a primitive
    * type as well as a plain serializable JavaScript object.
    *
    * <p> **Usage**
@@ -1186,7 +1186,7 @@ public interface LocatorAssertions {
     hasJSProperty(name, value, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with given JavaScript property. Note that this property can be↵of a primitive
+   * Ensures the {@code Locator} points to an element with given JavaScript property. Note that this property can be of a primitive
    * type as well as a plain serializable JavaScript object.
    *
    * <p> **Usage**

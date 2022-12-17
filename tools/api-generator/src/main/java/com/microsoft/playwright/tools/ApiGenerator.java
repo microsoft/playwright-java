@@ -143,7 +143,8 @@ abstract class Element {
       out.add("</" + currentItemList + ">");
       currentItemList = null;
     }
-    return String.join("\n", out);
+
+    return String.join("\n", out).replaceAll("↵", " ");
   }
 
   private static String beautify(String paragraph) {

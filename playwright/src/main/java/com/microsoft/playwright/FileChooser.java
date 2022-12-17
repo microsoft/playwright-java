@@ -30,21 +30,21 @@ public interface FileChooser {
   class SetFilesOptions {
     /**
      * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can↵opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating↵to inaccessible pages. Defaults to {@code false}.
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by↵using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or↵{@link
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
      * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can↵opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating↵to inaccessible pages. Defaults to {@code false}.
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public SetFilesOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -52,7 +52,7 @@ public interface FileChooser {
     }
     /**
      * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by↵using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or↵{@link
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SetFilesOptions setTimeout(double timeout) {
@@ -74,50 +74,50 @@ public interface FileChooser {
   Page page();
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths,
-   * then↵they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * then they are resolved relative to the current working directory. For empty array, clears the selected files.
    */
   default void setFiles(Path files) {
     setFiles(files, null);
   }
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths,
-   * then↵they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * then they are resolved relative to the current working directory. For empty array, clears the selected files.
    */
   void setFiles(Path files, SetFilesOptions options);
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths,
-   * then↵they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * then they are resolved relative to the current working directory. For empty array, clears the selected files.
    */
   default void setFiles(Path[] files) {
     setFiles(files, null);
   }
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths,
-   * then↵they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * then they are resolved relative to the current working directory. For empty array, clears the selected files.
    */
   void setFiles(Path[] files, SetFilesOptions options);
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths,
-   * then↵they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * then they are resolved relative to the current working directory. For empty array, clears the selected files.
    */
   default void setFiles(FilePayload files) {
     setFiles(files, null);
   }
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths,
-   * then↵they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * then they are resolved relative to the current working directory. For empty array, clears the selected files.
    */
   void setFiles(FilePayload files, SetFilesOptions options);
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths,
-   * then↵they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * then they are resolved relative to the current working directory. For empty array, clears the selected files.
    */
   default void setFiles(FilePayload[] files) {
     setFiles(files, null);
   }
   /**
    * Sets the value of the file input this chooser is associated with. If some of the {@code filePaths} are relative paths,
-   * then↵they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * then they are resolved relative to the current working directory. For empty array, clears the selected files.
    */
   void setFiles(FilePayload[] files, SetFilesOptions options);
 }

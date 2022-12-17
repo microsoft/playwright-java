@@ -18,7 +18,7 @@ package com.microsoft.playwright.options;
 
 public class SecurityDetails {
   /**
-   * Common Name component of the Issuer field.↵from the certificate. This should only be used for informational purposes.
+   * Common Name component of the Issuer field. from the certificate. This should only be used for informational purposes.
    * Optional.
    */
   public String issuer;
@@ -27,16 +27,16 @@ public class SecurityDetails {
    */
   public String protocol;
   /**
-   * Common Name component of the Subject↵field from the certificate. This should only be used for informational purposes.
+   * Common Name component of the Subject field from the certificate. This should only be used for informational purposes.
    * Optional.
    */
   public String subjectName;
   /**
-   * Unix timestamp (in seconds) specifying↵when this cert becomes valid. Optional.
+   * Unix timestamp (in seconds) specifying when this cert becomes valid. Optional.
    */
   public Double validFrom;
   /**
-   * Unix timestamp (in seconds) specifying↵when this cert becomes invalid. Optional.
+   * Unix timestamp (in seconds) specifying when this cert becomes invalid. Optional.
    */
   public Double validTo;
 

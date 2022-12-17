@@ -18,12 +18,12 @@ package com.microsoft.playwright.options;
 
 public class Proxy {
   /**
-   * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example↵{@code http://myproxy.com:3128} or
-   * {@code socks5://myproxy.com:3128}. Short form {@code myproxy.com:3128} is considered an HTTP↵proxy.
+   * Proxy to be used for all requests. HTTP and SOCKS proxies are supported, for example {@code http://myproxy.com:3128} or
+   * {@code socks5://myproxy.com:3128}. Short form {@code myproxy.com:3128} is considered an HTTP proxy.
    */
   public String server;
   /**
-   * Optional comma-separated domains to bypass proxy, for example {@code ".com, chromium.org,↵.domain.com"}.
+   * Optional comma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
    */
   public String bypass;
   /**
@@ -39,7 +39,7 @@ public class Proxy {
     this.server = server;
   }
   /**
-   * Optional comma-separated domains to bypass proxy, for example {@code ".com, chromium.org,↵.domain.com"}.
+   * Optional comma-separated domains to bypass proxy, for example {@code ".com, chromium.org, .domain.com"}.
    */
   public Proxy setBypass(String bypass) {
     this.bypass = bypass;

@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 /**
  * BrowserType provides methods to launch a specific browser instance or connect to an existing one. The following is
- * a↵typical example of using Playwright to drive automation:
+ * a typical example of using Playwright to drive automation:
  * <pre>{@code
  * import com.microsoft.playwright.*;
  *
@@ -48,12 +48,12 @@ public interface BrowserType {
      */
     public Map<String, String> headers;
     /**
-     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you↵can see what is going on.
+     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      * Defaults to 0.
      */
     public Double slowMo;
     /**
-     * Maximum time in milliseconds to wait for the connection to be established. Defaults to↵{@code 0} (no timeout).
+     * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 0} (no timeout).
      */
     public Double timeout;
 
@@ -65,7 +65,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you↵can see what is going on.
+     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      * Defaults to 0.
      */
     public ConnectOptions setSlowMo(double slowMo) {
@@ -73,7 +73,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Maximum time in milliseconds to wait for the connection to be established. Defaults to↵{@code 0} (no timeout).
+     * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 0} (no timeout).
      */
     public ConnectOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -86,12 +86,12 @@ public interface BrowserType {
      */
     public Map<String, String> headers;
     /**
-     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you↵can see what is going on.
+     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      * Defaults to 0.
      */
     public Double slowMo;
     /**
-     * Maximum time in milliseconds to wait for the connection to be established. Defaults to↵{@code 30000} (30 seconds). Pass {@code 0} to
+     * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
      * disable timeout.
      */
     public Double timeout;
@@ -104,7 +104,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you↵can see what is going on.
+     * Slows down Playwright operations by the specified amount of milliseconds. Useful so that you can see what is going on.
      * Defaults to 0.
      */
     public ConnectOverCDPOptions setSlowMo(double slowMo) {
@@ -112,7 +112,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Maximum time in milliseconds to wait for the connection to be established. Defaults to↵{@code 30000} (30 seconds). Pass {@code 0} to
+     * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
      * disable timeout.
      */
     public ConnectOverCDPOptions setTimeout(double timeout) {
@@ -122,7 +122,7 @@ public interface BrowserType {
   }
   class LaunchOptions {
     /**
-     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found↵<a
+     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
      * href="http://peter.sh/experiments/chromium-command-line-switches/">here</a>.
      */
     public List<String> args;
@@ -137,14 +137,14 @@ public interface BrowserType {
      */
     public Boolean chromiumSandbox;
     /**
-     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the↵{@code headless}
+     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless}
      * option will be set {@code false}.
      */
     public Boolean devtools;
     /**
      * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and
-     * is↵deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created
-     * in↵is closed.
+     * is deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created
+     * in is closed.
      */
     public Path downloadsPath;
     /**
@@ -152,13 +152,13 @@ public interface BrowserType {
      */
     public Map<String, String> env;
     /**
-     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then↵it is
-     * resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium,↵Firefox
+     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is
+     * resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium, Firefox
      * or WebKit, use at your own risk.
      */
     public Path executablePath;
     /**
-     * Firefox user preferences. Learn more about the Firefox user preferences at↵<a
+     * Firefox user preferences. Learn more about the Firefox user preferences at <a
      * href="https://support.mozilla.org/en-US/kb/about-config-editor-firefox">{@code about:config}</a>.
      */
     public Map<String, Object> firefoxUserPrefs;
@@ -175,19 +175,19 @@ public interface BrowserType {
      */
     public Boolean handleSIGTERM;
     /**
-     * Whether to run browser in headless mode. More details for↵<a
-     * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and↵<a
+     * Whether to run browser in headless mode. More details for <a
+     * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
      * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless
-     * the↵{@code devtools} option is {@code true}.
+     * the {@code devtools} option is {@code true}.
      */
     public Boolean headless;
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.↵Dangerous option;
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
      * use with care. Defaults to {@code false}.
      */
     public Boolean ignoreAllDefaultArgs;
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.↵Dangerous option;
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
      * use with care.
      */
     public List<String> ignoreDefaultArgs;
@@ -201,7 +201,7 @@ public interface BrowserType {
     public Double slowMo;
     /**
      * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0}
-     * to↵disable timeout.
+     * to disable timeout.
      */
     public Double timeout;
     /**
@@ -210,7 +210,7 @@ public interface BrowserType {
     public Path tracesDir;
 
     /**
-     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found↵<a
+     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
      * href="http://peter.sh/experiments/chromium-command-line-switches/">here</a>.
      */
     public LaunchOptions setArgs(List<String> args) {
@@ -244,7 +244,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the↵{@code headless}
+     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless}
      * option will be set {@code false}.
      */
     public LaunchOptions setDevtools(boolean devtools) {
@@ -253,8 +253,8 @@ public interface BrowserType {
     }
     /**
      * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and
-     * is↵deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created
-     * in↵is closed.
+     * is deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created
+     * in is closed.
      */
     public LaunchOptions setDownloadsPath(Path downloadsPath) {
       this.downloadsPath = downloadsPath;
@@ -268,8 +268,8 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then↵it is
-     * resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium,↵Firefox
+     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is
+     * resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium, Firefox
      * or WebKit, use at your own risk.
      */
     public LaunchOptions setExecutablePath(Path executablePath) {
@@ -277,7 +277,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Firefox user preferences. Learn more about the Firefox user preferences at↵<a
+     * Firefox user preferences. Learn more about the Firefox user preferences at <a
      * href="https://support.mozilla.org/en-US/kb/about-config-editor-firefox">{@code about:config}</a>.
      */
     public LaunchOptions setFirefoxUserPrefs(Map<String, Object> firefoxUserPrefs) {
@@ -306,17 +306,17 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Whether to run browser in headless mode. More details for↵<a
-     * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and↵<a
+     * Whether to run browser in headless mode. More details for <a
+     * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
      * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless
-     * the↵{@code devtools} option is {@code true}.
+     * the {@code devtools} option is {@code true}.
      */
     public LaunchOptions setHeadless(boolean headless) {
       this.headless = headless;
       return this;
     }
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.↵Dangerous option;
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
      * use with care. Defaults to {@code false}.
      */
     public LaunchOptions setIgnoreAllDefaultArgs(boolean ignoreAllDefaultArgs) {
@@ -324,7 +324,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.↵Dangerous option;
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
      * use with care.
      */
     public LaunchOptions setIgnoreDefaultArgs(List<String> ignoreDefaultArgs) {
@@ -353,7 +353,7 @@ public interface BrowserType {
     }
     /**
      * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0}
-     * to↵disable timeout.
+     * to disable timeout.
      */
     public LaunchOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -373,7 +373,7 @@ public interface BrowserType {
      */
     public Boolean acceptDownloads;
     /**
-     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found↵<a
+     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
      * href="http://peter.sh/experiments/chromium-command-line-switches/">here</a>.
      */
     public List<String> args;
@@ -407,7 +407,7 @@ public interface BrowserType {
     public Boolean chromiumSandbox;
     /**
      * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
-     * See↵{@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
      * Defaults to {@code "light"}.
      */
     public Optional<ColorScheme> colorScheme;
@@ -416,14 +416,14 @@ public interface BrowserType {
      */
     public Double deviceScaleFactor;
     /**
-     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the↵{@code headless}
+     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless}
      * option will be set {@code false}.
      */
     public Boolean devtools;
     /**
      * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and
-     * is↵deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created
-     * in↵is closed.
+     * is deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created
+     * in is closed.
      */
     public Path downloadsPath;
     /**
@@ -431,8 +431,8 @@ public interface BrowserType {
      */
     public Map<String, String> env;
     /**
-     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then↵it is
-     * resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium,↵Firefox
+     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is
+     * resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium, Firefox
      * or WebKit, use at your own risk.
      */
     public Path executablePath;
@@ -463,10 +463,10 @@ public interface BrowserType {
      */
     public Boolean hasTouch;
     /**
-     * Whether to run browser in headless mode. More details for↵<a
-     * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and↵<a
+     * Whether to run browser in headless mode. More details for <a
+     * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
      * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless
-     * the↵{@code devtools} option is {@code true}.
+     * the {@code devtools} option is {@code true}.
      */
     public Boolean headless;
     /**
@@ -474,12 +474,12 @@ public interface BrowserType {
      */
     public HttpCredentials httpCredentials;
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.↵Dangerous option;
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
      * use with care. Defaults to {@code false}.
      */
     public Boolean ignoreAllDefaultArgs;
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.↵Dangerous option;
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
      * use with care.
      */
     public List<String> ignoreDefaultArgs;
@@ -489,7 +489,7 @@ public interface BrowserType {
     public Boolean ignoreHTTPSErrors;
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
-     * supported↵in Firefox.
+     * supported in Firefox.
      */
     public Boolean isMobile;
     /**
@@ -498,7 +498,7 @@ public interface BrowserType {
     public Boolean javaScriptEnabled;
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
-     * {@code Accept-Language}↵request header value as well as number and date formatting rules.
+     * {@code Accept-Language} request header value as well as number and date formatting rules.
      */
     public String locale;
     /**
@@ -506,7 +506,7 @@ public interface BrowserType {
      */
     public Boolean offline;
     /**
-     * A list of permissions to grant to all pages in this context. See↵{@link BrowserContext#grantPermissions
+     * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
      * BrowserContext.grantPermissions()} for more details.
      */
     public List<String> permissions;
@@ -530,20 +530,20 @@ public interface BrowserType {
      */
     public Boolean recordHarOmitContent;
     /**
-     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the↵specified HAR
-     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to↵call {@link BrowserContext#close
+     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
+     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link BrowserContext#close
      * BrowserContext.close()} for the HAR to be saved.
      */
     public Path recordHarPath;
     public Object recordHarUrlFilter;
     /**
-     * Enables video recording for all pages into the specified directory. If not specified videos are↵not recorded. Make sure
+     * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
      * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
     public Path recordVideoDir;
     /**
-     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport}↵scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450.↵Actual picture of each page will
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
      * be scaled down if necessary to fit the specified size.
      */
     public RecordVideoSize recordVideoSize;
@@ -554,7 +554,7 @@ public interface BrowserType {
      */
     public Optional<ReducedMotion> reducedMotion;
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the↵{@code viewport}
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
      * is set.
      */
     public ScreenSize screenSize;
@@ -572,20 +572,20 @@ public interface BrowserType {
      */
     public Double slowMo;
     /**
-     * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations↵on selectors
-     * that imply single target DOM element will throw when more than one element matches the selector.↵This option does not
-     * affect any Locator APIs (Locators are always strict).↵See {@code Locator} to learn more about the strict mode.
+     * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector. This option does not
+     * affect any Locator APIs (Locators are always strict). See {@code Locator} to learn more about the strict mode.
      */
     public Boolean strictSelectors;
     /**
      * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0}
-     * to↵disable timeout.
+     * to disable timeout.
      */
     public Double timeout;
     /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
-     * metaZones.txt</a>↵for a list of supported timezone IDs.
+     * metaZones.txt</a> for a list of supported timezone IDs.
      */
     public String timezoneId;
     /**
@@ -609,7 +609,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found↵<a
+     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
      * href="http://peter.sh/experiments/chromium-command-line-switches/">here</a>.
      */
     public LaunchPersistentContextOptions setArgs(List<String> args) {
@@ -668,7 +668,7 @@ public interface BrowserType {
     }
     /**
      * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
-     * See↵{@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
      * Defaults to {@code "light"}.
      */
     public LaunchPersistentContextOptions setColorScheme(ColorScheme colorScheme) {
@@ -683,7 +683,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the↵{@code headless}
+     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless}
      * option will be set {@code false}.
      */
     public LaunchPersistentContextOptions setDevtools(boolean devtools) {
@@ -692,8 +692,8 @@ public interface BrowserType {
     }
     /**
      * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and
-     * is↵deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created
-     * in↵is closed.
+     * is deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created
+     * in is closed.
      */
     public LaunchPersistentContextOptions setDownloadsPath(Path downloadsPath) {
       this.downloadsPath = downloadsPath;
@@ -707,8 +707,8 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then↵it is
-     * resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium,↵Firefox
+     * Path to a browser executable to run instead of the bundled one. If {@code executablePath} is a relative path, then it is
+     * resolved relative to the current working directory. Note that Playwright only works with the bundled Chromium, Firefox
      * or WebKit, use at your own risk.
      */
     public LaunchPersistentContextOptions setExecutablePath(Path executablePath) {
@@ -766,10 +766,10 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Whether to run browser in headless mode. More details for↵<a
-     * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and↵<a
+     * Whether to run browser in headless mode. More details for <a
+     * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
      * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless
-     * the↵{@code devtools} option is {@code true}.
+     * the {@code devtools} option is {@code true}.
      */
     public LaunchPersistentContextOptions setHeadless(boolean headless) {
       this.headless = headless;
@@ -789,7 +789,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.↵Dangerous option;
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
      * use with care. Defaults to {@code false}.
      */
     public LaunchPersistentContextOptions setIgnoreAllDefaultArgs(boolean ignoreAllDefaultArgs) {
@@ -797,7 +797,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.↵Dangerous option;
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
      * use with care.
      */
     public LaunchPersistentContextOptions setIgnoreDefaultArgs(List<String> ignoreDefaultArgs) {
@@ -813,7 +813,7 @@ public interface BrowserType {
     }
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
-     * supported↵in Firefox.
+     * supported in Firefox.
      */
     public LaunchPersistentContextOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
@@ -828,7 +828,7 @@ public interface BrowserType {
     }
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
-     * {@code Accept-Language}↵request header value as well as number and date formatting rules.
+     * {@code Accept-Language} request header value as well as number and date formatting rules.
      */
     public LaunchPersistentContextOptions setLocale(String locale) {
       this.locale = locale;
@@ -842,7 +842,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * A list of permissions to grant to all pages in this context. See↵{@link BrowserContext#grantPermissions
+     * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
      * BrowserContext.grantPermissions()} for more details.
      */
     public LaunchPersistentContextOptions setPermissions(List<String> permissions) {
@@ -887,8 +887,8 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the↵specified HAR
-     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to↵call {@link BrowserContext#close
+     * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
+     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link BrowserContext#close
      * BrowserContext.close()} for the HAR to be saved.
      */
     public LaunchPersistentContextOptions setRecordHarPath(Path recordHarPath) {
@@ -904,7 +904,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Enables video recording for all pages into the specified directory. If not specified videos are↵not recorded. Make sure
+     * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
      * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
     public LaunchPersistentContextOptions setRecordVideoDir(Path recordVideoDir) {
@@ -912,16 +912,16 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport}↵scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450.↵Actual picture of each page will
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
      * be scaled down if necessary to fit the specified size.
      */
     public LaunchPersistentContextOptions setRecordVideoSize(int width, int height) {
       return setRecordVideoSize(new RecordVideoSize(width, height));
     }
     /**
-     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport}↵scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450.↵Actual picture of each page will
+     * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
      * be scaled down if necessary to fit the specified size.
      */
     public LaunchPersistentContextOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
@@ -938,14 +938,14 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the↵{@code viewport}
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
      * is set.
      */
     public LaunchPersistentContextOptions setScreenSize(int width, int height) {
       return setScreenSize(new ScreenSize(width, height));
     }
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the↵{@code viewport}
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
      * is set.
      */
     public LaunchPersistentContextOptions setScreenSize(ScreenSize screenSize) {
@@ -972,9 +972,9 @@ public interface BrowserType {
       return this;
     }
     /**
-     * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations↵on selectors
-     * that imply single target DOM element will throw when more than one element matches the selector.↵This option does not
-     * affect any Locator APIs (Locators are always strict).↵See {@code Locator} to learn more about the strict mode.
+     * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector. This option does not
+     * affect any Locator APIs (Locators are always strict). See {@code Locator} to learn more about the strict mode.
      */
     public LaunchPersistentContextOptions setStrictSelectors(boolean strictSelectors) {
       this.strictSelectors = strictSelectors;
@@ -982,7 +982,7 @@ public interface BrowserType {
     }
     /**
      * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0}
-     * to↵disable timeout.
+     * to disable timeout.
      */
     public LaunchPersistentContextOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -991,7 +991,7 @@ public interface BrowserType {
     /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
-     * metaZones.txt</a>↵for a list of supported timezone IDs.
+     * metaZones.txt</a> for a list of supported timezone IDs.
      */
     public LaunchPersistentContextOptions setTimezoneId(String timezoneId) {
       this.timezoneId = timezoneId;
@@ -1098,13 +1098,13 @@ public interface BrowserType {
    * }</pre>
    *
    * <p> > **Chromium-only** Playwright can also be used to control the Google Chrome or Microsoft Edge browsers, but it works
-   * best with the version of↵Chromium it is bundled with. There is no guarantee it will work with any other version. Use
-   * {@code executablePath}↵option with extreme caution.
+   * best with the version of Chromium it is bundled with. There is no guarantee it will work with any other version. Use
+   * {@code executablePath} option with extreme caution.
    *
    * <p> >
    *
-   * <p> > If Google Chrome (rather than Chromium) is preferred, a↵<a
-   * href="https://www.google.com/chrome/browser/canary.html">Chrome Canary</a> or↵<a
+   * <p> > If Google Chrome (rather than Chromium) is preferred, a <a
+   * href="https://www.google.com/chrome/browser/canary.html">Chrome Canary</a> or <a
    * href="https://www.chromium.org/getting-involved/dev-channel">Dev Channel</a> build is suggested.
    *
    * <p> >
@@ -1112,9 +1112,9 @@ public interface BrowserType {
    * <p> > Stock browsers like Google Chrome and Microsoft Edge are suitable for tests that require proprietary media codecs for
    * video playback. See <a
    * href="https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/">this article</a> for
-   * other differences between Chromium and Chrome.↵<a
+   * other differences between Chromium and Chrome. <a
    * href="https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md">This
-   * article</a>↵describes some differences for Linux users.
+   * article</a> describes some differences for Linux users.
    */
   default Browser launch() {
     return launch(null);
@@ -1132,13 +1132,13 @@ public interface BrowserType {
    * }</pre>
    *
    * <p> > **Chromium-only** Playwright can also be used to control the Google Chrome or Microsoft Edge browsers, but it works
-   * best with the version of↵Chromium it is bundled with. There is no guarantee it will work with any other version. Use
-   * {@code executablePath}↵option with extreme caution.
+   * best with the version of Chromium it is bundled with. There is no guarantee it will work with any other version. Use
+   * {@code executablePath} option with extreme caution.
    *
    * <p> >
    *
-   * <p> > If Google Chrome (rather than Chromium) is preferred, a↵<a
-   * href="https://www.google.com/chrome/browser/canary.html">Chrome Canary</a> or↵<a
+   * <p> > If Google Chrome (rather than Chromium) is preferred, a <a
+   * href="https://www.google.com/chrome/browser/canary.html">Chrome Canary</a> or <a
    * href="https://www.chromium.org/getting-involved/dev-channel">Dev Channel</a> build is suggested.
    *
    * <p> >
@@ -1146,22 +1146,22 @@ public interface BrowserType {
    * <p> > Stock browsers like Google Chrome and Microsoft Edge are suitable for tests that require proprietary media codecs for
    * video playback. See <a
    * href="https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/">this article</a> for
-   * other differences between Chromium and Chrome.↵<a
+   * other differences between Chromium and Chrome. <a
    * href="https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md">This
-   * article</a>↵describes some differences for Linux users.
+   * article</a> describes some differences for Linux users.
    */
   Browser launch(LaunchOptions options);
   /**
    * Returns the persistent browser context instance.
    *
-   * <p> Launches browser that uses persistent storage located at {@code userDataDir} and returns the only context. Closing↵this
+   * <p> Launches browser that uses persistent storage located at {@code userDataDir} and returns the only context. Closing this
    * context will automatically close the browser.
    *
-   * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for↵<a
-   * href="https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md#introduction">Chromium</a> and↵<a
-   * href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile">Firefox</a>.↵Note that
+   * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for <a
+   * href="https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md#introduction">Chromium</a> and <a
+   * href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile">Firefox</a>. Note that
    * Chromium's user data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}. Pass an
-   * empty string to↵use a temporary directory instead.
+   * empty string to use a temporary directory instead.
    */
   default BrowserContext launchPersistentContext(Path userDataDir) {
     return launchPersistentContext(userDataDir, null);
@@ -1169,14 +1169,14 @@ public interface BrowserType {
   /**
    * Returns the persistent browser context instance.
    *
-   * <p> Launches browser that uses persistent storage located at {@code userDataDir} and returns the only context. Closing↵this
+   * <p> Launches browser that uses persistent storage located at {@code userDataDir} and returns the only context. Closing this
    * context will automatically close the browser.
    *
-   * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for↵<a
-   * href="https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md#introduction">Chromium</a> and↵<a
-   * href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile">Firefox</a>.↵Note that
+   * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for <a
+   * href="https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md#introduction">Chromium</a> and <a
+   * href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile">Firefox</a>. Note that
    * Chromium's user data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}. Pass an
-   * empty string to↵use a temporary directory instead.
+   * empty string to use a temporary directory instead.
    */
   BrowserContext launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options);
   /**

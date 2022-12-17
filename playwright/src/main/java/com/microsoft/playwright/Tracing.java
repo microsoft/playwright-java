@@ -38,12 +38,12 @@ import java.nio.file.Path;
 public interface Tracing {
   class StartOptions {
     /**
-     * If specified, the trace is going to be saved into the file with the↵given name inside the {@code tracesDir} folder specified
+     * If specified, the trace is going to be saved into the file with the given name inside the {@code tracesDir} folder specified
      * in {@link BrowserType#launch BrowserType.launch()}.
      */
     public String name;
     /**
-     * Whether to capture screenshots during tracing. Screenshots are used to build↵a timeline preview.
+     * Whether to capture screenshots during tracing. Screenshots are used to build a timeline preview.
      */
     public Boolean screenshots;
     /**
@@ -55,8 +55,8 @@ public interface Tracing {
      */
     public Boolean snapshots;
     /**
-     * Whether to include source files for trace actions. List of the directories with source code for the application↵must be
-     * provided via {@code PLAYWRIGHT_JAVA_SRC} environment variable (the paths should be separated by ';' on Windows↵and by ':' on
+     * Whether to include source files for trace actions. List of the directories with source code for the application must be
+     * provided via {@code PLAYWRIGHT_JAVA_SRC} environment variable (the paths should be separated by ';' on Windows and by ':' on
      * other platforms).
      */
     public Boolean sources;
@@ -66,7 +66,7 @@ public interface Tracing {
     public String title;
 
     /**
-     * If specified, the trace is going to be saved into the file with the↵given name inside the {@code tracesDir} folder specified
+     * If specified, the trace is going to be saved into the file with the given name inside the {@code tracesDir} folder specified
      * in {@link BrowserType#launch BrowserType.launch()}.
      */
     public StartOptions setName(String name) {
@@ -74,7 +74,7 @@ public interface Tracing {
       return this;
     }
     /**
-     * Whether to capture screenshots during tracing. Screenshots are used to build↵a timeline preview.
+     * Whether to capture screenshots during tracing. Screenshots are used to build a timeline preview.
      */
     public StartOptions setScreenshots(boolean screenshots) {
       this.screenshots = screenshots;
@@ -92,8 +92,8 @@ public interface Tracing {
       return this;
     }
     /**
-     * Whether to include source files for trace actions. List of the directories with source code for the application↵must be
-     * provided via {@code PLAYWRIGHT_JAVA_SRC} environment variable (the paths should be separated by ';' on Windows↵and by ':' on
+     * Whether to include source files for trace actions. List of the directories with source code for the application must be
+     * provided via {@code PLAYWRIGHT_JAVA_SRC} environment variable (the paths should be separated by ';' on Windows and by ':' on
      * other platforms).
      */
     public StartOptions setSources(boolean sources) {

@@ -107,7 +107,7 @@ public interface FrameLocator {
     /**
      * An attribute that is usually set by {@code aria-disabled} or {@code disabled}.
      *
-     * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy.↵Learn more about <a
+     * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
      */
     public Boolean disabled;
@@ -168,7 +168,7 @@ public interface FrameLocator {
     /**
      * An attribute that is usually set by {@code aria-disabled} or {@code disabled}.
      *
-     * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy.↵Learn more about <a
+     * <p> <strong>NOTE:</strong> Unlike most other attributes, {@code disabled} is inherited through the DOM hierarchy. Learn more about <a
      * href="https://www.w3.org/TR/wai-aria-1.2/#aria-disabled">{@code aria-disabled}</a>.
      */
     public GetByRoleOptions setDisabled(boolean disabled) {
@@ -286,21 +286,21 @@ public interface FrameLocator {
   class LocatorOptions {
     /**
      * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer
-     * one.↵For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     * one. For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
     public Locator has;
     /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
-     * [string], matching is case-insensitive and searches for a substring.↵For example, {@code "Playwright"} matches
+     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
      * {@code <article><div>Playwright</div></article>}.
      */
     public Object hasText;
 
     /**
      * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer
-     * one.↵For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     * one. For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
@@ -310,7 +310,7 @@ public interface FrameLocator {
     }
     /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
-     * [string], matching is case-insensitive and searches for a substring.↵For example, {@code "Playwright"} matches
+     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
      * {@code <article><div>Playwright</div></article>}.
      */
     public LocatorOptions setHasText(String hasText) {
@@ -319,7 +319,7 @@ public interface FrameLocator {
     }
     /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
-     * [string], matching is case-insensitive and searches for a substring.↵For example, {@code "Playwright"} matches
+     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
      * {@code <article><div>Playwright</div></article>}.
      */
     public LocatorOptions setHasText(Pattern hasText) {
@@ -332,7 +332,7 @@ public interface FrameLocator {
    */
   FrameLocator first();
   /**
-   * When working with iframes, you can create a frame locator that will enter the iframe and allow selecting elements↵in
+   * When working with iframes, you can create a frame locator that will enter the iframe and allow selecting elements in
    * that iframe.
    *
    * @param selector A selector to use when resolving DOM element.

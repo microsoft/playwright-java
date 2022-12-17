@@ -20,21 +20,21 @@ import java.nio.file.Path;
 
 /**
  * Selectors can be used to install custom selector engines. See <a
- * href="https://playwright.dev/java/docs/extensibility">extensibility</a> for more↵information.
+ * href="https://playwright.dev/java/docs/extensibility">extensibility</a> for more information.
  */
 public interface Selectors {
   class RegisterOptions {
     /**
      * Whether to run this selector engine in isolated JavaScript environment. This environment has access to the same DOM,
-     * but↵not any JavaScript objects from the frame's scripts. Defaults to {@code false}. Note that running as a content script is
-     * not↵guaranteed when this engine is used together with other registered engines.
+     * but not any JavaScript objects from the frame's scripts. Defaults to {@code false}. Note that running as a content script is
+     * not guaranteed when this engine is used together with other registered engines.
      */
     public Boolean contentScript;
 
     /**
      * Whether to run this selector engine in isolated JavaScript environment. This environment has access to the same DOM,
-     * but↵not any JavaScript objects from the frame's scripts. Defaults to {@code false}. Note that running as a content script is
-     * not↵guaranteed when this engine is used together with other registered engines.
+     * but not any JavaScript objects from the frame's scripts. Defaults to {@code false}. Note that running as a content script is
+     * not guaranteed when this engine is used together with other registered engines.
      */
     public RegisterOptions setContentScript(boolean contentScript) {
       this.contentScript = contentScript;
@@ -72,7 +72,7 @@ public interface Selectors {
    * }</pre>
    *
    * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May
-   * only↵contain {@code [a-zA-Z0-9_]} characters.
+   * only contain {@code [a-zA-Z0-9_]} characters.
    * @param script Script that evaluates to a selector engine instance. The script is evaluated in the page context.
    */
   default void register(String name, String script) {
@@ -109,7 +109,7 @@ public interface Selectors {
    * }</pre>
    *
    * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May
-   * only↵contain {@code [a-zA-Z0-9_]} characters.
+   * only contain {@code [a-zA-Z0-9_]} characters.
    * @param script Script that evaluates to a selector engine instance. The script is evaluated in the page context.
    */
   void register(String name, String script, RegisterOptions options);
@@ -144,7 +144,7 @@ public interface Selectors {
    * }</pre>
    *
    * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May
-   * only↵contain {@code [a-zA-Z0-9_]} characters.
+   * only contain {@code [a-zA-Z0-9_]} characters.
    * @param script Script that evaluates to a selector engine instance. The script is evaluated in the page context.
    */
   default void register(String name, Path script) {
@@ -181,7 +181,7 @@ public interface Selectors {
    * }</pre>
    *
    * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May
-   * only↵contain {@code [a-zA-Z0-9_]} characters.
+   * only contain {@code [a-zA-Z0-9_]} characters.
    * @param script Script that evaluates to a selector engine instance. The script is evaluated in the page context.
    */
   void register(String name, Path script, RegisterOptions options);
