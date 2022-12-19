@@ -36,8 +36,8 @@ import java.nio.file.Path;
  */
 public interface Download {
   /**
-   * Cancels a download. Will not fail if the download is already finished or canceled. Upon successful cancellations,
-   * {@code download.failure()} would resolve to {@code "canceled"}.
+   * Cancels a download. Will not fail if the download is already finished or canceled. Upon successful cancellations, {@code
+   * download.failure()} would resolve to {@code "canceled"}.
    */
   void cancel();
   /**
@@ -60,8 +60,8 @@ public interface Download {
    * Returns path to the downloaded file in case of successful download. The method will wait for the download to finish if
    * necessary. The method throws when connected remotely.
    *
-   * <p> Note that the download's file name is a random GUID, use {@link Download#suggestedFilename
-   * Download.suggestedFilename()} to get suggested file name.
+   * <p> Note that the download's file name is a random GUID, use {@link Download#suggestedFilename Download.suggestedFilename()}
+   * to get suggested file name.
    */
   Path path();
   /**
@@ -73,8 +73,8 @@ public interface Download {
   void saveAs(Path path);
   /**
    * Returns suggested filename for this download. It is typically computed by the browser from the <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition">{@code Content-Disposition}</a> response
-   * header or the {@code download} attribute. See the spec on <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition">{@code Content-Disposition}</a>
+   * response header or the {@code download} attribute. See the spec on <a
    * href="https://html.spec.whatwg.org/#downloading-resources">whatwg</a>. Different browsers can use different logic for
    * computing it.
    */

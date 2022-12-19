@@ -152,11 +152,11 @@ abstract class Element {
 
   private static String beautify(String paragraph) {
     String linkified = linkifyMemberRefs(paragraph);
-    linkified = updateExternalLinks(linkified);
-    return wrapText(linkified, 120, "")
+    linkified = updateExternalLinks(linkified)
+      .replaceAll("↵", " ")
       .replaceAll("`'([^`]+)'`", "{@code \"$1\"}")
-      .replaceAll("`([^`]+)`", "{@code $1}")
-      .replaceAll("↵", " ");
+      .replaceAll("`([^`]+)`", "{@code $1}");
+    return wrapText(linkified, 120, "");
   }
 
   private static String linkifyMemberRefs(String paragraph) {

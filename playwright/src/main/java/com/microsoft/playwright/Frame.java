@@ -66,8 +66,8 @@ public interface Frame {
      */
     public String content;
     /**
-     * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to
-     * the current working directory.
+     * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative
+     * to the current working directory.
      */
     public Path path;
     /**
@@ -88,8 +88,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to
-     * the current working directory.
+     * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative
+     * to the current working directory.
      */
     public AddScriptTagOptions setPath(Path path) {
       this.path = path;
@@ -117,8 +117,8 @@ public interface Frame {
      */
     public String content;
     /**
-     * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to
-     * the current working directory.
+     * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the
+     * current working directory.
      */
     public Path path;
     /**
@@ -134,8 +134,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to
-     * the current working directory.
+     * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the
+     * current working directory.
      */
     public AddStyleTagOptions setPath(Path path) {
       this.path = path;
@@ -156,14 +156,14 @@ public interface Frame {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public Position position;
     /**
@@ -172,8 +172,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -193,24 +193,24 @@ public interface Frame {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public CheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public CheckOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public CheckOptions setPosition(Position position) {
       this.position = position;
@@ -225,8 +225,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public CheckOptions setTimeout(double timeout) {
@@ -262,19 +262,19 @@ public interface Frame {
      */
     public Boolean force;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
-     * current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
      */
     public List<KeyboardModifier> modifiers;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public Position position;
     /**
@@ -283,8 +283,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -325,32 +325,32 @@ public interface Frame {
       return this;
     }
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
-     * current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
      */
     public ClickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public ClickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public ClickOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public ClickOptions setPosition(Position position) {
       this.position = position;
@@ -365,8 +365,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public ClickOptions setTimeout(double timeout) {
@@ -398,19 +398,19 @@ public interface Frame {
      */
     public Boolean force;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
-     * current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
      */
     public List<KeyboardModifier> modifiers;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public Position position;
     /**
@@ -419,8 +419,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -454,32 +454,32 @@ public interface Frame {
       return this;
     }
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
-     * current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
      */
     public DblclickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public DblclickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public DblclickOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public DblclickOptions setPosition(Position position) {
       this.position = position;
@@ -494,8 +494,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public DblclickOptions setTimeout(double timeout) {
@@ -519,8 +519,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -534,8 +534,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public DispatchEventOptions setTimeout(double timeout) {
@@ -550,9 +550,9 @@ public interface Frame {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
@@ -571,8 +571,8 @@ public interface Frame {
      */
     public Position targetPosition;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -592,9 +592,9 @@ public interface Frame {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public DragAndDropOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -639,8 +639,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public DragAndDropOptions setTimeout(double timeout) {
@@ -680,9 +680,9 @@ public interface Frame {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
@@ -691,8 +691,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -706,9 +706,9 @@ public interface Frame {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public FillOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -723,8 +723,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public FillOptions setTimeout(double timeout) {
@@ -739,8 +739,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -754,8 +754,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public FocusOptions setTimeout(double timeout) {
@@ -770,8 +770,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -785,8 +785,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public GetAttributeOptions setTimeout(double timeout) {
@@ -857,8 +857,8 @@ public interface Frame {
      */
     public Boolean disabled;
     /**
-     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name} is a regular
-     * expression. Note that exact match still trims whitespace.
+     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name}
+     * is a regular expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
     /**
@@ -875,8 +875,8 @@ public interface Frame {
      */
     public Boolean includeHidden;
     /**
-     * A number attribute that is usually present for roles {@code heading}, {@code listitem}, {@code row}, {@code treeitem}, with default values for
-     * {@code <h1>-<h6>} elements.
+     * A number attribute that is usually present for roles {@code heading}, {@code listitem}, {@code row}, {@code treeitem},
+     * with default values for {@code <h1>-<h6>} elements.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-level">{@code aria-level}</a>.
      */
@@ -921,8 +921,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name} is a regular
-     * expression. Note that exact match still trims whitespace.
+     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name}
+     * is a regular expression. Note that exact match still trims whitespace.
      */
     public GetByRoleOptions setExact(boolean exact) {
       this.exact = exact;
@@ -948,8 +948,8 @@ public interface Frame {
       return this;
     }
     /**
-     * A number attribute that is usually present for roles {@code heading}, {@code listitem}, {@code row}, {@code treeitem}, with default values for
-     * {@code <h1>-<h6>} elements.
+     * A number attribute that is usually present for roles {@code heading}, {@code listitem}, {@code row}, {@code treeitem},
+     * with default values for {@code <h1>-<h6>} elements.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-level">{@code aria-level}</a>.
      */
@@ -1035,11 +1035,10 @@ public interface Frame {
      */
     public String referer;
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
-     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
-     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
-     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
+     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -1047,7 +1046,8 @@ public interface Frame {
      * <ul>
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500}
+     * ms.</li>
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
@@ -1062,11 +1062,10 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
-     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
-     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
-     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
+     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public NavigateOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1077,7 +1076,8 @@ public interface Frame {
      * <ul>
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500}
+     * ms.</li>
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
@@ -1093,19 +1093,19 @@ public interface Frame {
      */
     public Boolean force;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
-     * current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
      */
     public List<KeyboardModifier> modifiers;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public Position position;
     /**
@@ -1114,8 +1114,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1135,32 +1135,32 @@ public interface Frame {
       return this;
     }
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
-     * current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
      */
     public HoverOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public HoverOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public HoverOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public HoverOptions setPosition(Position position) {
       this.position = position;
@@ -1175,8 +1175,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public HoverOptions setTimeout(double timeout) {
@@ -1200,8 +1200,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1215,8 +1215,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public InnerHTMLOptions setTimeout(double timeout) {
@@ -1231,8 +1231,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1246,8 +1246,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public InnerTextOptions setTimeout(double timeout) {
@@ -1262,8 +1262,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1277,8 +1277,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public InputValueOptions setTimeout(double timeout) {
@@ -1293,8 +1293,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1308,8 +1308,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public IsCheckedOptions setTimeout(double timeout) {
@@ -1324,8 +1324,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1339,8 +1339,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public IsDisabledOptions setTimeout(double timeout) {
@@ -1355,8 +1355,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1370,8 +1370,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public IsEditableOptions setTimeout(double timeout) {
@@ -1386,8 +1386,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1401,8 +1401,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public IsEnabledOptions setTimeout(double timeout) {
@@ -1470,22 +1470,22 @@ public interface Frame {
   }
   class LocatorOptions {
     /**
-     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer
-     * one. For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
+     * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
     public Locator has;
     /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
-     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
-     * {@code <article><div>Playwright</div></article>}.
+     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
+     * <article><div>Playwright</div></article>}.
      */
     public Object hasText;
 
     /**
-     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer
-     * one. For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
+     * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
@@ -1495,8 +1495,8 @@ public interface Frame {
     }
     /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
-     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
-     * {@code <article><div>Playwright</div></article>}.
+     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
+     * <article><div>Playwright</div></article>}.
      */
     public LocatorOptions setHasText(String hasText) {
       this.hasText = hasText;
@@ -1504,8 +1504,8 @@ public interface Frame {
     }
     /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
-     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
-     * {@code <article><div>Playwright</div></article>}.
+     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
+     * <article><div>Playwright</div></article>}.
      */
     public LocatorOptions setHasText(Pattern hasText) {
       this.hasText = hasText;
@@ -1518,9 +1518,9 @@ public interface Frame {
      */
     public Double delay;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
@@ -1529,8 +1529,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1543,9 +1543,9 @@ public interface Frame {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public PressOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -1560,8 +1560,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public PressOptions setTimeout(double timeout) {
@@ -1592,9 +1592,9 @@ public interface Frame {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
@@ -1603,8 +1603,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1618,9 +1618,9 @@ public interface Frame {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -1635,8 +1635,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SelectOptionOptions setTimeout(double timeout) {
@@ -1651,14 +1651,14 @@ public interface Frame {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public Position position;
     /**
@@ -1667,8 +1667,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1688,24 +1688,24 @@ public interface Frame {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public SetCheckedOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public SetCheckedOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public SetCheckedOptions setPosition(Position position) {
       this.position = position;
@@ -1720,8 +1720,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SetCheckedOptions setTimeout(double timeout) {
@@ -1740,11 +1740,10 @@ public interface Frame {
   }
   class SetContentOptions {
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
-     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
-     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
-     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
+     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -1752,18 +1751,18 @@ public interface Frame {
      * <ul>
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500}
+     * ms.</li>
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
 
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
-     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
-     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
-     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
+     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SetContentOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1774,7 +1773,8 @@ public interface Frame {
      * <ul>
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500}
+     * ms.</li>
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
@@ -1785,9 +1785,9 @@ public interface Frame {
   }
   class SetInputFilesOptions {
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
@@ -1796,16 +1796,16 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public SetInputFilesOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -1820,8 +1820,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SetInputFilesOptions setTimeout(double timeout) {
@@ -1836,19 +1836,19 @@ public interface Frame {
      */
     public Boolean force;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
-     * current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
      */
     public List<KeyboardModifier> modifiers;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public Position position;
     /**
@@ -1857,8 +1857,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1878,32 +1878,32 @@ public interface Frame {
       return this;
     }
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
-     * current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
      */
     public TapOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public TapOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public TapOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public TapOptions setPosition(Position position) {
       this.position = position;
@@ -1918,8 +1918,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public TapOptions setTimeout(double timeout) {
@@ -1943,8 +1943,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1958,8 +1958,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public TextContentOptions setTimeout(double timeout) {
@@ -1973,9 +1973,9 @@ public interface Frame {
      */
     public Double delay;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
@@ -1984,8 +1984,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1998,9 +1998,9 @@ public interface Frame {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public TypeOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -2015,8 +2015,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public TypeOptions setTimeout(double timeout) {
@@ -2031,14 +2031,14 @@ public interface Frame {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public Position position;
     /**
@@ -2047,8 +2047,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -2068,24 +2068,24 @@ public interface Frame {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public UncheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public UncheckOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public UncheckOptions setPosition(Position position) {
       this.position = position;
@@ -2100,8 +2100,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public UncheckOptions setTimeout(double timeout) {
@@ -2149,20 +2149,18 @@ public interface Frame {
   }
   class WaitForLoadStateOptions {
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
-     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
-     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
-     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
+     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
-     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
-     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
-     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
+     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public WaitForLoadStateOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2171,11 +2169,10 @@ public interface Frame {
   }
   class WaitForNavigationOptions {
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
-     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
-     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
-     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
+     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -2189,18 +2186,18 @@ public interface Frame {
      * <ul>
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500}
+     * ms.</li>
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
 
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
-     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
-     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
-     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
+     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public WaitForNavigationOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2238,7 +2235,8 @@ public interface Frame {
      * <ul>
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500}
+     * ms.</li>
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
@@ -2253,10 +2251,10 @@ public interface Frame {
      * <ul>
      * <li> {@code "attached"} - wait for element to be present in DOM.</li>
      * <li> {@code "detached"} - wait for element to not be present in DOM.</li>
-     * <li> {@code "visible"} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
-     * content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
-     * <li> {@code "hidden"} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
-     * is opposite to the {@code "visible"} option.</li>
+     * <li> {@code "visible"} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element
+     * without any content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
+     * <li> {@code "hidden"} - wait for element to be either detached from DOM, or have an empty bounding box or {@code
+     * visibility:hidden}. This is opposite to the {@code "visible"} option.</li>
      * </ul>
      */
     public WaitForSelectorState state;
@@ -2266,8 +2264,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -2277,10 +2275,10 @@ public interface Frame {
      * <ul>
      * <li> {@code "attached"} - wait for element to be present in DOM.</li>
      * <li> {@code "detached"} - wait for element to not be present in DOM.</li>
-     * <li> {@code "visible"} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
-     * content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
-     * <li> {@code "hidden"} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
-     * is opposite to the {@code "visible"} option.</li>
+     * <li> {@code "visible"} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element
+     * without any content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
+     * <li> {@code "hidden"} - wait for element to be either detached from DOM, or have an empty bounding box or {@code
+     * visibility:hidden}. This is opposite to the {@code "visible"} option.</li>
      * </ul>
      */
     public WaitForSelectorOptions setState(WaitForSelectorState state) {
@@ -2296,8 +2294,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public WaitForSelectorOptions setTimeout(double timeout) {
@@ -2307,11 +2305,10 @@ public interface Frame {
   }
   class WaitForURLOptions {
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
-     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
-     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
-     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
+     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -2319,18 +2316,18 @@ public interface Frame {
      * <ul>
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500}
+     * ms.</li>
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
     public WaitUntilState waitUntil;
 
     /**
-     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
-     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
-     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
-     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
+     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
+     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public WaitForURLOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2341,7 +2338,8 @@ public interface Frame {
      * <ul>
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500} ms.</li>
+     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500}
+     * ms.</li>
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
@@ -2367,8 +2365,8 @@ public interface Frame {
   /**
    * Returns the added tag when the stylesheet's onload fires or when the CSS content was injected into frame.
    *
-   * <p> Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag with
-   * the content.
+   * <p> Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag
+   * with the content.
    */
   default ElementHandle addStyleTag() {
     return addStyleTag(null);
@@ -2376,16 +2374,16 @@ public interface Frame {
   /**
    * Returns the added tag when the stylesheet's onload fires or when the CSS content was injected into frame.
    *
-   * <p> Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag with
-   * the content.
+   * <p> Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag
+   * with the content.
    */
   ElementHandle addStyleTag(AddStyleTagOptions options);
   /**
    * This method checks an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is
-   * already checked, this method returns immediately.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is already
+   * checked, this method returns immediately.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
@@ -2394,8 +2392,8 @@ public interface Frame {
    * <li> Ensure that the element is now checked. If not, this method throws.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
@@ -2406,8 +2404,8 @@ public interface Frame {
    * This method checks an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is
-   * already checked, this method returns immediately.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is already
+   * checked, this method returns immediately.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
@@ -2416,8 +2414,8 @@ public interface Frame {
    * <li> Ensure that the element is now checked. If not, this method throws.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
@@ -2434,8 +2432,8 @@ public interface Frame {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
@@ -2453,8 +2451,8 @@ public interface Frame {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
@@ -2471,12 +2469,12 @@ public interface Frame {
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
-   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
-   * click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
+   * first click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code frame.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    *
@@ -2493,12 +2491,12 @@ public interface Frame {
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
-   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
-   * click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
+   * first click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code frame.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    *
@@ -2515,8 +2513,9 @@ public interface Frame {
    * frame.dispatchEvent("button#submit", "click");
    * }</pre>
    *
-   * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
-   * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
+   * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code
+   * eventInit} properties and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by
+   * default.
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
    * <ul>
@@ -2555,8 +2554,9 @@ public interface Frame {
    * frame.dispatchEvent("button#submit", "click");
    * }</pre>
    *
-   * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
-   * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
+   * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code
+   * eventInit} properties and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by
+   * default.
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
    * <ul>
@@ -2594,8 +2594,9 @@ public interface Frame {
    * frame.dispatchEvent("button#submit", "click");
    * }</pre>
    *
-   * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
-   * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
+   * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code
+   * eventInit} properties and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by
+   * default.
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
    * <ul>
@@ -2645,8 +2646,8 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression}.
    *
-   * <p> The method finds an element matching the specified selector within the frame and passes it as a first argument
-   * to {@code expression}. If no elements match the selector, the method throws an error.
+   * <p> The method finds an element matching the specified selector within the frame and passes it as a first argument to {@code
+   * expression}. If no elements match the selector, the method throws an error.
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
@@ -2670,8 +2671,8 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression}.
    *
-   * <p> The method finds an element matching the specified selector within the frame and passes it as a first argument
-   * to {@code expression}. If no elements match the selector, the method throws an error.
+   * <p> The method finds an element matching the specified selector within the frame and passes it as a first argument to {@code
+   * expression}. If no elements match the selector, the method throws an error.
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
@@ -2694,8 +2695,8 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression}.
    *
-   * <p> The method finds an element matching the specified selector within the frame and passes it as a first argument
-   * to {@code expression}. If no elements match the selector, the method throws an error.
+   * <p> The method finds an element matching the specified selector within the frame and passes it as a first argument to {@code
+   * expression}. If no elements match the selector, the method throws an error.
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
@@ -2717,8 +2718,8 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression}.
    *
-   * <p> The method finds all elements matching the specified selector within the frame and passes an array of matched
-   * elements as a first argument to {@code expression}.
+   * <p> The method finds all elements matching the specified selector within the frame and passes an array of matched elements
+   * as a first argument to {@code expression}.
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
@@ -2739,8 +2740,8 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression}.
    *
-   * <p> The method finds all elements matching the specified selector within the frame and passes an array of matched
-   * elements as a first argument to {@code expression}.
+   * <p> The method finds all elements matching the specified selector within the frame and passes an array of matched elements
+   * as a first argument to {@code expression}.
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
@@ -2765,8 +2766,8 @@ public interface Frame {
    * Frame#evaluate Frame.evaluate()} would wait for the promise to resolve and return its value.
    *
    * <p> If the function passed to the {@link Frame#evaluate Frame.evaluate()} returns a non-[Serializable] value, then {@link
-   * Frame#evaluate Frame.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values that
-   * are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
+   * Frame#evaluate Frame.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values
+   * that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -2802,8 +2803,8 @@ public interface Frame {
    * Frame#evaluate Frame.evaluate()} would wait for the promise to resolve and return its value.
    *
    * <p> If the function passed to the {@link Frame#evaluate Frame.evaluate()} returns a non-[Serializable] value, then {@link
-   * Frame#evaluate Frame.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values that
-   * are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
+   * Frame#evaluate Frame.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values
+   * that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -2904,8 +2905,8 @@ public interface Frame {
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the element, fills it and
    * triggers an {@code input} event after filling. Note that you can pass an empty string to clear the input field.
    *
-   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
-   * However, if the element is inside the {@code <label>} element that has an associated <a
+   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method
+   * throws an error. However, if the element is inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
    * instead.
    *
@@ -2922,8 +2923,8 @@ public interface Frame {
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the element, fills it and
    * triggers an {@code input} event after filling. Note that you can pass an empty string to clear the input field.
    *
-   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
-   * However, if the element is inside the {@code <label>} element that has an associated <a
+   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method
+   * throws an error. However, if the element is inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
    * instead.
    *
@@ -2934,8 +2935,8 @@ public interface Frame {
    */
   void fill(String selector, String value, FillOptions options);
   /**
-   * This method fetches an element with {@code selector} and focuses it. If there's no element matching {@code selector}, the method
-   * waits until a matching element appears in the DOM.
+   * This method fetches an element with {@code selector} and focuses it. If there's no element matching {@code selector},
+   * the method waits until a matching element appears in the DOM.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
@@ -2943,8 +2944,8 @@ public interface Frame {
     focus(selector, null);
   }
   /**
-   * This method fetches an element with {@code selector} and focuses it. If there's no element matching {@code selector}, the method
-   * waits until a matching element appears in the DOM.
+   * This method fetches an element with {@code selector} and focuses it. If there's no element matching {@code selector},
+   * the method waits until a matching element appears in the DOM.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
@@ -2971,7 +2972,8 @@ public interface Frame {
    *
    * <p> **Usage**
    *
-   * <p> Following snippet locates element with text "Submit" in the iframe with id {@code my-frame}, like {@code <iframe id="my-frame">}:
+   * <p> Following snippet locates element with text "Submit" in the iframe with id {@code my-frame}, like {@code <iframe
+   * id="my-frame">}:
    * <pre>{@code
    * Locator locator = frame.frameLocator("#my-iframe").getByText("Submit");
    * locator.click();
@@ -3097,8 +3099,8 @@ public interface Frame {
    * <p> Note that many html elements have an implicitly <a
    * href="https://w3c.github.io/html-aam/#html-element-role-mappings">defined role</a> that is recognized by the role
    * selector. You can find all the <a href="https://www.w3.org/TR/wai-aria-1.2/#role_definitions">supported roles here</a>.
-   * ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code aria-*}
-   * attributes to default values.
+   * ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code
+   * aria-*} attributes to default values.
    *
    * @param role Required aria role.
    */
@@ -3114,8 +3116,8 @@ public interface Frame {
    * <p> Note that many html elements have an implicitly <a
    * href="https://w3c.github.io/html-aam/#html-element-role-mappings">defined role</a> that is recognized by the role
    * selector. You can find all the <a href="https://www.w3.org/TR/wai-aria-1.2/#role_definitions">supported roles here</a>.
-   * ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code aria-*}
-   * attributes to default values.
+   * ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code
+   * aria-*} attributes to default values.
    *
    * @param role Required aria role.
    */
@@ -3161,8 +3163,8 @@ public interface Frame {
    * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
    *
-   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
-   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
+   * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
@@ -3196,8 +3198,8 @@ public interface Frame {
    * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
    *
-   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
-   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
+   * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
@@ -3229,8 +3231,8 @@ public interface Frame {
    * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
    *
-   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
-   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
+   * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
@@ -3264,8 +3266,8 @@ public interface Frame {
    * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
    *
-   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
-   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
+   * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
@@ -3299,8 +3301,8 @@ public interface Frame {
    */
   Locator getByTitle(Pattern text, GetByTitleOptions options);
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of
-   * the last redirect.
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
+   * last redirect.
    *
    * <p> The method will throw an error if:
    * <ul>
@@ -3315,8 +3317,8 @@ public interface Frame {
    * Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling {@link
    * Response#status Response.status()}.
    *
-   * <p> <strong>NOTE:</strong> The method either throws an error or returns a main resource response. The only exceptions are navigation
-   * to {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
+   * <p> <strong>NOTE:</strong> The method either throws an error or returns a main resource response. The only exceptions are navigation to {@code
+   * about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
    *
    * <p> <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the <a
    * href="https://bugs.chromium.org/p/chromium/issues/detail?id=761295">upstream issue</a>.
@@ -3327,8 +3329,8 @@ public interface Frame {
     return navigate(url, null);
   }
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of
-   * the last redirect.
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
+   * last redirect.
    *
    * <p> The method will throw an error if:
    * <ul>
@@ -3343,8 +3345,8 @@ public interface Frame {
    * Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling {@link
    * Response#status Response.status()}.
    *
-   * <p> <strong>NOTE:</strong> The method either throws an error or returns a main resource response. The only exceptions are navigation
-   * to {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
+   * <p> <strong>NOTE:</strong> The method either throws an error or returns a main resource response. The only exceptions are navigation to {@code
+   * about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
    *
    * <p> <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the <a
    * href="https://bugs.chromium.org/p/chromium/issues/detail?id=761295">upstream issue</a>.
@@ -3363,8 +3365,8 @@ public interface Frame {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
@@ -3382,8 +3384,8 @@ public interface Frame {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
@@ -3502,8 +3504,8 @@ public interface Frame {
   boolean isEnabled(String selector, IsEnabledOptions options);
   /**
    * Returns whether the element is hidden, the opposite of <a
-   * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.  {@code selector} that does not match any elements
-   * is considered hidden.
+   * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.  {@code selector} that does not match any
+   * elements is considered hidden.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
@@ -3512,15 +3514,15 @@ public interface Frame {
   }
   /**
    * Returns whether the element is hidden, the opposite of <a
-   * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.  {@code selector} that does not match any elements
-   * is considered hidden.
+   * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.  {@code selector} that does not match any
+   * elements is considered hidden.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   boolean isHidden(String selector, IsHiddenOptions options);
   /**
-   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>. {@code selector}
-   * that does not match any elements is considered not visible.
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>. {@code
+   * selector} that does not match any elements is considered not visible.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
@@ -3528,8 +3530,8 @@ public interface Frame {
     return isVisible(selector, null);
   }
   /**
-   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>. {@code selector}
-   * that does not match any elements is considered not visible.
+   * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>. {@code
+   * selector} that does not match any elements is considered not visible.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
@@ -3582,16 +3584,18 @@ public interface Frame {
    * character to generate the text for. A superset of the {@code key} values can be found <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
    *
-   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace},
-   * {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp},
-   * etc.
+   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus},
+   * {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown},
+   * {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code
+   * ArrowUp}, etc.
    *
-   * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
+   * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code
+   * ShiftLeft}.
    *
    * <p> Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
    *
-   * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
-   * texts.
+   * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate
+   * different respective texts.
    *
    * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with
    * the modifier, modifier is pressed and being held while the subsequent key is being pressed.
@@ -3608,16 +3612,18 @@ public interface Frame {
    * character to generate the text for. A superset of the {@code key} values can be found <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
    *
-   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace},
-   * {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp},
-   * etc.
+   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus},
+   * {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown},
+   * {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code
+   * ArrowUp}, etc.
    *
-   * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
+   * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code
+   * ShiftLeft}.
    *
    * <p> Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
    *
-   * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
-   * texts.
+   * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate
+   * different respective texts.
    *
    * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with
    * the modifier, modifier is pressed and being held while the subsequent key is being pressed.
@@ -3655,8 +3661,8 @@ public interface Frame {
    *
    * <p> <strong>NOTE:</strong> The use of {@code ElementHandle} is discouraged, use {@code Locator} objects instead.
    *
-   * <p> The method finds all elements matching the specified selector within the frame. If no elements match the
-   * selector, returns empty array.
+   * <p> The method finds all elements matching the specified selector within the frame. If no elements match the selector,
+   * returns empty array.
    *
    * @param selector A selector to query for.
    */
@@ -3666,8 +3672,8 @@ public interface Frame {
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
    * present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -3686,9 +3692,9 @@ public interface Frame {
    * }</pre>
    *
    * @param selector A selector to query for.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(String selector, String values) {
     return selectOption(selector, values, null);
@@ -3698,8 +3704,8 @@ public interface Frame {
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
    * present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -3718,9 +3724,9 @@ public interface Frame {
    * }</pre>
    *
    * @param selector A selector to query for.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   List<String> selectOption(String selector, String values, SelectOptionOptions options);
   /**
@@ -3728,8 +3734,8 @@ public interface Frame {
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
    * present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -3748,9 +3754,9 @@ public interface Frame {
    * }</pre>
    *
    * @param selector A selector to query for.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(String selector, ElementHandle values) {
     return selectOption(selector, values, null);
@@ -3760,8 +3766,8 @@ public interface Frame {
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
    * present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -3780,9 +3786,9 @@ public interface Frame {
    * }</pre>
    *
    * @param selector A selector to query for.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   List<String> selectOption(String selector, ElementHandle values, SelectOptionOptions options);
   /**
@@ -3790,8 +3796,8 @@ public interface Frame {
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
    * present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -3810,9 +3816,9 @@ public interface Frame {
    * }</pre>
    *
    * @param selector A selector to query for.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(String selector, String[] values) {
     return selectOption(selector, values, null);
@@ -3822,8 +3828,8 @@ public interface Frame {
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
    * present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -3842,9 +3848,9 @@ public interface Frame {
    * }</pre>
    *
    * @param selector A selector to query for.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   List<String> selectOption(String selector, String[] values, SelectOptionOptions options);
   /**
@@ -3852,8 +3858,8 @@ public interface Frame {
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
    * present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -3872,9 +3878,9 @@ public interface Frame {
    * }</pre>
    *
    * @param selector A selector to query for.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(String selector, SelectOption values) {
     return selectOption(selector, values, null);
@@ -3884,8 +3890,8 @@ public interface Frame {
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
    * present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -3904,9 +3910,9 @@ public interface Frame {
    * }</pre>
    *
    * @param selector A selector to query for.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   List<String> selectOption(String selector, SelectOption values, SelectOptionOptions options);
   /**
@@ -3914,8 +3920,8 @@ public interface Frame {
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
    * present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -3934,9 +3940,9 @@ public interface Frame {
    * }</pre>
    *
    * @param selector A selector to query for.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(String selector, ElementHandle[] values) {
     return selectOption(selector, values, null);
@@ -3946,8 +3952,8 @@ public interface Frame {
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
    * present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -3966,9 +3972,9 @@ public interface Frame {
    * }</pre>
    *
    * @param selector A selector to query for.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options);
   /**
@@ -3976,8 +3982,8 @@ public interface Frame {
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
    * present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -3996,9 +4002,9 @@ public interface Frame {
    * }</pre>
    *
    * @param selector A selector to query for.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(String selector, SelectOption[] values) {
     return selectOption(selector, values, null);
@@ -4008,8 +4014,8 @@ public interface Frame {
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all specified options are
    * present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -4028,9 +4034,9 @@ public interface Frame {
    * }</pre>
    *
    * @param selector A selector to query for.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   List<String> selectOption(String selector, SelectOption[] values, SelectOptionOptions options);
   /**
@@ -4047,8 +4053,8 @@ public interface Frame {
    * <li> Ensure that the element is now checked or unchecked. If not, this method throws.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param checked Whether to check or uncheck the checkbox.
@@ -4070,8 +4076,8 @@ public interface Frame {
    * <li> Ensure that the element is now checked or unchecked. If not, this method throws.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param checked Whether to check or uncheck the checkbox.
@@ -4214,8 +4220,8 @@ public interface Frame {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code frame.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    *
@@ -4235,8 +4241,8 @@ public interface Frame {
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code frame.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    *
@@ -4262,8 +4268,9 @@ public interface Frame {
    */
   String title();
   /**
-   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code frame.type} can be used
-   * to send fine-grained keyboard events. To fill values in form fields, use {@link Frame#fill Frame.fill()}.
+   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code
+   * frame.type} can be used to send fine-grained keyboard events. To fill values in form fields, use {@link Frame#fill
+   * Frame.fill()}.
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Keyboard#press Keyboard.press()}.
    *
@@ -4282,8 +4289,9 @@ public interface Frame {
     type(selector, text, null);
   }
   /**
-   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code frame.type} can be used
-   * to send fine-grained keyboard events. To fill values in form fields, use {@link Frame#fill Frame.fill()}.
+   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code
+   * frame.type} can be used to send fine-grained keyboard events. To fill values in form fields, use {@link Frame#fill
+   * Frame.fill()}.
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Keyboard#press Keyboard.press()}.
    *
@@ -4303,8 +4311,8 @@ public interface Frame {
    * This method checks an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is
-   * already unchecked, this method returns immediately.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is already
+   * unchecked, this method returns immediately.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
@@ -4313,8 +4321,8 @@ public interface Frame {
    * <li> Ensure that the element is now unchecked. If not, this method throws.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
@@ -4325,8 +4333,8 @@ public interface Frame {
    * This method checks an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is
-   * already unchecked, this method returns immediately.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is already
+   * unchecked, this method returns immediately.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
@@ -4335,8 +4343,8 @@ public interface Frame {
    * <li> Ensure that the element is now unchecked. If not, this method throws.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
@@ -4510,14 +4518,14 @@ public interface Frame {
    */
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
   /**
-   * Waits for the frame navigation and returns the main resource response. In case of multiple redirects, the
-   * navigation will resolve with the response of the last redirect. In case of navigation to a different anchor or
-   * navigation due to History API usage, the navigation will resolve with {@code null}.
+   * Waits for the frame navigation and returns the main resource response. In case of multiple redirects, the navigation
+   * will resolve with the response of the last redirect. In case of navigation to a different anchor or navigation due to
+   * History API usage, the navigation will resolve with {@code null}.
    *
    * <p> **Usage**
    *
-   * <p> This method waits for the frame to navigate to a new URL. It is useful for when you run code which will indirectly
-   * cause the frame to navigate. Consider this example:
+   * <p> This method waits for the frame to navigate to a new URL. It is useful for when you run code which will indirectly cause
+   * the frame to navigate. Consider this example:
    * <pre>{@code
    * // The method returns after navigation has finished
    * frame.waitForNavigation(() -> {
@@ -4535,14 +4543,14 @@ public interface Frame {
     return waitForNavigation(null, callback);
   }
   /**
-   * Waits for the frame navigation and returns the main resource response. In case of multiple redirects, the
-   * navigation will resolve with the response of the last redirect. In case of navigation to a different anchor or
-   * navigation due to History API usage, the navigation will resolve with {@code null}.
+   * Waits for the frame navigation and returns the main resource response. In case of multiple redirects, the navigation
+   * will resolve with the response of the last redirect. In case of navigation to a different anchor or navigation due to
+   * History API usage, the navigation will resolve with {@code null}.
    *
    * <p> **Usage**
    *
-   * <p> This method waits for the frame to navigate to a new URL. It is useful for when you run code which will indirectly
-   * cause the frame to navigate. Consider this example:
+   * <p> This method waits for the frame to navigate to a new URL. It is useful for when you run code which will indirectly cause
+   * the frame to navigate. Consider this example:
    * <pre>{@code
    * // The method returns after navigation has finished
    * frame.waitForNavigation(() -> {
@@ -4558,15 +4566,16 @@ public interface Frame {
    */
   Response waitForNavigation(WaitForNavigationOptions options, Runnable callback);
   /**
-   * Returns when element specified by selector satisfies {@code state} option. Returns {@code null} if waiting for {@code hidden}
-   * or {@code detached}.
+   * Returns when element specified by selector satisfies {@code state} option. Returns {@code null} if waiting for {@code
+   * hidden} or {@code detached}.
    *
    * <p> <strong>NOTE:</strong> Playwright automatically waits for element to be ready before performing an action. Using {@code Locator} objects and
    * web-first assertions make the code wait-for-selector-free.
    *
-   * <p> Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at
-   * the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the
-   * selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
+   * <p> Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become
+   * visible/hidden). If at the moment of calling the method {@code selector} already satisfies the condition, the method
+   * will return immediately. If the selector doesn't satisfy the condition for the {@code timeout} milliseconds, the
+   * function will throw.
    *
    * <p> **Usage**
    *
@@ -4597,15 +4606,16 @@ public interface Frame {
     return waitForSelector(selector, null);
   }
   /**
-   * Returns when element specified by selector satisfies {@code state} option. Returns {@code null} if waiting for {@code hidden}
-   * or {@code detached}.
+   * Returns when element specified by selector satisfies {@code state} option. Returns {@code null} if waiting for {@code
+   * hidden} or {@code detached}.
    *
    * <p> <strong>NOTE:</strong> Playwright automatically waits for element to be ready before performing an action. Using {@code Locator} objects and
    * web-first assertions make the code wait-for-selector-free.
    *
-   * <p> Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at
-   * the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the
-   * selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
+   * <p> Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become
+   * visible/hidden). If at the moment of calling the method {@code selector} already satisfies the condition, the method
+   * will return immediately. If the selector doesn't satisfy the condition for the {@code timeout} milliseconds, the
+   * function will throw.
    *
    * <p> **Usage**
    *
@@ -4636,8 +4646,8 @@ public interface Frame {
   /**
    * Waits for the given {@code timeout} in milliseconds.
    *
-   * <p> Note that {@code frame.waitForTimeout()} should only be used for debugging. Tests using the timer in production are going
-   * to be flaky. Use signals such as network events, selectors becoming visible and others instead.
+   * <p> Note that {@code frame.waitForTimeout()} should only be used for debugging. Tests using the timer in production are
+   * going to be flaky. Use signals such as network events, selectors becoming visible and others instead.
    *
    * @param timeout A timeout to wait for
    */

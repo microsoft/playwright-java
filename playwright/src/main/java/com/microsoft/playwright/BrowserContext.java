@@ -26,8 +26,8 @@ import java.util.regex.Pattern;
 /**
  * BrowserContexts provide a way to operate multiple independent browser sessions.
  *
- * <p> If a page opens another page, e.g. with a {@code window.open} call, the popup will belong to the parent page's
- * browser context.
+ * <p> If a page opens another page, e.g. with a {@code window.open} call, the popup will belong to the parent page's browser
+ * context.
  *
  * <p> Playwright allows creating "incognito" browser contexts with {@link Browser#newContext Browser.newContext()} method.
  * "Incognito" browser contexts don't write any browsing data to disk.
@@ -58,13 +58,13 @@ public interface BrowserContext extends AutoCloseable {
   void offClose(Consumer<BrowserContext> handler);
 
   /**
-   * The event is emitted when a new Page is created in the BrowserContext. The page may still be loading. The event
-   * will also fire for popup pages. See also {@link Page#onPopup Page.onPopup()} to receive events about popups relevant to
-   * a specific page.
+   * The event is emitted when a new Page is created in the BrowserContext. The page may still be loading. The event will
+   * also fire for popup pages. See also {@link Page#onPopup Page.onPopup()} to receive events about popups relevant to a
+   * specific page.
    *
-   * <p> The earliest moment that page is available is when it has navigated to the initial url. For example, when opening
-   * a popup with {@code window.open('http://example.com')}, this event will fire when the network request to "http://example.com"
-   * is done and its response has started loading in the popup.
+   * <p> The earliest moment that page is available is when it has navigated to the initial url. For example, when opening a
+   * popup with {@code window.open('http://example.com')}, this event will fire when the network request to
+   * "http://example.com" is done and its response has started loading in the popup.
    * <pre>{@code
    * Page newPage = context.waitForPage(() -> {
    *   page.getByText("open new page").click();
@@ -98,8 +98,8 @@ public interface BrowserContext extends AutoCloseable {
    * Emitted when a request fails, for example by timing out. To only listen for failed requests from a particular page, use
    * {@link Page#onRequestFailed Page.onRequestFailed()}.
    *
-   * <p> <strong>NOTE:</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will
-   * complete with {@link BrowserContext#onRequestFinished BrowserContext.onRequestFinished()} event and not with {@link
+   * <p> <strong>NOTE:</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will complete
+   * with {@link BrowserContext#onRequestFinished BrowserContext.onRequestFinished()} event and not with {@link
    * BrowserContext#onRequestFailed BrowserContext.onRequestFailed()}.
    */
   void onRequestFailed(Consumer<Request> handler);
@@ -109,9 +109,9 @@ public interface BrowserContext extends AutoCloseable {
   void offRequestFailed(Consumer<Request> handler);
 
   /**
-   * Emitted when a request finishes successfully after downloading the response body. For a successful response,
-   * the sequence of events is {@code request}, {@code response} and {@code requestfinished}. To listen for successful requests from a
-   * particular page, use {@link Page#onRequestFinished Page.onRequestFinished()}.
+   * Emitted when a request finishes successfully after downloading the response body. For a successful response, the
+   * sequence of events is {@code request}, {@code response} and {@code requestfinished}. To listen for successful requests
+   * from a particular page, use {@link Page#onRequestFinished Page.onRequestFinished()}.
    */
   void onRequestFinished(Consumer<Request> handler);
   /**
@@ -120,9 +120,9 @@ public interface BrowserContext extends AutoCloseable {
   void offRequestFinished(Consumer<Request> handler);
 
   /**
-   * Emitted when [response] status and headers are received for a request. For a successful response, the sequence of
-   * events is {@code request}, {@code response} and {@code requestfinished}. To listen for response events from a particular page, use {@link
-   * Page#onResponse Page.onResponse()}.
+   * Emitted when [response] status and headers are received for a request. For a successful response, the sequence of events
+   * is {@code request}, {@code response} and {@code requestfinished}. To listen for response events from a particular page,
+   * use {@link Page#onResponse Page.onResponse()}.
    */
   void onResponse(Consumer<Response> handler);
   /**
@@ -132,14 +132,14 @@ public interface BrowserContext extends AutoCloseable {
 
   class ExposeBindingOptions {
     /**
-     * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument
-     * is supported. When passing by value, multiple arguments are supported.
+     * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument is
+     * supported. When passing by value, multiple arguments are supported.
      */
     public Boolean handle;
 
     /**
-     * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument
-     * is supported. When passing by value, multiple arguments are supported.
+     * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument is
+     * supported. When passing by value, multiple arguments are supported.
      */
     public ExposeBindingOptions setHandle(boolean handle) {
       this.handle = handle;
@@ -254,8 +254,8 @@ public interface BrowserContext extends AutoCloseable {
      */
     public Predicate<Page> predicate;
     /**
-     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
      */
     public Double timeout;
 
@@ -267,8 +267,8 @@ public interface BrowserContext extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
      */
     public WaitForPageOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -276,8 +276,8 @@ public interface BrowserContext extends AutoCloseable {
     }
   }
   /**
-   * Adds cookies into this browser context. All pages within this context will have these cookies installed. Cookies can
-   * be obtained via {@link BrowserContext#cookies BrowserContext.cookies()}.
+   * Adds cookies into this browser context. All pages within this context will have these cookies installed. Cookies can be
+   * obtained via {@link BrowserContext#cookies BrowserContext.cookies()}.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -289,12 +289,12 @@ public interface BrowserContext extends AutoCloseable {
    * Adds a script which would be evaluated in one of the following scenarios:
    * <ul>
    * <li> Whenever a page is created in the browser context or is navigated.</li>
-   * <li> Whenever a child frame is attached or navigated in any page in the browser context. In this case, the script
-   * is evaluated in the context of the newly attached frame.</li>
+   * <li> Whenever a child frame is attached or navigated in any page in the browser context. In this case, the script is
+   * evaluated in the context of the newly attached frame.</li>
    * </ul>
    *
-   * <p> The script is evaluated after the document was created but before any of its scripts were run. This is useful to
-   * amend the JavaScript environment, e.g. to seed {@code Math.random}.
+   * <p> The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend
+   * the JavaScript environment, e.g. to seed {@code Math.random}.
    *
    * <p> **Usage**
    *
@@ -314,12 +314,12 @@ public interface BrowserContext extends AutoCloseable {
    * Adds a script which would be evaluated in one of the following scenarios:
    * <ul>
    * <li> Whenever a page is created in the browser context or is navigated.</li>
-   * <li> Whenever a child frame is attached or navigated in any page in the browser context. In this case, the script
-   * is evaluated in the context of the newly attached frame.</li>
+   * <li> Whenever a child frame is attached or navigated in any page in the browser context. In this case, the script is
+   * evaluated in the context of the newly attached frame.</li>
    * </ul>
    *
-   * <p> The script is evaluated after the document was created but before any of its scripts were run. This is useful to
-   * amend the JavaScript environment, e.g. to seed {@code Math.random}.
+   * <p> The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend
+   * the JavaScript environment, e.g. to seed {@code Math.random}.
    *
    * <p> **Usage**
    *
@@ -362,36 +362,36 @@ public interface BrowserContext extends AutoCloseable {
    */
   void close();
   /**
-   * If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those
-   * URLs are returned.
+   * If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those URLs
+   * are returned.
    */
   default List<Cookie> cookies() {
     return cookies((String) null);
   }
   /**
-   * If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those
-   * URLs are returned.
+   * If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those URLs
+   * are returned.
    *
    * @param urls Optional list of URLs.
    */
   List<Cookie> cookies(String urls);
   /**
-   * If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those
-   * URLs are returned.
+   * If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those URLs
+   * are returned.
    *
    * @param urls Optional list of URLs.
    */
   List<Cookie> cookies(List<String> urls);
   /**
-   * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context. When
-   * called, the function executes {@code callback} and returns a <a
+   * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context.
+   * When called, the function executes {@code callback} and returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a> which
    * resolves to the return value of {@code callback}. If the {@code callback} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, it will be
    * awaited.
    *
-   * <p> The first argument of the {@code callback} function contains information about the caller: {@code { browserContext: BrowserContext,
-   * page: Page, frame: Frame }}.
+   * <p> The first argument of the {@code callback} function contains information about the caller: {@code { browserContext:
+   * BrowserContext, page: Page, frame: Frame }}.
    *
    * <p> See {@link Page#exposeBinding Page.exposeBinding()} for page-only version.
    *
@@ -444,15 +444,15 @@ public interface BrowserContext extends AutoCloseable {
     exposeBinding(name, callback, null);
   }
   /**
-   * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context. When
-   * called, the function executes {@code callback} and returns a <a
+   * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context.
+   * When called, the function executes {@code callback} and returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a> which
    * resolves to the return value of {@code callback}. If the {@code callback} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, it will be
    * awaited.
    *
-   * <p> The first argument of the {@code callback} function contains information about the caller: {@code { browserContext: BrowserContext,
-   * page: Page, frame: Frame }}.
+   * <p> The first argument of the {@code callback} function contains information about the caller: {@code { browserContext:
+   * BrowserContext, page: Page, frame: Frame }}.
    *
    * <p> See {@link Page#exposeBinding Page.exposeBinding()} for page-only version.
    *
@@ -503,8 +503,8 @@ public interface BrowserContext extends AutoCloseable {
    */
   void exposeBinding(String name, BindingCallback callback, ExposeBindingOptions options);
   /**
-   * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context. When
-   * called, the function executes {@code callback} and returns a <a
+   * The method adds a function called {@code name} on the {@code window} object of every frame in every page in the context.
+   * When called, the function executes {@code callback} and returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a> which
    * resolves to the return value of {@code callback}.
    *
@@ -560,8 +560,8 @@ public interface BrowserContext extends AutoCloseable {
    */
   void exposeFunction(String name, FunctionCallback callback);
   /**
-   * Grants specified permissions to the browser context. Only grants corresponding permissions to the given origin
-   * if specified.
+   * Grants specified permissions to the browser context. Only grants corresponding permissions to the given origin if
+   * specified.
    *
    * @param permissions A permission or an array of permissions to grant. Permissions can be one of the following values:
    * <ul>
@@ -586,8 +586,8 @@ public interface BrowserContext extends AutoCloseable {
     grantPermissions(permissions, null);
   }
   /**
-   * Grants specified permissions to the browser context. Only grants corresponding permissions to the given origin
-   * if specified.
+   * Grants specified permissions to the browser context. Only grants corresponding permissions to the given origin if
+   * specified.
    *
    * @param permissions A permission or an array of permissions to grant. Permissions can be one of the following values:
    * <ul>
@@ -622,8 +622,8 @@ public interface BrowserContext extends AutoCloseable {
    */
   APIRequestContext request();
   /**
-   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once
-   * route is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
+   * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
    * <p> <strong>NOTE:</strong> {@link BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by Service Worker. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
@@ -667,8 +667,8 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the context
-   * options was provided and the passed URL is a path, it gets merged via the <a
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the
+   * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    */
@@ -676,8 +676,8 @@ public interface BrowserContext extends AutoCloseable {
     route(url, handler, null);
   }
   /**
-   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once
-   * route is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
+   * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
    * <p> <strong>NOTE:</strong> {@link BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by Service Worker. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
@@ -721,15 +721,15 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the context
-   * options was provided and the passed URL is a path, it gets merged via the <a
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the
+   * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    */
   void route(String url, Consumer<Route> handler, RouteOptions options);
   /**
-   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once
-   * route is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
+   * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
    * <p> <strong>NOTE:</strong> {@link BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by Service Worker. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
@@ -773,8 +773,8 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the context
-   * options was provided and the passed URL is a path, it gets merged via the <a
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the
+   * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    */
@@ -782,8 +782,8 @@ public interface BrowserContext extends AutoCloseable {
     route(url, handler, null);
   }
   /**
-   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once
-   * route is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
+   * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
    * <p> <strong>NOTE:</strong> {@link BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by Service Worker. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
@@ -827,15 +827,15 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the context
-   * options was provided and the passed URL is a path, it gets merged via the <a
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the
+   * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    */
   void route(Pattern url, Consumer<Route> handler, RouteOptions options);
   /**
-   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once
-   * route is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
+   * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
    * <p> <strong>NOTE:</strong> {@link BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by Service Worker. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
@@ -879,8 +879,8 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the context
-   * options was provided and the passed URL is a path, it gets merged via the <a
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the
+   * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    */
@@ -888,8 +888,8 @@ public interface BrowserContext extends AutoCloseable {
     route(url, handler, null);
   }
   /**
-   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once
-   * route is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
+   * Routing provides the capability to modify network requests that are made by any page in the browser context. Once route
+   * is enabled, every request matching the url pattern will stall unless it's continued, fulfilled or aborted.
    *
    * <p> <strong>NOTE:</strong> {@link BrowserContext#route BrowserContext.route()} will not intercept requests intercepted by Service Worker. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
@@ -933,8 +933,8 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Enabling routing disables http cache.
    *
-   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the context
-   * options was provided and the passed URL is a path, it gets merged via the <a
+   * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing. When a {@code baseURL} via the
+   * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
    */
@@ -947,8 +947,8 @@ public interface BrowserContext extends AutoCloseable {
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
    * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
    *
-   * @param har Path to a <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> file with prerecorded network data. If {@code path}
-   * is a relative path, then it is resolved relative to the current working directory.
+   * @param har Path to a <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> file with prerecorded network data. If {@code
+   * path} is a relative path, then it is resolved relative to the current working directory.
    */
   default void routeFromHAR(Path har) {
     routeFromHAR(har, null);
@@ -961,8 +961,8 @@ public interface BrowserContext extends AutoCloseable {
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
    * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
    *
-   * @param har Path to a <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> file with prerecorded network data. If {@code path}
-   * is a relative path, then it is resolved relative to the current working directory.
+   * @param har Path to a <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> file with prerecorded network data. If {@code
+   * path} is a relative path, then it is resolved relative to the current working directory.
    */
   void routeFromHAR(Path har, RouteFromHAROptions options);
   /**
@@ -995,9 +995,9 @@ public interface BrowserContext extends AutoCloseable {
    */
   void setDefaultTimeout(double timeout);
   /**
-   * The extra HTTP headers will be sent with every request initiated by any page in the context. These headers are
-   * merged with page-specific extra HTTP headers set with {@link Page#setExtraHTTPHeaders Page.setExtraHTTPHeaders()}. If
-   * page overrides a particular header, page-specific header value will be used instead of the browser context header value.
+   * The extra HTTP headers will be sent with every request initiated by any page in the context. These headers are merged
+   * with page-specific extra HTTP headers set with {@link Page#setExtraHTTPHeaders Page.setExtraHTTPHeaders()}. If page
+   * overrides a particular header, page-specific header value will be used instead of the browser context header value.
    *
    * <p> <strong>NOTE:</strong> {@link BrowserContext#setExtraHTTPHeaders BrowserContext.setExtraHTTPHeaders()} does not guarantee the order of headers
    * in the outgoing requests.
@@ -1092,9 +1092,9 @@ public interface BrowserContext extends AutoCloseable {
    */
   void unroute(Predicate<String> url, Consumer<Route> handler);
   /**
-   * Performs action and waits for a new {@code Page} to be created in the context. If predicate is provided, it passes {@code Page}
-   * value into the {@code predicate} function and waits for {@code predicate(event)} to return a truthy value. Will throw an error if
-   * the context closes before new {@code Page} is created.
+   * Performs action and waits for a new {@code Page} to be created in the context. If predicate is provided, it passes
+   * {@code Page} value into the {@code predicate} function and waits for {@code predicate(event)} to return a truthy value.
+   * Will throw an error if the context closes before new {@code Page} is created.
    *
    * @param callback Callback that performs the action triggering the event.
    */
@@ -1102,9 +1102,9 @@ public interface BrowserContext extends AutoCloseable {
     return waitForPage(null, callback);
   }
   /**
-   * Performs action and waits for a new {@code Page} to be created in the context. If predicate is provided, it passes {@code Page}
-   * value into the {@code predicate} function and waits for {@code predicate(event)} to return a truthy value. Will throw an error if
-   * the context closes before new {@code Page} is created.
+   * Performs action and waits for a new {@code Page} to be created in the context. If predicate is provided, it passes
+   * {@code Page} value into the {@code predicate} function and waits for {@code predicate(event)} to return a truthy value.
+   * Will throw an error if the context closes before new {@code Page} is created.
    *
    * @param callback Callback that performs the action triggering the event.
    */

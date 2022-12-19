@@ -20,8 +20,8 @@ import com.microsoft.playwright.options.*;
 import java.util.*;
 
 /**
- * {@code APIResponse} class represents responses returned by {@link APIRequestContext#get APIRequestContext.get()} and similar
- * methods.
+ * {@code APIResponse} class represents responses returned by {@link APIRequestContext#get APIRequestContext.get()} and
+ * similar methods.
  */
 public interface APIResponse {
   /**

@@ -20,8 +20,8 @@ import java.util.function.Consumer;
 
 /**
  * The Worker class represents a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API">WebWorker</a>.
- * {@code worker} event is emitted on the page object to signal a worker creation. {@code close} event is emitted on the worker object
- * when the worker is gone.
+ * {@code worker} event is emitted on the page object to signal a worker creation. {@code close} event is emitted on the
+ * worker object when the worker is gone.
  * <pre>{@code
  * page.onWorker(worker -> {
  *   System.out.println("Worker created: " + worker.url());
@@ -46,14 +46,14 @@ public interface Worker {
 
   class WaitForCloseOptions {
     /**
-     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
      */
     public Double timeout;
 
     /**
-     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
      */
     public WaitForCloseOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -68,8 +68,8 @@ public interface Worker {
    * Worker#evaluate Worker.evaluate()} would wait for the promise to resolve and return its value.
    *
    * <p> If the function passed to the {@link Worker#evaluate Worker.evaluate()} returns a non-[Serializable] value, then {@link
-   * Worker#evaluate Worker.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values
-   * that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
+   * Worker#evaluate Worker.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional
+   * values that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
@@ -85,8 +85,8 @@ public interface Worker {
    * Worker#evaluate Worker.evaluate()} would wait for the promise to resolve and return its value.
    *
    * <p> If the function passed to the {@link Worker#evaluate Worker.evaluate()} returns a non-[Serializable] value, then {@link
-   * Worker#evaluate Worker.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values
-   * that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
+   * Worker#evaluate Worker.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional
+   * values that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.

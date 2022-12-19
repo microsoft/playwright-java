@@ -22,8 +22,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * BrowserType provides methods to launch a specific browser instance or connect to an existing one. The following is
- * a typical example of using Playwright to drive automation:
+ * BrowserType provides methods to launch a specific browser instance or connect to an existing one. The following is a
+ * typical example of using Playwright to drive automation:
  * <pre>{@code
  * import com.microsoft.playwright.*;
  *
@@ -91,8 +91,8 @@ public interface BrowserType {
      */
     public Double slowMo;
     /**
-     * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
-     * disable timeout.
+     * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 30000} (30 seconds). Pass
+     * {@code 0} to disable timeout.
      */
     public Double timeout;
 
@@ -112,8 +112,8 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
-     * disable timeout.
+     * Maximum time in milliseconds to wait for the connection to be established. Defaults to {@code 30000} (30 seconds). Pass
+     * {@code 0} to disable timeout.
      */
     public ConnectOverCDPOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -137,14 +137,14 @@ public interface BrowserType {
      */
     public Boolean chromiumSandbox;
     /**
-     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless}
-     * option will be set {@code false}.
+     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code
+     * headless} option will be set {@code false}.
      */
     public Boolean devtools;
     /**
-     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and
-     * is deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created
-     * in is closed.
+     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
+     * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
+     * is closed.
      */
     public Path downloadsPath;
     /**
@@ -177,18 +177,18 @@ public interface BrowserType {
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
-     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless
-     * the {@code devtools} option is {@code true}.
+     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true}
+     * unless the {@code devtools} option is {@code true}.
      */
     public Boolean headless;
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
-     * use with care. Defaults to {@code false}.
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
+     * Dangerous option; use with care. Defaults to {@code false}.
      */
     public Boolean ignoreAllDefaultArgs;
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
-     * use with care.
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
+     * Dangerous option; use with care.
      */
     public List<String> ignoreDefaultArgs;
     /**
@@ -200,8 +200,8 @@ public interface BrowserType {
      */
     public Double slowMo;
     /**
-     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0}
-     * to disable timeout.
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass
+     * {@code 0} to disable timeout.
      */
     public Double timeout;
     /**
@@ -244,17 +244,17 @@ public interface BrowserType {
       return this;
     }
     /**
-     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless}
-     * option will be set {@code false}.
+     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code
+     * headless} option will be set {@code false}.
      */
     public LaunchOptions setDevtools(boolean devtools) {
       this.devtools = devtools;
       return this;
     }
     /**
-     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and
-     * is deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created
-     * in is closed.
+     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
+     * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
+     * is closed.
      */
     public LaunchOptions setDownloadsPath(Path downloadsPath) {
       this.downloadsPath = downloadsPath;
@@ -308,24 +308,24 @@ public interface BrowserType {
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
-     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless
-     * the {@code devtools} option is {@code true}.
+     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true}
+     * unless the {@code devtools} option is {@code true}.
      */
     public LaunchOptions setHeadless(boolean headless) {
       this.headless = headless;
       return this;
     }
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
-     * use with care. Defaults to {@code false}.
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
+     * Dangerous option; use with care. Defaults to {@code false}.
      */
     public LaunchOptions setIgnoreAllDefaultArgs(boolean ignoreAllDefaultArgs) {
       this.ignoreAllDefaultArgs = ignoreAllDefaultArgs;
       return this;
     }
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
-     * use with care.
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
+     * Dangerous option; use with care.
      */
     public LaunchOptions setIgnoreDefaultArgs(List<String> ignoreDefaultArgs) {
       this.ignoreDefaultArgs = ignoreDefaultArgs;
@@ -352,8 +352,8 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0}
-     * to disable timeout.
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass
+     * {@code 0} to disable timeout.
      */
     public LaunchOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -381,11 +381,13 @@ public interface BrowserType {
      * When using {@link Page#navigate Page.navigate()}, {@link Page#route Page.route()}, {@link Page#waitForURL
      * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
      * Page.waitForResponse()} it takes the base URL in consideration by using the <a
-     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the corresponding
-     * URL. Examples:
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
+     * corresponding URL. Examples:
      * <ul>
-     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
-     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code http://localhost:3000/foo/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code
+     * http://localhost:3000/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code
+     * http://localhost:3000/foo/bar.html}</li>
      * <li> baseURL: {@code http://localhost:3000/foo} (without trailing slash) and navigating to {@code ./bar.html} results in
      * {@code http://localhost:3000/bar.html}</li>
      * </ul>
@@ -406,9 +408,9 @@ public interface BrowserType {
      */
     public Boolean chromiumSandbox;
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
-     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
-     * Defaults to {@code "light"}.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
+     * "no-preference"}. See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
+     * emulation to system defaults. Defaults to {@code "light"}.
      */
     public Optional<ColorScheme> colorScheme;
     /**
@@ -416,14 +418,14 @@ public interface BrowserType {
      */
     public Double deviceScaleFactor;
     /**
-     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless}
-     * option will be set {@code false}.
+     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code
+     * headless} option will be set {@code false}.
      */
     public Boolean devtools;
     /**
-     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and
-     * is deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created
-     * in is closed.
+     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
+     * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
+     * is closed.
      */
     public Path downloadsPath;
     /**
@@ -441,8 +443,9 @@ public interface BrowserType {
      */
     public Map<String, String> extraHTTPHeaders;
     /**
-     * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link Page#emulateMedia
-     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code "none"}.
+     * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link
+     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Defaults to {@code "none"}.
      */
     public Optional<ForcedColors> forcedColors;
     public Geolocation geolocation;
@@ -465,8 +468,8 @@ public interface BrowserType {
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
-     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless
-     * the {@code devtools} option is {@code true}.
+     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true}
+     * unless the {@code devtools} option is {@code true}.
      */
     public Boolean headless;
     /**
@@ -474,13 +477,13 @@ public interface BrowserType {
      */
     public HttpCredentials httpCredentials;
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
-     * use with care. Defaults to {@code false}.
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
+     * Dangerous option; use with care. Defaults to {@code false}.
      */
     public Boolean ignoreAllDefaultArgs;
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
-     * use with care.
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
+     * Dangerous option; use with care.
      */
     public List<String> ignoreDefaultArgs;
     /**
@@ -515,14 +518,15 @@ public interface BrowserType {
      */
     public Proxy proxy;
     /**
-     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If {@code attach}
-     * is specified, resources are persisted as separate files and all of these files are archived along with the HAR file.
-     * Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
+     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If
+     * {@code attach} is specified, resources are persisted as separate files and all of these files are archived along with
+     * the HAR file. Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
      */
     public HarContentPolicy recordHarContent;
     /**
-     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page, cookies,
-     * security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code full}.
+     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
+     * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
+     * full}.
      */
     public HarMode recordHarMode;
     /**
@@ -543,26 +547,26 @@ public interface BrowserType {
     public Path recordVideoDir;
     /**
      * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
-     * be scaled down if necessary to fit the specified size.
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
+     * page will be scaled down if necessary to fit the specified size.
      */
     public RecordVideoSize recordVideoSize;
     /**
-     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
-     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to
-     * {@code "no-preference"}.
+     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}.
+     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system
+     * defaults. Defaults to {@code "no-preference"}.
      */
     public Optional<ReducedMotion> reducedMotion;
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
-     * is set.
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code
+     * viewport} is set.
      */
     public ScreenSize screenSize;
     /**
      * Whether to allow sites to register Service workers. Defaults to {@code "allow"}.
      * <ul>
-     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can be
-     * registered.</li>
+     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can
+     * be registered.</li>
      * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
      * </ul>
      */
@@ -578,8 +582,8 @@ public interface BrowserType {
      */
     public Boolean strictSelectors;
     /**
-     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0}
-     * to disable timeout.
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass
+     * {@code 0} to disable timeout.
      */
     public Double timeout;
     /**
@@ -597,7 +601,8 @@ public interface BrowserType {
      */
     public String userAgent;
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default
+     * viewport.
      */
     public Optional<ViewportSize> viewportSize;
 
@@ -620,11 +625,13 @@ public interface BrowserType {
      * When using {@link Page#navigate Page.navigate()}, {@link Page#route Page.route()}, {@link Page#waitForURL
      * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
      * Page.waitForResponse()} it takes the base URL in consideration by using the <a
-     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the corresponding
-     * URL. Examples:
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
+     * corresponding URL. Examples:
      * <ul>
-     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
-     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code http://localhost:3000/foo/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code
+     * http://localhost:3000/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code
+     * http://localhost:3000/foo/bar.html}</li>
      * <li> baseURL: {@code http://localhost:3000/foo} (without trailing slash) and navigating to {@code ./bar.html} results in
      * {@code http://localhost:3000/bar.html}</li>
      * </ul>
@@ -667,9 +674,9 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
-     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
-     * Defaults to {@code "light"}.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
+     * "no-preference"}. See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
+     * emulation to system defaults. Defaults to {@code "light"}.
      */
     public LaunchPersistentContextOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
@@ -683,17 +690,17 @@ public interface BrowserType {
       return this;
     }
     /**
-     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code headless}
-     * option will be set {@code false}.
+     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code
+     * headless} option will be set {@code false}.
      */
     public LaunchPersistentContextOptions setDevtools(boolean devtools) {
       this.devtools = devtools;
       return this;
     }
     /**
-     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and
-     * is deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created
-     * in is closed.
+     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
+     * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
+     * is closed.
      */
     public LaunchPersistentContextOptions setDownloadsPath(Path downloadsPath) {
       this.downloadsPath = downloadsPath;
@@ -723,8 +730,9 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link Page#emulateMedia
-     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code "none"}.
+     * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link
+     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Defaults to {@code "none"}.
      */
     public LaunchPersistentContextOptions setForcedColors(ForcedColors forcedColors) {
       this.forcedColors = Optional.ofNullable(forcedColors);
@@ -768,8 +776,8 @@ public interface BrowserType {
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
-     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless
-     * the {@code devtools} option is {@code true}.
+     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true}
+     * unless the {@code devtools} option is {@code true}.
      */
     public LaunchPersistentContextOptions setHeadless(boolean headless) {
       this.headless = headless;
@@ -789,16 +797,16 @@ public interface BrowserType {
       return this;
     }
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
-     * use with care. Defaults to {@code false}.
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
+     * Dangerous option; use with care. Defaults to {@code false}.
      */
     public LaunchPersistentContextOptions setIgnoreAllDefaultArgs(boolean ignoreAllDefaultArgs) {
       this.ignoreAllDefaultArgs = ignoreAllDefaultArgs;
       return this;
     }
     /**
-     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}. Dangerous option;
-     * use with care.
+     * If {@code true}, Playwright does not pass its own configurations args and only uses the ones from {@code args}.
+     * Dangerous option; use with care.
      */
     public LaunchPersistentContextOptions setIgnoreDefaultArgs(List<String> ignoreDefaultArgs) {
       this.ignoreDefaultArgs = ignoreDefaultArgs;
@@ -863,17 +871,18 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If {@code attach}
-     * is specified, resources are persisted as separate files and all of these files are archived along with the HAR file.
-     * Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
+     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If
+     * {@code attach} is specified, resources are persisted as separate files and all of these files are archived along with
+     * the HAR file. Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
      */
     public LaunchPersistentContextOptions setRecordHarContent(HarContentPolicy recordHarContent) {
       this.recordHarContent = recordHarContent;
       return this;
     }
     /**
-     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page, cookies,
-     * security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code full}.
+     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
+     * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
+     * full}.
      */
     public LaunchPersistentContextOptions setRecordHarMode(HarMode recordHarMode) {
       this.recordHarMode = recordHarMode;
@@ -913,40 +922,40 @@ public interface BrowserType {
     }
     /**
      * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
-     * be scaled down if necessary to fit the specified size.
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
+     * page will be scaled down if necessary to fit the specified size.
      */
     public LaunchPersistentContextOptions setRecordVideoSize(int width, int height) {
       return setRecordVideoSize(new RecordVideoSize(width, height));
     }
     /**
      * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
-     * be scaled down if necessary to fit the specified size.
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
+     * page will be scaled down if necessary to fit the specified size.
      */
     public LaunchPersistentContextOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
       return this;
     }
     /**
-     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
-     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to
-     * {@code "no-preference"}.
+     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}.
+     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system
+     * defaults. Defaults to {@code "no-preference"}.
      */
     public LaunchPersistentContextOptions setReducedMotion(ReducedMotion reducedMotion) {
       this.reducedMotion = Optional.ofNullable(reducedMotion);
       return this;
     }
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
-     * is set.
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code
+     * viewport} is set.
      */
     public LaunchPersistentContextOptions setScreenSize(int width, int height) {
       return setScreenSize(new ScreenSize(width, height));
     }
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
-     * is set.
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code
+     * viewport} is set.
      */
     public LaunchPersistentContextOptions setScreenSize(ScreenSize screenSize) {
       this.screenSize = screenSize;
@@ -955,8 +964,8 @@ public interface BrowserType {
     /**
      * Whether to allow sites to register Service workers. Defaults to {@code "allow"}.
      * <ul>
-     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can be
-     * registered.</li>
+     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can
+     * be registered.</li>
      * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
      * </ul>
      */
@@ -981,8 +990,8 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0}
-     * to disable timeout.
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass
+     * {@code 0} to disable timeout.
      */
     public LaunchPersistentContextOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1012,13 +1021,15 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default
+     * viewport.
      */
     public LaunchPersistentContextOptions setViewportSize(int width, int height) {
       return setViewportSize(new ViewportSize(width, height));
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default
+     * viewport.
      */
     public LaunchPersistentContextOptions setViewportSize(ViewportSize viewportSize) {
       this.viewportSize = Optional.ofNullable(viewportSize);
@@ -1026,8 +1037,8 @@ public interface BrowserType {
     }
   }
   /**
-   * This method attaches Playwright to an existing browser instance. When connecting to another browser launched via
-   * {@code BrowserType.launchServer} in Node.js, the major and minor version needs to match the client version (1.2.3 → is
+   * This method attaches Playwright to an existing browser instance. When connecting to another browser launched via {@code
+   * BrowserType.launchServer} in Node.js, the major and minor version needs to match the client version (1.2.3 → is
    * compatible with 1.2.x).
    *
    * @param wsEndpoint A browser websocket endpoint to connect to.
@@ -1036,8 +1047,8 @@ public interface BrowserType {
     return connect(wsEndpoint, null);
   }
   /**
-   * This method attaches Playwright to an existing browser instance. When connecting to another browser launched via
-   * {@code BrowserType.launchServer} in Node.js, the major and minor version needs to match the client version (1.2.3 → is
+   * This method attaches Playwright to an existing browser instance. When connecting to another browser launched via {@code
+   * BrowserType.launchServer} in Node.js, the major and minor version needs to match the client version (1.2.3 → is
    * compatible with 1.2.x).
    *
    * @param wsEndpoint A browser websocket endpoint to connect to.
@@ -1057,8 +1068,8 @@ public interface BrowserType {
    * Page page = defaultContext.pages().get(0);
    * }</pre>
    *
-   * @param endpointURL A CDP websocket endpoint or http url to connect to. For example {@code http://localhost:9222/} or
-   * {@code ws://127.0.0.1:9222/devtools/browser/387adf4c-243f-4051-a181-46798f4a46f4}.
+   * @param endpointURL A CDP websocket endpoint or http url to connect to. For example {@code http://localhost:9222/} or {@code
+   * ws://127.0.0.1:9222/devtools/browser/387adf4c-243f-4051-a181-46798f4a46f4}.
    */
   default Browser connectOverCDP(String endpointURL) {
     return connectOverCDP(endpointURL, null);
@@ -1077,8 +1088,8 @@ public interface BrowserType {
    * Page page = defaultContext.pages().get(0);
    * }</pre>
    *
-   * @param endpointURL A CDP websocket endpoint or http url to connect to. For example {@code http://localhost:9222/} or
-   * {@code ws://127.0.0.1:9222/devtools/browser/387adf4c-243f-4051-a181-46798f4a46f4}.
+   * @param endpointURL A CDP websocket endpoint or http url to connect to. For example {@code http://localhost:9222/} or {@code
+   * ws://127.0.0.1:9222/devtools/browser/387adf4c-243f-4051-a181-46798f4a46f4}.
    */
   Browser connectOverCDP(String endpointURL, ConnectOverCDPOptions options);
   /**
@@ -1113,8 +1124,8 @@ public interface BrowserType {
    * video playback. See <a
    * href="https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/">this article</a> for
    * other differences between Chromium and Chrome. <a
-   * href="https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md">This
-   * article</a> describes some differences for Linux users.
+   * href="https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md">This article</a>
+   * describes some differences for Linux users.
    */
   default Browser launch() {
     return launch(null);
@@ -1147,8 +1158,8 @@ public interface BrowserType {
    * video playback. See <a
    * href="https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/">this article</a> for
    * other differences between Chromium and Chrome. <a
-   * href="https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md">This
-   * article</a> describes some differences for Linux users.
+   * href="https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md">This article</a>
+   * describes some differences for Linux users.
    */
   Browser launch(LaunchOptions options);
   /**
@@ -1160,8 +1171,8 @@ public interface BrowserType {
    * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for <a
    * href="https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md#introduction">Chromium</a> and <a
    * href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile">Firefox</a>. Note that
-   * Chromium's user data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}. Pass an
-   * empty string to use a temporary directory instead.
+   * Chromium's user data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}. Pass
+   * an empty string to use a temporary directory instead.
    */
   default BrowserContext launchPersistentContext(Path userDataDir) {
     return launchPersistentContext(userDataDir, null);
@@ -1175,8 +1186,8 @@ public interface BrowserType {
    * @param userDataDir Path to a User Data Directory, which stores browser session data like cookies and local storage. More details for <a
    * href="https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md#introduction">Chromium</a> and <a
    * href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile">Firefox</a>. Note that
-   * Chromium's user data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}. Pass an
-   * empty string to use a temporary directory instead.
+   * Chromium's user data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}. Pass
+   * an empty string to use a temporary directory instead.
    */
   BrowserContext launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options);
   /**

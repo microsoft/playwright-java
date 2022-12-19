@@ -208,13 +208,13 @@ public interface Route {
      */
     public Map<String, String> headers;
     /**
-     * File path to respond with. The content type will be inferred from file extension. If {@code path} is a relative path, then
-     * it is resolved relative to the current working directory.
+     * File path to respond with. The content type will be inferred from file extension. If {@code path} is a relative path,
+     * then it is resolved relative to the current working directory.
      */
     public Path path;
     /**
-     * {@code APIResponse} to fulfill route's request with. Individual fields of the response (such as headers) can be overridden
-     * using fulfill options.
+     * {@code APIResponse} to fulfill route's request with. Individual fields of the response (such as headers) can be
+     * overridden using fulfill options.
      */
     public APIResponse response;
     /**
@@ -251,16 +251,16 @@ public interface Route {
       return this;
     }
     /**
-     * File path to respond with. The content type will be inferred from file extension. If {@code path} is a relative path, then
-     * it is resolved relative to the current working directory.
+     * File path to respond with. The content type will be inferred from file extension. If {@code path} is a relative path,
+     * then it is resolved relative to the current working directory.
      */
     public FulfillOptions setPath(Path path) {
       this.path = path;
       return this;
     }
     /**
-     * {@code APIResponse} to fulfill route's request with. Individual fields of the response (such as headers) can be overridden
-     * using fulfill options.
+     * {@code APIResponse} to fulfill route's request with. Individual fields of the response (such as headers) can be
+     * overridden using fulfill options.
      */
     public FulfillOptions setResponse(APIResponse response) {
       this.response = response;
@@ -287,11 +287,11 @@ public interface Route {
    * <ul>
    * <li> {@code "aborted"} - An operation was aborted (due to user action)</li>
    * <li> {@code "accessdenied"} - Permission to access a resource, other than the network, was denied</li>
-   * <li> {@code "addressunreachable"} - The IP address is unreachable. This usually means that there is no route to the specified host
-   * or network.</li>
+   * <li> {@code "addressunreachable"} - The IP address is unreachable. This usually means that there is no route to the specified
+   * host or network.</li>
    * <li> {@code "blockedbyclient"} - The client chose to block the request.</li>
-   * <li> {@code "blockedbyresponse"} - The request failed because the response was delivered along with requirements which are not met
-   * ('X-Frame-Options' and 'Content-Security-Policy' ancestor checks, for instance).</li>
+   * <li> {@code "blockedbyresponse"} - The request failed because the response was delivered along with requirements which are
+   * not met ('X-Frame-Options' and 'Content-Security-Policy' ancestor checks, for instance).</li>
    * <li> {@code "connectionaborted"} - A connection timed out as a result of not receiving an ACK for data sent.</li>
    * <li> {@code "connectionclosed"} - A connection was closed (corresponding to a TCP FIN).</li>
    * <li> {@code "connectionfailed"} - A connection attempt failed.</li>

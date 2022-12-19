@@ -20,8 +20,8 @@ import com.microsoft.playwright.impl.PlaywrightImpl;
 import java.util.*;
 
 /**
- * Playwright module provides a method to launch a browser instance. The following is a typical example of using
- * Playwright to drive automation:
+ * Playwright module provides a method to launch a browser instance. The following is a typical example of using Playwright
+ * to drive automation:
  * <pre>{@code
  * import com.microsoft.playwright.*;
  *
