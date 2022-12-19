@@ -29,8 +29,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Utils.convertType;
-import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
+import static com.microsoft.playwright.impl.Utils.*;
 import static com.microsoft.playwright.options.ScreenshotType.JPEG;
 import static com.microsoft.playwright.options.ScreenshotType.PNG;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -783,6 +782,11 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public Locator getByTestId(Pattern testId) {
+    return withLogging("Page.getByTestId", () -> mainFrame.getByTestId(testId));
+  }
+
+  @Override
   public Locator getByText(String text, GetByTextOptions options) {
     return withLogging("Page.getByText",
       () -> mainFrame.getByText(text, convertType(options, Frame.GetByTextOptions.class)));
@@ -1045,8 +1049,6 @@ public class PageImpl extends ChannelOwner implements Page {
     return withLogging("Page.screenshot", () -> screenshotImpl(options));
   }
 
-
-
   @Override
   public List<String> selectOption(String selector, String value, SelectOptionOptions options) {
     String[] values = value == null ? null : new String[]{ value };
@@ -1061,11 +1063,8 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public List<String> selectOption(String selector, String[] values, SelectOptionOptions options) {
-    if (values == null) {
-      return selectOption(selector, new SelectOption[0], options);
-    }
-    return selectOption(selector, Arrays.asList(values).stream().map(
-      v -> new SelectOption().setValue(v)).toArray(SelectOption[]::new), options);
+    return withLogging("Page.selectOption",
+      () -> mainFrame.selectOptionImpl(selector, values, convertType(options, Frame.SelectOptionOptions.class)));
   }
 
   @Override

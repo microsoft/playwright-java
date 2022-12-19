@@ -85,6 +85,11 @@ class FrameLocatorImpl implements FrameLocator {
   }
 
   @Override
+  public Locator getByTestId(Pattern testId) {
+    return locator(getByTestIdSelector(testId));
+  }
+
+  @Override
   public Locator getByText(String text, GetByTextOptions options) {
     return locator(getByTextSelector(text, convertType(options, Locator.GetByTextOptions.class)));
   }

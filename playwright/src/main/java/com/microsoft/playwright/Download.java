@@ -60,8 +60,8 @@ public interface Download {
    * Returns path to the downloaded file in case of successful download. The method will wait for the download to finish if
    * necessary. The method throws when connected remotely.
    *
-   * <p> Note that the download's file name is a random GUID, use {@link Download#suggestedFilename Download.suggestedFilename()}
-   * to get suggested file name.
+   * <p> Note that the download's file name is a random GUID, use {@link Download#suggestedFilename
+   * Download.suggestedFilename()} to get suggested file name.
    */
   Path path();
   /**

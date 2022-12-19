@@ -375,11 +375,14 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
 
   @Override
   public List<String> selectOption(String[] values, SelectOptionOptions options) {
-    if (values == null) {
-      return selectOption(new SelectOption[0], options);
+    if (options == null) {
+      options = new SelectOptionOptions();
     }
-    return selectOption(Arrays.asList(values).stream().map(
-      v -> new SelectOption().setValue(v)).toArray(SelectOption[]::new), options);
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    if (values != null) {
+      params.add("options", toSelectValueOrLabel(values));
+    }
+    return selectOption(params);
   }
 
   @Override

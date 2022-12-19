@@ -19,8 +19,8 @@ package com.microsoft.playwright.options;
 import com.microsoft.playwright.impl.RequestOptionsImpl;
 
 /**
- * The {@code RequestOptions} allows to create form data to be sent via {@code APIRequestContext}. Playwright will automatically
- * determine content type of the request.
+ * The {@code RequestOptions} allows to create form data to be sent via {@code APIRequestContext}. Playwright will
+ * automatically determine content type of the request.
  * <pre>{@code
  * context.request().post(
  *   "https://example.com/submit",

@@ -32,11 +32,11 @@ public interface Route {
      */
     public Map<String, String> headers;
     /**
-     * If set changes the request method (e.g. GET or POST)
+     * If set changes the request method (e.g. GET or POST).
      */
     public String method;
     /**
-     * If set changes the post data of request
+     * If set changes the post data of request.
      */
     public Object postData;
     /**
@@ -52,21 +52,21 @@ public interface Route {
       return this;
     }
     /**
-     * If set changes the request method (e.g. GET or POST)
+     * If set changes the request method (e.g. GET or POST).
      */
     public ResumeOptions setMethod(String method) {
       this.method = method;
       return this;
     }
     /**
-     * If set changes the post data of request
+     * If set changes the post data of request.
      */
     public ResumeOptions setPostData(String postData) {
       this.postData = postData;
       return this;
     }
     /**
-     * If set changes the post data of request
+     * If set changes the post data of request.
      */
     public ResumeOptions setPostData(byte[] postData) {
       this.postData = postData;
@@ -86,11 +86,11 @@ public interface Route {
      */
     public Map<String, String> headers;
     /**
-     * If set changes the request method (e.g. GET or POST)
+     * If set changes the request method (e.g. GET or POST).
      */
     public String method;
     /**
-     * If set changes the post data of request
+     * If set changes the post data of request.
      */
     public Object postData;
     /**
@@ -107,21 +107,21 @@ public interface Route {
       return this;
     }
     /**
-     * If set changes the request method (e.g. GET or POST)
+     * If set changes the request method (e.g. GET or POST).
      */
     public FallbackOptions setMethod(String method) {
       this.method = method;
       return this;
     }
     /**
-     * If set changes the post data of request
+     * If set changes the post data of request.
      */
     public FallbackOptions setPostData(String postData) {
       this.postData = postData;
       return this;
     }
     /**
-     * If set changes the post data of request
+     * If set changes the post data of request.
      */
     public FallbackOptions setPostData(byte[] postData) {
       this.postData = postData;
@@ -132,6 +132,60 @@ public interface Route {
      * matching, all the routes are matched using the original request URL.
      */
     public FallbackOptions setUrl(String url) {
+      this.url = url;
+      return this;
+    }
+  }
+  class FetchOptions {
+    /**
+     * If set changes the request HTTP headers. Header values will be converted to a string.
+     */
+    public Map<String, String> headers;
+    /**
+     * If set changes the request method (e.g. GET or POST).
+     */
+    public String method;
+    /**
+     * If set changes the post data of request.
+     */
+    public Object postData;
+    /**
+     * If set changes the request URL. New URL must have same protocol as original one.
+     */
+    public String url;
+
+    /**
+     * If set changes the request HTTP headers. Header values will be converted to a string.
+     */
+    public FetchOptions setHeaders(Map<String, String> headers) {
+      this.headers = headers;
+      return this;
+    }
+    /**
+     * If set changes the request method (e.g. GET or POST).
+     */
+    public FetchOptions setMethod(String method) {
+      this.method = method;
+      return this;
+    }
+    /**
+     * If set changes the post data of request.
+     */
+    public FetchOptions setPostData(String postData) {
+      this.postData = postData;
+      return this;
+    }
+    /**
+     * If set changes the post data of request.
+     */
+    public FetchOptions setPostData(byte[] postData) {
+      this.postData = postData;
+      return this;
+    }
+    /**
+     * If set changes the request URL. New URL must have same protocol as original one.
+     */
+    public FetchOptions setUrl(String url) {
       this.url = url;
       return this;
     }
@@ -154,8 +208,8 @@ public interface Route {
      */
     public Map<String, String> headers;
     /**
-     * File path to respond with. The content type will be inferred from file extension. If {@code path} is a relative path, then it
-     * is resolved relative to the current working directory.
+     * File path to respond with. The content type will be inferred from file extension. If {@code path} is a relative path, then
+     * it is resolved relative to the current working directory.
      */
     public Path path;
     /**
@@ -197,8 +251,8 @@ public interface Route {
       return this;
     }
     /**
-     * File path to respond with. The content type will be inferred from file extension. If {@code path} is a relative path, then it
-     * is resolved relative to the current working directory.
+     * File path to respond with. The content type will be inferred from file extension. If {@code path} is a relative path, then
+     * it is resolved relative to the current working directory.
      */
     public FulfillOptions setPath(Path path) {
       this.path = path;
@@ -252,6 +306,8 @@ public interface Route {
   void abort(String errorCode);
   /**
    * Continues route's request with optional overrides.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.route("**\/*", route -> {
    *   // Override headers
@@ -267,6 +323,8 @@ public interface Route {
   }
   /**
    * Continues route's request with optional overrides.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.route("**\/*", route -> {
    *   // Override headers
@@ -283,6 +341,8 @@ public interface Route {
    * registered route can always override all the previous ones. In the example below, request will be handled by the
    * bottom-most handler first, then it'll fall back to the previous one and in the end will be aborted by the first
    * registered route.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.route("**\/*", route -> {
    *   // Runs last.
@@ -344,6 +404,8 @@ public interface Route {
    * registered route can always override all the previous ones. In the example below, request will be handled by the
    * bottom-most handler first, then it'll fall back to the previous one and in the end will be aborted by the first
    * registered route.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.route("**\/*", route -> {
    *   // Runs last.
@@ -399,7 +461,47 @@ public interface Route {
    */
   void fallback(FallbackOptions options);
   /**
+   * Performs the request and fetches result without fulfilling it, so that the response could be modified and then
+   * fulfilled.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.route("https://dog.ceo/api/breeds/list/all", route -> {
+   *   APIResponse response = route.fetch();
+   *   JsonObject json = new Gson().fromJson(response.text(), JsonObject.class);
+   *   JsonObject message = itemObj.get("json").getAsJsonObject();
+   *   message.set("big_red_dog", new JsonArray());
+   *   route.fulfill(new Route.FulfillOptions()
+   *     .setResponse(response)
+   *     .setBody(json.toString()));
+   * });
+   * }</pre>
+   */
+  default APIResponse fetch() {
+    return fetch(null);
+  }
+  /**
+   * Performs the request and fetches result without fulfilling it, so that the response could be modified and then
+   * fulfilled.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.route("https://dog.ceo/api/breeds/list/all", route -> {
+   *   APIResponse response = route.fetch();
+   *   JsonObject json = new Gson().fromJson(response.text(), JsonObject.class);
+   *   JsonObject message = itemObj.get("json").getAsJsonObject();
+   *   message.set("big_red_dog", new JsonArray());
+   *   route.fulfill(new Route.FulfillOptions()
+   *     .setResponse(response)
+   *     .setBody(json.toString()));
+   * });
+   * }</pre>
+   */
+  APIResponse fetch(FetchOptions options);
+  /**
    * Fulfills route's request with given response.
+   *
+   * <p> **Usage**
    *
    * <p> An example of fulfilling all requests with 404 responses:
    * <pre>{@code
@@ -422,6 +524,8 @@ public interface Route {
   }
   /**
    * Fulfills route's request with given response.
+   *
+   * <p> **Usage**
    *
    * <p> An example of fulfilling all requests with 404 responses:
    * <pre>{@code

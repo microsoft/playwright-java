@@ -51,7 +51,7 @@ public interface JSHandle {
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
    * {@code handle.evaluate} would wait for the promise to resolve and return its value.
    *
-   * <p> Examples:
+   * <p> **Usage**
    * <pre>{@code
    * ElementHandle tweetHandle = page.querySelector(".tweet .retweets");
    * assertEquals("10 retweets", tweetHandle.evaluate("node => node.innerText"));
@@ -72,7 +72,7 @@ public interface JSHandle {
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
    * {@code handle.evaluate} would wait for the promise to resolve and return its value.
    *
-   * <p> Examples:
+   * <p> **Usage**
    * <pre>{@code
    * ElementHandle tweetHandle = page.querySelector(".tweet .retweets");
    * assertEquals("10 retweets", tweetHandle.evaluate("node => node.innerText"));
@@ -124,6 +124,8 @@ public interface JSHandle {
   JSHandle evaluateHandle(String expression, Object arg);
   /**
    * The method returns a map with **own property names** as keys and JSHandle instances for the property values.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * JSHandle handle = page.evaluateHandle("() => ({window, document}"););
    * Map<String, JSHandle> properties = handle.getProperties();
@@ -142,8 +144,8 @@ public interface JSHandle {
   /**
    * Returns a JSON representation of the object. If the object has a {@code toJSON} function, it **will not be called**.
    *
-   * <p> <strong>NOTE:</strong> The method will return an empty JSON object if the referenced object is not stringifiable. It will throw an error if the
-   * object has circular references.
+   * <p> <strong>NOTE:</strong> The method will return an empty JSON object if the referenced object is not stringifiable. It will throw an error if
+   * the object has circular references.
    */
   Object jsonValue();
 }

@@ -3,6 +3,8 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -57,4 +59,37 @@ public class TestPageInterception extends TestBase {
     }
   }
 
+  @Test
+  void shouldFulfillInterceptedResponseUsingAlias() {
+    page.route("**/*", route -> {
+      APIResponse response = route.fetch();
+      System.out.println(response.headers().get("content-type"));
+      route.fulfill(new Route.FulfillOptions().setResponse(response));
+    });
+    Response response = page.navigate(server.PREFIX + "/empty.html");
+    assertEquals(200, response.status());
+    assertTrue(response.headers().get("content-type").contains("text/html"));
+  }
+
+  @Test
+  void shouldInterceptWithUrlOverride() {
+    page.route("**/*.html", route -> {
+      APIResponse response = route.fetch(new Route.FetchOptions().setUrl(server.PREFIX + "/one-style.html"));
+      route.fulfill(new Route.FulfillOptions().setResponse(response));
+    });
+    Response response = page.navigate(server.PREFIX + "/empty.html");
+    assertEquals(200, response.status());
+    assertTrue(response.text().contains("one-style.css"), response.text());
+  }
+
+  @Test
+  void shouldInterceptWithPostDataOverride() throws ExecutionException, InterruptedException {
+    Future<Server.Request> request = server.futureRequest("/empty.html");
+    page.route("**/*.html", route -> {
+      APIResponse response = route.fetch(new Route.FetchOptions().setPostData("{ \"foo\": \"bar\" }"));
+      route.fulfill(new Route.FulfillOptions().setResponse(response));
+    });
+    page.navigate(server.PREFIX + "/empty.html");
+    assertEquals("{ \"foo\": \"bar\" }", new String(request.get().postBody));
+  }
 }

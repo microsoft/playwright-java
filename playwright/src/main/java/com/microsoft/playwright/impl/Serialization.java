@@ -348,6 +348,16 @@ class Serialization {
     return array;
   }
 
+  static JsonArray toSelectValueOrLabel(String[] values) {
+    JsonArray jsonOptions = new JsonArray();
+    for (String value : values) {
+      JsonObject option = new JsonObject();
+      option.addProperty("valueOrLabel", value);
+      jsonOptions.add(option);
+    }
+    return jsonOptions;
+  }
+
   static Map<String, String> fromNameValues(JsonArray array) {
     Map<String, String> map = new LinkedHashMap<>();
     for (JsonElement element : array) {
@@ -411,12 +421,6 @@ class Serialization {
     }
   }
 
-  private static class BrowserChannelSerializer implements JsonSerializer<BrowserChannel> {
-    @Override
-    public JsonElement serialize(BrowserChannel src, Type typeOfSrc, JsonSerializationContext context) {
-      return new JsonPrimitive(src.toString().toLowerCase().replace('_', '-'));
-    }
-  }
   private static class ToLowerCaseAndDashSerializer<E extends Enum<E>> implements JsonSerializer<E> {
     @Override
     public JsonElement serialize(E src, Type typeOfSrc, JsonSerializationContext context) {

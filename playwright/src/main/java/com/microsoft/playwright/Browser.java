@@ -80,8 +80,8 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean bypassCSP;
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
+     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
      * Defaults to {@code "light"}.
      */
     public Optional<ColorScheme> colorScheme;
@@ -112,8 +112,8 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean ignoreHTTPSErrors;
     /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported
-     * in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
+     * supported in Firefox.
      */
     public Boolean isMobile;
     /**
@@ -121,8 +121,8 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean javaScriptEnabled;
     /**
-     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language}
-     * request header value as well as number and date formatting rules.
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
+     * {@code Accept-Language} request header value as well as number and date formatting rules.
      */
     public String locale;
     /**
@@ -196,20 +196,20 @@ public interface Browser extends AutoCloseable {
      */
     public ServiceWorkerPolicy serviceWorkers;
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
     public String storageState;
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
-     * state.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved
+     * storage state.
      */
     public Path storageStatePath;
     /**
-     * If specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
-     * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
-     * more about the strict mode.
+     * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector. This option does not
+     * affect any Locator APIs (Locators are always strict). See {@code Locator} to learn more about the strict mode.
      */
     public Boolean strictSelectors;
     /**
@@ -259,8 +259,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
+     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
      * Defaults to {@code "light"}.
      */
     public NewContextOptions setColorScheme(ColorScheme colorScheme) {
@@ -324,8 +324,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported
-     * in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
+     * supported in Firefox.
      */
     public NewContextOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
@@ -339,8 +339,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language}
-     * request header value as well as number and date formatting rules.
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
+     * {@code Accept-Language} request header value as well as number and date formatting rules.
      */
     public NewContextOptions setLocale(String locale) {
       this.locale = locale;
@@ -485,26 +485,26 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
     public NewContextOptions setStorageState(String storageState) {
       this.storageState = storageState;
       return this;
     }
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
-     * state.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved
+     * storage state.
      */
     public NewContextOptions setStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
       return this;
     }
     /**
-     * If specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
-     * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
-     * more about the strict mode.
+     * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector. This option does not
+     * affect any Locator APIs (Locators are always strict). See {@code Locator} to learn more about the strict mode.
      */
     public NewContextOptions setStrictSelectors(boolean strictSelectors) {
       this.strictSelectors = strictSelectors;
@@ -564,8 +564,8 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean bypassCSP;
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
+     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
      * Defaults to {@code "light"}.
      */
     public Optional<ColorScheme> colorScheme;
@@ -596,8 +596,8 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean ignoreHTTPSErrors;
     /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported
-     * in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
+     * supported in Firefox.
      */
     public Boolean isMobile;
     /**
@@ -605,8 +605,8 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean javaScriptEnabled;
     /**
-     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language}
-     * request header value as well as number and date formatting rules.
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
+     * {@code Accept-Language} request header value as well as number and date formatting rules.
      */
     public String locale;
     /**
@@ -680,20 +680,20 @@ public interface Browser extends AutoCloseable {
      */
     public ServiceWorkerPolicy serviceWorkers;
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
     public String storageState;
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
-     * state.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved
+     * storage state.
      */
     public Path storageStatePath;
     /**
-     * If specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
-     * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
-     * more about the strict mode.
+     * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector. This option does not
+     * affect any Locator APIs (Locators are always strict). See {@code Locator} to learn more about the strict mode.
      */
     public Boolean strictSelectors;
     /**
@@ -743,8 +743,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
+     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
      * Defaults to {@code "light"}.
      */
     public NewPageOptions setColorScheme(ColorScheme colorScheme) {
@@ -808,8 +808,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported
-     * in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
+     * supported in Firefox.
      */
     public NewPageOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
@@ -823,8 +823,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language}
-     * request header value as well as number and date formatting rules.
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
+     * {@code Accept-Language} request header value as well as number and date formatting rules.
      */
     public NewPageOptions setLocale(String locale) {
       this.locale = locale;
@@ -969,26 +969,26 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
     public NewPageOptions setStorageState(String storageState) {
       this.storageState = storageState;
       return this;
     }
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
-     * state.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved
+     * storage state.
      */
     public NewPageOptions setStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
       return this;
     }
     /**
-     * If specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
-     * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
-     * more about the strict mode.
+     * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector. This option does not
+     * affect any Locator APIs (Locators are always strict). See {@code Locator} to learn more about the strict mode.
      */
     public NewPageOptions setStrictSelectors(boolean strictSelectors) {
       this.strictSelectors = strictSelectors;
@@ -1068,8 +1068,8 @@ public interface Browser extends AutoCloseable {
    * In case this browser is obtained using {@link BrowserType#launch BrowserType.launch()}, closes the browser and all of
    * its pages (if any were opened).
    *
-   * <p> In case this browser is connected to, clears all created contexts belonging to this browser and disconnects from the
-   * browser server.
+   * <p> In case this browser is connected to, clears all created contexts belonging to this browser and disconnects from
+   * the browser server.
    *
    * <p> <strong>NOTE:</strong> This is similar to force quitting the browser. Therefore, you should call {@link BrowserContext#close
    * BrowserContext.close()} on any {@code BrowserContext}'s you explicitly created earlier with {@link Browser#newContext
@@ -1080,6 +1080,8 @@ public interface Browser extends AutoCloseable {
   void close();
   /**
    * Returns an array of all open browser contexts. In a newly created browser, this will return zero browser contexts.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * Browser browser = pw.webkit().launch();
    * System.out.println(browser.contexts().size()); // prints "0"
@@ -1099,6 +1101,8 @@ public interface Browser extends AutoCloseable {
    * via {@link BrowserContext#close BrowserContext.close()} when your code is done with the {@code BrowserContext}, and before
    * calling {@link Browser#close Browser.close()}. This will ensure the {@code context} is closed gracefully and any
    * artifacts—like HARs and videos—are fully flushed and saved.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * Browser browser = playwright.firefox().launch();  // Or 'chromium' or 'webkit'.
    * // Create a new incognito browser context.
@@ -1122,6 +1126,8 @@ public interface Browser extends AutoCloseable {
    * via {@link BrowserContext#close BrowserContext.close()} when your code is done with the {@code BrowserContext}, and before
    * calling {@link Browser#close Browser.close()}. This will ensure the {@code context} is closed gracefully and any
    * artifacts—like HARs and videos—are fully flushed and saved.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * Browser browser = playwright.firefox().launch();  // Or 'chromium' or 'webkit'.
    * // Create a new incognito browser context.
@@ -1139,8 +1145,8 @@ public interface Browser extends AutoCloseable {
   /**
    * Creates a new page in a new browser context. Closing this page will close the context as well.
    *
-   * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and
-   * testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the {@link
+   * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code
+   * and testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the {@link
    * BrowserContext#newPage BrowserContext.newPage()} to control their exact life times.
    */
   default Page newPage() {
@@ -1149,8 +1155,8 @@ public interface Browser extends AutoCloseable {
   /**
    * Creates a new page in a new browser context. Closing this page will close the context as well.
    *
-   * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and
-   * testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the {@link
+   * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code
+   * and testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the {@link
    * BrowserContext#newPage BrowserContext.newPage()} to control their exact life times.
    */
   Page newPage(NewPageOptions options);
@@ -1162,6 +1168,8 @@ public interface Browser extends AutoCloseable {
    *
    * <p> You can use {@link Browser#startTracing Browser.startTracing()} and {@link Browser#stopTracing Browser.stopTracing()} to
    * create a trace file that can be opened in Chrome DevTools performance panel.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * browser.startTracing(page, new Browser.StartTracingOptions()
    *   .setPath(Paths.get("trace.json")));
@@ -1182,6 +1190,8 @@ public interface Browser extends AutoCloseable {
    *
    * <p> You can use {@link Browser#startTracing Browser.startTracing()} and {@link Browser#stopTracing Browser.stopTracing()} to
    * create a trace file that can be opened in Chrome DevTools performance panel.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * browser.startTracing(page, new Browser.StartTracingOptions()
    *   .setPath(Paths.get("trace.json")));
@@ -1200,6 +1210,8 @@ public interface Browser extends AutoCloseable {
    *
    * <p> You can use {@link Browser#startTracing Browser.startTracing()} and {@link Browser#stopTracing Browser.stopTracing()} to
    * create a trace file that can be opened in Chrome DevTools performance panel.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * browser.startTracing(page, new Browser.StartTracingOptions()
    *   .setPath(Paths.get("trace.json")));

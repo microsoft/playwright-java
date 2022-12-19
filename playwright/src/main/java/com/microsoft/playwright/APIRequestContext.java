@@ -20,8 +20,8 @@ import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 
 /**
- * This API is used for the Web API testing. You can use it to trigger API endpoints, configure micro-services, prepare
- * environment or the service to your e2e test.
+ * This API is used for the Web API testing. You can use it to trigger API endpoints, configure micro-services,
+ * prepare environment or the service to your e2e test.
  *
  * <p> Each Playwright browser context has associated with it {@code APIRequestContext} instance which shares cookie storage with the
  * browser context and can be accessed via {@link BrowserContext#request BrowserContext.request()} or {@link Page#request
@@ -36,8 +36,8 @@ import java.nio.file.Path;
  * automatically update {@code BrowserContext} cookies and requests made from the page will pick them up. This means that if you
  * log in using this API, your e2e test will be logged in and vice versa.
  *
- * <p> If you want API requests to not interfere with the browser cookies you should create a new {@code APIRequestContext} by
- * calling {@link APIRequest#newContext APIRequest.newContext()}. Such {@code APIRequestContext} object will have its own
+ * <p> If you want API requests to not interfere with the browser cookies you should create a new {@code APIRequestContext}
+ * by calling {@link APIRequest#newContext APIRequest.newContext()}. Such {@code APIRequestContext} object will have its own
  * isolated cookie storage.
  */
 public interface APIRequestContext {
@@ -83,10 +83,11 @@ public interface APIRequestContext {
    */
   void dispose();
   /**
-   * Sends HTTP(S) request and returns its response. The method will populate request cookies from the context and update
-   * context cookies from the response. The method will automatically follow redirects.
+   * Sends HTTP(S) request and returns its response. The method will populate request cookies from the context and
+   * update context cookies from the response. The method will automatically follow redirects. JSON objects can be passed
+   * directly to the request.
    *
-   * <p> JSON objects can be passed directly to the request:
+   * <p> **Usage**
    * <pre>{@code
    * Map<String, Object> data = new HashMap();
    * data.put("title", "Book Title");
@@ -117,10 +118,11 @@ public interface APIRequestContext {
     return fetch(urlOrRequest, null);
   }
   /**
-   * Sends HTTP(S) request and returns its response. The method will populate request cookies from the context and update
-   * context cookies from the response. The method will automatically follow redirects.
+   * Sends HTTP(S) request and returns its response. The method will populate request cookies from the context and
+   * update context cookies from the response. The method will automatically follow redirects. JSON objects can be passed
+   * directly to the request.
    *
-   * <p> JSON objects can be passed directly to the request:
+   * <p> **Usage**
    * <pre>{@code
    * Map<String, Object> data = new HashMap();
    * data.put("title", "Book Title");
@@ -150,10 +152,11 @@ public interface APIRequestContext {
    */
   APIResponse fetch(String urlOrRequest, RequestOptions params);
   /**
-   * Sends HTTP(S) request and returns its response. The method will populate request cookies from the context and update
-   * context cookies from the response. The method will automatically follow redirects.
+   * Sends HTTP(S) request and returns its response. The method will populate request cookies from the context and
+   * update context cookies from the response. The method will automatically follow redirects. JSON objects can be passed
+   * directly to the request.
    *
-   * <p> JSON objects can be passed directly to the request:
+   * <p> **Usage**
    * <pre>{@code
    * Map<String, Object> data = new HashMap();
    * data.put("title", "Book Title");
@@ -184,10 +187,11 @@ public interface APIRequestContext {
     return fetch(urlOrRequest, null);
   }
   /**
-   * Sends HTTP(S) request and returns its response. The method will populate request cookies from the context and update
-   * context cookies from the response. The method will automatically follow redirects.
+   * Sends HTTP(S) request and returns its response. The method will populate request cookies from the context and
+   * update context cookies from the response. The method will automatically follow redirects. JSON objects can be passed
+   * directly to the request.
    *
-   * <p> JSON objects can be passed directly to the request:
+   * <p> **Usage**
    * <pre>{@code
    * Map<String, Object> data = new HashMap();
    * data.put("title", "Book Title");
@@ -221,6 +225,8 @@ public interface APIRequestContext {
    * response. The method will populate request cookies from the context and update context cookies from the response. The
    * method will automatically follow redirects.
    *
+   * <p> **Usage**
+   *
    * <p> Request parameters can be configured with {@code params} option, they will be serialized into the URL search parameters:
    * <pre>{@code
    * request.get("https://example.com/api/getText", RequestOptions.create()
@@ -237,6 +243,8 @@ public interface APIRequestContext {
    * Sends HTTP(S) <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET">GET</a> request and returns its
    * response. The method will populate request cookies from the context and update context cookies from the response. The
    * method will automatically follow redirects.
+   *
+   * <p> **Usage**
    *
    * <p> Request parameters can be configured with {@code params} option, they will be serialized into the URL search parameters:
    * <pre>{@code
@@ -292,6 +300,8 @@ public interface APIRequestContext {
    * response. The method will populate request cookies from the context and update context cookies from the response. The
    * method will automatically follow redirects.
    *
+   * <p> **Usage**
+   *
    * <p> JSON objects can be passed directly to the request:
    * <pre>{@code
    * Map<String, Object> data = new HashMap();
@@ -334,6 +344,8 @@ public interface APIRequestContext {
    * Sends HTTP(S) <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST">POST</a> request and returns its
    * response. The method will populate request cookies from the context and update context cookies from the response. The
    * method will automatically follow redirects.
+   *
+   * <p> **Usage**
    *
    * <p> JSON objects can be passed directly to the request:
    * <pre>{@code

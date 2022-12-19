@@ -154,6 +154,8 @@ public interface Tracing {
   }
   /**
    * Start tracing.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * context.tracing().start(new Tracing.StartOptions()
    *   .setScreenshots(true)
@@ -169,6 +171,8 @@ public interface Tracing {
   }
   /**
    * Start tracing.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * context.tracing().start(new Tracing.StartOptions()
    *   .setScreenshots(true)
@@ -184,6 +188,8 @@ public interface Tracing {
    * Start a new trace chunk. If you'd like to record multiple traces on the same {@code BrowserContext}, use {@link Tracing#start
    * Tracing.start()} once, and then create multiple trace chunks with {@link Tracing#startChunk Tracing.startChunk()} and
    * {@link Tracing#stopChunk Tracing.stopChunk()}.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * context.tracing().start(new Tracing.StartOptions()
    *   .setScreenshots(true)
@@ -211,6 +217,8 @@ public interface Tracing {
    * Start a new trace chunk. If you'd like to record multiple traces on the same {@code BrowserContext}, use {@link Tracing#start
    * Tracing.start()} once, and then create multiple trace chunks with {@link Tracing#startChunk Tracing.startChunk()} and
    * {@link Tracing#stopChunk Tracing.stopChunk()}.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * context.tracing().start(new Tracing.StartOptions()
    *   .setScreenshots(true)

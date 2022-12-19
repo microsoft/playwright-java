@@ -26,6 +26,14 @@ public class TestSelectorsGetBy extends TestBase {
   }
 
   @Test
+  void getByTestIdShouldWorkForRegex() {
+    page.setContent("<div><div data-testid='Hello'>Hello world</div></div>");
+    assertThat(page.getByTestId(Pattern.compile("He[l]*o"))).hasText("Hello world");
+    assertThat(page.mainFrame().getByTestId("Hello")).hasText("Hello world");
+    assertThat(page.locator("div").getByTestId("Hello")).hasText("Hello world");
+  }
+
+  @Test
   void getByTextShouldWork() {
     page.setContent("<div>yo</div><div>ya</div><div>\nye  </div>");
     assertTrue(((String) page.getByText("ye").evaluate("e => e.outerHTML")).contains(">\nye  </div>"));

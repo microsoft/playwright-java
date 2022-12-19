@@ -30,8 +30,8 @@ public interface Video {
    */
   void delete();
   /**
-   * Returns the file system path this video will be recorded to. The video is guaranteed to be written to the filesystem
-   * upon closing the browser context. This method throws when connected remotely.
+   * Returns the file system path this video will be recorded to. The video is guaranteed to be written to the
+   * filesystem upon closing the browser context. This method throws when connected remotely.
    */
   Path path();
   /**

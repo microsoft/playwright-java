@@ -57,17 +57,17 @@ public interface APIRequest {
      */
     public Proxy proxy;
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()} or {@link APIRequestContext#storageState
-     * APIRequestContext.storageState()}. Either a path to the file with saved storage, or the value returned by one of {@link
-     * BrowserContext#storageState BrowserContext.storageState()} or {@link APIRequestContext#storageState
-     * APIRequestContext.storageState()} methods.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()} or {@link
+     * APIRequestContext#storageState APIRequestContext.storageState()}. Either a path to the file with saved storage, or the
+     * value returned by one of {@link BrowserContext#storageState BrowserContext.storageState()} or {@link
+     * APIRequestContext#storageState APIRequestContext.storageState()} methods.
      */
     public String storageState;
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
-     * state.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved
+     * storage state.
      */
     public Path storageStatePath;
     /**
@@ -136,20 +136,20 @@ public interface APIRequest {
       return this;
     }
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()} or {@link APIRequestContext#storageState
-     * APIRequestContext.storageState()}. Either a path to the file with saved storage, or the value returned by one of {@link
-     * BrowserContext#storageState BrowserContext.storageState()} or {@link APIRequestContext#storageState
-     * APIRequestContext.storageState()} methods.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()} or {@link
+     * APIRequestContext#storageState APIRequestContext.storageState()}. Either a path to the file with saved storage, or the
+     * value returned by one of {@link BrowserContext#storageState BrowserContext.storageState()} or {@link
+     * APIRequestContext#storageState APIRequestContext.storageState()} methods.
      */
     public NewContextOptions setStorageState(String storageState) {
       this.storageState = storageState;
       return this;
     }
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
-     * state.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in
+     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved
+     * storage state.
      */
     public NewContextOptions setStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;

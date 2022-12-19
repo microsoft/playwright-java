@@ -76,6 +76,8 @@ public interface PageAssertions {
   PageAssertions not();
   /**
    * Ensures the page has the given title.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page).hasTitle("Playwright");
    * }</pre>
@@ -87,6 +89,8 @@ public interface PageAssertions {
   }
   /**
    * Ensures the page has the given title.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page).hasTitle("Playwright");
    * }</pre>
@@ -96,6 +100,8 @@ public interface PageAssertions {
   void hasTitle(String titleOrRegExp, HasTitleOptions options);
   /**
    * Ensures the page has the given title.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page).hasTitle("Playwright");
    * }</pre>
@@ -107,6 +113,8 @@ public interface PageAssertions {
   }
   /**
    * Ensures the page has the given title.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page).hasTitle("Playwright");
    * }</pre>
@@ -116,6 +124,8 @@ public interface PageAssertions {
   void hasTitle(Pattern titleOrRegExp, HasTitleOptions options);
   /**
    * Ensures the page is navigated to the given URL.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page).hasURL(".com");
    * }</pre>
@@ -127,6 +137,8 @@ public interface PageAssertions {
   }
   /**
    * Ensures the page is navigated to the given URL.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page).hasURL(".com");
    * }</pre>
@@ -136,6 +148,8 @@ public interface PageAssertions {
   void hasURL(String urlOrRegExp, HasURLOptions options);
   /**
    * Ensures the page is navigated to the given URL.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page).hasURL(".com");
    * }</pre>
@@ -147,6 +161,8 @@ public interface PageAssertions {
   }
   /**
    * Ensures the page is navigated to the given URL.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page).hasURL(".com");
    * }</pre>

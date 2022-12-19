@@ -89,8 +89,9 @@ public interface Keyboard {
    * character to generate the text for. A superset of the {@code key} values can be found <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
    *
-   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
-   * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
+   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace},
+   * {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp},
+   * etc.
    *
    * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
    *
@@ -113,6 +114,8 @@ public interface Keyboard {
   void down(String key);
   /**
    * Dispatches only {@code input} event, does not emit the {@code keydown}, {@code keyup} or {@code keypress} events.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.keyboard().insertText("嗨");
    * }</pre>
@@ -128,8 +131,9 @@ public interface Keyboard {
    * character to generate the text for. A superset of the {@code key} values can be found <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
    *
-   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
-   * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
+   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace},
+   * {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp},
+   * etc.
    *
    * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
    *
@@ -138,8 +142,10 @@ public interface Keyboard {
    * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
    * texts.
    *
-   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with the
-   * modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with
+   * the modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * Page page = browser.newPage();
    * page.navigate("https://keycode.info");
@@ -165,8 +171,9 @@ public interface Keyboard {
    * character to generate the text for. A superset of the {@code key} values can be found <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
    *
-   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
-   * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
+   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace},
+   * {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp},
+   * etc.
    *
    * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
    *
@@ -175,8 +182,10 @@ public interface Keyboard {
    * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
    * texts.
    *
-   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with the
-   * modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with
+   * the modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * Page page = browser.newPage();
    * page.navigate("https://keycode.info");
@@ -198,6 +207,8 @@ public interface Keyboard {
    * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Keyboard#press Keyboard.press()}.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Types instantly
    * page.keyboard().type("Hello");
@@ -218,6 +229,8 @@ public interface Keyboard {
    * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Keyboard#press Keyboard.press()}.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Types instantly
    * page.keyboard().type("Hello");

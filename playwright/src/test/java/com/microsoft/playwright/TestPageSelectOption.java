@@ -44,6 +44,14 @@ public class TestPageSelectOption extends TestBase {
   }
 
   @Test
+  void shouldFallBackToSelectingByLabel() {
+    page.navigate(server.PREFIX + "/input/select.html");
+    page.selectOption("select", "Blue");
+    assertEquals(asList("blue"), page.evaluate("() => window['result'].onInput"));
+    assertEquals(asList("blue"), page.evaluate("() => window['result'].onChange"));
+  }
+
+  @Test
   void shouldSelectSingleOptionByLabel() {
     page.navigate(server.PREFIX + "/input/select.html");
     page.selectOption("select", new SelectOption().setLabel("Indigo"));

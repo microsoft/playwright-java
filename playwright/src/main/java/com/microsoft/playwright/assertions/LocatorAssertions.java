@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  *   @Test
  *   void statusBecomesSubmitted() {
  *     ...
- *     page.getByRole("button").click();
+ *     page.getByRole(AriaRole.BUTTON).click();
  *     assertThat(page.locator(".status")).hasText("Submitted");
  *   }
  * }
@@ -368,6 +368,8 @@ public interface LocatorAssertions {
   LocatorAssertions not();
   /**
    * Ensures the {@code Locator} points to a checked input.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.getByLabel("Subscribe to newsletter")).isChecked();
    * }</pre>
@@ -377,6 +379,8 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} points to a checked input.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.getByLabel("Subscribe to newsletter")).isChecked();
    * }</pre>
@@ -385,9 +389,11 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to a disabled element. Element is disabled if it has "disabled" attribute or is disabled
    * via <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled">'aria-disabled'</a>.
-   * Note that only native control elements such as HTML {@code button}, {@code input}, {@code select}, {@code textarea}, {@code option}, {@code optgroup} can be
+   * href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled">'aria-disabled'</a>. Note
+   * that only native control elements such as HTML {@code button}, {@code input}, {@code select}, {@code textarea}, {@code option}, {@code optgroup} can be
    * disabled by setting "disabled" attribute. "disabled" attribute on other elements is ignored by the browser.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("button.submit")).isDisabled();
    * }</pre>
@@ -398,9 +404,11 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to a disabled element. Element is disabled if it has "disabled" attribute or is disabled
    * via <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled">'aria-disabled'</a>.
-   * Note that only native control elements such as HTML {@code button}, {@code input}, {@code select}, {@code textarea}, {@code option}, {@code optgroup} can be
+   * href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled">'aria-disabled'</a>. Note
+   * that only native control elements such as HTML {@code button}, {@code input}, {@code select}, {@code textarea}, {@code option}, {@code optgroup} can be
    * disabled by setting "disabled" attribute. "disabled" attribute on other elements is ignored by the browser.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("button.submit")).isDisabled();
    * }</pre>
@@ -408,8 +416,10 @@ public interface LocatorAssertions {
   void isDisabled(IsDisabledOptions options);
   /**
    * Ensures the {@code Locator} points to an editable element.
+   *
+   * <p> **Usage**
    * <pre>{@code
-   * assertThat(page.getByRole("textbox")).isEditable();
+   * assertThat(page.getByRole(AriaRole.TEXTBOX)).isEditable();
    * }</pre>
    */
   default void isEditable() {
@@ -417,13 +427,17 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} points to an editable element.
+   *
+   * <p> **Usage**
    * <pre>{@code
-   * assertThat(page.getByRole("textbox")).isEditable();
+   * assertThat(page.getByRole(AriaRole.TEXTBOX)).isEditable();
    * }</pre>
    */
   void isEditable(IsEditableOptions options);
   /**
    * Ensures the {@code Locator} points to an empty editable element or to a DOM node that has no text.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("div.warning")).isEmpty();
    * }</pre>
@@ -433,6 +447,8 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} points to an empty editable element or to a DOM node that has no text.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("div.warning")).isEmpty();
    * }</pre>
@@ -440,6 +456,8 @@ public interface LocatorAssertions {
   void isEmpty(IsEmptyOptions options);
   /**
    * Ensures the {@code Locator} points to an enabled element.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("button.submit")).isEnabled();
    * }</pre>
@@ -449,6 +467,8 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} points to an enabled element.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("button.submit")).isEnabled();
    * }</pre>
@@ -456,8 +476,10 @@ public interface LocatorAssertions {
   void isEnabled(IsEnabledOptions options);
   /**
    * Ensures the {@code Locator} points to a focused DOM node.
+   *
+   * <p> **Usage**
    * <pre>{@code
-   * assertThat(page.getByRole("textbox")).isFocused();
+   * assertThat(page.getByRole(AriaRole.TEXTBOX)).isFocused();
    * }</pre>
    */
   default void isFocused() {
@@ -465,14 +487,18 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} points to a focused DOM node.
+   *
+   * <p> **Usage**
    * <pre>{@code
-   * assertThat(page.getByRole("textbox")).isFocused();
+   * assertThat(page.getByRole(AriaRole.TEXTBOX)).isFocused();
    * }</pre>
    */
   void isFocused(IsFocusedOptions options);
   /**
    * Ensures that {@code Locator} either does not resolve to any DOM node, or resolves to a <a
-   * href="https://playwright.dev/java/docs/api/actionability#visible">non-visible</a> one.
+   * href="https://playwright.dev/java/docs/actionability#visible">non-visible</a> one.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".my-element")).isHidden();
    * }</pre>
@@ -482,15 +508,19 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures that {@code Locator} either does not resolve to any DOM node, or resolves to a <a
-   * href="https://playwright.dev/java/docs/api/actionability#visible">non-visible</a> one.
+   * href="https://playwright.dev/java/docs/actionability#visible">non-visible</a> one.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".my-element")).isHidden();
    * }</pre>
    */
   void isHidden(IsHiddenOptions options);
   /**
-   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/api/actionability#attached">attached</a>
-   * and <a href="https://playwright.dev/java/docs/api/actionability#visible">visible</a> DOM node.
+   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/actionability#attached">attached</a> and
+   * <a href="https://playwright.dev/java/docs/actionability#visible">visible</a> DOM node.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".my-element")).isVisible();
    * }</pre>
@@ -499,8 +529,10 @@ public interface LocatorAssertions {
     isVisible(null);
   }
   /**
-   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/api/actionability#attached">attached</a>
-   * and <a href="https://playwright.dev/java/docs/api/actionability#visible">visible</a> DOM node.
+   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/actionability#attached">attached</a> and
+   * <a href="https://playwright.dev/java/docs/actionability#visible">visible</a> DOM node.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".my-element")).isVisible();
    * }</pre>
@@ -509,6 +541,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
    * as well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
@@ -546,6 +580,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
    * as well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
@@ -581,6 +617,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
    * as well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
@@ -618,6 +656,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
    * as well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
@@ -653,6 +693,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
    * as well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
@@ -690,6 +732,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
    * as well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
@@ -725,6 +769,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
    * as well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
@@ -762,6 +808,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
    * as well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).containsText("substring");
    * }</pre>
@@ -796,6 +844,8 @@ public interface LocatorAssertions {
   void containsText(Pattern[] expected, ContainsTextOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given attribute.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("input")).hasAttribute("type", "text");
    * }</pre>
@@ -808,6 +858,8 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} points to an element with given attribute.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("input")).hasAttribute("type", "text");
    * }</pre>
@@ -818,6 +870,8 @@ public interface LocatorAssertions {
   void hasAttribute(String name, String value, HasAttributeOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given attribute.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("input")).hasAttribute("type", "text");
    * }</pre>
@@ -830,6 +884,8 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} points to an element with given attribute.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("input")).hasAttribute("type", "text");
    * }</pre>
@@ -841,6 +897,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
    * assertThat(page.locator("#component")).hasClass("selected row");
@@ -859,6 +917,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
    * assertThat(page.locator("#component")).hasClass("selected row");
@@ -875,6 +935,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
    * assertThat(page.locator("#component")).hasClass("selected row");
@@ -893,6 +955,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
    * assertThat(page.locator("#component")).hasClass("selected row");
@@ -909,6 +973,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
    * assertThat(page.locator("#component")).hasClass("selected row");
@@ -927,6 +993,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
    * assertThat(page.locator("#component")).hasClass("selected row");
@@ -943,6 +1011,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
    * assertThat(page.locator("#component")).hasClass("selected row");
@@ -961,6 +1031,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
    * regular expression.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("#component")).hasClass(Pattern.compile("selected"));
    * assertThat(page.locator("#component")).hasClass("selected row");
@@ -976,6 +1048,8 @@ public interface LocatorAssertions {
   void hasClass(Pattern[] expected, HasClassOptions options);
   /**
    * Ensures the {@code Locator} resolves to an exact number of DOM nodes.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasCount(3);
    * }</pre>
@@ -987,6 +1061,8 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} resolves to an exact number of DOM nodes.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("list > .component")).hasCount(3);
    * }</pre>
@@ -996,8 +1072,10 @@ public interface LocatorAssertions {
   void hasCount(int count, HasCountOptions options);
   /**
    * Ensures the {@code Locator} resolves to an element with the given computed CSS style.
+   *
+   * <p> **Usage**
    * <pre>{@code
-   * assertThat(page.getByRole("button")).hasCSS("display", "flex");
+   * assertThat(page.getByRole(AriaRole.BUTTON)).hasCSS("display", "flex");
    * }</pre>
    *
    * @param name CSS property name.
@@ -1008,8 +1086,10 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} resolves to an element with the given computed CSS style.
+   *
+   * <p> **Usage**
    * <pre>{@code
-   * assertThat(page.getByRole("button")).hasCSS("display", "flex");
+   * assertThat(page.getByRole(AriaRole.BUTTON)).hasCSS("display", "flex");
    * }</pre>
    *
    * @param name CSS property name.
@@ -1018,8 +1098,10 @@ public interface LocatorAssertions {
   void hasCSS(String name, String value, HasCSSOptions options);
   /**
    * Ensures the {@code Locator} resolves to an element with the given computed CSS style.
+   *
+   * <p> **Usage**
    * <pre>{@code
-   * assertThat(page.getByRole("button")).hasCSS("display", "flex");
+   * assertThat(page.getByRole(AriaRole.BUTTON)).hasCSS("display", "flex");
    * }</pre>
    *
    * @param name CSS property name.
@@ -1030,8 +1112,10 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} resolves to an element with the given computed CSS style.
+   *
+   * <p> **Usage**
    * <pre>{@code
-   * assertThat(page.getByRole("button")).hasCSS("display", "flex");
+   * assertThat(page.getByRole(AriaRole.BUTTON)).hasCSS("display", "flex");
    * }</pre>
    *
    * @param name CSS property name.
@@ -1040,8 +1124,10 @@ public interface LocatorAssertions {
   void hasCSS(String name, Pattern value, HasCSSOptions options);
   /**
    * Ensures the {@code Locator} points to an element with the given DOM Node ID.
+   *
+   * <p> **Usage**
    * <pre>{@code
-   * assertThat(page.getByRole("textbox")).hasId("lastname");
+   * assertThat(page.getByRole(AriaRole.TEXTBOX)).hasId("lastname");
    * }</pre>
    *
    * @param id Element id.
@@ -1051,8 +1137,10 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} points to an element with the given DOM Node ID.
+   *
+   * <p> **Usage**
    * <pre>{@code
-   * assertThat(page.getByRole("textbox")).hasId("lastname");
+   * assertThat(page.getByRole(AriaRole.TEXTBOX)).hasId("lastname");
    * }</pre>
    *
    * @param id Element id.
@@ -1060,8 +1148,10 @@ public interface LocatorAssertions {
   void hasId(String id, HasIdOptions options);
   /**
    * Ensures the {@code Locator} points to an element with the given DOM Node ID.
+   *
+   * <p> **Usage**
    * <pre>{@code
-   * assertThat(page.getByRole("textbox")).hasId("lastname");
+   * assertThat(page.getByRole(AriaRole.TEXTBOX)).hasId("lastname");
    * }</pre>
    *
    * @param id Element id.
@@ -1071,8 +1161,10 @@ public interface LocatorAssertions {
   }
   /**
    * Ensures the {@code Locator} points to an element with the given DOM Node ID.
+   *
+   * <p> **Usage**
    * <pre>{@code
-   * assertThat(page.getByRole("textbox")).hasId("lastname");
+   * assertThat(page.getByRole(AriaRole.TEXTBOX)).hasId("lastname");
    * }</pre>
    *
    * @param id Element id.
@@ -1081,6 +1173,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with given JavaScript property. Note that this property can be of a primitive
    * type as well as a plain serializable JavaScript object.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("input")).hasJSProperty("loaded", true);
    * }</pre>
@@ -1094,6 +1188,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with given JavaScript property. Note that this property can be of a primitive
    * type as well as a plain serializable JavaScript object.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("input")).hasJSProperty("loaded", true);
    * }</pre>
@@ -1104,6 +1200,8 @@ public interface LocatorAssertions {
   void hasJSProperty(String name, Object value, HasJSPropertyOptions options);
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).hasText("Welcome, Test User");
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
@@ -1133,13 +1231,15 @@ public interface LocatorAssertions {
    * assertThat(page.locator("ul")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
-   * @param expected Expected substring or RegExp or a list of those.
+   * @param expected Expected string or RegExp or a list of those.
    */
   default void hasText(String expected) {
     hasText(expected, null);
   }
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).hasText("Welcome, Test User");
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
@@ -1169,11 +1269,13 @@ public interface LocatorAssertions {
    * assertThat(page.locator("ul")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
-   * @param expected Expected substring or RegExp or a list of those.
+   * @param expected Expected string or RegExp or a list of those.
    */
   void hasText(String expected, HasTextOptions options);
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).hasText("Welcome, Test User");
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
@@ -1203,13 +1305,15 @@ public interface LocatorAssertions {
    * assertThat(page.locator("ul")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
-   * @param expected Expected substring or RegExp or a list of those.
+   * @param expected Expected string or RegExp or a list of those.
    */
   default void hasText(Pattern expected) {
     hasText(expected, null);
   }
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).hasText("Welcome, Test User");
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
@@ -1239,11 +1343,13 @@ public interface LocatorAssertions {
    * assertThat(page.locator("ul")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
-   * @param expected Expected substring or RegExp or a list of those.
+   * @param expected Expected string or RegExp or a list of those.
    */
   void hasText(Pattern expected, HasTextOptions options);
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).hasText("Welcome, Test User");
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
@@ -1273,13 +1379,15 @@ public interface LocatorAssertions {
    * assertThat(page.locator("ul")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
-   * @param expected Expected substring or RegExp or a list of those.
+   * @param expected Expected string or RegExp or a list of those.
    */
   default void hasText(String[] expected) {
     hasText(expected, null);
   }
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).hasText("Welcome, Test User");
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
@@ -1309,11 +1417,13 @@ public interface LocatorAssertions {
    * assertThat(page.locator("ul")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
-   * @param expected Expected substring or RegExp or a list of those.
+   * @param expected Expected string or RegExp or a list of those.
    */
   void hasText(String[] expected, HasTextOptions options);
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).hasText("Welcome, Test User");
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
@@ -1343,13 +1453,15 @@ public interface LocatorAssertions {
    * assertThat(page.locator("ul")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
-   * @param expected Expected substring or RegExp or a list of those.
+   * @param expected Expected string or RegExp or a list of those.
    */
   default void hasText(Pattern[] expected) {
     hasText(expected, null);
   }
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).hasText("Welcome, Test User");
    * assertThat(page.locator(".title")).hasText(Pattern.compile("Welcome, .*"));
@@ -1379,12 +1491,14 @@ public interface LocatorAssertions {
    * assertThat(page.locator("ul")).hasText(new String[] {"Text 1", "Text 2", "Text 3"});
    * }</pre>
    *
-   * @param expected Expected substring or RegExp or a list of those.
+   * @param expected Expected string or RegExp or a list of those.
    */
   void hasText(Pattern[] expected, HasTextOptions options);
   /**
    * Ensures the {@code Locator} points to an element with the given input value. You can use regular expressions for the value as
    * well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("input[type=number]")).hasValue(Pattern.compile("[0-9]"));
    * }</pre>
@@ -1397,6 +1511,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given input value. You can use regular expressions for the value as
    * well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("input[type=number]")).hasValue(Pattern.compile("[0-9]"));
    * }</pre>
@@ -1407,6 +1523,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given input value. You can use regular expressions for the value as
    * well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("input[type=number]")).hasValue(Pattern.compile("[0-9]"));
    * }</pre>
@@ -1419,6 +1537,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given input value. You can use regular expressions for the value as
    * well.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator("input[type=number]")).hasValue(Pattern.compile("[0-9]"));
    * }</pre>
@@ -1429,6 +1549,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute) and the specified
    * values are selected.
+   *
+   * <p> **Usage**
    *
    * <p> For example, given the following element:
    * <pre>{@code
@@ -1445,6 +1567,8 @@ public interface LocatorAssertions {
    * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute) and the specified
    * values are selected.
    *
+   * <p> **Usage**
+   *
    * <p> For example, given the following element:
    * <pre>{@code
    * page.locator("id=favorite-colors").selectOption(["R", "G"]);
@@ -1457,6 +1581,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute) and the specified
    * values are selected.
+   *
+   * <p> **Usage**
    *
    * <p> For example, given the following element:
    * <pre>{@code
@@ -1472,6 +1598,8 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute) and the specified
    * values are selected.
+   *
+   * <p> **Usage**
    *
    * <p> For example, given the following element:
    * <pre>{@code

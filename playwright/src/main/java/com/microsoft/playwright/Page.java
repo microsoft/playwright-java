@@ -25,8 +25,8 @@ import java.util.regex.Pattern;
 
 /**
  * Page provides methods to interact with a single tab in a {@code Browser}, or an <a
- * href="https://developer.chrome.com/extensions/background_pages">extension background page</a> in Chromium. One {@code Browser}
- * instance might have multiple {@code Page} instances.
+ * href="https://developer.chrome.com/extensions/background_pages">extension background page</a> in Chromium. One
+ * {@code Browser} instance might have multiple {@code Page} instances.
  *
  * <p> This example creates a page, navigates it to a URL, and then saves a screenshot:
  * <pre>{@code
@@ -48,8 +48,8 @@ import java.util.regex.Pattern;
  * }</pre>
  *
  * <p> The Page class emits various events (described below) which can be handled using any of Node's native <a
- * href="https://nodejs.org/api/events.html#events_class_eventemitter">{@code EventEmitter}</a> methods, such as {@code on}, {@code once} or
- * {@code removeListener}.
+ * href="https://nodejs.org/api/events.html#events_class_eventemitter">{@code EventEmitter}</a> methods, such as {@code on}, {@code once}
+ * or {@code removeListener}.
  *
  * <p> This example logs a message for a single page {@code load} event:
  * <pre>{@code
@@ -78,8 +78,8 @@ public interface Page extends AutoCloseable {
   void offClose(Consumer<Page> handler);
 
   /**
-   * Emitted when JavaScript within the page calls one of console API methods, e.g. {@code console.log} or {@code console.dir}. Also
-   * emitted if the page throws an error or a warning.
+   * Emitted when JavaScript within the page calls one of console API methods, e.g. {@code console.log} or {@code console.dir}.
+   * Also emitted if the page throws an error or a warning.
    *
    * <p> The arguments passed into {@code console.log} appear as arguments on the event handler.
    *
@@ -99,8 +99,8 @@ public interface Page extends AutoCloseable {
   void offConsoleMessage(Consumer<ConsoleMessage> handler);
 
   /**
-   * Emitted when the page crashes. Browser pages might crash if they try to allocate too much memory. When the page crashes,
-   * ongoing and subsequent operations will throw.
+   * Emitted when the page crashes. Browser pages might crash if they try to allocate too much memory. When the page
+   * crashes, ongoing and subsequent operations will throw.
    *
    * <p> The most common way to deal with crashes is to catch an exception:
    * <pre>{@code
@@ -150,8 +150,8 @@ public interface Page extends AutoCloseable {
   void offDOMContentLoaded(Consumer<Page> handler);
 
   /**
-   * Emitted when attachment download started. User can access basic file operations on downloaded content via the passed
-   * {@code Download} instance.
+   * Emitted when attachment download started. User can access basic file operations on downloaded content via the
+   * passed {@code Download} instance.
    */
   void onDownload(Consumer<Download> handler);
   /**
@@ -160,9 +160,9 @@ public interface Page extends AutoCloseable {
   void offDownload(Consumer<Download> handler);
 
   /**
-   * Emitted when a file chooser is supposed to appear, such as after clicking the  {@code <input type=file>}. Playwright can
-   * respond to it via setting the input files using {@link FileChooser#setFiles FileChooser.setFiles()} that can be uploaded
-   * after that.
+   * Emitted when a file chooser is supposed to appear, such as after clicking the  {@code <input type=file>}. Playwright
+   * can respond to it via setting the input files using {@link FileChooser#setFiles FileChooser.setFiles()} that can be
+   * uploaded after that.
    * <pre>{@code
    * page.onFileChooser(fileChooser -> {
    *   fileChooser.setFiles(Paths.get("/tmp/myfile.pdf"));
@@ -234,12 +234,12 @@ public interface Page extends AutoCloseable {
    * Emitted when the page opens a new tab or window. This event is emitted in addition to the {@link BrowserContext#onPage
    * BrowserContext.onPage()}, but only for popups relevant to this page.
    *
-   * <p> The earliest moment that page is available is when it has navigated to the initial url. For example, when opening a
-   * popup with {@code window.open('http://example.com')}, this event will fire when the network request to "http://example.com" is
-   * done and its response has started loading in the popup.
+   * <p> The earliest moment that page is available is when it has navigated to the initial url. For example, when opening
+   * a popup with {@code window.open('http://example.com')}, this event will fire when the network request to "http://example.com"
+   * is done and its response has started loading in the popup.
    * <pre>{@code
    * Page popup = page.waitForPopup(() -> {
-   *   page.evaluate("() => window.open('https://example.com')");
+   *   page.getByText("open the popup").click();
    * });
    * System.out.println(popup.evaluate("location.href"));
    * }</pre>
@@ -254,8 +254,8 @@ public interface Page extends AutoCloseable {
   void offPopup(Consumer<Page> handler);
 
   /**
-   * Emitted when a page issues a request. The [request] object is read-only. In order to intercept and mutate requests, see
-   * {@link Page#route Page.route()} or {@link BrowserContext#route BrowserContext.route()}.
+   * Emitted when a page issues a request. The [request] object is read-only. In order to intercept and mutate requests,
+   * see {@link Page#route Page.route()} or {@link BrowserContext#route BrowserContext.route()}.
    */
   void onRequest(Consumer<Request> handler);
   /**
@@ -271,8 +271,8 @@ public interface Page extends AutoCloseable {
    * });
    * }</pre>
    *
-   * <p> <strong>NOTE:</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will complete
-   * with {@link Page#onRequestFinished Page.onRequestFinished()} event and not with {@link Page#onRequestFailed
+   * <p> <strong>NOTE:</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will
+   * complete with {@link Page#onRequestFinished Page.onRequestFinished()} event and not with {@link Page#onRequestFailed
    * Page.onRequestFailed()}. A request will only be considered failed when the client cannot get an HTTP response from the
    * server, e.g. due to network error net::ERR_FAILED.
    */
@@ -283,8 +283,8 @@ public interface Page extends AutoCloseable {
   void offRequestFailed(Consumer<Request> handler);
 
   /**
-   * Emitted when a request finishes successfully after downloading the response body. For a successful response, the
-   * sequence of events is {@code request}, {@code response} and {@code requestfinished}.
+   * Emitted when a request finishes successfully after downloading the response body. For a successful response,
+   * the sequence of events is {@code request}, {@code response} and {@code requestfinished}.
    */
   void onRequestFinished(Consumer<Request> handler);
   /**
@@ -293,8 +293,8 @@ public interface Page extends AutoCloseable {
   void offRequestFinished(Consumer<Request> handler);
 
   /**
-   * Emitted when [response] status and headers are received for a request. For a successful response, the sequence of events
-   * is {@code request}, {@code response} and {@code requestfinished}.
+   * Emitted when [response] status and headers are received for a request. For a successful response, the sequence of
+   * events is {@code request}, {@code response} and {@code requestfinished}.
    */
   void onResponse(Consumer<Response> handler);
   /**
@@ -327,8 +327,8 @@ public interface Page extends AutoCloseable {
      */
     public String content;
     /**
-     * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the
-     * current working directory.
+     * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to
+     * the current working directory.
      */
     public Path path;
     /**
@@ -349,8 +349,8 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the
-     * current working directory.
+     * Path to the JavaScript file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to
+     * the current working directory.
      */
     public AddScriptTagOptions setPath(Path path) {
       this.path = path;
@@ -378,8 +378,8 @@ public interface Page extends AutoCloseable {
      */
     public String content;
     /**
-     * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the
-     * current working directory.
+     * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to
+     * the current working directory.
      */
     public Path path;
     /**
@@ -395,8 +395,8 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to the
-     * current working directory.
+     * Path to the CSS file to be injected into frame. If {@code path} is a relative path, then it is resolved relative to
+     * the current working directory.
      */
     public AddStyleTagOptions setPath(Path path) {
       this.path = path;
@@ -417,14 +417,14 @@ public interface Page extends AutoCloseable {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public Position position;
     /**
@@ -433,9 +433,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -454,24 +454,24 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public CheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public CheckOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public CheckOptions setPosition(Position position) {
       this.position = position;
@@ -486,9 +486,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public CheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -523,19 +523,19 @@ public interface Page extends AutoCloseable {
      */
     public Boolean force;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
+     * current modifiers back. If not specified, currently pressed modifiers are used.
      */
     public List<KeyboardModifier> modifiers;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public Position position;
     /**
@@ -544,9 +544,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -586,32 +586,32 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
+     * current modifiers back. If not specified, currently pressed modifiers are used.
      */
     public ClickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public ClickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public ClickOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public ClickOptions setPosition(Position position) {
       this.position = position;
@@ -626,9 +626,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public ClickOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -675,19 +675,19 @@ public interface Page extends AutoCloseable {
      */
     public Boolean force;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
+     * current modifiers back. If not specified, currently pressed modifiers are used.
      */
     public List<KeyboardModifier> modifiers;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public Position position;
     /**
@@ -696,9 +696,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -731,32 +731,32 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
+     * current modifiers back. If not specified, currently pressed modifiers are used.
      */
     public DblclickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public DblclickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public DblclickOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public DblclickOptions setPosition(Position position) {
       this.position = position;
@@ -771,9 +771,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public DblclickOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -796,9 +796,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -811,9 +811,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public DispatchEventOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -827,9 +827,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
@@ -848,9 +848,9 @@ public interface Page extends AutoCloseable {
      */
     public Position targetPosition;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -869,9 +869,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public DragAndDropOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -916,9 +916,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public DragAndDropOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -936,8 +936,8 @@ public interface Page extends AutoCloseable {
   }
   class EmulateMediaOptions {
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. Passing
-     * {@code null} disables color scheme emulation.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
+     * Passing {@code null} disables color scheme emulation.
      */
     public Optional<ColorScheme> colorScheme;
     /**
@@ -957,8 +957,8 @@ public interface Page extends AutoCloseable {
     public Optional<ReducedMotion> reducedMotion;
 
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. Passing
-     * {@code null} disables color scheme emulation.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
+     * Passing {@code null} disables color scheme emulation.
      */
     public EmulateMediaOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
@@ -1007,14 +1007,14 @@ public interface Page extends AutoCloseable {
   }
   class ExposeBindingOptions {
     /**
-     * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument is
-     * supported. When passing by value, multiple arguments are supported.
+     * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument
+     * is supported. When passing by value, multiple arguments are supported.
      */
     public Boolean handle;
 
     /**
-     * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument is
-     * supported. When passing by value, multiple arguments are supported.
+     * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument
+     * is supported. When passing by value, multiple arguments are supported.
      */
     public ExposeBindingOptions setHandle(boolean handle) {
       this.handle = handle;
@@ -1028,9 +1028,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
@@ -1039,9 +1039,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -1054,9 +1054,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public FillOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -1071,9 +1071,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public FillOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1087,9 +1087,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -1102,9 +1102,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public FocusOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1118,9 +1118,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -1133,9 +1133,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public GetAttributeOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1379,9 +1379,10 @@ public interface Page extends AutoCloseable {
   class GoBackOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
+     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -1397,9 +1398,10 @@ public interface Page extends AutoCloseable {
 
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
+     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public GoBackOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1422,9 +1424,10 @@ public interface Page extends AutoCloseable {
   class GoForwardOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
+     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -1440,9 +1443,10 @@ public interface Page extends AutoCloseable {
 
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
+     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public GoForwardOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1470,9 +1474,10 @@ public interface Page extends AutoCloseable {
     public String referer;
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
+     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -1496,9 +1501,10 @@ public interface Page extends AutoCloseable {
     }
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
+     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public NavigateOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1525,19 +1531,19 @@ public interface Page extends AutoCloseable {
      */
     public Boolean force;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
+     * current modifiers back. If not specified, currently pressed modifiers are used.
      */
     public List<KeyboardModifier> modifiers;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public Position position;
     /**
@@ -1546,9 +1552,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -1567,32 +1573,32 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
+     * current modifiers back. If not specified, currently pressed modifiers are used.
      */
     public HoverOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public HoverOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public HoverOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public HoverOptions setPosition(Position position) {
       this.position = position;
@@ -1607,9 +1613,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public HoverOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1632,9 +1638,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -1647,9 +1653,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public InnerHTMLOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1663,9 +1669,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -1678,9 +1684,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public InnerTextOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1694,9 +1700,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -1709,9 +1715,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public InputValueOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1725,9 +1731,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -1740,9 +1746,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public IsCheckedOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1756,9 +1762,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -1771,9 +1777,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public IsDisabledOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1787,9 +1793,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -1802,9 +1808,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public IsEditableOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1818,9 +1824,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -1833,9 +1839,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public IsEnabledOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1849,8 +1855,8 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * **DEPRECATED** This option is ignored. {@link Page#isHidden Page.isHidden()} does not wait for the element to become
-     * hidden and returns immediately.
+     * @deprecated This option is ignored. {@link Page#isHidden Page.isHidden()} does not wait for the element to become hidden and returns
+     * immediately.
      */
     public Double timeout;
 
@@ -1863,8 +1869,8 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * **DEPRECATED** This option is ignored. {@link Page#isHidden Page.isHidden()} does not wait for the element to become
-     * hidden and returns immediately.
+     * @deprecated This option is ignored. {@link Page#isHidden Page.isHidden()} does not wait for the element to become hidden and returns
+     * immediately.
      */
     public IsHiddenOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1878,8 +1884,8 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * **DEPRECATED** This option is ignored. {@link Page#isVisible Page.isVisible()} does not wait for the element to become
-     * visible and returns immediately.
+     * @deprecated This option is ignored. {@link Page#isVisible Page.isVisible()} does not wait for the element to become visible and
+     * returns immediately.
      */
     public Double timeout;
 
@@ -1892,8 +1898,8 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * **DEPRECATED** This option is ignored. {@link Page#isVisible Page.isVisible()} does not wait for the element to become
-     * visible and returns immediately.
+     * @deprecated This option is ignored. {@link Page#isVisible Page.isVisible()} does not wait for the element to become visible and
+     * returns immediately.
      */
     public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1902,8 +1908,8 @@ public interface Page extends AutoCloseable {
   }
   class LocatorOptions {
     /**
-     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
-     * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer
+     * one. For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
@@ -1916,8 +1922,8 @@ public interface Page extends AutoCloseable {
     public Object hasText;
 
     /**
-     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
-     * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer
+     * one. For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
@@ -1958,8 +1964,8 @@ public interface Page extends AutoCloseable {
      */
     public String format;
     /**
-     * HTML template for the print header. Should be valid HTML markup with following classes used to inject printing values
-     * into them:
+     * HTML template for the print header. Should be valid HTML markup with following classes used to inject printing
+     * values into them:
      * <ul>
      * <li> {@code "date"} formatted print date</li>
      * <li> {@code "title"} document title</li>
@@ -2030,8 +2036,8 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * HTML template for the print header. Should be valid HTML markup with following classes used to inject printing values
-     * into them:
+     * HTML template for the print header. Should be valid HTML markup with following classes used to inject printing
+     * values into them:
      * <ul>
      * <li> {@code "date"} formatted print date</li>
      * <li> {@code "title"} document title</li>
@@ -2116,9 +2122,9 @@ public interface Page extends AutoCloseable {
      */
     public Double delay;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
@@ -2127,9 +2133,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -2141,9 +2147,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public PressOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -2158,9 +2164,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public PressOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2186,9 +2192,10 @@ public interface Page extends AutoCloseable {
   class ReloadOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
+     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -2204,9 +2211,10 @@ public interface Page extends AutoCloseable {
 
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
+     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public ReloadOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2320,8 +2328,8 @@ public interface Page extends AutoCloseable {
      */
     public Clip clip;
     /**
-     * When true, takes a screenshot of the full scrollable page, instead of the currently visible viewport. Defaults to
-     * {@code false}.
+     * When true, takes a screenshot of the full scrollable page, instead of the currently visible viewport. Defaults
+     * to {@code false}.
      */
     public Boolean fullPage;
     /**
@@ -2330,8 +2338,8 @@ public interface Page extends AutoCloseable {
      */
     public List<Locator> mask;
     /**
-     * Hides default white background and allows capturing screenshots with transparency. Not applicable to {@code jpeg} images.
-     * Defaults to {@code false}.
+     * Hides default white background and allows capturing screenshots with transparency. Not applicable to {@code jpeg}
+     * images. Defaults to {@code false}.
      */
     public Boolean omitBackground;
     /**
@@ -2353,9 +2361,9 @@ public interface Page extends AutoCloseable {
      */
     public ScreenshotScale scale;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -2399,8 +2407,8 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * When true, takes a screenshot of the full scrollable page, instead of the currently visible viewport. Defaults to
-     * {@code false}.
+     * When true, takes a screenshot of the full scrollable page, instead of the currently visible viewport. Defaults
+     * to {@code false}.
      */
     public ScreenshotOptions setFullPage(boolean fullPage) {
       this.fullPage = fullPage;
@@ -2415,8 +2423,8 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Hides default white background and allows capturing screenshots with transparency. Not applicable to {@code jpeg} images.
-     * Defaults to {@code false}.
+     * Hides default white background and allows capturing screenshots with transparency. Not applicable to {@code jpeg}
+     * images. Defaults to {@code false}.
      */
     public ScreenshotOptions setOmitBackground(boolean omitBackground) {
       this.omitBackground = omitBackground;
@@ -2450,9 +2458,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public ScreenshotOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2473,9 +2481,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
@@ -2484,9 +2492,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -2499,9 +2507,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -2516,9 +2524,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SelectOptionOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2532,14 +2540,14 @@ public interface Page extends AutoCloseable {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public Position position;
     /**
@@ -2548,9 +2556,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -2569,24 +2577,24 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public SetCheckedOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public SetCheckedOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public SetCheckedOptions setPosition(Position position) {
       this.position = position;
@@ -2601,9 +2609,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SetCheckedOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2622,9 +2630,10 @@ public interface Page extends AutoCloseable {
   class SetContentOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
+     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -2640,9 +2649,10 @@ public interface Page extends AutoCloseable {
 
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
+     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SetContentOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2664,9 +2674,9 @@ public interface Page extends AutoCloseable {
   }
   class SetInputFilesOptions {
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
@@ -2675,16 +2685,16 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public SetInputFilesOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -2699,9 +2709,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SetInputFilesOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2715,19 +2725,19 @@ public interface Page extends AutoCloseable {
      */
     public Boolean force;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
+     * current modifiers back. If not specified, currently pressed modifiers are used.
      */
     public List<KeyboardModifier> modifiers;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public Position position;
     /**
@@ -2736,9 +2746,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -2757,32 +2767,32 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
+     * current modifiers back. If not specified, currently pressed modifiers are used.
      */
     public TapOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public TapOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public TapOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public TapOptions setPosition(Position position) {
       this.position = position;
@@ -2797,9 +2807,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public TapOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2822,9 +2832,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -2837,9 +2847,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public TextContentOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2852,9 +2862,9 @@ public interface Page extends AutoCloseable {
      */
     public Double delay;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
@@ -2863,9 +2873,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -2877,9 +2887,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public TypeOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -2894,9 +2904,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public TypeOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2910,14 +2920,14 @@ public interface Page extends AutoCloseable {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public Position position;
     /**
@@ -2926,9 +2936,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -2947,24 +2957,24 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
+     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
+     * navigating to inaccessible pages. Defaults to {@code false}.
      */
     public UncheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public UncheckOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
-     * element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
+     * the element.
      */
     public UncheckOptions setPosition(Position position) {
       this.position = position;
@@ -2979,9 +2989,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public UncheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -3101,8 +3111,8 @@ public interface Page extends AutoCloseable {
      */
     public Double pollingInterval;
     /**
-     * maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     * maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
      */
     public Double timeout;
 
@@ -3115,8 +3125,8 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     * maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
      */
     public WaitForFunctionOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -3126,17 +3136,19 @@ public interface Page extends AutoCloseable {
   class WaitForLoadStateOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
+     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
+     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public WaitForLoadStateOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -3146,9 +3158,10 @@ public interface Page extends AutoCloseable {
   class WaitForNavigationOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
+     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -3170,9 +3183,10 @@ public interface Page extends AutoCloseable {
 
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
+     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public WaitForNavigationOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -3248,14 +3262,14 @@ public interface Page extends AutoCloseable {
   }
   class WaitForRequestOptions {
     /**
-     * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be
-     * changed by using the {@link Page#setDefaultTimeout Page.setDefaultTimeout()} method.
+     * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can
+     * be changed by using the {@link Page#setDefaultTimeout Page.setDefaultTimeout()} method.
      */
     public Double timeout;
 
     /**
-     * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be
-     * changed by using the {@link Page#setDefaultTimeout Page.setDefaultTimeout()} method.
+     * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can
+     * be changed by using the {@link Page#setDefaultTimeout Page.setDefaultTimeout()} method.
      */
     public WaitForRequestOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -3291,15 +3305,15 @@ public interface Page extends AutoCloseable {
   }
   class WaitForResponseOptions {
     /**
-     * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can
+     * be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum wait time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable the timeout. The default value can
+     * be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public WaitForResponseOptions setTimeout(double timeout) {
@@ -3326,9 +3340,9 @@ public interface Page extends AutoCloseable {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -3356,9 +3370,9 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed by
-     * using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link Page#setDefaultTimeout
-     * Page.setDefaultTimeout()} methods.
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
+     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public WaitForSelectorOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -3368,9 +3382,10 @@ public interface Page extends AutoCloseable {
   class WaitForURLOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
+     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
     /**
@@ -3386,9 +3401,10 @@ public interface Page extends AutoCloseable {
 
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * changed by using the {@link BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout Page.setDefaultNavigationTimeout()}
+     * or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public WaitForURLOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -3466,12 +3482,14 @@ public interface Page extends AutoCloseable {
    * Adds a script which would be evaluated in one of the following scenarios:
    * <ul>
    * <li> Whenever the page is navigated.</li>
-   * <li> Whenever the child frame is attached or navigated. In this case, the script is evaluated in the context of the newly
-   * attached frame.</li>
+   * <li> Whenever the child frame is attached or navigated. In this case, the script is evaluated in the context of the
+   * newly attached frame.</li>
    * </ul>
    *
-   * <p> The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend
-   * the JavaScript environment, e.g. to seed {@code Math.random}.
+   * <p> The script is evaluated after the document was created but before any of its scripts were run. This is useful to
+   * amend the JavaScript environment, e.g. to seed {@code Math.random}.
+   *
+   * <p> **Usage**
    *
    * <p> An example of overriding {@code Math.random} before the page loads:
    * <pre>{@code
@@ -3489,12 +3507,14 @@ public interface Page extends AutoCloseable {
    * Adds a script which would be evaluated in one of the following scenarios:
    * <ul>
    * <li> Whenever the page is navigated.</li>
-   * <li> Whenever the child frame is attached or navigated. In this case, the script is evaluated in the context of the newly
-   * attached frame.</li>
+   * <li> Whenever the child frame is attached or navigated. In this case, the script is evaluated in the context of the
+   * newly attached frame.</li>
    * </ul>
    *
-   * <p> The script is evaluated after the document was created but before any of its scripts were run. This is useful to amend
-   * the JavaScript environment, e.g. to seed {@code Math.random}.
+   * <p> The script is evaluated after the document was created but before any of its scripts were run. This is useful to
+   * amend the JavaScript environment, e.g. to seed {@code Math.random}.
+   *
+   * <p> **Usage**
    *
    * <p> An example of overriding {@code Math.random} before the page loads:
    * <pre>{@code
@@ -3509,35 +3529,27 @@ public interface Page extends AutoCloseable {
    */
   void addInitScript(Path script);
   /**
-   * Adds a {@code <script>} tag into the page with the desired url or content. Returns the added tag when the script's onload
-   * fires or when the script content was injected into frame.
-   *
-   * <p> Shortcut for main frame's {@link Frame#addScriptTag Frame.addScriptTag()}.
+   * Adds a {@code <script>} tag into the page with the desired url or content. Returns the added tag when the script's
+   * onload fires or when the script content was injected into frame.
    */
   default ElementHandle addScriptTag() {
     return addScriptTag(null);
   }
   /**
-   * Adds a {@code <script>} tag into the page with the desired url or content. Returns the added tag when the script's onload
-   * fires or when the script content was injected into frame.
-   *
-   * <p> Shortcut for main frame's {@link Frame#addScriptTag Frame.addScriptTag()}.
+   * Adds a {@code <script>} tag into the page with the desired url or content. Returns the added tag when the script's
+   * onload fires or when the script content was injected into frame.
    */
   ElementHandle addScriptTag(AddScriptTagOptions options);
   /**
-   * Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag with the
-   * content. Returns the added tag when the stylesheet's onload fires or when the CSS content was injected into frame.
-   *
-   * <p> Shortcut for main frame's {@link Frame#addStyleTag Frame.addStyleTag()}.
+   * Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag with
+   * the content. Returns the added tag when the stylesheet's onload fires or when the CSS content was injected into frame.
    */
   default ElementHandle addStyleTag() {
     return addStyleTag(null);
   }
   /**
-   * Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag with the
-   * content. Returns the added tag when the stylesheet's onload fires or when the CSS content was injected into frame.
-   *
-   * <p> Shortcut for main frame's {@link Frame#addStyleTag Frame.addStyleTag()}.
+   * Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag with
+   * the content. Returns the added tag when the stylesheet's onload fires or when the CSS content was injected into frame.
    */
   ElementHandle addStyleTag(AddStyleTagOptions options);
   /**
@@ -3548,8 +3560,8 @@ public interface Page extends AutoCloseable {
    * This method checks an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is already
-   * checked, this method returns immediately.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is
+   * already checked, this method returns immediately.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
@@ -3561,10 +3573,7 @@ public interface Page extends AutoCloseable {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * <p> Shortcut for main frame's {@link Frame#check Frame.check()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default void check(String selector) {
     check(selector, null);
@@ -3573,8 +3582,8 @@ public interface Page extends AutoCloseable {
    * This method checks an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is already
-   * checked, this method returns immediately.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is
+   * already checked, this method returns immediately.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
@@ -3586,10 +3595,7 @@ public interface Page extends AutoCloseable {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * <p> Shortcut for main frame's {@link Frame#check Frame.check()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   void check(String selector, CheckOptions options);
   /**
@@ -3606,10 +3612,7 @@ public interface Page extends AutoCloseable {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * <p> Shortcut for main frame's {@link Frame#click Frame.click()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default void click(String selector) {
     click(selector, null);
@@ -3628,15 +3631,12 @@ public interface Page extends AutoCloseable {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * <p> Shortcut for main frame's {@link Frame#click Frame.click()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   void click(String selector, ClickOptions options);
   /**
-   * If {@code runBeforeUnload} is {@code false}, does not run any unload handlers and waits for the page to be closed. If
-   * {@code runBeforeUnload} is {@code true} the method will run unload handlers, but will **not** wait for the page to close.
+   * If {@code runBeforeUnload} is {@code false}, does not run any unload handlers and waits for the page to be closed.
+   * If {@code runBeforeUnload} is {@code true} the method will run unload handlers, but will **not** wait for the page to close.
    *
    * <p> By default, {@code page.close()} **does not** run {@code beforeunload} handlers.
    *
@@ -3647,8 +3647,8 @@ public interface Page extends AutoCloseable {
     close(null);
   }
   /**
-   * If {@code runBeforeUnload} is {@code false}, does not run any unload handlers and waits for the page to be closed. If
-   * {@code runBeforeUnload} is {@code true} the method will run unload handlers, but will **not** wait for the page to close.
+   * If {@code runBeforeUnload} is {@code false}, does not run any unload handlers and waits for the page to be closed.
+   * If {@code runBeforeUnload} is {@code true} the method will run unload handlers, but will **not** wait for the page to close.
    *
    * <p> By default, {@code page.close()} **does not** run {@code beforeunload} handlers.
    *
@@ -3681,10 +3681,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@code page.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    *
-   * <p> Shortcut for main frame's {@link Frame#dblclick Frame.dblclick()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default void dblclick(String selector) {
     dblclick(selector, null);
@@ -3706,16 +3703,15 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@code page.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    *
-   * <p> Shortcut for main frame's {@link Frame#dblclick Frame.dblclick()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   void dblclick(String selector, DblclickOptions options);
   /**
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
    * {@code click} is dispatched. This is equivalent to calling <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.dispatchEvent("button#submit", "click");
    * }</pre>
@@ -3743,8 +3739,7 @@ public interface Page extends AutoCloseable {
    * page.dispatchEvent("#source", "dragstart", arg);
    * }</pre>
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    * @param eventInit Optional event-specific initialization properties.
    */
@@ -3755,6 +3750,8 @@ public interface Page extends AutoCloseable {
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
    * {@code click} is dispatched. This is equivalent to calling <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.dispatchEvent("button#submit", "click");
    * }</pre>
@@ -3782,8 +3779,7 @@ public interface Page extends AutoCloseable {
    * page.dispatchEvent("#source", "dragstart", arg);
    * }</pre>
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    */
   default void dispatchEvent(String selector, String type) {
@@ -3793,6 +3789,8 @@ public interface Page extends AutoCloseable {
    * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
    * {@code click} is dispatched. This is equivalent to calling <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.dispatchEvent("button#submit", "click");
    * }</pre>
@@ -3820,8 +3818,7 @@ public interface Page extends AutoCloseable {
    * page.dispatchEvent("#source", "dragstart", arg);
    * }</pre>
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    * @param eventInit Optional event-specific initialization properties.
    */
@@ -3829,6 +3826,8 @@ public interface Page extends AutoCloseable {
   /**
    * This method drags the source element to the target element. It will first move to the source element, perform a
    * {@code mousedown}, then move to the target element and perform a {@code mouseup}.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.dragAndDrop("#source", '#target');
    * // or specify exact positions relative to the top-left corners of the elements:
@@ -3837,9 +3836,9 @@ public interface Page extends AutoCloseable {
    * }</pre>
    *
    * @param source A selector to search for an element to drag. If there are multiple elements satisfying the selector, the first will be
-   * used. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * used.
    * @param target A selector to search for an element to drop onto. If there are multiple elements satisfying the selector, the first will
-   * be used. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * be used.
    */
   default void dragAndDrop(String source, String target) {
     dragAndDrop(source, target, null);
@@ -3847,6 +3846,8 @@ public interface Page extends AutoCloseable {
   /**
    * This method drags the source element to the target element. It will first move to the source element, perform a
    * {@code mousedown}, then move to the target element and perform a {@code mouseup}.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.dragAndDrop("#source", '#target');
    * // or specify exact positions relative to the top-left corners of the elements:
@@ -3855,14 +3856,16 @@ public interface Page extends AutoCloseable {
    * }</pre>
    *
    * @param source A selector to search for an element to drag. If there are multiple elements satisfying the selector, the first will be
-   * used. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * used.
    * @param target A selector to search for an element to drop onto. If there are multiple elements satisfying the selector, the first will
-   * be used. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * be used.
    */
   void dragAndDrop(String source, String target, DragAndDropOptions options);
   /**
    * This method changes the {@code CSS media type} through the {@code media} argument, and/or the {@code "prefers-colors-scheme"} media
    * feature, using the {@code colorScheme} argument.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.evaluate("() => matchMedia('screen').matches");
    * // → true
@@ -3897,6 +3900,8 @@ public interface Page extends AutoCloseable {
   /**
    * This method changes the {@code CSS media type} through the {@code media} argument, and/or the {@code "prefers-colors-scheme"} media
    * feature, using the {@code colorScheme} argument.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.evaluate("() => matchMedia('screen').matches");
    * // → true
@@ -3927,27 +3932,21 @@ public interface Page extends AutoCloseable {
    */
   void emulateMedia(EmulateMediaOptions options);
   /**
-   * <strong>NOTE:</strong> This method does not wait for the element to pass actionability checks and therefore can lead to the flaky tests. Use
-   * {@link Locator#evaluate Locator.evaluate()}, other {@code Locator} helper methods or web-first assertions instead.
-   *
-   * <p> The method finds an element matching the specified selector within the page and passes it as a first argument to
-   * {@code expression}. If no elements match the selector, the method throws an error. Returns the value of {@code expression}.
+   * The method finds an element matching the specified selector within the page and passes it as a first argument
+   * to {@code expression}. If no elements match the selector, the method throws an error. Returns the value of {@code expression}.
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
    * Page#evalOnSelector Page.evalOnSelector()} would wait for the promise to resolve and return its value.
    *
-   * <p> Examples:
+   * <p> **Usage**
    * <pre>{@code
    * String searchValue = (String) page.evalOnSelector("#search", "el => el.value");
    * String preloadHref = (String) page.evalOnSelector("link[rel=preload]", "el => el.href");
    * String html = (String) page.evalOnSelector(".main-container", "(e, suffix) => e.outerHTML + suffix", "hello");
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#evalOnSelector Frame.evalOnSelector()}.
-   *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
-   * details.
+   * @param selector A selector to query for.
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
@@ -3956,27 +3955,21 @@ public interface Page extends AutoCloseable {
     return evalOnSelector(selector, expression, arg, null);
   }
   /**
-   * <strong>NOTE:</strong> This method does not wait for the element to pass actionability checks and therefore can lead to the flaky tests. Use
-   * {@link Locator#evaluate Locator.evaluate()}, other {@code Locator} helper methods or web-first assertions instead.
-   *
-   * <p> The method finds an element matching the specified selector within the page and passes it as a first argument to
-   * {@code expression}. If no elements match the selector, the method throws an error. Returns the value of {@code expression}.
+   * The method finds an element matching the specified selector within the page and passes it as a first argument
+   * to {@code expression}. If no elements match the selector, the method throws an error. Returns the value of {@code expression}.
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
    * Page#evalOnSelector Page.evalOnSelector()} would wait for the promise to resolve and return its value.
    *
-   * <p> Examples:
+   * <p> **Usage**
    * <pre>{@code
    * String searchValue = (String) page.evalOnSelector("#search", "el => el.value");
    * String preloadHref = (String) page.evalOnSelector("link[rel=preload]", "el => el.href");
    * String html = (String) page.evalOnSelector(".main-container", "(e, suffix) => e.outerHTML + suffix", "hello");
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#evalOnSelector Frame.evalOnSelector()}.
-   *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
-   * details.
+   * @param selector A selector to query for.
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    */
@@ -3984,50 +3977,40 @@ public interface Page extends AutoCloseable {
     return evalOnSelector(selector, expression, null);
   }
   /**
-   * <strong>NOTE:</strong> This method does not wait for the element to pass actionability checks and therefore can lead to the flaky tests. Use
-   * {@link Locator#evaluate Locator.evaluate()}, other {@code Locator} helper methods or web-first assertions instead.
-   *
-   * <p> The method finds an element matching the specified selector within the page and passes it as a first argument to
-   * {@code expression}. If no elements match the selector, the method throws an error. Returns the value of {@code expression}.
+   * The method finds an element matching the specified selector within the page and passes it as a first argument
+   * to {@code expression}. If no elements match the selector, the method throws an error. Returns the value of {@code expression}.
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
    * Page#evalOnSelector Page.evalOnSelector()} would wait for the promise to resolve and return its value.
    *
-   * <p> Examples:
+   * <p> **Usage**
    * <pre>{@code
    * String searchValue = (String) page.evalOnSelector("#search", "el => el.value");
    * String preloadHref = (String) page.evalOnSelector("link[rel=preload]", "el => el.href");
    * String html = (String) page.evalOnSelector(".main-container", "(e, suffix) => e.outerHTML + suffix", "hello");
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#evalOnSelector Frame.evalOnSelector()}.
-   *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
-   * details.
+   * @param selector A selector to query for.
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
    */
   Object evalOnSelector(String selector, String expression, Object arg, EvalOnSelectorOptions options);
   /**
-   * <strong>NOTE:</strong> In most cases, {@link Locator#evaluateAll Locator.evaluateAll()}, other {@code Locator} helper methods and web-first
-   * assertions do a better job.
-   *
-   * <p> The method finds all elements matching the specified selector within the page and passes an array of matched elements as
-   * a first argument to {@code expression}. Returns the result of {@code expression} invocation.
+   * The method finds all elements matching the specified selector within the page and passes an array of matched elements
+   * as a first argument to {@code expression}. Returns the result of {@code expression} invocation.
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
    * Page#evalOnSelectorAll Page.evalOnSelectorAll()} would wait for the promise to resolve and return its value.
    *
-   * <p> Examples:
+   * <p> **Usage**
    * <pre>{@code
    * boolean divCounts = (boolean) page.evalOnSelectorAll("div", "(divs, min) => divs.length >= min", 10);
    * }</pre>
    *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
-   * details.
+   * @param selector A selector to query for.
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    */
@@ -4035,23 +4018,19 @@ public interface Page extends AutoCloseable {
     return evalOnSelectorAll(selector, expression, null);
   }
   /**
-   * <strong>NOTE:</strong> In most cases, {@link Locator#evaluateAll Locator.evaluateAll()}, other {@code Locator} helper methods and web-first
-   * assertions do a better job.
-   *
-   * <p> The method finds all elements matching the specified selector within the page and passes an array of matched elements as
-   * a first argument to {@code expression}. Returns the result of {@code expression} invocation.
+   * The method finds all elements matching the specified selector within the page and passes an array of matched elements
+   * as a first argument to {@code expression}. Returns the result of {@code expression} invocation.
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
    * Page#evalOnSelectorAll Page.evalOnSelectorAll()} would wait for the promise to resolve and return its value.
    *
-   * <p> Examples:
+   * <p> **Usage**
    * <pre>{@code
    * boolean divCounts = (boolean) page.evalOnSelectorAll("div", "(divs, min) => divs.length >= min", 10);
    * }</pre>
    *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
-   * details.
+   * @param selector A selector to query for.
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
@@ -4067,6 +4046,8 @@ public interface Page extends AutoCloseable {
    * <p> If the function passed to the {@link Page#evaluate Page.evaluate()} returns a non-[Serializable] value, then {@link
    * Page#evaluate Page.evaluate()} resolves to {@code undefined}. Playwright also supports transferring some additional values
    * that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
+   *
+   * <p> **Usage**
    *
    * <p> Passing argument to {@code expression}:
    * <pre>{@code
@@ -4087,8 +4068,6 @@ public interface Page extends AutoCloseable {
    * String html = (String) page.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
    * bodyHandle.dispose();
    * }</pre>
-   *
-   * <p> Shortcut for main frame's {@link Frame#evaluate Frame.evaluate()}.
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
@@ -4107,6 +4086,8 @@ public interface Page extends AutoCloseable {
    * Page#evaluate Page.evaluate()} resolves to {@code undefined}. Playwright also supports transferring some additional values
    * that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    *
+   * <p> **Usage**
+   *
    * <p> Passing argument to {@code expression}:
    * <pre>{@code
    * Object result = page.evaluate("([x, y]) => {\n" +
@@ -4127,8 +4108,6 @@ public interface Page extends AutoCloseable {
    * bodyHandle.dispose();
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#evaluate Frame.evaluate()}.
-   *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
@@ -4143,6 +4122,8 @@ public interface Page extends AutoCloseable {
    * <p> If the function passed to the {@link Page#evaluateHandle Page.evaluateHandle()} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
    * Page#evaluateHandle Page.evaluateHandle()} would wait for the promise to resolve and return its value.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Handle for the window object.
    * JSHandle aWindowHandle = page.evaluateHandle("() => Promise.resolve(window)");
@@ -4176,6 +4157,8 @@ public interface Page extends AutoCloseable {
    * <p> If the function passed to the {@link Page#evaluateHandle Page.evaluateHandle()} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
    * Page#evaluateHandle Page.evaluateHandle()} would wait for the promise to resolve and return its value.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Handle for the window object.
    * JSHandle aWindowHandle = page.evaluateHandle("() => Promise.resolve(window)");
@@ -4213,6 +4196,8 @@ public interface Page extends AutoCloseable {
    * <p> See {@link BrowserContext#exposeBinding BrowserContext.exposeBinding()} for the context-wide version.
    *
    * <p> <strong>NOTE:</strong> Functions installed via {@link Page#exposeBinding Page.exposeBinding()} survive navigations.
+   *
+   * <p> **Usage**
    *
    * <p> An example of exposing page URL to all frames in a page:
    * <pre>{@code
@@ -4275,6 +4260,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Functions installed via {@link Page#exposeBinding Page.exposeBinding()} survive navigations.
    *
+   * <p> **Usage**
+   *
    * <p> An example of exposing page URL to all frames in a page:
    * <pre>{@code
    * import com.microsoft.playwright.*;
@@ -4333,6 +4320,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Functions installed via {@link Page#exposeFunction Page.exposeFunction()} survive navigations.
    *
+   * <p> **Usage**
+   *
    * <p> An example of adding a {@code sha256} function to the page:
    * <pre>{@code
    * import com.microsoft.playwright.*;
@@ -4388,10 +4377,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> To send fine-grained keyboard events, use {@link Page#type Page.type()}.
    *
-   * <p> Shortcut for main frame's {@link Frame#fill Frame.fill()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
   default void fill(String selector, String value) {
@@ -4409,10 +4395,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> To send fine-grained keyboard events, use {@link Page#type Page.type()}.
    *
-   * <p> Shortcut for main frame's {@link Frame#fill Frame.fill()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    */
   void fill(String selector, String value, FillOptions options);
@@ -4420,10 +4403,7 @@ public interface Page extends AutoCloseable {
    * This method fetches an element with {@code selector} and focuses it. If there's no element matching {@code selector}, the method
    * waits until a matching element appears in the DOM.
    *
-   * <p> Shortcut for main frame's {@link Frame#focus Frame.focus()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default void focus(String selector) {
     focus(selector, null);
@@ -4432,14 +4412,13 @@ public interface Page extends AutoCloseable {
    * This method fetches an element with {@code selector} and focuses it. If there's no element matching {@code selector}, the method
    * waits until a matching element appears in the DOM.
    *
-   * <p> Shortcut for main frame's {@link Frame#focus Frame.focus()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   void focus(String selector, FocusOptions options);
   /**
    * Returns frame matching the specified criteria. Either {@code name} or {@code url} must be specified.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * Frame frame = page.frame("frame-name");
    * }</pre>
@@ -4470,15 +4449,17 @@ public interface Page extends AutoCloseable {
   Frame frameByUrl(Predicate<String> url);
   /**
    * When working with iframes, you can create a frame locator that will enter the iframe and allow selecting elements in
-   * that iframe. Following snippet locates element with text "Submit" in the iframe with id {@code my-frame}, like {@code <iframe
-   * id="my-frame">}:
+   * that iframe.
+   *
+   * <p> **Usage**
+   *
+   * <p> Following snippet locates element with text "Submit" in the iframe with id {@code my-frame}, like {@code <iframe id="my-frame">}:
    * <pre>{@code
    * Locator locator = page.frameLocator("#my-iframe").getByText("Submit");
    * locator.click();
    * }</pre>
    *
-   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
-   * selectors</a> for more details.
+   * @param selector A selector to use when resolving DOM element.
    */
   FrameLocator frameLocator(String selector);
   /**
@@ -4488,8 +4469,7 @@ public interface Page extends AutoCloseable {
   /**
    * Returns element attribute value.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param name Attribute name to get the value for.
    */
   default String getAttribute(String selector, String name) {
@@ -4498,8 +4478,7 @@ public interface Page extends AutoCloseable {
   /**
    * Returns element attribute value.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param name Attribute name to get the value for.
    */
   String getAttribute(String selector, String name, GetAttributeOptions options);
@@ -4634,6 +4613,13 @@ public interface Page extends AutoCloseable {
    * @param testId Id to locate the element by.
    */
   Locator getByTestId(String testId);
+  /**
+   * Locate element by the test id. By default, the {@code data-testid} attribute is used as a test id. Use {@link
+   * Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
+   *
+   * @param testId Id to locate the element by.
+   */
+  Locator getByTestId(Pattern testId);
   /**
    * Allows locating elements that contain given text. Consider the following DOM structure:
    *
@@ -4799,8 +4785,8 @@ public interface Page extends AutoCloseable {
    */
   Locator getByTitle(Pattern text, GetByTitleOptions options);
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * last redirect. If can not go back, returns {@code null}.
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of
+   * the last redirect. If can not go back, returns {@code null}.
    *
    * <p> Navigate to the previous page in history.
    */
@@ -4808,15 +4794,15 @@ public interface Page extends AutoCloseable {
     return goBack(null);
   }
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * last redirect. If can not go back, returns {@code null}.
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of
+   * the last redirect. If can not go back, returns {@code null}.
    *
    * <p> Navigate to the previous page in history.
    */
   Response goBack(GoBackOptions options);
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * last redirect. If can not go forward, returns {@code null}.
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of
+   * the last redirect. If can not go forward, returns {@code null}.
    *
    * <p> Navigate to the next page in history.
    */
@@ -4824,15 +4810,15 @@ public interface Page extends AutoCloseable {
     return goForward(null);
   }
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of the
-   * last redirect. If can not go forward, returns {@code null}.
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the response of
+   * the last redirect. If can not go forward, returns {@code null}.
    *
    * <p> Navigate to the next page in history.
    */
   Response goForward(GoForwardOptions options);
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the first
-   * non-redirect response.
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the
+   * first non-redirect response.
    *
    * <p> The method will throw an error if:
    * <ul>
@@ -4843,17 +4829,15 @@ public interface Page extends AutoCloseable {
    * <li> the main resource failed to load.</li>
    * </ul>
    *
-   * <p> The method will not throw an error when any valid HTTP status code is returned by the remote server, including 404 "Not
-   * Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling {@link
+   * <p> The method will not throw an error when any valid HTTP status code is returned by the remote server, including 404
+   * "Not Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling {@link
    * Response#status Response.status()}.
    *
-   * <p> <strong>NOTE:</strong> The method either throws an error or returns a main resource response. The only exceptions are navigation to
-   * {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
+   * <p> <strong>NOTE:</strong> The method either throws an error or returns a main resource response. The only exceptions are navigation
+   * to {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
    *
    * <p> <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the <a
    * href="https://bugs.chromium.org/p/chromium/issues/detail?id=761295">upstream issue</a>.
-   *
-   * <p> Shortcut for main frame's {@link Frame#navigate Frame.navigate()}
    *
    * @param url URL to navigate page to. The url should include scheme, e.g. {@code https://}. When a {@code baseURL} via the context options was
    * provided and the passed URL is a path, it gets merged via the <a
@@ -4863,8 +4847,8 @@ public interface Page extends AutoCloseable {
     return navigate(url, null);
   }
   /**
-   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the first
-   * non-redirect response.
+   * Returns the main resource response. In case of multiple redirects, the navigation will resolve with the
+   * first non-redirect response.
    *
    * <p> The method will throw an error if:
    * <ul>
@@ -4875,17 +4859,15 @@ public interface Page extends AutoCloseable {
    * <li> the main resource failed to load.</li>
    * </ul>
    *
-   * <p> The method will not throw an error when any valid HTTP status code is returned by the remote server, including 404 "Not
-   * Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling {@link
+   * <p> The method will not throw an error when any valid HTTP status code is returned by the remote server, including 404
+   * "Not Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling {@link
    * Response#status Response.status()}.
    *
-   * <p> <strong>NOTE:</strong> The method either throws an error or returns a main resource response. The only exceptions are navigation to
-   * {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
+   * <p> <strong>NOTE:</strong> The method either throws an error or returns a main resource response. The only exceptions are navigation
+   * to {@code about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
    *
    * <p> <strong>NOTE:</strong> Headless mode doesn't support navigation to a PDF document. See the <a
    * href="https://bugs.chromium.org/p/chromium/issues/detail?id=761295">upstream issue</a>.
-   *
-   * <p> Shortcut for main frame's {@link Frame#navigate Frame.navigate()}
    *
    * @param url URL to navigate page to. The url should include scheme, e.g. {@code https://}. When a {@code baseURL} via the context options was
    * provided and the passed URL is a path, it gets merged via the <a
@@ -4906,10 +4888,7 @@ public interface Page extends AutoCloseable {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * <p> Shortcut for main frame's {@link Frame#hover Frame.hover()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default void hover(String selector) {
     hover(selector, null);
@@ -4928,17 +4907,13 @@ public interface Page extends AutoCloseable {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * <p> Shortcut for main frame's {@link Frame#hover Frame.hover()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   void hover(String selector, HoverOptions options);
   /**
    * Returns {@code element.innerHTML}.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default String innerHTML(String selector) {
     return innerHTML(selector, null);
@@ -4946,15 +4921,13 @@ public interface Page extends AutoCloseable {
   /**
    * Returns {@code element.innerHTML}.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   String innerHTML(String selector, InnerHTMLOptions options);
   /**
    * Returns {@code element.innerText}.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default String innerText(String selector) {
     return innerText(selector, null);
@@ -4962,8 +4935,7 @@ public interface Page extends AutoCloseable {
   /**
    * Returns {@code element.innerText}.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   String innerText(String selector, InnerTextOptions options);
   /**
@@ -4973,8 +4945,7 @@ public interface Page extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, returns the value of the
    * control.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default String inputValue(String selector) {
     return inputValue(selector, null);
@@ -4986,15 +4957,13 @@ public interface Page extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, returns the value of the
    * control.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   String inputValue(String selector, InputValueOptions options);
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default boolean isChecked(String selector) {
     return isChecked(selector, null);
@@ -5002,8 +4971,7 @@ public interface Page extends AutoCloseable {
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   boolean isChecked(String selector, IsCheckedOptions options);
   /**
@@ -5014,8 +4982,7 @@ public interface Page extends AutoCloseable {
    * Returns whether the element is disabled, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default boolean isDisabled(String selector) {
     return isDisabled(selector, null);
@@ -5024,15 +4991,13 @@ public interface Page extends AutoCloseable {
    * Returns whether the element is disabled, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   boolean isDisabled(String selector, IsDisabledOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default boolean isEditable(String selector) {
     return isEditable(selector, null);
@@ -5040,15 +5005,13 @@ public interface Page extends AutoCloseable {
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   boolean isEditable(String selector, IsEditableOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default boolean isEnabled(String selector) {
     return isEnabled(selector, null);
@@ -5056,8 +5019,7 @@ public interface Page extends AutoCloseable {
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   boolean isEnabled(String selector, IsEnabledOptions options);
   /**
@@ -5065,8 +5027,7 @@ public interface Page extends AutoCloseable {
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.  {@code selector} that does not match any elements
    * is considered hidden.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default boolean isHidden(String selector) {
     return isHidden(selector, null);
@@ -5076,16 +5037,14 @@ public interface Page extends AutoCloseable {
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.  {@code selector} that does not match any elements
    * is considered hidden.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   boolean isHidden(String selector, IsHiddenOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>. {@code selector}
    * that does not match any elements is considered not visible.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default boolean isVisible(String selector) {
     return isVisible(selector, null);
@@ -5094,8 +5053,7 @@ public interface Page extends AutoCloseable {
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>. {@code selector}
    * that does not match any elements is considered not visible.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   boolean isVisible(String selector, IsVisibleOptions options);
   Keyboard keyboard();
@@ -5106,8 +5064,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
-   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
-   * selectors</a> for more details.
+   * @param selector A selector to use when resolving DOM element.
    */
   default Locator locator(String selector) {
     return locator(selector, null);
@@ -5119,8 +5076,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
-   * @param selector A selector to use when resolving DOM element. See <a href="https://playwright.dev/java/docs/selectors">working with
-   * selectors</a> for more details.
+   * @param selector A selector to use when resolving DOM element.
    */
   Locator locator(String selector, LocatorOptions options);
   /**
@@ -5136,8 +5092,8 @@ public interface Page extends AutoCloseable {
    * Pauses script execution. Playwright will stop executing the script and wait for the user to either press 'Resume' button
    * in the page overlay or to call {@code playwright.resume()} in the DevTools console.
    *
-   * <p> User can inspect selectors or perform manual steps while paused. Resume will continue running the original script from
-   * the place it was paused.
+   * <p> User can inspect selectors or perform manual steps while paused. Resume will continue running the original script
+   * from the place it was paused.
    *
    * <p> <strong>NOTE:</strong> This method requires Playwright to be started in a headed mode, with a falsy {@code headless} value in the {@link
    * BrowserType#launch BrowserType.launch()}.
@@ -5154,6 +5110,8 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> By default, {@code page.pdf()} generates a pdf with modified colors for printing. Use the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-print-color-adjust">{@code -webkit-print-color-adjust}</a>
    * property to force rendering of exact colors.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Generates a PDF with "screen" media type.
    * page.emulateMedia(new Page.EmulateMediaOptions().setMedia(Media.SCREEN));
@@ -5209,6 +5167,8 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> By default, {@code page.pdf()} generates a pdf with modified colors for printing. Use the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-print-color-adjust">{@code -webkit-print-color-adjust}</a>
    * property to force rendering of exact colors.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Generates a PDF with "screen" media type.
    * page.emulateMedia(new Page.EmulateMediaOptions().setMedia(Media.SCREEN));
@@ -5259,8 +5219,9 @@ public interface Page extends AutoCloseable {
    * character to generate the text for. A superset of the {@code key} values can be found <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
    *
-   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
-   * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
+   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace},
+   * {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp},
+   * etc.
    *
    * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
    *
@@ -5269,8 +5230,10 @@ public interface Page extends AutoCloseable {
    * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
    * texts.
    *
-   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with the
-   * modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with
+   * the modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * Page page = browser.newPage();
    * page.navigate("https://keycode.info");
@@ -5282,8 +5245,7 @@ public interface Page extends AutoCloseable {
    * page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("O.png" )));
    * }</pre>
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
   default void press(String selector, String key) {
@@ -5297,8 +5259,9 @@ public interface Page extends AutoCloseable {
    * character to generate the text for. A superset of the {@code key} values can be found <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
    *
-   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab},
-   * {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp}, etc.
+   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace},
+   * {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp},
+   * etc.
    *
    * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
    *
@@ -5307,8 +5270,10 @@ public interface Page extends AutoCloseable {
    * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
    * texts.
    *
-   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with the
-   * modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with
+   * the modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * Page page = browser.newPage();
    * page.navigate("https://keycode.info");
@@ -5320,47 +5285,31 @@ public interface Page extends AutoCloseable {
    * page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("O.png" )));
    * }</pre>
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    */
   void press(String selector, String key, PressOptions options);
   /**
-   * <strong>NOTE:</strong> The use of {@code ElementHandle} is discouraged, use {@code Locator} objects and web-first assertions instead.
+   * The method finds an element matching the specified selector within the page. If no elements match the selector,
+   * the return value resolves to {@code null}. To wait for an element on the page, use {@link Locator#waitFor Locator.waitFor()}.
    *
-   * <p> The method finds an element matching the specified selector within the page. If no elements match the selector, the
-   * return value resolves to {@code null}. To wait for an element on the page, use {@link Locator#waitFor Locator.waitFor()}.
-   *
-   * <p> Shortcut for main frame's {@link Frame#querySelector Frame.querySelector()}.
-   *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
-   * details.
+   * @param selector A selector to query for.
    */
   default ElementHandle querySelector(String selector) {
     return querySelector(selector, null);
   }
   /**
-   * <strong>NOTE:</strong> The use of {@code ElementHandle} is discouraged, use {@code Locator} objects and web-first assertions instead.
+   * The method finds an element matching the specified selector within the page. If no elements match the selector,
+   * the return value resolves to {@code null}. To wait for an element on the page, use {@link Locator#waitFor Locator.waitFor()}.
    *
-   * <p> The method finds an element matching the specified selector within the page. If no elements match the selector, the
-   * return value resolves to {@code null}. To wait for an element on the page, use {@link Locator#waitFor Locator.waitFor()}.
-   *
-   * <p> Shortcut for main frame's {@link Frame#querySelector Frame.querySelector()}.
-   *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
-   * details.
+   * @param selector A selector to query for.
    */
   ElementHandle querySelector(String selector, QuerySelectorOptions options);
   /**
-   * <strong>NOTE:</strong> The use of {@code ElementHandle} is discouraged, use {@code Locator} objects and web-first assertions instead.
+   * The method finds all elements matching the specified selector within the page. If no elements match the selector,
+   * the return value resolves to {@code []}.
    *
-   * <p> The method finds all elements matching the specified selector within the page. If no elements match the selector, the
-   * return value resolves to {@code []}.
-   *
-   * <p> Shortcut for main frame's {@link Frame#querySelectorAll Frame.querySelectorAll()}.
-   *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
-   * details.
+   * @param selector A selector to query for.
    */
   List<ElementHandle> querySelectorAll(String selector);
   /**
@@ -5391,6 +5340,8 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
    * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   *
+   * <p> **Usage**
    *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
@@ -5445,6 +5396,8 @@ public interface Page extends AutoCloseable {
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
    * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
    *
+   * <p> **Usage**
+   *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
    * Page page = browser.newPage();
@@ -5495,6 +5448,8 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
    * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   *
+   * <p> **Usage**
    *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
@@ -5549,6 +5504,8 @@ public interface Page extends AutoCloseable {
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
    * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
    *
+   * <p> **Usage**
+   *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
    * Page page = browser.newPage();
@@ -5599,6 +5556,8 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
    * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   *
+   * <p> **Usage**
    *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
@@ -5652,6 +5611,8 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> {@link Page#route Page.route()} will not intercept requests intercepted by Service Worker. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
    * using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   *
+   * <p> **Usage**
    *
    * <p> An example of a naive handler that aborts all image requests:
    * <pre>{@code
@@ -5742,6 +5703,8 @@ public interface Page extends AutoCloseable {
    * <p> Returns the array of option values that have been successfully selected.
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -5751,13 +5714,10 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
-   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
-   * is considered matching if all specified properties match.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
+   * the first option matching one of the passed options is selected. String values are matching both values and labels.
+   * Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(String selector, String values) {
     return selectOption(selector, values, null);
@@ -5775,6 +5735,8 @@ public interface Page extends AutoCloseable {
    * <p> Returns the array of option values that have been successfully selected.
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -5784,13 +5746,10 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
-   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
-   * is considered matching if all specified properties match.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
+   * the first option matching one of the passed options is selected. String values are matching both values and labels.
+   * Option is considered matching if all specified properties match.
    */
   List<String> selectOption(String selector, String values, SelectOptionOptions options);
   /**
@@ -5806,6 +5765,8 @@ public interface Page extends AutoCloseable {
    * <p> Returns the array of option values that have been successfully selected.
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -5815,13 +5776,10 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
-   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
-   * is considered matching if all specified properties match.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
+   * the first option matching one of the passed options is selected. String values are matching both values and labels.
+   * Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(String selector, ElementHandle values) {
     return selectOption(selector, values, null);
@@ -5839,6 +5797,8 @@ public interface Page extends AutoCloseable {
    * <p> Returns the array of option values that have been successfully selected.
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -5848,13 +5808,10 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
-   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
-   * is considered matching if all specified properties match.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
+   * the first option matching one of the passed options is selected. String values are matching both values and labels.
+   * Option is considered matching if all specified properties match.
    */
   List<String> selectOption(String selector, ElementHandle values, SelectOptionOptions options);
   /**
@@ -5870,6 +5827,8 @@ public interface Page extends AutoCloseable {
    * <p> Returns the array of option values that have been successfully selected.
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -5879,13 +5838,10 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
-   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
-   * is considered matching if all specified properties match.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
+   * the first option matching one of the passed options is selected. String values are matching both values and labels.
+   * Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(String selector, String[] values) {
     return selectOption(selector, values, null);
@@ -5903,6 +5859,8 @@ public interface Page extends AutoCloseable {
    * <p> Returns the array of option values that have been successfully selected.
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -5912,13 +5870,10 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
-   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
-   * is considered matching if all specified properties match.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
+   * the first option matching one of the passed options is selected. String values are matching both values and labels.
+   * Option is considered matching if all specified properties match.
    */
   List<String> selectOption(String selector, String[] values, SelectOptionOptions options);
   /**
@@ -5934,6 +5889,8 @@ public interface Page extends AutoCloseable {
    * <p> Returns the array of option values that have been successfully selected.
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -5943,13 +5900,10 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
-   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
-   * is considered matching if all specified properties match.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
+   * the first option matching one of the passed options is selected. String values are matching both values and labels.
+   * Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(String selector, SelectOption values) {
     return selectOption(selector, values, null);
@@ -5967,6 +5921,8 @@ public interface Page extends AutoCloseable {
    * <p> Returns the array of option values that have been successfully selected.
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -5976,13 +5932,10 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
-   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
-   * is considered matching if all specified properties match.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
+   * the first option matching one of the passed options is selected. String values are matching both values and labels.
+   * Option is considered matching if all specified properties match.
    */
   List<String> selectOption(String selector, SelectOption values, SelectOptionOptions options);
   /**
@@ -5998,6 +5951,8 @@ public interface Page extends AutoCloseable {
    * <p> Returns the array of option values that have been successfully selected.
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -6007,13 +5962,10 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
-   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
-   * is considered matching if all specified properties match.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
+   * the first option matching one of the passed options is selected. String values are matching both values and labels.
+   * Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(String selector, ElementHandle[] values) {
     return selectOption(selector, values, null);
@@ -6031,6 +5983,8 @@ public interface Page extends AutoCloseable {
    * <p> Returns the array of option values that have been successfully selected.
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -6040,13 +5994,10 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
-   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
-   * is considered matching if all specified properties match.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
+   * the first option matching one of the passed options is selected. String values are matching both values and labels.
+   * Option is considered matching if all specified properties match.
    */
   List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options);
   /**
@@ -6062,6 +6013,8 @@ public interface Page extends AutoCloseable {
    * <p> Returns the array of option values that have been successfully selected.
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -6071,13 +6024,10 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
-   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
-   * is considered matching if all specified properties match.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
+   * the first option matching one of the passed options is selected. String values are matching both values and labels.
+   * Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(String selector, SelectOption[] values) {
     return selectOption(selector, values, null);
@@ -6095,6 +6045,8 @@ public interface Page extends AutoCloseable {
    * <p> Returns the array of option values that have been successfully selected.
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // single selection matching the value
    * page.selectOption("select#colors", "blue");
@@ -6104,13 +6056,10 @@ public interface Page extends AutoCloseable {
    * page.selectOption("select#colors", new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#selectOption Frame.selectOption()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only the
-   * first option matching one of the passed options is selected. String values are equivalent to {@code {value:'string'}}. Option
-   * is considered matching if all specified properties match.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
+   * the first option matching one of the passed options is selected. String values are matching both values and labels.
+   * Option is considered matching if all specified properties match.
    */
   List<String> selectOption(String selector, SelectOption[] values, SelectOptionOptions options);
   /**
@@ -6130,10 +6079,7 @@ public interface Page extends AutoCloseable {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * <p> Shortcut for main frame's {@link Frame#setChecked Frame.setChecked()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param checked Whether to check or uncheck the checkbox.
    */
   default void setChecked(String selector, boolean checked) {
@@ -6156,10 +6102,7 @@ public interface Page extends AutoCloseable {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * <p> Shortcut for main frame's {@link Frame#setChecked Frame.setChecked()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param checked Whether to check or uncheck the checkbox.
    */
   void setChecked(String selector, boolean checked, SetCheckedOptions options);
@@ -6216,8 +6159,8 @@ public interface Page extends AutoCloseable {
    */
   void setExtraHTTPHeaders(Map<String, String> headers);
   /**
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the current working directory. For empty array, clears the selected files.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
+   * they are resolved relative to the current working directory. For empty array, clears the selected files.
    *
    * <p> This method expects {@code selector} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -6225,15 +6168,14 @@ public interface Page extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default void setInputFiles(String selector, Path files) {
     setInputFiles(selector, files, null);
   }
   /**
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the current working directory. For empty array, clears the selected files.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
+   * they are resolved relative to the current working directory. For empty array, clears the selected files.
    *
    * <p> This method expects {@code selector} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -6241,13 +6183,12 @@ public interface Page extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   void setInputFiles(String selector, Path files, SetInputFilesOptions options);
   /**
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the current working directory. For empty array, clears the selected files.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
+   * they are resolved relative to the current working directory. For empty array, clears the selected files.
    *
    * <p> This method expects {@code selector} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -6255,15 +6196,14 @@ public interface Page extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default void setInputFiles(String selector, Path[] files) {
     setInputFiles(selector, files, null);
   }
   /**
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the current working directory. For empty array, clears the selected files.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
+   * they are resolved relative to the current working directory. For empty array, clears the selected files.
    *
    * <p> This method expects {@code selector} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -6271,13 +6211,12 @@ public interface Page extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   void setInputFiles(String selector, Path[] files, SetInputFilesOptions options);
   /**
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the current working directory. For empty array, clears the selected files.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
+   * they are resolved relative to the current working directory. For empty array, clears the selected files.
    *
    * <p> This method expects {@code selector} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -6285,15 +6224,14 @@ public interface Page extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default void setInputFiles(String selector, FilePayload files) {
     setInputFiles(selector, files, null);
   }
   /**
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the current working directory. For empty array, clears the selected files.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
+   * they are resolved relative to the current working directory. For empty array, clears the selected files.
    *
    * <p> This method expects {@code selector} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -6301,13 +6239,12 @@ public interface Page extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   void setInputFiles(String selector, FilePayload files, SetInputFilesOptions options);
   /**
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the current working directory. For empty array, clears the selected files.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
+   * they are resolved relative to the current working directory. For empty array, clears the selected files.
    *
    * <p> This method expects {@code selector} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -6315,15 +6252,14 @@ public interface Page extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default void setInputFiles(String selector, FilePayload[] files) {
     setInputFiles(selector, files, null);
   }
   /**
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then they
-   * are resolved relative to the current working directory. For empty array, clears the selected files.
+   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
+   * they are resolved relative to the current working directory. For empty array, clears the selected files.
    *
    * <p> This method expects {@code selector} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -6331,8 +6267,7 @@ public interface Page extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   void setInputFiles(String selector, FilePayload[] files, SetInputFilesOptions options);
   /**
@@ -6343,6 +6278,8 @@ public interface Page extends AutoCloseable {
    * change size, so you should set the viewport size before navigating to the page. {@link Page#setViewportSize
    * Page.setViewportSize()} will also reset {@code screen} size, use {@link Browser#newContext Browser.newContext()} with {@code screen}
    * and {@code viewport} parameters if you need better control of these properties.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * Page page = browser.newPage();
    * page.setViewportSize(640, 480);
@@ -6366,10 +6303,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@link Page#tap Page.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    *
-   * <p> Shortcut for main frame's {@link Frame#tap Frame.tap()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default void tap(String selector) {
     tap(selector, null);
@@ -6390,17 +6324,13 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@link Page#tap Page.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    *
-   * <p> Shortcut for main frame's {@link Frame#tap Frame.tap()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   void tap(String selector, TapOptions options);
   /**
    * Returns {@code element.textContent}.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default String textContent(String selector) {
     return textContent(selector, null);
@@ -6408,20 +6338,21 @@ public interface Page extends AutoCloseable {
   /**
    * Returns {@code element.textContent}.
    *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   String textContent(String selector, TextContentOptions options);
   /**
-   * Returns the page's title. Shortcut for main frame's {@link Frame#title Frame.title()}.
+   * Returns the page's title.
    */
   String title();
   Touchscreen touchscreen();
   /**
-   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code page.type} can be used to send
-   * fine-grained keyboard events. To fill values in form fields, use {@link Page#fill Page.fill()}.
+   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code page.type} can be used to
+   * send fine-grained keyboard events. To fill values in form fields, use {@link Page#fill Page.fill()}.
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Keyboard#press Keyboard.press()}.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Types instantly
    * page.type("#mytextarea", "Hello");
@@ -6429,20 +6360,19 @@ public interface Page extends AutoCloseable {
    * page.type("#mytextarea", "World", new Page.TypeOptions().setDelay(100));
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#type Frame.type()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param text A text to type into a focused element.
    */
   default void type(String selector, String text) {
     type(selector, text, null);
   }
   /**
-   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code page.type} can be used to send
-   * fine-grained keyboard events. To fill values in form fields, use {@link Page#fill Page.fill()}.
+   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code page.type} can be used to
+   * send fine-grained keyboard events. To fill values in form fields, use {@link Page#fill Page.fill()}.
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Keyboard#press Keyboard.press()}.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Types instantly
    * page.type("#mytextarea", "Hello");
@@ -6450,10 +6380,7 @@ public interface Page extends AutoCloseable {
    * page.type("#mytextarea", "World", new Page.TypeOptions().setDelay(100));
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#type Frame.type()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param text A text to type into a focused element.
    */
   void type(String selector, String text, TypeOptions options);
@@ -6461,8 +6388,8 @@ public interface Page extends AutoCloseable {
    * This method unchecks an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is already
-   * unchecked, this method returns immediately.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is
+   * already unchecked, this method returns immediately.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
@@ -6474,10 +6401,7 @@ public interface Page extends AutoCloseable {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * <p> Shortcut for main frame's {@link Frame#uncheck Frame.uncheck()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   default void uncheck(String selector) {
     uncheck(selector, null);
@@ -6486,8 +6410,8 @@ public interface Page extends AutoCloseable {
    * This method unchecks an element matching {@code selector} by performing the following steps:
    * <ol>
    * <li> Find an element matching {@code selector}. If there is none, wait until a matching element is attached to the DOM.</li>
-   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is already
-   * unchecked, this method returns immediately.</li>
+   * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws. If the element is
+   * already unchecked, this method returns immediately.</li>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
@@ -6499,15 +6423,12 @@ public interface Page extends AutoCloseable {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
    * zero timeout disables this.
    *
-   * <p> Shortcut for main frame's {@link Frame#uncheck Frame.uncheck()}.
-   *
-   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used. See
-   * <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more details.
+   * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    */
   void uncheck(String selector, UncheckOptions options);
   /**
-   * Removes a route created with {@link Page#route Page.route()}. When {@code handler} is not specified, removes all routes for
-   * the {@code url}.
+   * Removes a route created with {@link Page#route Page.route()}. When {@code handler} is not specified, removes all routes
+   * for the {@code url}.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
    */
@@ -6515,16 +6436,16 @@ public interface Page extends AutoCloseable {
     unroute(url, null);
   }
   /**
-   * Removes a route created with {@link Page#route Page.route()}. When {@code handler} is not specified, removes all routes for
-   * the {@code url}.
+   * Removes a route created with {@link Page#route Page.route()}. When {@code handler} is not specified, removes all routes
+   * for the {@code url}.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
    * @param handler Optional handler function to route the request.
    */
   void unroute(String url, Consumer<Route> handler);
   /**
-   * Removes a route created with {@link Page#route Page.route()}. When {@code handler} is not specified, removes all routes for
-   * the {@code url}.
+   * Removes a route created with {@link Page#route Page.route()}. When {@code handler} is not specified, removes all routes
+   * for the {@code url}.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
    */
@@ -6532,16 +6453,16 @@ public interface Page extends AutoCloseable {
     unroute(url, null);
   }
   /**
-   * Removes a route created with {@link Page#route Page.route()}. When {@code handler} is not specified, removes all routes for
-   * the {@code url}.
+   * Removes a route created with {@link Page#route Page.route()}. When {@code handler} is not specified, removes all routes
+   * for the {@code url}.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
    * @param handler Optional handler function to route the request.
    */
   void unroute(Pattern url, Consumer<Route> handler);
   /**
-   * Removes a route created with {@link Page#route Page.route()}. When {@code handler} is not specified, removes all routes for
-   * the {@code url}.
+   * Removes a route created with {@link Page#route Page.route()}. When {@code handler} is not specified, removes all routes
+   * for the {@code url}.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
    */
@@ -6549,16 +6470,13 @@ public interface Page extends AutoCloseable {
     unroute(url, null);
   }
   /**
-   * Removes a route created with {@link Page#route Page.route()}. When {@code handler} is not specified, removes all routes for
-   * the {@code url}.
+   * Removes a route created with {@link Page#route Page.route()}. When {@code handler} is not specified, removes all routes
+   * for the {@code url}.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
    * @param handler Optional handler function to route the request.
    */
   void unroute(Predicate<String> url, Consumer<Route> handler);
-  /**
-   * Shortcut for main frame's {@link Frame#url Frame.url()}.
-   */
   String url();
   /**
    * Video object associated with this page.
@@ -6580,9 +6498,10 @@ public interface Page extends AutoCloseable {
    */
   Page waitForClose(WaitForCloseOptions options, Runnable callback);
   /**
-   * Performs action and waits for a {@code ConsoleMessage} to be logged by in the page. If predicate is provided, it passes
-   * {@code ConsoleMessage} value into the {@code predicate} function and waits for {@code predicate(message)} to return a truthy value. Will
-   * throw an error if the page is closed before the {@link Page#onConsoleMessage Page.onConsoleMessage()} event is fired.
+   * Performs action and waits for a {@code ConsoleMessage} to be logged by in the page. If predicate is provided, it
+   * passes {@code ConsoleMessage} value into the {@code predicate} function and waits for {@code predicate(message)} to return a truthy
+   * value. Will throw an error if the page is closed before the {@link Page#onConsoleMessage Page.onConsoleMessage()} event
+   * is fired.
    *
    * @param callback Callback that performs the action triggering the event.
    */
@@ -6590,9 +6509,10 @@ public interface Page extends AutoCloseable {
     return waitForConsoleMessage(null, callback);
   }
   /**
-   * Performs action and waits for a {@code ConsoleMessage} to be logged by in the page. If predicate is provided, it passes
-   * {@code ConsoleMessage} value into the {@code predicate} function and waits for {@code predicate(message)} to return a truthy value. Will
-   * throw an error if the page is closed before the {@link Page#onConsoleMessage Page.onConsoleMessage()} event is fired.
+   * Performs action and waits for a {@code ConsoleMessage} to be logged by in the page. If predicate is provided, it
+   * passes {@code ConsoleMessage} value into the {@code predicate} function and waits for {@code predicate(message)} to return a truthy
+   * value. Will throw an error if the page is closed before the {@link Page#onConsoleMessage Page.onConsoleMessage()} event
+   * is fired.
    *
    * @param callback Callback that performs the action triggering the event.
    */
@@ -6636,6 +6556,8 @@ public interface Page extends AutoCloseable {
   /**
    * Returns when the {@code expression} returns a truthy value. It resolves to a JSHandle of the truthy value.
    *
+   * <p> **Usage**
+   *
    * <p> The {@link Page#waitForFunction Page.waitForFunction()} can be used to observe viewport size change:
    * <pre>{@code
    * import com.microsoft.playwright.*;
@@ -6659,8 +6581,6 @@ public interface Page extends AutoCloseable {
    * String selector = ".foo";
    * page.waitForFunction("selector => !!document.querySelector(selector)", selector);
    * }</pre>
-   *
-   * <p> Shortcut for main frame's {@link Frame#waitForFunction Frame.waitForFunction()}.
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
@@ -6672,6 +6592,8 @@ public interface Page extends AutoCloseable {
   /**
    * Returns when the {@code expression} returns a truthy value. It resolves to a JSHandle of the truthy value.
    *
+   * <p> **Usage**
+   *
    * <p> The {@link Page#waitForFunction Page.waitForFunction()} can be used to observe viewport size change:
    * <pre>{@code
    * import com.microsoft.playwright.*;
@@ -6695,8 +6617,6 @@ public interface Page extends AutoCloseable {
    * String selector = ".foo";
    * page.waitForFunction("selector => !!document.querySelector(selector)", selector);
    * }</pre>
-   *
-   * <p> Shortcut for main frame's {@link Frame#waitForFunction Frame.waitForFunction()}.
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
@@ -6707,6 +6627,8 @@ public interface Page extends AutoCloseable {
   /**
    * Returns when the {@code expression} returns a truthy value. It resolves to a JSHandle of the truthy value.
    *
+   * <p> **Usage**
+   *
    * <p> The {@link Page#waitForFunction Page.waitForFunction()} can be used to observe viewport size change:
    * <pre>{@code
    * import com.microsoft.playwright.*;
@@ -6731,8 +6653,6 @@ public interface Page extends AutoCloseable {
    * page.waitForFunction("selector => !!document.querySelector(selector)", selector);
    * }</pre>
    *
-   * <p> Shortcut for main frame's {@link Frame#waitForFunction Frame.waitForFunction()}.
-   *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
@@ -6741,21 +6661,22 @@ public interface Page extends AutoCloseable {
   /**
    * Returns when the required load state has been reached.
    *
-   * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been committed
-   * when this method is called. If current document has already reached the required state, resolves immediately.
+   * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been
+   * committed when this method is called. If current document has already reached the required state, resolves immediately.
+   *
+   * <p> **Usage**
    * <pre>{@code
-   * page.getByRole("button").click(); // Click triggers navigation.
+   * page.getByRole(AriaRole.BUTTON).click(); // Click triggers navigation.
    * page.waitForLoadState(); // The promise resolves after "load" event.
    * }</pre>
    * <pre>{@code
    * Page popup = page.waitForPopup(() -> {
-   *   page.getByRole("button").click(); // Click triggers a popup.
+   *   page.getByRole(AriaRole.BUTTON).click(); // Click triggers a popup.
    * });
+   * // Wait for the "DOMContentLoaded" event
    * popup.waitForLoadState(LoadState.DOMCONTENTLOADED);
    * System.out.println(popup.title()); // Popup is ready to use.
    * }</pre>
-   *
-   * <p> Shortcut for main frame's {@link Frame#waitForLoadState Frame.waitForLoadState()}.
    *
    * @param state Optional load state to wait for, defaults to {@code load}. If the state has been already reached while loading current
    * document, the method resolves immediately. Can be one of:
@@ -6771,21 +6692,22 @@ public interface Page extends AutoCloseable {
   /**
    * Returns when the required load state has been reached.
    *
-   * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been committed
-   * when this method is called. If current document has already reached the required state, resolves immediately.
+   * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been
+   * committed when this method is called. If current document has already reached the required state, resolves immediately.
+   *
+   * <p> **Usage**
    * <pre>{@code
-   * page.getByRole("button").click(); // Click triggers navigation.
+   * page.getByRole(AriaRole.BUTTON).click(); // Click triggers navigation.
    * page.waitForLoadState(); // The promise resolves after "load" event.
    * }</pre>
    * <pre>{@code
    * Page popup = page.waitForPopup(() -> {
-   *   page.getByRole("button").click(); // Click triggers a popup.
+   *   page.getByRole(AriaRole.BUTTON).click(); // Click triggers a popup.
    * });
+   * // Wait for the "DOMContentLoaded" event
    * popup.waitForLoadState(LoadState.DOMCONTENTLOADED);
    * System.out.println(popup.title()); // Popup is ready to use.
    * }</pre>
-   *
-   * <p> Shortcut for main frame's {@link Frame#waitForLoadState Frame.waitForLoadState()}.
    */
   default void waitForLoadState() {
     waitForLoadState(null);
@@ -6793,21 +6715,22 @@ public interface Page extends AutoCloseable {
   /**
    * Returns when the required load state has been reached.
    *
-   * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been committed
-   * when this method is called. If current document has already reached the required state, resolves immediately.
+   * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been
+   * committed when this method is called. If current document has already reached the required state, resolves immediately.
+   *
+   * <p> **Usage**
    * <pre>{@code
-   * page.getByRole("button").click(); // Click triggers navigation.
+   * page.getByRole(AriaRole.BUTTON).click(); // Click triggers navigation.
    * page.waitForLoadState(); // The promise resolves after "load" event.
    * }</pre>
    * <pre>{@code
    * Page popup = page.waitForPopup(() -> {
-   *   page.getByRole("button").click(); // Click triggers a popup.
+   *   page.getByRole(AriaRole.BUTTON).click(); // Click triggers a popup.
    * });
+   * // Wait for the "DOMContentLoaded" event
    * popup.waitForLoadState(LoadState.DOMCONTENTLOADED);
    * System.out.println(popup.title()); // Popup is ready to use.
    * }</pre>
-   *
-   * <p> Shortcut for main frame's {@link Frame#waitForLoadState Frame.waitForLoadState()}.
    *
    * @param state Optional load state to wait for, defaults to {@code load}. If the state has been already reached while loading current
    * document, the method resolves immediately. Can be one of:
@@ -6823,20 +6746,21 @@ public interface Page extends AutoCloseable {
    * navigation will resolve with the response of the last redirect. In case of navigation to a different anchor or
    * navigation due to History API usage, the navigation will resolve with {@code null}.
    *
-   * <p> This resolves when the page navigates to a new URL or reloads. It is useful for when you run code which will indirectly
-   * cause the page to navigate. e.g. The click target has an {@code onclick} handler that triggers navigation from a {@code setTimeout}.
-   * Consider this example:
+   * <p> **Usage**
+   *
+   * <p> This resolves when the page navigates to a new URL or reloads. It is useful for when you run code which will
+   * indirectly cause the page to navigate. e.g. The click target has an {@code onclick} handler that triggers navigation from a
+   * {@code setTimeout}. Consider this example:
    * <pre>{@code
    * // The method returns after navigation has finished
    * Response response = page.waitForNavigation(() -> {
-   *   page.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
+   *   // This action triggers the navigation after a timeout.
+   *   page.getByText("Navigate after timeout").click();
    * });
    * }</pre>
    *
    * <p> <strong>NOTE:</strong> Usage of the <a href="https://developer.mozilla.org/en-US/docs/Web/API/History_API">History API</a> to change the URL is
    * considered a navigation.
-   *
-   * <p> Shortcut for main frame's {@link Frame#waitForNavigation Frame.waitForNavigation()}.
    *
    * @param callback Callback that performs the action triggering the event.
    */
@@ -6848,20 +6772,21 @@ public interface Page extends AutoCloseable {
    * navigation will resolve with the response of the last redirect. In case of navigation to a different anchor or
    * navigation due to History API usage, the navigation will resolve with {@code null}.
    *
-   * <p> This resolves when the page navigates to a new URL or reloads. It is useful for when you run code which will indirectly
-   * cause the page to navigate. e.g. The click target has an {@code onclick} handler that triggers navigation from a {@code setTimeout}.
-   * Consider this example:
+   * <p> **Usage**
+   *
+   * <p> This resolves when the page navigates to a new URL or reloads. It is useful for when you run code which will
+   * indirectly cause the page to navigate. e.g. The click target has an {@code onclick} handler that triggers navigation from a
+   * {@code setTimeout}. Consider this example:
    * <pre>{@code
    * // The method returns after navigation has finished
    * Response response = page.waitForNavigation(() -> {
-   *   page.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
+   *   // This action triggers the navigation after a timeout.
+   *   page.getByText("Navigate after timeout").click();
    * });
    * }</pre>
    *
    * <p> <strong>NOTE:</strong> Usage of the <a href="https://developer.mozilla.org/en-US/docs/Web/API/History_API">History API</a> to change the URL is
    * considered a navigation.
-   *
-   * <p> Shortcut for main frame's {@link Frame#waitForNavigation Frame.waitForNavigation()}.
    *
    * @param callback Callback that performs the action triggering the event.
    */
@@ -6887,17 +6812,19 @@ public interface Page extends AutoCloseable {
   /**
    * Waits for the matching request and returns it. See <a
    * href="https://playwright.dev/java/docs/events#waiting-for-event">waiting for event</a> for more details about events.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Waits for the next request with the specified url
    * Request request = page.waitForRequest("https://example.com/resource", () -> {
    *   // Triggers the request
-   *   page.click("button.triggers-request");
+   *   page.getByText("trigger request").click();
    * });
    *
    * // Waits for the next request matching some conditions
    * Request request = page.waitForRequest(request -> "https://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {
    *   // Triggers the request
-   *   page.click("button.triggers-request");
+   *   page.getByText("trigger request").click();
    * });
    * }</pre>
    *
@@ -6912,17 +6839,19 @@ public interface Page extends AutoCloseable {
   /**
    * Waits for the matching request and returns it. See <a
    * href="https://playwright.dev/java/docs/events#waiting-for-event">waiting for event</a> for more details about events.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Waits for the next request with the specified url
    * Request request = page.waitForRequest("https://example.com/resource", () -> {
    *   // Triggers the request
-   *   page.click("button.triggers-request");
+   *   page.getByText("trigger request").click();
    * });
    *
    * // Waits for the next request matching some conditions
    * Request request = page.waitForRequest(request -> "https://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {
    *   // Triggers the request
-   *   page.click("button.triggers-request");
+   *   page.getByText("trigger request").click();
    * });
    * }</pre>
    *
@@ -6935,17 +6864,19 @@ public interface Page extends AutoCloseable {
   /**
    * Waits for the matching request and returns it. See <a
    * href="https://playwright.dev/java/docs/events#waiting-for-event">waiting for event</a> for more details about events.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Waits for the next request with the specified url
    * Request request = page.waitForRequest("https://example.com/resource", () -> {
    *   // Triggers the request
-   *   page.click("button.triggers-request");
+   *   page.getByText("trigger request").click();
    * });
    *
    * // Waits for the next request matching some conditions
    * Request request = page.waitForRequest(request -> "https://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {
    *   // Triggers the request
-   *   page.click("button.triggers-request");
+   *   page.getByText("trigger request").click();
    * });
    * }</pre>
    *
@@ -6960,17 +6891,19 @@ public interface Page extends AutoCloseable {
   /**
    * Waits for the matching request and returns it. See <a
    * href="https://playwright.dev/java/docs/events#waiting-for-event">waiting for event</a> for more details about events.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Waits for the next request with the specified url
    * Request request = page.waitForRequest("https://example.com/resource", () -> {
    *   // Triggers the request
-   *   page.click("button.triggers-request");
+   *   page.getByText("trigger request").click();
    * });
    *
    * // Waits for the next request matching some conditions
    * Request request = page.waitForRequest(request -> "https://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {
    *   // Triggers the request
-   *   page.click("button.triggers-request");
+   *   page.getByText("trigger request").click();
    * });
    * }</pre>
    *
@@ -6983,17 +6916,19 @@ public interface Page extends AutoCloseable {
   /**
    * Waits for the matching request and returns it. See <a
    * href="https://playwright.dev/java/docs/events#waiting-for-event">waiting for event</a> for more details about events.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Waits for the next request with the specified url
    * Request request = page.waitForRequest("https://example.com/resource", () -> {
    *   // Triggers the request
-   *   page.click("button.triggers-request");
+   *   page.getByText("trigger request").click();
    * });
    *
    * // Waits for the next request matching some conditions
    * Request request = page.waitForRequest(request -> "https://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {
    *   // Triggers the request
-   *   page.click("button.triggers-request");
+   *   page.getByText("trigger request").click();
    * });
    * }</pre>
    *
@@ -7008,17 +6943,19 @@ public interface Page extends AutoCloseable {
   /**
    * Waits for the matching request and returns it. See <a
    * href="https://playwright.dev/java/docs/events#waiting-for-event">waiting for event</a> for more details about events.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Waits for the next request with the specified url
    * Request request = page.waitForRequest("https://example.com/resource", () -> {
    *   // Triggers the request
-   *   page.click("button.triggers-request");
+   *   page.getByText("trigger request").click();
    * });
    *
    * // Waits for the next request matching some conditions
    * Request request = page.waitForRequest(request -> "https://example.com".equals(request.url()) && "GET".equals(request.method()), () -> {
    *   // Triggers the request
-   *   page.click("button.triggers-request");
+   *   page.getByText("trigger request").click();
    * });
    * }</pre>
    *
@@ -7049,17 +6986,19 @@ public interface Page extends AutoCloseable {
   /**
    * Returns the matched response. See <a href="https://playwright.dev/java/docs/events#waiting-for-event">waiting for
    * event</a> for more details about events.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Waits for the next response with the specified url
    * Response response = page.waitForResponse("https://example.com/resource", () -> {
    *   // Triggers the response
-   *   page.click("button.triggers-response");
+   *   page.getByText("trigger response").click();
    * });
    *
    * // Waits for the next response matching some conditions
    * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
    *   // Triggers the response
-   *   page.click("button.triggers-response");
+   *   page.getByText("trigger response").click();
    * });
    * }</pre>
    *
@@ -7074,17 +7013,19 @@ public interface Page extends AutoCloseable {
   /**
    * Returns the matched response. See <a href="https://playwright.dev/java/docs/events#waiting-for-event">waiting for
    * event</a> for more details about events.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Waits for the next response with the specified url
    * Response response = page.waitForResponse("https://example.com/resource", () -> {
    *   // Triggers the response
-   *   page.click("button.triggers-response");
+   *   page.getByText("trigger response").click();
    * });
    *
    * // Waits for the next response matching some conditions
    * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
    *   // Triggers the response
-   *   page.click("button.triggers-response");
+   *   page.getByText("trigger response").click();
    * });
    * }</pre>
    *
@@ -7097,17 +7038,19 @@ public interface Page extends AutoCloseable {
   /**
    * Returns the matched response. See <a href="https://playwright.dev/java/docs/events#waiting-for-event">waiting for
    * event</a> for more details about events.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Waits for the next response with the specified url
    * Response response = page.waitForResponse("https://example.com/resource", () -> {
    *   // Triggers the response
-   *   page.click("button.triggers-response");
+   *   page.getByText("trigger response").click();
    * });
    *
    * // Waits for the next response matching some conditions
    * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
    *   // Triggers the response
-   *   page.click("button.triggers-response");
+   *   page.getByText("trigger response").click();
    * });
    * }</pre>
    *
@@ -7122,17 +7065,19 @@ public interface Page extends AutoCloseable {
   /**
    * Returns the matched response. See <a href="https://playwright.dev/java/docs/events#waiting-for-event">waiting for
    * event</a> for more details about events.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Waits for the next response with the specified url
    * Response response = page.waitForResponse("https://example.com/resource", () -> {
    *   // Triggers the response
-   *   page.click("button.triggers-response");
+   *   page.getByText("trigger response").click();
    * });
    *
    * // Waits for the next response matching some conditions
    * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
    *   // Triggers the response
-   *   page.click("button.triggers-response");
+   *   page.getByText("trigger response").click();
    * });
    * }</pre>
    *
@@ -7145,17 +7090,19 @@ public interface Page extends AutoCloseable {
   /**
    * Returns the matched response. See <a href="https://playwright.dev/java/docs/events#waiting-for-event">waiting for
    * event</a> for more details about events.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Waits for the next response with the specified url
    * Response response = page.waitForResponse("https://example.com/resource", () -> {
    *   // Triggers the response
-   *   page.click("button.triggers-response");
+   *   page.getByText("trigger response").click();
    * });
    *
    * // Waits for the next response matching some conditions
    * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
    *   // Triggers the response
-   *   page.click("button.triggers-response");
+   *   page.getByText("trigger response").click();
    * });
    * }</pre>
    *
@@ -7170,17 +7117,19 @@ public interface Page extends AutoCloseable {
   /**
    * Returns the matched response. See <a href="https://playwright.dev/java/docs/events#waiting-for-event">waiting for
    * event</a> for more details about events.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // Waits for the next response with the specified url
    * Response response = page.waitForResponse("https://example.com/resource", () -> {
    *   // Triggers the response
-   *   page.click("button.triggers-response");
+   *   page.getByText("trigger response").click();
    * });
    *
    * // Waits for the next response matching some conditions
    * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
    *   // Triggers the response
-   *   page.click("button.triggers-response");
+   *   page.getByText("trigger response").click();
    * });
    * }</pre>
    *
@@ -7191,8 +7140,8 @@ public interface Page extends AutoCloseable {
    */
   Response waitForResponse(Predicate<Response> urlOrPredicate, WaitForResponseOptions options, Runnable callback);
   /**
-   * Returns when element specified by selector satisfies {@code state} option. Returns {@code null} if waiting for {@code hidden} or
-   * {@code detached}.
+   * Returns when element specified by selector satisfies {@code state} option. Returns {@code null} if waiting for {@code hidden}
+   * or {@code detached}.
    *
    * <p> <strong>NOTE:</strong> Playwright automatically waits for element to be ready before performing an action. Using {@code Locator} objects and
    * web-first assertions makes the code wait-for-selector-free.
@@ -7200,6 +7149,8 @@ public interface Page extends AutoCloseable {
    * <p> Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at
    * the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the
    * selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
+   *
+   * <p> **Usage**
    *
    * <p> This method works across navigations:
    * <pre>{@code
@@ -7222,15 +7173,14 @@ public interface Page extends AutoCloseable {
    * }
    * }</pre>
    *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
-   * details.
+   * @param selector A selector to query for.
    */
   default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
   }
   /**
-   * Returns when element specified by selector satisfies {@code state} option. Returns {@code null} if waiting for {@code hidden} or
-   * {@code detached}.
+   * Returns when element specified by selector satisfies {@code state} option. Returns {@code null} if waiting for {@code hidden}
+   * or {@code detached}.
    *
    * <p> <strong>NOTE:</strong> Playwright automatically waits for element to be ready before performing an action. Using {@code Locator} objects and
    * web-first assertions makes the code wait-for-selector-free.
@@ -7238,6 +7188,8 @@ public interface Page extends AutoCloseable {
    * <p> Wait for the {@code selector} to satisfy {@code state} option (either appear/disappear from dom, or become visible/hidden). If at
    * the moment of calling the method {@code selector} already satisfies the condition, the method will return immediately. If the
    * selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will throw.
+   *
+   * <p> **Usage**
    *
    * <p> This method works across navigations:
    * <pre>{@code
@@ -7260,33 +7212,32 @@ public interface Page extends AutoCloseable {
    * }
    * }</pre>
    *
-   * @param selector A selector to query for. See <a href="https://playwright.dev/java/docs/selectors">working with selectors</a> for more
-   * details.
+   * @param selector A selector to query for.
    */
   ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
   /**
    * Waits for the given {@code timeout} in milliseconds.
    *
-   * <p> Note that {@code page.waitForTimeout()} should only be used for debugging. Tests using the timer in production are going to be
-   * flaky. Use signals such as network events, selectors becoming visible and others instead.
+   * <p> Note that {@code page.waitForTimeout()} should only be used for debugging. Tests using the timer in production are going to
+   * be flaky. Use signals such as network events, selectors becoming visible and others instead.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * // wait for 1 second
    * page.waitForTimeout(1000);
    * }</pre>
-   *
-   * <p> Shortcut for main frame's {@link Frame#waitForTimeout Frame.waitForTimeout()}.
    *
    * @param timeout A timeout to wait for
    */
   void waitForTimeout(double timeout);
   /**
    * Waits for the main frame to navigate to the given URL.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
    * page.waitForURL("**\/target.html");
    * }</pre>
-   *
-   * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
@@ -7297,12 +7248,12 @@ public interface Page extends AutoCloseable {
   }
   /**
    * Waits for the main frame to navigate to the given URL.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
    * page.waitForURL("**\/target.html");
    * }</pre>
-   *
-   * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
@@ -7311,12 +7262,12 @@ public interface Page extends AutoCloseable {
   void waitForURL(String url, WaitForURLOptions options);
   /**
    * Waits for the main frame to navigate to the given URL.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
    * page.waitForURL("**\/target.html");
    * }</pre>
-   *
-   * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
@@ -7327,12 +7278,12 @@ public interface Page extends AutoCloseable {
   }
   /**
    * Waits for the main frame to navigate to the given URL.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
    * page.waitForURL("**\/target.html");
    * }</pre>
-   *
-   * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
@@ -7341,12 +7292,12 @@ public interface Page extends AutoCloseable {
   void waitForURL(Pattern url, WaitForURLOptions options);
   /**
    * Waits for the main frame to navigate to the given URL.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
    * page.waitForURL("**\/target.html");
    * }</pre>
-   *
-   * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
@@ -7357,12 +7308,12 @@ public interface Page extends AutoCloseable {
   }
   /**
    * Waits for the main frame to navigate to the given URL.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
    * page.waitForURL("**\/target.html");
    * }</pre>
-   *
-   * <p> Shortcut for main frame's {@link Frame#waitForURL Frame.waitForURL()}.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to

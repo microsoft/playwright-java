@@ -149,7 +149,7 @@ class Utils {
       case "chromium":
         switch (getOS()) {
           case MAC:
-            return Arrays.asList("net::ERR_CERT_INVALID");
+            return Arrays.asList("net::ERR_CERT_INVALID", "net::ERR_CERT_AUTHORITY_INVALID");
           default:
             return Arrays.asList("net::ERR_CERT_AUTHORITY_INVALID");
         }

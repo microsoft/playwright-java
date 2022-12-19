@@ -22,8 +22,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * BrowserType provides methods to launch a specific browser instance or connect to an existing one. The following is a
- * typical example of using Playwright to drive automation:
+ * BrowserType provides methods to launch a specific browser instance or connect to an existing one. The following is
+ * a typical example of using Playwright to drive automation:
  * <pre>{@code
  * import com.microsoft.playwright.*;
  *
@@ -142,9 +142,9 @@ public interface BrowserType {
      */
     public Boolean devtools;
     /**
-     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
-     * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
-     * is closed.
+     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and
+     * is deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created
+     * in is closed.
      */
     public Path downloadsPath;
     /**
@@ -177,8 +177,8 @@ public interface BrowserType {
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
-     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless the
-     * {@code devtools} option is {@code true}.
+     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless
+     * the {@code devtools} option is {@code true}.
      */
     public Boolean headless;
     /**
@@ -200,8 +200,8 @@ public interface BrowserType {
      */
     public Double slowMo;
     /**
-     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
-     * disable timeout.
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0}
+     * to disable timeout.
      */
     public Double timeout;
     /**
@@ -252,9 +252,9 @@ public interface BrowserType {
       return this;
     }
     /**
-     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
-     * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
-     * is closed.
+     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and
+     * is deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created
+     * in is closed.
      */
     public LaunchOptions setDownloadsPath(Path downloadsPath) {
       this.downloadsPath = downloadsPath;
@@ -308,8 +308,8 @@ public interface BrowserType {
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
-     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless the
-     * {@code devtools} option is {@code true}.
+     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless
+     * the {@code devtools} option is {@code true}.
      */
     public LaunchOptions setHeadless(boolean headless) {
       this.headless = headless;
@@ -352,8 +352,8 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
-     * disable timeout.
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0}
+     * to disable timeout.
      */
     public LaunchOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -406,8 +406,8 @@ public interface BrowserType {
      */
     public Boolean chromiumSandbox;
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
+     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
      * Defaults to {@code "light"}.
      */
     public Optional<ColorScheme> colorScheme;
@@ -421,9 +421,9 @@ public interface BrowserType {
      */
     public Boolean devtools;
     /**
-     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
-     * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
-     * is closed.
+     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and
+     * is deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created
+     * in is closed.
      */
     public Path downloadsPath;
     /**
@@ -465,8 +465,8 @@ public interface BrowserType {
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
-     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless the
-     * {@code devtools} option is {@code true}.
+     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless
+     * the {@code devtools} option is {@code true}.
      */
     public Boolean headless;
     /**
@@ -488,8 +488,8 @@ public interface BrowserType {
      */
     public Boolean ignoreHTTPSErrors;
     /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported
-     * in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
+     * supported in Firefox.
      */
     public Boolean isMobile;
     /**
@@ -497,8 +497,8 @@ public interface BrowserType {
      */
     public Boolean javaScriptEnabled;
     /**
-     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language}
-     * request header value as well as number and date formatting rules.
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
+     * {@code Accept-Language} request header value as well as number and date formatting rules.
      */
     public String locale;
     /**
@@ -572,14 +572,14 @@ public interface BrowserType {
      */
     public Double slowMo;
     /**
-     * If specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
-     * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
-     * more about the strict mode.
+     * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector. This option does not
+     * affect any Locator APIs (Locators are always strict). See {@code Locator} to learn more about the strict mode.
      */
     public Boolean strictSelectors;
     /**
-     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
-     * disable timeout.
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0}
+     * to disable timeout.
      */
     public Double timeout;
     /**
@@ -667,8 +667,8 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}. See
-     * {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
+     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
      * Defaults to {@code "light"}.
      */
     public LaunchPersistentContextOptions setColorScheme(ColorScheme colorScheme) {
@@ -691,9 +691,9 @@ public interface BrowserType {
       return this;
     }
     /**
-     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and is
-     * deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created in
-     * is closed.
+     * If specified, accepted downloads are downloaded into this directory. Otherwise, temporary directory is created and
+     * is deleted when browser is closed. In either case, the downloads are deleted when the browser context they were created
+     * in is closed.
      */
     public LaunchPersistentContextOptions setDownloadsPath(Path downloadsPath) {
       this.downloadsPath = downloadsPath;
@@ -768,8 +768,8 @@ public interface BrowserType {
     /**
      * Whether to run browser in headless mode. More details for <a
      * href="https://developers.google.com/web/updates/2017/04/headless-chrome">Chromium</a> and <a
-     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless the
-     * {@code devtools} option is {@code true}.
+     * href="https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Headless_mode">Firefox</a>. Defaults to {@code true} unless
+     * the {@code devtools} option is {@code true}.
      */
     public LaunchPersistentContextOptions setHeadless(boolean headless) {
       this.headless = headless;
@@ -812,8 +812,8 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not supported
-     * in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
+     * supported in Firefox.
      */
     public LaunchPersistentContextOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
@@ -827,8 +827,8 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value, {@code Accept-Language}
-     * request header value as well as number and date formatting rules.
+     * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
+     * {@code Accept-Language} request header value as well as number and date formatting rules.
      */
     public LaunchPersistentContextOptions setLocale(String locale) {
       this.locale = locale;
@@ -972,17 +972,17 @@ public interface BrowserType {
       return this;
     }
     /**
-     * If specified, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
-     * that imply single target DOM element will throw when more than one element matches the selector. See {@code Locator} to learn
-     * more about the strict mode.
+     * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
+     * that imply single target DOM element will throw when more than one element matches the selector. This option does not
+     * affect any Locator APIs (Locators are always strict). See {@code Locator} to learn more about the strict mode.
      */
     public LaunchPersistentContextOptions setStrictSelectors(boolean strictSelectors) {
       this.strictSelectors = strictSelectors;
       return this;
     }
     /**
-     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to
-     * disable timeout.
+     * Maximum time in milliseconds to wait for the browser instance to start. Defaults to {@code 30000} (30 seconds). Pass {@code 0}
+     * to disable timeout.
      */
     public LaunchPersistentContextOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1049,6 +1049,8 @@ public interface BrowserType {
    * <p> The default browser context is accessible via {@link Browser#contexts Browser.contexts()}.
    *
    * <p> <strong>NOTE:</strong> Connecting over the Chrome DevTools Protocol is only supported for Chromium-based browsers.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * Browser browser = playwright.chromium().connectOverCDP("http://localhost:9222");
    * BrowserContext defaultContext = browser.contexts().get(0);
@@ -1067,6 +1069,8 @@ public interface BrowserType {
    * <p> The default browser context is accessible via {@link Browser#contexts Browser.contexts()}.
    *
    * <p> <strong>NOTE:</strong> Connecting over the Chrome DevTools Protocol is only supported for Chromium-based browsers.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * Browser browser = playwright.chromium().connectOverCDP("http://localhost:9222");
    * BrowserContext defaultContext = browser.contexts().get(0);
@@ -1084,6 +1088,8 @@ public interface BrowserType {
   /**
    * Returns the browser instance.
    *
+   * <p> **Usage**
+   *
    * <p> You can use {@code ignoreDefaultArgs} to filter out {@code --mute-audio} from default arguments:
    * <pre>{@code
    * // Or "firefox" or "webkit".
@@ -1107,8 +1113,8 @@ public interface BrowserType {
    * video playback. See <a
    * href="https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/">this article</a> for
    * other differences between Chromium and Chrome. <a
-   * href="https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md">This article</a>
-   * describes some differences for Linux users.
+   * href="https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md">This
+   * article</a> describes some differences for Linux users.
    */
   default Browser launch() {
     return launch(null);
@@ -1116,6 +1122,8 @@ public interface BrowserType {
   /**
    * Returns the browser instance.
    *
+   * <p> **Usage**
+   *
    * <p> You can use {@code ignoreDefaultArgs} to filter out {@code --mute-audio} from default arguments:
    * <pre>{@code
    * // Or "firefox" or "webkit".
@@ -1139,8 +1147,8 @@ public interface BrowserType {
    * video playback. See <a
    * href="https://www.howtogeek.com/202825/what%E2%80%99s-the-difference-between-chromium-and-chrome/">this article</a> for
    * other differences between Chromium and Chrome. <a
-   * href="https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md">This article</a>
-   * describes some differences for Linux users.
+   * href="https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md">This
+   * article</a> describes some differences for Linux users.
    */
   Browser launch(LaunchOptions options);
   /**
