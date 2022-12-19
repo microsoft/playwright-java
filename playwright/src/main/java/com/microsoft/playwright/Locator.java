@@ -1189,16 +1189,32 @@ public interface Locator {
     }
   }
   class IsHiddenOptions {
+    /**
+     * @deprecated This option is ignored. {@link Locator#isHidden Locator.isHidden()} does not wait for the element to become hidden and
+     * returns immediately.
+     */
     public Double timeout;
 
+    /**
+     * @deprecated This option is ignored. {@link Locator#isHidden Locator.isHidden()} does not wait for the element to become hidden and
+     * returns immediately.
+     */
     public IsHiddenOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
   }
   class IsVisibleOptions {
+    /**
+     * @deprecated This option is ignored. {@link Locator#isVisible Locator.isVisible()} does not wait for the element to become visible
+     * and returns immediately.
+     */
     public Double timeout;
 
+    /**
+     * @deprecated This option is ignored. {@link Locator#isVisible Locator.isVisible()} does not wait for the element to become visible
+     * and returns immediately.
+     */
     public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;

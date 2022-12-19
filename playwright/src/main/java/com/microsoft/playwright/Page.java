@@ -1854,6 +1854,10 @@ public interface Page extends AutoCloseable {
      * element, the call throws an exception.
      */
     public Boolean strict;
+    /**
+     * @deprecated This option is ignored. {@link Page#isHidden Page.isHidden()} does not wait for the element to become hidden and returns
+     * immediately.
+     */
     public Double timeout;
 
     /**
@@ -1864,6 +1868,10 @@ public interface Page extends AutoCloseable {
       this.strict = strict;
       return this;
     }
+    /**
+     * @deprecated This option is ignored. {@link Page#isHidden Page.isHidden()} does not wait for the element to become hidden and returns
+     * immediately.
+     */
     public IsHiddenOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1875,6 +1883,10 @@ public interface Page extends AutoCloseable {
      * element, the call throws an exception.
      */
     public Boolean strict;
+    /**
+     * @deprecated This option is ignored. {@link Page#isVisible Page.isVisible()} does not wait for the element to become visible and
+     * returns immediately.
+     */
     public Double timeout;
 
     /**
@@ -1885,6 +1897,10 @@ public interface Page extends AutoCloseable {
       this.strict = strict;
       return this;
     }
+    /**
+     * @deprecated This option is ignored. {@link Page#isVisible Page.isVisible()} does not wait for the element to become visible and
+     * returns immediately.
+     */
     public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;

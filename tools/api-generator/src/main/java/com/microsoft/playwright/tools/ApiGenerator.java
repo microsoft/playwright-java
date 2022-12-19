@@ -90,6 +90,9 @@ abstract class Element {
     if (!json.has("spec")) {
       return "";
     }
+    if (json.has("deprecated")) {
+      return "@deprecated " + beautify(json.get("deprecated").getAsString());
+    }
     return formatSpec(json.getAsJsonArray("spec"));
   }
 
@@ -144,7 +147,7 @@ abstract class Element {
       currentItemList = null;
     }
 
-    return String.join("\n", out).replaceAll("↵", " ");
+    return String.join("\n", out);
   }
 
   private static String beautify(String paragraph) {
@@ -152,7 +155,8 @@ abstract class Element {
     linkified = updateExternalLinks(linkified);
     return wrapText(linkified, 120, "")
       .replaceAll("`'([^`]+)'`", "{@code \"$1\"}")
-      .replaceAll("`([^`]+)`", "{@code $1}");
+      .replaceAll("`([^`]+)`", "{@code $1}")
+      .replaceAll("↵", " ");
   }
 
   private static String linkifyMemberRefs(String paragraph) {

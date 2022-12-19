@@ -1416,6 +1416,10 @@ public interface Frame {
      * element, the call throws an exception.
      */
     public Boolean strict;
+    /**
+     * @deprecated This option is ignored. {@link Frame#isHidden Frame.isHidden()} does not wait for the element to become hidden and
+     * returns immediately.
+     */
     public Double timeout;
 
     /**
@@ -1426,6 +1430,10 @@ public interface Frame {
       this.strict = strict;
       return this;
     }
+    /**
+     * @deprecated This option is ignored. {@link Frame#isHidden Frame.isHidden()} does not wait for the element to become hidden and
+     * returns immediately.
+     */
     public IsHiddenOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
@@ -1437,6 +1445,10 @@ public interface Frame {
      * element, the call throws an exception.
      */
     public Boolean strict;
+    /**
+     * @deprecated This option is ignored. {@link Frame#isVisible Frame.isVisible()} does not wait for the element to become visible and
+     * returns immediately.
+     */
     public Double timeout;
 
     /**
@@ -1447,6 +1459,10 @@ public interface Frame {
       this.strict = strict;
       return this;
     }
+    /**
+     * @deprecated This option is ignored. {@link Frame#isVisible Frame.isVisible()} does not wait for the element to become visible and
+     * returns immediately.
+     */
     public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
