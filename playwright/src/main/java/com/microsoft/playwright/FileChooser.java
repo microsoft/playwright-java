@@ -29,30 +29,30 @@ import java.nio.file.Path;
 public interface FileChooser {
   class SetFilesOptions {
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public SetFilesOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SetFilesOptions setTimeout(double timeout) {

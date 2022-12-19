@@ -21,20 +21,21 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * Exposes API that can be used for the Web API testing. This class is used for creating {@code APIRequestContext} instance which
- * in turn can be used for sending web requests. An instance of this class can be obtained via {@link Playwright#request
- * Playwright.request()}. For more information see {@code APIRequestContext}.
+ * Exposes API that can be used for the Web API testing. This class is used for creating {@code APIRequestContext} instance
+ * which in turn can be used for sending web requests. An instance of this class can be obtained via {@link
+ * Playwright#request Playwright.request()}. For more information see {@code APIRequestContext}.
  */
 public interface APIRequest {
   class NewContextOptions {
     /**
      * Methods like {@link APIRequestContext#get APIRequestContext.get()} take the base URL into consideration by using the <a
-     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the corresponding
-     * URL. Examples:
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
+     * corresponding URL. Examples:
      * <ul>
-     * <li> baseURL: {@code http://localhost:3000} and sending request to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
-     * <li> baseURL: {@code http://localhost:3000/foo/} and sending request to {@code ./bar.html} results in
-     * {@code http://localhost:3000/foo/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000} and sending request to {@code /bar.html} results in {@code
+     * http://localhost:3000/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo/} and sending request to {@code ./bar.html} results in {@code
+     * http://localhost:3000/foo/bar.html}</li>
      * <li> baseURL: {@code http://localhost:3000/foo} (without trailing slash) and navigating to {@code ./bar.html} results in
      * {@code http://localhost:3000/bar.html}</li>
      * </ul>
@@ -57,21 +58,22 @@ public interface APIRequest {
      */
     public Proxy proxy;
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in
-     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()} or {@link
-     * APIRequestContext#storageState APIRequestContext.storageState()}. Either a path to the file with saved storage, or the
-     * value returned by one of {@link BrowserContext#storageState BrowserContext.storageState()} or {@link
-     * APIRequestContext#storageState APIRequestContext.storageState()} methods.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()} or {@link APIRequestContext#storageState
+     * APIRequestContext.storageState()}. Either a path to the file with saved storage, or the value returned by one of {@link
+     * BrowserContext#storageState BrowserContext.storageState()} or {@link APIRequestContext#storageState
+     * APIRequestContext.storageState()} methods.
      */
     public String storageState;
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in
-     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved
-     * storage state.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
+     * state.
      */
     public Path storageStatePath;
     /**
-     * Maximum time in milliseconds to wait for the response. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
+     * Maximum time in milliseconds to wait for the response. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable
+     * timeout.
      */
     public Double timeout;
     /**
@@ -81,12 +83,13 @@ public interface APIRequest {
 
     /**
      * Methods like {@link APIRequestContext#get APIRequestContext.get()} take the base URL into consideration by using the <a
-     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the corresponding
-     * URL. Examples:
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
+     * corresponding URL. Examples:
      * <ul>
-     * <li> baseURL: {@code http://localhost:3000} and sending request to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
-     * <li> baseURL: {@code http://localhost:3000/foo/} and sending request to {@code ./bar.html} results in
-     * {@code http://localhost:3000/foo/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000} and sending request to {@code /bar.html} results in {@code
+     * http://localhost:3000/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo/} and sending request to {@code ./bar.html} results in {@code
+     * http://localhost:3000/foo/bar.html}</li>
      * <li> baseURL: {@code http://localhost:3000/foo} (without trailing slash) and navigating to {@code ./bar.html} results in
      * {@code http://localhost:3000/bar.html}</li>
      * </ul>
@@ -136,27 +139,28 @@ public interface APIRequest {
       return this;
     }
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in
-     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()} or {@link
-     * APIRequestContext#storageState APIRequestContext.storageState()}. Either a path to the file with saved storage, or the
-     * value returned by one of {@link BrowserContext#storageState BrowserContext.storageState()} or {@link
-     * APIRequestContext#storageState APIRequestContext.storageState()} methods.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()} or {@link APIRequestContext#storageState
+     * APIRequestContext.storageState()}. Either a path to the file with saved storage, or the value returned by one of {@link
+     * BrowserContext#storageState BrowserContext.storageState()} or {@link APIRequestContext#storageState
+     * APIRequestContext.storageState()} methods.
      */
     public NewContextOptions setStorageState(String storageState) {
       this.storageState = storageState;
       return this;
     }
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in
-     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved
-     * storage state.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
+     * state.
      */
     public NewContextOptions setStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
       return this;
     }
     /**
-     * Maximum time in milliseconds to wait for the response. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
+     * Maximum time in milliseconds to wait for the response. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable
+     * timeout.
      */
     public NewContextOptions setTimeout(double timeout) {
       this.timeout = timeout;

@@ -36,8 +36,8 @@ import java.util.*;
  * <p> ElementHandle instances can be used as an argument in {@link Page#evalOnSelector Page.evalOnSelector()} and {@link
  * Page#evaluate Page.evaluate()} methods.
  *
- * <p> The difference between the {@code Locator} and ElementHandle is that the ElementHandle points to a particular element, while
- * {@code Locator} captures the logic of how to retrieve an element.
+ * <p> The difference between the {@code Locator} and ElementHandle is that the ElementHandle points to a particular element,
+ * while {@code Locator} captures the logic of how to retrieve an element.
  *
  * <p> In the example below, handle points to a particular DOM element on page. If that element changes text or is used by
  * React to render an entirely different component, handle is still pointing to that very DOM element. This can lead to
@@ -48,8 +48,8 @@ import java.util.*;
  * handle.click();
  * }</pre>
  *
- * <p> With the locator, every time the {@code element} is used, up-to-date DOM element is located in the page using the selector. So
- * in the snippet below, underlying DOM element is going to be located twice.
+ * <p> With the locator, every time the {@code element} is used, up-to-date DOM element is located in the page using the
+ * selector. So in the snippet below, underlying DOM element is going to be located twice.
  * <pre>{@code
  * Locator locator = page.getByText("Submit");
  * locator.hover();
@@ -64,19 +64,19 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public Position position;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -96,32 +96,32 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public CheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public CheckOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public CheckOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public CheckOptions setTimeout(double timeout) {
@@ -157,24 +157,24 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean force;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
-     * current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
      */
     public List<KeyboardModifier> modifiers;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public Position position;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -215,40 +215,40 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
-     * current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
      */
     public ClickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public ClickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public ClickOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public ClickOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public ClickOptions setTimeout(double timeout) {
@@ -280,24 +280,24 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean force;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
-     * current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
      */
     public List<KeyboardModifier> modifiers;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public Position position;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -331,40 +331,40 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
-     * current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
      */
     public DblclickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public DblclickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public DblclickOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public DblclickOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public DblclickOptions setTimeout(double timeout) {
@@ -388,14 +388,14 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -409,17 +409,17 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public FillOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public FillOptions setTimeout(double timeout) {
@@ -434,24 +434,24 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean force;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
-     * current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
      */
     public List<KeyboardModifier> modifiers;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public Position position;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -471,40 +471,40 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
-     * current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
      */
     public HoverOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public HoverOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public HoverOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public HoverOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public HoverOptions setTimeout(double timeout) {
@@ -523,15 +523,15 @@ public interface ElementHandle extends JSHandle {
   }
   class InputValueOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public InputValueOptions setTimeout(double timeout) {
@@ -545,14 +545,14 @@ public interface ElementHandle extends JSHandle {
      */
     public Double delay;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -565,17 +565,17 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public PressOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public PressOptions setTimeout(double timeout) {
@@ -585,8 +585,8 @@ public interface ElementHandle extends JSHandle {
   }
   class ScreenshotOptions {
     /**
-     * When set to {@code "disabled"}, stops CSS animations, CSS transitions and Web Animations. Animations get different treatment
-     * depending on their duration:
+     * When set to {@code "disabled"}, stops CSS animations, CSS transitions and Web Animations. Animations get different
+     * treatment depending on their duration:
      * <ul>
      * <li> finite animations are fast-forwarded to completion, so they'll fire {@code transitionend} event.</li>
      * <li> infinite animations are canceled to initial state, and then played over after the screenshot.</li>
@@ -596,8 +596,8 @@ public interface ElementHandle extends JSHandle {
      */
     public ScreenshotAnimations animations;
     /**
-     * When set to {@code "hide"}, screenshot will hide text caret. When set to {@code "initial"}, text caret behavior will not be changed.
-     * Defaults to {@code "hide"}.
+     * When set to {@code "hide"}, screenshot will hide text caret. When set to {@code "initial"}, text caret behavior will not
+     * be changed.  Defaults to {@code "hide"}.
      */
     public ScreenshotCaret caret;
     /**
@@ -611,9 +611,9 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean omitBackground;
     /**
-     * The file path to save the image to. The screenshot type will be inferred from file extension. If {@code path} is a relative
-     * path, then it is resolved relative to the current working directory. If no path is provided, the image won't be saved to
-     * the disk.
+     * The file path to save the image to. The screenshot type will be inferred from file extension. If {@code path} is a
+     * relative path, then it is resolved relative to the current working directory. If no path is provided, the image won't be
+     * saved to the disk.
      */
     public Path path;
     /**
@@ -621,16 +621,16 @@ public interface ElementHandle extends JSHandle {
      */
     public Integer quality;
     /**
-     * When set to {@code "css"}, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices, this will
-     * keep screenshots small. Using {@code "device"} option will produce a single pixel per each device pixel, so screenshots of
-     * high-dpi devices will be twice as large or even larger.
+     * When set to {@code "css"}, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices,
+     * this will keep screenshots small. Using {@code "device"} option will produce a single pixel per each device pixel, so
+     * screenshots of high-dpi devices will be twice as large or even larger.
      *
      * <p> Defaults to {@code "device"}.
      */
     public ScreenshotScale scale;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -640,8 +640,8 @@ public interface ElementHandle extends JSHandle {
     public ScreenshotType type;
 
     /**
-     * When set to {@code "disabled"}, stops CSS animations, CSS transitions and Web Animations. Animations get different treatment
-     * depending on their duration:
+     * When set to {@code "disabled"}, stops CSS animations, CSS transitions and Web Animations. Animations get different
+     * treatment depending on their duration:
      * <ul>
      * <li> finite animations are fast-forwarded to completion, so they'll fire {@code transitionend} event.</li>
      * <li> infinite animations are canceled to initial state, and then played over after the screenshot.</li>
@@ -654,8 +654,8 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * When set to {@code "hide"}, screenshot will hide text caret. When set to {@code "initial"}, text caret behavior will not be changed.
-     * Defaults to {@code "hide"}.
+     * When set to {@code "hide"}, screenshot will hide text caret. When set to {@code "initial"}, text caret behavior will not
+     * be changed.  Defaults to {@code "hide"}.
      */
     public ScreenshotOptions setCaret(ScreenshotCaret caret) {
       this.caret = caret;
@@ -678,9 +678,9 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * The file path to save the image to. The screenshot type will be inferred from file extension. If {@code path} is a relative
-     * path, then it is resolved relative to the current working directory. If no path is provided, the image won't be saved to
-     * the disk.
+     * The file path to save the image to. The screenshot type will be inferred from file extension. If {@code path} is a
+     * relative path, then it is resolved relative to the current working directory. If no path is provided, the image won't be
+     * saved to the disk.
      */
     public ScreenshotOptions setPath(Path path) {
       this.path = path;
@@ -694,9 +694,9 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * When set to {@code "css"}, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices, this will
-     * keep screenshots small. Using {@code "device"} option will produce a single pixel per each device pixel, so screenshots of
-     * high-dpi devices will be twice as large or even larger.
+     * When set to {@code "css"}, screenshot will have a single pixel per each css pixel on the page. For high-dpi devices,
+     * this will keep screenshots small. Using {@code "device"} option will produce a single pixel per each device pixel, so
+     * screenshots of high-dpi devices will be twice as large or even larger.
      *
      * <p> Defaults to {@code "device"}.
      */
@@ -705,8 +705,8 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public ScreenshotOptions setTimeout(double timeout) {
@@ -723,15 +723,15 @@ public interface ElementHandle extends JSHandle {
   }
   class ScrollIntoViewIfNeededOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public ScrollIntoViewIfNeededOptions setTimeout(double timeout) {
@@ -746,14 +746,14 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -767,17 +767,17 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SelectOptionOptions setTimeout(double timeout) {
@@ -792,8 +792,8 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean force;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -807,8 +807,8 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SelectTextOptions setTimeout(double timeout) {
@@ -823,19 +823,19 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public Position position;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -855,32 +855,32 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public SetCheckedOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public SetCheckedOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public SetCheckedOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SetCheckedOptions setTimeout(double timeout) {
@@ -899,30 +899,30 @@ public interface ElementHandle extends JSHandle {
   }
   class SetInputFilesOptions {
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public SetInputFilesOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SetInputFilesOptions setTimeout(double timeout) {
@@ -937,24 +937,24 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean force;
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
-     * current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
      */
     public List<KeyboardModifier> modifiers;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public Position position;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -974,40 +974,40 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores
-     * current modifiers back. If not specified, currently pressed modifiers are used.
+     * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
+     * modifiers back. If not specified, currently pressed modifiers are used.
      */
     public TapOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public TapOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public TapOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public TapOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public TapOptions setTimeout(double timeout) {
@@ -1030,14 +1030,14 @@ public interface ElementHandle extends JSHandle {
      */
     public Double delay;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1050,17 +1050,17 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public TypeOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public TypeOptions setTimeout(double timeout) {
@@ -1075,19 +1075,19 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public Boolean noWaitAfter;
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public Position position;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1107,32 +1107,32 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You
-     * can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as
-     * navigating to inaccessible pages. Defaults to {@code false}.
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
      */
     public UncheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
       return this;
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public UncheckOptions setPosition(double x, double y) {
       return setPosition(new Position(x, y));
     }
     /**
-     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of
-     * the element.
+     * A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the
+     * element.
      */
     public UncheckOptions setPosition(Position position) {
       this.position = position;
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public UncheckOptions setTimeout(double timeout) {
@@ -1151,15 +1151,15 @@ public interface ElementHandle extends JSHandle {
   }
   class WaitForElementStateOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public WaitForElementStateOptions setTimeout(double timeout) {
@@ -1173,10 +1173,10 @@ public interface ElementHandle extends JSHandle {
      * <ul>
      * <li> {@code "attached"} - wait for element to be present in DOM.</li>
      * <li> {@code "detached"} - wait for element to not be present in DOM.</li>
-     * <li> {@code "visible"} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
-     * content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
-     * <li> {@code "hidden"} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
-     * is opposite to the {@code "visible"} option.</li>
+     * <li> {@code "visible"} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element
+     * without any content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
+     * <li> {@code "hidden"} - wait for element to be either detached from DOM, or have an empty bounding box or {@code
+     * visibility:hidden}. This is opposite to the {@code "visible"} option.</li>
      * </ul>
      */
     public WaitForSelectorState state;
@@ -1186,8 +1186,8 @@ public interface ElementHandle extends JSHandle {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1197,10 +1197,10 @@ public interface ElementHandle extends JSHandle {
      * <ul>
      * <li> {@code "attached"} - wait for element to be present in DOM.</li>
      * <li> {@code "detached"} - wait for element to not be present in DOM.</li>
-     * <li> {@code "visible"} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element without any
-     * content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
-     * <li> {@code "hidden"} - wait for element to be either detached from DOM, or have an empty bounding box or {@code visibility:hidden}. This
-     * is opposite to the {@code "visible"} option.</li>
+     * <li> {@code "visible"} - wait for element to have non-empty bounding box and no {@code visibility:hidden}. Note that element
+     * without any content or with {@code display:none} has an empty bounding box and is not considered visible.</li>
+     * <li> {@code "hidden"} - wait for element to be either detached from DOM, or have an empty bounding box or {@code
+     * visibility:hidden}. This is opposite to the {@code "visible"} option.</li>
      * </ul>
      */
     public WaitForSelectorOptions setState(WaitForSelectorState state) {
@@ -1216,8 +1216,8 @@ public interface ElementHandle extends JSHandle {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be changed
-     * by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
+     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public WaitForSelectorOptions setTimeout(double timeout) {
@@ -1226,8 +1226,8 @@ public interface ElementHandle extends JSHandle {
     }
   }
   /**
-   * This method returns the bounding box of the element, or {@code null} if the element is not visible. The bounding box
-   * is calculated relative to the main frame viewport - which is usually the same as the browser window.
+   * This method returns the bounding box of the element, or {@code null} if the element is not visible. The bounding box is
+   * calculated relative to the main frame viewport - which is usually the same as the browser window.
    *
    * <p> Scrolling affects the returned bounding box, similarly to <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">Element.getBoundingClientRect</a>.
@@ -1236,8 +1236,8 @@ public interface ElementHandle extends JSHandle {
    * <p> Elements from child frames return the bounding box relative to the main frame, unlike the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">Element.getBoundingClientRect</a>.
    *
-   * <p> Assuming the page is static, it is safe to use bounding box coordinates to perform input. For example, the
-   * following snippet should click the center of the element.
+   * <p> Assuming the page is static, it is safe to use bounding box coordinates to perform input. For example, the following
+   * snippet should click the center of the element.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1251,8 +1251,8 @@ public interface ElementHandle extends JSHandle {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already checked, this
    * method returns immediately.</li>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
-   * {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
+   * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
@@ -1261,8 +1261,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    */
   default void check() {
     check(null);
@@ -1272,8 +1272,8 @@ public interface ElementHandle extends JSHandle {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already checked, this
    * method returns immediately.</li>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
-   * {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
+   * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
@@ -1282,15 +1282,15 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    */
   void check(CheckOptions options);
   /**
    * This method clicks the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
-   * {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
+   * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
@@ -1298,8 +1298,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    */
   default void click() {
     click(null);
@@ -1307,8 +1307,8 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method clicks the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
-   * {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
+   * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
@@ -1316,8 +1316,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    */
   void click(ClickOptions options);
   /**
@@ -1327,18 +1327,18 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method double clicks the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
-   * {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
+   * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
-   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
-   * click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
+   * first click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
    * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code elementHandle.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    */
@@ -1348,18 +1348,18 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method double clicks the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
-   * {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
+   * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
-   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the first
-   * click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
+   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
+   * first click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
    * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code elementHandle.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    */
@@ -1374,8 +1374,9 @@ public interface ElementHandle extends JSHandle {
    * elementHandle.dispatchEvent("click");
    * }</pre>
    *
-   * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
-   * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
+   * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code
+   * eventInit} properties and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by
+   * default.
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
    * <ul>
@@ -1412,8 +1413,9 @@ public interface ElementHandle extends JSHandle {
    * elementHandle.dispatchEvent("click");
    * }</pre>
    *
-   * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code eventInit} properties
-   * and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by default.
+   * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code
+   * eventInit} properties and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by
+   * default.
    *
    * <p> Since {@code eventInit} is event-specific, please refer to the events documentation for the lists of initial properties:
    * <ul>
@@ -1494,8 +1496,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * ElementHandle#evalOnSelectorAll ElementHandle.evalOnSelectorAll()} would wait for the promise to resolve and return
-   * its value.
+   * ElementHandle#evalOnSelectorAll ElementHandle.evalOnSelectorAll()} would wait for the promise to resolve and return its
+   * value.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1518,8 +1520,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * ElementHandle#evalOnSelectorAll ElementHandle.evalOnSelectorAll()} would wait for the promise to resolve and return
-   * its value.
+   * ElementHandle#evalOnSelectorAll ElementHandle.evalOnSelectorAll()} would wait for the promise to resolve and return its
+   * value.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1535,11 +1537,11 @@ public interface ElementHandle extends JSHandle {
   Object evalOnSelectorAll(String selector, String expression, Object arg);
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
-   * element, fills it and triggers an {@code input} event after filling. Note that you can pass an empty string to clear the input
-   * field.
+   * element, fills it and triggers an {@code input} event after filling. Note that you can pass an empty string to clear the
+   * input field.
    *
-   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
-   * However, if the element is inside the {@code <label>} element that has an associated <a
+   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method
+   * throws an error. However, if the element is inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
    * instead.
    *
@@ -1552,11 +1554,11 @@ public interface ElementHandle extends JSHandle {
   }
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
-   * element, fills it and triggers an {@code input} event after filling. Note that you can pass an empty string to clear the input
-   * field.
+   * element, fills it and triggers an {@code input} event after filling. Note that you can pass an empty string to clear the
+   * input field.
    *
-   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method throws an error.
-   * However, if the element is inside the {@code <label>} element that has an associated <a
+   * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method
+   * throws an error. However, if the element is inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
    * instead.
    *
@@ -1578,8 +1580,8 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method hovers over the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
-   * {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
+   * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to hover over the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
@@ -1587,8 +1589,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    */
   default void hover() {
     hover(null);
@@ -1596,8 +1598,8 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method hovers over the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
-   * {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
+   * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to hover over the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
@@ -1605,8 +1607,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    */
   void hover(HoverOptions options);
   /**
@@ -1673,16 +1675,18 @@ public interface ElementHandle extends JSHandle {
    * character to generate the text for. A superset of the {@code key} values can be found <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
    *
-   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace},
-   * {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp},
-   * etc.
+   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus},
+   * {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown},
+   * {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code
+   * ArrowUp}, etc.
    *
-   * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
+   * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code
+   * ShiftLeft}.
    *
    * <p> Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
    *
-   * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
-   * texts.
+   * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate
+   * different respective texts.
    *
    * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with
    * the modifier, modifier is pressed and being held while the subsequent key is being pressed.
@@ -1700,16 +1704,18 @@ public interface ElementHandle extends JSHandle {
    * character to generate the text for. A superset of the {@code key} values can be found <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
    *
-   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus}, {@code Equal}, {@code Backslash}, {@code Backspace},
-   * {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown}, {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code ArrowUp},
-   * etc.
+   * <p> {@code F1} - {@code F12}, {@code Digit0}- {@code Digit9}, {@code KeyA}- {@code KeyZ}, {@code Backquote}, {@code Minus},
+   * {@code Equal}, {@code Backslash}, {@code Backspace}, {@code Tab}, {@code Delete}, {@code Escape}, {@code ArrowDown},
+   * {@code End}, {@code Enter}, {@code Home}, {@code Insert}, {@code PageDown}, {@code PageUp}, {@code ArrowRight}, {@code
+   * ArrowUp}, etc.
    *
-   * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code ShiftLeft}.
+   * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code
+   * ShiftLeft}.
    *
    * <p> Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
    *
-   * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate different respective
-   * texts.
+   * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate
+   * different respective texts.
    *
    * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with
    * the modifier, modifier is pressed and being held while the subsequent key is being pressed.
@@ -1718,15 +1724,15 @@ public interface ElementHandle extends JSHandle {
    */
   void press(String key, PressOptions options);
   /**
-   * The method finds an element matching the specified selector in the {@code ElementHandle}'s subtree. If no elements match the
-   * selector, returns {@code null}.
+   * The method finds an element matching the specified selector in the {@code ElementHandle}'s subtree. If no elements match
+   * the selector, returns {@code null}.
    *
    * @param selector A selector to query for.
    */
   ElementHandle querySelector(String selector);
   /**
-   * The method finds all elements matching the specified selector in the {@code ElementHandle}s subtree. If no elements match the
-   * selector, returns empty array.
+   * The method finds all elements matching the specified selector in the {@code ElementHandle}s subtree. If no elements
+   * match the selector, returns empty array.
    *
    * @param selector A selector to query for.
    */
@@ -1758,7 +1764,8 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then tries to
    * scroll element into view, unless it is completely visible as defined by <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">IntersectionObserver</a>'s {@code ratio}.
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">IntersectionObserver</a>'s {@code
+   * ratio}.
    *
    * <p> Throws when {@code elementHandle} does not point to an element <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Node/isConnected">connected</a> to a Document or a ShadowRoot.
@@ -1769,7 +1776,8 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, then tries to
    * scroll element into view, unless it is completely visible as defined by <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">IntersectionObserver</a>'s {@code ratio}.
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">IntersectionObserver</a>'s {@code
+   * ratio}.
    *
    * <p> Throws when {@code elementHandle} does not point to an element <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Node/isConnected">connected</a> to a Document or a ShadowRoot.
@@ -1779,8 +1787,8 @@ public interface ElementHandle extends JSHandle {
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -1798,9 +1806,9 @@ public interface ElementHandle extends JSHandle {
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(String values) {
     return selectOption(values, null);
@@ -1809,8 +1817,8 @@ public interface ElementHandle extends JSHandle {
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -1828,17 +1836,17 @@ public interface ElementHandle extends JSHandle {
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   List<String> selectOption(String values, SelectOptionOptions options);
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -1856,9 +1864,9 @@ public interface ElementHandle extends JSHandle {
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(ElementHandle values) {
     return selectOption(values, null);
@@ -1867,8 +1875,8 @@ public interface ElementHandle extends JSHandle {
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -1886,17 +1894,17 @@ public interface ElementHandle extends JSHandle {
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   List<String> selectOption(ElementHandle values, SelectOptionOptions options);
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -1914,9 +1922,9 @@ public interface ElementHandle extends JSHandle {
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(String[] values) {
     return selectOption(values, null);
@@ -1925,8 +1933,8 @@ public interface ElementHandle extends JSHandle {
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -1944,17 +1952,17 @@ public interface ElementHandle extends JSHandle {
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   List<String> selectOption(String[] values, SelectOptionOptions options);
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -1972,9 +1980,9 @@ public interface ElementHandle extends JSHandle {
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(SelectOption values) {
     return selectOption(values, null);
@@ -1983,8 +1991,8 @@ public interface ElementHandle extends JSHandle {
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -2002,17 +2010,17 @@ public interface ElementHandle extends JSHandle {
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   List<String> selectOption(SelectOption values, SelectOptionOptions options);
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -2030,9 +2038,9 @@ public interface ElementHandle extends JSHandle {
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(ElementHandle[] values) {
     return selectOption(values, null);
@@ -2041,8 +2049,8 @@ public interface ElementHandle extends JSHandle {
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -2060,17 +2068,17 @@ public interface ElementHandle extends JSHandle {
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   List<String> selectOption(ElementHandle[] values, SelectOptionOptions options);
   /**
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -2088,9 +2096,9 @@ public interface ElementHandle extends JSHandle {
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   default List<String> selectOption(SelectOption[] values) {
     return selectOption(values, null);
@@ -2099,8 +2107,8 @@ public interface ElementHandle extends JSHandle {
    * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
    *
-   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside the
-   * {@code <label>} element that has an associated <a
+   * <p> If the target element is not a {@code <select>} element, this method throws an error. However, if the element is inside
+   * the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be used
    * instead.
    *
@@ -2118,9 +2126,9 @@ public interface ElementHandle extends JSHandle {
    * handle.selectOption(new String[] {"red", "green", "blue"});
    * }</pre>
    *
-   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected, otherwise only
-   * the first option matching one of the passed options is selected. String values are matching both values and labels.
-   * Option is considered matching if all specified properties match.
+   * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
+   * otherwise only the first option matching one of the passed options is selected. String values are matching both values
+   * and labels. Option is considered matching if all specified properties match.
    */
   List<String> selectOption(SelectOption[] values, SelectOptionOptions options);
   /**
@@ -2156,8 +2164,8 @@ public interface ElementHandle extends JSHandle {
    * <li> Ensure that the element is now checked or unchecked. If not, this method throws.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * @param checked Whether to check or uncheck the checkbox.
    */
@@ -2177,8 +2185,8 @@ public interface ElementHandle extends JSHandle {
    * <li> Ensure that the element is now checked or unchecked. If not, this method throws.</li>
    * </ol>
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * @param checked Whether to check or uncheck the checkbox.
    */
@@ -2282,8 +2290,8 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method taps the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
-   * {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
+   * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#touchscreen Page.touchscreen()} to tap the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
@@ -2291,8 +2299,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code elementHandle.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    */
@@ -2302,8 +2310,8 @@ public interface ElementHandle extends JSHandle {
   /**
    * This method taps the element by performing the following steps:
    * <ol>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
-   * {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
+   * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#touchscreen Page.touchscreen()} to tap the center of the element, or the specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
@@ -2311,8 +2319,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code elementHandle.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    */
@@ -2322,9 +2330,11 @@ public interface ElementHandle extends JSHandle {
    */
   String textContent();
   /**
-   * Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
+   * Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each
+   * character in the text.
    *
-   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link ElementHandle#press ElementHandle.press()}.
+   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link ElementHandle#press
+   * ElementHandle.press()}.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -2345,9 +2355,11 @@ public interface ElementHandle extends JSHandle {
     type(text, null);
   }
   /**
-   * Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
+   * Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each
+   * character in the text.
    *
-   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link ElementHandle#press ElementHandle.press()}.
+   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link ElementHandle#press
+   * ElementHandle.press()}.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -2370,8 +2382,8 @@ public interface ElementHandle extends JSHandle {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already unchecked,
    * this method returns immediately.</li>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
-   * {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
+   * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
@@ -2380,8 +2392,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    */
   default void uncheck() {
     uncheck(null);
@@ -2391,8 +2403,8 @@ public interface ElementHandle extends JSHandle {
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already unchecked,
    * this method returns immediately.</li>
-   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless
-   * {@code force} option is set.</li>
+   * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
+   * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
@@ -2401,8 +2413,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
    *
-   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code TimeoutError}. Passing
-   * zero timeout disables this.
+   * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
+   * TimeoutError}. Passing zero timeout disables this.
    */
   void uncheck(UncheckOptions options);
   /**
@@ -2412,15 +2424,20 @@ public interface ElementHandle extends JSHandle {
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks to pass. This method throws when the
    * element is detached while waiting, unless waiting for the {@code "hidden"} state.
    * <ul>
-   * <li> {@code "visible"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>.</li>
-   * <li> {@code "hidden"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#visible">not visible</a>
-   * or <a href="https://playwright.dev/java/docs/actionability#attached">not attached</a>. Note that waiting for hidden does
-   * not throw when the element detaches.</li>
-   * <li> {@code "stable"} Wait until the element is both <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>
-   * and <a href="https://playwright.dev/java/docs/actionability#stable">stable</a>.</li>
-   * <li> {@code "enabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.</li>
-   * <li> {@code "disabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#enabled">not enabled</a>.</li>
-   * <li> {@code "editable"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.</li>
+   * <li> {@code "visible"} Wait until the element is <a
+   * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.</li>
+   * <li> {@code "hidden"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#visible">not
+   * visible</a> or <a href="https://playwright.dev/java/docs/actionability#attached">not attached</a>. Note that waiting for
+   * hidden does not throw when the element detaches.</li>
+   * <li> {@code "stable"} Wait until the element is both <a
+   * href="https://playwright.dev/java/docs/actionability#visible">visible</a> and <a
+   * href="https://playwright.dev/java/docs/actionability#stable">stable</a>.</li>
+   * <li> {@code "enabled"} Wait until the element is <a
+   * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.</li>
+   * <li> {@code "disabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#enabled">not
+   * enabled</a>.</li>
+   * <li> {@code "editable"} Wait until the element is <a
+   * href="https://playwright.dev/java/docs/actionability#editable">editable</a>.</li>
    * </ul>
    *
    * <p> If the element does not satisfy the condition for the {@code timeout} milliseconds, this method will throw.
@@ -2437,15 +2454,20 @@ public interface ElementHandle extends JSHandle {
    * href="https://playwright.dev/java/docs/actionability">actionability</a> checks to pass. This method throws when the
    * element is detached while waiting, unless waiting for the {@code "hidden"} state.
    * <ul>
-   * <li> {@code "visible"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>.</li>
-   * <li> {@code "hidden"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#visible">not visible</a>
-   * or <a href="https://playwright.dev/java/docs/actionability#attached">not attached</a>. Note that waiting for hidden does
-   * not throw when the element detaches.</li>
-   * <li> {@code "stable"} Wait until the element is both <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>
-   * and <a href="https://playwright.dev/java/docs/actionability#stable">stable</a>.</li>
-   * <li> {@code "enabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.</li>
-   * <li> {@code "disabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#enabled">not enabled</a>.</li>
-   * <li> {@code "editable"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.</li>
+   * <li> {@code "visible"} Wait until the element is <a
+   * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.</li>
+   * <li> {@code "hidden"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#visible">not
+   * visible</a> or <a href="https://playwright.dev/java/docs/actionability#attached">not attached</a>. Note that waiting for
+   * hidden does not throw when the element detaches.</li>
+   * <li> {@code "stable"} Wait until the element is both <a
+   * href="https://playwright.dev/java/docs/actionability#visible">visible</a> and <a
+   * href="https://playwright.dev/java/docs/actionability#stable">stable</a>.</li>
+   * <li> {@code "enabled"} Wait until the element is <a
+   * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.</li>
+   * <li> {@code "disabled"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#enabled">not
+   * enabled</a>.</li>
+   * <li> {@code "editable"} Wait until the element is <a
+   * href="https://playwright.dev/java/docs/actionability#editable">editable</a>.</li>
    * </ul>
    *
    * <p> If the element does not satisfy the condition for the {@code timeout} milliseconds, this method will throw.
@@ -2454,13 +2476,13 @@ public interface ElementHandle extends JSHandle {
    */
   void waitForElementState(ElementState state, WaitForElementStateOptions options);
   /**
-   * Returns element specified by selector when it satisfies {@code state} option. Returns {@code null} if waiting for {@code hidden} or
-   * {@code detached}.
+   * Returns element specified by selector when it satisfies {@code state} option. Returns {@code null} if waiting for {@code
+   * hidden} or {@code detached}.
    *
-   * <p> Wait for the {@code selector} relative to the element handle to satisfy {@code state} option (either appear/disappear from dom, or
-   * become visible/hidden). If at the moment of calling the method {@code selector} already satisfies the condition, the method
-   * will return immediately. If the selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will
-   * throw.
+   * <p> Wait for the {@code selector} relative to the element handle to satisfy {@code state} option (either appear/disappear
+   * from dom, or become visible/hidden). If at the moment of calling the method {@code selector} already satisfies the
+   * condition, the method will return immediately. If the selector doesn't satisfy the condition for the {@code timeout}
+   * milliseconds, the function will throw.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -2479,13 +2501,13 @@ public interface ElementHandle extends JSHandle {
     return waitForSelector(selector, null);
   }
   /**
-   * Returns element specified by selector when it satisfies {@code state} option. Returns {@code null} if waiting for {@code hidden} or
-   * {@code detached}.
+   * Returns element specified by selector when it satisfies {@code state} option. Returns {@code null} if waiting for {@code
+   * hidden} or {@code detached}.
    *
-   * <p> Wait for the {@code selector} relative to the element handle to satisfy {@code state} option (either appear/disappear from dom, or
-   * become visible/hidden). If at the moment of calling the method {@code selector} already satisfies the condition, the method
-   * will return immediately. If the selector doesn't satisfy the condition for the {@code timeout} milliseconds, the function will
-   * throw.
+   * <p> Wait for the {@code selector} relative to the element handle to satisfy {@code state} option (either appear/disappear
+   * from dom, or become visible/hidden). If at the moment of calling the method {@code selector} already satisfies the
+   * condition, the method will return immediately. If the selector doesn't satisfy the condition for the {@code timeout}
+   * milliseconds, the function will throw.
    *
    * <p> **Usage**
    * <pre>{@code

@@ -44,9 +44,9 @@ import com.microsoft.playwright.impl.PageAssertionsImpl;
  * }
  * }</pre>
  *
- * <p> Playwright will be re-testing the node with the selector {@code .status} until fetched Node has the {@code "Submitted"} text. It
- * will be re-fetching the node and checking it over and over, until the condition is met or until the timeout is reached.
- * You can pass this timeout as an option.
+ * <p> Playwright will be re-testing the node with the selector {@code .status} until fetched Node has the {@code "Submitted"}
+ * text. It will be re-fetching the node and checking it over and over, until the condition is met or until the timeout is
+ * reached. You can pass this timeout as an option.
  *
  * <p> By default, the timeout for assertions is set to 5 seconds.
  */

@@ -48,8 +48,8 @@ public interface JSHandle {
    * <p> This method passes this handle as the first argument to {@code expression}.
    *
    * <p> If {@code expression} returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
-   * {@code handle.evaluate} would wait for the promise to resolve and return its value.
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@code
+   * handle.evaluate} would wait for the promise to resolve and return its value.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -69,8 +69,8 @@ public interface JSHandle {
    * <p> This method passes this handle as the first argument to {@code expression}.
    *
    * <p> If {@code expression} returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
-   * {@code handle.evaluate} would wait for the promise to resolve and return its value.
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@code
+   * handle.evaluate} would wait for the promise to resolve and return its value.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -88,12 +88,12 @@ public interface JSHandle {
    *
    * <p> This method passes this handle as the first argument to {@code expression}.
    *
-   * <p> The only difference between {@code jsHandle.evaluate} and {@code jsHandle.evaluateHandle} is that {@code jsHandle.evaluateHandle} returns
-   * {@code JSHandle}.
+   * <p> The only difference between {@code jsHandle.evaluate} and {@code jsHandle.evaluateHandle} is that {@code
+   * jsHandle.evaluateHandle} returns {@code JSHandle}.
    *
    * <p> If the function passed to the {@code jsHandle.evaluateHandle} returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
-   * {@code jsHandle.evaluateHandle} would wait for the promise to resolve and return its value.
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@code
+   * jsHandle.evaluateHandle} would wait for the promise to resolve and return its value.
    *
    * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
@@ -108,12 +108,12 @@ public interface JSHandle {
    *
    * <p> This method passes this handle as the first argument to {@code expression}.
    *
-   * <p> The only difference between {@code jsHandle.evaluate} and {@code jsHandle.evaluateHandle} is that {@code jsHandle.evaluateHandle} returns
-   * {@code JSHandle}.
+   * <p> The only difference between {@code jsHandle.evaluate} and {@code jsHandle.evaluateHandle} is that {@code
+   * jsHandle.evaluateHandle} returns {@code JSHandle}.
    *
    * <p> If the function passed to the {@code jsHandle.evaluateHandle} returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
-   * {@code jsHandle.evaluateHandle} would wait for the promise to resolve and return its value.
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@code
+   * jsHandle.evaluateHandle} would wait for the promise to resolve and return its value.
    *
    * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
@@ -144,8 +144,8 @@ public interface JSHandle {
   /**
    * Returns a JSON representation of the object. If the object has a {@code toJSON} function, it **will not be called**.
    *
-   * <p> <strong>NOTE:</strong> The method will return an empty JSON object if the referenced object is not stringifiable. It will throw an error if
-   * the object has circular references.
+   * <p> <strong>NOTE:</strong> The method will return an empty JSON object if the referenced object is not stringifiable. It will throw an error if the
+   * object has circular references.
    */
   Object jsonValue();
 }

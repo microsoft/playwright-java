@@ -66,8 +66,8 @@ public interface WebSocket {
      */
     public Predicate<WebSocketFrame> predicate;
     /**
-     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
      */
     public Double timeout;
 
@@ -79,8 +79,8 @@ public interface WebSocket {
       return this;
     }
     /**
-     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
      */
     public WaitForFrameReceivedOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -93,8 +93,8 @@ public interface WebSocket {
      */
     public Predicate<WebSocketFrame> predicate;
     /**
-     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
      */
     public Double timeout;
 
@@ -106,8 +106,8 @@ public interface WebSocket {
       return this;
     }
     /**
-     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
      */
     public WaitForFrameSentOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -123,9 +123,9 @@ public interface WebSocket {
    */
   String url();
   /**
-   * Performs action and waits for a frame to be sent. If predicate is provided, it passes {@code WebSocketFrame} value into the
-   * {@code predicate} function and waits for {@code predicate(webSocketFrame)} to return a truthy value. Will throw an error if the
-   * WebSocket or Page is closed before the frame is received.
+   * Performs action and waits for a frame to be sent. If predicate is provided, it passes {@code WebSocketFrame} value into
+   * the {@code predicate} function and waits for {@code predicate(webSocketFrame)} to return a truthy value. Will throw an
+   * error if the WebSocket or Page is closed before the frame is received.
    *
    * @param callback Callback that performs the action triggering the event.
    */
@@ -133,17 +133,17 @@ public interface WebSocket {
     return waitForFrameReceived(null, callback);
   }
   /**
-   * Performs action and waits for a frame to be sent. If predicate is provided, it passes {@code WebSocketFrame} value into the
-   * {@code predicate} function and waits for {@code predicate(webSocketFrame)} to return a truthy value. Will throw an error if the
-   * WebSocket or Page is closed before the frame is received.
+   * Performs action and waits for a frame to be sent. If predicate is provided, it passes {@code WebSocketFrame} value into
+   * the {@code predicate} function and waits for {@code predicate(webSocketFrame)} to return a truthy value. Will throw an
+   * error if the WebSocket or Page is closed before the frame is received.
    *
    * @param callback Callback that performs the action triggering the event.
    */
   WebSocketFrame waitForFrameReceived(WaitForFrameReceivedOptions options, Runnable callback);
   /**
-   * Performs action and waits for a frame to be sent. If predicate is provided, it passes {@code WebSocketFrame} value into the
-   * {@code predicate} function and waits for {@code predicate(webSocketFrame)} to return a truthy value. Will throw an error if the
-   * WebSocket or Page is closed before the frame is sent.
+   * Performs action and waits for a frame to be sent. If predicate is provided, it passes {@code WebSocketFrame} value into
+   * the {@code predicate} function and waits for {@code predicate(webSocketFrame)} to return a truthy value. Will throw an
+   * error if the WebSocket or Page is closed before the frame is sent.
    *
    * @param callback Callback that performs the action triggering the event.
    */
@@ -151,9 +151,9 @@ public interface WebSocket {
     return waitForFrameSent(null, callback);
   }
   /**
-   * Performs action and waits for a frame to be sent. If predicate is provided, it passes {@code WebSocketFrame} value into the
-   * {@code predicate} function and waits for {@code predicate(webSocketFrame)} to return a truthy value. Will throw an error if the
-   * WebSocket or Page is closed before the frame is sent.
+   * Performs action and waits for a frame to be sent. If predicate is provided, it passes {@code WebSocketFrame} value into
+   * the {@code predicate} function and waits for {@code predicate(webSocketFrame)} to return a truthy value. Will throw an
+   * error if the WebSocket or Page is closed before the frame is sent.
    *
    * @param callback Callback that performs the action triggering the event.
    */

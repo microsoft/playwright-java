@@ -19,9 +19,9 @@ package com.microsoft.playwright.assertions;
 import java.util.regex.Pattern;
 
 /**
- * The {@code LocatorAssertions} class provides assertion methods that can be used to make assertions about the {@code Locator} state
- * in the tests. A new instance of {@code LocatorAssertions} is created by calling {@link PlaywrightAssertions#assertThat
- * PlaywrightAssertions.assertThat()}:
+ * The {@code LocatorAssertions} class provides assertion methods that can be used to make assertions about the {@code
+ * Locator} state in the tests. A new instance of {@code LocatorAssertions} is created by calling {@link
+ * PlaywrightAssertions#assertThat PlaywrightAssertions.assertThat()}:
  * <pre>{@code
  * ...
  * import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
@@ -387,11 +387,12 @@ public interface LocatorAssertions {
    */
   void isChecked(IsCheckedOptions options);
   /**
-   * Ensures the {@code Locator} points to a disabled element. Element is disabled if it has "disabled" attribute or is disabled
-   * via <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled">'aria-disabled'</a>. Note
-   * that only native control elements such as HTML {@code button}, {@code input}, {@code select}, {@code textarea}, {@code option}, {@code optgroup} can be
-   * disabled by setting "disabled" attribute. "disabled" attribute on other elements is ignored by the browser.
+   * Ensures the {@code Locator} points to a disabled element. Element is disabled if it has "disabled" attribute or is
+   * disabled via <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled">'aria-disabled'</a>.
+   * Note that only native control elements such as HTML {@code button}, {@code input}, {@code select}, {@code textarea},
+   * {@code option}, {@code optgroup} can be disabled by setting "disabled" attribute. "disabled" attribute on other elements
+   * is ignored by the browser.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -402,11 +403,12 @@ public interface LocatorAssertions {
     isDisabled(null);
   }
   /**
-   * Ensures the {@code Locator} points to a disabled element. Element is disabled if it has "disabled" attribute or is disabled
-   * via <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled">'aria-disabled'</a>. Note
-   * that only native control elements such as HTML {@code button}, {@code input}, {@code select}, {@code textarea}, {@code option}, {@code optgroup} can be
-   * disabled by setting "disabled" attribute. "disabled" attribute on other elements is ignored by the browser.
+   * Ensures the {@code Locator} points to a disabled element. Element is disabled if it has "disabled" attribute or is
+   * disabled via <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled">'aria-disabled'</a>.
+   * Note that only native control elements such as HTML {@code button}, {@code input}, {@code select}, {@code textarea},
+   * {@code option}, {@code optgroup} can be disabled by setting "disabled" attribute. "disabled" attribute on other elements
+   * is ignored by the browser.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -517,8 +519,8 @@ public interface LocatorAssertions {
    */
   void isHidden(IsHiddenOptions options);
   /**
-   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/actionability#attached">attached</a> and
-   * <a href="https://playwright.dev/java/docs/actionability#visible">visible</a> DOM node.
+   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/actionability#attached">attached</a>
+   * and <a href="https://playwright.dev/java/docs/actionability#visible">visible</a> DOM node.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -529,8 +531,8 @@ public interface LocatorAssertions {
     isVisible(null);
   }
   /**
-   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/actionability#attached">attached</a> and
-   * <a href="https://playwright.dev/java/docs/actionability#visible">visible</a> DOM node.
+   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/actionability#attached">attached</a>
+   * and <a href="https://playwright.dev/java/docs/actionability#visible">visible</a> DOM node.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -539,8 +541,8 @@ public interface LocatorAssertions {
    */
   void isVisible(IsVisibleOptions options);
   /**
-   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
-   * as well.
+   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
+   * value as well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -578,8 +580,8 @@ public interface LocatorAssertions {
     containsText(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
-   * as well.
+   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
+   * value as well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -615,8 +617,8 @@ public interface LocatorAssertions {
    */
   void containsText(String expected, ContainsTextOptions options);
   /**
-   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
-   * as well.
+   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
+   * value as well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -654,8 +656,8 @@ public interface LocatorAssertions {
     containsText(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
-   * as well.
+   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
+   * value as well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -691,8 +693,8 @@ public interface LocatorAssertions {
    */
   void containsText(Pattern expected, ContainsTextOptions options);
   /**
-   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
-   * as well.
+   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
+   * value as well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -730,8 +732,8 @@ public interface LocatorAssertions {
     containsText(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
-   * as well.
+   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
+   * value as well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -767,8 +769,8 @@ public interface LocatorAssertions {
    */
   void containsText(String[] expected, ContainsTextOptions options);
   /**
-   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
-   * as well.
+   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
+   * value as well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -806,8 +808,8 @@ public interface LocatorAssertions {
     containsText(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the value
-   * as well.
+   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
+   * value as well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -895,8 +897,8 @@ public interface LocatorAssertions {
    */
   void hasAttribute(String name, Pattern value, HasAttributeOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
-   * regular expression.
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a
+   * relaxed regular expression.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -915,8 +917,8 @@ public interface LocatorAssertions {
     hasClass(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
-   * regular expression.
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a
+   * relaxed regular expression.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -933,8 +935,8 @@ public interface LocatorAssertions {
    */
   void hasClass(String expected, HasClassOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
-   * regular expression.
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a
+   * relaxed regular expression.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -953,8 +955,8 @@ public interface LocatorAssertions {
     hasClass(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
-   * regular expression.
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a
+   * relaxed regular expression.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -971,8 +973,8 @@ public interface LocatorAssertions {
    */
   void hasClass(Pattern expected, HasClassOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
-   * regular expression.
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a
+   * relaxed regular expression.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -991,8 +993,8 @@ public interface LocatorAssertions {
     hasClass(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
-   * regular expression.
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a
+   * relaxed regular expression.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1009,8 +1011,8 @@ public interface LocatorAssertions {
    */
   void hasClass(String[] expected, HasClassOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
-   * regular expression.
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a
+   * relaxed regular expression.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1029,8 +1031,8 @@ public interface LocatorAssertions {
     hasClass(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a relaxed
-   * regular expression.
+   * Ensures the {@code Locator} points to an element with given CSS classes. This needs to be a full match or using a
+   * relaxed regular expression.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1171,8 +1173,8 @@ public interface LocatorAssertions {
    */
   void hasId(Pattern id, HasIdOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with given JavaScript property. Note that this property can be of a primitive
-   * type as well as a plain serializable JavaScript object.
+   * Ensures the {@code Locator} points to an element with given JavaScript property. Note that this property can be of a
+   * primitive type as well as a plain serializable JavaScript object.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1186,8 +1188,8 @@ public interface LocatorAssertions {
     hasJSProperty(name, value, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with given JavaScript property. Note that this property can be of a primitive
-   * type as well as a plain serializable JavaScript object.
+   * Ensures the {@code Locator} points to an element with given JavaScript property. Note that this property can be of a
+   * primitive type as well as a plain serializable JavaScript object.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1199,7 +1201,8 @@ public interface LocatorAssertions {
    */
   void hasJSProperty(String name, Object value, HasJSPropertyOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
+   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
+   * well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1237,7 +1240,8 @@ public interface LocatorAssertions {
     hasText(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
+   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
+   * well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1273,7 +1277,8 @@ public interface LocatorAssertions {
    */
   void hasText(String expected, HasTextOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
+   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
+   * well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1311,7 +1316,8 @@ public interface LocatorAssertions {
     hasText(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
+   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
+   * well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1347,7 +1353,8 @@ public interface LocatorAssertions {
    */
   void hasText(Pattern expected, HasTextOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
+   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
+   * well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1385,7 +1392,8 @@ public interface LocatorAssertions {
     hasText(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
+   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
+   * well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1421,7 +1429,8 @@ public interface LocatorAssertions {
    */
   void hasText(String[] expected, HasTextOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
+   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
+   * well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1459,7 +1468,8 @@ public interface LocatorAssertions {
     hasText(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as well.
+   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
+   * well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1495,8 +1505,8 @@ public interface LocatorAssertions {
    */
   void hasText(Pattern[] expected, HasTextOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with the given input value. You can use regular expressions for the value as
-   * well.
+   * Ensures the {@code Locator} points to an element with the given input value. You can use regular expressions for the
+   * value as well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1509,8 +1519,8 @@ public interface LocatorAssertions {
     hasValue(value, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with the given input value. You can use regular expressions for the value as
-   * well.
+   * Ensures the {@code Locator} points to an element with the given input value. You can use regular expressions for the
+   * value as well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1521,8 +1531,8 @@ public interface LocatorAssertions {
    */
   void hasValue(String value, HasValueOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with the given input value. You can use regular expressions for the value as
-   * well.
+   * Ensures the {@code Locator} points to an element with the given input value. You can use regular expressions for the
+   * value as well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1535,8 +1545,8 @@ public interface LocatorAssertions {
     hasValue(value, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with the given input value. You can use regular expressions for the value as
-   * well.
+   * Ensures the {@code Locator} points to an element with the given input value. You can use regular expressions for the
+   * value as well.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1547,8 +1557,8 @@ public interface LocatorAssertions {
    */
   void hasValue(Pattern value, HasValueOptions options);
   /**
-   * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute) and the specified
-   * values are selected.
+   * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute)
+   * and the specified values are selected.
    *
    * <p> **Usage**
    *
@@ -1564,8 +1574,8 @@ public interface LocatorAssertions {
     hasValues(values, null);
   }
   /**
-   * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute) and the specified
-   * values are selected.
+   * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute)
+   * and the specified values are selected.
    *
    * <p> **Usage**
    *
@@ -1579,8 +1589,8 @@ public interface LocatorAssertions {
    */
   void hasValues(String[] values, HasValuesOptions options);
   /**
-   * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute) and the specified
-   * values are selected.
+   * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute)
+   * and the specified values are selected.
    *
    * <p> **Usage**
    *
@@ -1596,8 +1606,8 @@ public interface LocatorAssertions {
     hasValues(values, null);
   }
   /**
-   * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute) and the specified
-   * values are selected.
+   * Ensures the {@code Locator} points to multi-select/combobox (i.e. a {@code select} with the {@code multiple} attribute)
+   * and the specified values are selected.
    *
    * <p> **Usage**
    *

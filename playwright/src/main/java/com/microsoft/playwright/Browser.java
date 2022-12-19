@@ -23,8 +23,8 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 /**
- * A Browser is created via {@link BrowserType#launch BrowserType.launch()}. An example of using a {@code Browser} to create a
- * {@code Page}:
+ * A Browser is created via {@link BrowserType#launch BrowserType.launch()}. An example of using a {@code Browser} to
+ * create a {@code Page}:
  * <pre>{@code
  * import com.microsoft.playwright.*;
  *
@@ -65,11 +65,13 @@ public interface Browser extends AutoCloseable {
      * When using {@link Page#navigate Page.navigate()}, {@link Page#route Page.route()}, {@link Page#waitForURL
      * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
      * Page.waitForResponse()} it takes the base URL in consideration by using the <a
-     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the corresponding
-     * URL. Examples:
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
+     * corresponding URL. Examples:
      * <ul>
-     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
-     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code http://localhost:3000/foo/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code
+     * http://localhost:3000/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code
+     * http://localhost:3000/foo/bar.html}</li>
      * <li> baseURL: {@code http://localhost:3000/foo} (without trailing slash) and navigating to {@code ./bar.html} results in
      * {@code http://localhost:3000/bar.html}</li>
      * </ul>
@@ -80,9 +82,9 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean bypassCSP;
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
-     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
-     * Defaults to {@code "light"}.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
+     * "no-preference"}. See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
+     * emulation to system defaults. Defaults to {@code "light"}.
      */
     public Optional<ColorScheme> colorScheme;
     /**
@@ -94,8 +96,9 @@ public interface Browser extends AutoCloseable {
      */
     public Map<String, String> extraHTTPHeaders;
     /**
-     * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link Page#emulateMedia
-     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code "none"}.
+     * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link
+     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Defaults to {@code "none"}.
      */
     public Optional<ForcedColors> forcedColors;
     public Geolocation geolocation;
@@ -143,14 +146,15 @@ public interface Browser extends AutoCloseable {
      */
     public Proxy proxy;
     /**
-     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If {@code attach}
-     * is specified, resources are persisted as separate files and all of these files are archived along with the HAR file.
-     * Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
+     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If
+     * {@code attach} is specified, resources are persisted as separate files and all of these files are archived along with
+     * the HAR file. Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
      */
     public HarContentPolicy recordHarContent;
     /**
-     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page, cookies,
-     * security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code full}.
+     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
+     * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
+     * full}.
      */
     public HarMode recordHarMode;
     /**
@@ -171,39 +175,39 @@ public interface Browser extends AutoCloseable {
     public Path recordVideoDir;
     /**
      * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
-     * be scaled down if necessary to fit the specified size.
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
+     * page will be scaled down if necessary to fit the specified size.
      */
     public RecordVideoSize recordVideoSize;
     /**
-     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
-     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to
-     * {@code "no-preference"}.
+     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}.
+     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system
+     * defaults. Defaults to {@code "no-preference"}.
      */
     public Optional<ReducedMotion> reducedMotion;
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
-     * is set.
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code
+     * viewport} is set.
      */
     public ScreenSize screenSize;
     /**
      * Whether to allow sites to register Service workers. Defaults to {@code "allow"}.
      * <ul>
-     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can be
-     * registered.</li>
+     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can
+     * be registered.</li>
      * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
      * </ul>
      */
     public ServiceWorkerPolicy serviceWorkers;
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in
-     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
     public String storageState;
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in
-     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved
-     * storage state.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
+     * state.
      */
     public Path storageStatePath;
     /**
@@ -223,7 +227,8 @@ public interface Browser extends AutoCloseable {
      */
     public String userAgent;
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default
+     * viewport.
      */
     public Optional<ViewportSize> viewportSize;
 
@@ -238,11 +243,13 @@ public interface Browser extends AutoCloseable {
      * When using {@link Page#navigate Page.navigate()}, {@link Page#route Page.route()}, {@link Page#waitForURL
      * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
      * Page.waitForResponse()} it takes the base URL in consideration by using the <a
-     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the corresponding
-     * URL. Examples:
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
+     * corresponding URL. Examples:
      * <ul>
-     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
-     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code http://localhost:3000/foo/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code
+     * http://localhost:3000/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code
+     * http://localhost:3000/foo/bar.html}</li>
      * <li> baseURL: {@code http://localhost:3000/foo} (without trailing slash) and navigating to {@code ./bar.html} results in
      * {@code http://localhost:3000/bar.html}</li>
      * </ul>
@@ -259,9 +266,9 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
-     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
-     * Defaults to {@code "light"}.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
+     * "no-preference"}. See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
+     * emulation to system defaults. Defaults to {@code "light"}.
      */
     public NewContextOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
@@ -282,8 +289,9 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link Page#emulateMedia
-     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code "none"}.
+     * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link
+     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Defaults to {@code "none"}.
      */
     public NewContextOptions setForcedColors(ForcedColors forcedColors) {
       this.forcedColors = Optional.ofNullable(forcedColors);
@@ -383,17 +391,18 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If {@code attach}
-     * is specified, resources are persisted as separate files and all of these files are archived along with the HAR file.
-     * Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
+     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If
+     * {@code attach} is specified, resources are persisted as separate files and all of these files are archived along with
+     * the HAR file. Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
      */
     public NewContextOptions setRecordHarContent(HarContentPolicy recordHarContent) {
       this.recordHarContent = recordHarContent;
       return this;
     }
     /**
-     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page, cookies,
-     * security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code full}.
+     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
+     * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
+     * full}.
      */
     public NewContextOptions setRecordHarMode(HarMode recordHarMode) {
       this.recordHarMode = recordHarMode;
@@ -433,40 +442,40 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
-     * be scaled down if necessary to fit the specified size.
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
+     * page will be scaled down if necessary to fit the specified size.
      */
     public NewContextOptions setRecordVideoSize(int width, int height) {
       return setRecordVideoSize(new RecordVideoSize(width, height));
     }
     /**
      * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
-     * be scaled down if necessary to fit the specified size.
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
+     * page will be scaled down if necessary to fit the specified size.
      */
     public NewContextOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
       return this;
     }
     /**
-     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
-     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to
-     * {@code "no-preference"}.
+     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}.
+     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system
+     * defaults. Defaults to {@code "no-preference"}.
      */
     public NewContextOptions setReducedMotion(ReducedMotion reducedMotion) {
       this.reducedMotion = Optional.ofNullable(reducedMotion);
       return this;
     }
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
-     * is set.
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code
+     * viewport} is set.
      */
     public NewContextOptions setScreenSize(int width, int height) {
       return setScreenSize(new ScreenSize(width, height));
     }
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
-     * is set.
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code
+     * viewport} is set.
      */
     public NewContextOptions setScreenSize(ScreenSize screenSize) {
       this.screenSize = screenSize;
@@ -475,8 +484,8 @@ public interface Browser extends AutoCloseable {
     /**
      * Whether to allow sites to register Service workers. Defaults to {@code "allow"}.
      * <ul>
-     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can be
-     * registered.</li>
+     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can
+     * be registered.</li>
      * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
      * </ul>
      */
@@ -485,17 +494,17 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in
-     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
     public NewContextOptions setStorageState(String storageState) {
       this.storageState = storageState;
       return this;
     }
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in
-     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved
-     * storage state.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
+     * state.
      */
     public NewContextOptions setStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
@@ -527,13 +536,15 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default
+     * viewport.
      */
     public NewContextOptions setViewportSize(int width, int height) {
       return setViewportSize(new ViewportSize(width, height));
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default
+     * viewport.
      */
     public NewContextOptions setViewportSize(ViewportSize viewportSize) {
       this.viewportSize = Optional.ofNullable(viewportSize);
@@ -549,11 +560,13 @@ public interface Browser extends AutoCloseable {
      * When using {@link Page#navigate Page.navigate()}, {@link Page#route Page.route()}, {@link Page#waitForURL
      * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
      * Page.waitForResponse()} it takes the base URL in consideration by using the <a
-     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the corresponding
-     * URL. Examples:
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
+     * corresponding URL. Examples:
      * <ul>
-     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
-     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code http://localhost:3000/foo/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code
+     * http://localhost:3000/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code
+     * http://localhost:3000/foo/bar.html}</li>
      * <li> baseURL: {@code http://localhost:3000/foo} (without trailing slash) and navigating to {@code ./bar.html} results in
      * {@code http://localhost:3000/bar.html}</li>
      * </ul>
@@ -564,9 +577,9 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean bypassCSP;
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
-     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
-     * Defaults to {@code "light"}.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
+     * "no-preference"}. See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
+     * emulation to system defaults. Defaults to {@code "light"}.
      */
     public Optional<ColorScheme> colorScheme;
     /**
@@ -578,8 +591,9 @@ public interface Browser extends AutoCloseable {
      */
     public Map<String, String> extraHTTPHeaders;
     /**
-     * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link Page#emulateMedia
-     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code "none"}.
+     * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link
+     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Defaults to {@code "none"}.
      */
     public Optional<ForcedColors> forcedColors;
     public Geolocation geolocation;
@@ -627,14 +641,15 @@ public interface Browser extends AutoCloseable {
      */
     public Proxy proxy;
     /**
-     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If {@code attach}
-     * is specified, resources are persisted as separate files and all of these files are archived along with the HAR file.
-     * Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
+     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If
+     * {@code attach} is specified, resources are persisted as separate files and all of these files are archived along with
+     * the HAR file. Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
      */
     public HarContentPolicy recordHarContent;
     /**
-     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page, cookies,
-     * security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code full}.
+     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
+     * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
+     * full}.
      */
     public HarMode recordHarMode;
     /**
@@ -655,39 +670,39 @@ public interface Browser extends AutoCloseable {
     public Path recordVideoDir;
     /**
      * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
-     * be scaled down if necessary to fit the specified size.
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
+     * page will be scaled down if necessary to fit the specified size.
      */
     public RecordVideoSize recordVideoSize;
     /**
-     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
-     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to
-     * {@code "no-preference"}.
+     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}.
+     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system
+     * defaults. Defaults to {@code "no-preference"}.
      */
     public Optional<ReducedMotion> reducedMotion;
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
-     * is set.
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code
+     * viewport} is set.
      */
     public ScreenSize screenSize;
     /**
      * Whether to allow sites to register Service workers. Defaults to {@code "allow"}.
      * <ul>
-     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can be
-     * registered.</li>
+     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can
+     * be registered.</li>
      * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
      * </ul>
      */
     public ServiceWorkerPolicy serviceWorkers;
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in
-     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
     public String storageState;
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in
-     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved
-     * storage state.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
+     * state.
      */
     public Path storageStatePath;
     /**
@@ -707,7 +722,8 @@ public interface Browser extends AutoCloseable {
      */
     public String userAgent;
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default
+     * viewport.
      */
     public Optional<ViewportSize> viewportSize;
 
@@ -722,11 +738,13 @@ public interface Browser extends AutoCloseable {
      * When using {@link Page#navigate Page.navigate()}, {@link Page#route Page.route()}, {@link Page#waitForURL
      * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
      * Page.waitForResponse()} it takes the base URL in consideration by using the <a
-     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the corresponding
-     * URL. Examples:
+     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
+     * corresponding URL. Examples:
      * <ul>
-     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code http://localhost:3000/bar.html}</li>
-     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code http://localhost:3000/foo/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code
+     * http://localhost:3000/bar.html}</li>
+     * <li> baseURL: {@code http://localhost:3000/foo/} and navigating to {@code ./bar.html} results in {@code
+     * http://localhost:3000/foo/bar.html}</li>
      * <li> baseURL: {@code http://localhost:3000/foo} (without trailing slash) and navigating to {@code ./bar.html} results in
      * {@code http://localhost:3000/bar.html}</li>
      * </ul>
@@ -743,9 +761,9 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code "no-preference"}.
-     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
-     * Defaults to {@code "light"}.
+     * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
+     * "no-preference"}. See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
+     * emulation to system defaults. Defaults to {@code "light"}.
      */
     public NewPageOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
@@ -766,8 +784,9 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link Page#emulateMedia
-     * Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to {@code "none"}.
+     * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link
+     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
+     * Defaults to {@code "none"}.
      */
     public NewPageOptions setForcedColors(ForcedColors forcedColors) {
       this.forcedColors = Optional.ofNullable(forcedColors);
@@ -867,17 +886,18 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If {@code attach}
-     * is specified, resources are persisted as separate files and all of these files are archived along with the HAR file.
-     * Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
+     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If
+     * {@code attach} is specified, resources are persisted as separate files and all of these files are archived along with
+     * the HAR file. Defaults to {@code embed}, which stores content inline the HAR file as per HAR specification.
      */
     public NewPageOptions setRecordHarContent(HarContentPolicy recordHarContent) {
       this.recordHarContent = recordHarContent;
       return this;
     }
     /**
-     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page, cookies,
-     * security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code full}.
+     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
+     * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
+     * full}.
      */
     public NewPageOptions setRecordHarMode(HarMode recordHarMode) {
       this.recordHarMode = recordHarMode;
@@ -917,40 +937,40 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
-     * be scaled down if necessary to fit the specified size.
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
+     * page will be scaled down if necessary to fit the specified size.
      */
     public NewPageOptions setRecordVideoSize(int width, int height) {
       return setRecordVideoSize(new RecordVideoSize(width, height));
     }
     /**
      * Dimensions of the recorded videos. If not specified the size will be equal to {@code viewport} scaled down to fit into
-     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each page will
-     * be scaled down if necessary to fit the specified size.
+     * 800x800. If {@code viewport} is not configured explicitly the video size defaults to 800x450. Actual picture of each
+     * page will be scaled down if necessary to fit the specified size.
      */
     public NewPageOptions setRecordVideoSize(RecordVideoSize recordVideoSize) {
       this.recordVideoSize = recordVideoSize;
       return this;
     }
     /**
-     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}. See {@link
-     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults. Defaults to
-     * {@code "no-preference"}.
+     * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}.
+     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system
+     * defaults. Defaults to {@code "no-preference"}.
      */
     public NewPageOptions setReducedMotion(ReducedMotion reducedMotion) {
       this.reducedMotion = Optional.ofNullable(reducedMotion);
       return this;
     }
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
-     * is set.
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code
+     * viewport} is set.
      */
     public NewPageOptions setScreenSize(int width, int height) {
       return setScreenSize(new ScreenSize(width, height));
     }
     /**
-     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code viewport}
-     * is set.
+     * Emulates consistent window screen size available inside web page via {@code window.screen}. Is only used when the {@code
+     * viewport} is set.
      */
     public NewPageOptions setScreenSize(ScreenSize screenSize) {
       this.screenSize = screenSize;
@@ -959,8 +979,8 @@ public interface Browser extends AutoCloseable {
     /**
      * Whether to allow sites to register Service workers. Defaults to {@code "allow"}.
      * <ul>
-     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can be
-     * registered.</li>
+     * <li> {@code "allow"}: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Workers</a> can
+     * be registered.</li>
      * <li> {@code "block"}: Playwright will block all registration of Service Workers.</li>
      * </ul>
      */
@@ -969,17 +989,17 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in
-     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
      */
     public NewPageOptions setStorageState(String storageState) {
       this.storageState = storageState;
       return this;
     }
     /**
-     * Populates context with given storage state. This option can be used to initialize context with logged-in
-     * information obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved
-     * storage state.
+     * Populates context with given storage state. This option can be used to initialize context with logged-in information
+     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
+     * state.
      */
     public NewPageOptions setStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
@@ -1011,13 +1031,15 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default
+     * viewport.
      */
     public NewPageOptions setViewportSize(int width, int height) {
       return setViewportSize(new ViewportSize(width, height));
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default viewport.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default
+     * viewport.
      */
     public NewPageOptions setViewportSize(ViewportSize viewportSize) {
       this.viewportSize = Optional.ofNullable(viewportSize);
@@ -1068,8 +1090,8 @@ public interface Browser extends AutoCloseable {
    * In case this browser is obtained using {@link BrowserType#launch BrowserType.launch()}, closes the browser and all of
    * its pages (if any were opened).
    *
-   * <p> In case this browser is connected to, clears all created contexts belonging to this browser and disconnects from
-   * the browser server.
+   * <p> In case this browser is connected to, clears all created contexts belonging to this browser and disconnects from the
+   * browser server.
    *
    * <p> <strong>NOTE:</strong> This is similar to force quitting the browser. Therefore, you should call {@link BrowserContext#close
    * BrowserContext.close()} on any {@code BrowserContext}'s you explicitly created earlier with {@link Browser#newContext
@@ -1097,10 +1119,10 @@ public interface Browser extends AutoCloseable {
   /**
    * Creates a new browser context. It won't share cookies/cache with other browser contexts.
    *
-   * <p> <strong>NOTE:</strong> If directly using this method to create {@code BrowserContext}s, it is best practice to explicitly close the returned context
-   * via {@link BrowserContext#close BrowserContext.close()} when your code is done with the {@code BrowserContext}, and before
-   * calling {@link Browser#close Browser.close()}. This will ensure the {@code context} is closed gracefully and any
-   * artifacts—like HARs and videos—are fully flushed and saved.
+   * <p> <strong>NOTE:</strong> If directly using this method to create {@code BrowserContext}s, it is best practice to explicitly close the returned
+   * context via {@link BrowserContext#close BrowserContext.close()} when your code is done with the {@code BrowserContext},
+   * and before calling {@link Browser#close Browser.close()}. This will ensure the {@code context} is closed gracefully and
+   * any artifacts—like HARs and videos—are fully flushed and saved.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1122,10 +1144,10 @@ public interface Browser extends AutoCloseable {
   /**
    * Creates a new browser context. It won't share cookies/cache with other browser contexts.
    *
-   * <p> <strong>NOTE:</strong> If directly using this method to create {@code BrowserContext}s, it is best practice to explicitly close the returned context
-   * via {@link BrowserContext#close BrowserContext.close()} when your code is done with the {@code BrowserContext}, and before
-   * calling {@link Browser#close Browser.close()}. This will ensure the {@code context} is closed gracefully and any
-   * artifacts—like HARs and videos—are fully flushed and saved.
+   * <p> <strong>NOTE:</strong> If directly using this method to create {@code BrowserContext}s, it is best practice to explicitly close the returned
+   * context via {@link BrowserContext#close BrowserContext.close()} when your code is done with the {@code BrowserContext},
+   * and before calling {@link Browser#close Browser.close()}. This will ensure the {@code context} is closed gracefully and
+   * any artifacts—like HARs and videos—are fully flushed and saved.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1145,8 +1167,8 @@ public interface Browser extends AutoCloseable {
   /**
    * Creates a new page in a new browser context. Closing this page will close the context as well.
    *
-   * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code
-   * and testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the {@link
+   * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and
+   * testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the {@link
    * BrowserContext#newPage BrowserContext.newPage()} to control their exact life times.
    */
   default Page newPage() {
@@ -1155,8 +1177,8 @@ public interface Browser extends AutoCloseable {
   /**
    * Creates a new page in a new browser context. Closing this page will close the context as well.
    *
-   * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code
-   * and testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the {@link
+   * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and
+   * testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the {@link
    * BrowserContext#newPage BrowserContext.newPage()} to control their exact life times.
    */
   Page newPage(NewPageOptions options);

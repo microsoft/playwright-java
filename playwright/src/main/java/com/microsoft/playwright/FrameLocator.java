@@ -20,8 +20,8 @@ import com.microsoft.playwright.options.*;
 import java.util.regex.Pattern;
 
 /**
- * FrameLocator represents a view to the {@code iframe} on the page. It captures the logic sufficient to retrieve the {@code iframe}
- * and locate elements in that iframe. FrameLocator can be created with either {@link Page#frameLocator
+ * FrameLocator represents a view to the {@code iframe} on the page. It captures the logic sufficient to retrieve the
+ * {@code iframe} and locate elements in that iframe. FrameLocator can be created with either {@link Page#frameLocator
  * Page.frameLocator()} or {@link Locator#frameLocator Locator.frameLocator()} method.
  * <pre>{@code
  * Locator locator = page.frameLocator("#my-frame").getByText("Submit");
@@ -112,8 +112,8 @@ public interface FrameLocator {
      */
     public Boolean disabled;
     /**
-     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name} is a regular
-     * expression. Note that exact match still trims whitespace.
+     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name}
+     * is a regular expression. Note that exact match still trims whitespace.
      */
     public Boolean exact;
     /**
@@ -130,8 +130,8 @@ public interface FrameLocator {
      */
     public Boolean includeHidden;
     /**
-     * A number attribute that is usually present for roles {@code heading}, {@code listitem}, {@code row}, {@code treeitem}, with default values for
-     * {@code <h1>-<h6>} elements.
+     * A number attribute that is usually present for roles {@code heading}, {@code listitem}, {@code row}, {@code treeitem},
+     * with default values for {@code <h1>-<h6>} elements.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-level">{@code aria-level}</a>.
      */
@@ -176,8 +176,8 @@ public interface FrameLocator {
       return this;
     }
     /**
-     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name} is a regular
-     * expression. Note that exact match still trims whitespace.
+     * Whether {@code name} is matched exactly: case-sensitive and whole-string. Defaults to false. Ignored when {@code name}
+     * is a regular expression. Note that exact match still trims whitespace.
      */
     public GetByRoleOptions setExact(boolean exact) {
       this.exact = exact;
@@ -203,8 +203,8 @@ public interface FrameLocator {
       return this;
     }
     /**
-     * A number attribute that is usually present for roles {@code heading}, {@code listitem}, {@code row}, {@code treeitem}, with default values for
-     * {@code <h1>-<h6>} elements.
+     * A number attribute that is usually present for roles {@code heading}, {@code listitem}, {@code row}, {@code treeitem},
+     * with default values for {@code <h1>-<h6>} elements.
      *
      * <p> Learn more about <a href="https://www.w3.org/TR/wai-aria-1.2/#aria-level">{@code aria-level}</a>.
      */
@@ -285,22 +285,22 @@ public interface FrameLocator {
   }
   class LocatorOptions {
     /**
-     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer
-     * one. For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
+     * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
     public Locator has;
     /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
-     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
-     * {@code <article><div>Playwright</div></article>}.
+     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
+     * <article><div>Playwright</div></article>}.
      */
     public Object hasText;
 
     /**
-     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer
-     * one. For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
+     * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
@@ -310,8 +310,8 @@ public interface FrameLocator {
     }
     /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
-     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
-     * {@code <article><div>Playwright</div></article>}.
+     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
+     * <article><div>Playwright</div></article>}.
      */
     public LocatorOptions setHasText(String hasText) {
       this.hasText = hasText;
@@ -319,8 +319,8 @@ public interface FrameLocator {
     }
     /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
-     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches
-     * {@code <article><div>Playwright</div></article>}.
+     * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
+     * <article><div>Playwright</div></article>}.
      */
     public LocatorOptions setHasText(Pattern hasText) {
       this.hasText = hasText;
@@ -439,8 +439,8 @@ public interface FrameLocator {
    * <p> Note that many html elements have an implicitly <a
    * href="https://w3c.github.io/html-aam/#html-element-role-mappings">defined role</a> that is recognized by the role
    * selector. You can find all the <a href="https://www.w3.org/TR/wai-aria-1.2/#role_definitions">supported roles here</a>.
-   * ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code aria-*}
-   * attributes to default values.
+   * ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code
+   * aria-*} attributes to default values.
    *
    * @param role Required aria role.
    */
@@ -456,8 +456,8 @@ public interface FrameLocator {
    * <p> Note that many html elements have an implicitly <a
    * href="https://w3c.github.io/html-aam/#html-element-role-mappings">defined role</a> that is recognized by the role
    * selector. You can find all the <a href="https://www.w3.org/TR/wai-aria-1.2/#role_definitions">supported roles here</a>.
-   * ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code aria-*}
-   * attributes to default values.
+   * ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code
+   * aria-*} attributes to default values.
    *
    * @param role Required aria role.
    */
@@ -503,8 +503,8 @@ public interface FrameLocator {
    * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
    *
-   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
-   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
+   * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
@@ -538,8 +538,8 @@ public interface FrameLocator {
    * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
    *
-   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
-   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
+   * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
@@ -571,8 +571,8 @@ public interface FrameLocator {
    * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
    *
-   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
-   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
+   * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */
@@ -606,8 +606,8 @@ public interface FrameLocator {
    * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
    *
-   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text content. For example,
-   * locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
+   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
+   * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
    */

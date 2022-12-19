@@ -18,9 +18,9 @@ package com.microsoft.playwright.assertions;
 
 
 /**
- * The {@code APIResponseAssertions} class provides assertion methods that can be used to make assertions about the {@code APIResponse}
- * in the tests. A new instance of {@code APIResponseAssertions} is created by calling {@link PlaywrightAssertions#assertThat
- * PlaywrightAssertions.assertThat()}:
+ * The {@code APIResponseAssertions} class provides assertion methods that can be used to make assertions about the {@code
+ * APIResponse} in the tests. A new instance of {@code APIResponseAssertions} is created by calling {@link
+ * PlaywrightAssertions#assertThat PlaywrightAssertions.assertThat()}:
  * <pre>{@code
  * ...
  * import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;

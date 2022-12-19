@@ -52,14 +52,14 @@ public interface Response {
   Map<String, String> headers();
   /**
    * An array with all the request HTTP headers associated with this response. Unlike {@link Response#allHeaders
-   * Response.allHeaders()}, header names are NOT lower-cased. Headers with multiple entries, such as {@code Set-Cookie}, appear in
-   * the array multiple times.
+   * Response.allHeaders()}, header names are NOT lower-cased. Headers with multiple entries, such as {@code Set-Cookie},
+   * appear in the array multiple times.
    */
   List<HttpHeader> headersArray();
   /**
    * Returns the value of the header matching the name. The name is case insensitive. If multiple headers have the same name
-   * (except {@code set-cookie}), they are returned as a list separated by {@code , }. For {@code set-cookie}, the {@code \n} separator is used. If
-   * no headers are found, {@code null} is returned.
+   * (except {@code set-cookie}), they are returned as a list separated by {@code , }. For {@code set-cookie}, the {@code \n}
+   * separator is used. If no headers are found, {@code null} is returned.
    *
    * @param name Name of the header.
    */
