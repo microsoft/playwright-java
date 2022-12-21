@@ -10,13 +10,10 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- script: bash ./scripts/download_driver_for_all_platforms.sh
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- script: mvn -B install -D skipTests --no-transfer-progress
+  displayName: 'Build & Install'
 
 - task: Maven@4
   inputs:
