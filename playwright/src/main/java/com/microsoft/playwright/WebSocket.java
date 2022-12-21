@@ -116,10 +116,14 @@ public interface WebSocket {
   }
   /**
    * Indicates that the web socket has been closed.
+   *
+   * @since v1.8
    */
   boolean isClosed();
   /**
    * Contains the URL of the WebSocket.
+   *
+   * @since v1.8
    */
   String url();
   /**
@@ -128,6 +132,7 @@ public interface WebSocket {
    * error if the WebSocket or Page is closed before the frame is received.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.10
    */
   default WebSocketFrame waitForFrameReceived(Runnable callback) {
     return waitForFrameReceived(null, callback);
@@ -138,6 +143,7 @@ public interface WebSocket {
    * error if the WebSocket or Page is closed before the frame is received.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.10
    */
   WebSocketFrame waitForFrameReceived(WaitForFrameReceivedOptions options, Runnable callback);
   /**
@@ -146,6 +152,7 @@ public interface WebSocket {
    * error if the WebSocket or Page is closed before the frame is sent.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.10
    */
   default WebSocketFrame waitForFrameSent(Runnable callback) {
     return waitForFrameSent(null, callback);
@@ -156,6 +163,7 @@ public interface WebSocket {
    * error if the WebSocket or Page is closed before the frame is sent.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.10
    */
   WebSocketFrame waitForFrameSent(WaitForFrameSentOptions options, Runnable callback);
 }

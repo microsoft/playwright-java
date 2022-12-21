@@ -27,11 +27,15 @@ import java.nio.file.Path;
 public interface Video {
   /**
    * Deletes the video file. Will wait for the video to finish if necessary.
+   *
+   * @since v1.11
    */
   void delete();
   /**
    * Returns the file system path this video will be recorded to. The video is guaranteed to be written to the filesystem
    * upon closing the browser context. This method throws when connected remotely.
+   *
+   * @since v1.8
    */
   Path path();
   /**
@@ -39,6 +43,7 @@ public interface Video {
    * the page has closed. This method waits until the page is closed and the video is fully saved.
    *
    * @param path Path where the video should be saved.
+   * @since v1.11
    */
   void saveAs(Path path);
 }

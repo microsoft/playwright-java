@@ -34,6 +34,8 @@ import java.nio.file.Path;
 public interface FormData {
   /**
    * Creates new instance of {@code FormData}.
+   *
+   * @since v1.18
    */
   static FormData create() {
     return new FormDataImpl();
@@ -43,6 +45,7 @@ public interface FormData {
    *
    * @param name Field name.
    * @param value Field value.
+   * @since v1.18
    */
   FormData set(String name, String value);
   /**
@@ -50,6 +53,7 @@ public interface FormData {
    *
    * @param name Field name.
    * @param value Field value.
+   * @since v1.18
    */
   FormData set(String name, boolean value);
   /**
@@ -57,6 +61,7 @@ public interface FormData {
    *
    * @param name Field name.
    * @param value Field value.
+   * @since v1.18
    */
   FormData set(String name, int value);
   /**
@@ -64,6 +69,7 @@ public interface FormData {
    *
    * @param name Field name.
    * @param value Field value.
+   * @since v1.18
    */
   FormData set(String name, Path value);
   /**
@@ -71,6 +77,7 @@ public interface FormData {
    *
    * @param name Field name.
    * @param value Field value.
+   * @since v1.18
    */
   FormData set(String name, FilePayload value);
 }

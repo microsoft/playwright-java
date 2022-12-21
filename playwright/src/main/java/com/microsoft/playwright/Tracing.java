@@ -165,6 +165,8 @@ public interface Tracing {
    * context.tracing().stop(new Tracing.StopOptions()
    *   .setPath(Paths.get("trace.zip")));
    * }</pre>
+   *
+   * @since v1.12
    */
   default void start() {
     start(null);
@@ -182,6 +184,8 @@ public interface Tracing {
    * context.tracing().stop(new Tracing.StopOptions()
    *   .setPath(Paths.get("trace.zip")));
    * }</pre>
+   *
+   * @since v1.12
    */
   void start(StartOptions options);
   /**
@@ -209,6 +213,8 @@ public interface Tracing {
    * context.tracing().stopChunk(new Tracing.StopChunkOptions()
    *   .setPath(Paths.get("trace2.zip")));
    * }</pre>
+   *
+   * @since v1.15
    */
   default void startChunk() {
     startChunk(null);
@@ -238,26 +244,36 @@ public interface Tracing {
    * context.tracing().stopChunk(new Tracing.StopChunkOptions()
    *   .setPath(Paths.get("trace2.zip")));
    * }</pre>
+   *
+   * @since v1.15
    */
   void startChunk(StartChunkOptions options);
   /**
    * Stop tracing.
+   *
+   * @since v1.12
    */
   default void stop() {
     stop(null);
   }
   /**
    * Stop tracing.
+   *
+   * @since v1.12
    */
   void stop(StopOptions options);
   /**
    * Stop the trace chunk. See {@link Tracing#startChunk Tracing.startChunk()} for more details about multiple trace chunks.
+   *
+   * @since v1.15
    */
   default void stopChunk() {
     stopChunk(null);
   }
   /**
    * Stop the trace chunk. See {@link Tracing#startChunk Tracing.startChunk()} for more details about multiple trace chunks.
+   *
+   * @since v1.15
    */
   void stopChunk(StopChunkOptions options);
 }

@@ -26,39 +26,57 @@ import java.util.*;
 public interface APIResponse {
   /**
    * Returns the buffer with response body.
+   *
+   * @since v1.16
    */
   byte[] body();
   /**
    * Disposes the body of this response. If not called then the body will stay in memory until the context closes.
+   *
+   * @since v1.16
    */
   void dispose();
   /**
    * An object with all the response HTTP headers associated with this response.
+   *
+   * @since v1.16
    */
   Map<String, String> headers();
   /**
    * An array with all the request HTTP headers associated with this response. Header names are not lower-cased. Headers with
    * multiple entries, such as {@code Set-Cookie}, appear in the array multiple times.
+   *
+   * @since v1.16
    */
   List<HttpHeader> headersArray();
   /**
    * Contains a boolean stating whether the response was successful (status in the range 200-299) or not.
+   *
+   * @since v1.16
    */
   boolean ok();
   /**
    * Contains the status code of the response (e.g., 200 for a success).
+   *
+   * @since v1.16
    */
   int status();
   /**
    * Contains the status text of the response (e.g. usually an "OK" for a success).
+   *
+   * @since v1.16
    */
   String statusText();
   /**
    * Returns the text representation of response body.
+   *
+   * @since v1.16
    */
   String text();
   /**
    * Contains the URL of the response.
+   *
+   * @since v1.16
    */
   String url();
 }

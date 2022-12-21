@@ -36,10 +36,14 @@ import java.util.*;
 public interface JSHandle {
   /**
    * Returns either {@code null} or the object handle itself, if the object handle is an instance of {@code ElementHandle}.
+   *
+   * @since v1.8
    */
   ElementHandle asElement();
   /**
    * The {@code jsHandle.dispose} method stops referencing the element handle.
+   *
+   * @since v1.8
    */
   void dispose();
   /**
@@ -59,6 +63,7 @@ public interface JSHandle {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
+   * @since v1.8
    */
   default Object evaluate(String expression) {
     return evaluate(expression, null);
@@ -81,6 +86,7 @@ public interface JSHandle {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.8
    */
   Object evaluate(String expression, Object arg);
   /**
@@ -99,6 +105,7 @@ public interface JSHandle {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
+   * @since v1.8
    */
   default JSHandle evaluateHandle(String expression) {
     return evaluateHandle(expression, null);
@@ -120,6 +127,7 @@ public interface JSHandle {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.8
    */
   JSHandle evaluateHandle(String expression, Object arg);
   /**
@@ -133,12 +141,15 @@ public interface JSHandle {
    * JSHandle documentHandle = properties.get("document");
    * handle.dispose();
    * }</pre>
+   *
+   * @since v1.8
    */
   Map<String, JSHandle> getProperties();
   /**
    * Fetches a single property from the referenced object.
    *
    * @param propertyName property to get
+   * @since v1.8
    */
   JSHandle getProperty(String propertyName);
   /**
@@ -146,6 +157,8 @@ public interface JSHandle {
    *
    * <p> <strong>NOTE:</strong> The method will return an empty JSON object if the referenced object is not stringifiable. It will throw an error if the
    * object has circular references.
+   *
+   * @since v1.8
    */
   Object jsonValue();
 }

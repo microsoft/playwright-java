@@ -113,6 +113,7 @@ public interface Keyboard {
    * <p> <strong>NOTE:</strong> Modifier keys DO influence {@code keyboard.down}. Holding down {@code Shift} will type the text in upper case.
    *
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
+   * @since v1.8
    */
   void down(String key);
   /**
@@ -127,6 +128,7 @@ public interface Keyboard {
    * case.
    *
    * @param text Sets input to the specified text value.
+   * @since v1.8
    */
   void insertText(String text);
   /**
@@ -167,6 +169,7 @@ public interface Keyboard {
    * <p> Shortcut for {@link Keyboard#down Keyboard.down()} and {@link Keyboard#up Keyboard.up()}.
    *
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
+   * @since v1.8
    */
   default void press(String key) {
     press(key, null);
@@ -209,6 +212,7 @@ public interface Keyboard {
    * <p> Shortcut for {@link Keyboard#down Keyboard.down()} and {@link Keyboard#up Keyboard.up()}.
    *
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
+   * @since v1.8
    */
   void press(String key, PressOptions options);
   /**
@@ -229,6 +233,7 @@ public interface Keyboard {
    * <p> <strong>NOTE:</strong> For characters that are not on a US keyboard, only an {@code input} event will be sent.
    *
    * @param text A text to type into a focused element.
+   * @since v1.8
    */
   default void type(String text) {
     type(text, null);
@@ -251,12 +256,14 @@ public interface Keyboard {
    * <p> <strong>NOTE:</strong> For characters that are not on a US keyboard, only an {@code input} event will be sent.
    *
    * @param text A text to type into a focused element.
+   * @since v1.8
    */
   void type(String text, TypeOptions options);
   /**
    * Dispatches a {@code keyup} event.
    *
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
+   * @since v1.8
    */
   void up(String key);
 }

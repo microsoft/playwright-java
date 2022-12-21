@@ -25,10 +25,14 @@ package com.microsoft.playwright;
 public interface WebSocketFrame {
   /**
    * Returns binary payload.
+   *
+   * @since v1.9
    */
   byte[] binary();
   /**
    * Returns text payload.
+   *
+   * @since v1.9
    */
   String text();
 }

@@ -50,6 +50,8 @@ package com.microsoft.playwright;
 public interface Dialog {
   /**
    * Returns when the dialog has been accepted.
+   *
+   * @since v1.8
    */
   default void accept() {
     accept(null);
@@ -58,22 +60,31 @@ public interface Dialog {
    * Returns when the dialog has been accepted.
    *
    * @param promptText A text to enter in prompt. Does not cause any effects if the dialog's {@code type} is not prompt. Optional.
+   * @since v1.8
    */
   void accept(String promptText);
   /**
    * If dialog is prompt, returns default prompt value. Otherwise, returns empty string.
+   *
+   * @since v1.8
    */
   String defaultValue();
   /**
    * Returns when the dialog has been dismissed.
+   *
+   * @since v1.8
    */
   void dismiss();
   /**
    * A message displayed in the dialog.
+   *
+   * @since v1.8
    */
   String message();
   /**
    * Returns dialog's type, can be one of {@code alert}, {@code beforeunload}, {@code confirm} or {@code prompt}.
+   *
+   * @since v1.8
    */
   String type();
 }

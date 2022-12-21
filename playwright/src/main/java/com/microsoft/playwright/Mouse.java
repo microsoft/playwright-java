@@ -161,17 +161,23 @@ public interface Mouse {
   }
   /**
    * Shortcut for {@link Mouse#move Mouse.move()}, {@link Mouse#down Mouse.down()}, {@link Mouse#up Mouse.up()}.
+   *
+   * @since v1.8
    */
   default void click(double x, double y) {
     click(x, y, null);
   }
   /**
    * Shortcut for {@link Mouse#move Mouse.move()}, {@link Mouse#down Mouse.down()}, {@link Mouse#up Mouse.up()}.
+   *
+   * @since v1.8
    */
   void click(double x, double y, ClickOptions options);
   /**
    * Shortcut for {@link Mouse#move Mouse.move()}, {@link Mouse#down Mouse.down()}, {@link Mouse#up Mouse.up()}, {@link
    * Mouse#down Mouse.down()} and {@link Mouse#up Mouse.up()}.
+   *
+   * @since v1.8
    */
   default void dblclick(double x, double y) {
     dblclick(x, y, null);
@@ -179,36 +185,50 @@ public interface Mouse {
   /**
    * Shortcut for {@link Mouse#move Mouse.move()}, {@link Mouse#down Mouse.down()}, {@link Mouse#up Mouse.up()}, {@link
    * Mouse#down Mouse.down()} and {@link Mouse#up Mouse.up()}.
+   *
+   * @since v1.8
    */
   void dblclick(double x, double y, DblclickOptions options);
   /**
    * Dispatches a {@code mousedown} event.
+   *
+   * @since v1.8
    */
   default void down() {
     down(null);
   }
   /**
    * Dispatches a {@code mousedown} event.
+   *
+   * @since v1.8
    */
   void down(DownOptions options);
   /**
    * Dispatches a {@code mousemove} event.
+   *
+   * @since v1.8
    */
   default void move(double x, double y) {
     move(x, y, null);
   }
   /**
    * Dispatches a {@code mousemove} event.
+   *
+   * @since v1.8
    */
   void move(double x, double y, MoveOptions options);
   /**
    * Dispatches a {@code mouseup} event.
+   *
+   * @since v1.8
    */
   default void up() {
     up(null);
   }
   /**
    * Dispatches a {@code mouseup} event.
+   *
+   * @since v1.8
    */
   void up(UpOptions options);
   /**
@@ -219,6 +239,7 @@ public interface Mouse {
    *
    * @param deltaX Pixels to scroll horizontally.
    * @param deltaY Pixels to scroll vertically.
+   * @since v1.15
    */
   void wheel(double deltaX, double deltaY);
 }

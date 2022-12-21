@@ -73,6 +73,7 @@ public interface Worker {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
+   * @since v1.8
    */
   default Object evaluate(String expression) {
     return evaluate(expression, null);
@@ -91,6 +92,7 @@ public interface Worker {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.8
    */
   Object evaluate(String expression, Object arg);
   /**
@@ -105,6 +107,7 @@ public interface Worker {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
+   * @since v1.8
    */
   default JSHandle evaluateHandle(String expression) {
     return evaluateHandle(expression, null);
@@ -122,13 +125,20 @@ public interface Worker {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.8
    */
   JSHandle evaluateHandle(String expression, Object arg);
+  /**
+   *
+   *
+   * @since v1.8
+   */
   String url();
   /**
    * Performs action and waits for the Worker to close.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.10
    */
   default Worker waitForClose(Runnable callback) {
     return waitForClose(null, callback);
@@ -137,6 +147,7 @@ public interface Worker {
    * Performs action and waits for the Worker to close.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.10
    */
   Worker waitForClose(WaitForCloseOptions options, Runnable callback);
 }

@@ -60,6 +60,7 @@ public interface PlaywrightAssertions {
    * }</pre>
    *
    * @param response {@code APIResponse} object to use for assertions.
+   * @since v1.18
    */
   static APIResponseAssertions assertThat(APIResponse response) {
     return new APIResponseAssertionsImpl(response);
@@ -74,6 +75,7 @@ public interface PlaywrightAssertions {
    * }</pre>
    *
    * @param locator {@code Locator} object to use for assertions.
+   * @since v1.18
    */
   static LocatorAssertions assertThat(Locator locator) {
     return new LocatorAssertionsImpl(locator);
@@ -88,6 +90,7 @@ public interface PlaywrightAssertions {
    * }</pre>
    *
    * @param page {@code Page} object to use for assertions.
+   * @since v1.18
    */
   static PageAssertions assertThat(Page page) {
     return new PageAssertionsImpl(page);
@@ -102,6 +105,7 @@ public interface PlaywrightAssertions {
    * }</pre>
    *
    * @param timeout Timeout in milliseconds.
+   * @since v1.25
    */
   static void setDefaultAssertionTimeout(double milliseconds) {
     AssertionsTimeout.setDefaultTimeout(milliseconds);

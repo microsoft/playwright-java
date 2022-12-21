@@ -176,12 +176,16 @@ public interface APIRequest {
   }
   /**
    * Creates new instances of {@code APIRequestContext}.
+   *
+   * @since v1.16
    */
   default APIRequestContext newContext() {
     return newContext(null);
   }
   /**
    * Creates new instances of {@code APIRequestContext}.
+   *
+   * @since v1.16
    */
   APIRequestContext newContext(NewContextOptions options);
 }

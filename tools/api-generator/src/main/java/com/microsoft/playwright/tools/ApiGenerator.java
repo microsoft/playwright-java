@@ -779,6 +779,14 @@ class Method extends Element {
       String returnComment = jsonElement.getAsJsonObject().get("returnComment").getAsString();
       sections.add("@return " + returnComment);
     }
+    if (jsonElement.getAsJsonObject().has("since")) {
+      if (!hasBlankLine) {
+        sections.add("");
+        hasBlankLine = true;
+      }
+      String since = jsonElement.getAsJsonObject().get("since").getAsString();
+      sections.add("@since " + since);
+    }
     writeJavadoc(output, offset, String.join("\n", sections));
   }
 }

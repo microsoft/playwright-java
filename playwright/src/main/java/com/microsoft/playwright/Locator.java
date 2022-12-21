@@ -1945,24 +1945,34 @@ public interface Locator {
    * for (Locator li : page.getByRole('listitem').all())
    *   li.click();
    * }</pre>
+   *
+   * @since v1.29
    */
   List<Locator> all();
   /**
    * Returns an array of {@code node.innerText} values for all matching nodes.
+   *
+   * @since v1.14
    */
   List<String> allInnerTexts();
   /**
    * Returns an array of {@code node.textContent} values for all matching nodes.
+   *
+   * @since v1.14
    */
   List<String> allTextContents();
   /**
    * Calls <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/blur">blur</a> on the element.
+   *
+   * @since v1.28
    */
   default void blur() {
     blur(null);
   }
   /**
    * Calls <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/blur">blur</a> on the element.
+   *
+   * @since v1.28
    */
   void blur(BlurOptions options);
   /**
@@ -1984,6 +1994,8 @@ public interface Locator {
    * BoundingBox box = element.boundingBox();
    * page.mouse().click(box.x + box.width / 2, box.y + box.height / 2);
    * }</pre>
+   *
+   * @since v1.14
    */
   default BoundingBox boundingBox() {
     return boundingBox(null);
@@ -2007,6 +2019,8 @@ public interface Locator {
    * BoundingBox box = element.boundingBox();
    * page.mouse().click(box.x + box.width / 2, box.y + box.height / 2);
    * }</pre>
+   *
+   * @since v1.14
    */
   BoundingBox boundingBox(BoundingBoxOptions options);
   /**
@@ -2026,6 +2040,8 @@ public interface Locator {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * @since v1.14
    */
   default void check() {
     check(null);
@@ -2047,6 +2063,8 @@ public interface Locator {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * @since v1.14
    */
   void check(CheckOptions options);
   /**
@@ -2057,6 +2075,8 @@ public interface Locator {
    * throws an error. However, if the element is inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be
    * cleared instead.
+   *
+   * @since v1.28
    */
   default void clear() {
     clear(null);
@@ -2069,6 +2089,8 @@ public interface Locator {
    * throws an error. However, if the element is inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be
    * cleared instead.
+   *
+   * @since v1.28
    */
   void clear(ClearOptions options);
   /**
@@ -2089,6 +2111,8 @@ public interface Locator {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * @since v1.14
    */
   default void click() {
     click(null);
@@ -2111,10 +2135,14 @@ public interface Locator {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * @since v1.14
    */
   void click(ClickOptions options);
   /**
    * Returns the number of elements matching given selector.
+   *
+   * @since v1.14
    */
   int count();
   /**
@@ -2134,6 +2162,8 @@ public interface Locator {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code element.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
+   *
+   * @since v1.14
    */
   default void dblclick() {
     dblclick(null);
@@ -2155,6 +2185,8 @@ public interface Locator {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code element.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
+   *
+   * @since v1.14
    */
   void dblclick(DblclickOptions options);
   /**
@@ -2193,6 +2225,7 @@ public interface Locator {
    *
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    * @param eventInit Optional event-specific initialization properties.
+   * @since v1.14
    */
   default void dispatchEvent(String type, Object eventInit) {
     dispatchEvent(type, eventInit, null);
@@ -2232,6 +2265,7 @@ public interface Locator {
    * }</pre>
    *
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
+   * @since v1.14
    */
   default void dispatchEvent(String type) {
     dispatchEvent(type, null);
@@ -2272,6 +2306,7 @@ public interface Locator {
    *
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    * @param eventInit Optional event-specific initialization properties.
+   * @since v1.14
    */
   void dispatchEvent(String type, Object eventInit, DispatchEventOptions options);
   /**
@@ -2290,6 +2325,7 @@ public interface Locator {
    * }</pre>
    *
    * @param target Locator of the element to drag to.
+   * @since v1.18
    */
   default void dragTo(Locator target) {
     dragTo(target, null);
@@ -2310,11 +2346,14 @@ public interface Locator {
    * }</pre>
    *
    * @param target Locator of the element to drag to.
+   * @since v1.18
    */
   void dragTo(Locator target, DragToOptions options);
   /**
    * Resolves given locator to the first matching DOM element. If no elements matching the query are visible, waits for them
    * up to a given timeout. If multiple elements match the selector, throws.
+   *
+   * @since v1.14
    */
   default ElementHandle elementHandle() {
     return elementHandle(null);
@@ -2322,10 +2361,14 @@ public interface Locator {
   /**
    * Resolves given locator to the first matching DOM element. If no elements matching the query are visible, waits for them
    * up to a given timeout. If multiple elements match the selector, throws.
+   *
+   * @since v1.14
    */
   ElementHandle elementHandle(ElementHandleOptions options);
   /**
    * Resolves given locator to all matching DOM elements.
+   *
+   * @since v1.14
    */
   List<ElementHandle> elementHandles();
   /**
@@ -2346,6 +2389,7 @@ public interface Locator {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.14
    */
   default Object evaluate(String expression, Object arg) {
     return evaluate(expression, arg, null);
@@ -2367,6 +2411,7 @@ public interface Locator {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
+   * @since v1.14
    */
   default Object evaluate(String expression) {
     return evaluate(expression, null);
@@ -2389,6 +2434,7 @@ public interface Locator {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.14
    */
   Object evaluate(String expression, Object arg, EvaluateOptions options);
   /**
@@ -2407,6 +2453,7 @@ public interface Locator {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
+   * @since v1.14
    */
   default Object evaluateAll(String expression) {
     return evaluateAll(expression, null);
@@ -2428,6 +2475,7 @@ public interface Locator {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.14
    */
   Object evaluateAll(String expression, Object arg);
   /**
@@ -2447,6 +2495,7 @@ public interface Locator {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.14
    */
   default JSHandle evaluateHandle(String expression, Object arg) {
     return evaluateHandle(expression, arg, null);
@@ -2467,6 +2516,7 @@ public interface Locator {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
+   * @since v1.14
    */
   default JSHandle evaluateHandle(String expression) {
     return evaluateHandle(expression, null);
@@ -2488,6 +2538,7 @@ public interface Locator {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.14
    */
   JSHandle evaluateHandle(String expression, Object arg, EvaluateHandleOptions options);
   /**
@@ -2503,6 +2554,7 @@ public interface Locator {
    * <p> To send fine-grained keyboard events, use {@link Locator#type Locator.type()}.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
+   * @since v1.14
    */
   default void fill(String value) {
     fill(value, null);
@@ -2520,6 +2572,7 @@ public interface Locator {
    * <p> To send fine-grained keyboard events, use {@link Locator#type Locator.type()}.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
+   * @since v1.14
    */
   void fill(String value, FillOptions options);
   /**
@@ -2537,6 +2590,8 @@ public interface Locator {
    *     ))
    *     .screenshot();
    * }</pre>
+   *
+   * @since v1.22
    */
   default Locator filter() {
     return filter(null);
@@ -2556,20 +2611,28 @@ public interface Locator {
    *     ))
    *     .screenshot();
    * }</pre>
+   *
+   * @since v1.22
    */
   Locator filter(FilterOptions options);
   /**
    * Returns locator to the first matching element.
+   *
+   * @since v1.14
    */
   Locator first();
   /**
    * Calls <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus">focus</a> on the element.
+   *
+   * @since v1.14
    */
   default void focus() {
     focus(null);
   }
   /**
    * Calls <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus">focus</a> on the element.
+   *
+   * @since v1.14
    */
   void focus(FocusOptions options);
   /**
@@ -2583,12 +2646,14 @@ public interface Locator {
    * }</pre>
    *
    * @param selector A selector to use when resolving DOM element.
+   * @since v1.17
    */
   FrameLocator frameLocator(String selector);
   /**
    * Returns element attribute value.
    *
    * @param name Attribute name to get the value for.
+   * @since v1.14
    */
   default String getAttribute(String name) {
     return getAttribute(name, null);
@@ -2597,12 +2662,14 @@ public interface Locator {
    * Returns element attribute value.
    *
    * @param name Attribute name to get the value for.
+   * @since v1.14
    */
   String getAttribute(String name, GetAttributeOptions options);
   /**
    * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByAltText(String text) {
     return getByAltText(text, null);
@@ -2611,12 +2678,14 @@ public interface Locator {
    * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByAltText(String text, GetByAltTextOptions options);
   /**
    * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByAltText(Pattern text) {
     return getByAltText(text, null);
@@ -2625,6 +2694,7 @@ public interface Locator {
    * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByAltText(Pattern text, GetByAltTextOptions options);
   /**
@@ -2632,6 +2702,7 @@ public interface Locator {
    * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByLabel(String text) {
     return getByLabel(text, null);
@@ -2641,6 +2712,7 @@ public interface Locator {
    * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByLabel(String text, GetByLabelOptions options);
   /**
@@ -2648,6 +2720,7 @@ public interface Locator {
    * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByLabel(Pattern text) {
     return getByLabel(text, null);
@@ -2657,6 +2730,7 @@ public interface Locator {
    * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByLabel(Pattern text, GetByLabelOptions options);
   /**
@@ -2664,6 +2738,7 @@ public interface Locator {
    * "Country":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByPlaceholder(String text) {
     return getByPlaceholder(text, null);
@@ -2673,6 +2748,7 @@ public interface Locator {
    * "Country":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByPlaceholder(String text, GetByPlaceholderOptions options);
   /**
@@ -2680,6 +2756,7 @@ public interface Locator {
    * "Country":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByPlaceholder(Pattern text) {
     return getByPlaceholder(text, null);
@@ -2689,6 +2766,7 @@ public interface Locator {
    * "Country":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByPlaceholder(Pattern text, GetByPlaceholderOptions options);
   /**
@@ -2704,6 +2782,7 @@ public interface Locator {
    * aria-*} attributes to default values.
    *
    * @param role Required aria role.
+   * @since v1.27
    */
   default Locator getByRole(AriaRole role) {
     return getByRole(role, null);
@@ -2721,6 +2800,7 @@ public interface Locator {
    * aria-*} attributes to default values.
    *
    * @param role Required aria role.
+   * @since v1.27
    */
   Locator getByRole(AriaRole role, GetByRoleOptions options);
   /**
@@ -2728,6 +2808,7 @@ public interface Locator {
    * Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
    *
    * @param testId Id to locate the element by.
+   * @since v1.27
    */
   Locator getByTestId(String testId);
   /**
@@ -2735,6 +2816,7 @@ public interface Locator {
    * Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
    *
    * @param testId Id to locate the element by.
+   * @since v1.27
    */
   Locator getByTestId(Pattern testId);
   /**
@@ -2768,6 +2850,7 @@ public interface Locator {
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByText(String text) {
     return getByText(text, null);
@@ -2803,6 +2886,7 @@ public interface Locator {
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByText(String text, GetByTextOptions options);
   /**
@@ -2836,6 +2920,7 @@ public interface Locator {
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByText(Pattern text) {
     return getByText(text, null);
@@ -2871,12 +2956,14 @@ public interface Locator {
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByText(Pattern text, GetByTextOptions options);
   /**
    * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByTitle(String text) {
     return getByTitle(text, null);
@@ -2885,12 +2972,14 @@ public interface Locator {
    * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByTitle(String text, GetByTitleOptions options);
   /**
    * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByTitle(Pattern text) {
     return getByTitle(text, null);
@@ -2899,11 +2988,14 @@ public interface Locator {
    * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByTitle(Pattern text, GetByTitleOptions options);
   /**
    * Highlight the corresponding element(s) on the screen. Useful for debugging, don't commit the code that uses {@link
    * Locator#highlight Locator.highlight()}.
+   *
+   * @since v1.20
    */
   void highlight();
   /**
@@ -2920,6 +3012,8 @@ public interface Locator {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * @since v1.14
    */
   default void hover() {
     hover(null);
@@ -2938,26 +3032,36 @@ public interface Locator {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * @since v1.14
    */
   void hover(HoverOptions options);
   /**
    * Returns the {@code element.innerHTML}.
+   *
+   * @since v1.14
    */
   default String innerHTML() {
     return innerHTML(null);
   }
   /**
    * Returns the {@code element.innerHTML}.
+   *
+   * @since v1.14
    */
   String innerHTML(InnerHTMLOptions options);
   /**
    * Returns the {@code element.innerText}.
+   *
+   * @since v1.14
    */
   default String innerText() {
     return innerText(null);
   }
   /**
    * Returns the {@code element.innerText}.
+   *
+   * @since v1.14
    */
   String innerText(InnerTextOptions options);
   /**
@@ -2966,6 +3070,8 @@ public interface Locator {
    * <p> Throws for non-input elements. However, if the element is inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, returns the value of the
    * control.
+   *
+   * @since v1.14
    */
   default String inputValue() {
     return inputValue(null);
@@ -2976,21 +3082,29 @@ public interface Locator {
    * <p> Throws for non-input elements. However, if the element is inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, returns the value of the
    * control.
+   *
+   * @since v1.14
    */
   String inputValue(InputValueOptions options);
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
+   *
+   * @since v1.14
    */
   default boolean isChecked() {
     return isChecked(null);
   }
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
+   *
+   * @since v1.14
    */
   boolean isChecked(IsCheckedOptions options);
   /**
    * Returns whether the element is disabled, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
+   *
+   * @since v1.14
    */
   default boolean isDisabled() {
     return isDisabled(null);
@@ -2998,31 +3112,43 @@ public interface Locator {
   /**
    * Returns whether the element is disabled, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
+   *
+   * @since v1.14
    */
   boolean isDisabled(IsDisabledOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
+   *
+   * @since v1.14
    */
   default boolean isEditable() {
     return isEditable(null);
   }
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
+   *
+   * @since v1.14
    */
   boolean isEditable(IsEditableOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
+   *
+   * @since v1.14
    */
   default boolean isEnabled() {
     return isEnabled(null);
   }
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
+   *
+   * @since v1.14
    */
   boolean isEnabled(IsEnabledOptions options);
   /**
    * Returns whether the element is hidden, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
+   *
+   * @since v1.14
    */
   default boolean isHidden() {
     return isHidden(null);
@@ -3030,20 +3156,28 @@ public interface Locator {
   /**
    * Returns whether the element is hidden, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
+   *
+   * @since v1.14
    */
   boolean isHidden(IsHiddenOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
+   *
+   * @since v1.14
    */
   default boolean isVisible() {
     return isVisible(null);
   }
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
+   *
+   * @since v1.14
    */
   boolean isVisible(IsVisibleOptions options);
   /**
    * Returns locator to the last matching element.
+   *
+   * @since v1.14
    */
   Locator last();
   /**
@@ -3053,6 +3187,7 @@ public interface Locator {
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
    * @param selector A selector to use when resolving DOM element.
+   * @since v1.14
    */
   default Locator locator(String selector) {
     return locator(selector, null);
@@ -3064,14 +3199,19 @@ public interface Locator {
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
    * @param selector A selector to use when resolving DOM element.
+   * @since v1.14
    */
   Locator locator(String selector, LocatorOptions options);
   /**
    * Returns locator to the n-th matching element. It's zero based, {@code nth(0)} selects the first element.
+   *
+   * @since v1.14
    */
   Locator nth(int index);
   /**
    * A page this locator belongs to.
+   *
+   * @since v1.19
    */
   Page page();
   /**
@@ -3099,6 +3239,7 @@ public interface Locator {
    * the modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
+   * @since v1.14
    */
   default void press(String key) {
     press(key, null);
@@ -3128,6 +3269,7 @@ public interface Locator {
    * the modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
+   * @since v1.14
    */
   void press(String key, PressOptions options);
   /**
@@ -3139,6 +3281,8 @@ public interface Locator {
    * scrolls element into view before taking a screenshot. If the element is detached from DOM, the method throws an error.
    *
    * <p> Returns the buffer with the captured screenshot.
+   *
+   * @since v1.14
    */
   default byte[] screenshot() {
     return screenshot(null);
@@ -3152,6 +3296,8 @@ public interface Locator {
    * scrolls element into view before taking a screenshot. If the element is detached from DOM, the method throws an error.
    *
    * <p> Returns the buffer with the captured screenshot.
+   *
+   * @since v1.14
    */
   byte[] screenshot(ScreenshotOptions options);
   /**
@@ -3159,6 +3305,8 @@ public interface Locator {
    * scroll element into view, unless it is completely visible as defined by <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">IntersectionObserver</a>'s {@code
    * ratio}.
+   *
+   * @since v1.14
    */
   default void scrollIntoViewIfNeeded() {
     scrollIntoViewIfNeeded(null);
@@ -3168,6 +3316,8 @@ public interface Locator {
    * scroll element into view, unless it is completely visible as defined by <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">IntersectionObserver</a>'s {@code
    * ratio}.
+   *
+   * @since v1.14
    */
   void scrollIntoViewIfNeeded(ScrollIntoViewIfNeededOptions options);
   /**
@@ -3200,6 +3350,7 @@ public interface Locator {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.14
    */
   default List<String> selectOption(String values) {
     return selectOption(values, null);
@@ -3234,6 +3385,7 @@ public interface Locator {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.14
    */
   List<String> selectOption(String values, SelectOptionOptions options);
   /**
@@ -3266,6 +3418,7 @@ public interface Locator {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.14
    */
   default List<String> selectOption(ElementHandle values) {
     return selectOption(values, null);
@@ -3300,6 +3453,7 @@ public interface Locator {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.14
    */
   List<String> selectOption(ElementHandle values, SelectOptionOptions options);
   /**
@@ -3332,6 +3486,7 @@ public interface Locator {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.14
    */
   default List<String> selectOption(String[] values) {
     return selectOption(values, null);
@@ -3366,6 +3521,7 @@ public interface Locator {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.14
    */
   List<String> selectOption(String[] values, SelectOptionOptions options);
   /**
@@ -3398,6 +3554,7 @@ public interface Locator {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.14
    */
   default List<String> selectOption(SelectOption values) {
     return selectOption(values, null);
@@ -3432,6 +3589,7 @@ public interface Locator {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.14
    */
   List<String> selectOption(SelectOption values, SelectOptionOptions options);
   /**
@@ -3464,6 +3622,7 @@ public interface Locator {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.14
    */
   default List<String> selectOption(ElementHandle[] values) {
     return selectOption(values, null);
@@ -3498,6 +3657,7 @@ public interface Locator {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.14
    */
   List<String> selectOption(ElementHandle[] values, SelectOptionOptions options);
   /**
@@ -3530,6 +3690,7 @@ public interface Locator {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.14
    */
   default List<String> selectOption(SelectOption[] values) {
     return selectOption(values, null);
@@ -3564,6 +3725,7 @@ public interface Locator {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.14
    */
   List<String> selectOption(SelectOption[] values, SelectOptionOptions options);
   /**
@@ -3573,6 +3735,8 @@ public interface Locator {
    * <p> If the element is inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, focuses and selects text
    * in the control instead.
+   *
+   * @since v1.14
    */
   default void selectText() {
     selectText(null);
@@ -3584,6 +3748,8 @@ public interface Locator {
    * <p> If the element is inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, focuses and selects text
    * in the control instead.
+   *
+   * @since v1.14
    */
   void selectText(SelectTextOptions options);
   /**
@@ -3603,6 +3769,7 @@ public interface Locator {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * @param checked Whether to check or uncheck the checkbox.
+   * @since v1.15
    */
   default void setChecked(boolean checked) {
     setChecked(checked, null);
@@ -3624,6 +3791,7 @@ public interface Locator {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * @param checked Whether to check or uncheck the checkbox.
+   * @since v1.15
    */
   void setChecked(boolean checked, SetCheckedOptions options);
   /**
@@ -3635,6 +3803,8 @@ public interface Locator {
    * inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
+   *
+   * @since v1.14
    */
   default void setInputFiles(Path files) {
     setInputFiles(files, null);
@@ -3648,6 +3818,8 @@ public interface Locator {
    * inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
+   *
+   * @since v1.14
    */
   void setInputFiles(Path files, SetInputFilesOptions options);
   /**
@@ -3659,6 +3831,8 @@ public interface Locator {
    * inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
+   *
+   * @since v1.14
    */
   default void setInputFiles(Path[] files) {
     setInputFiles(files, null);
@@ -3672,6 +3846,8 @@ public interface Locator {
    * inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
+   *
+   * @since v1.14
    */
   void setInputFiles(Path[] files, SetInputFilesOptions options);
   /**
@@ -3683,6 +3859,8 @@ public interface Locator {
    * inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
+   *
+   * @since v1.14
    */
   default void setInputFiles(FilePayload files) {
     setInputFiles(files, null);
@@ -3696,6 +3874,8 @@ public interface Locator {
    * inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
+   *
+   * @since v1.14
    */
   void setInputFiles(FilePayload files, SetInputFilesOptions options);
   /**
@@ -3707,6 +3887,8 @@ public interface Locator {
    * inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
+   *
+   * @since v1.14
    */
   default void setInputFiles(FilePayload[] files) {
     setInputFiles(files, null);
@@ -3720,6 +3902,8 @@ public interface Locator {
    * inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
+   *
+   * @since v1.14
    */
   void setInputFiles(FilePayload[] files, SetInputFilesOptions options);
   /**
@@ -3738,6 +3922,8 @@ public interface Locator {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code element.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
+   *
+   * @since v1.14
    */
   default void tap() {
     tap(null);
@@ -3758,16 +3944,22 @@ public interface Locator {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code element.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
+   *
+   * @since v1.14
    */
   void tap(TapOptions options);
   /**
    * Returns the {@code node.textContent}.
+   *
+   * @since v1.14
    */
   default String textContent() {
     return textContent(null);
   }
   /**
    * Returns the {@code node.textContent}.
+   *
+   * @since v1.14
    */
   String textContent(TextContentOptions options);
   /**
@@ -3790,6 +3982,7 @@ public interface Locator {
    * }</pre>
    *
    * @param text A text to type into a focused element.
+   * @since v1.14
    */
   default void type(String text) {
     type(text, null);
@@ -3814,6 +4007,7 @@ public interface Locator {
    * }</pre>
    *
    * @param text A text to type into a focused element.
+   * @since v1.14
    */
   void type(String text, TypeOptions options);
   /**
@@ -3833,6 +4027,8 @@ public interface Locator {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * @since v1.14
    */
   default void uncheck() {
     uncheck(null);
@@ -3854,6 +4050,8 @@ public interface Locator {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * @since v1.14
    */
   void uncheck(UncheckOptions options);
   /**
@@ -3867,6 +4065,8 @@ public interface Locator {
    * Locator orderSent = page.locator("#order-sent");
    * orderSent.waitFor();
    * }</pre>
+   *
+   * @since v1.16
    */
   default void waitFor() {
     waitFor(null);
@@ -3882,6 +4082,8 @@ public interface Locator {
    * Locator orderSent = page.locator("#order-sent");
    * orderSent.waitFor();
    * }</pre>
+   *
+   * @since v1.16
    */
   void waitFor(WaitForOptions options);
 }

@@ -46,14 +46,20 @@ public interface ConsoleMessage {
   /**
    * List of arguments passed to a {@code console} function call. See also {@link Page#onConsoleMessage
    * Page.onConsoleMessage()}.
+   *
+   * @since v1.8
    */
   List<JSHandle> args();
   /**
    * URL of the resource followed by 0-based line and column numbers in the resource formatted as {@code URL:line:column}.
+   *
+   * @since v1.8
    */
   String location();
   /**
    * The text of the console message.
+   *
+   * @since v1.8
    */
   String text();
   /**
@@ -61,6 +67,8 @@ public interface ConsoleMessage {
    * "dir"}, {@code "dirxml"}, {@code "table"}, {@code "trace"}, {@code "clear"}, {@code "startGroup"}, {@code
    * "startGroupCollapsed"}, {@code "endGroup"}, {@code "assert"}, {@code "profile"}, {@code "profileEnd"}, {@code "count"},
    * {@code "timeEnd"}.
+   *
+   * @since v1.8
    */
   String type();
 }

@@ -276,6 +276,8 @@ public interface Route {
   }
   /**
    * Aborts the route's request.
+   *
+   * @since v1.8
    */
   default void abort() {
     abort(null);
@@ -302,6 +304,7 @@ public interface Route {
    * <li> {@code "timedout"} - An operation timed out.</li>
    * <li> {@code "failed"} - A generic failure occurred.</li>
    * </ul>
+   * @since v1.8
    */
   void abort(String errorCode);
   /**
@@ -317,6 +320,8 @@ public interface Route {
    *   route.resume(new Route.ResumeOptions().setHeaders(headers));
    * });
    * }</pre>
+   *
+   * @since v1.8
    */
   default void resume() {
     resume(null);
@@ -334,6 +339,8 @@ public interface Route {
    *   route.resume(new Route.ResumeOptions().setHeaders(headers));
    * });
    * }</pre>
+   *
+   * @since v1.8
    */
   void resume(ResumeOptions options);
   /**
@@ -395,6 +402,8 @@ public interface Route {
    *   route.fallback(new Route.ResumeOptions().setHeaders(headers));
    * });
    * }</pre>
+   *
+   * @since v1.23
    */
   default void fallback() {
     fallback(null);
@@ -458,6 +467,8 @@ public interface Route {
    *   route.fallback(new Route.ResumeOptions().setHeaders(headers));
    * });
    * }</pre>
+   *
+   * @since v1.23
    */
   void fallback(FallbackOptions options);
   /**
@@ -476,6 +487,8 @@ public interface Route {
    *     .setBody(json.toString()));
    * });
    * }</pre>
+   *
+   * @since v1.29
    */
   default APIResponse fetch() {
     return fetch(null);
@@ -496,6 +509,8 @@ public interface Route {
    *     .setBody(json.toString()));
    * });
    * }</pre>
+   *
+   * @since v1.29
    */
   APIResponse fetch(FetchOptions options);
   /**
@@ -518,6 +533,8 @@ public interface Route {
    * page.route("**\/xhr_endpoint", route -> route.fulfill(
    *   new Route.FulfillOptions().setPath(Paths.get("mock_data.json"))));
    * }</pre>
+   *
+   * @since v1.8
    */
   default void fulfill() {
     fulfill(null);
@@ -542,10 +559,14 @@ public interface Route {
    * page.route("**\/xhr_endpoint", route -> route.fulfill(
    *   new Route.FulfillOptions().setPath(Paths.get("mock_data.json"))));
    * }</pre>
+   *
+   * @since v1.8
    */
   void fulfill(FulfillOptions options);
   /**
    * A request to be routed.
+   *
+   * @since v1.8
    */
   Request request();
 }

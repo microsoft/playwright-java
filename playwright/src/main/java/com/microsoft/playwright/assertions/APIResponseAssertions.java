@@ -43,6 +43,8 @@ public interface APIResponseAssertions {
    * <pre>{@code
    * assertThat(response).not().isOK();
    * }</pre>
+   *
+   * @since v1.20
    */
   APIResponseAssertions not();
   /**
@@ -52,6 +54,8 @@ public interface APIResponseAssertions {
    * <pre>{@code
    * assertThat(response).isOK();
    * }</pre>
+   *
+   * @since v1.18
    */
   void isOK();
 }

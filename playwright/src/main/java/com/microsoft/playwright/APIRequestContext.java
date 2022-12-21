@@ -63,6 +63,7 @@ public interface APIRequestContext {
    * The method will automatically follow redirects.
    *
    * @param url Target URL.
+   * @since v1.16
    */
   default APIResponse delete(String url) {
     return delete(url, null);
@@ -74,12 +75,15 @@ public interface APIRequestContext {
    *
    * @param url Target URL.
    * @param params Optional request parameters.
+   * @since v1.16
    */
   APIResponse delete(String url, RequestOptions params);
   /**
    * All responses returned by {@link APIRequestContext#get APIRequestContext.get()} and similar methods are stored in the
    * memory, so that you can later call {@link APIResponse#body APIResponse.body()}. This method discards all stored
    * responses, and makes {@link APIResponse#body APIResponse.body()} throw "Response disposed" error.
+   *
+   * @since v1.16
    */
   void dispose();
   /**
@@ -113,6 +117,7 @@ public interface APIRequestContext {
    * }</pre>
    *
    * @param urlOrRequest Target URL or Request to get all parameters from.
+   * @since v1.16
    */
   default APIResponse fetch(String urlOrRequest) {
     return fetch(urlOrRequest, null);
@@ -149,6 +154,7 @@ public interface APIRequestContext {
    *
    * @param urlOrRequest Target URL or Request to get all parameters from.
    * @param params Optional request parameters.
+   * @since v1.16
    */
   APIResponse fetch(String urlOrRequest, RequestOptions params);
   /**
@@ -182,6 +188,7 @@ public interface APIRequestContext {
    * }</pre>
    *
    * @param urlOrRequest Target URL or Request to get all parameters from.
+   * @since v1.16
    */
   default APIResponse fetch(Request urlOrRequest) {
     return fetch(urlOrRequest, null);
@@ -218,6 +225,7 @@ public interface APIRequestContext {
    *
    * @param urlOrRequest Target URL or Request to get all parameters from.
    * @param params Optional request parameters.
+   * @since v1.16
    */
   APIResponse fetch(Request urlOrRequest, RequestOptions params);
   /**
@@ -235,6 +243,7 @@ public interface APIRequestContext {
    * }</pre>
    *
    * @param url Target URL.
+   * @since v1.16
    */
   default APIResponse get(String url) {
     return get(url, null);
@@ -255,6 +264,7 @@ public interface APIRequestContext {
    *
    * @param url Target URL.
    * @param params Optional request parameters.
+   * @since v1.16
    */
   APIResponse get(String url, RequestOptions params);
   /**
@@ -263,6 +273,7 @@ public interface APIRequestContext {
    * method will automatically follow redirects.
    *
    * @param url Target URL.
+   * @since v1.16
    */
   default APIResponse head(String url) {
     return head(url, null);
@@ -274,6 +285,7 @@ public interface APIRequestContext {
    *
    * @param url Target URL.
    * @param params Optional request parameters.
+   * @since v1.16
    */
   APIResponse head(String url, RequestOptions params);
   /**
@@ -282,6 +294,7 @@ public interface APIRequestContext {
    * The method will automatically follow redirects.
    *
    * @param url Target URL.
+   * @since v1.16
    */
   default APIResponse patch(String url) {
     return patch(url, null);
@@ -293,6 +306,7 @@ public interface APIRequestContext {
    *
    * @param url Target URL.
    * @param params Optional request parameters.
+   * @since v1.16
    */
   APIResponse patch(String url, RequestOptions params);
   /**
@@ -337,6 +351,7 @@ public interface APIRequestContext {
    * }</pre>
    *
    * @param url Target URL.
+   * @since v1.16
    */
   default APIResponse post(String url) {
     return post(url, null);
@@ -384,6 +399,7 @@ public interface APIRequestContext {
    *
    * @param url Target URL.
    * @param params Optional request parameters.
+   * @since v1.16
    */
   APIResponse post(String url, RequestOptions params);
   /**
@@ -392,6 +408,7 @@ public interface APIRequestContext {
    * method will automatically follow redirects.
    *
    * @param url Target URL.
+   * @since v1.16
    */
   default APIResponse put(String url) {
     return put(url, null);
@@ -403,11 +420,14 @@ public interface APIRequestContext {
    *
    * @param url Target URL.
    * @param params Optional request parameters.
+   * @since v1.16
    */
   APIResponse put(String url, RequestOptions params);
   /**
    * Returns storage state for this request context, contains current cookies and local storage snapshot if it was passed to
    * the constructor.
+   *
+   * @since v1.16
    */
   default String storageState() {
     return storageState(null);
@@ -415,6 +435,8 @@ public interface APIRequestContext {
   /**
    * Returns storage state for this request context, contains current cookies and local storage snapshot if it was passed to
    * the constructor.
+   *
+   * @since v1.16
    */
   String storageState(StorageStateOptions options);
 }

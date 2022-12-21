@@ -329,6 +329,8 @@ public interface FrameLocator {
   }
   /**
    * Returns locator to the first matching frame.
+   *
+   * @since v1.17
    */
   FrameLocator first();
   /**
@@ -336,12 +338,14 @@ public interface FrameLocator {
    * that iframe.
    *
    * @param selector A selector to use when resolving DOM element.
+   * @since v1.17
    */
   FrameLocator frameLocator(String selector);
   /**
    * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByAltText(String text) {
     return getByAltText(text, null);
@@ -350,12 +354,14 @@ public interface FrameLocator {
    * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByAltText(String text, GetByAltTextOptions options);
   /**
    * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByAltText(Pattern text) {
     return getByAltText(text, null);
@@ -364,6 +370,7 @@ public interface FrameLocator {
    * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByAltText(Pattern text, GetByAltTextOptions options);
   /**
@@ -371,6 +378,7 @@ public interface FrameLocator {
    * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByLabel(String text) {
     return getByLabel(text, null);
@@ -380,6 +388,7 @@ public interface FrameLocator {
    * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByLabel(String text, GetByLabelOptions options);
   /**
@@ -387,6 +396,7 @@ public interface FrameLocator {
    * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByLabel(Pattern text) {
     return getByLabel(text, null);
@@ -396,6 +406,7 @@ public interface FrameLocator {
    * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByLabel(Pattern text, GetByLabelOptions options);
   /**
@@ -403,6 +414,7 @@ public interface FrameLocator {
    * "Country":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByPlaceholder(String text) {
     return getByPlaceholder(text, null);
@@ -412,6 +424,7 @@ public interface FrameLocator {
    * "Country":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByPlaceholder(String text, GetByPlaceholderOptions options);
   /**
@@ -419,6 +432,7 @@ public interface FrameLocator {
    * "Country":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByPlaceholder(Pattern text) {
     return getByPlaceholder(text, null);
@@ -428,6 +442,7 @@ public interface FrameLocator {
    * "Country":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByPlaceholder(Pattern text, GetByPlaceholderOptions options);
   /**
@@ -443,6 +458,7 @@ public interface FrameLocator {
    * aria-*} attributes to default values.
    *
    * @param role Required aria role.
+   * @since v1.27
    */
   default Locator getByRole(AriaRole role) {
     return getByRole(role, null);
@@ -460,6 +476,7 @@ public interface FrameLocator {
    * aria-*} attributes to default values.
    *
    * @param role Required aria role.
+   * @since v1.27
    */
   Locator getByRole(AriaRole role, GetByRoleOptions options);
   /**
@@ -467,6 +484,7 @@ public interface FrameLocator {
    * Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
    *
    * @param testId Id to locate the element by.
+   * @since v1.27
    */
   Locator getByTestId(String testId);
   /**
@@ -474,6 +492,7 @@ public interface FrameLocator {
    * Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
    *
    * @param testId Id to locate the element by.
+   * @since v1.27
    */
   Locator getByTestId(Pattern testId);
   /**
@@ -507,6 +526,7 @@ public interface FrameLocator {
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByText(String text) {
     return getByText(text, null);
@@ -542,6 +562,7 @@ public interface FrameLocator {
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByText(String text, GetByTextOptions options);
   /**
@@ -575,6 +596,7 @@ public interface FrameLocator {
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByText(Pattern text) {
     return getByText(text, null);
@@ -610,12 +632,14 @@ public interface FrameLocator {
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByText(Pattern text, GetByTextOptions options);
   /**
    * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByTitle(String text) {
     return getByTitle(text, null);
@@ -624,12 +648,14 @@ public interface FrameLocator {
    * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByTitle(String text, GetByTitleOptions options);
   /**
    * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByTitle(Pattern text) {
     return getByTitle(text, null);
@@ -638,10 +664,13 @@ public interface FrameLocator {
    * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByTitle(Pattern text, GetByTitleOptions options);
   /**
    * Returns locator to the last matching frame.
+   *
+   * @since v1.17
    */
   FrameLocator last();
   /**
@@ -651,6 +680,7 @@ public interface FrameLocator {
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
    * @param selector A selector to use when resolving DOM element.
+   * @since v1.17
    */
   default Locator locator(String selector) {
     return locator(selector, null);
@@ -662,10 +692,13 @@ public interface FrameLocator {
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
    * @param selector A selector to use when resolving DOM element.
+   * @since v1.17
    */
   Locator locator(String selector, LocatorOptions options);
   /**
    * Returns locator to the n-th matching frame. It's zero based, {@code nth(0)} selects the first frame.
+   *
+   * @since v1.17
    */
   FrameLocator nth(int index);
 }

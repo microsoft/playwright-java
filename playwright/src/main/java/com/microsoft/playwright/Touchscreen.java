@@ -24,6 +24,8 @@ package com.microsoft.playwright;
 public interface Touchscreen {
   /**
    * Dispatches a {@code touchstart} and {@code touchend} event with a single touch at the position ({@code x},{@code y}).
+   *
+   * @since v1.8
    */
   void tap(double x, double y);
 }
