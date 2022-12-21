@@ -3500,6 +3500,7 @@ public interface Page extends AutoCloseable {
    * BrowserContext.addInitScript()} and {@link Page#addInitScript Page.addInitScript()} is not defined.
    *
    * @param script Script to be evaluated in all pages in the browser context.
+   * @since v1.8
    */
   void addInitScript(String script);
   /**
@@ -3525,11 +3526,14 @@ public interface Page extends AutoCloseable {
    * BrowserContext.addInitScript()} and {@link Page#addInitScript Page.addInitScript()} is not defined.
    *
    * @param script Script to be evaluated in all pages in the browser context.
+   * @since v1.8
    */
   void addInitScript(Path script);
   /**
    * Adds a {@code <script>} tag into the page with the desired url or content. Returns the added tag when the script's
    * onload fires or when the script content was injected into frame.
+   *
+   * @since v1.8
    */
   default ElementHandle addScriptTag() {
     return addScriptTag(null);
@@ -3537,12 +3541,16 @@ public interface Page extends AutoCloseable {
   /**
    * Adds a {@code <script>} tag into the page with the desired url or content. Returns the added tag when the script's
    * onload fires or when the script content was injected into frame.
+   *
+   * @since v1.8
    */
   ElementHandle addScriptTag(AddScriptTagOptions options);
   /**
    * Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag
    * with the content. Returns the added tag when the stylesheet's onload fires or when the CSS content was injected into
    * frame.
+   *
+   * @since v1.8
    */
   default ElementHandle addStyleTag() {
     return addStyleTag(null);
@@ -3551,10 +3559,14 @@ public interface Page extends AutoCloseable {
    * Adds a {@code <link rel="stylesheet">} tag into the page with the desired url or a {@code <style type="text/css">} tag
    * with the content. Returns the added tag when the stylesheet's onload fires or when the CSS content was injected into
    * frame.
+   *
+   * @since v1.8
    */
   ElementHandle addStyleTag(AddStyleTagOptions options);
   /**
    * Brings page to front (activates tab).
+   *
+   * @since v1.8
    */
   void bringToFront();
   /**
@@ -3575,6 +3587,7 @@ public interface Page extends AutoCloseable {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default void check(String selector) {
     check(selector, null);
@@ -3597,6 +3610,7 @@ public interface Page extends AutoCloseable {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   void check(String selector, CheckOptions options);
   /**
@@ -3614,6 +3628,7 @@ public interface Page extends AutoCloseable {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default void click(String selector) {
     click(selector, null);
@@ -3633,6 +3648,7 @@ public interface Page extends AutoCloseable {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   void click(String selector, ClickOptions options);
   /**
@@ -3644,6 +3660,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> if {@code runBeforeUnload} is passed as true, a {@code beforeunload} dialog might be summoned and should be handled
    * manually via {@link Page#onDialog Page.onDialog()} event.
+   *
+   * @since v1.8
    */
   default void close() {
     close(null);
@@ -3657,14 +3675,20 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> if {@code runBeforeUnload} is passed as true, a {@code beforeunload} dialog might be summoned and should be handled
    * manually via {@link Page#onDialog Page.onDialog()} event.
+   *
+   * @since v1.8
    */
   void close(CloseOptions options);
   /**
    * Gets the full HTML contents of the page, including the doctype.
+   *
+   * @since v1.8
    */
   String content();
   /**
    * Get the browser context that the page belongs to.
+   *
+   * @since v1.8
    */
   BrowserContext context();
   /**
@@ -3685,6 +3709,7 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> {@code page.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default void dblclick(String selector) {
     dblclick(selector, null);
@@ -3707,6 +3732,7 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> {@code page.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   void dblclick(String selector, DblclickOptions options);
   /**
@@ -3746,6 +3772,7 @@ public interface Page extends AutoCloseable {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    * @param eventInit Optional event-specific initialization properties.
+   * @since v1.8
    */
   default void dispatchEvent(String selector, String type, Object eventInit) {
     dispatchEvent(selector, type, eventInit, null);
@@ -3786,6 +3813,7 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
+   * @since v1.8
    */
   default void dispatchEvent(String selector, String type) {
     dispatchEvent(selector, type, null);
@@ -3827,6 +3855,7 @@ public interface Page extends AutoCloseable {
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    * @param eventInit Optional event-specific initialization properties.
+   * @since v1.8
    */
   void dispatchEvent(String selector, String type, Object eventInit, DispatchEventOptions options);
   /**
@@ -3845,6 +3874,7 @@ public interface Page extends AutoCloseable {
    * used.
    * @param target A selector to search for an element to drop onto. If there are multiple elements satisfying the selector, the first will
    * be used.
+   * @since v1.13
    */
   default void dragAndDrop(String source, String target) {
     dragAndDrop(source, target, null);
@@ -3865,6 +3895,7 @@ public interface Page extends AutoCloseable {
    * used.
    * @param target A selector to search for an element to drop onto. If there are multiple elements satisfying the selector, the first will
    * be used.
+   * @since v1.13
    */
   void dragAndDrop(String source, String target, DragAndDropOptions options);
   /**
@@ -3899,6 +3930,8 @@ public interface Page extends AutoCloseable {
    * page.evaluate("() => matchMedia('(prefers-color-scheme: no-preference)').matches");
    * // → false
    * }</pre>
+   *
+   * @since v1.8
    */
   default void emulateMedia() {
     emulateMedia(null);
@@ -3935,6 +3968,8 @@ public interface Page extends AutoCloseable {
    * page.evaluate("() => matchMedia('(prefers-color-scheme: no-preference)').matches");
    * // → false
    * }</pre>
+   *
+   * @since v1.8
    */
   void emulateMedia(EmulateMediaOptions options);
   /**
@@ -3956,6 +3991,7 @@ public interface Page extends AutoCloseable {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.9
    */
   default Object evalOnSelector(String selector, String expression, Object arg) {
     return evalOnSelector(selector, expression, arg, null);
@@ -3978,6 +4014,7 @@ public interface Page extends AutoCloseable {
    * @param selector A selector to query for.
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
+   * @since v1.9
    */
   default Object evalOnSelector(String selector, String expression) {
     return evalOnSelector(selector, expression, null);
@@ -4001,6 +4038,7 @@ public interface Page extends AutoCloseable {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.9
    */
   Object evalOnSelector(String selector, String expression, Object arg, EvalOnSelectorOptions options);
   /**
@@ -4019,6 +4057,7 @@ public interface Page extends AutoCloseable {
    * @param selector A selector to query for.
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
+   * @since v1.9
    */
   default Object evalOnSelectorAll(String selector, String expression) {
     return evalOnSelectorAll(selector, expression, null);
@@ -4040,6 +4079,7 @@ public interface Page extends AutoCloseable {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.9
    */
   Object evalOnSelectorAll(String selector, String expression, Object arg);
   /**
@@ -4077,6 +4117,7 @@ public interface Page extends AutoCloseable {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
+   * @since v1.8
    */
   default Object evaluate(String expression) {
     return evaluate(expression, null);
@@ -4117,6 +4158,7 @@ public interface Page extends AutoCloseable {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.8
    */
   Object evaluate(String expression, Object arg);
   /**
@@ -4150,6 +4192,7 @@ public interface Page extends AutoCloseable {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
+   * @since v1.8
    */
   default JSHandle evaluateHandle(String expression) {
     return evaluateHandle(expression, null);
@@ -4186,6 +4229,7 @@ public interface Page extends AutoCloseable {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.8
    */
   JSHandle evaluateHandle(String expression, Object arg);
   /**
@@ -4247,6 +4291,7 @@ public interface Page extends AutoCloseable {
    *
    * @param name Name of the function on the window object.
    * @param callback Callback function that will be called in the Playwright's context.
+   * @since v1.8
    */
   default void exposeBinding(String name, BindingCallback callback) {
     exposeBinding(name, callback, null);
@@ -4310,6 +4355,7 @@ public interface Page extends AutoCloseable {
    *
    * @param name Name of the function on the window object.
    * @param callback Callback function that will be called in the Playwright's context.
+   * @since v1.8
    */
   void exposeBinding(String name, BindingCallback callback, ExposeBindingOptions options);
   /**
@@ -4369,6 +4415,7 @@ public interface Page extends AutoCloseable {
    *
    * @param name Name of the function on the window object
    * @param callback Callback function which will be called in Playwright's context.
+   * @since v1.8
    */
   void exposeFunction(String name, FunctionCallback callback);
   /**
@@ -4385,6 +4432,7 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
+   * @since v1.8
    */
   default void fill(String selector, String value) {
     fill(selector, value, null);
@@ -4403,6 +4451,7 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
+   * @since v1.8
    */
   void fill(String selector, String value, FillOptions options);
   /**
@@ -4410,6 +4459,7 @@ public interface Page extends AutoCloseable {
    * the method waits until a matching element appears in the DOM.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default void focus(String selector) {
     focus(selector, null);
@@ -4419,6 +4469,7 @@ public interface Page extends AutoCloseable {
    * the method waits until a matching element appears in the DOM.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   void focus(String selector, FocusOptions options);
   /**
@@ -4433,24 +4484,28 @@ public interface Page extends AutoCloseable {
    * }</pre>
    *
    * @param name Frame name specified in the {@code iframe}'s {@code name} attribute.
+   * @since v1.8
    */
   Frame frame(String name);
   /**
    * Returns frame with matching URL.
    *
    * @param url A glob pattern, regex pattern or predicate receiving frame's {@code url} as a [URL] object.
+   * @since v1.9
    */
   Frame frameByUrl(String url);
   /**
    * Returns frame with matching URL.
    *
    * @param url A glob pattern, regex pattern or predicate receiving frame's {@code url} as a [URL] object.
+   * @since v1.9
    */
   Frame frameByUrl(Pattern url);
   /**
    * Returns frame with matching URL.
    *
    * @param url A glob pattern, regex pattern or predicate receiving frame's {@code url} as a [URL] object.
+   * @since v1.9
    */
   Frame frameByUrl(Predicate<String> url);
   /**
@@ -4467,10 +4522,13 @@ public interface Page extends AutoCloseable {
    * }</pre>
    *
    * @param selector A selector to use when resolving DOM element.
+   * @since v1.17
    */
   FrameLocator frameLocator(String selector);
   /**
    * An array of all frames attached to the page.
+   *
+   * @since v1.8
    */
   List<Frame> frames();
   /**
@@ -4478,6 +4536,7 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param name Attribute name to get the value for.
+   * @since v1.8
    */
   default String getAttribute(String selector, String name) {
     return getAttribute(selector, name, null);
@@ -4487,12 +4546,14 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param name Attribute name to get the value for.
+   * @since v1.8
    */
   String getAttribute(String selector, String name, GetAttributeOptions options);
   /**
    * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByAltText(String text) {
     return getByAltText(text, null);
@@ -4501,12 +4562,14 @@ public interface Page extends AutoCloseable {
    * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByAltText(String text, GetByAltTextOptions options);
   /**
    * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByAltText(Pattern text) {
     return getByAltText(text, null);
@@ -4515,6 +4578,7 @@ public interface Page extends AutoCloseable {
    * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByAltText(Pattern text, GetByAltTextOptions options);
   /**
@@ -4522,6 +4586,7 @@ public interface Page extends AutoCloseable {
    * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByLabel(String text) {
     return getByLabel(text, null);
@@ -4531,6 +4596,7 @@ public interface Page extends AutoCloseable {
    * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByLabel(String text, GetByLabelOptions options);
   /**
@@ -4538,6 +4604,7 @@ public interface Page extends AutoCloseable {
    * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByLabel(Pattern text) {
     return getByLabel(text, null);
@@ -4547,6 +4614,7 @@ public interface Page extends AutoCloseable {
    * label text "Password" in the following DOM:
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByLabel(Pattern text, GetByLabelOptions options);
   /**
@@ -4554,6 +4622,7 @@ public interface Page extends AutoCloseable {
    * "Country":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByPlaceholder(String text) {
     return getByPlaceholder(text, null);
@@ -4563,6 +4632,7 @@ public interface Page extends AutoCloseable {
    * "Country":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByPlaceholder(String text, GetByPlaceholderOptions options);
   /**
@@ -4570,6 +4640,7 @@ public interface Page extends AutoCloseable {
    * "Country":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByPlaceholder(Pattern text) {
     return getByPlaceholder(text, null);
@@ -4579,6 +4650,7 @@ public interface Page extends AutoCloseable {
    * "Country":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByPlaceholder(Pattern text, GetByPlaceholderOptions options);
   /**
@@ -4594,6 +4666,7 @@ public interface Page extends AutoCloseable {
    * aria-*} attributes to default values.
    *
    * @param role Required aria role.
+   * @since v1.27
    */
   default Locator getByRole(AriaRole role) {
     return getByRole(role, null);
@@ -4611,6 +4684,7 @@ public interface Page extends AutoCloseable {
    * aria-*} attributes to default values.
    *
    * @param role Required aria role.
+   * @since v1.27
    */
   Locator getByRole(AriaRole role, GetByRoleOptions options);
   /**
@@ -4618,6 +4692,7 @@ public interface Page extends AutoCloseable {
    * Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
    *
    * @param testId Id to locate the element by.
+   * @since v1.27
    */
   Locator getByTestId(String testId);
   /**
@@ -4625,6 +4700,7 @@ public interface Page extends AutoCloseable {
    * Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
    *
    * @param testId Id to locate the element by.
+   * @since v1.27
    */
   Locator getByTestId(Pattern testId);
   /**
@@ -4658,6 +4734,7 @@ public interface Page extends AutoCloseable {
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByText(String text) {
     return getByText(text, null);
@@ -4693,6 +4770,7 @@ public interface Page extends AutoCloseable {
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByText(String text, GetByTextOptions options);
   /**
@@ -4726,6 +4804,7 @@ public interface Page extends AutoCloseable {
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByText(Pattern text) {
     return getByText(text, null);
@@ -4761,12 +4840,14 @@ public interface Page extends AutoCloseable {
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByText(Pattern text, GetByTextOptions options);
   /**
    * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByTitle(String text) {
     return getByTitle(text, null);
@@ -4775,12 +4856,14 @@ public interface Page extends AutoCloseable {
    * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByTitle(String text, GetByTitleOptions options);
   /**
    * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   default Locator getByTitle(Pattern text) {
     return getByTitle(text, null);
@@ -4789,6 +4872,7 @@ public interface Page extends AutoCloseable {
    * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
    *
    * @param text Text to locate the element for.
+   * @since v1.27
    */
   Locator getByTitle(Pattern text, GetByTitleOptions options);
   /**
@@ -4796,6 +4880,8 @@ public interface Page extends AutoCloseable {
    * last redirect. If can not go back, returns {@code null}.
    *
    * <p> Navigate to the previous page in history.
+   *
+   * @since v1.8
    */
   default Response goBack() {
     return goBack(null);
@@ -4805,6 +4891,8 @@ public interface Page extends AutoCloseable {
    * last redirect. If can not go back, returns {@code null}.
    *
    * <p> Navigate to the previous page in history.
+   *
+   * @since v1.8
    */
   Response goBack(GoBackOptions options);
   /**
@@ -4812,6 +4900,8 @@ public interface Page extends AutoCloseable {
    * last redirect. If can not go forward, returns {@code null}.
    *
    * <p> Navigate to the next page in history.
+   *
+   * @since v1.8
    */
   default Response goForward() {
     return goForward(null);
@@ -4821,6 +4911,8 @@ public interface Page extends AutoCloseable {
    * last redirect. If can not go forward, returns {@code null}.
    *
    * <p> Navigate to the next page in history.
+   *
+   * @since v1.8
    */
   Response goForward(GoForwardOptions options);
   /**
@@ -4849,6 +4941,7 @@ public interface Page extends AutoCloseable {
    * @param url URL to navigate page to. The url should include scheme, e.g. {@code https://}. When a {@code baseURL} via the context
    * options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
+   * @since v1.8
    */
   default Response navigate(String url) {
     return navigate(url, null);
@@ -4879,6 +4972,7 @@ public interface Page extends AutoCloseable {
    * @param url URL to navigate page to. The url should include scheme, e.g. {@code https://}. When a {@code baseURL} via the context
    * options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
+   * @since v1.8
    */
   Response navigate(String url, NavigateOptions options);
   /**
@@ -4896,6 +4990,7 @@ public interface Page extends AutoCloseable {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default void hover(String selector) {
     hover(selector, null);
@@ -4915,12 +5010,14 @@ public interface Page extends AutoCloseable {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   void hover(String selector, HoverOptions options);
   /**
    * Returns {@code element.innerHTML}.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default String innerHTML(String selector) {
     return innerHTML(selector, null);
@@ -4929,12 +5026,14 @@ public interface Page extends AutoCloseable {
    * Returns {@code element.innerHTML}.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   String innerHTML(String selector, InnerHTMLOptions options);
   /**
    * Returns {@code element.innerText}.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default String innerText(String selector) {
     return innerText(selector, null);
@@ -4943,6 +5042,7 @@ public interface Page extends AutoCloseable {
    * Returns {@code element.innerText}.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   String innerText(String selector, InnerTextOptions options);
   /**
@@ -4953,6 +5053,7 @@ public interface Page extends AutoCloseable {
    * control.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.13
    */
   default String inputValue(String selector) {
     return inputValue(selector, null);
@@ -4965,12 +5066,14 @@ public interface Page extends AutoCloseable {
    * control.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.13
    */
   String inputValue(String selector, InputValueOptions options);
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default boolean isChecked(String selector) {
     return isChecked(selector, null);
@@ -4979,10 +5082,13 @@ public interface Page extends AutoCloseable {
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   boolean isChecked(String selector, IsCheckedOptions options);
   /**
    * Indicates that the page has been closed.
+   *
+   * @since v1.8
    */
   boolean isClosed();
   /**
@@ -4990,6 +5096,7 @@ public interface Page extends AutoCloseable {
    * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default boolean isDisabled(String selector) {
     return isDisabled(selector, null);
@@ -4999,12 +5106,14 @@ public interface Page extends AutoCloseable {
    * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   boolean isDisabled(String selector, IsDisabledOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default boolean isEditable(String selector) {
     return isEditable(selector, null);
@@ -5013,12 +5122,14 @@ public interface Page extends AutoCloseable {
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   boolean isEditable(String selector, IsEditableOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default boolean isEnabled(String selector) {
     return isEnabled(selector, null);
@@ -5027,6 +5138,7 @@ public interface Page extends AutoCloseable {
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   boolean isEnabled(String selector, IsEnabledOptions options);
   /**
@@ -5035,6 +5147,7 @@ public interface Page extends AutoCloseable {
    * elements is considered hidden.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default boolean isHidden(String selector) {
     return isHidden(selector, null);
@@ -5045,6 +5158,7 @@ public interface Page extends AutoCloseable {
    * elements is considered hidden.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   boolean isHidden(String selector, IsHiddenOptions options);
   /**
@@ -5052,6 +5166,7 @@ public interface Page extends AutoCloseable {
    * selector} that does not match any elements is considered not visible.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default boolean isVisible(String selector) {
     return isVisible(selector, null);
@@ -5061,8 +5176,14 @@ public interface Page extends AutoCloseable {
    * selector} that does not match any elements is considered not visible.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   boolean isVisible(String selector, IsVisibleOptions options);
+  /**
+   *
+   *
+   * @since v1.8
+   */
   Keyboard keyboard();
   /**
    * The method returns an element locator that can be used to perform actions on this page / frame. Locator is resolved to
@@ -5072,6 +5193,7 @@ public interface Page extends AutoCloseable {
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
    * @param selector A selector to use when resolving DOM element.
+   * @since v1.14
    */
   default Locator locator(String selector) {
     return locator(selector, null);
@@ -5084,16 +5206,26 @@ public interface Page extends AutoCloseable {
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
    * @param selector A selector to use when resolving DOM element.
+   * @since v1.14
    */
   Locator locator(String selector, LocatorOptions options);
   /**
    * The page's main frame. Page is guaranteed to have a main frame which persists during navigations.
+   *
+   * @since v1.8
    */
   Frame mainFrame();
+  /**
+   *
+   *
+   * @since v1.8
+   */
   Mouse mouse();
   /**
    * Returns the opener for popup pages and {@code null} for others. If the opener has been closed already the returns {@code
    * null}.
+   *
+   * @since v1.8
    */
   Page opener();
   /**
@@ -5105,6 +5237,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> This method requires Playwright to be started in a headed mode, with a falsy {@code headless} value in the {@link
    * BrowserType#launch BrowserType.launch()}.
+   *
+   * @since v1.9
    */
   void pause();
   /**
@@ -5161,6 +5295,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@code headerTemplate} and {@code footerTemplate} markup have the following limitations: > 1. Script tags inside
    * templates are not evaluated. > 2. Page styles are not visible inside templates.
+   *
+   * @since v1.8
    */
   default byte[] pdf() {
     return pdf(null);
@@ -5219,6 +5355,8 @@ public interface Page extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> {@code headerTemplate} and {@code footerTemplate} markup have the following limitations: > 1. Script tags inside
    * templates are not evaluated. > 2. Page styles are not visible inside templates.
+   *
+   * @since v1.8
    */
   byte[] pdf(PdfOptions options);
   /**
@@ -5259,6 +5397,7 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
+   * @since v1.8
    */
   default void press(String selector, String key) {
     press(selector, key, null);
@@ -5301,6 +5440,7 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
+   * @since v1.8
    */
   void press(String selector, String key, PressOptions options);
   /**
@@ -5309,6 +5449,7 @@ public interface Page extends AutoCloseable {
    * Locator.waitFor()}.
    *
    * @param selector A selector to query for.
+   * @since v1.9
    */
   default ElementHandle querySelector(String selector) {
     return querySelector(selector, null);
@@ -5319,6 +5460,7 @@ public interface Page extends AutoCloseable {
    * Locator.waitFor()}.
    *
    * @param selector A selector to query for.
+   * @since v1.9
    */
   ElementHandle querySelector(String selector, QuerySelectorOptions options);
   /**
@@ -5326,11 +5468,14 @@ public interface Page extends AutoCloseable {
    * return value resolves to {@code []}.
    *
    * @param selector A selector to query for.
+   * @since v1.9
    */
   List<ElementHandle> querySelectorAll(String selector);
   /**
    * This method reloads the current page, in the same way as if the user had triggered a browser refresh. Returns the main
    * resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect.
+   *
+   * @since v1.8
    */
   default Response reload() {
     return reload(null);
@@ -5338,12 +5483,16 @@ public interface Page extends AutoCloseable {
   /**
    * This method reloads the current page, in the same way as if the user had triggered a browser refresh. Returns the main
    * resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect.
+   *
+   * @since v1.8
    */
   Response reload(ReloadOptions options);
   /**
    * API testing helper associated with this page. This method returns the same instance as {@link BrowserContext#request
    * BrowserContext.request()} on the page's context. See {@link BrowserContext#request BrowserContext.request()} for more
    * details.
+   *
+   * @since v1.16
    */
   APIRequestContext request();
   /**
@@ -5397,6 +5546,7 @@ public interface Page extends AutoCloseable {
    * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
+   * @since v1.8
    */
   default void route(String url, Consumer<Route> handler) {
     route(url, handler, null);
@@ -5452,6 +5602,7 @@ public interface Page extends AutoCloseable {
    * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
+   * @since v1.8
    */
   void route(String url, Consumer<Route> handler, RouteOptions options);
   /**
@@ -5505,6 +5656,7 @@ public interface Page extends AutoCloseable {
    * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
+   * @since v1.8
    */
   default void route(Pattern url, Consumer<Route> handler) {
     route(url, handler, null);
@@ -5560,6 +5712,7 @@ public interface Page extends AutoCloseable {
    * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
+   * @since v1.8
    */
   void route(Pattern url, Consumer<Route> handler, RouteOptions options);
   /**
@@ -5613,6 +5766,7 @@ public interface Page extends AutoCloseable {
    * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
+   * @since v1.8
    */
   default void route(Predicate<String> url, Consumer<Route> handler) {
     route(url, handler, null);
@@ -5668,6 +5822,7 @@ public interface Page extends AutoCloseable {
    * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
+   * @since v1.8
    */
   void route(Predicate<String> url, Consumer<Route> handler, RouteOptions options);
   /**
@@ -5680,6 +5835,7 @@ public interface Page extends AutoCloseable {
    *
    * @param har Path to a <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> file with prerecorded network data. If {@code
    * path} is a relative path, then it is resolved relative to the current working directory.
+   * @since v1.23
    */
   default void routeFromHAR(Path har) {
     routeFromHAR(har, null);
@@ -5694,16 +5850,21 @@ public interface Page extends AutoCloseable {
    *
    * @param har Path to a <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> file with prerecorded network data. If {@code
    * path} is a relative path, then it is resolved relative to the current working directory.
+   * @since v1.23
    */
   void routeFromHAR(Path har, RouteFromHAROptions options);
   /**
    * Returns the buffer with the captured screenshot.
+   *
+   * @since v1.8
    */
   default byte[] screenshot() {
     return screenshot(null);
   }
   /**
    * Returns the buffer with the captured screenshot.
+   *
+   * @since v1.8
    */
   byte[] screenshot(ScreenshotOptions options);
   /**
@@ -5734,6 +5895,7 @@ public interface Page extends AutoCloseable {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   default List<String> selectOption(String selector, String values) {
     return selectOption(selector, values, null);
@@ -5766,6 +5928,7 @@ public interface Page extends AutoCloseable {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   List<String> selectOption(String selector, String values, SelectOptionOptions options);
   /**
@@ -5796,6 +5959,7 @@ public interface Page extends AutoCloseable {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   default List<String> selectOption(String selector, ElementHandle values) {
     return selectOption(selector, values, null);
@@ -5828,6 +5992,7 @@ public interface Page extends AutoCloseable {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   List<String> selectOption(String selector, ElementHandle values, SelectOptionOptions options);
   /**
@@ -5858,6 +6023,7 @@ public interface Page extends AutoCloseable {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   default List<String> selectOption(String selector, String[] values) {
     return selectOption(selector, values, null);
@@ -5890,6 +6056,7 @@ public interface Page extends AutoCloseable {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   List<String> selectOption(String selector, String[] values, SelectOptionOptions options);
   /**
@@ -5920,6 +6087,7 @@ public interface Page extends AutoCloseable {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   default List<String> selectOption(String selector, SelectOption values) {
     return selectOption(selector, values, null);
@@ -5952,6 +6120,7 @@ public interface Page extends AutoCloseable {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   List<String> selectOption(String selector, SelectOption values, SelectOptionOptions options);
   /**
@@ -5982,6 +6151,7 @@ public interface Page extends AutoCloseable {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   default List<String> selectOption(String selector, ElementHandle[] values) {
     return selectOption(selector, values, null);
@@ -6014,6 +6184,7 @@ public interface Page extends AutoCloseable {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   List<String> selectOption(String selector, ElementHandle[] values, SelectOptionOptions options);
   /**
@@ -6044,6 +6215,7 @@ public interface Page extends AutoCloseable {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   default List<String> selectOption(String selector, SelectOption[] values) {
     return selectOption(selector, values, null);
@@ -6076,6 +6248,7 @@ public interface Page extends AutoCloseable {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   List<String> selectOption(String selector, SelectOption[] values, SelectOptionOptions options);
   /**
@@ -6097,6 +6270,7 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param checked Whether to check or uncheck the checkbox.
+   * @since v1.15
    */
   default void setChecked(String selector, boolean checked) {
     setChecked(selector, checked, null);
@@ -6120,12 +6294,14 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param checked Whether to check or uncheck the checkbox.
+   * @since v1.15
    */
   void setChecked(String selector, boolean checked, SetCheckedOptions options);
   /**
    *
    *
    * @param html HTML markup to assign to the page.
+   * @since v1.8
    */
   default void setContent(String html) {
     setContent(html, null);
@@ -6134,6 +6310,7 @@ public interface Page extends AutoCloseable {
    *
    *
    * @param html HTML markup to assign to the page.
+   * @since v1.8
    */
   void setContent(String html, SetContentOptions options);
   /**
@@ -6154,6 +6331,7 @@ public interface Page extends AutoCloseable {
    * BrowserContext.setDefaultNavigationTimeout()}.
    *
    * @param timeout Maximum navigation time in milliseconds
+   * @since v1.8
    */
   void setDefaultNavigationTimeout(double timeout);
   /**
@@ -6163,6 +6341,7 @@ public interface Page extends AutoCloseable {
    * Page#setDefaultTimeout Page.setDefaultTimeout()}.
    *
    * @param timeout Maximum time in milliseconds
+   * @since v1.8
    */
   void setDefaultTimeout(double timeout);
   /**
@@ -6172,6 +6351,7 @@ public interface Page extends AutoCloseable {
    * requests.
    *
    * @param headers An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+   * @since v1.8
    */
   void setExtraHTTPHeaders(Map<String, String> headers);
   /**
@@ -6185,6 +6365,7 @@ public interface Page extends AutoCloseable {
    * instead.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default void setInputFiles(String selector, Path files) {
     setInputFiles(selector, files, null);
@@ -6200,6 +6381,7 @@ public interface Page extends AutoCloseable {
    * instead.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   void setInputFiles(String selector, Path files, SetInputFilesOptions options);
   /**
@@ -6213,6 +6395,7 @@ public interface Page extends AutoCloseable {
    * instead.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default void setInputFiles(String selector, Path[] files) {
     setInputFiles(selector, files, null);
@@ -6228,6 +6411,7 @@ public interface Page extends AutoCloseable {
    * instead.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   void setInputFiles(String selector, Path[] files, SetInputFilesOptions options);
   /**
@@ -6241,6 +6425,7 @@ public interface Page extends AutoCloseable {
    * instead.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default void setInputFiles(String selector, FilePayload files) {
     setInputFiles(selector, files, null);
@@ -6256,6 +6441,7 @@ public interface Page extends AutoCloseable {
    * instead.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   void setInputFiles(String selector, FilePayload files, SetInputFilesOptions options);
   /**
@@ -6269,6 +6455,7 @@ public interface Page extends AutoCloseable {
    * instead.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default void setInputFiles(String selector, FilePayload[] files) {
     setInputFiles(selector, files, null);
@@ -6284,6 +6471,7 @@ public interface Page extends AutoCloseable {
    * instead.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   void setInputFiles(String selector, FilePayload[] files, SetInputFilesOptions options);
   /**
@@ -6301,6 +6489,8 @@ public interface Page extends AutoCloseable {
    * page.setViewportSize(640, 480);
    * page.navigate("https://example.com");
    * }</pre>
+   *
+   * @since v1.8
    */
   void setViewportSize(int width, int height);
   /**
@@ -6320,6 +6510,7 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> {@link Page#tap Page.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default void tap(String selector) {
     tap(selector, null);
@@ -6341,12 +6532,14 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> {@link Page#tap Page.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   void tap(String selector, TapOptions options);
   /**
    * Returns {@code element.textContent}.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default String textContent(String selector) {
     return textContent(selector, null);
@@ -6355,12 +6548,20 @@ public interface Page extends AutoCloseable {
    * Returns {@code element.textContent}.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   String textContent(String selector, TextContentOptions options);
   /**
    * Returns the page's title.
+   *
+   * @since v1.8
    */
   String title();
+  /**
+   *
+   *
+   * @since v1.8
+   */
   Touchscreen touchscreen();
   /**
    * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code
@@ -6379,6 +6580,7 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param text A text to type into a focused element.
+   * @since v1.8
    */
   default void type(String selector, String text) {
     type(selector, text, null);
@@ -6400,6 +6602,7 @@ public interface Page extends AutoCloseable {
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param text A text to type into a focused element.
+   * @since v1.8
    */
   void type(String selector, String text, TypeOptions options);
   /**
@@ -6420,6 +6623,7 @@ public interface Page extends AutoCloseable {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   default void uncheck(String selector) {
     uncheck(selector, null);
@@ -6442,6 +6646,7 @@ public interface Page extends AutoCloseable {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
+   * @since v1.8
    */
   void uncheck(String selector, UncheckOptions options);
   /**
@@ -6449,6 +6654,7 @@ public interface Page extends AutoCloseable {
    * for the {@code url}.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @since v1.8
    */
   default void unroute(String url) {
     unroute(url, null);
@@ -6459,6 +6665,7 @@ public interface Page extends AutoCloseable {
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
    * @param handler Optional handler function to route the request.
+   * @since v1.8
    */
   void unroute(String url, Consumer<Route> handler);
   /**
@@ -6466,6 +6673,7 @@ public interface Page extends AutoCloseable {
    * for the {@code url}.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @since v1.8
    */
   default void unroute(Pattern url) {
     unroute(url, null);
@@ -6476,6 +6684,7 @@ public interface Page extends AutoCloseable {
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
    * @param handler Optional handler function to route the request.
+   * @since v1.8
    */
   void unroute(Pattern url, Consumer<Route> handler);
   /**
@@ -6483,6 +6692,7 @@ public interface Page extends AutoCloseable {
    * for the {@code url}.
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
+   * @since v1.8
    */
   default void unroute(Predicate<String> url) {
     unroute(url, null);
@@ -6493,18 +6703,32 @@ public interface Page extends AutoCloseable {
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while routing.
    * @param handler Optional handler function to route the request.
+   * @since v1.8
    */
   void unroute(Predicate<String> url, Consumer<Route> handler);
+  /**
+   *
+   *
+   * @since v1.8
+   */
   String url();
   /**
    * Video object associated with this page.
+   *
+   * @since v1.8
    */
   Video video();
+  /**
+   *
+   *
+   * @since v1.8
+   */
   ViewportSize viewportSize();
   /**
    * Performs action and waits for the Page to close.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.11
    */
   default Page waitForClose(Runnable callback) {
     return waitForClose(null, callback);
@@ -6513,6 +6737,7 @@ public interface Page extends AutoCloseable {
    * Performs action and waits for the Page to close.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.11
    */
   Page waitForClose(WaitForCloseOptions options, Runnable callback);
   /**
@@ -6522,6 +6747,7 @@ public interface Page extends AutoCloseable {
    * event is fired.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.9
    */
   default ConsoleMessage waitForConsoleMessage(Runnable callback) {
     return waitForConsoleMessage(null, callback);
@@ -6533,6 +6759,7 @@ public interface Page extends AutoCloseable {
    * event is fired.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.9
    */
   ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable callback);
   /**
@@ -6541,6 +6768,7 @@ public interface Page extends AutoCloseable {
    * if the page is closed before the download event is fired.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.9
    */
   default Download waitForDownload(Runnable callback) {
     return waitForDownload(null, callback);
@@ -6551,6 +6779,7 @@ public interface Page extends AutoCloseable {
    * if the page is closed before the download event is fired.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.9
    */
   Download waitForDownload(WaitForDownloadOptions options, Runnable callback);
   /**
@@ -6559,6 +6788,7 @@ public interface Page extends AutoCloseable {
    * value. Will throw an error if the page is closed before the file chooser is opened.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.9
    */
   default FileChooser waitForFileChooser(Runnable callback) {
     return waitForFileChooser(null, callback);
@@ -6569,6 +6799,7 @@ public interface Page extends AutoCloseable {
    * value. Will throw an error if the page is closed before the file chooser is opened.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.9
    */
   FileChooser waitForFileChooser(WaitForFileChooserOptions options, Runnable callback);
   /**
@@ -6603,6 +6834,7 @@ public interface Page extends AutoCloseable {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.8
    */
   default JSHandle waitForFunction(String expression, Object arg) {
     return waitForFunction(expression, arg, null);
@@ -6638,6 +6870,7 @@ public interface Page extends AutoCloseable {
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
+   * @since v1.8
    */
   default JSHandle waitForFunction(String expression) {
     return waitForFunction(expression, null);
@@ -6674,6 +6907,7 @@ public interface Page extends AutoCloseable {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.8
    */
   JSHandle waitForFunction(String expression, Object arg, WaitForFunctionOptions options);
   /**
@@ -6703,6 +6937,7 @@ public interface Page extends AutoCloseable {
    * <li> {@code "domcontentloaded"} - wait for the {@code DOMContentLoaded} event to be fired.</li>
    * <li> {@code "networkidle"} - wait until there are no network connections for at least {@code 500} ms.</li>
    * </ul>
+   * @since v1.8
    */
   default void waitForLoadState(LoadState state) {
     waitForLoadState(state, null);
@@ -6726,6 +6961,8 @@ public interface Page extends AutoCloseable {
    * popup.waitForLoadState(LoadState.DOMCONTENTLOADED);
    * System.out.println(popup.title()); // Popup is ready to use.
    * }</pre>
+   *
+   * @since v1.8
    */
   default void waitForLoadState() {
     waitForLoadState(null);
@@ -6757,6 +6994,7 @@ public interface Page extends AutoCloseable {
    * <li> {@code "domcontentloaded"} - wait for the {@code DOMContentLoaded} event to be fired.</li>
    * <li> {@code "networkidle"} - wait until there are no network connections for at least {@code 500} ms.</li>
    * </ul>
+   * @since v1.8
    */
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
   /**
@@ -6781,6 +7019,7 @@ public interface Page extends AutoCloseable {
    * considered a navigation.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.8
    */
   default Response waitForNavigation(Runnable callback) {
     return waitForNavigation(null, callback);
@@ -6807,6 +7046,7 @@ public interface Page extends AutoCloseable {
    * considered a navigation.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.8
    */
   Response waitForNavigation(WaitForNavigationOptions options, Runnable callback);
   /**
@@ -6815,6 +7055,7 @@ public interface Page extends AutoCloseable {
    * closed before the popup event is fired.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.9
    */
   default Page waitForPopup(Runnable callback) {
     return waitForPopup(null, callback);
@@ -6825,6 +7066,7 @@ public interface Page extends AutoCloseable {
    * closed before the popup event is fired.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.9
    */
   Page waitForPopup(WaitForPopupOptions options, Runnable callback);
   /**
@@ -6850,6 +7092,7 @@ public interface Page extends AutoCloseable {
    * was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.8
    */
   default Request waitForRequest(String urlOrPredicate, Runnable callback) {
     return waitForRequest(urlOrPredicate, null, callback);
@@ -6877,6 +7120,7 @@ public interface Page extends AutoCloseable {
    * was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.8
    */
   Request waitForRequest(String urlOrPredicate, WaitForRequestOptions options, Runnable callback);
   /**
@@ -6902,6 +7146,7 @@ public interface Page extends AutoCloseable {
    * was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.8
    */
   default Request waitForRequest(Pattern urlOrPredicate, Runnable callback) {
     return waitForRequest(urlOrPredicate, null, callback);
@@ -6929,6 +7174,7 @@ public interface Page extends AutoCloseable {
    * was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.8
    */
   Request waitForRequest(Pattern urlOrPredicate, WaitForRequestOptions options, Runnable callback);
   /**
@@ -6954,6 +7200,7 @@ public interface Page extends AutoCloseable {
    * was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.8
    */
   default Request waitForRequest(Predicate<Request> urlOrPredicate, Runnable callback) {
     return waitForRequest(urlOrPredicate, null, callback);
@@ -6981,6 +7228,7 @@ public interface Page extends AutoCloseable {
    * was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.8
    */
   Request waitForRequest(Predicate<Request> urlOrPredicate, WaitForRequestOptions options, Runnable callback);
   /**
@@ -6989,6 +7237,7 @@ public interface Page extends AutoCloseable {
    * an error if the page is closed before the {@link Page#onRequestFinished Page.onRequestFinished()} event is fired.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.12
    */
   default Request waitForRequestFinished(Runnable callback) {
     return waitForRequestFinished(null, callback);
@@ -6999,6 +7248,7 @@ public interface Page extends AutoCloseable {
    * an error if the page is closed before the {@link Page#onRequestFinished Page.onRequestFinished()} event is fired.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.12
    */
   Request waitForRequestFinished(WaitForRequestFinishedOptions options, Runnable callback);
   /**
@@ -7024,6 +7274,7 @@ public interface Page extends AutoCloseable {
    * was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.8
    */
   default Response waitForResponse(String urlOrPredicate, Runnable callback) {
     return waitForResponse(urlOrPredicate, null, callback);
@@ -7051,6 +7302,7 @@ public interface Page extends AutoCloseable {
    * was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.8
    */
   Response waitForResponse(String urlOrPredicate, WaitForResponseOptions options, Runnable callback);
   /**
@@ -7076,6 +7328,7 @@ public interface Page extends AutoCloseable {
    * was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.8
    */
   default Response waitForResponse(Pattern urlOrPredicate, Runnable callback) {
     return waitForResponse(urlOrPredicate, null, callback);
@@ -7103,6 +7356,7 @@ public interface Page extends AutoCloseable {
    * was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.8
    */
   Response waitForResponse(Pattern urlOrPredicate, WaitForResponseOptions options, Runnable callback);
   /**
@@ -7128,6 +7382,7 @@ public interface Page extends AutoCloseable {
    * was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.8
    */
   default Response waitForResponse(Predicate<Response> urlOrPredicate, Runnable callback) {
     return waitForResponse(urlOrPredicate, null, callback);
@@ -7155,6 +7410,7 @@ public interface Page extends AutoCloseable {
    * was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.8
    */
   Response waitForResponse(Predicate<Response> urlOrPredicate, WaitForResponseOptions options, Runnable callback);
   /**
@@ -7193,6 +7449,7 @@ public interface Page extends AutoCloseable {
    * }</pre>
    *
    * @param selector A selector to query for.
+   * @since v1.8
    */
   default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
@@ -7233,6 +7490,7 @@ public interface Page extends AutoCloseable {
    * }</pre>
    *
    * @param selector A selector to query for.
+   * @since v1.8
    */
   ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
   /**
@@ -7248,6 +7506,7 @@ public interface Page extends AutoCloseable {
    * }</pre>
    *
    * @param timeout A timeout to wait for
+   * @since v1.8
    */
   void waitForTimeout(double timeout);
   /**
@@ -7262,6 +7521,7 @@ public interface Page extends AutoCloseable {
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
+   * @since v1.11
    */
   default void waitForURL(String url) {
     waitForURL(url, null);
@@ -7278,6 +7538,7 @@ public interface Page extends AutoCloseable {
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
+   * @since v1.11
    */
   void waitForURL(String url, WaitForURLOptions options);
   /**
@@ -7292,6 +7553,7 @@ public interface Page extends AutoCloseable {
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
+   * @since v1.11
    */
   default void waitForURL(Pattern url) {
     waitForURL(url, null);
@@ -7308,6 +7570,7 @@ public interface Page extends AutoCloseable {
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
+   * @since v1.11
    */
   void waitForURL(Pattern url, WaitForURLOptions options);
   /**
@@ -7322,6 +7585,7 @@ public interface Page extends AutoCloseable {
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
+   * @since v1.11
    */
   default void waitForURL(Predicate<String> url) {
     waitForURL(url, null);
@@ -7338,6 +7602,7 @@ public interface Page extends AutoCloseable {
    * @param url A glob pattern, regex pattern or predicate receiving [URL] to match while waiting for the navigation. Note that if the
    * parameter is a string without wildcard characters, the method will wait for navigation to URL that is exactly equal to
    * the string.
+   * @since v1.11
    */
   void waitForURL(Predicate<String> url, WaitForURLOptions options);
   /**
@@ -7346,6 +7611,7 @@ public interface Page extends AutoCloseable {
    * if the page is closed before the WebSocket event is fired.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.9
    */
   default WebSocket waitForWebSocket(Runnable callback) {
     return waitForWebSocket(null, callback);
@@ -7356,6 +7622,7 @@ public interface Page extends AutoCloseable {
    * if the page is closed before the WebSocket event is fired.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.9
    */
   WebSocket waitForWebSocket(WaitForWebSocketOptions options, Runnable callback);
   /**
@@ -7364,6 +7631,7 @@ public interface Page extends AutoCloseable {
    * page is closed before the worker event is fired.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.9
    */
   default Worker waitForWorker(Runnable callback) {
     return waitForWorker(null, callback);
@@ -7374,6 +7642,7 @@ public interface Page extends AutoCloseable {
    * page is closed before the worker event is fired.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.9
    */
   Worker waitForWorker(WaitForWorkerOptions options, Runnable callback);
   /**
@@ -7381,6 +7650,8 @@ public interface Page extends AutoCloseable {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API">WebWorkers</a> associated with the page.
    *
    * <p> <strong>NOTE:</strong> This does not contain ServiceWorkers
+   *
+   * @since v1.8
    */
   List<Worker> workers();
   /**
@@ -7419,6 +7690,7 @@ public interface Page extends AutoCloseable {
    * Dialog.dismiss()} the dialog - otherwise the page will <a
    * href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop#never_blocking">freeze</a> waiting for the
    * dialog, and actions like click will never finish.
+   * @since v1.10
    */
   void onceDialog(Consumer<Dialog> handler);
 }

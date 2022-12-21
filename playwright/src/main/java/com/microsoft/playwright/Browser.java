@@ -1084,6 +1084,8 @@ public interface Browser extends AutoCloseable {
   }
   /**
    * Get the browser type (chromium, firefox or webkit) that the browser belongs to.
+   *
+   * @since v1.23
    */
   BrowserType browserType();
   /**
@@ -1098,6 +1100,8 @@ public interface Browser extends AutoCloseable {
    * Browser.newContext()} **before** calling {@link Browser#close Browser.close()}.
    *
    * <p> The {@code Browser} object itself is considered to be disposed and cannot be used anymore.
+   *
+   * @since v1.8
    */
   void close();
   /**
@@ -1110,10 +1114,14 @@ public interface Browser extends AutoCloseable {
    * BrowserContext context = browser.newContext();
    * System.out.println(browser.contexts().size()); // prints "1"
    * }</pre>
+   *
+   * @since v1.8
    */
   List<BrowserContext> contexts();
   /**
    * Indicates that the browser is connected.
+   *
+   * @since v1.8
    */
   boolean isConnected();
   /**
@@ -1137,6 +1145,8 @@ public interface Browser extends AutoCloseable {
    * context.close();
    * browser.close();
    * }</pre>
+   *
+   * @since v1.8
    */
   default BrowserContext newContext() {
     return newContext(null);
@@ -1162,6 +1172,8 @@ public interface Browser extends AutoCloseable {
    * context.close();
    * browser.close();
    * }</pre>
+   *
+   * @since v1.8
    */
   BrowserContext newContext(NewContextOptions options);
   /**
@@ -1170,6 +1182,8 @@ public interface Browser extends AutoCloseable {
    * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and
    * testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the {@link
    * BrowserContext#newPage BrowserContext.newPage()} to control their exact life times.
+   *
+   * @since v1.8
    */
   default Page newPage() {
     return newPage(null);
@@ -1180,6 +1194,8 @@ public interface Browser extends AutoCloseable {
    * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and
    * testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the {@link
    * BrowserContext#newPage BrowserContext.newPage()} to control their exact life times.
+   *
+   * @since v1.8
    */
   Page newPage(NewPageOptions options);
   /**
@@ -1200,6 +1216,7 @@ public interface Browser extends AutoCloseable {
    * }</pre>
    *
    * @param page Optional, if specified, tracing includes screenshots of the given page.
+   * @since v1.11
    */
   default void startTracing(Page page) {
     startTracing(page, null);
@@ -1220,6 +1237,8 @@ public interface Browser extends AutoCloseable {
    * page.goto('https://www.google.com');
    * browser.stopTracing();
    * }</pre>
+   *
+   * @since v1.11
    */
   default void startTracing() {
     startTracing(null);
@@ -1242,6 +1261,7 @@ public interface Browser extends AutoCloseable {
    * }</pre>
    *
    * @param page Optional, if specified, tracing includes screenshots of the given page.
+   * @since v1.11
    */
   void startTracing(Page page, StartTracingOptions options);
   /**
@@ -1251,10 +1271,14 @@ public interface Browser extends AutoCloseable {
    * href="https://playwright.dev/java/docs/api/class-tracing">here</a>.
    *
    * <p> Returns the buffer with trace data.
+   *
+   * @since v1.11
    */
   byte[] stopTracing();
   /**
    * Returns the browser version.
+   *
+   * @since v1.8
    */
   String version();
 }

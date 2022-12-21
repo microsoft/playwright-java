@@ -364,6 +364,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(locator).not().containsText("error");
    * }</pre>
+   *
+   * @since v1.20
    */
   LocatorAssertions not();
   /**
@@ -373,6 +375,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(page.getByLabel("Subscribe to newsletter")).isChecked();
    * }</pre>
+   *
+   * @since v1.20
    */
   default void isChecked() {
     isChecked(null);
@@ -384,6 +388,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(page.getByLabel("Subscribe to newsletter")).isChecked();
    * }</pre>
+   *
+   * @since v1.20
    */
   void isChecked(IsCheckedOptions options);
   /**
@@ -398,6 +404,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(page.locator("button.submit")).isDisabled();
    * }</pre>
+   *
+   * @since v1.20
    */
   default void isDisabled() {
     isDisabled(null);
@@ -414,6 +422,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(page.locator("button.submit")).isDisabled();
    * }</pre>
+   *
+   * @since v1.20
    */
   void isDisabled(IsDisabledOptions options);
   /**
@@ -423,6 +433,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(page.getByRole(AriaRole.TEXTBOX)).isEditable();
    * }</pre>
+   *
+   * @since v1.20
    */
   default void isEditable() {
     isEditable(null);
@@ -434,6 +446,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(page.getByRole(AriaRole.TEXTBOX)).isEditable();
    * }</pre>
+   *
+   * @since v1.20
    */
   void isEditable(IsEditableOptions options);
   /**
@@ -443,6 +457,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(page.locator("div.warning")).isEmpty();
    * }</pre>
+   *
+   * @since v1.20
    */
   default void isEmpty() {
     isEmpty(null);
@@ -454,6 +470,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(page.locator("div.warning")).isEmpty();
    * }</pre>
+   *
+   * @since v1.20
    */
   void isEmpty(IsEmptyOptions options);
   /**
@@ -463,6 +481,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(page.locator("button.submit")).isEnabled();
    * }</pre>
+   *
+   * @since v1.20
    */
   default void isEnabled() {
     isEnabled(null);
@@ -474,6 +494,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(page.locator("button.submit")).isEnabled();
    * }</pre>
+   *
+   * @since v1.20
    */
   void isEnabled(IsEnabledOptions options);
   /**
@@ -483,6 +505,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(page.getByRole(AriaRole.TEXTBOX)).isFocused();
    * }</pre>
+   *
+   * @since v1.20
    */
   default void isFocused() {
     isFocused(null);
@@ -494,6 +518,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(page.getByRole(AriaRole.TEXTBOX)).isFocused();
    * }</pre>
+   *
+   * @since v1.20
    */
   void isFocused(IsFocusedOptions options);
   /**
@@ -504,6 +530,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(page.locator(".my-element")).isHidden();
    * }</pre>
+   *
+   * @since v1.20
    */
   default void isHidden() {
     isHidden(null);
@@ -516,6 +544,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(page.locator(".my-element")).isHidden();
    * }</pre>
+   *
+   * @since v1.20
    */
   void isHidden(IsHiddenOptions options);
   /**
@@ -526,6 +556,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(page.locator(".my-element")).isVisible();
    * }</pre>
+   *
+   * @since v1.20
    */
   default void isVisible() {
     isVisible(null);
@@ -538,6 +570,8 @@ public interface LocatorAssertions {
    * <pre>{@code
    * assertThat(page.locator(".my-element")).isVisible();
    * }</pre>
+   *
+   * @since v1.20
    */
   void isVisible(IsVisibleOptions options);
   /**
@@ -575,6 +609,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
+   * @since v1.20
    */
   default void containsText(String expected) {
     containsText(expected, null);
@@ -614,6 +649,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
+   * @since v1.20
    */
   void containsText(String expected, ContainsTextOptions options);
   /**
@@ -651,6 +687,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
+   * @since v1.20
    */
   default void containsText(Pattern expected) {
     containsText(expected, null);
@@ -690,6 +727,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
+   * @since v1.20
    */
   void containsText(Pattern expected, ContainsTextOptions options);
   /**
@@ -727,6 +765,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
+   * @since v1.20
    */
   default void containsText(String[] expected) {
     containsText(expected, null);
@@ -766,6 +805,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
+   * @since v1.20
    */
   void containsText(String[] expected, ContainsTextOptions options);
   /**
@@ -803,6 +843,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
+   * @since v1.20
    */
   default void containsText(Pattern[] expected) {
     containsText(expected, null);
@@ -842,6 +883,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected substring or RegExp or a list of those.
+   * @since v1.20
    */
   void containsText(Pattern[] expected, ContainsTextOptions options);
   /**
@@ -854,6 +896,7 @@ public interface LocatorAssertions {
    *
    * @param name Attribute name.
    * @param value Expected attribute value.
+   * @since v1.20
    */
   default void hasAttribute(String name, String value) {
     hasAttribute(name, value, (HasAttributeOptions) null);
@@ -868,6 +911,7 @@ public interface LocatorAssertions {
    *
    * @param name Attribute name.
    * @param value Expected attribute value.
+   * @since v1.20
    */
   void hasAttribute(String name, String value, HasAttributeOptions options);
   /**
@@ -880,6 +924,7 @@ public interface LocatorAssertions {
    *
    * @param name Attribute name.
    * @param value Expected attribute value.
+   * @since v1.20
    */
   default void hasAttribute(String name, Pattern value) {
     hasAttribute(name, value, (HasAttributeOptions) null);
@@ -894,6 +939,7 @@ public interface LocatorAssertions {
    *
    * @param name Attribute name.
    * @param value Expected attribute value.
+   * @since v1.20
    */
   void hasAttribute(String name, Pattern value, HasAttributeOptions options);
   /**
@@ -912,6 +958,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected class or RegExp or a list of those.
+   * @since v1.20
    */
   default void hasClass(String expected) {
     hasClass(expected, null);
@@ -932,6 +979,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected class or RegExp or a list of those.
+   * @since v1.20
    */
   void hasClass(String expected, HasClassOptions options);
   /**
@@ -950,6 +998,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected class or RegExp or a list of those.
+   * @since v1.20
    */
   default void hasClass(Pattern expected) {
     hasClass(expected, null);
@@ -970,6 +1019,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected class or RegExp or a list of those.
+   * @since v1.20
    */
   void hasClass(Pattern expected, HasClassOptions options);
   /**
@@ -988,6 +1038,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected class or RegExp or a list of those.
+   * @since v1.20
    */
   default void hasClass(String[] expected) {
     hasClass(expected, null);
@@ -1008,6 +1059,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected class or RegExp or a list of those.
+   * @since v1.20
    */
   void hasClass(String[] expected, HasClassOptions options);
   /**
@@ -1026,6 +1078,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected class or RegExp or a list of those.
+   * @since v1.20
    */
   default void hasClass(Pattern[] expected) {
     hasClass(expected, null);
@@ -1046,6 +1099,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected class or RegExp or a list of those.
+   * @since v1.20
    */
   void hasClass(Pattern[] expected, HasClassOptions options);
   /**
@@ -1057,6 +1111,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param count Expected count.
+   * @since v1.20
    */
   default void hasCount(int count) {
     hasCount(count, null);
@@ -1070,6 +1125,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param count Expected count.
+   * @since v1.20
    */
   void hasCount(int count, HasCountOptions options);
   /**
@@ -1082,6 +1138,7 @@ public interface LocatorAssertions {
    *
    * @param name CSS property name.
    * @param value CSS property value.
+   * @since v1.20
    */
   default void hasCSS(String name, String value) {
     hasCSS(name, value, null);
@@ -1096,6 +1153,7 @@ public interface LocatorAssertions {
    *
    * @param name CSS property name.
    * @param value CSS property value.
+   * @since v1.20
    */
   void hasCSS(String name, String value, HasCSSOptions options);
   /**
@@ -1108,6 +1166,7 @@ public interface LocatorAssertions {
    *
    * @param name CSS property name.
    * @param value CSS property value.
+   * @since v1.20
    */
   default void hasCSS(String name, Pattern value) {
     hasCSS(name, value, null);
@@ -1122,6 +1181,7 @@ public interface LocatorAssertions {
    *
    * @param name CSS property name.
    * @param value CSS property value.
+   * @since v1.20
    */
   void hasCSS(String name, Pattern value, HasCSSOptions options);
   /**
@@ -1133,6 +1193,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param id Element id.
+   * @since v1.20
    */
   default void hasId(String id) {
     hasId(id, null);
@@ -1146,6 +1207,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param id Element id.
+   * @since v1.20
    */
   void hasId(String id, HasIdOptions options);
   /**
@@ -1157,6 +1219,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param id Element id.
+   * @since v1.20
    */
   default void hasId(Pattern id) {
     hasId(id, null);
@@ -1170,6 +1233,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param id Element id.
+   * @since v1.20
    */
   void hasId(Pattern id, HasIdOptions options);
   /**
@@ -1183,6 +1247,7 @@ public interface LocatorAssertions {
    *
    * @param name Property name.
    * @param value Property value.
+   * @since v1.20
    */
   default void hasJSProperty(String name, Object value) {
     hasJSProperty(name, value, null);
@@ -1198,6 +1263,7 @@ public interface LocatorAssertions {
    *
    * @param name Property name.
    * @param value Property value.
+   * @since v1.20
    */
   void hasJSProperty(String name, Object value, HasJSPropertyOptions options);
   /**
@@ -1235,6 +1301,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected string or RegExp or a list of those.
+   * @since v1.20
    */
   default void hasText(String expected) {
     hasText(expected, null);
@@ -1274,6 +1341,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected string or RegExp or a list of those.
+   * @since v1.20
    */
   void hasText(String expected, HasTextOptions options);
   /**
@@ -1311,6 +1379,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected string or RegExp or a list of those.
+   * @since v1.20
    */
   default void hasText(Pattern expected) {
     hasText(expected, null);
@@ -1350,6 +1419,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected string or RegExp or a list of those.
+   * @since v1.20
    */
   void hasText(Pattern expected, HasTextOptions options);
   /**
@@ -1387,6 +1457,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected string or RegExp or a list of those.
+   * @since v1.20
    */
   default void hasText(String[] expected) {
     hasText(expected, null);
@@ -1426,6 +1497,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected string or RegExp or a list of those.
+   * @since v1.20
    */
   void hasText(String[] expected, HasTextOptions options);
   /**
@@ -1463,6 +1535,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected string or RegExp or a list of those.
+   * @since v1.20
    */
   default void hasText(Pattern[] expected) {
     hasText(expected, null);
@@ -1502,6 +1575,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param expected Expected string or RegExp or a list of those.
+   * @since v1.20
    */
   void hasText(Pattern[] expected, HasTextOptions options);
   /**
@@ -1514,6 +1588,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param value Expected value.
+   * @since v1.20
    */
   default void hasValue(String value) {
     hasValue(value, null);
@@ -1528,6 +1603,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param value Expected value.
+   * @since v1.20
    */
   void hasValue(String value, HasValueOptions options);
   /**
@@ -1540,6 +1616,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param value Expected value.
+   * @since v1.20
    */
   default void hasValue(Pattern value) {
     hasValue(value, null);
@@ -1554,6 +1631,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param value Expected value.
+   * @since v1.20
    */
   void hasValue(Pattern value, HasValueOptions options);
   /**
@@ -1569,6 +1647,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param values Expected options currently selected.
+   * @since v1.23
    */
   default void hasValues(String[] values) {
     hasValues(values, null);
@@ -1586,6 +1665,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param values Expected options currently selected.
+   * @since v1.23
    */
   void hasValues(String[] values, HasValuesOptions options);
   /**
@@ -1601,6 +1681,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param values Expected options currently selected.
+   * @since v1.23
    */
   default void hasValues(Pattern[] values) {
     hasValues(values, null);
@@ -1618,6 +1699,7 @@ public interface LocatorAssertions {
    * }</pre>
    *
    * @param values Expected options currently selected.
+   * @since v1.23
    */
   void hasValues(Pattern[] values, HasValuesOptions options);
 }

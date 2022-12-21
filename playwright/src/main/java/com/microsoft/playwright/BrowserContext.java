@@ -283,6 +283,8 @@ public interface BrowserContext extends AutoCloseable {
    * <pre>{@code
    * browserContext.addCookies(Arrays.asList(cookieObject1, cookieObject2));
    * }</pre>
+   *
+   * @since v1.8
    */
   void addCookies(List<Cookie> cookies);
   /**
@@ -308,6 +310,7 @@ public interface BrowserContext extends AutoCloseable {
    * BrowserContext.addInitScript()} and {@link Page#addInitScript Page.addInitScript()} is not defined.
    *
    * @param script Script to be evaluated in all pages in the browser context.
+   * @since v1.8
    */
   void addInitScript(String script);
   /**
@@ -333,14 +336,19 @@ public interface BrowserContext extends AutoCloseable {
    * BrowserContext.addInitScript()} and {@link Page#addInitScript Page.addInitScript()} is not defined.
    *
    * @param script Script to be evaluated in all pages in the browser context.
+   * @since v1.8
    */
   void addInitScript(Path script);
   /**
    * Returns the browser instance of the context. If it was launched as a persistent context null gets returned.
+   *
+   * @since v1.8
    */
   Browser browser();
   /**
    * Clears context cookies.
+   *
+   * @since v1.8
    */
   void clearCookies();
   /**
@@ -353,17 +361,23 @@ public interface BrowserContext extends AutoCloseable {
    * // do stuff ..
    * context.clearPermissions();
    * }</pre>
+   *
+   * @since v1.8
    */
   void clearPermissions();
   /**
    * Closes the browser context. All the pages that belong to the browser context will be closed.
    *
    * <p> <strong>NOTE:</strong> The default browser context cannot be closed.
+   *
+   * @since v1.8
    */
   void close();
   /**
    * If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those URLs
    * are returned.
+   *
+   * @since v1.8
    */
   default List<Cookie> cookies() {
     return cookies((String) null);
@@ -373,6 +387,7 @@ public interface BrowserContext extends AutoCloseable {
    * are returned.
    *
    * @param urls Optional list of URLs.
+   * @since v1.8
    */
   List<Cookie> cookies(String urls);
   /**
@@ -380,6 +395,7 @@ public interface BrowserContext extends AutoCloseable {
    * are returned.
    *
    * @param urls Optional list of URLs.
+   * @since v1.8
    */
   List<Cookie> cookies(List<String> urls);
   /**
@@ -439,6 +455,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @param name Name of the function on the window object.
    * @param callback Callback function that will be called in the Playwright's context.
+   * @since v1.8
    */
   default void exposeBinding(String name, BindingCallback callback) {
     exposeBinding(name, callback, null);
@@ -500,6 +517,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @param name Name of the function on the window object.
    * @param callback Callback function that will be called in the Playwright's context.
+   * @since v1.8
    */
   void exposeBinding(String name, BindingCallback callback, ExposeBindingOptions options);
   /**
@@ -557,6 +575,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @param name Name of the function on the window object.
    * @param callback Callback function that will be called in the Playwright's context.
+   * @since v1.8
    */
   void exposeFunction(String name, FunctionCallback callback);
   /**
@@ -581,6 +600,7 @@ public interface BrowserContext extends AutoCloseable {
    * <li> {@code "clipboard-write"}</li>
    * <li> {@code "payment-handler"}</li>
    * </ul>
+   * @since v1.8
    */
   default void grantPermissions(List<String> permissions) {
     grantPermissions(permissions, null);
@@ -607,18 +627,25 @@ public interface BrowserContext extends AutoCloseable {
    * <li> {@code "clipboard-write"}</li>
    * <li> {@code "payment-handler"}</li>
    * </ul>
+   * @since v1.8
    */
   void grantPermissions(List<String> permissions, GrantPermissionsOptions options);
   /**
    * Creates a new page in the browser context.
+   *
+   * @since v1.8
    */
   Page newPage();
   /**
    * Returns all open pages in the context.
+   *
+   * @since v1.8
    */
   List<Page> pages();
   /**
    * API testing helper associated with this context. Requests made with this API will use context cookies.
+   *
+   * @since v1.16
    */
   APIRequestContext request();
   /**
@@ -671,6 +698,7 @@ public interface BrowserContext extends AutoCloseable {
    * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
+   * @since v1.8
    */
   default void route(String url, Consumer<Route> handler) {
     route(url, handler, null);
@@ -725,6 +753,7 @@ public interface BrowserContext extends AutoCloseable {
    * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
+   * @since v1.8
    */
   void route(String url, Consumer<Route> handler, RouteOptions options);
   /**
@@ -777,6 +806,7 @@ public interface BrowserContext extends AutoCloseable {
    * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
+   * @since v1.8
    */
   default void route(Pattern url, Consumer<Route> handler) {
     route(url, handler, null);
@@ -831,6 +861,7 @@ public interface BrowserContext extends AutoCloseable {
    * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
+   * @since v1.8
    */
   void route(Pattern url, Consumer<Route> handler, RouteOptions options);
   /**
@@ -883,6 +914,7 @@ public interface BrowserContext extends AutoCloseable {
    * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
+   * @since v1.8
    */
   default void route(Predicate<String> url, Consumer<Route> handler) {
     route(url, handler, null);
@@ -937,6 +969,7 @@ public interface BrowserContext extends AutoCloseable {
    * context options was provided and the passed URL is a path, it gets merged via the <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code new URL()}</a> constructor.
    * @param handler handler function to route the request.
+   * @since v1.8
    */
   void route(Predicate<String> url, Consumer<Route> handler, RouteOptions options);
   /**
@@ -949,6 +982,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @param har Path to a <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> file with prerecorded network data. If {@code
    * path} is a relative path, then it is resolved relative to the current working directory.
+   * @since v1.23
    */
   default void routeFromHAR(Path har) {
     routeFromHAR(har, null);
@@ -963,6 +997,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @param har Path to a <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> file with prerecorded network data. If {@code
    * path} is a relative path, then it is resolved relative to the current working directory.
+   * @since v1.23
    */
   void routeFromHAR(Path har, RouteFromHAROptions options);
   /**
@@ -981,6 +1016,7 @@ public interface BrowserContext extends AutoCloseable {
    * BrowserContext.setDefaultNavigationTimeout()}.
    *
    * @param timeout Maximum navigation time in milliseconds
+   * @since v1.8
    */
   void setDefaultNavigationTimeout(double timeout);
   /**
@@ -992,6 +1028,7 @@ public interface BrowserContext extends AutoCloseable {
    * BrowserContext.setDefaultTimeout()}.
    *
    * @param timeout Maximum time in milliseconds
+   * @since v1.8
    */
   void setDefaultTimeout(double timeout);
   /**
@@ -1003,6 +1040,7 @@ public interface BrowserContext extends AutoCloseable {
    * in the outgoing requests.
    *
    * @param headers An object containing additional HTTP headers to be sent with every request. All header values must be strings.
+   * @since v1.8
    */
   void setExtraHTTPHeaders(Map<String, String> headers);
   /**
@@ -1015,24 +1053,36 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> <strong>NOTE:</strong> Consider using {@link BrowserContext#grantPermissions BrowserContext.grantPermissions()} to grant permissions for the
    * browser context pages to read its geolocation.
+   *
+   * @since v1.8
    */
   void setGeolocation(Geolocation geolocation);
   /**
    *
    *
    * @param offline Whether to emulate network being offline for the browser context.
+   * @since v1.8
    */
   void setOffline(boolean offline);
   /**
    * Returns storage state for this browser context, contains current cookies and local storage snapshot.
+   *
+   * @since v1.8
    */
   default String storageState() {
     return storageState(null);
   }
   /**
    * Returns storage state for this browser context, contains current cookies and local storage snapshot.
+   *
+   * @since v1.8
    */
   String storageState(StorageStateOptions options);
+  /**
+   *
+   *
+   * @since v1.12
+   */
   Tracing tracing();
   /**
    * Removes a route created with {@link BrowserContext#route BrowserContext.route()}. When {@code handler} is not specified,
@@ -1040,6 +1090,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link BrowserContext#route
    * BrowserContext.route()}.
+   * @since v1.8
    */
   default void unroute(String url) {
     unroute(url, null);
@@ -1051,6 +1102,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link BrowserContext#route
    * BrowserContext.route()}.
    * @param handler Optional handler function used to register a routing with {@link BrowserContext#route BrowserContext.route()}.
+   * @since v1.8
    */
   void unroute(String url, Consumer<Route> handler);
   /**
@@ -1059,6 +1111,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link BrowserContext#route
    * BrowserContext.route()}.
+   * @since v1.8
    */
   default void unroute(Pattern url) {
     unroute(url, null);
@@ -1070,6 +1123,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link BrowserContext#route
    * BrowserContext.route()}.
    * @param handler Optional handler function used to register a routing with {@link BrowserContext#route BrowserContext.route()}.
+   * @since v1.8
    */
   void unroute(Pattern url, Consumer<Route> handler);
   /**
@@ -1078,6 +1132,7 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link BrowserContext#route
    * BrowserContext.route()}.
+   * @since v1.8
    */
   default void unroute(Predicate<String> url) {
     unroute(url, null);
@@ -1089,6 +1144,7 @@ public interface BrowserContext extends AutoCloseable {
    * @param url A glob pattern, regex pattern or predicate receiving [URL] used to register a routing with {@link BrowserContext#route
    * BrowserContext.route()}.
    * @param handler Optional handler function used to register a routing with {@link BrowserContext#route BrowserContext.route()}.
+   * @since v1.8
    */
   void unroute(Predicate<String> url, Consumer<Route> handler);
   /**
@@ -1097,6 +1153,7 @@ public interface BrowserContext extends AutoCloseable {
    * Will throw an error if the context closes before new {@code Page} is created.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.9
    */
   default Page waitForPage(Runnable callback) {
     return waitForPage(null, callback);
@@ -1107,6 +1164,7 @@ public interface BrowserContext extends AutoCloseable {
    * Will throw an error if the context closes before new {@code Page} is created.
    *
    * @param callback Callback that performs the action triggering the event.
+   * @since v1.9
    */
   Page waitForPage(WaitForPageOptions options, Runnable callback);
 }

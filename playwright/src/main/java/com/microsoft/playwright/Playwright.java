@@ -58,27 +58,39 @@ public interface Playwright extends AutoCloseable {
   }
   /**
    * This object can be used to launch or connect to Chromium, returning instances of {@code Browser}.
+   *
+   * @since v1.8
    */
   BrowserType chromium();
   /**
    * This object can be used to launch or connect to Firefox, returning instances of {@code Browser}.
+   *
+   * @since v1.8
    */
   BrowserType firefox();
   /**
    * Exposes API that can be used for the Web API testing.
+   *
+   * @since v1.16
    */
   APIRequest request();
   /**
    * Selectors can be used to install custom selector engines. See <a
    * href="https://playwright.dev/java/docs/extensibility">extensibility</a> for more information.
+   *
+   * @since v1.8
    */
   Selectors selectors();
   /**
    * This object can be used to launch or connect to WebKit, returning instances of {@code Browser}.
+   *
+   * @since v1.8
    */
   BrowserType webkit();
   /**
    * Terminates this instance of Playwright, will also close all created browsers if they are still running.
+   *
+   * @since v1.9
    */
   void close();
   /**
@@ -91,6 +103,8 @@ public interface Playwright extends AutoCloseable {
    * page.navigate("https://www.w3.org/");
    * playwright.close();
    * }</pre>
+   *
+   * @since v1.10
    */
   static Playwright create(CreateOptions options) {
     return PlaywrightImpl.create(options);

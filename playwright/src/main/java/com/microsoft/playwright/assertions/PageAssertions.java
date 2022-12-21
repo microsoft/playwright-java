@@ -72,6 +72,8 @@ public interface PageAssertions {
    * <pre>{@code
    * assertThat(page).not().hasURL("error");
    * }</pre>
+   *
+   * @since v1.20
    */
   PageAssertions not();
   /**
@@ -83,6 +85,7 @@ public interface PageAssertions {
    * }</pre>
    *
    * @param titleOrRegExp Expected title or RegExp.
+   * @since v1.20
    */
   default void hasTitle(String titleOrRegExp) {
     hasTitle(titleOrRegExp, null);
@@ -96,6 +99,7 @@ public interface PageAssertions {
    * }</pre>
    *
    * @param titleOrRegExp Expected title or RegExp.
+   * @since v1.20
    */
   void hasTitle(String titleOrRegExp, HasTitleOptions options);
   /**
@@ -107,6 +111,7 @@ public interface PageAssertions {
    * }</pre>
    *
    * @param titleOrRegExp Expected title or RegExp.
+   * @since v1.20
    */
   default void hasTitle(Pattern titleOrRegExp) {
     hasTitle(titleOrRegExp, null);
@@ -120,6 +125,7 @@ public interface PageAssertions {
    * }</pre>
    *
    * @param titleOrRegExp Expected title or RegExp.
+   * @since v1.20
    */
   void hasTitle(Pattern titleOrRegExp, HasTitleOptions options);
   /**
@@ -131,6 +137,7 @@ public interface PageAssertions {
    * }</pre>
    *
    * @param urlOrRegExp Expected URL string or RegExp.
+   * @since v1.20
    */
   default void hasURL(String urlOrRegExp) {
     hasURL(urlOrRegExp, null);
@@ -144,6 +151,7 @@ public interface PageAssertions {
    * }</pre>
    *
    * @param urlOrRegExp Expected URL string or RegExp.
+   * @since v1.20
    */
   void hasURL(String urlOrRegExp, HasURLOptions options);
   /**
@@ -155,6 +163,7 @@ public interface PageAssertions {
    * }</pre>
    *
    * @param urlOrRegExp Expected URL string or RegExp.
+   * @since v1.20
    */
   default void hasURL(Pattern urlOrRegExp) {
     hasURL(urlOrRegExp, null);
@@ -168,6 +177,7 @@ public interface PageAssertions {
    * }</pre>
    *
    * @param urlOrRegExp Expected URL string or RegExp.
+   * @since v1.20
    */
   void hasURL(Pattern urlOrRegExp, HasURLOptions options);
 }

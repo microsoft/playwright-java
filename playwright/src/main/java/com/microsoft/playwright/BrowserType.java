@@ -1042,6 +1042,7 @@ public interface BrowserType {
    * compatible with 1.2.x).
    *
    * @param wsEndpoint A browser websocket endpoint to connect to.
+   * @since v1.8
    */
   default Browser connect(String wsEndpoint) {
     return connect(wsEndpoint, null);
@@ -1052,6 +1053,7 @@ public interface BrowserType {
    * compatible with 1.2.x).
    *
    * @param wsEndpoint A browser websocket endpoint to connect to.
+   * @since v1.8
    */
   Browser connect(String wsEndpoint, ConnectOptions options);
   /**
@@ -1070,6 +1072,7 @@ public interface BrowserType {
    *
    * @param endpointURL A CDP websocket endpoint or http url to connect to. For example {@code http://localhost:9222/} or {@code
    * ws://127.0.0.1:9222/devtools/browser/387adf4c-243f-4051-a181-46798f4a46f4}.
+   * @since v1.9
    */
   default Browser connectOverCDP(String endpointURL) {
     return connectOverCDP(endpointURL, null);
@@ -1090,10 +1093,13 @@ public interface BrowserType {
    *
    * @param endpointURL A CDP websocket endpoint or http url to connect to. For example {@code http://localhost:9222/} or {@code
    * ws://127.0.0.1:9222/devtools/browser/387adf4c-243f-4051-a181-46798f4a46f4}.
+   * @since v1.9
    */
   Browser connectOverCDP(String endpointURL, ConnectOverCDPOptions options);
   /**
    * A path where Playwright expects to find a bundled browser executable.
+   *
+   * @since v1.8
    */
   String executablePath();
   /**
@@ -1126,6 +1132,8 @@ public interface BrowserType {
    * other differences between Chromium and Chrome. <a
    * href="https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md">This article</a>
    * describes some differences for Linux users.
+   *
+   * @since v1.8
    */
   default Browser launch() {
     return launch(null);
@@ -1160,6 +1168,8 @@ public interface BrowserType {
    * other differences between Chromium and Chrome. <a
    * href="https://chromium.googlesource.com/chromium/src/+/lkgr/docs/chromium_browser_vs_google_chrome.md">This article</a>
    * describes some differences for Linux users.
+   *
+   * @since v1.8
    */
   Browser launch(LaunchOptions options);
   /**
@@ -1173,6 +1183,7 @@ public interface BrowserType {
    * href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile">Firefox</a>. Note that
    * Chromium's user data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}. Pass
    * an empty string to use a temporary directory instead.
+   * @since v1.8
    */
   default BrowserContext launchPersistentContext(Path userDataDir) {
     return launchPersistentContext(userDataDir, null);
@@ -1188,10 +1199,13 @@ public interface BrowserType {
    * href="https://developer.mozilla.org/en-US/docs/Mozilla/Command_Line_Options#User_Profile">Firefox</a>. Note that
    * Chromium's user data directory is the **parent** directory of the "Profile Path" seen at {@code chrome://version}. Pass
    * an empty string to use a temporary directory instead.
+   * @since v1.8
    */
   BrowserContext launchPersistentContext(Path userDataDir, LaunchPersistentContextOptions options);
   /**
    * Returns browser name. For example: {@code "chromium"}, {@code "webkit"} or {@code "firefox"}.
+   *
+   * @since v1.8
    */
   String name();
 }

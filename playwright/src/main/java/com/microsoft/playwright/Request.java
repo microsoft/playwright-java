@@ -40,6 +40,8 @@ import java.util.*;
 public interface Request {
   /**
    * An object with all the request HTTP headers associated with this request. The header names are lower-cased.
+   *
+   * @since v1.15
    */
   Map<String, String> allHeaders();
   /**
@@ -53,44 +55,61 @@ public interface Request {
    *   System.out.println(request.url() + " " + request.failure());
    * });
    * }</pre>
+   *
+   * @since v1.8
    */
   String failure();
   /**
    * Returns the {@code Frame} that initiated this request.
+   *
+   * @since v1.8
    */
   Frame frame();
   /**
    * An object with the request HTTP headers. The header names are lower-cased. Note that this method does not return
    * security-related headers, including cookie-related ones. You can use {@link Request#allHeaders Request.allHeaders()} for
    * complete list of headers that include {@code cookie} information.
+   *
+   * @since v1.8
    */
   Map<String, String> headers();
   /**
    * An array with all the request HTTP headers associated with this request. Unlike {@link Request#allHeaders
    * Request.allHeaders()}, header names are NOT lower-cased. Headers with multiple entries, such as {@code Set-Cookie},
    * appear in the array multiple times.
+   *
+   * @since v1.15
    */
   List<HttpHeader> headersArray();
   /**
    * Returns the value of the header matching the name. The name is case insensitive.
    *
    * @param name Name of the header.
+   * @since v1.15
    */
   String headerValue(String name);
   /**
    * Whether this request is driving frame's navigation.
+   *
+   * @since v1.8
    */
   boolean isNavigationRequest();
   /**
    * Request's method (GET, POST, etc.)
+   *
+   * @since v1.8
    */
   String method();
   /**
    * Request's post body, if any.
+   *
+   * @since v1.8
    */
   String postData();
   /**
    * Request's post body in a binary form, if any.
+   *
+   * @since v1.8
    */
   byte[] postDataBuffer();
   /**
@@ -113,6 +132,8 @@ public interface Request {
    * Response response = page.navigate("https://google.com");
    * System.out.println(response.request().redirectedFrom()); // null
    * }</pre>
+   *
+   * @since v1.8
    */
   Request redirectedFrom();
   /**
@@ -124,20 +145,28 @@ public interface Request {
    * <pre>{@code
    * System.out.println(request.redirectedFrom().redirectedTo() == request); // true
    * }</pre>
+   *
+   * @since v1.8
    */
   Request redirectedTo();
   /**
    * Contains the request's resource type as it was perceived by the rendering engine. ResourceType will be one of the
    * following: {@code document}, {@code stylesheet}, {@code image}, {@code media}, {@code font}, {@code script}, {@code
    * texttrack}, {@code xhr}, {@code fetch}, {@code eventsource}, {@code websocket}, {@code manifest}, {@code other}.
+   *
+   * @since v1.8
    */
   String resourceType();
   /**
    * Returns the matching {@code Response} object, or {@code null} if the response was not received due to error.
+   *
+   * @since v1.8
    */
   Response response();
   /**
    * Returns resource size information for given request.
+   *
+   * @since v1.15
    */
   Sizes sizes();
   /**
@@ -153,10 +182,14 @@ public interface Request {
    * });
    * page.navigate("http://example.com");
    * }</pre>
+   *
+   * @since v1.8
    */
   Timing timing();
   /**
    * URL of the request.
+   *
+   * @since v1.8
    */
   String url();
 }

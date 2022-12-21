@@ -38,22 +38,32 @@ public interface Download {
   /**
    * Cancels a download. Will not fail if the download is already finished or canceled. Upon successful cancellations, {@code
    * download.failure()} would resolve to {@code "canceled"}.
+   *
+   * @since v1.13
    */
   void cancel();
   /**
    * Returns readable stream for current download or {@code null} if download failed.
+   *
+   * @since v1.8
    */
   InputStream createReadStream();
   /**
    * Deletes the downloaded file. Will wait for the download to finish if necessary.
+   *
+   * @since v1.8
    */
   void delete();
   /**
    * Returns download error if any. Will wait for the download to finish if necessary.
+   *
+   * @since v1.8
    */
   String failure();
   /**
    * Get the page that the download belongs to.
+   *
+   * @since v1.12
    */
   Page page();
   /**
@@ -62,6 +72,8 @@ public interface Download {
    *
    * <p> Note that the download's file name is a random GUID, use {@link Download#suggestedFilename Download.suggestedFilename()}
    * to get suggested file name.
+   *
+   * @since v1.8
    */
   Path path();
   /**
@@ -69,6 +81,7 @@ public interface Download {
    * wait for the download to finish if necessary.
    *
    * @param path Path where the download should be copied.
+   * @since v1.8
    */
   void saveAs(Path path);
   /**
@@ -77,10 +90,14 @@ public interface Download {
    * response header or the {@code download} attribute. See the spec on <a
    * href="https://html.spec.whatwg.org/#downloading-resources">whatwg</a>. Different browsers can use different logic for
    * computing it.
+   *
+   * @since v1.8
    */
   String suggestedFilename();
   /**
    * Returns downloaded url.
+   *
+   * @since v1.8
    */
   String url();
 }

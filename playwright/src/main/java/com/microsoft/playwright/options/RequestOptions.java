@@ -59,6 +59,8 @@ import com.microsoft.playwright.impl.RequestOptionsImpl;
 public interface RequestOptions {
   /**
    * Creates new instance of {@code RequestOptions}.
+   *
+   * @since v1.18
    */
   static RequestOptions create() {
     return new RequestOptionsImpl();
@@ -69,6 +71,7 @@ public interface RequestOptions {
    * @param data Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string and
    * {@code content-type} header will be set to {@code application/json} if not explicitly set. Otherwise the {@code
    * content-type} header will be set to {@code application/octet-stream} if not explicitly set.
+   * @since v1.18
    */
   RequestOptions setData(String data);
   /**
@@ -77,6 +80,7 @@ public interface RequestOptions {
    * @param data Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string and
    * {@code content-type} header will be set to {@code application/json} if not explicitly set. Otherwise the {@code
    * content-type} header will be set to {@code application/octet-stream} if not explicitly set.
+   * @since v1.18
    */
   RequestOptions setData(byte[] data);
   /**
@@ -85,12 +89,14 @@ public interface RequestOptions {
    * @param data Allows to set post data of the request. If the data parameter is an object, it will be serialized to json string and
    * {@code content-type} header will be set to {@code application/json} if not explicitly set. Otherwise the {@code
    * content-type} header will be set to {@code application/octet-stream} if not explicitly set.
+   * @since v1.18
    */
   RequestOptions setData(Object data);
   /**
    *
    *
    * @param failOnStatusCode Whether to throw on response codes other than 2xx and 3xx. By default response object is returned for all status codes.
+   * @since v1.18
    */
   RequestOptions setFailOnStatusCode(boolean failOnStatusCode);
   /**
@@ -100,6 +106,7 @@ public interface RequestOptions {
    *
    * @param form Form data to be serialized as html form using {@code application/x-www-form-urlencoded} encoding and sent as this
    * request body.
+   * @since v1.18
    */
   RequestOptions setForm(FormData form);
   /**
@@ -107,12 +114,14 @@ public interface RequestOptions {
    *
    * @param name Header name.
    * @param value Header value.
+   * @since v1.18
    */
   RequestOptions setHeader(String name, String value);
   /**
    *
    *
    * @param ignoreHTTPSErrors Whether to ignore HTTPS errors when sending network requests.
+   * @since v1.18
    */
   RequestOptions setIgnoreHTTPSErrors(boolean ignoreHTTPSErrors);
   /**
@@ -120,6 +129,7 @@ public interface RequestOptions {
    *
    * @param maxRedirects Maximum number of request redirects that will be followed automatically. An error will be thrown if the number is
    * exceeded. Defaults to {@code 20}. Pass {@code 0} to not follow redirects.
+   * @since v1.26
    */
   RequestOptions setMaxRedirects(int maxRedirects);
   /**
@@ -127,6 +137,7 @@ public interface RequestOptions {
    * href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST">POST</a>).
    *
    * @param method Request method, e.g. <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST">POST</a>.
+   * @since v1.18
    */
   RequestOptions setMethod(String method);
   /**
@@ -135,6 +146,7 @@ public interface RequestOptions {
    * multipart/form-data} unless explicitly provided.
    *
    * @param form Form data to be serialized as html form using {@code multipart/form-data} encoding and sent as this request body.
+   * @since v1.18
    */
   RequestOptions setMultipart(FormData form);
   /**
@@ -142,6 +154,7 @@ public interface RequestOptions {
    *
    * @param name Parameter name.
    * @param value Parameter value.
+   * @since v1.18
    */
   RequestOptions setQueryParam(String name, String value);
   /**
@@ -149,6 +162,7 @@ public interface RequestOptions {
    *
    * @param name Parameter name.
    * @param value Parameter value.
+   * @since v1.18
    */
   RequestOptions setQueryParam(String name, boolean value);
   /**
@@ -156,12 +170,14 @@ public interface RequestOptions {
    *
    * @param name Parameter name.
    * @param value Parameter value.
+   * @since v1.18
    */
   RequestOptions setQueryParam(String name, int value);
   /**
    * Sets request timeout in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
    *
    * @param timeout Request timeout in milliseconds.
+   * @since v1.18
    */
   RequestOptions setTimeout(double timeout);
 }

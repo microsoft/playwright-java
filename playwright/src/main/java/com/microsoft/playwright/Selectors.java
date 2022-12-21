@@ -74,6 +74,7 @@ public interface Selectors {
    * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May
    * only contain {@code [a-zA-Z0-9_]} characters.
    * @param script Script that evaluates to a selector engine instance. The script is evaluated in the page context.
+   * @since v1.8
    */
   default void register(String name, String script) {
     register(name, script, null);
@@ -111,6 +112,7 @@ public interface Selectors {
    * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May
    * only contain {@code [a-zA-Z0-9_]} characters.
    * @param script Script that evaluates to a selector engine instance. The script is evaluated in the page context.
+   * @since v1.8
    */
   void register(String name, String script, RegisterOptions options);
   /**
@@ -146,6 +148,7 @@ public interface Selectors {
    * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May
    * only contain {@code [a-zA-Z0-9_]} characters.
    * @param script Script that evaluates to a selector engine instance. The script is evaluated in the page context.
+   * @since v1.8
    */
   default void register(String name, Path script) {
     register(name, script, null);
@@ -183,6 +186,7 @@ public interface Selectors {
    * @param name Name that is used in selectors as a prefix, e.g. {@code {name: 'foo'}} enables {@code foo=myselectorbody} selectors. May
    * only contain {@code [a-zA-Z0-9_]} characters.
    * @param script Script that evaluates to a selector engine instance. The script is evaluated in the page context.
+   * @since v1.8
    */
   void register(String name, Path script, RegisterOptions options);
   /**
@@ -190,6 +194,7 @@ public interface Selectors {
    * default.
    *
    * @param attributeName Test id attribute name.
+   * @since v1.27
    */
   void setTestIdAttribute(String attributeName);
 }

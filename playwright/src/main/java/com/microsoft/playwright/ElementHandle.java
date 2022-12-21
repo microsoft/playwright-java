@@ -1244,6 +1244,8 @@ public interface ElementHandle extends JSHandle {
    * BoundingBox box = elementHandle.boundingBox();
    * page.mouse().click(box.x + box.width / 2, box.y + box.height / 2);
    * }</pre>
+   *
+   * @since v1.8
    */
   BoundingBox boundingBox();
   /**
@@ -1263,6 +1265,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * @since v1.8
    */
   default void check() {
     check(null);
@@ -1284,6 +1288,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * @since v1.8
    */
   void check(CheckOptions options);
   /**
@@ -1300,6 +1306,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * @since v1.8
    */
   default void click() {
     click(null);
@@ -1318,10 +1326,14 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * @since v1.8
    */
   void click(ClickOptions options);
   /**
    * Returns the content frame for element handles referencing iframe nodes, or {@code null} otherwise
+   *
+   * @since v1.8
    */
   Frame contentFrame();
   /**
@@ -1341,6 +1353,8 @@ public interface ElementHandle extends JSHandle {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code elementHandle.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
+   *
+   * @since v1.8
    */
   default void dblclick() {
     dblclick(null);
@@ -1362,6 +1376,8 @@ public interface ElementHandle extends JSHandle {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code elementHandle.dblclick()} dispatches two {@code click} events and a single {@code dblclick} event.
+   *
+   * @since v1.8
    */
   void dblclick(DblclickOptions options);
   /**
@@ -1399,6 +1415,7 @@ public interface ElementHandle extends JSHandle {
    * }</pre>
    *
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
+   * @since v1.8
    */
   default void dispatchEvent(String type) {
     dispatchEvent(type, null);
@@ -1439,6 +1456,7 @@ public interface ElementHandle extends JSHandle {
    *
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
    * @param eventInit Optional event-specific initialization properties.
+   * @since v1.8
    */
   void dispatchEvent(String type, Object eventInit);
   /**
@@ -1461,6 +1479,7 @@ public interface ElementHandle extends JSHandle {
    * @param selector A selector to query for.
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
+   * @since v1.9
    */
   default Object evalOnSelector(String selector, String expression) {
     return evalOnSelector(selector, expression, null);
@@ -1486,6 +1505,7 @@ public interface ElementHandle extends JSHandle {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.9
    */
   Object evalOnSelector(String selector, String expression, Object arg);
   /**
@@ -1508,6 +1528,7 @@ public interface ElementHandle extends JSHandle {
    * @param selector A selector to query for.
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
+   * @since v1.9
    */
   default Object evalOnSelectorAll(String selector, String expression) {
     return evalOnSelectorAll(selector, expression, null);
@@ -1533,6 +1554,7 @@ public interface ElementHandle extends JSHandle {
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
    * @param arg Optional argument to pass to {@code expression}.
+   * @since v1.9
    */
   Object evalOnSelectorAll(String selector, String expression, Object arg);
   /**
@@ -1548,6 +1570,7 @@ public interface ElementHandle extends JSHandle {
    * <p> To send fine-grained keyboard events, use {@link ElementHandle#type ElementHandle.type()}.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
+   * @since v1.8
    */
   default void fill(String value) {
     fill(value, null);
@@ -1565,16 +1588,20 @@ public interface ElementHandle extends JSHandle {
    * <p> To send fine-grained keyboard events, use {@link ElementHandle#type ElementHandle.type()}.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
+   * @since v1.8
    */
   void fill(String value, FillOptions options);
   /**
    * Calls <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus">focus</a> on the element.
+   *
+   * @since v1.8
    */
   void focus();
   /**
    * Returns element attribute value.
    *
    * @param name Attribute name to get the value for.
+   * @since v1.8
    */
   String getAttribute(String name);
   /**
@@ -1591,6 +1618,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * @since v1.8
    */
   default void hover() {
     hover(null);
@@ -1609,14 +1638,20 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * @since v1.8
    */
   void hover(HoverOptions options);
   /**
    * Returns the {@code element.innerHTML}.
+   *
+   * @since v1.8
    */
   String innerHTML();
   /**
    * Returns the {@code element.innerText}.
+   *
+   * @since v1.8
    */
   String innerText();
   /**
@@ -1625,6 +1660,8 @@ public interface ElementHandle extends JSHandle {
    * <p> Throws for non-input elements. However, if the element is inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, returns the value of the
    * control.
+   *
+   * @since v1.13
    */
   default String inputValue() {
     return inputValue(null);
@@ -1635,36 +1672,52 @@ public interface ElementHandle extends JSHandle {
    * <p> Throws for non-input elements. However, if the element is inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, returns the value of the
    * control.
+   *
+   * @since v1.13
    */
   String inputValue(InputValueOptions options);
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
+   *
+   * @since v1.8
    */
   boolean isChecked();
   /**
    * Returns whether the element is disabled, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
+   *
+   * @since v1.8
    */
   boolean isDisabled();
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
+   *
+   * @since v1.8
    */
   boolean isEditable();
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
+   *
+   * @since v1.8
    */
   boolean isEnabled();
   /**
    * Returns whether the element is hidden, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
+   *
+   * @since v1.8
    */
   boolean isHidden();
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
+   *
+   * @since v1.8
    */
   boolean isVisible();
   /**
    * Returns the frame containing the given element.
+   *
+   * @since v1.8
    */
   Frame ownerFrame();
   /**
@@ -1692,6 +1745,7 @@ public interface ElementHandle extends JSHandle {
    * the modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
+   * @since v1.8
    */
   default void press(String key) {
     press(key, null);
@@ -1721,6 +1775,7 @@ public interface ElementHandle extends JSHandle {
    * the modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
+   * @since v1.8
    */
   void press(String key, PressOptions options);
   /**
@@ -1728,6 +1783,7 @@ public interface ElementHandle extends JSHandle {
    * the selector, returns {@code null}.
    *
    * @param selector A selector to query for.
+   * @since v1.9
    */
   ElementHandle querySelector(String selector);
   /**
@@ -1735,6 +1791,7 @@ public interface ElementHandle extends JSHandle {
    * match the selector, returns empty array.
    *
    * @param selector A selector to query for.
+   * @since v1.9
    */
   List<ElementHandle> querySelectorAll(String selector);
   /**
@@ -1746,6 +1803,8 @@ public interface ElementHandle extends JSHandle {
    * scrolls element into view before taking a screenshot. If the element is detached from DOM, the method throws an error.
    *
    * <p> Returns the buffer with the captured screenshot.
+   *
+   * @since v1.8
    */
   default byte[] screenshot() {
     return screenshot(null);
@@ -1759,6 +1818,8 @@ public interface ElementHandle extends JSHandle {
    * scrolls element into view before taking a screenshot. If the element is detached from DOM, the method throws an error.
    *
    * <p> Returns the buffer with the captured screenshot.
+   *
+   * @since v1.8
    */
   byte[] screenshot(ScreenshotOptions options);
   /**
@@ -1769,6 +1830,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> Throws when {@code elementHandle} does not point to an element <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Node/isConnected">connected</a> to a Document or a ShadowRoot.
+   *
+   * @since v1.8
    */
   default void scrollIntoViewIfNeeded() {
     scrollIntoViewIfNeeded(null);
@@ -1781,6 +1844,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> Throws when {@code elementHandle} does not point to an element <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Node/isConnected">connected</a> to a Document or a ShadowRoot.
+   *
+   * @since v1.8
    */
   void scrollIntoViewIfNeeded(ScrollIntoViewIfNeededOptions options);
   /**
@@ -1809,6 +1874,7 @@ public interface ElementHandle extends JSHandle {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   default List<String> selectOption(String values) {
     return selectOption(values, null);
@@ -1839,6 +1905,7 @@ public interface ElementHandle extends JSHandle {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   List<String> selectOption(String values, SelectOptionOptions options);
   /**
@@ -1867,6 +1934,7 @@ public interface ElementHandle extends JSHandle {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   default List<String> selectOption(ElementHandle values) {
     return selectOption(values, null);
@@ -1897,6 +1965,7 @@ public interface ElementHandle extends JSHandle {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   List<String> selectOption(ElementHandle values, SelectOptionOptions options);
   /**
@@ -1925,6 +1994,7 @@ public interface ElementHandle extends JSHandle {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   default List<String> selectOption(String[] values) {
     return selectOption(values, null);
@@ -1955,6 +2025,7 @@ public interface ElementHandle extends JSHandle {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   List<String> selectOption(String[] values, SelectOptionOptions options);
   /**
@@ -1983,6 +2054,7 @@ public interface ElementHandle extends JSHandle {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   default List<String> selectOption(SelectOption values) {
     return selectOption(values, null);
@@ -2013,6 +2085,7 @@ public interface ElementHandle extends JSHandle {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   List<String> selectOption(SelectOption values, SelectOptionOptions options);
   /**
@@ -2041,6 +2114,7 @@ public interface ElementHandle extends JSHandle {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   default List<String> selectOption(ElementHandle[] values) {
     return selectOption(values, null);
@@ -2071,6 +2145,7 @@ public interface ElementHandle extends JSHandle {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   List<String> selectOption(ElementHandle[] values, SelectOptionOptions options);
   /**
@@ -2099,6 +2174,7 @@ public interface ElementHandle extends JSHandle {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   default List<String> selectOption(SelectOption[] values) {
     return selectOption(values, null);
@@ -2129,6 +2205,7 @@ public interface ElementHandle extends JSHandle {
    * @param values Options to select. If the {@code <select>} has the {@code multiple} attribute, all matching options are selected,
    * otherwise only the first option matching one of the passed options is selected. String values are matching both values
    * and labels. Option is considered matching if all specified properties match.
+   * @since v1.8
    */
   List<String> selectOption(SelectOption[] values, SelectOptionOptions options);
   /**
@@ -2138,6 +2215,8 @@ public interface ElementHandle extends JSHandle {
    * <p> If the element is inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, focuses and selects text
    * in the control instead.
+   *
+   * @since v1.8
    */
   default void selectText() {
     selectText(null);
@@ -2149,6 +2228,8 @@ public interface ElementHandle extends JSHandle {
    * <p> If the element is inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, focuses and selects text
    * in the control instead.
+   *
+   * @since v1.8
    */
   void selectText(SelectTextOptions options);
   /**
@@ -2168,6 +2249,7 @@ public interface ElementHandle extends JSHandle {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * @param checked Whether to check or uncheck the checkbox.
+   * @since v1.15
    */
   default void setChecked(boolean checked) {
     setChecked(checked, null);
@@ -2189,6 +2271,7 @@ public interface ElementHandle extends JSHandle {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * @param checked Whether to check or uncheck the checkbox.
+   * @since v1.15
    */
   void setChecked(boolean checked, SetCheckedOptions options);
   /**
@@ -2200,6 +2283,8 @@ public interface ElementHandle extends JSHandle {
    * inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
+   *
+   * @since v1.8
    */
   default void setInputFiles(Path files) {
     setInputFiles(files, null);
@@ -2213,6 +2298,8 @@ public interface ElementHandle extends JSHandle {
    * inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
+   *
+   * @since v1.8
    */
   void setInputFiles(Path files, SetInputFilesOptions options);
   /**
@@ -2224,6 +2311,8 @@ public interface ElementHandle extends JSHandle {
    * inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
+   *
+   * @since v1.8
    */
   default void setInputFiles(Path[] files) {
     setInputFiles(files, null);
@@ -2237,6 +2326,8 @@ public interface ElementHandle extends JSHandle {
    * inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
+   *
+   * @since v1.8
    */
   void setInputFiles(Path[] files, SetInputFilesOptions options);
   /**
@@ -2248,6 +2339,8 @@ public interface ElementHandle extends JSHandle {
    * inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
+   *
+   * @since v1.8
    */
   default void setInputFiles(FilePayload files) {
     setInputFiles(files, null);
@@ -2261,6 +2354,8 @@ public interface ElementHandle extends JSHandle {
    * inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
+   *
+   * @since v1.8
    */
   void setInputFiles(FilePayload files, SetInputFilesOptions options);
   /**
@@ -2272,6 +2367,8 @@ public interface ElementHandle extends JSHandle {
    * inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
+   *
+   * @since v1.8
    */
   default void setInputFiles(FilePayload[] files) {
     setInputFiles(files, null);
@@ -2285,6 +2382,8 @@ public interface ElementHandle extends JSHandle {
    * inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, targets the control
    * instead.
+   *
+   * @since v1.8
    */
   void setInputFiles(FilePayload[] files, SetInputFilesOptions options);
   /**
@@ -2303,6 +2402,8 @@ public interface ElementHandle extends JSHandle {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code elementHandle.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
+   *
+   * @since v1.8
    */
   default void tap() {
     tap(null);
@@ -2323,10 +2424,14 @@ public interface ElementHandle extends JSHandle {
    * TimeoutError}. Passing zero timeout disables this.
    *
    * <p> <strong>NOTE:</strong> {@code elementHandle.tap()} requires that the {@code hasTouch} option of the browser context be set to true.
+   *
+   * @since v1.8
    */
   void tap(TapOptions options);
   /**
    * Returns the {@code node.textContent}.
+   *
+   * @since v1.8
    */
   String textContent();
   /**
@@ -2350,6 +2455,7 @@ public interface ElementHandle extends JSHandle {
    * }</pre>
    *
    * @param text A text to type into a focused element.
+   * @since v1.8
    */
   default void type(String text) {
     type(text, null);
@@ -2375,6 +2481,7 @@ public interface ElementHandle extends JSHandle {
    * }</pre>
    *
    * @param text A text to type into a focused element.
+   * @since v1.8
    */
   void type(String text, TypeOptions options);
   /**
@@ -2394,6 +2501,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * @since v1.8
    */
   default void uncheck() {
     uncheck(null);
@@ -2415,6 +2524,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * @since v1.8
    */
   void uncheck(UncheckOptions options);
   /**
@@ -2443,6 +2554,7 @@ public interface ElementHandle extends JSHandle {
    * <p> If the element does not satisfy the condition for the {@code timeout} milliseconds, this method will throw.
    *
    * @param state A state to wait for, see below for more details.
+   * @since v1.8
    */
   default void waitForElementState(ElementState state) {
     waitForElementState(state, null);
@@ -2473,6 +2585,7 @@ public interface ElementHandle extends JSHandle {
    * <p> If the element does not satisfy the condition for the {@code timeout} milliseconds, this method will throw.
    *
    * @param state A state to wait for, see below for more details.
+   * @since v1.8
    */
   void waitForElementState(ElementState state, WaitForElementStateOptions options);
   /**
@@ -2496,6 +2609,7 @@ public interface ElementHandle extends JSHandle {
    * <p> <strong>NOTE:</strong> This method does not work across navigations, use {@link Page#waitForSelector Page.waitForSelector()} instead.
    *
    * @param selector A selector to query for.
+   * @since v1.8
    */
   default ElementHandle waitForSelector(String selector) {
     return waitForSelector(selector, null);
@@ -2521,6 +2635,7 @@ public interface ElementHandle extends JSHandle {
    * <p> <strong>NOTE:</strong> This method does not work across navigations, use {@link Page#waitForSelector Page.waitForSelector()} instead.
    *
    * @param selector A selector to query for.
+   * @since v1.8
    */
   ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
 }
