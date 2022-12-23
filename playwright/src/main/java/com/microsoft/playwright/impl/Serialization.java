@@ -32,9 +32,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -43,6 +47,8 @@ import static com.microsoft.playwright.impl.Utils.fromJsRegexFlags;
 
 class Serialization {
   private static final Gson gson = new GsonBuilder().disableHtmlEscaping()
+    .registerTypeAdapter(Date.class, new DateSerializer())
+    .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
     .registerTypeAdapter(SameSiteAttribute.class, new SameSiteAdapter().nullSafe())
     .registerTypeAdapter(BrowserChannel.class, new ToLowerCaseAndDashSerializer<BrowserChannel>())
     .registerTypeAdapter(ColorScheme.class, new ToLowerCaseAndDashSerializer<ColorScheme>())
@@ -468,5 +474,29 @@ class Serialization {
       return SameSiteAttribute.valueOf(value.toUpperCase());
     }
   }
+
+  private static DateFormat iso8601Format() {
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+    dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+    return dateFormat;
+  }
+  private static final DateFormat dateFormat = iso8601Format();
+
+  private static class DateSerializer implements JsonSerializer<Date> {
+    @Override
+    public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
+      return new JsonPrimitive(dateFormat.format(src));
+    }
+  }
+
+  private static class LocalDateTimeSerializer implements JsonSerializer<LocalDateTime> {
+    @Override
+    public JsonElement serialize(LocalDateTime src, Type typeOfSrc, JsonSerializationContext context) {
+      ZoneOffset offset = ZoneId.systemDefault().getRules().getOffset(src);
+      Instant instant = src.toInstant(offset);
+      return new JsonPrimitive(dateFormat.format(Date.from(instant)));
+    }
+  }
+
 }
 

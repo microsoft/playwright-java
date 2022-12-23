@@ -9,6 +9,9 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -477,6 +480,28 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals("POST", req.get().method);
     assertEquals(asList("bar"), req.get().headers.get("foo"));
     assertEquals("data", new String(req.get().postBody));
+  }
+
+  public static class TestData {
+    public String name;
+    public LocalDateTime localDateTime;
+    public Date date;
+    public LocalDateTime nullLocalDateTime;
+    public Date nullDate;
+  }
+
+  @Test
+  void shouldSerializeDateAndLocalDateTime() throws ExecutionException, InterruptedException, ParseException {
+    Request pageReq = page.waitForRequest("**/*", () -> page.navigate(server.EMPTY_PAGE));
+    Future<Server.Request> req = server.futureRequest("/empty.html");
+    TestData testData = new TestData();
+    testData.name = "foo";
+    long currentMillis = 1671776098818L;
+    testData.date = new Date(currentMillis);
+    testData.localDateTime = testData.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+    context.request().fetch(pageReq, RequestOptions.create().setMethod("POST").setData(testData));
+    assertEquals("{\"name\":\"foo\",\"localDateTime\":\"2022-12-23T06:14:58.818Z\",\"date\":\"2022-12-23T06:14:58.818Z\"}",
+      new String(req.get().postBody));
   }
 
   @Test
