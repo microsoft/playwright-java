@@ -143,6 +143,9 @@
               </configurationParameters>
             </properties>
             <failIfNoTests>false</failIfNoTests>
+            <!-- Activate the use of TCP to transmit events to the plugin and avoid
+            [WARNING] Corrupted STDOUT by directly writing to native stream in forked JVM -->
+            <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
           </configuration>
         </plugin>
         <plugin>
