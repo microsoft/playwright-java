@@ -31,4 +31,4 @@ jobs:
         run: tools/test-cli-version/test.sh
       - name: Test CLI Fatjar
         shell: bash
-        run: tools/test-cli-farjar/test.sh
+        run: tools/test-cli-fatjar/test.sh
