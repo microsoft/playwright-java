@@ -114,11 +114,14 @@ public class DriverJar extends Driver {
     }
   }
 
-  void extractDriverToTempDir() throws URISyntaxException, IOException {
+  URI getPlatformDriver() throws URISyntaxException {
     ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-    URI originalUri = classloader.getResource(
-      "driver/" + platformDir()).toURI();
-    URI uri = maybeExtractNestedJar(originalUri);
+    URI originalUri = classloader.getResource("driver/" + platformDir()).toURI();
+    return maybeExtractNestedJar(originalUri);
+  }
+
+  void extractDriverToTempDir() throws URISyntaxException, IOException {
+    URI uri = getPlatformDriver();
 
     // Create zip filesystem if loading from jar.
     try (FileSystem fileSystem = "jar".equals(uri.getScheme()) ? initFileSystem(uri) : null) {
@@ -148,7 +151,7 @@ public class DriverJar extends Driver {
           }
           toPath.toFile().deleteOnExit();
         } catch (IOException e) {
-          throw new RuntimeException("Failed to extract driver from " + uri + ", full uri: " + originalUri, e);
+          throw new RuntimeException("Failed to extract driver from " + uri, e);
         }
       });
     }

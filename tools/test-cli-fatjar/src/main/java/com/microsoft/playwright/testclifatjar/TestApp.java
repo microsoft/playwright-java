@@ -3,6 +3,8 @@ package com.microsoft.playwright.testclifatjar;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.impl.driver.Driver;
+import com.microsoft.playwright.impl.driver.jar.DriverJar;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,10 +15,8 @@ import java.util.Collections;
 
 public class TestApp {
   public static void main(String[] args) throws IOException, URISyntaxException {
-    String version = Playwright.class.getPackage().getImplementationVersion();
-    URI uri = new URI(
-      "jar:file:/home/user/.m2/repository/com/microsoft/playwright/driver-bundle/" + version + "/driver-bundle-" + version + ".jar!/driver/linux"
-    );
+    DriverJar driver = (DriverJar) Driver.ensureDriverInstalled(Collections.emptyMap(), false);
+    URI uri = driver.getPlatformDriver();
     FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap());
     if (fs == null) {
       throw new RuntimeException();

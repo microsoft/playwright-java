@@ -29,5 +29,10 @@
       <artifactId>playwright</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.microsoft.playwright</groupId>
+      <artifactId>driver-bundle</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 </project>
