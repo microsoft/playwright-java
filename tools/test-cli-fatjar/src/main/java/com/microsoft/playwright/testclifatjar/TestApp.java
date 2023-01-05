@@ -12,10 +12,15 @@ import java.nio.file.FileSystems;
 import java.util.Collections;
 
 public class TestApp {
-  public static void main(String[] args) throws IOException, InterruptedException, URISyntaxException {
-    URI uri = new URI("jar:file:/home/user/.m2/repository/com/microsoft/playwright/driver-bundle/1.28.0/driver-bundle-1.28.0.jar!/driver/linux");
+  public static void main(String[] args) throws IOException, URISyntaxException {
+    String version = Playwright.class.getPackage().getImplementationVersion();
+    URI uri = new URI(
+      "jar:file:/home/user/.m2/repository/com/microsoft/playwright/driver-bundle/" + version + "/driver-bundle-" + version + ".jar!/driver/linux"
+    );
     FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap());
-    assert (fs != null);
+    if (fs == null) {
+      throw new RuntimeException();
+    }
     try (Playwright playwright = Playwright.create()) {
       Browser browser = playwright.chromium().launch();
       Page page = browser.newPage();

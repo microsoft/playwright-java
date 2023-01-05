@@ -10,4 +10,4 @@ TMP_DIR=$(mktemp -d)
 echo "Created ${TMP_DIR}"
 
 echo "Running TestApp..."
-mvn compile exec:java -e -Dexec.mainClass=com.microsoft.playwright.testclifatjarversion.TestApp
+mvn compile exec:java -e -Dexec.mainClass=com.microsoft.playwright.testclifatjar.TestApp

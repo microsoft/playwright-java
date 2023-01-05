@@ -29,3 +29,6 @@ jobs:
       - name: Test CLI version
         shell: bash
         run: tools/test-cli-version/test.sh
+      - name: Test CLI Fatjar
+        shell: bash
+        run: tools/test-cli-farjar/test.sh
