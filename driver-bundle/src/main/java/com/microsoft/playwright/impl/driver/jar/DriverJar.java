@@ -106,7 +106,7 @@ public class DriverJar extends Driver {
     return name.endsWith(".sh") || name.endsWith(".exe") || !name.contains(".");
   }
 
-private FileSystem initFileSystem(URI uri) throws IOException {
+  private FileSystem initFileSystem(URI uri) throws IOException {
     try {
       return FileSystems.newFileSystem(uri, Collections.emptyMap());
     } catch (FileSystemAlreadyExistsException e) {
@@ -153,7 +153,7 @@ private FileSystem initFileSystem(URI uri) throws IOException {
       });
     }
   }
- 
+
   private URI maybeExtractNestedJar(final URI uri) throws URISyntaxException {
     if (!"jar".equals(uri.getScheme())) {
       return uri;
