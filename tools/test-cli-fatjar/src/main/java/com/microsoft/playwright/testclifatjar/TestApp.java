@@ -1,4 +1,4 @@
-package com.microsoft.playwright.testclifatjarversion;
+package com.microsoft.playwright.testclifatjar;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.Page;
