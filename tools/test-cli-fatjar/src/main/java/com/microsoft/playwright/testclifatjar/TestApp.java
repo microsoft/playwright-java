@@ -15,7 +15,7 @@ import java.util.Collections;
 
 public class TestApp {
   public static void main(String[] args) throws IOException, URISyntaxException {
-    DriverJar driver = (DriverJar) Driver.ensureDriverInstalled(Collections.emptyMap(), false);
+    DriverJar driver = (DriverJar) Driver.ensureDriverInstalled(Collections.emptyMap(), true);
     URI uri = driver.getDriverResourceURI();
     FileSystem fs = FileSystems.newFileSystem(uri, Collections.emptyMap());
     if (fs == null) {
