@@ -1,5 +1,7 @@
 FROM ubuntu:focal
 
+ARG DEBIAN_FRONTEND=noninteractive
+ARG TZ=America/Los_Angeles
 ARG DOCKER_IMAGE_NAME_TEMPLATE="mcr.microsoft.com/playwright/java:v%version%-focal"
 
 # === INSTALL JDK and Maven ===
@@ -22,7 +24,7 @@ RUN apt-get update && \
     # Create the pwuser
     adduser pwuser
 
-RUN VERSION=3.8.6 && \
+RUN VERSION=3.8.7 && \
     curl -o - https://dlcdn.apache.org/maven/maven-3/$VERSION/binaries/apache-maven-$VERSION-bin.tar.gz | tar zxfv - -C /opt/ && \
     ln -s /opt/apache-maven-$VERSION/bin/mvn /usr/local/bin/
 
