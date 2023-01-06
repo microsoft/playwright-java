@@ -114,7 +114,7 @@ public class DriverJar extends Driver {
     }
   }
 
-  public URI getDriverResourceURI() throws URISyntaxException {
+  public static URI getDriverResourceURI() throws URISyntaxException {
     ClassLoader classloader = Thread.currentThread().getContextClassLoader();
     return classloader.getResource("driver/" + platformDir()).toURI();
   }
