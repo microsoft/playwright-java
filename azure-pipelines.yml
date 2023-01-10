@@ -6,9 +6,17 @@ pool:
   vmImage: ubuntu-22.04
 
 steps:
-- script: echo "username = '$MAVEN_USERNAME'"
+- script: bash ./scripts/download_driver_for_all_platforms.sh
+
+- script: echo "username = '$MAVEN_USERNAME'" && echo
+
   displayName: 'Echo username'
   env:
     MAVEN_USERNAME: $(ADO_USERNAME)
     MAVEN_PASSWORD: $(ADO_PASSWORD)
 
+- script: mvn -B deploy -D skipTests --no-transfer-progress
+  displayName: 'Deploy'
+  env:
+    MAVEN_USERNAME: $(ADO_USERNAME)
+    MAVEN_PASSWORD: $(ADO_PASSWORD)
