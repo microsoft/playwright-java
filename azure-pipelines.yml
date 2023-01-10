@@ -6,40 +6,25 @@ pool:
   vmImage: ubuntu-22.04
 
 steps:
-- script: echo "username = $ADO_USERNAME "
-  displayName: 'Echo username'
-
-- bash: echo "USERNAME = $USERNAME "
-  displayName: 'Echo $USERNAME'
+- powershell: |
+    Write-Host "My first secret variable is $env:FOO_ONE"
+    $env:FOO_ONE -eq "foo"
   env:
-    USERNAME: $(ADO_USERNAME)
-
-- bash: echo "password = $ADO_PASSWORD"
-  displayName: 'Echo passwd '
+    FOO_ONE: $(mySecret)
+- bash: |
+    echo "My second secret variable: $FOO_TWO"
+    if [ "$FOO_TWO" = "bar" ]; then
+        echo "Strings are equal."
+    else
+        echo "Strings are not equal."
+    fi
   env:
-    ADO_USERNAME: $(ADO_USERNAME)
-    ADO_PASSWORD: $(ADO_PASSWORD)
-
-- bash: echo "PASSWORD = $PASSWORD"
-  displayName: 'Echo passwd '
-  env:
-    PASSWORD: $(ADO_PASSWORD)
-
-- bash: echo "PPP = $PPP"
-  displayName: 'Echo ppp '
-  env:
-    PPP: $(MY_SECRET)
-
-- bash: echo "PPP2 = $PPP"
-  displayName: 'Echo ppp2 '
-  env:
-    PPP: $MY_SECRET
+    FOO_TWO: $(mySecret)
 
 - bash: |
     echo "Using the mapped env var for this task works and is recommended: $MY_MAPPED_ENV_VAR"
   env:
-    MY_MAPPED_ENV_VAR: $(MY_SECRET) # the recommended way to map to an env variable
-
+    MY_MAPPED_ENV_VAR: $(mySecret) # the recommended way to map to an env variable
 
 - script: bash ./scripts/download_driver_for_all_platforms.sh
 
