@@ -6,10 +6,16 @@ pool:
   vmImage: ubuntu-22.04
 
 steps:
-- script: echo "username = $ADO_USERNAME " && echo $ADO_PASSWORD | cut -c 1-3
+- script: echo "username = $ADO_USERNAME "
   displayName: 'Echo username and pwd'
+
+- script: echo $ADO_PASSWORD | cut -c 1-3
+  displayName: 'Echo pwd'
 
 - script: bash ./scripts/download_driver_for_all_platforms.sh
 
 - script: mvn -B deploy -D skipTests --no-transfer-progress --settings maven-settings.xml
   displayName: 'Deploy'
+  env:
+    ADO_USERNAME: $($ADO_USERNAME)
+    $ADO_PASSWORD: $($ADO_PASSWORD)
