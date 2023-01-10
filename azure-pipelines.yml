@@ -9,7 +9,12 @@ steps:
 - script: echo "username = $ADO_USERNAME "
   displayName: 'Echo username'
 
-- script: echo "password = $ADO_PASSWORD"
+- bash: echo "USERNAME = $USERNAME "
+  displayName: 'Echo $USERNAME'
+  env:
+    USERNAME: $(ADO_USERNAME)
+
+- bash: echo "password = $ADO_PASSWORD"
   displayName: 'Echo passwd '
   env:
     ADO_USERNAME: $(ADO_USERNAME)
