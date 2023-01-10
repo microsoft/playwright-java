@@ -15,20 +15,26 @@ steps:
     ADO_USERNAME: $(ADO_USERNAME)
     ADO_PASSWORD: $(ADO_PASSWORD)
 
-- script: echo "PASSWORD = $PASSWORD"
+- bash: echo "PASSWORD = $PASSWORD"
   displayName: 'Echo passwd '
   env:
     PASSWORD: $(ADO_PASSWORD)
 
-- script: echo "PPP = $PPP"
+- bash: echo "PPP = $PPP"
   displayName: 'Echo ppp '
   env:
     PPP: $(MY_SECRET)
 
-- script: echo "PPP2 = $PPP"
+- bash: echo "PPP2 = $PPP"
   displayName: 'Echo ppp2 '
   env:
     PPP: $MY_SECRET
+
+- bash: |
+    echo "Using the mapped env var for this task works and is recommended: $MY_MAPPED_ENV_VAR"
+  env:
+    MY_MAPPED_ENV_VAR: $(MY_SECRET) # the recommended way to map to an env variable
+
 
 - script: bash ./scripts/download_driver_for_all_platforms.sh
 
