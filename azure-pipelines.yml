@@ -6,30 +6,17 @@ pool:
   vmImage: ubuntu-22.04
 
 steps:
-- powershell: |
-    Write-Host "My first secret variable is $env:FOO_ONE"
-    $env:FOO_ONE -eq "foo"
-  env:
-    FOO_ONE: $(mySecret)
 - bash: |
-    echo "My second secret variable: $FOO_TWO"
-    if [ "$FOO_TWO" = "foo" ]; then
-        echo "Strings are equal."
-    else
-        echo "Strings are not equal."
-    fi
+    echo "user: $ADO_USERNAME"
+    echo "pwd: $ADO_PASSWORD"
   env:
-    FOO_TWO: $(mySecret)
+    ADO_USERNAME: $(ADO_USERNAME)
+    ADO_PASSWORD: $(ADO_PASSWORD) # secret variable has to be mapped to an env variable
 
-- bash: |
-    echo "Using the mapped env var for this task works and is recommended: $MY_MAPPED_ENV_VAR"
-  env:
-    MY_MAPPED_ENV_VAR: $(mySecret) # the recommended way to map to an env variable
+- bash: ./scripts/download_driver_for_all_platforms.sh
 
-- script: bash ./scripts/download_driver_for_all_platforms.sh
-
-- script: mvn -B deploy -D skipTests --no-transfer-progress --settings maven-settings.xml
+- bash: mvn -B deploy -D skipTests --no-transfer-progress --settings maven-settings.xml
   displayName: 'Deploy'
   env:
     ADO_USERNAME: $(ADO_USERNAME)
-    ADO_PASSWORD: $(ADO_PASSWORD)
+    ADO_PASSWORD: $(ADO_PASSWORD) # secret variable has to be mapped to an env variable
