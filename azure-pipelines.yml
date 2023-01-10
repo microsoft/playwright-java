@@ -1,5 +1,6 @@
 trigger:
 - main
+- test-snapshot-feed
 
 pool:
   vmImage: ubuntu-22.04
@@ -9,3 +10,6 @@ steps:
 
 - script: mvn -B install -D skipTests --no-transfer-progress
   displayName: 'Build & Install'
+
+- script: mvn deploy
+  displayName: 'Deploy'
