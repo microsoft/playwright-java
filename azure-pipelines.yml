@@ -11,5 +11,8 @@ steps:
 - script: mvn -B install -D skipTests --no-transfer-progress
   displayName: 'Build & Install'
 
-- script: mvn deploy
+- script: mvn -B deploy -D skipTests --no-transfer-progress
   displayName: 'Deploy'
+  env:
+    MAVEN_USERNAME: $(ADO_USERNAME)
+    MAVEN_PASSWORD: $(ADO_PASSWORD)
