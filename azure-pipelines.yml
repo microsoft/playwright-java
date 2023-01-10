@@ -1,11 +1,22 @@
 trigger:
 - main
+- test-snapshot-feed
 
 pool:
   vmImage: ubuntu-22.04
 
 steps:
-- script: bash ./scripts/download_driver_for_all_platforms.sh
+- bash: |
+    echo "user: $ADO_USERNAME"
+    echo "pwd: $ADO_PASSWORD"
+  env:
+    ADO_USERNAME: $(ADO_USERNAME)
+    ADO_PASSWORD: $(ADO_PASSWORD) # secret variable has to be mapped to an env variable
 
-- script: mvn -B install -D skipTests --no-transfer-progress
-  displayName: 'Build & Install'
+- bash: ./scripts/download_driver_for_all_platforms.sh
+
+- bash: mvn -B deploy -D skipTests --no-transfer-progress --settings maven-settings.xml
+  displayName: 'Deploy'
+  env:
+    ADO_USERNAME: $(ADO_USERNAME)
+    ADO_PASSWORD: $(ADO_PASSWORD) # secret variable has to be mapped to an env variable
