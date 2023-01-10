@@ -11,14 +11,25 @@ steps:
 
 - script: echo "password = $ADO_PASSWORD"
   displayName: 'Echo passwd '
+  env:
+    ADO_USERNAME: $(ADO_USERNAME)
+    ADO_PASSWORD: $(ADO_PASSWORD)
+
+- script: echo "PASSWORD = $PASSWORD"
+  displayName: 'Echo passwd '
+  env:
+    PASSWORD: $(ADO_PASSWORD)
 
 - script: echo $ADO_PASSWORD | cut -c 1-3
   displayName: 'pwd prefix'
+  env:
+    ADO_USERNAME: $(ADO_USERNAME)
+    ADO_PASSWORD: $(ADO_PASSWORD)
 
 - script: bash ./scripts/download_driver_for_all_platforms.sh
 
 - script: mvn -B deploy -D skipTests --no-transfer-progress --settings maven-settings.xml
   displayName: 'Deploy'
   env:
-    ADO_USERNAME: $($ADO_USERNAME)
-    ADO_PASSWORD: $($ADO_PASSWORD)
+    ADO_USERNAME: $(ADO_USERNAME)
+    ADO_PASSWORD: $(ADO_PASSWORD)
