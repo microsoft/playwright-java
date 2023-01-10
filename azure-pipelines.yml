@@ -20,11 +20,15 @@ steps:
   env:
     PASSWORD: $(ADO_PASSWORD)
 
-- script: echo $ADO_PASSWORD | cut -c 1-3
-  displayName: 'pwd prefix'
+- script: echo "PPP = $PPP"
+  displayName: 'Echo ppp '
   env:
-    ADO_USERNAME: $(ADO_USERNAME)
-    ADO_PASSWORD: $(ADO_PASSWORD)
+    PPP: $(MY_SECRET)
+
+- script: echo "PPP2 = $PPP"
+  displayName: 'Echo ppp2 '
+  env:
+    PPP: $MY_SECRET
 
 - script: bash ./scripts/download_driver_for_all_platforms.sh
 
