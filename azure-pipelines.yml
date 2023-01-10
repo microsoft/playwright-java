@@ -18,4 +18,4 @@ steps:
   displayName: 'Deploy'
   env:
     ADO_USERNAME: $($ADO_USERNAME)
-    $ADO_PASSWORD: $($ADO_PASSWORD)
+    ADO_PASSWORD: $($ADO_PASSWORD)
