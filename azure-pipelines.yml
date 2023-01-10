@@ -10,7 +10,7 @@ steps:
   displayName: 'Echo username'
 
 - script: echo "password = $ADO_PASSWORD"
-  displayName: 'Echo pwd'
+  displayName: 'Echo passwd'
 
 - script: echo $ADO_PASSWORD | cut -c 1-3
   displayName: 'pwd prefix'
