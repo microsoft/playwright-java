@@ -8,8 +8,7 @@ pool:
 steps:
 - script: bash ./scripts/download_driver_for_all_platforms.sh
 
-- script: echo "username = '$MAVEN_USERNAME'" && echo
-
+- script: echo "username = '$MAVEN_USERNAME'"
   displayName: 'Echo username'
   env:
     MAVEN_USERNAME: $(ADO_USERNAME)
