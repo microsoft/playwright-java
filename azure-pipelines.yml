@@ -8,9 +8,6 @@ pool:
 steps:
 - script: bash ./scripts/download_driver_for_all_platforms.sh
 
-- script: mvn -B install -D skipTests --no-transfer-progress
-  displayName: 'Build & Install'
-
 - script: mvn -B deploy -D skipTests --no-transfer-progress
   displayName: 'Deploy'
   env:
