@@ -6,8 +6,8 @@ pool:
   vmImage: ubuntu-22.04
 
 steps:
-- script: echo "username = $(ADO_USERNAME)"
-  displayName: 'Echo username'
+- script: echo "username = $ADO_USERNAME " && echo $ADO_PASSWORD | cut -c 1-3
+  displayName: 'Echo username and pwd'
 
 - script: bash ./scripts/download_driver_for_all_platforms.sh
 
