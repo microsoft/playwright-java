@@ -1,0 +1,5 @@
+<server>
+  <id>playwright-java-snapshots-010923</id>
+  <username>${env.ADO_USERNAME}</username>
+  <password>${env.ADO_PASSWORD}</password>
+</server>

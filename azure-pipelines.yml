@@ -15,7 +15,7 @@ steps:
     MAVEN_USERNAME: $(ADO_USERNAME)
     MAVEN_PASSWORD: $(ADO_PASSWORD)
 
-- script: mvn -B deploy -D skipTests --no-transfer-progress
+- script: mvn -B deploy -D skipTests --no-transfer-progress --settings maven-settings.xml
   displayName: 'Deploy'
   env:
     MAVEN_USERNAME: $(ADO_USERNAME)
