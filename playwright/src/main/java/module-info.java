@@ -8,6 +8,7 @@ module playwright {
   exports com.microsoft.playwright.assertions;
   exports com.microsoft.playwright.impl;
   exports com.microsoft.playwright.options;
+  exports com.microsoft.playwright;
 
   opens com.microsoft.playwright;
   opens com.microsoft.playwright.impl;
