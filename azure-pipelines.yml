@@ -14,11 +14,15 @@ steps:
     ADO_PASSWORD: $(ADO_PASSWORD) # secret variable has to be mapped to an env variable
 
 - bash: |
+    echo "list keys:"
     gpg --list-keys
-    cat $GPG_PRIVATE_KEY | base64 -D | gpg --import
+    echo "importing key:"
+    cat $GPG_PRIVATE_KEY | base64 -d | gpg --import
+    echo "list keys after import:"
     gpg --list-keys
   env:
    GPG_PRIVATE_KEY: $(GPG_PRIVATE_KEY) # secret variable has to be mapped to an env variable
+  displayName: "Import gpg key"
 
 - bash: ./scripts/download_driver_for_all_platforms.sh
 
