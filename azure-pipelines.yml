@@ -13,10 +13,18 @@ steps:
     ADO_USERNAME: $(ADO_USERNAME)
     ADO_PASSWORD: $(ADO_PASSWORD) # secret variable has to be mapped to an env variable
 
+- bash: |
+    gpg --list-keys
+    cat $GPG_PRIVATE_KEY | base64 -D | gpg --import
+    gpg --list-keys
+  env:
+   GPG_PRIVATE_KEY: $(GPG_PRIVATE_KEY) # secret variable has to be mapped to an env variable
+
 - bash: ./scripts/download_driver_for_all_platforms.sh
 
-- bash: mvn -B verify gpg:sign deploy -D skipTests --no-transfer-progress --settings maven-settings.xml
+- bash: mvn -B verify gpg:sign deploy -D skipTests --no-transfer-progress --settings maven-settings.xml -D gpg.passphrase=$GPG_PASSPHRASE
   displayName: 'Deploy'
   env:
     ADO_USERNAME: $(ADO_USERNAME)
     ADO_PASSWORD: $(ADO_PASSWORD) # secret variable has to be mapped to an env variable
+    GPG_PASSPHRASE: $(GPG_PASSPHRASE) # secret variable has to be mapped to an env variable
