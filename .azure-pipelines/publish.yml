@@ -1,0 +1,55 @@
+trigger:
+  none
+
+pool:
+  vmImage: ubuntu-22.04
+
+steps:
+- bash: |
+    echo "Can only publish from a release branch. Unexpected branch name: $CURRENT_BRANCH"
+    exit 1
+  env:
+    CURRENT_BRANCH: ${{ variables['Build.SourceBranchName'] }}
+  condition: ${{ not(startsWith(variables['Build.SourceBranchName'], 'release-')) }}
+  displayName: "Check the branch is a release branch"
+
+- bash: |
+    echo "importing GPG key:"
+    # Pipeline variables do not preserve line ends so we use base64 instead of --armored as a workaround.
+    echo $GPG_PRIVATE_KEY_BASE64 | base64 -d | gpg --batch --import
+    echo "list keys after import:"
+    gpg --list-keys
+  env:
+   GPG_PRIVATE_KEY_BASE64: $(GPG_PRIVATE_KEY_BASE64) # secret variable has to be mapped to an env variable
+  displayName: "Import gpg key"
+
+- bash: ./scripts/download_driver_for_all_platforms.sh
+  displayName: 'Download driver'
+
+- bash: mvn -B deploy -D skipTests --no-transfer-progress --activate-profiles release -D gpg.passphrase=$GPG_PASSPHRASE -DaltDeploymentRepository=snapshot-repo::default::file:$(pwd)/local-build
+  displayName: 'Build and deploy to a local directory'
+  env:
+    GPG_PASSPHRASE: $(GPG_PASSPHRASE) # secret variable has to be mapped to an env variable
+
+- bash: |
+    for file in $(find snapshots -type f); do
+      echo "processing: $file"
+      if [[ $file =~ \.(md5|sha1|sha256)$ ]]; then
+        continue
+      fi
+      sha256sum "$file" | cut -f1 -d \ > "$file.sha256"
+    done
+  displayName: 'Create .sha256 files'
+
+- task: EsrpRelease@2
+  inputs:
+    ConnectedServiceName: 'Playwright-Java-ESRP'
+    Intent: 'PackageDistribution'
+    ContentType: 'Maven'
+    PackageLocation: './local-build'
+    Owners: 'yurys@microsoft.com'
+    Approvers: 'maxschmitt@microsoft.com'
+    ServiceEndpointUrl: 'https://api.esrp.microsoft.com'
+    MainPublisher: 'PlaywrightJava'
+    DomainTenantId: '72f988bf-86f1-41af-91ab-2d7cd011db47'
+  displayName: 'ESRP Release to Maven'
