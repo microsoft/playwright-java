@@ -6,11 +6,13 @@ pool:
 
 steps:
 - bash: |
-    echo "Can only publish from a release branch. Unexpected branch name: $CURRENT_BRANCH"
-    exit 1
+    if [[ ! "$CURRENT_BRANCH" =~ ^release-.* ]]; then
+      echo "Can only publish from a release branch."
+      echo "Unexpected branch name: $CURRENT_BRANCH"
+      exit 1
+    fi
   env:
     CURRENT_BRANCH: ${{ variables['Build.SourceBranchName'] }}
-  condition: ${{ not(startsWith(variables['Build.SourceBranchName'], 'release-')) }}
   displayName: "Check the branch is a release branch"
 
 - bash: |
