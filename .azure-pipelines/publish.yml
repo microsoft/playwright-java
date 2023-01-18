@@ -1,5 +1,4 @@
-trigger:
-  none
+trigger: none
 
 pool:
   vmImage: ubuntu-22.04
