@@ -547,8 +547,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
   }
 
-  void pause() {
-    sendMessage("pause");
+  WaitableResult<JsonElement> pause() {
+    return sendMessageAsync("pause", new JsonObject());
   }
 
   @Override
