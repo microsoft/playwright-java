@@ -4550,7 +4550,14 @@ public interface Page extends AutoCloseable {
    */
   String getAttribute(String selector, String name, GetAttributeOptions options);
   /**
-   * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
+   * Allows locating elements by their alt text.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, this method will find the image by alt text "Playwright logo":
+   * <pre>{@code
+   * page.getByAltText("Playwright logo").click();
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -4559,14 +4566,28 @@ public interface Page extends AutoCloseable {
     return getByAltText(text, null);
   }
   /**
-   * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
+   * Allows locating elements by their alt text.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, this method will find the image by alt text "Playwright logo":
+   * <pre>{@code
+   * page.getByAltText("Playwright logo").click();
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
    */
   Locator getByAltText(String text, GetByAltTextOptions options);
   /**
-   * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
+   * Allows locating elements by their alt text.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, this method will find the image by alt text "Playwright logo":
+   * <pre>{@code
+   * page.getByAltText("Playwright logo").click();
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -4575,15 +4596,28 @@ public interface Page extends AutoCloseable {
     return getByAltText(text, null);
   }
   /**
-   * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
+   * Allows locating elements by their alt text.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, this method will find the image by alt text "Playwright logo":
+   * <pre>{@code
+   * page.getByAltText("Playwright logo").click();
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
    */
   Locator getByAltText(Pattern text, GetByAltTextOptions options);
   /**
-   * Allows locating input elements by the text of the associated label. For example, this method will find the input by
-   * label text "Password" in the following DOM:
+   * Allows locating input elements by the text of the associated label.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <pre>{@code
+   * page.getByLabel("Password").fill("secret");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -4592,16 +4626,28 @@ public interface Page extends AutoCloseable {
     return getByLabel(text, null);
   }
   /**
-   * Allows locating input elements by the text of the associated label. For example, this method will find the input by
-   * label text "Password" in the following DOM:
+   * Allows locating input elements by the text of the associated label.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <pre>{@code
+   * page.getByLabel("Password").fill("secret");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
    */
   Locator getByLabel(String text, GetByLabelOptions options);
   /**
-   * Allows locating input elements by the text of the associated label. For example, this method will find the input by
-   * label text "Password" in the following DOM:
+   * Allows locating input elements by the text of the associated label.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <pre>{@code
+   * page.getByLabel("Password").fill("secret");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -4610,16 +4656,30 @@ public interface Page extends AutoCloseable {
     return getByLabel(text, null);
   }
   /**
-   * Allows locating input elements by the text of the associated label. For example, this method will find the input by
-   * label text "Password" in the following DOM:
+   * Allows locating input elements by the text of the associated label.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <pre>{@code
+   * page.getByLabel("Password").fill("secret");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
    */
   Locator getByLabel(Pattern text, GetByLabelOptions options);
   /**
-   * Allows locating input elements by the placeholder text. For example, this method will find the input by placeholder
-   * "Country":
+   * Allows locating input elements by the placeholder text.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, consider the following DOM structure.
+   *
+   * <p> You can fill the input after locating it by the placeholder text:
+   * <pre>{@code
+   * page.getByPlaceholder("name@example.com").fill("playwright@microsoft.com");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -4628,16 +4688,32 @@ public interface Page extends AutoCloseable {
     return getByPlaceholder(text, null);
   }
   /**
-   * Allows locating input elements by the placeholder text. For example, this method will find the input by placeholder
-   * "Country":
+   * Allows locating input elements by the placeholder text.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, consider the following DOM structure.
+   *
+   * <p> You can fill the input after locating it by the placeholder text:
+   * <pre>{@code
+   * page.getByPlaceholder("name@example.com").fill("playwright@microsoft.com");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
    */
   Locator getByPlaceholder(String text, GetByPlaceholderOptions options);
   /**
-   * Allows locating input elements by the placeholder text. For example, this method will find the input by placeholder
-   * "Country":
+   * Allows locating input elements by the placeholder text.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, consider the following DOM structure.
+   *
+   * <p> You can fill the input after locating it by the placeholder text:
+   * <pre>{@code
+   * page.getByPlaceholder("name@example.com").fill("playwright@microsoft.com");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -4646,8 +4722,16 @@ public interface Page extends AutoCloseable {
     return getByPlaceholder(text, null);
   }
   /**
-   * Allows locating input elements by the placeholder text. For example, this method will find the input by placeholder
-   * "Country":
+   * Allows locating input elements by the placeholder text.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, consider the following DOM structure.
+   *
+   * <p> You can fill the input after locating it by the placeholder text:
+   * <pre>{@code
+   * page.getByPlaceholder("name@example.com").fill("playwright@microsoft.com");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -4656,14 +4740,39 @@ public interface Page extends AutoCloseable {
   /**
    * Allows locating elements by their <a href="https://www.w3.org/TR/wai-aria-1.2/#roles">ARIA role</a>, <a
    * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a
-   * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>. Note that role selector **does not
-   * replace** accessibility audits and conformance tests, but rather gives early feedback about the ARIA guidelines.
+   * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
    *
-   * <p> Note that many html elements have an implicitly <a
-   * href="https://w3c.github.io/html-aam/#html-element-role-mappings">defined role</a> that is recognized by the role
-   * selector. You can find all the <a href="https://www.w3.org/TR/wai-aria-1.2/#role_definitions">supported roles here</a>.
-   * ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code
-   * aria-*} attributes to default values.
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure.
+   *
+   * <p> You can locate each element by it's implicit role:
+   * <pre>{@code
+   * assertThat(page
+   *     .getByRole(AriaRole.HEADING,
+   *                new Page.GetByRoleOptions().setName("Sign up")))
+   *     .isVisible();
+   *
+   * page.getByRole(AriaRole.CHECKBOX,
+   *                new Page.GetByRoleOptions().setName("Subscribe"))
+   *     .check();
+   *
+   * page.getByRole(AriaRole.BUTTON,
+   *                new Page.GetByRoleOptions().setName(
+   *                    Pattern.compile("submit", Pattern.CASE_INSENSITIVE)))
+   *     .click();
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Role selector **does not replace** accessibility audits and conformance tests, but rather gives early feedback about the
+   * ARIA guidelines.
+   *
+   * <p> Many html elements have an implicitly <a href="https://w3c.github.io/html-aam/#html-element-role-mappings">defined
+   * role</a> that is recognized by the role selector. You can find all the <a
+   * href="https://www.w3.org/TR/wai-aria-1.2/#role_definitions">supported roles here</a>. ARIA guidelines **do not
+   * recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code aria-*} attributes to
+   * default values.
    *
    * @param role Required aria role.
    * @since v1.27
@@ -4674,37 +4783,95 @@ public interface Page extends AutoCloseable {
   /**
    * Allows locating elements by their <a href="https://www.w3.org/TR/wai-aria-1.2/#roles">ARIA role</a>, <a
    * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a
-   * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>. Note that role selector **does not
-   * replace** accessibility audits and conformance tests, but rather gives early feedback about the ARIA guidelines.
+   * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
    *
-   * <p> Note that many html elements have an implicitly <a
-   * href="https://w3c.github.io/html-aam/#html-element-role-mappings">defined role</a> that is recognized by the role
-   * selector. You can find all the <a href="https://www.w3.org/TR/wai-aria-1.2/#role_definitions">supported roles here</a>.
-   * ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code
-   * aria-*} attributes to default values.
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure.
+   *
+   * <p> You can locate each element by it's implicit role:
+   * <pre>{@code
+   * assertThat(page
+   *     .getByRole(AriaRole.HEADING,
+   *                new Page.GetByRoleOptions().setName("Sign up")))
+   *     .isVisible();
+   *
+   * page.getByRole(AriaRole.CHECKBOX,
+   *                new Page.GetByRoleOptions().setName("Subscribe"))
+   *     .check();
+   *
+   * page.getByRole(AriaRole.BUTTON,
+   *                new Page.GetByRoleOptions().setName(
+   *                    Pattern.compile("submit", Pattern.CASE_INSENSITIVE)))
+   *     .click();
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Role selector **does not replace** accessibility audits and conformance tests, but rather gives early feedback about the
+   * ARIA guidelines.
+   *
+   * <p> Many html elements have an implicitly <a href="https://w3c.github.io/html-aam/#html-element-role-mappings">defined
+   * role</a> that is recognized by the role selector. You can find all the <a
+   * href="https://www.w3.org/TR/wai-aria-1.2/#role_definitions">supported roles here</a>. ARIA guidelines **do not
+   * recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code aria-*} attributes to
+   * default values.
    *
    * @param role Required aria role.
    * @since v1.27
    */
   Locator getByRole(AriaRole role, GetByRoleOptions options);
   /**
-   * Locate element by the test id. By default, the {@code data-testid} attribute is used as a test id. Use {@link
-   * Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
+   * Locate element by the test id.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure.
+   *
+   * <p> You can locate the element by it's test id:
+   * <pre>{@code
+   * page.getByTestId("directions").click();
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> By default, the {@code data-testid} attribute is used as a test id. Use {@link Selectors#setTestIdAttribute
+   * Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
    *
    * @param testId Id to locate the element by.
    * @since v1.27
    */
   Locator getByTestId(String testId);
   /**
-   * Locate element by the test id. By default, the {@code data-testid} attribute is used as a test id. Use {@link
-   * Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
+   * Locate element by the test id.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure.
+   *
+   * <p> You can locate the element by it's test id:
+   * <pre>{@code
+   * page.getByTestId("directions").click();
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> By default, the {@code data-testid} attribute is used as a test id. Use {@link Selectors#setTestIdAttribute
+   * Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
    *
    * @param testId Id to locate the element by.
    * @since v1.27
    */
   Locator getByTestId(Pattern testId);
   /**
-   * Allows locating elements that contain given text. Consider the following DOM structure:
+   * Allows locating elements that contain given text.
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure:
    *
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
@@ -4724,13 +4891,12 @@ public interface Page extends AutoCloseable {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> **Details**
    *
-   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
    *
-   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
+   * <p> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
@@ -4740,7 +4906,14 @@ public interface Page extends AutoCloseable {
     return getByText(text, null);
   }
   /**
-   * Allows locating elements that contain given text. Consider the following DOM structure:
+   * Allows locating elements that contain given text.
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure:
    *
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
@@ -4760,13 +4933,12 @@ public interface Page extends AutoCloseable {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> **Details**
    *
-   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
    *
-   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
+   * <p> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
@@ -4774,7 +4946,14 @@ public interface Page extends AutoCloseable {
    */
   Locator getByText(String text, GetByTextOptions options);
   /**
-   * Allows locating elements that contain given text. Consider the following DOM structure:
+   * Allows locating elements that contain given text.
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure:
    *
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
@@ -4794,13 +4973,12 @@ public interface Page extends AutoCloseable {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> **Details**
    *
-   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
    *
-   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
+   * <p> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
@@ -4810,7 +4988,14 @@ public interface Page extends AutoCloseable {
     return getByText(text, null);
   }
   /**
-   * Allows locating elements that contain given text. Consider the following DOM structure:
+   * Allows locating elements that contain given text.
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure:
    *
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
@@ -4830,13 +5015,12 @@ public interface Page extends AutoCloseable {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> **Details**
    *
-   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
    *
-   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
+   * <p> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
@@ -4844,7 +5028,16 @@ public interface Page extends AutoCloseable {
    */
   Locator getByText(Pattern text, GetByTextOptions options);
   /**
-   * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
+   * Allows locating elements by their title attribute.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure.
+   *
+   * <p> You can check the issues count after locating it by the title text:
+   * <pre>{@code
+   * assertThat(page.getByTitle("Issues count")).hasText("25 issues");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -4853,14 +5046,32 @@ public interface Page extends AutoCloseable {
     return getByTitle(text, null);
   }
   /**
-   * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
+   * Allows locating elements by their title attribute.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure.
+   *
+   * <p> You can check the issues count after locating it by the title text:
+   * <pre>{@code
+   * assertThat(page.getByTitle("Issues count")).hasText("25 issues");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
    */
   Locator getByTitle(String text, GetByTitleOptions options);
   /**
-   * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
+   * Allows locating elements by their title attribute.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure.
+   *
+   * <p> You can check the issues count after locating it by the title text:
+   * <pre>{@code
+   * assertThat(page.getByTitle("Issues count")).hasText("25 issues");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -4869,7 +5080,16 @@ public interface Page extends AutoCloseable {
     return getByTitle(text, null);
   }
   /**
-   * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
+   * Allows locating elements by their title attribute.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure.
+   *
+   * <p> You can check the issues count after locating it by the title text:
+   * <pre>{@code
+   * assertThat(page.getByTitle("Issues count")).hasText("25 issues");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -6998,25 +7218,7 @@ public interface Page extends AutoCloseable {
    */
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
   /**
-   * Waits for the main frame navigation and returns the main resource response. In case of multiple redirects, the
-   * navigation will resolve with the response of the last redirect. In case of navigation to a different anchor or
-   * navigation due to History API usage, the navigation will resolve with {@code null}.
-   *
-   * <p> **Usage**
-   *
-   * <p> This resolves when the page navigates to a new URL or reloads. It is useful for when you run code which will indirectly
-   * cause the page to navigate. e.g. The click target has an {@code onclick} handler that triggers navigation from a {@code
-   * setTimeout}. Consider this example:
-   * <pre>{@code
-   * // The method returns after navigation has finished
-   * Response response = page.waitForNavigation(() -> {
-   *   // This action triggers the navigation after a timeout.
-   *   page.getByText("Navigate after timeout").click();
-   * });
-   * }</pre>
-   *
-   * <p> <strong>NOTE:</strong> Usage of the <a href="https://developer.mozilla.org/en-US/docs/Web/API/History_API">History API</a> to change the URL is
-   * considered a navigation.
+   * @deprecated This method is inherently racy, please use {@link Page#waitForURL Page.waitForURL()} instead.
    *
    * @param callback Callback that performs the action triggering the event.
    * @since v1.8
@@ -7025,25 +7227,7 @@ public interface Page extends AutoCloseable {
     return waitForNavigation(null, callback);
   }
   /**
-   * Waits for the main frame navigation and returns the main resource response. In case of multiple redirects, the
-   * navigation will resolve with the response of the last redirect. In case of navigation to a different anchor or
-   * navigation due to History API usage, the navigation will resolve with {@code null}.
-   *
-   * <p> **Usage**
-   *
-   * <p> This resolves when the page navigates to a new URL or reloads. It is useful for when you run code which will indirectly
-   * cause the page to navigate. e.g. The click target has an {@code onclick} handler that triggers navigation from a {@code
-   * setTimeout}. Consider this example:
-   * <pre>{@code
-   * // The method returns after navigation has finished
-   * Response response = page.waitForNavigation(() -> {
-   *   // This action triggers the navigation after a timeout.
-   *   page.getByText("Navigate after timeout").click();
-   * });
-   * }</pre>
-   *
-   * <p> <strong>NOTE:</strong> Usage of the <a href="https://developer.mozilla.org/en-US/docs/Web/API/History_API">History API</a> to change the URL is
-   * considered a navigation.
+   * @deprecated This method is inherently racy, please use {@link Page#waitForURL Page.waitForURL()} instead.
    *
    * @param callback Callback that performs the action triggering the event.
    * @since v1.8
