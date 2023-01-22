@@ -194,7 +194,6 @@ public class TestLocatorAssertions extends TestBase {
     });
     assertEquals("[]", e.getExpected().getStringRepresentation());
     assertEquals("[]", e.getActual().getStringRepresentation());
-    System.out.println(e.getMessage());
     assertTrue(e.getMessage().contains("Locator expected not to have text"), e.getMessage());
   }
 
