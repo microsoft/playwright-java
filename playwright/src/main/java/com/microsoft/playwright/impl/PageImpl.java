@@ -17,6 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
@@ -949,7 +950,7 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void pause() {
     withLogging("BrowserContext.pause", () -> {
-      context().pause();
+      new WaitableRace<>(asList(context().pause(), (Waitable<JsonElement>) waitableClosedOrCrashed)).get();
     });
   }
 

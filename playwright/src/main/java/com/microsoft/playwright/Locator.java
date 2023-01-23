@@ -1952,11 +1952,21 @@ public interface Locator {
   /**
    * Returns an array of {@code node.innerText} values for all matching nodes.
    *
+   * <p> **Usage**
+   * <pre>{@code
+   * String[] texts = page.getByRole(AriaRole.LINK).allInnerTexts();
+   * }</pre>
+   *
    * @since v1.14
    */
   List<String> allInnerTexts();
   /**
    * Returns an array of {@code node.textContent} values for all matching nodes.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * String[] texts = page.getByRole(AriaRole.LINK).allTextContents();
+   * }</pre>
    *
    * @since v1.14
    */
@@ -1976,8 +1986,10 @@ public interface Locator {
    */
   void blur(BlurOptions options);
   /**
-   * This method returns the bounding box of the element, or {@code null} if the element is not visible. The bounding box is
-   * calculated relative to the main frame viewport - which is usually the same as the browser window.
+   * This method returns the bounding box of the element matching the locator, or {@code null} if the element is not visible.
+   * The bounding box is calculated relative to the main frame viewport - which is usually the same as the browser window.
+   *
+   * <p> **Details**
    *
    * <p> Scrolling affects the returned bounding box, similarly to <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">Element.getBoundingClientRect</a>.
@@ -1991,7 +2003,7 @@ public interface Locator {
    *
    * <p> **Usage**
    * <pre>{@code
-   * BoundingBox box = element.boundingBox();
+   * BoundingBox box = page.getByRole(AriaRole.BUTTON).boundingBox();
    * page.mouse().click(box.x + box.width / 2, box.y + box.height / 2);
    * }</pre>
    *
@@ -2001,8 +2013,10 @@ public interface Locator {
     return boundingBox(null);
   }
   /**
-   * This method returns the bounding box of the element, or {@code null} if the element is not visible. The bounding box is
-   * calculated relative to the main frame viewport - which is usually the same as the browser window.
+   * This method returns the bounding box of the element matching the locator, or {@code null} if the element is not visible.
+   * The bounding box is calculated relative to the main frame viewport - which is usually the same as the browser window.
+   *
+   * <p> **Details**
    *
    * <p> Scrolling affects the returned bounding box, similarly to <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">Element.getBoundingClientRect</a>.
@@ -2016,7 +2030,7 @@ public interface Locator {
    *
    * <p> **Usage**
    * <pre>{@code
-   * BoundingBox box = element.boundingBox();
+   * BoundingBox box = page.getByRole(AriaRole.BUTTON).boundingBox();
    * page.mouse().click(box.x + box.width / 2, box.y + box.height / 2);
    * }</pre>
    *
@@ -2024,7 +2038,11 @@ public interface Locator {
    */
   BoundingBox boundingBox(BoundingBoxOptions options);
   /**
-   * This method checks the element by performing the following steps:
+   * Ensure that checkbox or radio element is checked.
+   *
+   * <p> **Details**
+   *
+   * <p> Performs the following steps:
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already checked, this
    * method returns immediately.</li>
@@ -2040,6 +2058,11 @@ public interface Locator {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.getByRole(AriaRole.CHECKBOX).check();
+   * }</pre>
    *
    * @since v1.14
    */
@@ -2047,7 +2070,11 @@ public interface Locator {
     check(null);
   }
   /**
-   * This method checks the element by performing the following steps:
+   * Ensure that checkbox or radio element is checked.
+   *
+   * <p> **Details**
+   *
+   * <p> Performs the following steps:
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already checked, this
    * method returns immediately.</li>
@@ -2064,17 +2091,31 @@ public interface Locator {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
    *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.getByRole(AriaRole.CHECKBOX).check();
+   * }</pre>
+   *
    * @since v1.14
    */
   void check(CheckOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
+   * Clear the input field.
+   *
+   * <p> **Details**
+   *
+   * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
    * element, clears it and triggers an {@code input} event after clearing.
    *
    * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method
    * throws an error. However, if the element is inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be
    * cleared instead.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.getByRole(AriaRole.TEXTBOX).clear();
+   * }</pre>
    *
    * @since v1.28
    */
@@ -2082,13 +2123,22 @@ public interface Locator {
     clear(null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
+   * Clear the input field.
+   *
+   * <p> **Details**
+   *
+   * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
    * element, clears it and triggers an {@code input} event after clearing.
    *
    * <p> If the target element is not an {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element, this method
    * throws an error. However, if the element is inside the {@code <label>} element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be
    * cleared instead.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.getByRole(AriaRole.TEXTBOX).clear();
+   * }</pre>
    *
    * @since v1.28
    */
@@ -2111,6 +2161,21 @@ public interface Locator {
    *
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
+   *
+   * <p> **Usage**
+   *
+   * <p> Click a button:
+   * <pre>{@code
+   * page.getByRole(AriaRole.BUTTON).click();
+   * }</pre>
+   *
+   * <p> Shift-right-click at a specific position on a canvas:
+   * <pre>{@code
+   * page.locator("canvas").click(new Locator.ClickOptions()
+   *   .setButton(MouseButton.RIGHT)
+   *   .setModifiers(Arrays.asList(KeyboardModifier.SHIFT))
+   *   .setPosition(23, 32));
+   * }</pre>
    *
    * @since v1.14
    */
@@ -2136,17 +2201,41 @@ public interface Locator {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
    *
+   * <p> **Usage**
+   *
+   * <p> Click a button:
+   * <pre>{@code
+   * page.getByRole(AriaRole.BUTTON).click();
+   * }</pre>
+   *
+   * <p> Shift-right-click at a specific position on a canvas:
+   * <pre>{@code
+   * page.locator("canvas").click(new Locator.ClickOptions()
+   *   .setButton(MouseButton.RIGHT)
+   *   .setModifiers(Arrays.asList(KeyboardModifier.SHIFT))
+   *   .setPosition(23, 32));
+   * }</pre>
+   *
    * @since v1.14
    */
   void click(ClickOptions options);
   /**
-   * Returns the number of elements matching given selector.
+   * Returns the number of elements matching the locator.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * int count = page.getByRole(AriaRole.LISTITEM).count();
+   * }</pre>
    *
    * @since v1.14
    */
   int count();
   /**
-   * This method double clicks the element by performing the following steps:
+   * Double-click an element.
+   *
+   * <p> **Details**
+   *
+   * <p> This method double clicks the element by performing the following steps:
    * <ol>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
@@ -2169,7 +2258,11 @@ public interface Locator {
     dblclick(null);
   }
   /**
-   * This method double clicks the element by performing the following steps:
+   * Double-click an element.
+   *
+   * <p> **Details**
+   *
+   * <p> This method double clicks the element by performing the following steps:
    * <ol>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
@@ -2190,14 +2283,18 @@ public interface Locator {
    */
   void dblclick(DblclickOptions options);
   /**
-   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
-   * {@code click} is dispatched. This is equivalent to calling <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
+   * Programmaticaly dispatch an event on the matching element.
    *
    * <p> **Usage**
    * <pre>{@code
-   * element.dispatchEvent("click");
+   * locator.dispatchEvent("click");
    * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> The snippet above dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
+   * {@code click} is dispatched. This is equivalent to calling <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    *
    * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code
    * eventInit} properties and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by
@@ -2220,7 +2317,7 @@ public interface Locator {
    * JSHandle dataTransfer = page.evaluateHandle("() => new DataTransfer()");
    * Map<String, Object> arg = new HashMap<>();
    * arg.put("dataTransfer", dataTransfer);
-   * element.dispatchEvent("dragstart", arg);
+   * locator.dispatchEvent("dragstart", arg);
    * }</pre>
    *
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
@@ -2231,14 +2328,18 @@ public interface Locator {
     dispatchEvent(type, eventInit, null);
   }
   /**
-   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
-   * {@code click} is dispatched. This is equivalent to calling <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
+   * Programmaticaly dispatch an event on the matching element.
    *
    * <p> **Usage**
    * <pre>{@code
-   * element.dispatchEvent("click");
+   * locator.dispatchEvent("click");
    * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> The snippet above dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
+   * {@code click} is dispatched. This is equivalent to calling <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    *
    * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code
    * eventInit} properties and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by
@@ -2261,7 +2362,7 @@ public interface Locator {
    * JSHandle dataTransfer = page.evaluateHandle("() => new DataTransfer()");
    * Map<String, Object> arg = new HashMap<>();
    * arg.put("dataTransfer", dataTransfer);
-   * element.dispatchEvent("dragstart", arg);
+   * locator.dispatchEvent("dragstart", arg);
    * }</pre>
    *
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
@@ -2271,14 +2372,18 @@ public interface Locator {
     dispatchEvent(type, null);
   }
   /**
-   * The snippet below dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
-   * {@code click} is dispatched. This is equivalent to calling <a
-   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
+   * Programmaticaly dispatch an event on the matching element.
    *
    * <p> **Usage**
    * <pre>{@code
-   * element.dispatchEvent("click");
+   * locator.dispatchEvent("click");
    * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> The snippet above dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
+   * {@code click} is dispatched. This is equivalent to calling <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    *
    * <p> Under the hood, it creates an instance of an event based on the given {@code type}, initializes it with {@code
    * eventInit} properties and dispatches it on the element. Events are {@code composed}, {@code cancelable} and bubble by
@@ -2301,7 +2406,7 @@ public interface Locator {
    * JSHandle dataTransfer = page.evaluateHandle("() => new DataTransfer()");
    * Map<String, Object> arg = new HashMap<>();
    * arg.put("dataTransfer", dataTransfer);
-   * element.dispatchEvent("dragstart", arg);
+   * locator.dispatchEvent("dragstart", arg);
    * }</pre>
    *
    * @param type DOM event type: {@code "click"}, {@code "dragstart"}, etc.
@@ -2310,7 +2415,11 @@ public interface Locator {
    */
   void dispatchEvent(String type, Object eventInit, DispatchEventOptions options);
   /**
-   * This method drags the locator to another target locator or target position. It will first move to the source element,
+   * Drag the source element towards the target element and drop it.
+   *
+   * <p> **Details**
+   *
+   * <p> This method drags the locator to another target locator or target position. It will first move to the source element,
    * perform a {@code mousedown}, then move to the target element or position and perform a {@code mouseup}.
    *
    * <p> **Usage**
@@ -2331,7 +2440,11 @@ public interface Locator {
     dragTo(target, null);
   }
   /**
-   * This method drags the locator to another target locator or target position. It will first move to the source element,
+   * Drag the source element towards the target element and drop it.
+   *
+   * <p> **Details**
+   *
+   * <p> This method drags the locator to another target locator or target position. It will first move to the source element,
    * perform a {@code mousedown}, then move to the target element or position and perform a {@code mouseup}.
    *
    * <p> **Usage**
@@ -2350,8 +2463,8 @@ public interface Locator {
    */
   void dragTo(Locator target, DragToOptions options);
   /**
-   * Resolves given locator to the first matching DOM element. If no elements matching the query are visible, waits for them
-   * up to a given timeout. If multiple elements match the selector, throws.
+   * Resolves given locator to the first matching DOM element. If there are no matching elements, waits for one. If multiple
+   * elements match the locator, throws.
    *
    * @since v1.14
    */
@@ -2359,26 +2472,31 @@ public interface Locator {
     return elementHandle(null);
   }
   /**
-   * Resolves given locator to the first matching DOM element. If no elements matching the query are visible, waits for them
-   * up to a given timeout. If multiple elements match the selector, throws.
+   * Resolves given locator to the first matching DOM element. If there are no matching elements, waits for one. If multiple
+   * elements match the locator, throws.
    *
    * @since v1.14
    */
   ElementHandle elementHandle(ElementHandleOptions options);
   /**
-   * Resolves given locator to all matching DOM elements.
+   * Resolves given locator to all matching DOM elements. If there are no matching elements, returns an empty list.
    *
    * @since v1.14
    */
   List<ElementHandle> elementHandles();
   /**
-   * Returns the return value of {@code expression}.
+   * Execute JavaScript code in the page, taking the matching element as an argument.
    *
-   * <p> This method passes this handle as the first argument to {@code expression}.
+   * <p> **Details**
+   *
+   * <p> Returns the return value of {@code expression}, called with the matching element as a first argument, and {@code arg} as
+   * a second argument.
    *
    * <p> If {@code expression} returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@code
-   * handle.evaluate} would wait for the promise to resolve and return its value.
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, this method
+   * will wait for the promise to resolve and return its value.
+   *
+   * <p> If {@code expression} throws or rejects, this method throws.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -2395,13 +2513,18 @@ public interface Locator {
     return evaluate(expression, arg, null);
   }
   /**
-   * Returns the return value of {@code expression}.
+   * Execute JavaScript code in the page, taking the matching element as an argument.
    *
-   * <p> This method passes this handle as the first argument to {@code expression}.
+   * <p> **Details**
+   *
+   * <p> Returns the return value of {@code expression}, called with the matching element as a first argument, and {@code arg} as
+   * a second argument.
    *
    * <p> If {@code expression} returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@code
-   * handle.evaluate} would wait for the promise to resolve and return its value.
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, this method
+   * will wait for the promise to resolve and return its value.
+   *
+   * <p> If {@code expression} throws or rejects, this method throws.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -2417,13 +2540,18 @@ public interface Locator {
     return evaluate(expression, null);
   }
   /**
-   * Returns the return value of {@code expression}.
+   * Execute JavaScript code in the page, taking the matching element as an argument.
    *
-   * <p> This method passes this handle as the first argument to {@code expression}.
+   * <p> **Details**
+   *
+   * <p> Returns the return value of {@code expression}, called with the matching element as a first argument, and {@code arg} as
+   * a second argument.
    *
    * <p> If {@code expression} returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@code
-   * handle.evaluate} would wait for the promise to resolve and return its value.
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, this method
+   * will wait for the promise to resolve and return its value.
+   *
+   * <p> If {@code expression} throws or rejects, this method throws.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -2438,17 +2566,23 @@ public interface Locator {
    */
   Object evaluate(String expression, Object arg, EvaluateOptions options);
   /**
-   * The method finds all elements matching the specified locator and passes an array of matched elements as a first argument
-   * to {@code expression}. Returns the result of {@code expression} invocation.
+   * Execute JavaScript code in the page, taking all matching elements as an argument.
+   *
+   * <p> **Details**
+   *
+   * <p> Returns the return value of {@code expression}, called with an array of all matching elements as a first argument, and
+   * {@code arg} as a second argument.
    *
    * <p> If {@code expression} returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Locator#evaluateAll Locator.evaluateAll()} would wait for the promise to resolve and return its value.
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, this method
+   * will wait for the promise to resolve and return its value.
+   *
+   * <p> If {@code expression} throws or rejects, this method throws.
    *
    * <p> **Usage**
    * <pre>{@code
-   * Locator elements = page.locator("div");
-   * boolean divCounts = (boolean) elements.evaluateAll("(divs, min) => divs.length >= min", 10);
+   * Locator locator = page.locator("div");
+   * boolean moreThanTen = (boolean) locator.evaluateAll("(divs, min) => divs.length > min", 10);
    * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
@@ -2459,17 +2593,23 @@ public interface Locator {
     return evaluateAll(expression, null);
   }
   /**
-   * The method finds all elements matching the specified locator and passes an array of matched elements as a first argument
-   * to {@code expression}. Returns the result of {@code expression} invocation.
+   * Execute JavaScript code in the page, taking all matching elements as an argument.
+   *
+   * <p> **Details**
+   *
+   * <p> Returns the return value of {@code expression}, called with an array of all matching elements as a first argument, and
+   * {@code arg} as a second argument.
    *
    * <p> If {@code expression} returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Locator#evaluateAll Locator.evaluateAll()} would wait for the promise to resolve and return its value.
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, this method
+   * will wait for the promise to resolve and return its value.
+   *
+   * <p> If {@code expression} throws or rejects, this method throws.
    *
    * <p> **Usage**
    * <pre>{@code
-   * Locator elements = page.locator("div");
-   * boolean divCounts = (boolean) elements.evaluateAll("(divs, min) => divs.length >= min", 10);
+   * Locator locator = page.locator("div");
+   * boolean moreThanTen = (boolean) locator.evaluateAll("(divs, min) => divs.length > min", 10);
    * }</pre>
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
@@ -2479,16 +2619,22 @@ public interface Locator {
    */
   Object evaluateAll(String expression, Object arg);
   /**
-   * Returns the return value of {@code expression} as a {@code JSHandle}.
+   * Execute JavaScript code in the page, taking the matching element as an argument, and return a {@code JSHandle} with the
+   * result.
    *
-   * <p> This method passes this handle as the first argument to {@code expression}.
+   * <p> **Details**
+   *
+   * <p> Returns the return value of {@code expression} as a{@code JSHandle}, called with the matching element as a first
+   * argument, and {@code arg} as a second argument.
    *
    * <p> The only difference between {@link Locator#evaluate Locator.evaluate()} and {@link Locator#evaluateHandle
    * Locator.evaluateHandle()} is that {@link Locator#evaluateHandle Locator.evaluateHandle()} returns {@code JSHandle}.
    *
-   * <p> If the function passed to the {@link Locator#evaluateHandle Locator.evaluateHandle()} returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Locator#evaluateHandle Locator.evaluateHandle()} would wait for the promise to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, this method
+   * will wait for the promise to resolve and return its value.
+   *
+   * <p> If {@code expression} throws or rejects, this method throws.
    *
    * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
@@ -2501,16 +2647,22 @@ public interface Locator {
     return evaluateHandle(expression, arg, null);
   }
   /**
-   * Returns the return value of {@code expression} as a {@code JSHandle}.
+   * Execute JavaScript code in the page, taking the matching element as an argument, and return a {@code JSHandle} with the
+   * result.
    *
-   * <p> This method passes this handle as the first argument to {@code expression}.
+   * <p> **Details**
+   *
+   * <p> Returns the return value of {@code expression} as a{@code JSHandle}, called with the matching element as a first
+   * argument, and {@code arg} as a second argument.
    *
    * <p> The only difference between {@link Locator#evaluate Locator.evaluate()} and {@link Locator#evaluateHandle
    * Locator.evaluateHandle()} is that {@link Locator#evaluateHandle Locator.evaluateHandle()} returns {@code JSHandle}.
    *
-   * <p> If the function passed to the {@link Locator#evaluateHandle Locator.evaluateHandle()} returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Locator#evaluateHandle Locator.evaluateHandle()} would wait for the promise to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, this method
+   * will wait for the promise to resolve and return its value.
+   *
+   * <p> If {@code expression} throws or rejects, this method throws.
    *
    * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
@@ -2522,16 +2674,22 @@ public interface Locator {
     return evaluateHandle(expression, null);
   }
   /**
-   * Returns the return value of {@code expression} as a {@code JSHandle}.
+   * Execute JavaScript code in the page, taking the matching element as an argument, and return a {@code JSHandle} with the
+   * result.
    *
-   * <p> This method passes this handle as the first argument to {@code expression}.
+   * <p> **Details**
+   *
+   * <p> Returns the return value of {@code expression} as a{@code JSHandle}, called with the matching element as a first
+   * argument, and {@code arg} as a second argument.
    *
    * <p> The only difference between {@link Locator#evaluate Locator.evaluate()} and {@link Locator#evaluateHandle
    * Locator.evaluateHandle()} is that {@link Locator#evaluateHandle Locator.evaluateHandle()} returns {@code JSHandle}.
    *
-   * <p> If the function passed to the {@link Locator#evaluateHandle Locator.evaluateHandle()} returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Locator#evaluateHandle Locator.evaluateHandle()} would wait for the promise to resolve and return its value.
+   * <p> If {@code expression} returns a <a
+   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, this method
+   * will wait for the promise to resolve and return its value.
+   *
+   * <p> If {@code expression} throws or rejects, this method throws.
    *
    * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
@@ -2542,7 +2700,16 @@ public interface Locator {
    */
   JSHandle evaluateHandle(String expression, Object arg, EvaluateHandleOptions options);
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
+   * Set a value to the input field.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.getByRole(AriaRole.TEXTBOX).fill("example value");
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
    * element, fills it and triggers an {@code input} event after filling. Note that you can pass an empty string to clear the
    * input field.
    *
@@ -2560,7 +2727,16 @@ public interface Locator {
     fill(value, null);
   }
   /**
-   * This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
+   * Set a value to the input field.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.getByRole(AriaRole.TEXTBOX).fill("example value");
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
    * element, fills it and triggers an {@code input} event after filling. Note that you can pass an empty string to clear the
    * input field.
    *
@@ -2622,7 +2798,7 @@ public interface Locator {
    */
   Locator first();
   /**
-   * Calls <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus">focus</a> on the element.
+   * Calls <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus">focus</a> on the matching element.
    *
    * @since v1.14
    */
@@ -2630,16 +2806,16 @@ public interface Locator {
     focus(null);
   }
   /**
-   * Calls <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus">focus</a> on the element.
+   * Calls <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus">focus</a> on the matching element.
    *
    * @since v1.14
    */
   void focus(FocusOptions options);
   /**
-   * **Usage**
+   * When working with iframes, you can create a frame locator that will enter the iframe and allow locating elements in that
+   * iframe:
    *
-   * <p> When working with iframes, you can create a frame locator that will enter the iframe and allow selecting elements in
-   * that iframe:
+   * <p> **Usage**
    * <pre>{@code
    * Locator locator = page.frameLocator("iframe").getByText("Submit");
    * locator.click();
@@ -2650,7 +2826,7 @@ public interface Locator {
    */
   FrameLocator frameLocator(String selector);
   /**
-   * Returns element attribute value.
+   * Returns the matching element's attribute value.
    *
    * @param name Attribute name to get the value for.
    * @since v1.14
@@ -2659,14 +2835,21 @@ public interface Locator {
     return getAttribute(name, null);
   }
   /**
-   * Returns element attribute value.
+   * Returns the matching element's attribute value.
    *
    * @param name Attribute name to get the value for.
    * @since v1.14
    */
   String getAttribute(String name, GetAttributeOptions options);
   /**
-   * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
+   * Allows locating elements by their alt text.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, this method will find the image by alt text "Playwright logo":
+   * <pre>{@code
+   * page.getByAltText("Playwright logo").click();
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -2675,14 +2858,28 @@ public interface Locator {
     return getByAltText(text, null);
   }
   /**
-   * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
+   * Allows locating elements by their alt text.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, this method will find the image by alt text "Playwright logo":
+   * <pre>{@code
+   * page.getByAltText("Playwright logo").click();
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
    */
   Locator getByAltText(String text, GetByAltTextOptions options);
   /**
-   * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
+   * Allows locating elements by their alt text.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, this method will find the image by alt text "Playwright logo":
+   * <pre>{@code
+   * page.getByAltText("Playwright logo").click();
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -2691,15 +2888,28 @@ public interface Locator {
     return getByAltText(text, null);
   }
   /**
-   * Allows locating elements by their alt text. For example, this method will find the image by alt text "Castle":
+   * Allows locating elements by their alt text.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, this method will find the image by alt text "Playwright logo":
+   * <pre>{@code
+   * page.getByAltText("Playwright logo").click();
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
    */
   Locator getByAltText(Pattern text, GetByAltTextOptions options);
   /**
-   * Allows locating input elements by the text of the associated label. For example, this method will find the input by
-   * label text "Password" in the following DOM:
+   * Allows locating input elements by the text of the associated label.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <pre>{@code
+   * page.getByLabel("Password").fill("secret");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -2708,16 +2918,28 @@ public interface Locator {
     return getByLabel(text, null);
   }
   /**
-   * Allows locating input elements by the text of the associated label. For example, this method will find the input by
-   * label text "Password" in the following DOM:
+   * Allows locating input elements by the text of the associated label.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <pre>{@code
+   * page.getByLabel("Password").fill("secret");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
    */
   Locator getByLabel(String text, GetByLabelOptions options);
   /**
-   * Allows locating input elements by the text of the associated label. For example, this method will find the input by
-   * label text "Password" in the following DOM:
+   * Allows locating input elements by the text of the associated label.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <pre>{@code
+   * page.getByLabel("Password").fill("secret");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -2726,16 +2948,30 @@ public interface Locator {
     return getByLabel(text, null);
   }
   /**
-   * Allows locating input elements by the text of the associated label. For example, this method will find the input by
-   * label text "Password" in the following DOM:
+   * Allows locating input elements by the text of the associated label.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <pre>{@code
+   * page.getByLabel("Password").fill("secret");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
    */
   Locator getByLabel(Pattern text, GetByLabelOptions options);
   /**
-   * Allows locating input elements by the placeholder text. For example, this method will find the input by placeholder
-   * "Country":
+   * Allows locating input elements by the placeholder text.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, consider the following DOM structure.
+   *
+   * <p> You can fill the input after locating it by the placeholder text:
+   * <pre>{@code
+   * page.getByPlaceholder("name@example.com").fill("playwright@microsoft.com");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -2744,16 +2980,32 @@ public interface Locator {
     return getByPlaceholder(text, null);
   }
   /**
-   * Allows locating input elements by the placeholder text. For example, this method will find the input by placeholder
-   * "Country":
+   * Allows locating input elements by the placeholder text.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, consider the following DOM structure.
+   *
+   * <p> You can fill the input after locating it by the placeholder text:
+   * <pre>{@code
+   * page.getByPlaceholder("name@example.com").fill("playwright@microsoft.com");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
    */
   Locator getByPlaceholder(String text, GetByPlaceholderOptions options);
   /**
-   * Allows locating input elements by the placeholder text. For example, this method will find the input by placeholder
-   * "Country":
+   * Allows locating input elements by the placeholder text.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, consider the following DOM structure.
+   *
+   * <p> You can fill the input after locating it by the placeholder text:
+   * <pre>{@code
+   * page.getByPlaceholder("name@example.com").fill("playwright@microsoft.com");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -2762,8 +3014,16 @@ public interface Locator {
     return getByPlaceholder(text, null);
   }
   /**
-   * Allows locating input elements by the placeholder text. For example, this method will find the input by placeholder
-   * "Country":
+   * Allows locating input elements by the placeholder text.
+   *
+   * <p> **Usage**
+   *
+   * <p> For example, consider the following DOM structure.
+   *
+   * <p> You can fill the input after locating it by the placeholder text:
+   * <pre>{@code
+   * page.getByPlaceholder("name@example.com").fill("playwright@microsoft.com");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -2772,14 +3032,39 @@ public interface Locator {
   /**
    * Allows locating elements by their <a href="https://www.w3.org/TR/wai-aria-1.2/#roles">ARIA role</a>, <a
    * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a
-   * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>. Note that role selector **does not
-   * replace** accessibility audits and conformance tests, but rather gives early feedback about the ARIA guidelines.
+   * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
    *
-   * <p> Note that many html elements have an implicitly <a
-   * href="https://w3c.github.io/html-aam/#html-element-role-mappings">defined role</a> that is recognized by the role
-   * selector. You can find all the <a href="https://www.w3.org/TR/wai-aria-1.2/#role_definitions">supported roles here</a>.
-   * ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code
-   * aria-*} attributes to default values.
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure.
+   *
+   * <p> You can locate each element by it's implicit role:
+   * <pre>{@code
+   * assertThat(page
+   *     .getByRole(AriaRole.HEADING,
+   *                new Page.GetByRoleOptions().setName("Sign up")))
+   *     .isVisible();
+   *
+   * page.getByRole(AriaRole.CHECKBOX,
+   *                new Page.GetByRoleOptions().setName("Subscribe"))
+   *     .check();
+   *
+   * page.getByRole(AriaRole.BUTTON,
+   *                new Page.GetByRoleOptions().setName(
+   *                    Pattern.compile("submit", Pattern.CASE_INSENSITIVE)))
+   *     .click();
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Role selector **does not replace** accessibility audits and conformance tests, but rather gives early feedback about the
+   * ARIA guidelines.
+   *
+   * <p> Many html elements have an implicitly <a href="https://w3c.github.io/html-aam/#html-element-role-mappings">defined
+   * role</a> that is recognized by the role selector. You can find all the <a
+   * href="https://www.w3.org/TR/wai-aria-1.2/#role_definitions">supported roles here</a>. ARIA guidelines **do not
+   * recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code aria-*} attributes to
+   * default values.
    *
    * @param role Required aria role.
    * @since v1.27
@@ -2790,37 +3075,95 @@ public interface Locator {
   /**
    * Allows locating elements by their <a href="https://www.w3.org/TR/wai-aria-1.2/#roles">ARIA role</a>, <a
    * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a
-   * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>. Note that role selector **does not
-   * replace** accessibility audits and conformance tests, but rather gives early feedback about the ARIA guidelines.
+   * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
    *
-   * <p> Note that many html elements have an implicitly <a
-   * href="https://w3c.github.io/html-aam/#html-element-role-mappings">defined role</a> that is recognized by the role
-   * selector. You can find all the <a href="https://www.w3.org/TR/wai-aria-1.2/#role_definitions">supported roles here</a>.
-   * ARIA guidelines **do not recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code
-   * aria-*} attributes to default values.
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure.
+   *
+   * <p> You can locate each element by it's implicit role:
+   * <pre>{@code
+   * assertThat(page
+   *     .getByRole(AriaRole.HEADING,
+   *                new Page.GetByRoleOptions().setName("Sign up")))
+   *     .isVisible();
+   *
+   * page.getByRole(AriaRole.CHECKBOX,
+   *                new Page.GetByRoleOptions().setName("Subscribe"))
+   *     .check();
+   *
+   * page.getByRole(AriaRole.BUTTON,
+   *                new Page.GetByRoleOptions().setName(
+   *                    Pattern.compile("submit", Pattern.CASE_INSENSITIVE)))
+   *     .click();
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Role selector **does not replace** accessibility audits and conformance tests, but rather gives early feedback about the
+   * ARIA guidelines.
+   *
+   * <p> Many html elements have an implicitly <a href="https://w3c.github.io/html-aam/#html-element-role-mappings">defined
+   * role</a> that is recognized by the role selector. You can find all the <a
+   * href="https://www.w3.org/TR/wai-aria-1.2/#role_definitions">supported roles here</a>. ARIA guidelines **do not
+   * recommend** duplicating implicit roles and attributes by setting {@code role} and/or {@code aria-*} attributes to
+   * default values.
    *
    * @param role Required aria role.
    * @since v1.27
    */
   Locator getByRole(AriaRole role, GetByRoleOptions options);
   /**
-   * Locate element by the test id. By default, the {@code data-testid} attribute is used as a test id. Use {@link
-   * Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
+   * Locate element by the test id.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure.
+   *
+   * <p> You can locate the element by it's test id:
+   * <pre>{@code
+   * page.getByTestId("directions").click();
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> By default, the {@code data-testid} attribute is used as a test id. Use {@link Selectors#setTestIdAttribute
+   * Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
    *
    * @param testId Id to locate the element by.
    * @since v1.27
    */
   Locator getByTestId(String testId);
   /**
-   * Locate element by the test id. By default, the {@code data-testid} attribute is used as a test id. Use {@link
-   * Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
+   * Locate element by the test id.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure.
+   *
+   * <p> You can locate the element by it's test id:
+   * <pre>{@code
+   * page.getByTestId("directions").click();
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> By default, the {@code data-testid} attribute is used as a test id. Use {@link Selectors#setTestIdAttribute
+   * Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
    *
    * @param testId Id to locate the element by.
    * @since v1.27
    */
   Locator getByTestId(Pattern testId);
   /**
-   * Allows locating elements that contain given text. Consider the following DOM structure:
+   * Allows locating elements that contain given text.
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure:
    *
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
@@ -2840,13 +3183,12 @@ public interface Locator {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> **Details**
    *
-   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
    *
-   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
+   * <p> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
@@ -2856,7 +3198,14 @@ public interface Locator {
     return getByText(text, null);
   }
   /**
-   * Allows locating elements that contain given text. Consider the following DOM structure:
+   * Allows locating elements that contain given text.
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure:
    *
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
@@ -2876,13 +3225,12 @@ public interface Locator {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> **Details**
    *
-   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
    *
-   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
+   * <p> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
@@ -2890,7 +3238,14 @@ public interface Locator {
    */
   Locator getByText(String text, GetByTextOptions options);
   /**
-   * Allows locating elements that contain given text. Consider the following DOM structure:
+   * Allows locating elements that contain given text.
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure:
    *
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
@@ -2910,13 +3265,12 @@ public interface Locator {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> **Details**
    *
-   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
    *
-   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
+   * <p> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
@@ -2926,7 +3280,14 @@ public interface Locator {
     return getByText(text, null);
   }
   /**
-   * Allows locating elements that contain given text. Consider the following DOM structure:
+   * Allows locating elements that contain given text.
+   *
+   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
+   * then filter by the text content.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure:
    *
    * <p> You can locate by text substring, exact string, or a regular expression:
    * <pre>{@code
@@ -2946,13 +3307,12 @@ public interface Locator {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> **Details**
    *
-   * <p> <strong>NOTE:</strong> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
+   * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
    *
-   * <p> <strong>NOTE:</strong> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
+   * <p> Input elements of the type {@code button} and {@code submit} are matched by their {@code value} instead of the text
    * content. For example, locating by text {@code "Log in"} matches {@code <input type=button value="Log in">}.
    *
    * @param text Text to locate the element for.
@@ -2960,7 +3320,16 @@ public interface Locator {
    */
   Locator getByText(Pattern text, GetByTextOptions options);
   /**
-   * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
+   * Allows locating elements by their title attribute.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure.
+   *
+   * <p> You can check the issues count after locating it by the title text:
+   * <pre>{@code
+   * assertThat(page.getByTitle("Issues count")).hasText("25 issues");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -2969,14 +3338,32 @@ public interface Locator {
     return getByTitle(text, null);
   }
   /**
-   * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
+   * Allows locating elements by their title attribute.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure.
+   *
+   * <p> You can check the issues count after locating it by the title text:
+   * <pre>{@code
+   * assertThat(page.getByTitle("Issues count")).hasText("25 issues");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
    */
   Locator getByTitle(String text, GetByTitleOptions options);
   /**
-   * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
+   * Allows locating elements by their title attribute.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure.
+   *
+   * <p> You can check the issues count after locating it by the title text:
+   * <pre>{@code
+   * assertThat(page.getByTitle("Issues count")).hasText("25 issues");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -2985,7 +3372,16 @@ public interface Locator {
     return getByTitle(text, null);
   }
   /**
-   * Allows locating elements by their title. For example, this method will find the button by its title "Place the order":
+   * Allows locating elements by their title attribute.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider the following DOM structure.
+   *
+   * <p> You can check the issues count after locating it by the title text:
+   * <pre>{@code
+   * assertThat(page.getByTitle("Issues count")).hasText("25 issues");
+   * }</pre>
    *
    * @param text Text to locate the element for.
    * @since v1.27
@@ -2999,7 +3395,16 @@ public interface Locator {
    */
   void highlight();
   /**
-   * This method hovers over the element by performing the following steps:
+   * Hover over the matching element.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.getByRole(AriaRole.LINK).hover();
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> This method hovers over the element by performing the following steps:
    * <ol>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
@@ -3019,7 +3424,16 @@ public interface Locator {
     hover(null);
   }
   /**
-   * This method hovers over the element by performing the following steps:
+   * Hover over the matching element.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.getByRole(AriaRole.LINK).hover();
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> This method hovers over the element by performing the following steps:
    * <ol>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
@@ -3037,7 +3451,7 @@ public interface Locator {
    */
   void hover(HoverOptions options);
   /**
-   * Returns the {@code element.innerHTML}.
+   * Returns the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML">{@code element.innerHTML}</a>.
    *
    * @since v1.14
    */
@@ -3045,13 +3459,14 @@ public interface Locator {
     return innerHTML(null);
   }
   /**
-   * Returns the {@code element.innerHTML}.
+   * Returns the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML">{@code element.innerHTML}</a>.
    *
    * @since v1.14
    */
   String innerHTML(InnerHTMLOptions options);
   /**
-   * Returns the {@code element.innerText}.
+   * Returns the <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/innerText">{@code
+   * element.innerText}</a>.
    *
    * @since v1.14
    */
@@ -3059,15 +3474,24 @@ public interface Locator {
     return innerText(null);
   }
   /**
-   * Returns the {@code element.innerText}.
+   * Returns the <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/innerText">{@code
+   * element.innerText}</a>.
    *
    * @since v1.14
    */
   String innerText(InnerTextOptions options);
   /**
-   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} or {@code <select>} element.
+   * Returns the value for the matching {@code <input>} or {@code <textarea>} or {@code <select>} element.
    *
-   * <p> Throws for non-input elements. However, if the element is inside the {@code <label>} element that has an associated <a
+   * <p> **Usage**
+   * <pre>{@code
+   * String value = page.getByRole(AriaRole.TEXTBOX).inputValue();
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Throws elements that are not an input, textarea or a select. However, if the element is inside the {@code <label>}
+   * element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, returns the value of the
    * control.
    *
@@ -3077,9 +3501,17 @@ public interface Locator {
     return inputValue(null);
   }
   /**
-   * Returns {@code input.value} for the selected {@code <input>} or {@code <textarea>} or {@code <select>} element.
+   * Returns the value for the matching {@code <input>} or {@code <textarea>} or {@code <select>} element.
    *
-   * <p> Throws for non-input elements. However, if the element is inside the {@code <label>} element that has an associated <a
+   * <p> **Usage**
+   * <pre>{@code
+   * String value = page.getByRole(AriaRole.TEXTBOX).inputValue();
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Throws elements that are not an input, textarea or a select. However, if the element is inside the {@code <label>}
+   * element that has an associated <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, returns the value of the
    * control.
    *
@@ -3089,6 +3521,11 @@ public interface Locator {
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
+   * <p> **Usage**
+   * <pre>{@code
+   * boolean checked = page.getByRole(AriaRole.CHECKBOX).isChecked();
+   * }</pre>
+   *
    * @since v1.14
    */
   default boolean isChecked() {
@@ -3097,12 +3534,22 @@ public interface Locator {
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
+   * <p> **Usage**
+   * <pre>{@code
+   * boolean checked = page.getByRole(AriaRole.CHECKBOX).isChecked();
+   * }</pre>
+   *
    * @since v1.14
    */
   boolean isChecked(IsCheckedOptions options);
   /**
    * Returns whether the element is disabled, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * boolean disabled = page.getByRole(AriaRole.BUTTON).isDisabled();
+   * }</pre>
    *
    * @since v1.14
    */
@@ -3113,11 +3560,21 @@ public interface Locator {
    * Returns whether the element is disabled, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
+   * <p> **Usage**
+   * <pre>{@code
+   * boolean disabled = page.getByRole(AriaRole.BUTTON).isDisabled();
+   * }</pre>
+   *
    * @since v1.14
    */
   boolean isDisabled(IsDisabledOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * boolean editable = page.getByRole(AriaRole.TEXTBOX).isEditable();
+   * }</pre>
    *
    * @since v1.14
    */
@@ -3127,11 +3584,21 @@ public interface Locator {
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
    *
+   * <p> **Usage**
+   * <pre>{@code
+   * boolean editable = page.getByRole(AriaRole.TEXTBOX).isEditable();
+   * }</pre>
+   *
    * @since v1.14
    */
   boolean isEditable(IsEditableOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * boolean enabled = page.getByRole(AriaRole.BUTTON).isEnabled();
+   * }</pre>
    *
    * @since v1.14
    */
@@ -3141,12 +3608,22 @@ public interface Locator {
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
+   * <p> **Usage**
+   * <pre>{@code
+   * boolean enabled = page.getByRole(AriaRole.BUTTON).isEnabled();
+   * }</pre>
+   *
    * @since v1.14
    */
   boolean isEnabled(IsEnabledOptions options);
   /**
    * Returns whether the element is hidden, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * boolean hidden = page.getByRole(AriaRole.BUTTON).isHidden();
+   * }</pre>
    *
    * @since v1.14
    */
@@ -3157,11 +3634,21 @@ public interface Locator {
    * Returns whether the element is hidden, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
    *
+   * <p> **Usage**
+   * <pre>{@code
+   * boolean hidden = page.getByRole(AriaRole.BUTTON).isHidden();
+   * }</pre>
+   *
    * @since v1.14
    */
   boolean isHidden(IsHiddenOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * boolean visible = page.getByRole(AriaRole.BUTTON).isVisible();
+   * }</pre>
    *
    * @since v1.14
    */
@@ -3171,11 +3658,21 @@ public interface Locator {
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
    *
+   * <p> **Usage**
+   * <pre>{@code
+   * boolean visible = page.getByRole(AriaRole.BUTTON).isVisible();
+   * }</pre>
+   *
    * @since v1.14
    */
   boolean isVisible(IsVisibleOptions options);
   /**
    * Returns locator to the last matching element.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * Locator banana = page.getByRole(AriaRole.LISTITEM).last();
+   * }</pre>
    *
    * @since v1.14
    */
@@ -3205,6 +3702,11 @@ public interface Locator {
   /**
    * Returns locator to the n-th matching element. It's zero based, {@code nth(0)} selects the first element.
    *
+   * <p> **Usage**
+   * <pre>{@code
+   * Locator banana = page.getByRole(AriaRole.LISTITEM).nth(2);
+   * }</pre>
+   *
    * @since v1.14
    */
   Locator nth(int index);
@@ -3215,7 +3717,16 @@ public interface Locator {
    */
   Page page();
   /**
-   * Focuses the element, and then uses {@link Keyboard#down Keyboard.down()} and {@link Keyboard#up Keyboard.up()}.
+   * Focuses the mathing element and presses a combintation of the keys.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.getByRole(AriaRole.TEXTBOX).press("Backspace");
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Focuses the element, and then uses {@link Keyboard#down Keyboard.down()} and {@link Keyboard#up Keyboard.up()}.
    *
    * <p> {@code key} can specify the intended <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key">keyboardEvent.key</a> value or a single
@@ -3245,7 +3756,16 @@ public interface Locator {
     press(key, null);
   }
   /**
-   * Focuses the element, and then uses {@link Keyboard#down Keyboard.down()} and {@link Keyboard#up Keyboard.up()}.
+   * Focuses the mathing element and presses a combintation of the keys.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.getByRole(AriaRole.TEXTBOX).press("Backspace");
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Focuses the element, and then uses {@link Keyboard#down Keyboard.down()} and {@link Keyboard#up Keyboard.up()}.
    *
    * <p> {@code key} can specify the intended <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key">keyboardEvent.key</a> value or a single
@@ -3273,7 +3793,23 @@ public interface Locator {
    */
   void press(String key, PressOptions options);
   /**
-   * This method captures a screenshot of the page, clipped to the size and position of a particular element matching the
+   * Take a screenshot of the element matching the locator.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.getByRole(AriaRole.LINK).screenshot();
+   * }</pre>
+   *
+   * <p> Disable animations and save screenshot to a file:
+   * <pre>{@code
+   * page.getByRole(AriaRole.LINK).screenshot(new Locator.ScreenshotOptions()
+   *     .setAnimations(ScreenshotAnimations.DISABLED)
+   *     .setPath(Paths.get("example.png")));
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> This method captures a screenshot of the page, clipped to the size and position of a particular element matching the
    * locator. If the element is covered by other elements, it will not be actually visible on the screenshot. If the element
    * is a scrollable container, only the currently scrolled content will be visible on the screenshot.
    *
@@ -3288,7 +3824,23 @@ public interface Locator {
     return screenshot(null);
   }
   /**
-   * This method captures a screenshot of the page, clipped to the size and position of a particular element matching the
+   * Take a screenshot of the element matching the locator.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.getByRole(AriaRole.LINK).screenshot();
+   * }</pre>
+   *
+   * <p> Disable animations and save screenshot to a file:
+   * <pre>{@code
+   * page.getByRole(AriaRole.LINK).screenshot(new Locator.ScreenshotOptions()
+   *     .setAnimations(ScreenshotAnimations.DISABLED)
+   *     .setPath(Paths.get("example.png")));
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> This method captures a screenshot of the page, clipped to the size and position of a particular element matching the
    * locator. If the element is covered by other elements, it will not be actually visible on the screenshot. If the element
    * is a scrollable container, only the currently scrolled content will be visible on the screenshot.
    *
@@ -3753,7 +4305,16 @@ public interface Locator {
    */
   void selectText(SelectTextOptions options);
   /**
-   * This method checks or unchecks an element by performing the following steps:
+   * Set the state of a checkbox or a radio element.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.getByRole(AriaRole.CHECKBOX).setChecked(true);
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> This method checks or unchecks an element by performing the following steps:
    * <ol>
    * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws.</li>
    * <li> If the element already has the right checked state, this method returns immediately.</li>
@@ -3775,7 +4336,16 @@ public interface Locator {
     setChecked(checked, null);
   }
   /**
-   * This method checks or unchecks an element by performing the following steps:
+   * Set the state of a checkbox or a radio element.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.getByRole(AriaRole.CHECKBOX).setChecked(true);
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> This method checks or unchecks an element by performing the following steps:
    * <ol>
    * <li> Ensure that matched element is a checkbox or a radio input. If not, this method throws.</li>
    * <li> If the element already has the right checked state, this method returns immediately.</li>
@@ -3795,7 +4365,27 @@ public interface Locator {
    */
   void setChecked(boolean checked, SetCheckedOptions options);
   /**
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
+   * Upload file or multiple files into {@code <input type=file>}.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * // Select one file
+   * page.getByLabel("Upload file").setInputFiles(Paths.get("myfile.pdf"));
+   *
+   * // Select multiple files
+   * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Remove all the selected files
+   * page.getByLabel("Upload file").setInputFiles(new Path[0]);
+   *
+   * // Upload buffer from memory
+   * page.getByLabel("Upload file").setInputFiles(new FilePayload(
+   *   "file.txt", "text/plain", "this is test".getBytes(StandardCharsets.UTF_8)));
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
    *
    * <p> This method expects {@code Locator} to point to an <a
@@ -3810,7 +4400,27 @@ public interface Locator {
     setInputFiles(files, null);
   }
   /**
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
+   * Upload file or multiple files into {@code <input type=file>}.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * // Select one file
+   * page.getByLabel("Upload file").setInputFiles(Paths.get("myfile.pdf"));
+   *
+   * // Select multiple files
+   * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Remove all the selected files
+   * page.getByLabel("Upload file").setInputFiles(new Path[0]);
+   *
+   * // Upload buffer from memory
+   * page.getByLabel("Upload file").setInputFiles(new FilePayload(
+   *   "file.txt", "text/plain", "this is test".getBytes(StandardCharsets.UTF_8)));
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
    *
    * <p> This method expects {@code Locator} to point to an <a
@@ -3823,7 +4433,27 @@ public interface Locator {
    */
   void setInputFiles(Path files, SetInputFilesOptions options);
   /**
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
+   * Upload file or multiple files into {@code <input type=file>}.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * // Select one file
+   * page.getByLabel("Upload file").setInputFiles(Paths.get("myfile.pdf"));
+   *
+   * // Select multiple files
+   * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Remove all the selected files
+   * page.getByLabel("Upload file").setInputFiles(new Path[0]);
+   *
+   * // Upload buffer from memory
+   * page.getByLabel("Upload file").setInputFiles(new FilePayload(
+   *   "file.txt", "text/plain", "this is test".getBytes(StandardCharsets.UTF_8)));
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
    *
    * <p> This method expects {@code Locator} to point to an <a
@@ -3838,7 +4468,27 @@ public interface Locator {
     setInputFiles(files, null);
   }
   /**
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
+   * Upload file or multiple files into {@code <input type=file>}.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * // Select one file
+   * page.getByLabel("Upload file").setInputFiles(Paths.get("myfile.pdf"));
+   *
+   * // Select multiple files
+   * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Remove all the selected files
+   * page.getByLabel("Upload file").setInputFiles(new Path[0]);
+   *
+   * // Upload buffer from memory
+   * page.getByLabel("Upload file").setInputFiles(new FilePayload(
+   *   "file.txt", "text/plain", "this is test".getBytes(StandardCharsets.UTF_8)));
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
    *
    * <p> This method expects {@code Locator} to point to an <a
@@ -3851,7 +4501,27 @@ public interface Locator {
    */
   void setInputFiles(Path[] files, SetInputFilesOptions options);
   /**
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
+   * Upload file or multiple files into {@code <input type=file>}.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * // Select one file
+   * page.getByLabel("Upload file").setInputFiles(Paths.get("myfile.pdf"));
+   *
+   * // Select multiple files
+   * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Remove all the selected files
+   * page.getByLabel("Upload file").setInputFiles(new Path[0]);
+   *
+   * // Upload buffer from memory
+   * page.getByLabel("Upload file").setInputFiles(new FilePayload(
+   *   "file.txt", "text/plain", "this is test".getBytes(StandardCharsets.UTF_8)));
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
    *
    * <p> This method expects {@code Locator} to point to an <a
@@ -3866,7 +4536,27 @@ public interface Locator {
     setInputFiles(files, null);
   }
   /**
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
+   * Upload file or multiple files into {@code <input type=file>}.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * // Select one file
+   * page.getByLabel("Upload file").setInputFiles(Paths.get("myfile.pdf"));
+   *
+   * // Select multiple files
+   * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Remove all the selected files
+   * page.getByLabel("Upload file").setInputFiles(new Path[0]);
+   *
+   * // Upload buffer from memory
+   * page.getByLabel("Upload file").setInputFiles(new FilePayload(
+   *   "file.txt", "text/plain", "this is test".getBytes(StandardCharsets.UTF_8)));
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
    *
    * <p> This method expects {@code Locator} to point to an <a
@@ -3879,7 +4569,27 @@ public interface Locator {
    */
   void setInputFiles(FilePayload files, SetInputFilesOptions options);
   /**
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
+   * Upload file or multiple files into {@code <input type=file>}.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * // Select one file
+   * page.getByLabel("Upload file").setInputFiles(Paths.get("myfile.pdf"));
+   *
+   * // Select multiple files
+   * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Remove all the selected files
+   * page.getByLabel("Upload file").setInputFiles(new Path[0]);
+   *
+   * // Upload buffer from memory
+   * page.getByLabel("Upload file").setInputFiles(new FilePayload(
+   *   "file.txt", "text/plain", "this is test".getBytes(StandardCharsets.UTF_8)));
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
    *
    * <p> This method expects {@code Locator} to point to an <a
@@ -3894,7 +4604,27 @@ public interface Locator {
     setInputFiles(files, null);
   }
   /**
-   * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
+   * Upload file or multiple files into {@code <input type=file>}.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * // Select one file
+   * page.getByLabel("Upload file").setInputFiles(Paths.get("myfile.pdf"));
+   *
+   * // Select multiple files
+   * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Remove all the selected files
+   * page.getByLabel("Upload file").setInputFiles(new Path[0]);
+   *
+   * // Upload buffer from memory
+   * page.getByLabel("Upload file").setInputFiles(new FilePayload(
+   *   "file.txt", "text/plain", "this is test".getBytes(StandardCharsets.UTF_8)));
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
    *
    * <p> This method expects {@code Locator} to point to an <a
@@ -3907,7 +4637,11 @@ public interface Locator {
    */
   void setInputFiles(FilePayload[] files, SetInputFilesOptions options);
   /**
-   * This method taps the element by performing the following steps:
+   * Perform a tap gesture on the element matching the locator.
+   *
+   * <p> **Details**
+   *
+   * <p> This method taps the element by performing the following steps:
    * <ol>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
@@ -3929,7 +4663,11 @@ public interface Locator {
     tap(null);
   }
   /**
-   * This method taps the element by performing the following steps:
+   * Perform a tap gesture on the element matching the locator.
+   *
+   * <p> **Details**
+   *
+   * <p> This method taps the element by performing the following steps:
    * <ol>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
@@ -3949,7 +4687,7 @@ public interface Locator {
    */
   void tap(TapOptions options);
   /**
-   * Returns the {@code node.textContent}.
+   * Returns the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent">{@code node.textContent}</a>.
    *
    * @since v1.14
    */
@@ -3957,7 +4695,7 @@ public interface Locator {
     return textContent(null);
   }
   /**
-   * Returns the {@code node.textContent}.
+   * Returns the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent">{@code node.textContent}</a>.
    *
    * @since v1.14
    */
@@ -4011,7 +4749,16 @@ public interface Locator {
    */
   void type(String text, TypeOptions options);
   /**
-   * This method checks the element by performing the following steps:
+   * Ensure that checkbox or radio element is unchecked.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.getByRole(AriaRole.CHECKBOX).uncheck();
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> This method unchecks the element by performing the following steps:
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already unchecked,
    * this method returns immediately.</li>
@@ -4034,7 +4781,16 @@ public interface Locator {
     uncheck(null);
   }
   /**
-   * This method checks the element by performing the following steps:
+   * Ensure that checkbox or radio element is unchecked.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * page.getByRole(AriaRole.CHECKBOX).uncheck();
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> This method unchecks the element by performing the following steps:
    * <ol>
    * <li> Ensure that element is a checkbox or a radio input. If not, this method throws. If the element is already unchecked,
    * this method returns immediately.</li>

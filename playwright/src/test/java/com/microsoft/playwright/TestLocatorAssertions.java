@@ -193,7 +193,7 @@ public class TestLocatorAssertions extends TestBase {
       assertThat(locator).not().hasText(new String[] {}, new LocatorAssertions.HasTextOptions().setTimeout(1000));
     });
     assertEquals("[]", e.getExpected().getStringRepresentation());
-    assertEquals("null", e.getActual().getStringRepresentation());
+    assertEquals("[]", e.getActual().getStringRepresentation());
     assertTrue(e.getMessage().contains("Locator expected not to have text"), e.getMessage());
   }
 
