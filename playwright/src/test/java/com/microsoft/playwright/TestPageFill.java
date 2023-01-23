@@ -44,7 +44,7 @@ public class TestPageFill extends TestBase {
     for (String type : new String[]{"button", "checkbox", "file", "image", "radio", "reset", "submit"}) {
       page.evalOnSelector("input", "(input, type) => input.setAttribute('type', type)", type);
       PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.fill("input", ""));
-      assertTrue(e.getMessage().contains("input of type \"" + type + "\" cannot be filled"), "type = " + type + e.getMessage());
+      assertTrue(e.getMessage().contains("Error: Input of type \"" + type + "\" cannot be filled"), "type = " + type + e.getMessage());
     }
   }
 
