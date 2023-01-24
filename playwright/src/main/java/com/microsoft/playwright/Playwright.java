@@ -17,7 +17,6 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.impl.PlaywrightImpl;
-import com.sample.app.pojo.Playwright;
 
 import java.util.*;
 
