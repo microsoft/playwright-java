@@ -39,29 +39,29 @@ class TimeoutSettings {
   }
 
   double timeout(Double timeout) {
-    if (timeout != null) {
+    if (timeout != null && timeout > 0) {
       return timeout;
     }
-    if (defaultTimeout != null) {
+    if (defaultTimeout != null && defaultTimeout > 0) {
       return defaultTimeout;
     }
-    if (parent != null) {
+    if (parent != null && timeout > 0) {
       return parent.timeout(timeout);
     }
     return DEFAULT_TIMEOUT_MS;
   }
 
   double navigationTimeout(Double timeout) {
-    if (timeout != null) {
+    if (timeout != null && timeout > 0) {
       return timeout;
     }
-    if (defaultNavigationTimeout != null) {
+    if (defaultNavigationTimeout != null && defaultNavigationTimeout > 0) {
       return defaultNavigationTimeout;
     }
-    if (defaultTimeout != null) {
+    if (defaultTimeout != null && defaultTimeout > 0) {
       return defaultTimeout;
     }
-    if (parent != null) {
+    if (parent != null && timeout > 0) {
       return parent.navigationTimeout(timeout);
     }
     return DEFAULT_TIMEOUT_MS;
