@@ -1,5 +1,6 @@
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.assertions.LocatorAssertions;
 import com.microsoft.playwright.options.AriaRole;
 import org.junit.jupiter.api.Test;
 
@@ -147,6 +148,11 @@ public class TestSelectorsGetBy extends TestBase {
     assertThat(page.getByPlaceholder("hello my\nworld")).hasAttribute("id", "control");
     assertThat(page.getByAltText("hello my\nworld")).hasAttribute("id", "control");
     assertThat(page.getByTitle("hello my\nworld")).hasAttribute("id", "control");
+
+    page.setContent("<div id=target title='my title'>Text here</div>");
+    assertThat(page.getByTitle("my title", new Page.GetByTitleOptions().setExact(true))).hasCount(1, new LocatorAssertions.HasCountOptions().setTimeout(500));
+    assertThat(page.getByTitle("my t\\itle", new Page.GetByTitleOptions().setExact(true))).hasCount(0, new LocatorAssertions.HasCountOptions().setTimeout(500));
+    assertThat(page.getByTitle("my t\\\\itle", new Page.GetByTitleOptions().setExact(true))).hasCount(0, new LocatorAssertions.HasCountOptions().setTimeout(500));
   }
 
   @Test
@@ -178,6 +184,16 @@ public class TestSelectorsGetBy extends TestBase {
     assertEquals(
       asList("<a href=\"https://playwright.dev\">he llo 56</a>"),
       page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("   he \n llo 56 ").setExact(true)).evaluateAll("els => els.map(e => e.outerHTML)"));
+
+    assertEquals(
+      asList("<button>Click me</button>"),
+      page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Click me").setExact(true)).evaluateAll("els => els.map(e => e.outerHTML)"));
+    assertEquals(
+      asList(),
+      page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Click \\me").setExact(true)).evaluateAll("els => els.map(e => e.outerHTML)"));
+    assertEquals(
+      asList(),
+      page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Click \\\\me").setExact(true)).evaluateAll("els => els.map(e => e.outerHTML)"));
   }
 
   @Test
