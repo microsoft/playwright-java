@@ -92,4 +92,17 @@ public class TestPageInterception extends TestBase {
     page.navigate(server.PREFIX + "/empty.html");
     assertEquals("{ \"foo\": \"bar\" }", new String(request.get().postBody));
   }
+
+  @Test
+  void shouldNotFollowRedirectsWhenMaxRedirectsIsSetTo0InRouteFetch() {
+    server.setRedirect("/foo", "/empty.html");
+    page.route("**/*", route -> {
+      APIResponse response = route.fetch(new Route.FetchOptions().setMaxRedirects(0));
+      assertEquals("/empty.html", response.headers().get("location"));
+      assertEquals(302, response.status());
+      route.fulfill(new Route.FulfillOptions().setBody("hello"));
+    });
+    page.navigate(server.PREFIX + "/foo");
+    assertTrue(page.content().contains("hello"));
+  }
 }

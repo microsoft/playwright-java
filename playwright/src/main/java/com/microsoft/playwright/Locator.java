@@ -2283,7 +2283,7 @@ public interface Locator {
    */
   void dblclick(DblclickOptions options);
   /**
-   * Programmaticaly dispatch an event on the matching element.
+   * Programmatically dispatch an event on the matching element.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -2328,7 +2328,7 @@ public interface Locator {
     dispatchEvent(type, eventInit, null);
   }
   /**
-   * Programmaticaly dispatch an event on the matching element.
+   * Programmatically dispatch an event on the matching element.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -2372,7 +2372,7 @@ public interface Locator {
     dispatchEvent(type, null);
   }
   /**
-   * Programmaticaly dispatch an event on the matching element.
+   * Programmatically dispatch an event on the matching element.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -3717,7 +3717,7 @@ public interface Locator {
    */
   Page page();
   /**
-   * Focuses the mathing element and presses a combintation of the keys.
+   * Focuses the matching element and presses a combination of the keys.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -3756,7 +3756,7 @@ public interface Locator {
     press(key, null);
   }
   /**
-   * Focuses the mathing element and presses a combintation of the keys.
+   * Focuses the matching element and presses a combination of the keys.
    *
    * <p> **Usage**
    * <pre>{@code

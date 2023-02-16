@@ -148,7 +148,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
       options = new HasCountOptions();
     }
     FrameExpectOptions commonOptions = convertType(options, FrameExpectOptions.class);
-    commonOptions.expectedNumber = count;
+    commonOptions.expectedNumber = (double) count;
     List<ExpectedTextValue> expectedText = null;
     expectImpl("to.have.count", expectedText, count, "Locator expected to have count", commonOptions);
   }
@@ -324,6 +324,15 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   @Override
   public void isHidden(IsHiddenOptions options) {
     expectTrue("to.be.hidden", "Locator expected to be hidden", convertType(options, FrameExpectOptions.class));
+  }
+
+  @Override
+  public void isInViewport(IsInViewportOptions options) {
+    FrameExpectOptions expectOptions = convertType(options, FrameExpectOptions.class);
+    if (options != null && options.ratio != null) {
+      expectOptions.expectedNumber = options.ratio;
+    }
+    expectTrue("to.be.in.viewport", "Locator expected to be in viewport",  expectOptions);
   }
 
   @Override

@@ -97,7 +97,7 @@ public interface Playwright extends AutoCloseable {
    * Launches new Playwright driver process and connects to it. {@link Playwright#close Playwright.close()} should be called
    * when the instance is no longer needed.
    * <pre>{@code
-   * Playwright playwright = Playwright.create()) {
+   * Playwright playwright = Playwright.create();
    * Browser browser = playwright.webkit().launch();
    * Page page = browser.newPage();
    * page.navigate("https://www.w3.org/");

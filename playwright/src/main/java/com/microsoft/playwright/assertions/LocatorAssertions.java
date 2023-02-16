@@ -20,8 +20,7 @@ import java.util.regex.Pattern;
 
 /**
  * The {@code LocatorAssertions} class provides assertion methods that can be used to make assertions about the {@code
- * Locator} state in the tests. A new instance of {@code LocatorAssertions} is created by calling {@link
- * PlaywrightAssertions#assertThat PlaywrightAssertions.assertThat()}:
+ * Locator} state in the tests.
  * <pre>{@code
  * ...
  * import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
@@ -147,6 +146,33 @@ public interface LocatorAssertions {
      * Time to retry the assertion for.
      */
     public IsHiddenOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class IsInViewportOptions {
+    /**
+     * The minimal ratio of the element to intersect viewport. If equals to {@code 0}, then element should intersect viewport
+     * at any positive ratio. Defaults to {@code 0}.
+     */
+    public Double ratio;
+    /**
+     * Time to retry the assertion for.
+     */
+    public Double timeout;
+
+    /**
+     * The minimal ratio of the element to intersect viewport. If equals to {@code 0}, then element should intersect viewport
+     * at any positive ratio. Defaults to {@code 0}.
+     */
+    public IsInViewportOptions setRatio(double ratio) {
+      this.ratio = ratio;
+      return this;
+    }
+    /**
+     * Time to retry the assertion for.
+     */
+    public IsInViewportOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -548,6 +574,44 @@ public interface LocatorAssertions {
    * @since v1.20
    */
   void isHidden(IsHiddenOptions options);
+  /**
+   * Ensures the {@code Locator} points to an element that intersects viewport, according to the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">intersection observer API</a>.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * Locator locator = page.locator("button.submit");
+   * // Make sure at least some part of element intersects viewport.
+   * assertThat(locator).isInViewport();
+   * // Make sure element is fully outside of viewport.
+   * assertThat(locator).not().isInViewport();
+   * // Make sure that at least half of the element intersects viewport.
+   * assertThat(locator).isInViewport(new LocatorAssertions.IsInViewportOptions().setRatio(0.5));
+   * }</pre>
+   *
+   * @since v1.31
+   */
+  default void isInViewport() {
+    isInViewport(null);
+  }
+  /**
+   * Ensures the {@code Locator} points to an element that intersects viewport, according to the <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">intersection observer API</a>.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * Locator locator = page.locator("button.submit");
+   * // Make sure at least some part of element intersects viewport.
+   * assertThat(locator).isInViewport();
+   * // Make sure element is fully outside of viewport.
+   * assertThat(locator).not().isInViewport();
+   * // Make sure that at least half of the element intersects viewport.
+   * assertThat(locator).isInViewport(new LocatorAssertions.IsInViewportOptions().setRatio(0.5));
+   * }</pre>
+   *
+   * @since v1.31
+   */
+  void isInViewport(IsInViewportOptions options);
   /**
    * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/actionability#attached">attached</a>
    * and <a href="https://playwright.dev/java/docs/actionability#visible">visible</a> DOM node.

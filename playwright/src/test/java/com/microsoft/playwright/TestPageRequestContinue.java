@@ -73,7 +73,7 @@ public class TestPageRequestContinue extends TestBase {
       done[0] = true;
     });
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
-    assertTrue(e.getMessage().contains("Navigation failed because page was closed") ||
+    assertTrue(e.getMessage().contains("Target page, context or browser has been closed") ||
       e.getMessage().contains("frame was detached"), e.getMessage());
     assertTrue(done[0]);
   }

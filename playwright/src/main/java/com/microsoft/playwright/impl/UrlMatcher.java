@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.impl.Utils.globToRegex;
 
 class UrlMatcher {
-  private final Object rawSource;
+  final Object rawSource;
   private final Predicate<String> predicate;
 
   private static Predicate<String> toPredicate(Pattern pattern) {

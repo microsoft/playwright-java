@@ -142,6 +142,11 @@ public interface Route {
      */
     public Map<String, String> headers;
     /**
+     * Maximum number of request redirects that will be followed automatically. An error will be thrown if the number is
+     * exceeded. Defaults to {@code 20}. Pass {@code 0} to not follow redirects.
+     */
+    public Integer maxRedirects;
+    /**
      * If set changes the request method (e.g. GET or POST).
      */
     public String method;
@@ -159,6 +164,14 @@ public interface Route {
      */
     public FetchOptions setHeaders(Map<String, String> headers) {
       this.headers = headers;
+      return this;
+    }
+    /**
+     * Maximum number of request redirects that will be followed automatically. An error will be thrown if the number is
+     * exceeded. Defaults to {@code 20}. Pass {@code 0} to not follow redirects.
+     */
+    public FetchOptions setMaxRedirects(int maxRedirects) {
+      this.maxRedirects = maxRedirects;
       return this;
     }
     /**
@@ -321,6 +334,13 @@ public interface Route {
    * });
    * }</pre>
    *
+   * <p> **Details**
+   *
+   * <p> Note that any overrides such as {@code url} or {@code headers} only apply to the request being routed. If this request
+   * results in a redirect, overrides will not be applied to the new redirected request. If you want to propagate a header
+   * through redirects, use the combination of {@link Route#fetch Route.fetch()} and {@link Route#fulfill Route.fulfill()}
+   * instead.
+   *
    * @since v1.8
    */
   default void resume() {
@@ -339,6 +359,13 @@ public interface Route {
    *   route.resume(new Route.ResumeOptions().setHeaders(headers));
    * });
    * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Note that any overrides such as {@code url} or {@code headers} only apply to the request being routed. If this request
+   * results in a redirect, overrides will not be applied to the new redirected request. If you want to propagate a header
+   * through redirects, use the combination of {@link Route#fetch Route.fetch()} and {@link Route#fulfill Route.fulfill()}
+   * instead.
    *
    * @since v1.8
    */
@@ -488,6 +515,12 @@ public interface Route {
    * });
    * }</pre>
    *
+   * <p> **Details**
+   *
+   * <p> Note that {@code headers} option will apply to the fetched request as well as any redirects initiated by it. If you want
+   * to only apply {@code headers} to the original request, but not to redirects, look into {@link Route#resume
+   * Route.resume()} instead.
+   *
    * @since v1.29
    */
   default APIResponse fetch() {
@@ -509,6 +542,12 @@ public interface Route {
    *     .setBody(json.toString()));
    * });
    * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Note that {@code headers} option will apply to the fetched request as well as any redirects initiated by it. If you want
+   * to only apply {@code headers} to the original request, but not to redirects, look into {@link Route#resume
+   * Route.resume()} instead.
    *
    * @since v1.29
    */

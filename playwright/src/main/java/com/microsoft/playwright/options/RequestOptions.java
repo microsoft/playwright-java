@@ -110,7 +110,8 @@ public interface RequestOptions {
    */
   RequestOptions setForm(FormData form);
   /**
-   * Sets an HTTP header to the request.
+   * Sets an HTTP header to the request. This header will apply to the fetched request as well as any redirects initiated by
+   * it.
    *
    * @param name Header name.
    * @param value Header value.

@@ -20,8 +20,7 @@ import java.util.regex.Pattern;
 
 /**
  * The {@code PageAssertions} class provides assertion methods that can be used to make assertions about the {@code Page}
- * state in the tests. A new instance of {@code PageAssertions} is created by calling {@link
- * PlaywrightAssertions#assertThat PlaywrightAssertions.assertThat()}:
+ * state in the tests.
  * <pre>{@code
  * ...
  * import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
