@@ -118,7 +118,7 @@ public class LocatorUtils {
     //   cssEscape(value).replace(/\\ /g, ' ')
     // However, our attribute selectors do not conform to CSS parsing spec,
     // so we escape them differently.
-    return '"' + value.replaceAll("\"", "\\\\\"") + '"' + (exact ? "" : "i");
+    return '"' + value.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"") + '"' + (exact ? "" : "i");
   }
 
   private static String toJsRegExp(Pattern pattern) {
