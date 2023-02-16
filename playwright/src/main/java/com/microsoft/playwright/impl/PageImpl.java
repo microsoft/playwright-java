@@ -949,8 +949,8 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void pause() {
-    withLogging("BrowserContext.pause", () -> {
-      new WaitableRace<>(asList(context().pause(), (Waitable<JsonElement>) waitableClosedOrCrashed)).get();
+    withLogging("Page.pause", () -> {
+      runUntil(() -> {}, new WaitableRace<>(asList(context().pause(), (Waitable<JsonElement>) waitableClosedOrCrashed)));
     });
   }
 
