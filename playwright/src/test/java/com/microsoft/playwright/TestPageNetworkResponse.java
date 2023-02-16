@@ -19,11 +19,12 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.options.HttpHeader;
 import org.junit.jupiter.api.Test;
 
+import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPageNetworkResponse extends TestBase {
   @Test
@@ -45,4 +46,51 @@ public class TestPageNetworkResponse extends TestBase {
     assertEquals(asList("a=b", "c=d"), response.headerValues("set-cookie"));
   }
 
+  @Test
+  void shouldRejectResponseFinishedIfPageCloses() {
+    page.navigate(server.EMPTY_PAGE);
+    server.setRoute("/get", exchange -> {
+      // In Firefox, |fetch| will be hanging until it receives |Content-Type| header
+      // from server.
+      exchange.getResponseHeaders().add("Content-Type", "text/plain; charset=utf-8");
+      exchange.sendResponseHeaders(200, 0);
+      OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
+      writer.write("hello ");
+    });
+
+    // send request and wait for server response
+    Response pageResponse = page.waitForResponse("**/get", () -> {
+      page.evaluate("() => fetch('./get', { method: 'GET' })");
+    });
+    // In 1s send a request which will trigger a request event while pageResponse.finished() is still
+    // on the callstack.
+    page.onRequest(request -> page.close());
+    page.evaluate("() => setTimeout(() => fetch('./empty.html', { method: 'GET' }), 1000)");
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> pageResponse.finished());
+    assertTrue(e.getMessage().contains("closed"), e.getMessage());
+  }
+
+  @Test
+  void shouldRejectResponseFinishedIfContextCloses() {
+    page.navigate(server.EMPTY_PAGE);
+    server.setRoute("/get", exchange -> {
+      // In Firefox, |fetch| will be hanging until it receives |Content-Type| header
+      // from server.
+      exchange.getResponseHeaders().add("Content-Type", "text/plain; charset=utf-8");
+      exchange.sendResponseHeaders(200, 0);
+      OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
+      writer.write("hello ");
+    });
+
+    // send request and wait for server response
+    Response pageResponse = page.waitForResponse("**/get", () -> {
+      page.evaluate("() => fetch('./get', { method: 'GET' })");
+    });
+    // In 1s send a request which will trigger a request event while pageResponse.finished() is still
+    // on the callstack.
+    page.onRequest(request -> context.close());
+    page.evaluate("() => setTimeout(() => fetch('./empty.html', { method: 'GET' }), 1000)");
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> pageResponse.finished());
+    assertTrue(e.getMessage().contains("closed"), e.getMessage());
+  }
 }
