@@ -189,7 +189,7 @@ public class PageImpl extends ChannelOwner implements Page {
       RouteImpl route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
       Router.HandleResult handled = routes.handle(route);
       if (handled != Router.HandleResult.NoMatchingHandler) {
-        maybeDisableNetworkInterception();
+        updateInterceptionPatterns();
       }
       if (handled == Router.HandleResult.NoMatchingHandler || handled == Router.HandleResult.Fallback) {
         browserContext.handleRoute(route);
@@ -1037,11 +1037,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private void route(UrlMatcher matcher, Consumer<Route> handler, RouteOptions options) {
     withLogging("Page.route", () -> {
       routes.add(matcher, handler, options == null ? null : options.times);
-      if (routes.size() == 1) {
-        JsonObject params = new JsonObject();
-        params.addProperty("enabled", true);
-        sendMessage("setNetworkInterceptionEnabled", params);
-      }
+      updateInterceptionPatterns();
     });
   }
 
@@ -1256,16 +1252,12 @@ public class PageImpl extends ChannelOwner implements Page {
   private void unroute(UrlMatcher matcher, Consumer<Route> handler) {
     withLogging("Page.unroute", () -> {
       routes.remove(matcher, handler);
-      maybeDisableNetworkInterception();
+      updateInterceptionPatterns();
     });
   }
 
-  private void maybeDisableNetworkInterception() {
-    if (routes.size() == 0) {
-      JsonObject params = new JsonObject();
-      params.addProperty("enabled", false);
-      sendMessage("setNetworkInterceptionEnabled", params);
-    }
+  private void updateInterceptionPatterns() {
+    sendMessage("setNetworkInterceptionPatterns", routes.interceptionPatterns());
   }
 
   @Override

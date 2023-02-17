@@ -42,7 +42,9 @@ public interface Selectors {
     }
   }
   /**
-   * **Usage**
+   * Selectors must be registered before creating the page.
+   *
+   * <p> **Usage**
    *
    * <p> An example of registering selector engine that queries elements based on a tag name:
    * <pre>{@code
@@ -64,8 +66,8 @@ public interface Selectors {
    * page.setContent("<div><button>Click me</button></div>");
    * // Use the selector prefixed with its name.
    * Locator button = page.locator("tag=button");
-   * // Combine it with other selector engines.
-   * page.locator("tag=div >> text=\"Click me\"").click();
+   * // Combine it with built-in locators.
+   * page.locator("tag=div").getByText("Click me").click();
    * // Can use it in any methods supporting selectors.
    * int buttonCount = (int) page.locator("tag=button").count();
    * browser.close();
@@ -80,7 +82,9 @@ public interface Selectors {
     register(name, script, null);
   }
   /**
-   * **Usage**
+   * Selectors must be registered before creating the page.
+   *
+   * <p> **Usage**
    *
    * <p> An example of registering selector engine that queries elements based on a tag name:
    * <pre>{@code
@@ -102,8 +106,8 @@ public interface Selectors {
    * page.setContent("<div><button>Click me</button></div>");
    * // Use the selector prefixed with its name.
    * Locator button = page.locator("tag=button");
-   * // Combine it with other selector engines.
-   * page.locator("tag=div >> text=\"Click me\"").click();
+   * // Combine it with built-in locators.
+   * page.locator("tag=div").getByText("Click me").click();
    * // Can use it in any methods supporting selectors.
    * int buttonCount = (int) page.locator("tag=button").count();
    * browser.close();
@@ -116,7 +120,9 @@ public interface Selectors {
    */
   void register(String name, String script, RegisterOptions options);
   /**
-   * **Usage**
+   * Selectors must be registered before creating the page.
+   *
+   * <p> **Usage**
    *
    * <p> An example of registering selector engine that queries elements based on a tag name:
    * <pre>{@code
@@ -138,8 +144,8 @@ public interface Selectors {
    * page.setContent("<div><button>Click me</button></div>");
    * // Use the selector prefixed with its name.
    * Locator button = page.locator("tag=button");
-   * // Combine it with other selector engines.
-   * page.locator("tag=div >> text=\"Click me\"").click();
+   * // Combine it with built-in locators.
+   * page.locator("tag=div").getByText("Click me").click();
    * // Can use it in any methods supporting selectors.
    * int buttonCount = (int) page.locator("tag=button").count();
    * browser.close();
@@ -154,7 +160,9 @@ public interface Selectors {
     register(name, script, null);
   }
   /**
-   * **Usage**
+   * Selectors must be registered before creating the page.
+   *
+   * <p> **Usage**
    *
    * <p> An example of registering selector engine that queries elements based on a tag name:
    * <pre>{@code
@@ -176,8 +184,8 @@ public interface Selectors {
    * page.setContent("<div><button>Click me</button></div>");
    * // Use the selector prefixed with its name.
    * Locator button = page.locator("tag=button");
-   * // Combine it with other selector engines.
-   * page.locator("tag=div >> text=\"Click me\"").click();
+   * // Combine it with built-in locators.
+   * page.locator("tag=div").getByText("Click me").click();
    * // Can use it in any methods supporting selectors.
    * int buttonCount = (int) page.locator("tag=button").count();
    * browser.close();

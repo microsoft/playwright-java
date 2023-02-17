@@ -94,7 +94,7 @@ class ExpectedTextValue {
 class FrameExpectOptions {
   Object expressionArg;
   List<ExpectedTextValue> expectedText;
-  Integer expectedNumber;
+  Double expectedNumber;
   SerializedArgument expectedValue;
   Boolean useInnerText;
   boolean isNot;

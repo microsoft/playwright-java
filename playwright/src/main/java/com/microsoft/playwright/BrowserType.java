@@ -601,8 +601,11 @@ public interface BrowserType {
      */
     public String userAgent;
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default
-     * viewport.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
+     * viewport emulation.
+     *
+     * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
+     * operating system. It makes the execution of the tests non-deterministic.
      */
     public Optional<ViewportSize> viewportSize;
 
@@ -1021,15 +1024,21 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default
-     * viewport.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
+     * viewport emulation.
+     *
+     * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
+     * operating system. It makes the execution of the tests non-deterministic.
      */
     public LaunchPersistentContextOptions setViewportSize(int width, int height) {
       return setViewportSize(new ViewportSize(width, height));
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. {@code null} disables the default
-     * viewport.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
+     * viewport emulation.
+     *
+     * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
+     * operating system. It makes the execution of the tests non-deterministic.
      */
     public LaunchPersistentContextOptions setViewportSize(ViewportSize viewportSize) {
       this.viewportSize = Optional.ofNullable(viewportSize);

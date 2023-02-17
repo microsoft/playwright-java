@@ -399,11 +399,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private void route(UrlMatcher matcher, Consumer<Route> handler, RouteOptions options) {
     withLogging("BrowserContext.route", () -> {
       routes.add(matcher, handler, options == null ? null : options.times);
-      if (routes.size() == 1) {
-        JsonObject params = new JsonObject();
-        params.addProperty("enabled", true);
-        sendMessage("setNetworkInterceptionEnabled", params);
-      }
+      updateInterceptionPatterns();
     });
   }
 
@@ -525,22 +521,18 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private void unroute(UrlMatcher matcher, Consumer<Route> handler) {
     withLogging("BrowserContext.unroute", () -> {
       routes.remove(matcher, handler);
-      maybeDisableNetworkInterception();
+      updateInterceptionPatterns();
     });
   }
 
-  private void maybeDisableNetworkInterception() {
-    if (routes.size() == 0) {
-      JsonObject params = new JsonObject();
-      params.addProperty("enabled", false);
-      sendMessage("setNetworkInterceptionEnabled", params);
-    }
+  private void updateInterceptionPatterns() {
+    sendMessage("setNetworkInterceptionPatterns", routes.interceptionPatterns());
   }
 
   void handleRoute(RouteImpl route) {
     Router.HandleResult handled = routes.handle(route);
     if (handled != Router.HandleResult.NoMatchingHandler) {
-      maybeDisableNetworkInterception();
+      updateInterceptionPatterns();
     }
     if (handled == Router.HandleResult.NoMatchingHandler || handled == Router.HandleResult.Fallback) {
       route.resume();
