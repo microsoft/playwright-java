@@ -31,11 +31,11 @@ jobs:
     - name: Build & Install
       run: mvn -B install -D skipTests --no-transfer-progress
     - name: Run tests
-      run: mvn test --no-transfer-progress --fail-at-end
+      run: mvn test --no-transfer-progress --fail-at-end -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
       env:
         BROWSER: ${{ matrix.browser }}
     - name: Run tracing tests w/ sources
-      run: mvn test --no-transfer-progress --fail-at-end -D test=*TestTracing*
+      run: mvn test --no-transfer-progress --fail-at-end -D test=*TestTracing* -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
       env:
         BROWSER: ${{ matrix.browser }}
         PLAYWRIGHT_JAVA_SRC: src/test/java
@@ -79,7 +79,7 @@ jobs:
       - name: Build & Install
         run: mvn -B install -D skipTests --no-transfer-progress
       - name: Run tests
-        run: mvn test --no-transfer-progress --fail-at-end
+        run: mvn test --no-transfer-progress --fail-at-end -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
         env:
           BROWSER: chromium
           BROWSER_CHANNEL: ${{ matrix.browser-channel }}
