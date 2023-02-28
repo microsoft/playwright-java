@@ -56,6 +56,7 @@ public class TestPageNetworkResponse extends TestBase {
       exchange.sendResponseHeaders(200, 0);
       OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
       writer.write("hello ");
+      writer.flush();
     });
 
     // send request and wait for server response
@@ -80,6 +81,7 @@ public class TestPageNetworkResponse extends TestBase {
       exchange.sendResponseHeaders(200, 0);
       OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
       writer.write("hello ");
+      writer.flush();
     });
 
     // send request and wait for server response
