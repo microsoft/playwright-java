@@ -52,18 +52,20 @@ public class TestPageWaitForUrl extends TestBase {
 
   @Test
   void shouldWorkWithCommit() {
+    server.setRoute("/script.js", exchange -> {});
     server.setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "text/html");
-      exchange.sendResponseHeaders(200, 8192);
-      OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
-      writer.write("<title>" + String.join("", nCopies(4100, "A")));
-      writer.flush();
+      exchange.sendResponseHeaders(200, 0);
+      try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write("<title>Hello</title><script src=\"script.js\"></script>");
+      }
     });
     try {
       page.navigate(server.EMPTY_PAGE, new Page.NavigateOptions().setTimeout(100));
     } catch (TimeoutError e) {
     }
     page.waitForURL("**/empty.html", new Page.WaitForURLOptions().setWaitUntil(WaitUntilState.COMMIT));
+    assertEquals("Hello", page.title());
   }
 
   @Test

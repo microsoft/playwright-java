@@ -58,19 +58,21 @@ public class TestPageWaitForNavigation extends TestBase {
 
   @Test
   void shouldWorkWithCommit() {
+    server.setRoute("/script.js", exchange -> {});
     server.setRoute("/empty.html", exchange -> {
       exchange.getResponseHeaders().add("Content-Type", "text/html");
-      exchange.sendResponseHeaders(200, 8192);
-      OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody());
-      writer.write("<title>" + String.join("", nCopies(4100, "A")));
-      writer.flush();
+      exchange.sendResponseHeaders(200, 0);
+      try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write("<title>Hello</title><script src=\"script.js\"></script>");
+      }
     });
     page.waitForNavigation(new Page.WaitForNavigationOptions().setWaitUntil(WaitUntilState.COMMIT), () -> {
       try {
-        page.navigate(server.EMPTY_PAGE, new Page.NavigateOptions().setTimeout(100));
+        page.navigate(server.EMPTY_PAGE, new Page.NavigateOptions().setTimeout(1000));
       } catch (TimeoutError e) {
       }
     });
+    assertEquals("Hello", page.title());
   }
 
   @Test
