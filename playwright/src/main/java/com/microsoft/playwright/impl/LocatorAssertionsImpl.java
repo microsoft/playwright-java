@@ -288,8 +288,10 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
 
   @Override
   public void isChecked(IsCheckedOptions options) {
-    String expression = (options != null && options.checked != null && !options.checked) ? "to.be.unchecked" : "to.be.checked";
-    expectTrue(expression, "Locator expected to be checked", convertType(options, FrameExpectOptions.class));
+    boolean unchecked = options != null && options.checked != null && !options.checked;
+    String expression = unchecked ? "to.be.unchecked" : "to.be.checked";
+    String message = "Locator expected to be " + (unchecked ? "un" : "") + "checked";
+    expectTrue(expression, message, convertType(options, FrameExpectOptions.class));
   }
 
   @Override
@@ -301,7 +303,8 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   public void isEditable(IsEditableOptions options) {
     FrameExpectOptions frameOptions = convertType(options, FrameExpectOptions.class);
     boolean editable = options == null || options.editable == null || options.editable == true;
-    expectTrue(editable ? "to.be.editable" : "to.be.readonly", "Locator expected to be editable", frameOptions);
+    String message = "Locator expected to be " + (editable ? "editable" : "readonly");
+    expectTrue(editable ? "to.be.editable" : "to.be.readonly", message, frameOptions);
   }
 
   @Override
@@ -313,7 +316,8 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   public void isEnabled(IsEnabledOptions options) {
     FrameExpectOptions frameOptions = convertType(options, FrameExpectOptions.class);
     boolean enabled = options == null || options.enabled == null || options.enabled == true;
-    expectTrue(enabled ? "to.be.enabled" : "to.be.disabled", "Locator expected to be enabled", frameOptions);
+    String message = "Locator expected to be " + (enabled ? "enabled" : "disabled");
+    expectTrue(enabled ? "to.be.enabled" : "to.be.disabled", message, frameOptions);
   }
 
   @Override
@@ -339,7 +343,8 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   public void isVisible(IsVisibleOptions options) {
     FrameExpectOptions frameOptions = convertType(options, FrameExpectOptions.class);
     boolean visible = options == null || options.visible == null || options.visible == true;
-    expectTrue(visible ? "to.be.visible" : "to.be.hidden", "Locator expected to be visible", frameOptions);
+    String message = "Locator expected to be " + (visible ? "visible" : "hidden");
+    expectTrue(visible ? "to.be.visible" : "to.be.hidden", message, frameOptions);
   }
 
   private void expectTrue(String expression, String message, FrameExpectOptions options) {
