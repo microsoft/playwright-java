@@ -22,26 +22,45 @@ import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Tracing;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
 class TracingImpl extends ChannelOwner implements Tracing {
+  private boolean includeSources;
+  private List<CallMetadata> metadataCollector = new ArrayList<>();
+
   TracingImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 
   private void stopChunkImpl(Path path) {
+    connection.stopCollectingCallMetadata(metadataCollector);
+    List<CallMetadata> metadata = metadataCollector;
+    metadataCollector = new ArrayList<>();
+
     JsonObject params = new JsonObject();
-    String mode = "doNotSave";
-    if (path != null) {
-      if (connection.isRemote) {
-        mode = "compressTrace";
-      } else {
-        mode = "compressTraceAndSources";
-      }
+
+    // Not interested in artifacts.
+    if (path == null) {
+      params.addProperty("mode", "discard");
+      sendMessage("tracingStopChunk", params);
+      return;
     }
-    params.addProperty("mode", mode);
+
+    boolean isLocal = !connection.isRemote;
+    if (isLocal) {
+      params.addProperty("mode", "entries");
+      JsonObject json = sendMessage("tracingStopChunk", params).getAsJsonObject();
+      JsonArray entries = json.getAsJsonArray("entries");
+      connection.localUtils.zip(path, entries, metadata, false, includeSources);
+      return;
+    }
+
+    params.addProperty("mode", "archive");
     JsonObject json = sendMessage("tracingStopChunk", params).getAsJsonObject();
+    // The artifact may be missing if the browser closed while stopping tracing.
     if (!json.has("artifact")) {
       return;
     }
@@ -52,9 +71,9 @@ class TracingImpl extends ChannelOwner implements Tracing {
     // Add local sources to the remote trace if necessary.
     // In case of CDP connection since the connection is established by
     // the driver it is safe to consider the artifact local.
-    if (connection.isRemote && json.has("sourceEntries")) {
-      JsonArray entries = json.getAsJsonArray("sourceEntries");
-      connection.localUtils.zip(path, entries);
+    if (json.has("entries")) {
+      JsonArray entries = json.getAsJsonArray("entries");
+      connection.localUtils.zip(path, entries, metadata, true, includeSources);
     }
   }
 
@@ -74,6 +93,10 @@ class TracingImpl extends ChannelOwner implements Tracing {
     if (options == null) {
       options = new StartChunkOptions();
     }
+    if (includeSources) {
+      metadataCollector = new ArrayList<>();
+      connection.startCollectingCallMetadata(metadataCollector);
+    }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     sendMessage("tracingStartChunk", params);
   }
@@ -83,11 +106,10 @@ class TracingImpl extends ChannelOwner implements Tracing {
       options = new StartOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    boolean includeSources = options.sources != null && options.sources;
+    includeSources = options.sources != null && options.sources;
     if (includeSources) {
-      if (!connection.isCollectingStacks()) {
-        throw new PlaywrightException("Source root directory must be specified via PLAYWRIGHT_JAVA_SRC environment variable when source collection is enabled");
-      }
+      metadataCollector = new ArrayList<>();
+      connection.startCollectingCallMetadata(metadataCollector);
       params.addProperty("sources", true);
     }
     sendMessage("tracingStart", params);

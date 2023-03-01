@@ -18,6 +18,7 @@ package com.microsoft.playwright.impl;
 
 import com.microsoft.playwright.FrameLocator;
 import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.AriaRole;
 
 import java.util.regex.Pattern;
@@ -117,6 +118,15 @@ class FrameLocatorImpl implements FrameLocator {
   @Override
   public Locator locator(String selector, LocatorOptions options) {
     return new LocatorImpl(frame, frameSelector + " >> internal:control=enter-frame >> " + selector, convertType(options, Locator.LocatorOptions.class));
+  }
+
+  @Override
+  public Locator locator(Locator selectorOrLocator, LocatorOptions options) {
+    LocatorImpl other = (LocatorImpl) selectorOrLocator;
+    if (other.frame != frame) {
+      throw new PlaywrightException("Locators must belong to the same frame.");
+    }
+    return locator(other.selector, options);
   }
 
   @Override

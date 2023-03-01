@@ -20,8 +20,8 @@ import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 class LocatorImpl implements Locator {
-  private final FrameImpl frame;
-  private final String selector;
+  final FrameImpl frame;
+  final String selector;
 
   public LocatorImpl(FrameImpl frame, String selector, LocatorOptions options) {
     this.frame = frame;
@@ -382,6 +382,15 @@ class LocatorImpl implements Locator {
   @Override
   public Locator locator(String selector, LocatorOptions options) {
     return new LocatorImpl(frame, this.selector + " >> " + selector, options);
+  }
+
+  @Override
+  public Locator locator(Locator selectorOrLocator, LocatorOptions options) {
+    LocatorImpl other = (LocatorImpl) selectorOrLocator;
+    if (other.frame != frame) {
+      throw new PlaywrightException("Locators must belong to the same frame.");
+    }
+    return locator(other.selector, options);
   }
 
   @Override

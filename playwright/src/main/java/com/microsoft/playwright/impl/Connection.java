@@ -16,6 +16,7 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.Playwright;
@@ -24,8 +25,7 @@ import com.microsoft.playwright.TimeoutError;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
@@ -67,6 +67,7 @@ public class Connection {
   }
   LocalUtils localUtils;
   final Map<String, String> env;
+  private Set<List<CallMetadata>> stackCollectors = Collections.newSetFromMap(new IdentityHashMap<>());
 
   class Root extends ChannelOwner {
     Root(Connection connection) {
@@ -101,8 +102,15 @@ public class Connection {
     stackTraceCollector = StackTraceCollector.createFromEnv(env);
   }
 
-  boolean isCollectingStacks() {
-    return stackTraceCollector != null;
+  void startCollectingCallMetadata(List<CallMetadata> collection) {
+    if (stackTraceCollector == null) {
+      throw new PlaywrightException("Source root directory must be specified via PLAYWRIGHT_JAVA_SRC environment variable when source collection is enabled");
+    }
+    stackCollectors.add(collection);
+  }
+
+  void stopCollectingCallMetadata(List<CallMetadata> collection) {
+    stackCollectors.remove(collection);
   }
 
   String setApiName(String name) {
@@ -140,7 +148,21 @@ public class Connection {
       // All but first message in an API call are considered internal and will be hidden from the inspector.
       apiName = null;
       if (stackTraceCollector != null) {
-        metadata.add("stack", stackTraceCollector.currentStackTrace());
+        JsonArray stack = stackTraceCollector.currentStackTrace();
+        CallMetadata callMetadata = new CallMetadata();
+        callMetadata.id = id;
+        callMetadata.stack = stack;
+        for (List<CallMetadata> collector : stackCollectors) {
+          collector.add(callMetadata);
+        }
+        if (!stack.isEmpty()) {
+          JsonObject location = new JsonObject();
+          JsonObject frame = stack.get(0).getAsJsonObject();
+          location.addProperty("file", frame.get("file").getAsString());
+          location.addProperty("line", frame.get("line").getAsInt());
+          location.addProperty("column", frame.get("column").getAsInt());
+          metadata.add("location", location);
+        }
       }
     }
     message.add("metadata", metadata);

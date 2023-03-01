@@ -176,6 +176,18 @@ public interface BrowserContext extends AutoCloseable {
   }
   class RouteFromHAROptions {
     /**
+     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If
+     * {@code attach} is specified, resources are persisted as separate files or entries in the ZIP archive. If {@code embed}
+     * is specified, content is stored inline the HAR file
+     */
+    public HarContentPolicy content;
+    /**
+     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
+     * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
+     * minimal}.
+     */
+    public HarMode mode;
+    /**
      * <ul>
      * <li> If set to 'abort' any request not found in the HAR file will be aborted.</li>
      * <li> If set to 'fallback' falls through to the next route handler in the handler chain.</li>
@@ -195,6 +207,24 @@ public interface BrowserContext extends AutoCloseable {
      */
     public Object url;
 
+    /**
+     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If
+     * {@code attach} is specified, resources are persisted as separate files or entries in the ZIP archive. If {@code embed}
+     * is specified, content is stored inline the HAR file
+     */
+    public RouteFromHAROptions setContent(HarContentPolicy content) {
+      this.content = content;
+      return this;
+    }
+    /**
+     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
+     * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
+     * minimal}.
+     */
+    public RouteFromHAROptions setMode(HarMode mode) {
+      this.mode = mode;
+      return this;
+    }
     /**
      * <ul>
      * <li> If set to 'abort' any request not found in the HAR file will be aborted.</li>
