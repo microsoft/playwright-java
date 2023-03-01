@@ -674,6 +674,15 @@ public class TestLocatorAssertions extends TestBase {
   }
 
   @Test
+  void isCheckedFalseFail() {
+    page.setContent("<input checked type=checkbox></input>");
+    Locator locator = page.locator("input");
+    AssertionFailedError error = assertThrows(AssertionFailedError.class,
+      () -> assertThat(locator).isChecked(new LocatorAssertions.IsCheckedOptions().setChecked(false).setTimeout(1000)));
+    assertTrue(error.getMessage().contains("Locator expected to be unchecked"), error.getMessage());
+  }
+
+  @Test
   void isDisabledPass() {
     page.setContent("<button disabled>Text</button>");
     Locator locator = page.locator("button");
@@ -721,6 +730,15 @@ public class TestLocatorAssertions extends TestBase {
     assertNull(e.getExpected());
     assertNull(e.getActual());
     assertTrue(e.getMessage().contains("Locator expected to be editable"), e.getMessage());
+  }
+
+  @Test
+  void isEditableFalseFail() {
+    page.setContent("<input></input>");
+    Locator locator = page.locator("input");
+    AssertionFailedError error = assertThrows(AssertionFailedError.class,
+      () -> assertThat(locator).isEditable(new LocatorAssertions.IsEditableOptions().setEditable(false).setTimeout(1000)));
+    assertTrue(error.getMessage().contains("Locator expected to be readonly"), error.getMessage());
   }
 
   @Test
@@ -840,6 +858,15 @@ public class TestLocatorAssertions extends TestBase {
   }
 
   @Test
+  void isEnabledFalseFail() {
+    page.setContent("<button>Text</button>");
+    Locator locator = page.locator("button");
+    AssertionFailedError error = assertThrows(AssertionFailedError.class,
+      () -> assertThat(locator).isEnabled(new LocatorAssertions.IsEnabledOptions().setEnabled(false).setTimeout(1000)));
+    assertTrue(error.getMessage().contains("Locator expected to be disabled"), error.getMessage());
+  }
+
+  @Test
   void isEnabledEventually() {
     page.setContent("<button disabled>Text</button>");
     Locator locator = page.locator("button");
@@ -947,6 +974,15 @@ public class TestLocatorAssertions extends TestBase {
     assertNull(e.getExpected());
     assertNull(e.getActual());
     assertTrue(e.getMessage().contains("Locator expected to be visible"), e.getMessage());
+  }
+
+  @Test
+  void isVisibleFalseFail() {
+    page.setContent("<input></input>");
+    Locator locator = page.locator("input");
+    AssertionFailedError error = assertThrows(AssertionFailedError.class,
+      () -> assertThat(locator).isVisible(new LocatorAssertions.IsVisibleOptions().setVisible(false).setTimeout(1000)));
+    assertTrue(error.getMessage().contains("Locator expected to be hidden"), error.getMessage());
   }
 
   @Test
