@@ -28,6 +28,7 @@ import java.time.Duration;
 import java.util.*;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static java.lang.System.currentTimeMillis;
 
 class Message {
   int id;
@@ -141,6 +142,7 @@ public class Connection {
     message.addProperty("method", method);
     message.add("params", params);
     JsonObject metadata = new JsonObject();
+    metadata.addProperty("wallTime", currentTimeMillis());
     if (apiName == null) {
       metadata.addProperty("internal", true);
     } else {
