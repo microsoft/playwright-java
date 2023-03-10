@@ -2821,10 +2821,10 @@ public interface Locator {
    * locator.click();
    * }</pre>
    *
-   * @param selector A selector to use when resolving DOM element.
+   * @param selectorOrLocator A selector to use when resolving DOM element.
    * @since v1.17
    */
-  FrameLocator frameLocator(String selector);
+  FrameLocator frameLocator(String selectorOrLocator);
   /**
    * Returns the matching element's attribute value.
    *
@@ -3683,11 +3683,11 @@ public interface Locator {
    *
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
-   * @param selector A selector to use when resolving DOM element.
+   * @param selectorOrLocator A selector or locator to use when resolving DOM element.
    * @since v1.14
    */
-  default Locator locator(String selector) {
-    return locator(selector, null);
+  default Locator locator(String selectorOrLocator) {
+    return locator(selectorOrLocator, null);
   }
   /**
    * The method finds an element matching the specified selector in the locator's subtree. It also accepts filter options,
@@ -3695,10 +3695,32 @@ public interface Locator {
    *
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
-   * @param selector A selector to use when resolving DOM element.
+   * @param selectorOrLocator A selector or locator to use when resolving DOM element.
    * @since v1.14
    */
-  Locator locator(String selector, LocatorOptions options);
+  Locator locator(String selectorOrLocator, LocatorOptions options);
+  /**
+   * The method finds an element matching the specified selector in the locator's subtree. It also accepts filter options,
+   * similar to {@link Locator#filter Locator.filter()} method.
+   *
+   * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
+   *
+   * @param selectorOrLocator A selector or locator to use when resolving DOM element.
+   * @since v1.14
+   */
+  default Locator locator(Locator selectorOrLocator) {
+    return locator(selectorOrLocator, null);
+  }
+  /**
+   * The method finds an element matching the specified selector in the locator's subtree. It also accepts filter options,
+   * similar to {@link Locator#filter Locator.filter()} method.
+   *
+   * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
+   *
+   * @param selectorOrLocator A selector or locator to use when resolving DOM element.
+   * @since v1.14
+   */
+  Locator locator(Locator selectorOrLocator, LocatorOptions options);
   /**
    * Returns locator to the n-th matching element. It's zero based, {@code nth(0)} selects the first element.
    *

@@ -118,6 +118,7 @@ class StackTraceCollector {
       JsonObject jsonFrame = new JsonObject();
       jsonFrame.addProperty("file", sourceFile(frame));
       jsonFrame.addProperty("line", frame.getLineNumber());
+      jsonFrame.addProperty("column", 0);
       jsonFrame.addProperty("function", frame.getClassName() + "." + frame.getMethodName());
       jsonStack.add(jsonFrame);
     }

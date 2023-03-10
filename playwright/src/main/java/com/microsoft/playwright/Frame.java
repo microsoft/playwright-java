@@ -4886,24 +4886,7 @@ public interface Frame {
    */
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
   /**
-   * Waits for the frame navigation and returns the main resource response. In case of multiple redirects, the navigation
-   * will resolve with the response of the last redirect. In case of navigation to a different anchor or navigation due to
-   * History API usage, the navigation will resolve with {@code null}.
-   *
-   * <p> **Usage**
-   *
-   * <p> This method waits for the frame to navigate to a new URL. It is useful for when you run code which will indirectly cause
-   * the frame to navigate. Consider this example:
-   * <pre>{@code
-   * // The method returns after navigation has finished
-   * frame.waitForNavigation(() -> {
-   *   // Clicking the link will indirectly cause a navigation
-   *   frame.click("a.delayed-navigation");
-   * });
-   * }</pre>
-   *
-   * <p> <strong>NOTE:</strong> Usage of the <a href="https://developer.mozilla.org/en-US/docs/Web/API/History_API">History API</a> to change the URL is
-   * considered a navigation.
+   * @deprecated This method is inherently racy, please use {@link Frame#waitForURL Frame.waitForURL()} instead.
    *
    * @param callback Callback that performs the action triggering the event.
    * @since v1.8
@@ -4912,24 +4895,7 @@ public interface Frame {
     return waitForNavigation(null, callback);
   }
   /**
-   * Waits for the frame navigation and returns the main resource response. In case of multiple redirects, the navigation
-   * will resolve with the response of the last redirect. In case of navigation to a different anchor or navigation due to
-   * History API usage, the navigation will resolve with {@code null}.
-   *
-   * <p> **Usage**
-   *
-   * <p> This method waits for the frame to navigate to a new URL. It is useful for when you run code which will indirectly cause
-   * the frame to navigate. Consider this example:
-   * <pre>{@code
-   * // The method returns after navigation has finished
-   * frame.waitForNavigation(() -> {
-   *   // Clicking the link will indirectly cause a navigation
-   *   frame.click("a.delayed-navigation");
-   * });
-   * }</pre>
-   *
-   * <p> <strong>NOTE:</strong> Usage of the <a href="https://developer.mozilla.org/en-US/docs/Web/API/History_API">History API</a> to change the URL is
-   * considered a navigation.
+   * @deprecated This method is inherently racy, please use {@link Frame#waitForURL Frame.waitForURL()} instead.
    *
    * @param callback Callback that performs the action triggering the event.
    * @since v1.8

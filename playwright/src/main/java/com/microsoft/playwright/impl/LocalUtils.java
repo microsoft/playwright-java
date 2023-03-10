@@ -20,16 +20,22 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.nio.file.Path;
+import java.util.List;
+
+import static com.microsoft.playwright.impl.Serialization.gson;
 
 class LocalUtils extends ChannelOwner {
   LocalUtils(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 
-  void zip(Path zipFile, JsonArray entries) {
+  void zip(Path zipFile, JsonArray entries, List<CallMetadata> metadata, boolean appendMode, boolean includeSources) {
     JsonObject params = new JsonObject();
     params.addProperty("zipFile", zipFile.toString());
     params.add("entries", entries);
+    params.addProperty("mode", appendMode ? "append" : "write");
+    params.add("metadata", gson().toJsonTree(metadata));
+    params.addProperty("includeSources", includeSources);
     sendMessage("zip", params);
   }
 }

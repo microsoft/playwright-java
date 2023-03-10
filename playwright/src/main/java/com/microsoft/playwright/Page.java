@@ -2250,6 +2250,8 @@ public interface Page extends AutoCloseable {
     }
   }
   class RouteFromHAROptions {
+    public HarContentPolicy content;
+    public HarMode mode;
     /**
      * <ul>
      * <li> If set to 'abort' any request not found in the HAR file will be aborted.</li>
@@ -2270,6 +2272,14 @@ public interface Page extends AutoCloseable {
      */
     public Object url;
 
+    public RouteFromHAROptions setContent(HarContentPolicy content) {
+      this.content = content;
+      return this;
+    }
+    public RouteFromHAROptions setMode(HarMode mode) {
+      this.mode = mode;
+      return this;
+    }
     /**
      * <ul>
      * <li> If set to 'abort' any request not found in the HAR file will be aborted.</li>

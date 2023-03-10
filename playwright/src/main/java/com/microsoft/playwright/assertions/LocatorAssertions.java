@@ -580,7 +580,7 @@ public interface LocatorAssertions {
    *
    * <p> **Usage**
    * <pre>{@code
-   * Locator locator = page.locator("button.submit");
+   * Locator locator = page.getByRole(AriaRole.BUTTON);
    * // Make sure at least some part of element intersects viewport.
    * assertThat(locator).isInViewport();
    * // Make sure element is fully outside of viewport.
@@ -600,7 +600,7 @@ public interface LocatorAssertions {
    *
    * <p> **Usage**
    * <pre>{@code
-   * Locator locator = page.locator("button.submit");
+   * Locator locator = page.getByRole(AriaRole.BUTTON);
    * // Make sure at least some part of element intersects viewport.
    * assertThat(locator).isInViewport();
    * // Make sure element is fully outside of viewport.

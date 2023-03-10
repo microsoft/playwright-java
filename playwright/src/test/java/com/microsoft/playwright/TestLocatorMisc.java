@@ -102,4 +102,18 @@ public class TestLocatorMisc extends TestBase{
     assertTrue(blurred[0]);
     assertEquals(false, button.evaluate("button => document.activeElement === button"));
   }
+  @Test
+  void LocatorLocatorAndFrameLocatorLocatorShouldAcceptLocator() {
+    page.setContent("<div><input value=outer></div>\n" +
+      "    <iframe srcdoc=\"<div><input value=inner></div>\"></iframe>\n");
+    Locator inputLocator = page.locator("input");
+    assertEquals("outer", inputLocator.inputValue());
+    assertEquals("outer", page.locator("div").locator(inputLocator).inputValue());
+    assertEquals("inner", page.frameLocator("iframe").locator(inputLocator).inputValue());
+    assertEquals("inner", page.frameLocator("iframe").locator("div").locator(inputLocator).inputValue());
+
+    Locator divLocator = page.locator("div");
+    assertEquals("outer", divLocator.locator("input").inputValue());
+    assertEquals("inner", page.frameLocator("iframe").locator(divLocator).locator("input").inputValue());
+  }
 }

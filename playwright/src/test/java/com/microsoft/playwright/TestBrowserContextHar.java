@@ -38,6 +38,7 @@ import static com.microsoft.playwright.Utils.copy;
 import static com.microsoft.playwright.Utils.extractZip;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static com.microsoft.playwright.options.HarContentPolicy.ATTACH;
+import static com.microsoft.playwright.options.HarContentPolicy.EMBED;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBrowserContextHar extends TestBase {
@@ -421,6 +422,24 @@ public class TestBrowserContextHar extends TestBase {
       page1.routeFromHAR(harPath, new Page.RouteFromHAROptions().setUpdate(true));
       page1.navigate(server.PREFIX + "/one-style.html");
     }
+    try (BrowserContext context2 = browser.newContext()) {
+      Page page2 = context2.newPage();
+      page2.routeFromHAR(harPath, new Page.RouteFromHAROptions().setNotFound(HarNotFound.ABORT));
+      page2.navigate(server.PREFIX + "/one-style.html");
+      assertTrue(page2.content().contains("hello, world!"));
+      assertThat(page2.locator("body")).hasCSS("background-color", "rgb(255, 192, 203)");
+    }
+  }
+
+  @Test
+  void shouldUpdateHarZipForPageWithDifferentOptions(@TempDir Path tmpDir) {
+    Path harPath = tmpDir.resolve("har.zip");
+    try (BrowserContext context1 = browser.newContext()) {
+      Page page1 = context1.newPage();
+      page1.routeFromHAR(harPath, new Page.RouteFromHAROptions().setUpdate(true).setContent(EMBED).setMode(HarMode.FULL));
+      page1.navigate(server.PREFIX + "/one-style.html");
+    }
+
     try (BrowserContext context2 = browser.newContext()) {
       Page page2 = context2.newPage();
       page2.routeFromHAR(harPath, new Page.RouteFromHAROptions().setNotFound(HarNotFound.ABORT));
