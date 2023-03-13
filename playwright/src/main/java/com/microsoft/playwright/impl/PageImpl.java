@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
@@ -1499,6 +1500,26 @@ public class PageImpl extends ChannelOwner implements Page {
         } finally {
           offDialog(this);
         }
+      }
+    });
+  }
+
+  @Override
+  public void yieldUntil(Supplier<Boolean> condition) {
+    runUntil(() -> {}, new Waitable<Object>() {
+      @Override
+      public boolean isDone() {
+        return condition.get();
+      }
+
+      @Override
+      public Object get() {
+        return null;
+      }
+
+      @Override
+      public void dispose() {
+
       }
     });
   }

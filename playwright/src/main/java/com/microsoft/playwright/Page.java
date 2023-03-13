@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 /**
@@ -321,6 +322,13 @@ public interface Page extends AutoCloseable {
    * Removes handler that was previously added with {@link #onWorker onWorker(handler)}.
    */
   void offWorker(Consumer<Worker> handler);
+
+  /**
+   * Yields to the Playwright event loop until the {@link Supplier} given returns true.
+   *
+   * @param condition The condition under which the yield will end.
+   */
+  void yieldUntil(Supplier<Boolean> condition);
 
   class AddScriptTagOptions {
     /**

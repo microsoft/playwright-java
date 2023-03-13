@@ -20,6 +20,7 @@ import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 /**
@@ -5087,5 +5088,12 @@ public interface Frame {
    * @since v1.11
    */
   void waitForURL(Predicate<String> url, WaitForURLOptions options);
+
+  /**
+   * Yields to the Playwright event loop until the {@link Supplier} given returns true.
+   *
+   * @param condition The condition under which the yield will end.
+   */
+  void yieldUntil(Supplier<Boolean> condition);
 }
 

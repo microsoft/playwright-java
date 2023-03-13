@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.LocatorUtils.*;
@@ -1093,6 +1094,26 @@ public class FrameImpl extends ChannelOwner implements Frame {
   @Override
   public void waitForURL(Predicate<String> url, WaitForURLOptions options) {
     waitForURL(new UrlMatcher(url), options);
+  }
+
+  @Override
+  public void yieldUntil(Supplier<Boolean> condition) {
+    runUntil(() -> {}, new Waitable<Object>() {
+      @Override
+      public boolean isDone() {
+        return condition.get();
+      }
+
+      @Override
+      public Object get() {
+        return null;
+      }
+
+      @Override
+      public void dispose() {
+
+      }
+    });
   }
 
   private void waitForURL(UrlMatcher matcher, WaitForURLOptions options) {
