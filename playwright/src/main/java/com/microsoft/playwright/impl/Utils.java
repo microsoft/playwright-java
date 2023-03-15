@@ -82,6 +82,9 @@ class Utils {
   }
 
   static <T> T clone(T f) {
+    if (f == null) {
+      return f;
+    }
     return convertType(f, (Class<T>) f.getClass());
   }
 
