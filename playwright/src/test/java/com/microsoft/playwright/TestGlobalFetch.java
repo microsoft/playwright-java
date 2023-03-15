@@ -380,4 +380,35 @@ public class TestGlobalFetch extends TestBase {
     }
     request.dispose();
   }
+
+  @Test
+  void shouldNotModifyRequestMethodInOptions() {
+    APIRequestContext request = playwright.request().newContext();
+    server.setRoute("/empty.html", exchange -> {
+      exchange.getResponseHeaders().set("Content-type", "text/plain");
+      exchange.sendResponseHeaders(200, 0);
+      try (Writer writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write(exchange.getRequestMethod());
+      }
+    });
+    RequestOptions options = RequestOptions.create();
+    options.setTimeout(10000);
+    {
+      APIResponse response = request.fetch(server.EMPTY_PAGE, options);
+      assertTrue(response.ok());
+      assertEquals("GET", response.text());
+    }
+    {
+      APIResponse response = request.delete(server.EMPTY_PAGE, options);
+      assertTrue(response.ok());
+      assertEquals("DELETE", response.text());
+    }
+    {
+      APIResponse response = request.put(server.EMPTY_PAGE, options);
+      assertTrue(response.ok());
+      assertEquals("PUT", response.text());
+    }
+    request.dispose();
+  }
+
 }
