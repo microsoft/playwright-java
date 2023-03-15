@@ -193,7 +193,7 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
   }
 
   private static RequestOptionsImpl ensureOptions(RequestOptions options, String method) {
-    RequestOptionsImpl impl = (RequestOptionsImpl) options;
+    RequestOptionsImpl impl = Utils.clone((RequestOptionsImpl) options);
     if (impl == null) {
       impl = new RequestOptionsImpl();
     }

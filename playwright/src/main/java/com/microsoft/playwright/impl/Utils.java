@@ -18,6 +18,7 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.FilePayload;
 import com.microsoft.playwright.options.HttpHeader;
@@ -79,6 +80,14 @@ class Utils {
       throw new PlaywrightException("Internal error", e);
     }
   }
+
+  static <T> T clone(T f) {
+    if (f == null) {
+      return f;
+    }
+    return convertType(f, (Class<T>) f.getClass());
+  }
+
 
   static Set<Character> escapeGlobChars = new HashSet<>(Arrays.asList('/', '$', '^', '+', '.', '(', ')', '=', '!', '|'));
 
