@@ -29,13 +29,29 @@ class LocalUtils extends ChannelOwner {
     super(parent, type, guid, initializer);
   }
 
-  void zip(Path zipFile, JsonArray entries, List<CallMetadata> metadata, boolean appendMode, boolean includeSources) {
+  void zip(Path zipFile, JsonArray entries, String stacksId, boolean appendMode, boolean includeSources) {
     JsonObject params = new JsonObject();
     params.addProperty("zipFile", zipFile.toString());
     params.add("entries", entries);
     params.addProperty("mode", appendMode ? "append" : "write");
-    params.add("metadata", gson().toJsonTree(metadata));
+    params.addProperty("stacksId", stacksId);
     params.addProperty("includeSources", includeSources);
     sendMessage("zip", params);
+  }
+
+  void traceDiscarded(String stacksId) {
+    JsonObject params = new JsonObject();
+    params.addProperty("stacksId", stacksId);
+    sendMessage("traceDiscarded", params);
+  }
+
+  String tracingStarted(String tracesDir, String traceName) {
+    JsonObject params = new JsonObject();
+    if (tracesDir != null) {
+      params.addProperty("tracesDir", "");
+    }
+    params.addProperty("traceName", traceName);
+    JsonObject json = connection.localUtils().sendMessage("tracingStarted", params).getAsJsonObject();
+    return json.get("stacksId").getAsString();
   }
 }

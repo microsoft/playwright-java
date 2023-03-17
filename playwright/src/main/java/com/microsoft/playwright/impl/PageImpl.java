@@ -25,6 +25,7 @@ import com.microsoft.playwright.options.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -1455,6 +1456,15 @@ public class PageImpl extends ChannelOwner implements Page {
   public ElementHandle waitForSelector(String selector, WaitForSelectorOptions options) {
     return withLogging("Page.waitForSelector",
       () -> mainFrame.waitForSelectorImpl(selector, convertType(options, Frame.WaitForSelectorOptions.class)));
+  }
+
+  @Override
+  public void waitForCondition(BooleanSupplier predicate, WaitForConditionOptions options) {
+    List<Waitable<Void>> waitables = new ArrayList<>();
+    waitables.add(createWaitForCloseHelper());
+    waitables.add(createWaitableTimeout(options == null ? null : options.timeout));
+    waitables.add(new WaitablePredicate<>(predicate));
+    runUntil(() -> {}, new WaitableRace<>(waitables));
   }
 
   @Override

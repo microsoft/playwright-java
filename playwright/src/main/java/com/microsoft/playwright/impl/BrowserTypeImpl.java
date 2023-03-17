@@ -52,6 +52,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     JsonElement result = sendMessage("launch", params);
     BrowserImpl browser = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("browser").get("guid").getAsString());
     browser.browserType = this;
+    browser.launchOptions = options;
     return browser;
   }
 
@@ -229,6 +230,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
       context.setBaseUrl(options.baseURL);
     }
     context.setRecordHar(recordHarPath, harContentPolicy);
+    context.tracing().setTracesDir(options.tracesDir);
     return context;
   }
 

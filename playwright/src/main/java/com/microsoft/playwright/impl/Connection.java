@@ -25,7 +25,8 @@ import com.microsoft.playwright.TimeoutError;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static java.lang.System.currentTimeMillis;
@@ -68,7 +69,7 @@ public class Connection {
   }
   LocalUtils localUtils;
   final Map<String, String> env;
-  private Set<List<CallMetadata>> stackCollectors = Collections.newSetFromMap(new IdentityHashMap<>());
+  private int tracingCount;
 
   class Root extends ChannelOwner {
     Root(Connection connection) {
@@ -103,15 +104,12 @@ public class Connection {
     stackTraceCollector = StackTraceCollector.createFromEnv(env);
   }
 
-  void startCollectingCallMetadata(List<CallMetadata> collection) {
-    if (stackTraceCollector == null) {
-      throw new PlaywrightException("Source root directory must be specified via PLAYWRIGHT_JAVA_SRC environment variable when source collection is enabled");
+  void setIsTracing(boolean tracing) {
+    if (tracing) {
+      ++tracingCount;
+    } else {
+      --tracingCount;
     }
-    stackCollectors.add(collection);
-  }
-
-  void stopCollectingCallMetadata(List<CallMetadata> collection) {
-    stackCollectors.remove(collection);
   }
 
   String setApiName(String name) {
@@ -129,10 +127,10 @@ public class Connection {
   }
 
   public WaitableResult<JsonElement> sendMessageAsync(String guid, String method, JsonObject params) {
-    return internalSendMessage(guid, method, params);
+    return internalSendMessage(guid, method, params, true);
   }
 
-  private WaitableResult<JsonElement> internalSendMessage(String guid, String method, JsonObject params) {
+  private WaitableResult<JsonElement> internalSendMessage(String guid, String method, JsonObject params, boolean sendStack) {
     int id = ++lastId;
     WaitableResult<JsonElement> result = new WaitableResult<>();
     callbacks.put(id, result);
@@ -143,6 +141,7 @@ public class Connection {
     message.add("params", params);
     JsonObject metadata = new JsonObject();
     metadata.addProperty("wallTime", currentTimeMillis());
+    JsonArray stack = null;
     if (apiName == null) {
       metadata.addProperty("internal", true);
     } else {
@@ -150,13 +149,7 @@ public class Connection {
       // All but first message in an API call are considered internal and will be hidden from the inspector.
       apiName = null;
       if (stackTraceCollector != null) {
-        JsonArray stack = stackTraceCollector.currentStackTrace();
-        CallMetadata callMetadata = new CallMetadata();
-        callMetadata.id = id;
-        callMetadata.stack = stack;
-        for (List<CallMetadata> collector : stackCollectors) {
-          collector.add(callMetadata);
-        }
+        stack = stackTraceCollector.currentStackTrace();
         if (!stack.isEmpty()) {
           JsonObject location = new JsonObject();
           JsonObject frame = stack.get(0).getAsJsonObject();
@@ -169,6 +162,14 @@ public class Connection {
     }
     message.add("metadata", metadata);
     transport.send(message);
+    if (sendStack && tracingCount > 0 && stack != null && !method.startsWith("LocalUtils")) {
+      JsonObject callData = new JsonObject();
+      callData.addProperty("id", id);
+      callData.add("stack", stack);
+      JsonObject stackParams = new JsonObject();
+      stackParams.add("callData", callData);
+      internalSendMessage(localUtils.guid,"addStackToTracing", stackParams, false);
+    }
     return result;
   }
 

@@ -20,6 +20,7 @@ import com.microsoft.playwright.options.*;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -176,18 +177,6 @@ public interface BrowserContext extends AutoCloseable {
   }
   class RouteFromHAROptions {
     /**
-     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If
-     * {@code attach} is specified, resources are persisted as separate files or entries in the ZIP archive. If {@code embed}
-     * is specified, content is stored inline the HAR file
-     */
-    public HarContentPolicy content;
-    /**
-     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
-     * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
-     * minimal}.
-     */
-    public HarMode mode;
-    /**
      * <ul>
      * <li> If set to 'abort' any request not found in the HAR file will be aborted.</li>
      * <li> If set to 'fallback' falls through to the next route handler in the handler chain.</li>
@@ -202,29 +191,22 @@ public interface BrowserContext extends AutoCloseable {
      */
     public Boolean update;
     /**
-     * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
-     * will be served from the HAR file. If not specified, all requests are served from the HAR file.
+     * Optional setting to control resource content management. If {@code attach} is specified, resources are persisted as
+     * separate files or entries in the ZIP archive. If {@code embed} is specified, content is stored inline the HAR file.
      */
-    public Object url;
-
-    /**
-     * Optional setting to control resource content management. If {@code omit} is specified, content is not persisted. If
-     * {@code attach} is specified, resources are persisted as separate files or entries in the ZIP archive. If {@code embed}
-     * is specified, content is stored inline the HAR file
-     */
-    public RouteFromHAROptions setContent(HarContentPolicy content) {
-      this.content = content;
-      return this;
-    }
+    public RouteFromHarUpdateContentPolicy updateContent;
     /**
      * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
      * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
      * minimal}.
      */
-    public RouteFromHAROptions setMode(HarMode mode) {
-      this.mode = mode;
-      return this;
-    }
+    public HarMode updateMode;
+    /**
+     * A glob pattern, regular expression or predicate to match the request URL. Only requests with URL matching the pattern
+     * will be served from the HAR file. If not specified, all requests are served from the HAR file.
+     */
+    public Object url;
+
     /**
      * <ul>
      * <li> If set to 'abort' any request not found in the HAR file will be aborted.</li>
@@ -243,6 +225,23 @@ public interface BrowserContext extends AutoCloseable {
      */
     public RouteFromHAROptions setUpdate(boolean update) {
       this.update = update;
+      return this;
+    }
+    /**
+     * Optional setting to control resource content management. If {@code attach} is specified, resources are persisted as
+     * separate files or entries in the ZIP archive. If {@code embed} is specified, content is stored inline the HAR file.
+     */
+    public RouteFromHAROptions setUpdateContent(RouteFromHarUpdateContentPolicy updateContent) {
+      this.updateContent = updateContent;
+      return this;
+    }
+    /**
+     * When set to {@code minimal}, only record information necessary for routing from HAR. This omits sizes, timing, page,
+     * cookies, security and other types of HAR information that are not used when replaying from HAR. Defaults to {@code
+     * minimal}.
+     */
+    public RouteFromHAROptions setUpdateMode(HarMode updateMode) {
+      this.updateMode = updateMode;
       return this;
     }
     /**
@@ -275,6 +274,24 @@ public interface BrowserContext extends AutoCloseable {
      */
     public StorageStateOptions setPath(Path path) {
       this.path = path;
+      return this;
+    }
+  }
+  class WaitForConditionOptions {
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or
+     * {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     */
+    public Double timeout;
+
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or
+     * {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     */
+    public WaitForConditionOptions setTimeout(double timeout) {
+      this.timeout = timeout;
       return this;
     }
   }
@@ -1177,6 +1194,54 @@ public interface BrowserContext extends AutoCloseable {
    * @since v1.8
    */
   void unroute(Predicate<String> url, Consumer<Route> handler);
+  /**
+   * The method will block until the condition returns true. All Playwright events will be dispatched while the method is
+   * waiting for the condition.
+   *
+   * <p> **Usage**
+   *
+   * <p> Use the method to wait for a condition that depends on page events:
+   * <pre>{@code
+   * List<String> failedUrls = new ArrayList<>();
+   * context.onResponse(response -> {
+   *   if (!response.ok()) {
+   *     failedUrls.add(response.url());
+   *   }
+   * });
+   * page1.getByText("Create user").click();
+   * page2.getByText("Submit button").click();
+   * context.waitForCondition(() -> failedUrls.size() > 3);
+   * }</pre>
+   *
+   * @param condition Condition to wait for.
+   * @since v1.32
+   */
+  default void waitForCondition(BooleanSupplier condition) {
+    waitForCondition(condition, null);
+  }
+  /**
+   * The method will block until the condition returns true. All Playwright events will be dispatched while the method is
+   * waiting for the condition.
+   *
+   * <p> **Usage**
+   *
+   * <p> Use the method to wait for a condition that depends on page events:
+   * <pre>{@code
+   * List<String> failedUrls = new ArrayList<>();
+   * context.onResponse(response -> {
+   *   if (!response.ok()) {
+   *     failedUrls.add(response.url());
+   *   }
+   * });
+   * page1.getByText("Create user").click();
+   * page2.getByText("Submit button").click();
+   * context.waitForCondition(() -> failedUrls.size() > 3);
+   * }</pre>
+   *
+   * @param condition Condition to wait for.
+   * @since v1.32
+   */
+  void waitForCondition(BooleanSupplier condition, WaitForConditionOptions options);
   /**
    * Performs action and waits for a new {@code Page} to be created in the context. If predicate is provided, it passes
    * {@code Page} value into the {@code predicate} function and waits for {@code predicate(event)} to return a truthy value.

@@ -19,6 +19,7 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.options.HarContentPolicy;
 import com.microsoft.playwright.options.HarMode;
 import com.microsoft.playwright.options.HarNotFound;
+import com.microsoft.playwright.options.RouteFromHarUpdateContentPolicy;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.io.TempDir;
@@ -436,7 +437,10 @@ public class TestBrowserContextHar extends TestBase {
     Path harPath = tmpDir.resolve("har.zip");
     try (BrowserContext context1 = browser.newContext()) {
       Page page1 = context1.newPage();
-      page1.routeFromHAR(harPath, new Page.RouteFromHAROptions().setUpdate(true).setContent(EMBED).setMode(HarMode.FULL));
+      page1.routeFromHAR(harPath, new Page.RouteFromHAROptions()
+        .setUpdate(true)
+        .setUpdateContent(RouteFromHarUpdateContentPolicy.EMBED)
+        .setUpdateMode(HarMode.FULL));
       page1.navigate(server.PREFIX + "/one-style.html");
     }
 

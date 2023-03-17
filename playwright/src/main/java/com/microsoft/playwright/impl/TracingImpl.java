@@ -18,34 +18,37 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Tracing;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
 class TracingImpl extends ChannelOwner implements Tracing {
   private boolean includeSources;
-  private List<CallMetadata> metadataCollector = new ArrayList<>();
+  private Path tracesDir;
+  private boolean isTracing;
+  private String stacksId;
+
 
   TracingImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
 
   private void stopChunkImpl(Path path) {
-    connection.stopCollectingCallMetadata(metadataCollector);
-    List<CallMetadata> metadata = metadataCollector;
-    metadataCollector = new ArrayList<>();
-
+    if (isTracing) {
+      isTracing = false;
+      connection.setIsTracing(false);
+    }
     JsonObject params = new JsonObject();
 
     // Not interested in artifacts.
     if (path == null) {
       params.addProperty("mode", "discard");
       sendMessage("tracingStopChunk", params);
+      if (stacksId != null) {
+        connection.localUtils().traceDiscarded(stacksId);
+      }
       return;
     }
 
@@ -54,7 +57,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
       params.addProperty("mode", "entries");
       JsonObject json = sendMessage("tracingStopChunk", params).getAsJsonObject();
       JsonArray entries = json.getAsJsonArray("entries");
-      connection.localUtils.zip(path, entries, metadata, false, includeSources);
+      connection.localUtils.zip(path, entries, stacksId, false, includeSources);
       return;
     }
 
@@ -62,19 +65,16 @@ class TracingImpl extends ChannelOwner implements Tracing {
     JsonObject json = sendMessage("tracingStopChunk", params).getAsJsonObject();
     // The artifact may be missing if the browser closed while stopping tracing.
     if (!json.has("artifact")) {
+      if (stacksId != null) {
+        connection.localUtils().traceDiscarded(stacksId);
+      }
       return;
     }
     ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject("artifact").get("guid").getAsString());
     artifact.saveAs(path);
     artifact.delete();
 
-    // Add local sources to the remote trace if necessary.
-    // In case of CDP connection since the connection is established by
-    // the driver it is safe to consider the artifact local.
-    if (json.has("entries")) {
-      JsonArray entries = json.getAsJsonArray("entries");
-      connection.localUtils.zip(path, entries, metadata, true, includeSources);
-    }
+    connection.localUtils.zip(path, new JsonArray(), stacksId, true, includeSources);
   }
 
   @Override
@@ -93,12 +93,27 @@ class TracingImpl extends ChannelOwner implements Tracing {
     if (options == null) {
       options = new StartChunkOptions();
     }
-    if (includeSources) {
-      metadataCollector = new ArrayList<>();
-      connection.startCollectingCallMetadata(metadataCollector);
+    tracingStartChunk(options.name, options.title);
+  }
+
+  private void tracingStartChunk(String name, String title) {
+    JsonObject params = new JsonObject();
+    if (name != null) {
+      params.addProperty("name", name);
     }
-    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    sendMessage("tracingStartChunk", params);
+    if (title != null) {
+      params.addProperty("title", title);
+    }
+    JsonObject result = sendMessage("tracingStartChunk", params).getAsJsonObject();
+    startCollectingStacks(result.get("traceName").getAsString());
+  }
+
+  private void startCollectingStacks(String traceName) {
+    if (!isTracing) {
+      isTracing = true;
+      connection.setIsTracing(true);
+    }
+    stacksId = connection.localUtils().tracingStarted(tracesDir.toString(), traceName);
   }
 
   private void startImpl(StartOptions options) {
@@ -108,12 +123,10 @@ class TracingImpl extends ChannelOwner implements Tracing {
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     includeSources = options.sources != null && options.sources;
     if (includeSources) {
-      metadataCollector = new ArrayList<>();
-      connection.startCollectingCallMetadata(metadataCollector);
       params.addProperty("sources", true);
     }
     sendMessage("tracingStart", params);
-    sendMessage("tracingStartChunk");
+    tracingStartChunk(options.name, options.title);
   }
 
   @Override
@@ -129,5 +142,9 @@ class TracingImpl extends ChannelOwner implements Tracing {
     withLogging("Tracing.stopChunk", () -> {
       stopChunkImpl(options == null ? null : options.path);
     });
+  }
+
+  void setTracesDir(Path tracesDir) {
+    this.tracesDir = tracesDir;
   }
 }
