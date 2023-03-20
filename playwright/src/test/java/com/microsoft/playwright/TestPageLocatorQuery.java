@@ -140,18 +140,21 @@ public class TestPageLocatorQuery extends TestBase {
       new Page.LocatorOptions().setHasText("Save & Continue")).textContent());
   }
 
+  private static String removeHighlight(String markup) {
+    return markup.replaceAll("\\s__playwright_target__=\"[^\"]+\"", "");
+  }
   @Test
   void shouldSupportHasLocator() {
     page.setContent("<div><span>hello</span></div><div><span>world</span></div>");
     assertThat(page.locator("div", new Page.LocatorOptions().setHas(page.locator("text=world")))).hasCount(1);
-    assertEquals("<div><span>world</span></div>", page.locator("div", new Page.LocatorOptions().setHas(page.locator("text=world"))).evaluate("e => e.outerHTML"));
+    assertEquals("<div><span>world</span></div>", removeHighlight((String) page.locator("div", new Page.LocatorOptions().setHas(page.locator("text=world"))).evaluate("e => e.outerHTML")));
     assertThat(page.locator("div", new Page.LocatorOptions().setHas(page.locator("text='hello'")))).hasCount(1);
-    assertEquals("<div><span>hello</span></div>", page.locator("div", new Page.LocatorOptions().setHas(page.locator("text='hello'"))).evaluate("e => e.outerHTML"));
+    assertEquals("<div><span>hello</span></div>", removeHighlight((String) page.locator("div", new Page.LocatorOptions().setHas(page.locator("text='hello'"))).evaluate("e => e.outerHTML")));
     assertThat(page.locator("div", new Page.LocatorOptions().setHas(page.locator("xpath=./span")))).hasCount(2);
     assertThat(page.locator("div", new Page.LocatorOptions().setHas(page.locator("span")))).hasCount(2);
     assertThat(page.locator("div", new Page.LocatorOptions().setHas(page.locator("span", new Page.LocatorOptions().setHasText("wor"))))).hasCount(1);
-    assertEquals("<div><span>world</span></div>", page.locator("div", new Page.LocatorOptions().setHas(
-      page.locator("span", new Page.LocatorOptions().setHasText("wor")))).evaluate("e => e.outerHTML"));
+    assertEquals("<div><span>world</span></div>", removeHighlight((String) page.locator("div", new Page.LocatorOptions().setHas(
+      page.locator("span", new Page.LocatorOptions().setHasText("wor")))).evaluate("e => e.outerHTML")));
     assertThat(page.locator("div", new Page.LocatorOptions()
         .setHas(page.locator("span")).setHasText("wor"))).hasCount(1);
   }
