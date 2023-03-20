@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.options.LoadState.DOMCONTENTLOADED;
 import static com.microsoft.playwright.options.LoadState.LOAD;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPageBasic extends TestBase {
@@ -296,7 +297,7 @@ public class TestPageBasic extends TestBase {
   void frameFocusShouldWorkMultipleTimes() {
     Page page1 = context.newPage();
     Page page2 = context.newPage();
-    for (Page page : Arrays.asList(page1, page2)) {
+    for (Page page : asList(page1, page2)) {
       page.setContent("<button id='foo' onfocus='window.gotFocus=true'></button>");
       page.focus("#foo");
       assertEquals(true, page.evaluate("() => !!window['gotFocus']"));
@@ -308,5 +309,33 @@ public class TestPageBasic extends TestBase {
     page.navigate(server.PREFIX + "/drag-n-drop.html");
     page.dragAndDrop("#source", "#target");
     assertEquals(true, page.evalOnSelector("#target", "target => target.contains(document.querySelector('#source'))"));
+  }
+
+  @Test
+  void shouldWaitForCondition() {
+    List<String> messages = new ArrayList<>();
+    page.onConsoleMessage(m -> messages.add(m.text()));
+    page.evaluate("setTimeout(() => {\n" +
+      "  console.log('foo');\n" +
+      "  console.log('bar');\n" +
+      "}, 100);");
+    page.waitForCondition(() -> messages.size() > 1);
+    assertEquals(asList("foo", "bar"), messages);
+  }
+
+  @Test
+  void waitForConditionTimeout() {
+    PlaywrightException e = assertThrows(PlaywrightException.class,
+      () -> page.waitForCondition(() -> false, new Page.WaitForConditionOptions().setTimeout(100)));
+    assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
+  }
+  @Test
+  void waitForConditionPageClosed() {
+    PlaywrightException e = assertThrows(PlaywrightException.class,
+      () -> page.waitForCondition(() -> {
+        page.close();
+        return false;
+      }));
+    assertTrue(e.getMessage().contains("Page closed"), e.getMessage());
   }
 }

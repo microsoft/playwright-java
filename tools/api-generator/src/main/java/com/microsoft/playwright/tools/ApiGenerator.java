@@ -967,6 +967,10 @@ class Interface extends TypeDefinition {
     if (asList("Page", "Browser", "BrowserContext", "WebSocket", "Worker").contains(jsonName)) {
       output.add("import java.util.function.Consumer;");
     }
+    if (asList("Page", "BrowserContext").contains(jsonName)) {
+      output.add("import java.util.function.BooleanSupplier;");
+    }
+
     if (asList("Page", "Frame", "BrowserContext", "WebSocket").contains(jsonName)) {
       output.add("import java.util.function.Predicate;");
     }

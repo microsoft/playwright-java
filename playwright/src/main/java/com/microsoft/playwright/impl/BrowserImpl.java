@@ -41,6 +41,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
   boolean isConnectedOverWebSocket;
   private boolean isConnected = true;
   BrowserTypeImpl browserType;
+  BrowserType.LaunchOptions launchOptions;
 
   enum EventType {
     DISCONNECTED,
@@ -209,6 +210,9 @@ class BrowserImpl extends ChannelOwner implements Browser {
       context.setBaseUrl(options.baseURL);
     }
     context.setRecordHar(recordHarPath, harContentPolicy);
+    if (launchOptions != null) {
+      context.tracing().setTracesDir(launchOptions.tracesDir);
+    }
     contexts.add(context);
     return context;
   }

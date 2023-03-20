@@ -131,4 +131,27 @@ public class TestTracing extends TestBase {
     context.tracing().start(new Tracing.StartOptions().setSources(false));
   }
 
+  @Test
+  void shouldRespectTracesDirAndName(@TempDir Path tempDir) {
+    Path tracesDir = tempDir.resolve("trace-dir");
+    BrowserType.LaunchOptions options = createLaunchOptions();
+    options.setTracesDir(tracesDir);
+    try (Browser browser = browserType.launch(options)) {
+      BrowserContext context = browser.newContext();
+      Page page = context.newPage();
+
+      context.tracing().start(new Tracing.StartOptions().setName("name1").setSnapshots(true));
+      page.navigate(server.PREFIX + "/one-style.html");
+      context.tracing().stopChunk(new Tracing.StopChunkOptions().setPath(tempDir.resolve("trace1.zip")));
+      assertTrue(Files.exists(tracesDir.resolve("name1.trace")));
+      assertTrue(Files.exists(tracesDir.resolve("name1.network")));
+
+      context.tracing().startChunk(new Tracing.StartChunkOptions().setName("name2"));
+      page.navigate(server.PREFIX + "/har.html");
+      context.tracing().stop(new Tracing.StopOptions().setPath(tempDir.resolve("trace2.zip")));
+      assertTrue(Files.exists(tracesDir.resolve("name2.trace")));
+      assertTrue(Files.exists(tracesDir.resolve("name2.network")));
+    }
+  }
+
 }

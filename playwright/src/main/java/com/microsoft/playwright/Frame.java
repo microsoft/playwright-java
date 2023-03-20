@@ -172,8 +172,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -225,8 +225,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public CheckOptions setTimeout(double timeout) {
@@ -283,8 +283,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -365,8 +365,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public ClickOptions setTimeout(double timeout) {
@@ -419,8 +419,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -494,8 +494,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public DblclickOptions setTimeout(double timeout) {
@@ -519,8 +519,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -534,8 +534,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public DispatchEventOptions setTimeout(double timeout) {
@@ -571,8 +571,8 @@ public interface Frame {
      */
     public Position targetPosition;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -639,8 +639,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public DragAndDropOptions setTimeout(double timeout) {
@@ -691,8 +691,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -723,8 +723,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public FillOptions setTimeout(double timeout) {
@@ -739,8 +739,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -754,8 +754,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public FocusOptions setTimeout(double timeout) {
@@ -770,8 +770,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -785,8 +785,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public GetAttributeOptions setTimeout(double timeout) {
@@ -1114,8 +1114,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1175,8 +1175,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public HoverOptions setTimeout(double timeout) {
@@ -1200,8 +1200,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1215,8 +1215,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public InnerHTMLOptions setTimeout(double timeout) {
@@ -1231,8 +1231,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1246,8 +1246,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public InnerTextOptions setTimeout(double timeout) {
@@ -1262,8 +1262,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1277,8 +1277,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public InputValueOptions setTimeout(double timeout) {
@@ -1293,8 +1293,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1308,8 +1308,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public IsCheckedOptions setTimeout(double timeout) {
@@ -1324,8 +1324,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1339,8 +1339,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public IsDisabledOptions setTimeout(double timeout) {
@@ -1355,8 +1355,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1370,8 +1370,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public IsEditableOptions setTimeout(double timeout) {
@@ -1386,8 +1386,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1401,8 +1401,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public IsEnabledOptions setTimeout(double timeout) {
@@ -1529,8 +1529,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1560,8 +1560,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public PressOptions setTimeout(double timeout) {
@@ -1603,8 +1603,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1635,8 +1635,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SelectOptionOptions setTimeout(double timeout) {
@@ -1667,8 +1667,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1720,8 +1720,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SetCheckedOptions setTimeout(double timeout) {
@@ -1796,8 +1796,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1820,8 +1820,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SetInputFilesOptions setTimeout(double timeout) {
@@ -1857,8 +1857,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1918,8 +1918,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public TapOptions setTimeout(double timeout) {
@@ -1943,8 +1943,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1958,8 +1958,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public TextContentOptions setTimeout(double timeout) {
@@ -1984,8 +1984,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -2015,8 +2015,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public TypeOptions setTimeout(double timeout) {
@@ -2047,8 +2047,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -2100,8 +2100,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public UncheckOptions setTimeout(double timeout) {
@@ -2125,8 +2125,9 @@ public interface Frame {
      */
     public Double pollingInterval;
     /**
-     * maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
-     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or
+     * {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
@@ -2139,8 +2140,9 @@ public interface Frame {
       return this;
     }
     /**
-     * maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
-     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or
+     * {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public WaitForFunctionOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2264,8 +2266,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -2294,8 +2296,8 @@ public interface Frame {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public WaitForSelectorOptions setTimeout(double timeout) {
@@ -3103,12 +3105,14 @@ public interface Frame {
    */
   Locator getByAltText(Pattern text, GetByAltTextOptions options);
   /**
-   * Allows locating input elements by the text of the associated label.
+   * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
+   * the {@code aria-label} attribute.
    *
    * <p> **Usage**
    *
-   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
+   * page.getByLabel("Username").fill("john");
    * page.getByLabel("Password").fill("secret");
    * }</pre>
    *
@@ -3119,12 +3123,14 @@ public interface Frame {
     return getByLabel(text, null);
   }
   /**
-   * Allows locating input elements by the text of the associated label.
+   * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
+   * the {@code aria-label} attribute.
    *
    * <p> **Usage**
    *
-   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
+   * page.getByLabel("Username").fill("john");
    * page.getByLabel("Password").fill("secret");
    * }</pre>
    *
@@ -3133,12 +3139,14 @@ public interface Frame {
    */
   Locator getByLabel(String text, GetByLabelOptions options);
   /**
-   * Allows locating input elements by the text of the associated label.
+   * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
+   * the {@code aria-label} attribute.
    *
    * <p> **Usage**
    *
-   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
+   * page.getByLabel("Username").fill("john");
    * page.getByLabel("Password").fill("secret");
    * }</pre>
    *
@@ -3149,12 +3157,14 @@ public interface Frame {
     return getByLabel(text, null);
   }
   /**
-   * Allows locating input elements by the text of the associated label.
+   * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
+   * the {@code aria-label} attribute.
    *
    * <p> **Usage**
    *
-   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
+   * page.getByLabel("Username").fill("john");
    * page.getByLabel("Password").fill("secret");
    * }</pre>
    *

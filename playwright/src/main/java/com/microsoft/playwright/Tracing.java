@@ -110,10 +110,23 @@ public interface Tracing {
   }
   class StartChunkOptions {
     /**
+     * If specified, the trace is going to be saved into the file with the given name inside the {@code tracesDir} folder
+     * specified in {@link BrowserType#launch BrowserType.launch()}.
+     */
+    public String name;
+    /**
      * Trace name to be shown in the Trace Viewer.
      */
     public String title;
 
+    /**
+     * If specified, the trace is going to be saved into the file with the given name inside the {@code tracesDir} folder
+     * specified in {@link BrowserType#launch BrowserType.launch()}.
+     */
+    public StartChunkOptions setName(String name) {
+      this.name = name;
+      return this;
+    }
     /**
      * Trace name to be shown in the Trace Viewer.
      */

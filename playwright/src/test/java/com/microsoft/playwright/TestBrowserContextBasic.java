@@ -20,9 +20,11 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.microsoft.playwright.Utils.verifyViewport;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBrowserContextBasic extends TestBase {
@@ -253,4 +255,33 @@ public class TestBrowserContextBasic extends TestBase {
     assertEquals(true, page.evaluate("() => window.navigator.onLine"));
     context.close();
   }
+
+  @Test
+  void shouldWaitForCondition() {
+    List<String> messages = new ArrayList<>();
+    page.onConsoleMessage(m -> messages.add(m.text()));
+    page.evaluate("setTimeout(() => {\n" +
+      "  console.log('foo');\n" +
+      "  console.log('bar');\n" +
+      "}, 100);");
+    context.waitForCondition(() -> messages.size() > 1);
+    assertEquals(asList("foo", "bar"), messages);
+  }
+
+  @Test
+  void waitForConditionTimeout() {
+    PlaywrightException e = assertThrows(PlaywrightException.class,
+      () -> context.waitForCondition(() -> false, new BrowserContext.WaitForConditionOptions().setTimeout(100)));
+    assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
+  }
+  @Test
+  void waitForConditionPageClosed() {
+    PlaywrightException e = assertThrows(PlaywrightException.class,
+      () -> context.waitForCondition(() -> {
+        context.close();
+        return false;
+      }));
+    assertTrue(e.getMessage().contains("Context closed"), e.getMessage());
+  }
+
 }

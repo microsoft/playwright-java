@@ -402,12 +402,14 @@ public interface FrameLocator {
    */
   Locator getByAltText(Pattern text, GetByAltTextOptions options);
   /**
-   * Allows locating input elements by the text of the associated label.
+   * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
+   * the {@code aria-label} attribute.
    *
    * <p> **Usage**
    *
-   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
+   * page.getByLabel("Username").fill("john");
    * page.getByLabel("Password").fill("secret");
    * }</pre>
    *
@@ -418,12 +420,14 @@ public interface FrameLocator {
     return getByLabel(text, null);
   }
   /**
-   * Allows locating input elements by the text of the associated label.
+   * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
+   * the {@code aria-label} attribute.
    *
    * <p> **Usage**
    *
-   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
+   * page.getByLabel("Username").fill("john");
    * page.getByLabel("Password").fill("secret");
    * }</pre>
    *
@@ -432,12 +436,14 @@ public interface FrameLocator {
    */
   Locator getByLabel(String text, GetByLabelOptions options);
   /**
-   * Allows locating input elements by the text of the associated label.
+   * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
+   * the {@code aria-label} attribute.
    *
    * <p> **Usage**
    *
-   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
+   * page.getByLabel("Username").fill("john");
    * page.getByLabel("Password").fill("secret");
    * }</pre>
    *
@@ -448,12 +454,14 @@ public interface FrameLocator {
     return getByLabel(text, null);
   }
   /**
-   * Allows locating input elements by the text of the associated label.
+   * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
+   * the {@code aria-label} attribute.
    *
    * <p> **Usage**
    *
-   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
+   * page.getByLabel("Username").fill("john");
    * page.getByLabel("Password").fill("secret");
    * }</pre>
    *

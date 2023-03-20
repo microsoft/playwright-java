@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -410,8 +411,12 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
     JsonObject jsonOptions = new JsonObject();
     jsonOptions.addProperty("path", har.toAbsolutePath().toString());
-    jsonOptions.addProperty("content", HarContentPolicy.ATTACH.name().toLowerCase());
-    jsonOptions.addProperty("mode", HarMode.MINIMAL.name().toLowerCase());
+    jsonOptions.addProperty("content", options.updateContent == null ?
+      HarContentPolicy.ATTACH.name().toLowerCase() :
+      options.updateContent.name().toLowerCase());
+    jsonOptions.addProperty("mode", options.updateMode == null ?
+      HarMode.MINIMAL.name().toLowerCase() :
+      options.updateMode.name().toLowerCase());
     addHarUrlFilter(jsonOptions, options.url);
     params.add("options", jsonOptions);
     JsonObject json = sendMessage("harStart", params).getAsJsonObject();
@@ -505,6 +510,15 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   public void unroute(Predicate<String> url, Consumer<Route> handler) {
     unroute(new UrlMatcher(url), handler);
+  }
+
+  @Override
+  public void waitForCondition(BooleanSupplier predicate, WaitForConditionOptions options) {
+    List<Waitable<Void>> waitables = new ArrayList<>();
+    waitables.add(new WaitableContextClose<>());
+    waitables.add(timeoutSettings.createWaitable(options == null ? null : options.timeout));
+    waitables.add(new WaitablePredicate<>(predicate));
+    runUntil(() -> {}, new WaitableRace<>(waitables));
   }
 
   private class WaitableContextClose<R> extends WaitableEvent<EventType, R> {

@@ -31,15 +31,15 @@ import java.util.regex.Pattern;
 public interface Locator {
   class BlurOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public BlurOptions setTimeout(double timeout) {
@@ -49,15 +49,15 @@ public interface Locator {
   }
   class BoundingBoxOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public BoundingBoxOptions setTimeout(double timeout) {
@@ -83,8 +83,8 @@ public interface Locator {
      */
     public Position position;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -128,8 +128,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public CheckOptions setTimeout(double timeout) {
@@ -159,8 +159,8 @@ public interface Locator {
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -183,8 +183,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public ClearOptions setTimeout(double timeout) {
@@ -227,8 +227,8 @@ public interface Locator {
      */
     public Position position;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -301,8 +301,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public ClickOptions setTimeout(double timeout) {
@@ -350,8 +350,8 @@ public interface Locator {
      */
     public Position position;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -417,8 +417,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public DblclickOptions setTimeout(double timeout) {
@@ -437,15 +437,15 @@ public interface Locator {
   }
   class DispatchEventOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public DispatchEventOptions setTimeout(double timeout) {
@@ -476,8 +476,8 @@ public interface Locator {
      */
     public Position targetPosition;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -536,8 +536,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public DragToOptions setTimeout(double timeout) {
@@ -556,15 +556,15 @@ public interface Locator {
   }
   class ElementHandleOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public ElementHandleOptions setTimeout(double timeout) {
@@ -574,15 +574,15 @@ public interface Locator {
   }
   class EvaluateOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public EvaluateOptions setTimeout(double timeout) {
@@ -592,15 +592,15 @@ public interface Locator {
   }
   class EvaluateHandleOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public EvaluateHandleOptions setTimeout(double timeout) {
@@ -621,8 +621,8 @@ public interface Locator {
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -645,8 +645,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public FillOptions setTimeout(double timeout) {
@@ -700,15 +700,15 @@ public interface Locator {
   }
   class FocusOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public FocusOptions setTimeout(double timeout) {
@@ -718,15 +718,15 @@ public interface Locator {
   }
   class GetAttributeOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public GetAttributeOptions setTimeout(double timeout) {
@@ -991,8 +991,8 @@ public interface Locator {
      */
     public Position position;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1044,8 +1044,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public HoverOptions setTimeout(double timeout) {
@@ -1064,15 +1064,15 @@ public interface Locator {
   }
   class InnerHTMLOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public InnerHTMLOptions setTimeout(double timeout) {
@@ -1082,15 +1082,15 @@ public interface Locator {
   }
   class InnerTextOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public InnerTextOptions setTimeout(double timeout) {
@@ -1100,15 +1100,15 @@ public interface Locator {
   }
   class InputValueOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public InputValueOptions setTimeout(double timeout) {
@@ -1118,15 +1118,15 @@ public interface Locator {
   }
   class IsCheckedOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public IsCheckedOptions setTimeout(double timeout) {
@@ -1136,15 +1136,15 @@ public interface Locator {
   }
   class IsDisabledOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public IsDisabledOptions setTimeout(double timeout) {
@@ -1154,15 +1154,15 @@ public interface Locator {
   }
   class IsEditableOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public IsEditableOptions setTimeout(double timeout) {
@@ -1172,15 +1172,15 @@ public interface Locator {
   }
   class IsEnabledOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public IsEnabledOptions setTimeout(double timeout) {
@@ -1276,8 +1276,8 @@ public interface Locator {
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1299,8 +1299,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public PressOptions setTimeout(double timeout) {
@@ -1354,8 +1354,8 @@ public interface Locator {
      */
     public ScreenshotScale scale;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1430,8 +1430,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public ScreenshotOptions setTimeout(double timeout) {
@@ -1448,15 +1448,15 @@ public interface Locator {
   }
   class ScrollIntoViewIfNeededOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public ScrollIntoViewIfNeededOptions setTimeout(double timeout) {
@@ -1477,8 +1477,8 @@ public interface Locator {
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1501,8 +1501,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SelectOptionOptions setTimeout(double timeout) {
@@ -1517,8 +1517,8 @@ public interface Locator {
      */
     public Boolean force;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1532,8 +1532,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SelectTextOptions setTimeout(double timeout) {
@@ -1559,8 +1559,8 @@ public interface Locator {
      */
     public Position position;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1604,8 +1604,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SetCheckedOptions setTimeout(double timeout) {
@@ -1630,8 +1630,8 @@ public interface Locator {
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1646,8 +1646,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public SetInputFilesOptions setTimeout(double timeout) {
@@ -1678,8 +1678,8 @@ public interface Locator {
      */
     public Position position;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1731,8 +1731,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public TapOptions setTimeout(double timeout) {
@@ -1751,15 +1751,15 @@ public interface Locator {
   }
   class TextContentOptions {
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
 
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public TextContentOptions setTimeout(double timeout) {
@@ -1779,8 +1779,8 @@ public interface Locator {
      */
     public Boolean noWaitAfter;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1802,8 +1802,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public TypeOptions setTimeout(double timeout) {
@@ -1829,8 +1829,8 @@ public interface Locator {
      */
     public Position position;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1874,8 +1874,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public UncheckOptions setTimeout(double timeout) {
@@ -1906,8 +1906,8 @@ public interface Locator {
      */
     public WaitForSelectorState state;
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public Double timeout;
@@ -1928,8 +1928,8 @@ public interface Locator {
       return this;
     }
     /**
-     * Maximum time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can be
-     * changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
      */
     public WaitForOptions setTimeout(double timeout) {
@@ -1939,6 +1939,10 @@ public interface Locator {
   }
   /**
    * When locator points to a list of elements, returns array of locators, pointing to respective elements.
+   *
+   * <p> Note that {@link Locator#all Locator.all()} does not wait for elements to match the locator, and instead immediately
+   * returns whatever is present in the page. To avoid flakiness when elements are loaded dynamically, wait for the loading
+   * to finish before calling {@link Locator#all Locator.all()}.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -2821,10 +2825,10 @@ public interface Locator {
    * locator.click();
    * }</pre>
    *
-   * @param selectorOrLocator A selector to use when resolving DOM element.
+   * @param selector A selector to use when resolving DOM element.
    * @since v1.17
    */
-  FrameLocator frameLocator(String selectorOrLocator);
+  FrameLocator frameLocator(String selector);
   /**
    * Returns the matching element's attribute value.
    *
@@ -2902,12 +2906,14 @@ public interface Locator {
    */
   Locator getByAltText(Pattern text, GetByAltTextOptions options);
   /**
-   * Allows locating input elements by the text of the associated label.
+   * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
+   * the {@code aria-label} attribute.
    *
    * <p> **Usage**
    *
-   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
+   * page.getByLabel("Username").fill("john");
    * page.getByLabel("Password").fill("secret");
    * }</pre>
    *
@@ -2918,12 +2924,14 @@ public interface Locator {
     return getByLabel(text, null);
   }
   /**
-   * Allows locating input elements by the text of the associated label.
+   * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
+   * the {@code aria-label} attribute.
    *
    * <p> **Usage**
    *
-   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
+   * page.getByLabel("Username").fill("john");
    * page.getByLabel("Password").fill("secret");
    * }</pre>
    *
@@ -2932,12 +2940,14 @@ public interface Locator {
    */
   Locator getByLabel(String text, GetByLabelOptions options);
   /**
-   * Allows locating input elements by the text of the associated label.
+   * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
+   * the {@code aria-label} attribute.
    *
    * <p> **Usage**
    *
-   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
+   * page.getByLabel("Username").fill("john");
    * page.getByLabel("Password").fill("secret");
    * }</pre>
    *
@@ -2948,12 +2958,14 @@ public interface Locator {
     return getByLabel(text, null);
   }
   /**
-   * Allows locating input elements by the text of the associated label.
+   * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
+   * the {@code aria-label} attribute.
    *
    * <p> **Usage**
    *
-   * <p> For example, this method will find the input by label text "Password" in the following DOM:
+   * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
+   * page.getByLabel("Username").fill("john");
    * page.getByLabel("Password").fill("secret");
    * }</pre>
    *

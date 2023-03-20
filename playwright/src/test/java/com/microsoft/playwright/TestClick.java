@@ -24,6 +24,7 @@ import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static com.microsoft.playwright.options.KeyboardModifier.SHIFT;
 import static com.microsoft.playwright.options.MouseButton.RIGHT;
