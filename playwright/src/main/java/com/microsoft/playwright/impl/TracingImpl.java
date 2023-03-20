@@ -113,7 +113,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
       isTracing = true;
       connection.setIsTracing(true);
     }
-    stacksId = connection.localUtils().tracingStarted(tracesDir.toString(), traceName);
+    stacksId = connection.localUtils().tracingStarted(tracesDir == null ? null : tracesDir.toString(), traceName);
   }
 
   private void startImpl(StartOptions options) {

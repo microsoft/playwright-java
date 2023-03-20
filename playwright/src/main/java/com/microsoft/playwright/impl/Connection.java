@@ -168,7 +168,7 @@ public class Connection {
       callData.add("stack", stack);
       JsonObject stackParams = new JsonObject();
       stackParams.add("callData", callData);
-      internalSendMessage(localUtils.guid,"addStackToTracing", stackParams, false);
+      internalSendMessage(localUtils.guid,"addStackToTracingNoReply", stackParams, false);
     }
     return result;
   }
