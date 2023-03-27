@@ -1,5 +1,8 @@
 trigger:
   none
+  
+# don't trigger for Pull Requests
+pr: none
 
 pool:
   vmImage: ubuntu-22.04
