@@ -47,7 +47,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private final APIRequestContextImpl request;
   final List<PageImpl> pages = new ArrayList<>();
   final Router routes = new Router();
-  private boolean isClosedOrClosing;
+  private boolean closeWasCalled;
+  private final WaitableEvent<EventType, ?> closePromise;
   final Map<String, BindingCallback> bindings = new HashMap<>();
   PageImpl ownerPage;
   private static final Map<EventType, String> eventSubscriptions() {
@@ -90,8 +91,9 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     } else {
       browser = null;
     }
-    this.tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());
-    this.request = connection.getExistingObject(initializer.getAsJsonObject("requestContext").get("guid").getAsString());
+    tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());
+    request = connection.getExistingObject(initializer.getAsJsonObject("requestContext").get("guid").getAsString());
+    closePromise = new WaitableEvent<>(listeners, EventType.CLOSE);
   }
 
   void setRecordHar(Path path, HarContentPolicy policy) {
@@ -199,11 +201,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   private void closeImpl() {
-    if (isClosedOrClosing) {
-      return;
-    }
-    isClosedOrClosing = true;
-    try {
+    if (!closeWasCalled) {
+      closeWasCalled = true;
       for (Map.Entry<String, HarRecorder> entry : harRecorders.entrySet()) {
         JsonObject params = new JsonObject();
         params.addProperty("harId", entry.getKey());
@@ -225,13 +224,9 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         }
         artifact.delete();
       }
-
       sendMessage("close");
-    } catch (PlaywrightException e) {
-      if (!isSafeCloseError(e)) {
-        throw e;
-      }
     }
+    runUntil(() -> {}, closePromise);
   }
 
   @Override
@@ -624,7 +619,6 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   void didClose() {
-    isClosedOrClosing = true;
     if (browser != null) {
       browser.contexts.remove(this);
     }

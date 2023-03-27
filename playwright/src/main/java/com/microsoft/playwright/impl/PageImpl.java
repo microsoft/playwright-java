@@ -511,19 +511,21 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   public void close(CloseOptions options) {
-    if (isClosed) {
-      return;
+    if (options == null) {
+      options = new CloseOptions();
     }
-    JsonObject params = options == null ? new JsonObject() : gson().toJsonTree(options).getAsJsonObject();
     try {
-      sendMessage("close", params);
-    } catch (PlaywrightException exception) {
-      if (!isSafeCloseError(exception)) {
-        throw exception;
+      if (ownedContext != null) {
+        ownedContext.close();
+      } else {
+        JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+        sendMessage("close", params);
       }
-    }
-    if (ownedContext != null) {
-      ownedContext.close();
+    } catch (PlaywrightException exception) {
+      if (isSafeCloseError(exception) && (options.runBeforeUnload == null || !options.runBeforeUnload)) {
+        return;
+      }
+      throw exception;
     }
   }
 
