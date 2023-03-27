@@ -21,8 +21,10 @@ RUN apt-get update && \
     # For the MSEdge install script
     gpg && \
     rm -rf /var/lib/apt/lists/* && \
-    # Create the pwuser
-    adduser pwuser
+
+# Create the pwuser and make it passwordless sudoer.
+RUN adduser --disabled-password --gecos "" pwuser && \
+    echo "ALL            ALL = (ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 RUN VERSION=3.8.8 && \
     curl -o - https://archive.apache.org/dist/maven/maven-3/$VERSION/binaries/apache-maven-$VERSION-bin.tar.gz | tar zxfv - -C /opt/ && \
