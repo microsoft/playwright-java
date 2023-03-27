@@ -24,8 +24,8 @@ RUN apt-get update && \
     # Create the pwuser
     adduser pwuser
 
-RUN VERSION=3.8.7 && \
-    curl -o - https://dlcdn.apache.org/maven/maven-3/$VERSION/binaries/apache-maven-$VERSION-bin.tar.gz | tar zxfv - -C /opt/ && \
+RUN VERSION=3.8.8 && \
+    curl -o - https://archive.apache.org/dist/maven/maven-3/$VERSION/binaries/apache-maven-$VERSION-bin.tar.gz | tar zxfv - -C /opt/ && \
     ln -s /opt/apache-maven-$VERSION/bin/mvn /usr/local/bin/
 
 ARG PW_TARGET_ARCH
