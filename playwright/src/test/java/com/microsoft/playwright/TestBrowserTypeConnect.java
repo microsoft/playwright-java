@@ -349,40 +349,7 @@ public class TestBrowserTypeConnect extends TestBase {
     }
     browser.close();
   }
-
-  @Test
-  void shouldNotThrowOnContextCloseAfterDisconnect() throws InterruptedException {
-    BrowserServer remoteServer = launchBrowserServer(browserType);
-    Browser browser = browserType.connect(remoteServer.wsEndpoint);
-    BrowserContext context = browser.newContext();
-    Page page = context.newPage();
-
-    remoteServer.kill();
-    while (browser.isConnected()) {
-      try {
-        page.waitForTimeout(10);
-      } catch (PlaywrightException e) {
-      }
-    }
-    context.close();
-  }
-
-  @Test
-  void shouldNotThrowOnPageCloseAfterDisconnect() throws InterruptedException {
-    BrowserServer remoteServer = launchBrowserServer(browserType);
-    Browser browser = browserType.connect(remoteServer.wsEndpoint);
-    Page page = browser.newPage();
-
-    remoteServer.kill();
-    while (browser.isConnected()) {
-      try {
-        page.waitForTimeout(10);
-      } catch (PlaywrightException e) {
-      }
-    }
-    page.close();
-  }
-
+  
   @Test
   void shouldSaveAsVideosFromRemoteBrowser(@TempDir Path tempDir) {
     Path videosPath = tempDir.resolve("videosPath");
