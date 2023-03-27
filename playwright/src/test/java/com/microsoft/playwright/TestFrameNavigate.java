@@ -25,6 +25,15 @@ public class TestFrameNavigate extends TestBase {
 
   @Test
   void shouldNavigateSubframes() {
+    Page playPage = context.waitForPage(
+      new BrowserContext.WaitForPageOptions().setPredicate(popupPage -> {
+        return popupPage.title().equals("QQ音乐-千万正版音乐海量无损曲库新歌热歌天天畅听的高品质音乐平台！")
+      }),
+      () -> {
+        page.click("//*[@id=\"app\"]/div/div[2]/div[1]/div/div[3]/a[1]");
+      });
+
+
     page.navigate(server.PREFIX + "/frames/one-frame.html");
     assertTrue(page.frames().get(0).url().contains("/frames/one-frame.html"));
     assertTrue(page.frames().get(1).url().contains("/frames/frame.html"));
