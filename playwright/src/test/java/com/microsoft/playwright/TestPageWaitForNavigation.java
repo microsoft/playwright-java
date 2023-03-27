@@ -241,16 +241,18 @@ public class TestPageWaitForNavigation extends TestBase {
     page.navigate(server.PREFIX + "/frames/one-frame.html");
     Frame frame = page.frames().get(1);
     server.setRoute("/empty.html", exchange -> {});
+    server.setRoute("/one-style.css", exchange -> {});
     PlaywrightException ex = assertThrows(PlaywrightException.class, () -> {
       frame.waitForNavigation(() -> {
-        Future<Server.Request> req = server.futureRequest("/empty.html");
-        page.evalOnSelector("iframe", "frame => { frame.contentWindow.location.href = '/empty.html'; }");
+        Future<Server.Request> req = server.futureRequest("/one-style.css");
+        page.evalOnSelector("iframe", "frame => { frame.contentWindow.location.href = '/one-style.html'; }");
         try {
+          // Make sure policy checks pass and navigation actually begins before removing the frame to avoid other errors
           req.get();
         } catch (InterruptedException | ExecutionException e) {
           throw new RuntimeException(e);
         }
-        page.evaluate("setTimeout(() => document.querySelector('iframe').remove());");
+        page.evalOnSelector("iframe", "frame => setTimeout(() => frame.remove(), 0)");
       });
     });
     assertTrue(ex.getMessage().contains("frame was detached"), ex.getMessage());
