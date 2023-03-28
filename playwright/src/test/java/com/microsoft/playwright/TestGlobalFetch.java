@@ -1,6 +1,7 @@
 package com.microsoft.playwright;
 
 import com.google.gson.Gson;
+import com.microsoft.playwright.options.HttpCredentials;
 import com.microsoft.playwright.options.HttpHeader;
 import com.microsoft.playwright.options.RequestOptions;
 import org.junit.jupiter.api.Disabled;
@@ -409,6 +410,36 @@ public class TestGlobalFetch extends TestBase {
       assertEquals("PUT", response.text());
     }
     request.dispose();
+  }
+
+  @Test
+  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginScheme() {
+    server.setAuth("/empty.html", "user", "pass");
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(Utils.generateDifferentOriginScheme(server));
+    APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setHttpCredentials(httpCredentials));
+    APIResponse response = request.get(server.EMPTY_PAGE);
+    assertEquals(401, response.status());
+  }
+
+  @Test
+  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginHostname() {
+    server.setAuth("/empty.html", "user", "pass");
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(Utils.generateDifferentOriginHostname(server));
+    APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setHttpCredentials(httpCredentials));
+    APIResponse response = request.get(server.EMPTY_PAGE);
+    assertEquals(401, response.status());
+  }
+
+  @Test
+  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginPort() {
+    server.setAuth("/empty.html", "user", "pass");
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(Utils.generateDifferentOriginPort(server));
+    APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions().setHttpCredentials(httpCredentials));
+    APIResponse response = request.get(server.EMPTY_PAGE);
+    assertEquals(401, response.status());
   }
 
 }
