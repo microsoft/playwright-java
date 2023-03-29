@@ -194,7 +194,11 @@ public class DriverJar extends Driver {
       }
     }
     if (name.contains("mac os x")) {
-      return "mac";
+      if (arch.equals("aarch64")) {
+        return "mac-arm64";
+      } else {
+        return "mac";
+      }
     }
     throw new RuntimeException("Unexpected os.name value: " + name);
   }
