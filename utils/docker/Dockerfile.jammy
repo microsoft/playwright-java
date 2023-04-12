@@ -1,0 +1,57 @@
+FROM ubuntu:jammy
+
+ARG DEBIAN_FRONTEND=noninteractive
+ARG TZ=America/Los_Angeles
+ARG DOCKER_IMAGE_NAME_TEMPLATE="mcr.microsoft.com/playwright/java:v%version%-jammy"
+
+# === INSTALL JDK and Maven ===
+
+RUN apt-get update && \
+    # Install install jdk 17 in a separate apt-get command so that
+    # installing maven doesn't bring in jdk 11
+    apt-get install -y --no-install-recommends openjdk-17-jdk && \
+    apt-get install -y --no-install-recommends \
+    # Ubuntu 22.04 and earlier come with Maven 3.6.3 which fails with
+    # Java 17, so we install latest Maven from Apache instead.
+    # maven \
+    # Install utilities required for downloading browsers
+    curl \
+    # Install utilities required for downloading driver
+    unzip \
+    # For the MSEdge install script
+    gpg && \
+    rm -rf /var/lib/apt/lists/* && \
+    # Create the pwuser
+    adduser pwuser
+
+RUN VERSION=3.8.8 && \
+    curl -o - https://archive.apache.org/dist/maven/maven-3/$VERSION/binaries/apache-maven-$VERSION-bin.tar.gz | tar zxfv - -C /opt/ && \
+    ln -s /opt/apache-maven-$VERSION/bin/mvn /usr/local/bin/
+
+ARG PW_TARGET_ARCH
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-${PW_TARGET_ARCH}
+
+# === BAKE BROWSERS INTO IMAGE ===
+
+# Browsers will remain downloaded in `/ms-playwright`.
+# Note: make sure to set 777 to the registry so that any user can access
+# registry.
+
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+
+RUN mkdir /ms-playwright && \
+    mkdir /tmp/pw-java
+
+COPY . /tmp/pw-java
+
+RUN cd /tmp/pw-java && \
+    ./scripts/download_driver_for_all_platforms.sh && \
+    mvn install -D skipTests --no-transfer-progress && \
+    DEBIAN_FRONTEND=noninteractive mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
+                     -D exec.args="install-deps" -f playwright/pom.xml --no-transfer-progress && \
+    mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
+                     -D exec.args="install" -f playwright/pom.xml --no-transfer-progress && \
+    mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
+                     -D exec.args="mark-docker-image '${DOCKER_IMAGE_NAME_TEMPLATE}'" -f playwright/pom.xml --no-transfer-progress && \
+    rm -rf /tmp/pw-java && \
+    chmod -R 777 $PLAYWRIGHT_BROWSERS_PATH
