@@ -2,6 +2,7 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSelectorsMisc extends TestBase {
@@ -193,5 +194,29 @@ public class TestSelectorsMisc extends TestBase {
 
     e = assertThrows(PlaywrightException.class, () -> page.querySelector("div >> left-of='span',3,4"));
     assertTrue(e.getMessage().contains("Malformed selector: left-of='span',3,4"));
+  }
+
+  @Test
+  void shouldWorkWithInternalHasNot() {
+    page.setContent("<section><span></span><div></div></section><section><br></section>");
+    assertEquals(1, page.evalOnSelectorAll("section >> internal:has-not=\"span\"", "els => els.length"));
+    assertEquals(0, page.evalOnSelectorAll("section >> internal:has-not=\"span, div, br\"", "els => els.length"));
+    assertEquals(1, page.evalOnSelectorAll("section >> internal:has-not=\"br\"", "els => els.length"));
+    assertEquals(1, page.evalOnSelectorAll("section >> internal:has-not=\"span, div\"", "els => els.length"));
+    assertEquals(2, page.evalOnSelectorAll("section >> internal:has-not=\"article\"", "els => els.length"));
+  }
+
+
+  @Test
+  void shouldWorkWithInternalOr() {
+    page.setContent("<div>hello</div>\n" +
+      "    <span>world</span>");
+    assertEquals(asList("hello", "world"), page.evalOnSelectorAll("div >> internal:or=\"span\"", "els => els.map(e => e.textContent)"));
+    assertEquals(asList("hello", "world"), page.evalOnSelectorAll("span >> internal:or=\"div\"", "els => els.map(e => e.textContent)"));
+    assertEquals(0, page.evalOnSelectorAll("article >> internal:or=\"something\"", "els => els.length"));
+    assertEquals("hello", page.locator("article >> internal:or=\"div\"").textContent());
+    assertEquals("world", page.locator("article >> internal:or=\"span\"").textContent());
+    assertEquals("hello", page.locator("div >> internal:or=\"article\"").textContent());
+    assertEquals("world", page.locator("span >> internal:or=\"article\"").textContent());
   }
 }

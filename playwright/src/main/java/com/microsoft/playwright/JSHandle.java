@@ -135,7 +135,7 @@ public interface JSHandle {
    *
    * <p> **Usage**
    * <pre>{@code
-   * JSHandle handle = page.evaluateHandle("() => ({window, document}"););
+   * JSHandle handle = page.evaluateHandle("() => ({window, document})");
    * Map<String, JSHandle> properties = handle.getProperties();
    * JSHandle windowHandle = properties.get("window");
    * JSHandle documentHandle = properties.get("document");

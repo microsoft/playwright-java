@@ -29,11 +29,20 @@ class LocatorImpl implements Locator {
       if (options.hasText != null) {
         selector += " >> internal:has-text=" + escapeForTextSelector(options.hasText, false);
       }
+      if (options.hasNotText != null) {
+        selector += " >> internal:has-not-text=" + escapeForTextSelector(options.hasNotText, false);
+      }
       if (options.has != null) {
         LocatorImpl locator = (LocatorImpl) options.has;
         if (locator.frame != frame)
           throw new Error("Inner 'has' locator must belong to the same frame.");
         selector += " >> internal:has=" + gson().toJson(locator.selector);
+      }
+      if (options.hasNot != null) {
+        LocatorImpl locator = (LocatorImpl) options.hasNot;
+        if (locator.frame != frame)
+          throw new Error("Inner 'hasNot' locator must belong to the same frame.");
+        selector += " >> internal:has-not=" + gson().toJson(locator.selector);
       }
     }
     this.selector = selector;
@@ -396,6 +405,14 @@ class LocatorImpl implements Locator {
   @Override
   public Locator nth(int index) {
     return new LocatorImpl(frame, selector + " >> nth=" + index, null);
+  }
+
+  @Override
+  public Locator or(Locator locator) {
+    LocatorImpl other = (LocatorImpl) locator;
+    if (other.frame != frame)
+      throw new Error("Locators must belong to the same frame.");
+    return new LocatorImpl(frame, selector + " >> internal:or=" + gson().toJson(other.selector), null);
   }
 
   @Override

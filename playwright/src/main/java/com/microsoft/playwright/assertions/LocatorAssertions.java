@@ -37,6 +37,25 @@ import java.util.regex.Pattern;
  * }</pre>
  */
 public interface LocatorAssertions {
+  class IsAttachedOptions {
+    public Boolean attached;
+    /**
+     * Time to retry the assertion for.
+     */
+    public Double timeout;
+
+    public IsAttachedOptions setAttached(boolean attached) {
+      this.attached = attached;
+      return this;
+    }
+    /**
+     * Time to retry the assertion for.
+     */
+    public IsAttachedOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class IsCheckedOptions {
     public Boolean checked;
     /**
@@ -395,6 +414,32 @@ public interface LocatorAssertions {
    */
   LocatorAssertions not();
   /**
+   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/actionability#attached">attached</a>
+   * DOM node.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * assertThat(page.getByText("Hidden text")).isAttached();
+   * }</pre>
+   *
+   * @since v1.33
+   */
+  default void isAttached() {
+    isAttached(null);
+  }
+  /**
+   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/actionability#attached">attached</a>
+   * DOM node.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * assertThat(page.getByText("Hidden text")).isAttached();
+   * }</pre>
+   *
+   * @since v1.33
+   */
+  void isAttached(IsAttachedOptions options);
+  /**
    * Ensures the {@code Locator} points to a checked input.
    *
    * <p> **Usage**
@@ -618,7 +663,7 @@ public interface LocatorAssertions {
    *
    * <p> **Usage**
    * <pre>{@code
-   * assertThat(page.locator(".my-element")).isVisible();
+   * assertThat(page.getByText("Welcome")).isVisible();
    * }</pre>
    *
    * @since v1.20
@@ -632,7 +677,7 @@ public interface LocatorAssertions {
    *
    * <p> **Usage**
    * <pre>{@code
-   * assertThat(page.locator(".my-element")).isVisible();
+   * assertThat(page.getByText("Welcome")).isVisible();
    * }</pre>
    *
    * @since v1.20

@@ -292,6 +292,19 @@ public interface FrameLocator {
      */
     public Locator has;
     /**
+     * Matches elements that do not contain an element that matches an inner locator. Inner locator is queried against the
+     * outer one. For example, {@code article} that does not have {@code div} matches {@code
+     * <article><span>Playwright</span></article>}.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator hasNot;
+    /**
+     * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
+     * passed a [string], matching is case-insensitive and searches for a substring.
+     */
+    public Object hasNotText;
+    /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
      * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
      * <article><div>Playwright</div></article>}.
@@ -306,6 +319,33 @@ public interface FrameLocator {
      */
     public LocatorOptions setHas(Locator has) {
       this.has = has;
+      return this;
+    }
+    /**
+     * Matches elements that do not contain an element that matches an inner locator. Inner locator is queried against the
+     * outer one. For example, {@code article} that does not have {@code div} matches {@code
+     * <article><span>Playwright</span></article>}.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setHasNot(Locator hasNot) {
+      this.hasNot = hasNot;
+      return this;
+    }
+    /**
+     * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
+     * passed a [string], matching is case-insensitive and searches for a substring.
+     */
+    public LocatorOptions setHasNotText(String hasNotText) {
+      this.hasNotText = hasNotText;
+      return this;
+    }
+    /**
+     * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
+     * passed a [string], matching is case-insensitive and searches for a substring.
+     */
+    public LocatorOptions setHasNotText(Pattern hasNotText) {
+      this.hasNotText = hasNotText;
       return this;
     }
     /**

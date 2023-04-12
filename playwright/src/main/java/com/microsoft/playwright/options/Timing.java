@@ -52,8 +52,8 @@ public class Timing {
    */
   public double requestStart;
   /**
-   * Time immediately after the browser starts requesting the resource from the server, cache, or local resource. The value
-   * is given in milliseconds relative to {@code startTime}, -1 if not available.
+   * Time immediately after the browser receives the first byte of the response from the server, cache, or local resource.
+   * The value is given in milliseconds relative to {@code startTime}, -1 if not available.
    */
   public double responseStart;
   /**

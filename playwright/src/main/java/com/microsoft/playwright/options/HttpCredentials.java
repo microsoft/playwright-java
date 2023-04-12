@@ -19,9 +19,20 @@ package com.microsoft.playwright.options;
 public class HttpCredentials {
   public String username;
   public String password;
+  /**
+   * Restrain sending http credentials on specific origin (scheme://host:port).
+   */
+  public String origin;
 
   public HttpCredentials(String username, String password) {
     this.username = username;
     this.password = password;
+  }
+  /**
+   * Restrain sending http credentials on specific origin (scheme://host:port).
+   */
+  public HttpCredentials setOrigin(String origin) {
+    this.origin = origin;
+    return this;
   }
 }
