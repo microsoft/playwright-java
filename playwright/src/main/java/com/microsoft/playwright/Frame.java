@@ -1046,8 +1046,8 @@ public interface Frame {
      * <ul>
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500}
-     * ms.</li>
+     * <li> {@code "networkidle"} - **DISCOURAGED** consider operation to be finished when there are no network connections for at
+     * least {@code 500} ms. Don't use this method for testing, rely on web assertions to assess readiness instead.</li>
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
@@ -1076,8 +1076,8 @@ public interface Frame {
      * <ul>
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500}
-     * ms.</li>
+     * <li> {@code "networkidle"} - **DISCOURAGED** consider operation to be finished when there are no network connections for at
+     * least {@code 500} ms. Don't use this method for testing, rely on web assertions to assess readiness instead.</li>
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
@@ -1477,6 +1477,19 @@ public interface Frame {
      */
     public Locator has;
     /**
+     * Matches elements that do not contain an element that matches an inner locator. Inner locator is queried against the
+     * outer one. For example, {@code article} that does not have {@code div} matches {@code
+     * <article><span>Playwright</span></article>}.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator hasNot;
+    /**
+     * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
+     * passed a [string], matching is case-insensitive and searches for a substring.
+     */
+    public Object hasNotText;
+    /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
      * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
      * <article><div>Playwright</div></article>}.
@@ -1491,6 +1504,33 @@ public interface Frame {
      */
     public LocatorOptions setHas(Locator has) {
       this.has = has;
+      return this;
+    }
+    /**
+     * Matches elements that do not contain an element that matches an inner locator. Inner locator is queried against the
+     * outer one. For example, {@code article} that does not have {@code div} matches {@code
+     * <article><span>Playwright</span></article>}.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setHasNot(Locator hasNot) {
+      this.hasNot = hasNot;
+      return this;
+    }
+    /**
+     * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
+     * passed a [string], matching is case-insensitive and searches for a substring.
+     */
+    public LocatorOptions setHasNotText(String hasNotText) {
+      this.hasNotText = hasNotText;
+      return this;
+    }
+    /**
+     * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
+     * passed a [string], matching is case-insensitive and searches for a substring.
+     */
+    public LocatorOptions setHasNotText(Pattern hasNotText) {
+      this.hasNotText = hasNotText;
       return this;
     }
     /**
@@ -1751,8 +1791,8 @@ public interface Frame {
      * <ul>
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500}
-     * ms.</li>
+     * <li> {@code "networkidle"} - **DISCOURAGED** consider operation to be finished when there are no network connections for at
+     * least {@code 500} ms. Don't use this method for testing, rely on web assertions to assess readiness instead.</li>
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
@@ -1773,8 +1813,8 @@ public interface Frame {
      * <ul>
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500}
-     * ms.</li>
+     * <li> {@code "networkidle"} - **DISCOURAGED** consider operation to be finished when there are no network connections for at
+     * least {@code 500} ms. Don't use this method for testing, rely on web assertions to assess readiness instead.</li>
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
@@ -2188,8 +2228,8 @@ public interface Frame {
      * <ul>
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500}
-     * ms.</li>
+     * <li> {@code "networkidle"} - **DISCOURAGED** consider operation to be finished when there are no network connections for at
+     * least {@code 500} ms. Don't use this method for testing, rely on web assertions to assess readiness instead.</li>
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
@@ -2237,8 +2277,8 @@ public interface Frame {
      * <ul>
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500}
-     * ms.</li>
+     * <li> {@code "networkidle"} - **DISCOURAGED** consider operation to be finished when there are no network connections for at
+     * least {@code 500} ms. Don't use this method for testing, rely on web assertions to assess readiness instead.</li>
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
@@ -2318,8 +2358,8 @@ public interface Frame {
      * <ul>
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500}
-     * ms.</li>
+     * <li> {@code "networkidle"} - **DISCOURAGED** consider operation to be finished when there are no network connections for at
+     * least {@code 500} ms. Don't use this method for testing, rely on web assertions to assess readiness instead.</li>
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
@@ -2340,8 +2380,8 @@ public interface Frame {
      * <ul>
      * <li> {@code "domcontentloaded"} - consider operation to be finished when the {@code DOMContentLoaded} event is fired.</li>
      * <li> {@code "load"} - consider operation to be finished when the {@code load} event is fired.</li>
-     * <li> {@code "networkidle"} - consider operation to be finished when there are no network connections for at least {@code 500}
-     * ms.</li>
+     * <li> {@code "networkidle"} - **DISCOURAGED** consider operation to be finished when there are no network connections for at
+     * least {@code 500} ms. Don't use this method for testing, rely on web assertions to assess readiness instead.</li>
      * <li> {@code "commit"} - consider operation to be finished when network response is received and the document started loading.</li>
      * </ul>
      */
@@ -4849,7 +4889,8 @@ public interface Frame {
    * <ul>
    * <li> {@code "load"} - wait for the {@code load} event to be fired.</li>
    * <li> {@code "domcontentloaded"} - wait for the {@code DOMContentLoaded} event to be fired.</li>
-   * <li> {@code "networkidle"} - wait until there are no network connections for at least {@code 500} ms.</li>
+   * <li> {@code "networkidle"} - **DISCOURAGED** wait until there are no network connections for at least {@code 500} ms. Don't
+   * use this method for testing, rely on web assertions to assess readiness instead.</li>
    * </ul>
    * @since v1.8
    */
@@ -4890,7 +4931,8 @@ public interface Frame {
    * <ul>
    * <li> {@code "load"} - wait for the {@code load} event to be fired.</li>
    * <li> {@code "domcontentloaded"} - wait for the {@code DOMContentLoaded} event to be fired.</li>
-   * <li> {@code "networkidle"} - wait until there are no network connections for at least {@code 500} ms.</li>
+   * <li> {@code "networkidle"} - **DISCOURAGED** wait until there are no network connections for at least {@code 500} ms. Don't
+   * use this method for testing, rely on web assertions to assess readiness instead.</li>
    * </ul>
    * @since v1.8
    */

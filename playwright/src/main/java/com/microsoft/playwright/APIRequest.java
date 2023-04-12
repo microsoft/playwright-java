@@ -46,7 +46,8 @@ public interface APIRequest {
      */
     public Map<String, String> extraHTTPHeaders;
     /**
-     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>.
+     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>. If
+     * no origin is specified, the username and password are sent to any servers upon unauthorized responses.
      */
     public HttpCredentials httpCredentials;
     /**
@@ -106,13 +107,15 @@ public interface APIRequest {
       return this;
     }
     /**
-     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>.
+     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>. If
+     * no origin is specified, the username and password are sent to any servers upon unauthorized responses.
      */
     public NewContextOptions setHttpCredentials(String username, String password) {
       return setHttpCredentials(new HttpCredentials(username, password));
     }
     /**
-     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>.
+     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>. If
+     * no origin is specified, the username and password are sent to any servers upon unauthorized responses.
      */
     public NewContextOptions setHttpCredentials(HttpCredentials httpCredentials) {
       this.httpCredentials = httpCredentials;

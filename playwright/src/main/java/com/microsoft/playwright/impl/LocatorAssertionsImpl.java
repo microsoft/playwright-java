@@ -357,6 +357,14 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     return new LocatorAssertionsImpl(actualLocator, !isNot);
   }
 
+  @Override
+  public void isAttached(IsAttachedOptions options) {
+    FrameExpectOptions frameOptions = convertType(options, FrameExpectOptions.class);
+    boolean attached = options == null || options.attached == null || options.attached == true;
+    String message = "Locator expected to be " + (attached ? "attached" : "detached");
+    expectTrue(attached ? "to.be.attached" : "to.be.detached", message, frameOptions);
+  }
+
   private static Boolean shouldIgnoreCase(Object options) {
     if (options == null) {
       return null;

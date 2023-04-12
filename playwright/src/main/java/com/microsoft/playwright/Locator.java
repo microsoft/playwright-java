@@ -663,6 +663,19 @@ public interface Locator {
      */
     public Locator has;
     /**
+     * Matches elements that do not contain an element that matches an inner locator. Inner locator is queried against the
+     * outer one. For example, {@code article} that does not have {@code div} matches {@code
+     * <article><span>Playwright</span></article>}.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator hasNot;
+    /**
+     * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
+     * passed a [string], matching is case-insensitive and searches for a substring.
+     */
+    public Object hasNotText;
+    /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
      * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
      * <article><div>Playwright</div></article>}.
@@ -677,6 +690,33 @@ public interface Locator {
      */
     public FilterOptions setHas(Locator has) {
       this.has = has;
+      return this;
+    }
+    /**
+     * Matches elements that do not contain an element that matches an inner locator. Inner locator is queried against the
+     * outer one. For example, {@code article} that does not have {@code div} matches {@code
+     * <article><span>Playwright</span></article>}.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public FilterOptions setHasNot(Locator hasNot) {
+      this.hasNot = hasNot;
+      return this;
+    }
+    /**
+     * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
+     * passed a [string], matching is case-insensitive and searches for a substring.
+     */
+    public FilterOptions setHasNotText(String hasNotText) {
+      this.hasNotText = hasNotText;
+      return this;
+    }
+    /**
+     * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
+     * passed a [string], matching is case-insensitive and searches for a substring.
+     */
+    public FilterOptions setHasNotText(Pattern hasNotText) {
+      this.hasNotText = hasNotText;
       return this;
     }
     /**
@@ -1229,6 +1269,19 @@ public interface Locator {
      */
     public Locator has;
     /**
+     * Matches elements that do not contain an element that matches an inner locator. Inner locator is queried against the
+     * outer one. For example, {@code article} that does not have {@code div} matches {@code
+     * <article><span>Playwright</span></article>}.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public Locator hasNot;
+    /**
+     * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
+     * passed a [string], matching is case-insensitive and searches for a substring.
+     */
+    public Object hasNotText;
+    /**
      * Matches elements containing specified text somewhere inside, possibly in a child or a descendant element. When passed a
      * [string], matching is case-insensitive and searches for a substring. For example, {@code "Playwright"} matches {@code
      * <article><div>Playwright</div></article>}.
@@ -1243,6 +1296,33 @@ public interface Locator {
      */
     public LocatorOptions setHas(Locator has) {
       this.has = has;
+      return this;
+    }
+    /**
+     * Matches elements that do not contain an element that matches an inner locator. Inner locator is queried against the
+     * outer one. For example, {@code article} that does not have {@code div} matches {@code
+     * <article><span>Playwright</span></article>}.
+     *
+     * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
+     */
+    public LocatorOptions setHasNot(Locator hasNot) {
+      this.hasNot = hasNot;
+      return this;
+    }
+    /**
+     * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
+     * passed a [string], matching is case-insensitive and searches for a substring.
+     */
+    public LocatorOptions setHasNotText(String hasNotText) {
+      this.hasNotText = hasNotText;
+      return this;
+    }
+    /**
+     * Matches elements that do not contain specified text somewhere inside, possibly in a child or a descendant element. When
+     * passed a [string], matching is case-insensitive and searches for a substring.
+     */
+    public LocatorOptions setHasNotText(Pattern hasNotText) {
+      this.hasNotText = hasNotText;
       return this;
     }
     /**
@@ -3744,6 +3824,26 @@ public interface Locator {
    * @since v1.14
    */
   Locator nth(int index);
+  /**
+   * Creates a locator that matches either of the two locators.
+   *
+   * <p> **Usage**
+   *
+   * <p> Consider a scenario where you'd like to click on a "New email" button, but sometimes a security settings dialog shows up
+   * instead. In this case, you can wait for either a "New email" button, or a dialog and act accordingly.
+   * <pre>{@code
+   * Locator newEmail = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("New"));
+   * Locator dialog = page.getByText("Confirm security settings");
+   * assertThat(newEmail.or(dialog)).isVisible();
+   * if (dialog.isVisible())
+   *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Dismiss")).click();
+   * newEmail.click();
+   * }</pre>
+   *
+   * @param locator Alternative locator to match.
+   * @since v1.33
+   */
+  Locator or(Locator locator);
   /**
    * A page this locator belongs to.
    *

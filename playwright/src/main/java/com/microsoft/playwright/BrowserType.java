@@ -473,7 +473,8 @@ public interface BrowserType {
      */
     public Boolean headless;
     /**
-     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>.
+     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>. If
+     * no origin is specified, the username and password are sent to any servers upon unauthorized responses.
      */
     public HttpCredentials httpCredentials;
     /**
@@ -787,13 +788,15 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>.
+     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>. If
+     * no origin is specified, the username and password are sent to any servers upon unauthorized responses.
      */
     public LaunchPersistentContextOptions setHttpCredentials(String username, String password) {
       return setHttpCredentials(new HttpCredentials(username, password));
     }
     /**
-     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>.
+     * Credentials for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication">HTTP authentication</a>. If
+     * no origin is specified, the username and password are sent to any servers upon unauthorized responses.
      */
     public LaunchPersistentContextOptions setHttpCredentials(HttpCredentials httpCredentials) {
       this.httpCredentials = httpCredentials;
