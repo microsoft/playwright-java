@@ -673,6 +673,36 @@ public class TestBrowserContextFetch extends TestBase {
   }
 
   @Test
+  void shouldWorkWithSetHTTPCredentialsAndMatchingOrigin() throws ExecutionException, InterruptedException {
+    server.setAuth("/empty.html", "user", "pass");
+    APIResponse response1 = context.request().get(server.EMPTY_PAGE);
+    assertEquals(401, response1.status());
+
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(server.PREFIX);
+    try (BrowserContext context2 = browser.newContext(
+      new Browser.NewContextOptions().setHttpCredentials(httpCredentials))) {
+      APIResponse response2 = context2.request().get(server.EMPTY_PAGE);
+      assertEquals(200, response2.status());
+    }
+  }
+
+  @Test
+  void shouldWorkWithSetHTTPCredentialsAndMatchingOriginCaseInsensitive() throws ExecutionException, InterruptedException {
+    server.setAuth("/empty.html", "user", "pass");
+    APIResponse response1 = context.request().get(server.EMPTY_PAGE);
+    assertEquals(401, response1.status());
+
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(server.PREFIX.toUpperCase());
+    try (BrowserContext context2 = browser.newContext(
+      new Browser.NewContextOptions().setHttpCredentials(httpCredentials))) {
+      APIResponse response2 = context2.request().get(server.EMPTY_PAGE);
+      assertEquals(200, response2.status());
+    }
+  }
+
+  @Test
   void shouldReturnErrorWithCorrectCredentialsAndWrongOriginScheme() {
     server.setAuth("/empty.html", "user", "pass");
     final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");

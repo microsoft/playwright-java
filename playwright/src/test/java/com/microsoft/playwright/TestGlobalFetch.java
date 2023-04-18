@@ -413,6 +413,38 @@ public class TestGlobalFetch extends TestBase {
   }
 
   @Test
+  void shouldSupportGlobalHttpCredentialsOptionAndMatchingOrigin() {
+    server.setAuth("/empty.html", "user", "pass");
+    APIRequestContext request1 = playwright.request().newContext();
+    APIResponse response1 = request1.get(server.EMPTY_PAGE);
+    assertEquals(401, response1.status());
+    request1.dispose();
+
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(server.PREFIX);
+    APIRequestContext request2 = playwright.request().newContext(new APIRequest.NewContextOptions().setHttpCredentials(httpCredentials));
+    APIResponse response2 = request2.get(server.EMPTY_PAGE);
+    assertEquals(200, response2.status());
+    request2.dispose();
+  }
+
+  @Test
+  void shouldSupportGlobalHttpCredentialsOptionAndMatchingOriginCaseInsensitive() {
+    server.setAuth("/empty.html", "user", "pass");
+    APIRequestContext request1 = playwright.request().newContext();
+    APIResponse response1 = request1.get(server.EMPTY_PAGE);
+    assertEquals(401, response1.status());
+    request1.dispose();
+
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(server.PREFIX.toUpperCase());
+    APIRequestContext request2 = playwright.request().newContext(new APIRequest.NewContextOptions().setHttpCredentials(httpCredentials));
+    APIResponse response2 = request2.get(server.EMPTY_PAGE);
+    assertEquals(200, response2.status());
+    request2.dispose();
+  }
+
+  @Test
   void shouldReturnErrorWithCorrectCredentialsAndWrongOriginScheme() {
     server.setAuth("/empty.html", "user", "pass");
     final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
