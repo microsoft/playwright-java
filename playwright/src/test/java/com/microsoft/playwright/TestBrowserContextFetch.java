@@ -671,4 +671,67 @@ public class TestBrowserContextFetch extends TestBase {
     e = assertThrows(PlaywrightException.class, () ->  context.request().post(server.EMPTY_PAGE));
     assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
   }
+
+  @Test
+  void shouldWorkWithSetHTTPCredentialsAndMatchingOrigin() throws ExecutionException, InterruptedException {
+    server.setAuth("/empty.html", "user", "pass");
+    APIResponse response1 = context.request().get(server.EMPTY_PAGE);
+    assertEquals(401, response1.status());
+
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(server.PREFIX);
+    try (BrowserContext context2 = browser.newContext(
+      new Browser.NewContextOptions().setHttpCredentials(httpCredentials))) {
+      APIResponse response2 = context2.request().get(server.EMPTY_PAGE);
+      assertEquals(200, response2.status());
+    }
+  }
+
+  @Test
+  void shouldWorkWithSetHTTPCredentialsAndMatchingOriginCaseInsensitive() throws ExecutionException, InterruptedException {
+    server.setAuth("/empty.html", "user", "pass");
+    APIResponse response1 = context.request().get(server.EMPTY_PAGE);
+    assertEquals(401, response1.status());
+
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(server.PREFIX.toUpperCase());
+    try (BrowserContext context2 = browser.newContext(
+      new Browser.NewContextOptions().setHttpCredentials(httpCredentials))) {
+      APIResponse response2 = context2.request().get(server.EMPTY_PAGE);
+      assertEquals(200, response2.status());
+    }
+  }
+
+  @Test
+  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginScheme() {
+    server.setAuth("/empty.html", "user", "pass");
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(Utils.generateDifferentOriginScheme(server));
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions().setHttpCredentials(httpCredentials))) {
+      APIResponse response = context.request().get(server.EMPTY_PAGE);
+      assertEquals(401, response.status());
+    }
+  }
+
+  @Test
+  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginHostname() {
+    server.setAuth("/empty.html", "user", "pass");
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(Utils.generateDifferentOriginHostname(server));
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions().setHttpCredentials(httpCredentials))) {
+      APIResponse response = context.request().get(server.EMPTY_PAGE);
+      assertEquals(401, response.status());
+    }
+  }
+
+  @Test
+  void shouldReturnErrorWithCorrectCredentialsAndWrongOriginPort() {
+    server.setAuth("/empty.html", "user", "pass");
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(Utils.generateDifferentOriginPort(server));
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions().setHttpCredentials(httpCredentials))) {
+      APIResponse response = context.request().get(server.EMPTY_PAGE);
+      assertEquals(401, response.status());
+    }
+  }
 }

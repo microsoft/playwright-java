@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.HttpCredentials;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
@@ -72,6 +73,68 @@ public class TestBrowserContextCredentials extends TestBase {
       assertEquals(200, response.status());
       assertEquals("Playground", page.title());
       assertTrue(new String(response.body()).contains("Playground"));
+    }
+  }
+
+  @Test
+  void shouldWorkWithCorrectCredentialsAndMatchingOrigin() {
+    server.setAuth("/empty.html", "user", "pass");
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(server.PREFIX);
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setHttpCredentials(httpCredentials))) {
+      Page page = context.newPage();
+      Response response = page.navigate(server.EMPTY_PAGE);
+      assertEquals(200, response.status());
+    }
+  }
+
+  @Test
+  void shouldWorkWithCorrectCredentialsAndMatchingOriginCaseInsensitive() {
+    server.setAuth("/empty.html", "user", "pass");
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(server.PREFIX.toUpperCase());
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+      .setHttpCredentials(httpCredentials))) {
+      Page page = context.newPage();
+      Response response = page.navigate(server.EMPTY_PAGE);
+      assertEquals(200, response.status());
+    }
+  }
+
+  @Test
+  void shouldFailWithCorrectCredentialsAndWrongOriginScheme() {
+    server.setAuth("/empty.html", "user", "pass");
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(Utils.generateDifferentOriginScheme(server));
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions().setHttpCredentials(httpCredentials))) {
+      Page page = context.newPage();
+      Response response = page.navigate(server.EMPTY_PAGE);
+      assertEquals(401, response.status());
+    }
+  }
+
+  @Test
+  void shouldFailWithCorrectCredentialsAndWrongOriginHostname() {
+    server.setAuth("/empty.html", "user", "pass");
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(Utils.generateDifferentOriginHostname(server));
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions().setHttpCredentials(httpCredentials))) {
+      Page page = context.newPage();
+      Response response = page.navigate(server.EMPTY_PAGE);
+      assertEquals(401, response.status());
+    }
+  }
+
+  @Test
+  void shouldFailWithCorrectCredentialsAndWrongOriginPort() {
+    server.setAuth("/empty.html", "user", "pass");
+    final HttpCredentials httpCredentials = new HttpCredentials("user", "pass");
+    httpCredentials.setOrigin(Utils.generateDifferentOriginPort(server));
+    try (BrowserContext context = browser.newContext(new Browser.NewContextOptions().setHttpCredentials(httpCredentials))) {
+      Page page = context.newPage();
+      Response response = page.navigate(server.EMPTY_PAGE);
+      assertEquals(401, response.status());
     }
   }
 }

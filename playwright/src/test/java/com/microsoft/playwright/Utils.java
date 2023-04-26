@@ -200,4 +200,18 @@ class Utils {
     assertEquals(width, page.evaluate("window.innerWidth"));
     assertEquals(height, page.evaluate("window.innerHeight"));
   }
+
+  static String generateDifferentOriginScheme(final Server server){
+    return server.PREFIX.startsWith("http://") ?
+      server.PREFIX.replace("http://", "https://") :
+      server.PREFIX.replace("https://", "http://");
+  }
+
+  static String generateDifferentOriginHostname(final Server server){
+    return server.PREFIX.replace("localhost", "mismatching-hostname");
+  }
+
+  static String generateDifferentOriginPort(final Server server){
+    return server.PREFIX.replace(String.valueOf(server.PORT), String.valueOf(server.PORT+1));
+  }
 }
