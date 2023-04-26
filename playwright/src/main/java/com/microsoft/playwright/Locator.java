@@ -2020,9 +2020,10 @@ public interface Locator {
   /**
    * When locator points to a list of elements, returns array of locators, pointing to respective elements.
    *
-   * <p> Note that {@link Locator#all Locator.all()} does not wait for elements to match the locator, and instead immediately
-   * returns whatever is present in the page. To avoid flakiness when elements are loaded dynamically, wait for the loading
-   * to finish before calling {@link Locator#all Locator.all()}.
+   * <p> <strong>NOTE:</strong> {@link Locator#all Locator.all()} does not wait for elements to match the locator, and instead immediately returns
+   * whatever is present in the page.  When the list of elements changes dynamically, {@link Locator#all Locator.all()} will
+   * produce unpredictable and flaky results.  When the list of elements is stable, but loaded dynamically, wait for the full
+   * list to finish loading before calling {@link Locator#all Locator.all()}.
    *
    * <p> **Usage**
    * <pre>{@code

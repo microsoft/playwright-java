@@ -144,6 +144,10 @@ class Utils {
     return OS.UNKNOWN;
   }
 
+  static int osVersion() {
+    return Integer.parseInt(System.getProperty("os.version").split("\\.")[0]);
+  }
+
   static List<String> expectedSSLError(String browserName) {
     switch (browserName) {
       case "chromium":

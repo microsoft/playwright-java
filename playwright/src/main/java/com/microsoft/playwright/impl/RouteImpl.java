@@ -92,6 +92,9 @@ public class RouteImpl extends ChannelOwner implements Route {
     } else {
       options.data = request.postDataBuffer();
     }
+    if (fetchOptions != null && fetchOptions.timeout != null) {
+      options.timeout = fetchOptions.timeout;
+    }
     APIRequestContextImpl apiRequest = request.frame().page().context().request();
     String url = (fetchOptions == null || fetchOptions.url == null) ? request().url() : fetchOptions.url;
     return apiRequest.fetch(url, options);

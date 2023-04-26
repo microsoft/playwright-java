@@ -16,15 +16,12 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.options.AriaRole;
-import com.microsoft.playwright.options.WaitUntilState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 import static com.microsoft.playwright.options.KeyboardModifier.SHIFT;
 import static com.microsoft.playwright.options.MouseButton.RIGHT;
@@ -425,15 +422,23 @@ public class TestClick extends TestBase {
     // 20;10 + 8px of border in each direction
     int expectedX = 28;
     int expectedY = 18;
+
     if (isWebKit()) {
-      // WebKit rounds up during css -> dip -> css conversion.
-      expectedX = 26;
-      expectedY = 17;
+      // WebKit for macOS 12 has different expectations starting r1829.
+      if (isMac && Utils.osVersion() < 12) {
+        // WebKit rounds up during css -> dip -> css conversion.
+        expectedX = 26;
+        expectedY = 17;
+      } else {
+        expectedX = 29;
+        expectedY = 19;
+      }
     } else if (isChromium() && !headful) {
       // Headless Chromium rounds down during css -> dip -> css conversion.
       expectedX = 27;
       expectedY = 18;
     }
+
     assertEquals(expectedX, Math.round((Integer) page.evaluate("pageX") + 0.01));
     assertEquals(expectedY, Math.round((Integer) page.evaluate("pageY") + 0.01));
     context.close();
