@@ -155,6 +155,10 @@ public interface Route {
      */
     public Object postData;
     /**
+     * Request timeout in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
+     */
+    public Double timeout;
+    /**
      * If set changes the request URL. New URL must have same protocol as original one.
      */
     public String url;
@@ -193,6 +197,13 @@ public interface Route {
      */
     public FetchOptions setPostData(byte[] postData) {
       this.postData = postData;
+      return this;
+    }
+    /**
+     * Request timeout in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout.
+     */
+    public FetchOptions setTimeout(double timeout) {
+      this.timeout = timeout;
       return this;
     }
     /**

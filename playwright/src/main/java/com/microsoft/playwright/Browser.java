@@ -88,7 +88,8 @@ public interface Browser extends AutoCloseable {
      */
     public Optional<ColorScheme> colorScheme;
     /**
-     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
+     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#devices">emulating devices with device scale factor</a>.
      */
     public Double deviceScaleFactor;
     /**
@@ -103,7 +104,8 @@ public interface Browser extends AutoCloseable {
     public Optional<ForcedColors> forcedColors;
     public Geolocation geolocation;
     /**
-     * Specifies if viewport supports touch events. Defaults to false.
+     * Specifies if viewport supports touch events. Defaults to false. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#devices">mobile emulation</a>.
      */
     public Boolean hasTouch;
     /**
@@ -116,21 +118,25 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean ignoreHTTPSErrors;
     /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
-     * supported in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
+     * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
+     * about <a href="https://playwright.dev/java/docs/emulation#isMobile">mobile emulation</a>.
      */
     public Boolean isMobile;
     /**
-     * Whether or not to enable JavaScript in the context. Defaults to {@code true}.
+     * Whether or not to enable JavaScript in the context. Defaults to {@code true}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#javascript-enabled">disabling JavaScript</a>.
      */
     public Boolean javaScriptEnabled;
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
-     * {@code Accept-Language} request header value as well as number and date formatting rules.
+     * {@code Accept-Language} request header value as well as number and date formatting rules. Learn more about emulation in
+     * our <a href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
     public String locale;
     /**
-     * Whether to emulate network being offline. Defaults to {@code false}.
+     * Whether to emulate network being offline. Defaults to {@code false}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#offline">network emulation</a>.
      */
     public Boolean offline;
     /**
@@ -228,8 +234,9 @@ public interface Browser extends AutoCloseable {
      */
     public String userAgent;
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
-     * viewport emulation.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
+     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
      * operating system. It makes the execution of the tests non-deterministic.
@@ -279,7 +286,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
+     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#devices">emulating devices with device scale factor</a>.
      */
     public NewContextOptions setDeviceScaleFactor(double deviceScaleFactor) {
       this.deviceScaleFactor = deviceScaleFactor;
@@ -309,7 +317,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Specifies if viewport supports touch events. Defaults to false.
+     * Specifies if viewport supports touch events. Defaults to false. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#devices">mobile emulation</a>.
      */
     public NewContextOptions setHasTouch(boolean hasTouch) {
       this.hasTouch = hasTouch;
@@ -338,15 +347,17 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
-     * supported in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
+     * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
+     * about <a href="https://playwright.dev/java/docs/emulation#isMobile">mobile emulation</a>.
      */
     public NewContextOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
       return this;
     }
     /**
-     * Whether or not to enable JavaScript in the context. Defaults to {@code true}.
+     * Whether or not to enable JavaScript in the context. Defaults to {@code true}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#javascript-enabled">disabling JavaScript</a>.
      */
     public NewContextOptions setJavaScriptEnabled(boolean javaScriptEnabled) {
       this.javaScriptEnabled = javaScriptEnabled;
@@ -354,14 +365,16 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
-     * {@code Accept-Language} request header value as well as number and date formatting rules.
+     * {@code Accept-Language} request header value as well as number and date formatting rules. Learn more about emulation in
+     * our <a href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
     public NewContextOptions setLocale(String locale) {
       this.locale = locale;
       return this;
     }
     /**
-     * Whether to emulate network being offline. Defaults to {@code false}.
+     * Whether to emulate network being offline. Defaults to {@code false}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#offline">network emulation</a>.
      */
     public NewContextOptions setOffline(boolean offline) {
       this.offline = offline;
@@ -542,8 +555,9 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
-     * viewport emulation.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
+     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
      * operating system. It makes the execution of the tests non-deterministic.
@@ -552,8 +566,9 @@ public interface Browser extends AutoCloseable {
       return setViewportSize(new ViewportSize(width, height));
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
-     * viewport emulation.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
+     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
      * operating system. It makes the execution of the tests non-deterministic.
@@ -595,7 +610,8 @@ public interface Browser extends AutoCloseable {
      */
     public Optional<ColorScheme> colorScheme;
     /**
-     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
+     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#devices">emulating devices with device scale factor</a>.
      */
     public Double deviceScaleFactor;
     /**
@@ -610,7 +626,8 @@ public interface Browser extends AutoCloseable {
     public Optional<ForcedColors> forcedColors;
     public Geolocation geolocation;
     /**
-     * Specifies if viewport supports touch events. Defaults to false.
+     * Specifies if viewport supports touch events. Defaults to false. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#devices">mobile emulation</a>.
      */
     public Boolean hasTouch;
     /**
@@ -623,21 +640,25 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean ignoreHTTPSErrors;
     /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
-     * supported in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
+     * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
+     * about <a href="https://playwright.dev/java/docs/emulation#isMobile">mobile emulation</a>.
      */
     public Boolean isMobile;
     /**
-     * Whether or not to enable JavaScript in the context. Defaults to {@code true}.
+     * Whether or not to enable JavaScript in the context. Defaults to {@code true}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#javascript-enabled">disabling JavaScript</a>.
      */
     public Boolean javaScriptEnabled;
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
-     * {@code Accept-Language} request header value as well as number and date formatting rules.
+     * {@code Accept-Language} request header value as well as number and date formatting rules. Learn more about emulation in
+     * our <a href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
     public String locale;
     /**
-     * Whether to emulate network being offline. Defaults to {@code false}.
+     * Whether to emulate network being offline. Defaults to {@code false}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#offline">network emulation</a>.
      */
     public Boolean offline;
     /**
@@ -735,8 +756,9 @@ public interface Browser extends AutoCloseable {
      */
     public String userAgent;
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
-     * viewport emulation.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
+     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
      * operating system. It makes the execution of the tests non-deterministic.
@@ -786,7 +808,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
+     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#devices">emulating devices with device scale factor</a>.
      */
     public NewPageOptions setDeviceScaleFactor(double deviceScaleFactor) {
       this.deviceScaleFactor = deviceScaleFactor;
@@ -816,7 +839,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Specifies if viewport supports touch events. Defaults to false.
+     * Specifies if viewport supports touch events. Defaults to false. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#devices">mobile emulation</a>.
      */
     public NewPageOptions setHasTouch(boolean hasTouch) {
       this.hasTouch = hasTouch;
@@ -845,15 +869,17 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
-     * supported in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
+     * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
+     * about <a href="https://playwright.dev/java/docs/emulation#isMobile">mobile emulation</a>.
      */
     public NewPageOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
       return this;
     }
     /**
-     * Whether or not to enable JavaScript in the context. Defaults to {@code true}.
+     * Whether or not to enable JavaScript in the context. Defaults to {@code true}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#javascript-enabled">disabling JavaScript</a>.
      */
     public NewPageOptions setJavaScriptEnabled(boolean javaScriptEnabled) {
       this.javaScriptEnabled = javaScriptEnabled;
@@ -861,14 +887,16 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
-     * {@code Accept-Language} request header value as well as number and date formatting rules.
+     * {@code Accept-Language} request header value as well as number and date formatting rules. Learn more about emulation in
+     * our <a href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
     public NewPageOptions setLocale(String locale) {
       this.locale = locale;
       return this;
     }
     /**
-     * Whether to emulate network being offline. Defaults to {@code false}.
+     * Whether to emulate network being offline. Defaults to {@code false}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#offline">network emulation</a>.
      */
     public NewPageOptions setOffline(boolean offline) {
       this.offline = offline;
@@ -1049,8 +1077,9 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
-     * viewport emulation.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
+     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
      * operating system. It makes the execution of the tests non-deterministic.
@@ -1059,8 +1088,9 @@ public interface Browser extends AutoCloseable {
       return setViewportSize(new ViewportSize(width, height));
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
-     * viewport emulation.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
+     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
      * operating system. It makes the execution of the tests non-deterministic.

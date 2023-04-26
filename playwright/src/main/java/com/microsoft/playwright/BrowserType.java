@@ -414,7 +414,8 @@ public interface BrowserType {
      */
     public Optional<ColorScheme> colorScheme;
     /**
-     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
+     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#devices">emulating devices with device scale factor</a>.
      */
     public Double deviceScaleFactor;
     /**
@@ -462,7 +463,8 @@ public interface BrowserType {
      */
     public Boolean handleSIGTERM;
     /**
-     * Specifies if viewport supports touch events. Defaults to false.
+     * Specifies if viewport supports touch events. Defaults to false. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#devices">mobile emulation</a>.
      */
     public Boolean hasTouch;
     /**
@@ -492,21 +494,25 @@ public interface BrowserType {
      */
     public Boolean ignoreHTTPSErrors;
     /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
-     * supported in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
+     * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
+     * about <a href="https://playwright.dev/java/docs/emulation#isMobile">mobile emulation</a>.
      */
     public Boolean isMobile;
     /**
-     * Whether or not to enable JavaScript in the context. Defaults to {@code true}.
+     * Whether or not to enable JavaScript in the context. Defaults to {@code true}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#javascript-enabled">disabling JavaScript</a>.
      */
     public Boolean javaScriptEnabled;
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
-     * {@code Accept-Language} request header value as well as number and date formatting rules.
+     * {@code Accept-Language} request header value as well as number and date formatting rules. Learn more about emulation in
+     * our <a href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
     public String locale;
     /**
-     * Whether to emulate network being offline. Defaults to {@code false}.
+     * Whether to emulate network being offline. Defaults to {@code false}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#offline">network emulation</a>.
      */
     public Boolean offline;
     /**
@@ -602,8 +608,9 @@ public interface BrowserType {
      */
     public String userAgent;
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
-     * viewport emulation.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
+     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
      * operating system. It makes the execution of the tests non-deterministic.
@@ -687,7 +694,8 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}.
+     * Specify device scale factor (can be thought of as dpr). Defaults to {@code 1}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#devices">emulating devices with device scale factor</a>.
      */
     public LaunchPersistentContextOptions setDeviceScaleFactor(double deviceScaleFactor) {
       this.deviceScaleFactor = deviceScaleFactor;
@@ -771,7 +779,8 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Specifies if viewport supports touch events. Defaults to false.
+     * Specifies if viewport supports touch events. Defaults to false. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#devices">mobile emulation</a>.
      */
     public LaunchPersistentContextOptions setHasTouch(boolean hasTouch) {
       this.hasTouch = hasTouch;
@@ -826,15 +835,17 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. Defaults to {@code false}. Not
-     * supported in Firefox.
+     * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
+     * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
+     * about <a href="https://playwright.dev/java/docs/emulation#isMobile">mobile emulation</a>.
      */
     public LaunchPersistentContextOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
       return this;
     }
     /**
-     * Whether or not to enable JavaScript in the context. Defaults to {@code true}.
+     * Whether or not to enable JavaScript in the context. Defaults to {@code true}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#javascript-enabled">disabling JavaScript</a>.
      */
     public LaunchPersistentContextOptions setJavaScriptEnabled(boolean javaScriptEnabled) {
       this.javaScriptEnabled = javaScriptEnabled;
@@ -842,14 +853,16 @@ public interface BrowserType {
     }
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
-     * {@code Accept-Language} request header value as well as number and date formatting rules.
+     * {@code Accept-Language} request header value as well as number and date formatting rules. Learn more about emulation in
+     * our <a href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
     public LaunchPersistentContextOptions setLocale(String locale) {
       this.locale = locale;
       return this;
     }
     /**
-     * Whether to emulate network being offline. Defaults to {@code false}.
+     * Whether to emulate network being offline. Defaults to {@code false}. Learn more about <a
+     * href="https://playwright.dev/java/docs/emulation#offline">network emulation</a>.
      */
     public LaunchPersistentContextOptions setOffline(boolean offline) {
       this.offline = offline;
@@ -1027,8 +1040,9 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
-     * viewport emulation.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
+     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
      * operating system. It makes the execution of the tests non-deterministic.
@@ -1037,8 +1051,9 @@ public interface BrowserType {
       return setViewportSize(new ViewportSize(width, height));
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
-     * viewport emulation.
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
+     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
      * operating system. It makes the execution of the tests non-deterministic.

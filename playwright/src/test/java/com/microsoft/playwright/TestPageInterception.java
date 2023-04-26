@@ -2,6 +2,8 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -69,6 +71,23 @@ public class TestPageInterception extends TestBase {
     Response response = page.navigate(server.PREFIX + "/empty.html");
     assertEquals(200, response.status());
     assertTrue(response.headers().get("content-type").contains("text/html"));
+  }
+
+  @Test
+  void shouldSupportTimeoutOptionInRouteFetch() {
+    server.setRoute("/slow", exchange -> {
+      exchange.getResponseHeaders().set("Content-type", "text/plain");
+      exchange.sendResponseHeaders(200, 4096);
+    });
+
+    page.route("**/*", route -> {
+      PlaywrightException error = assertThrows(PlaywrightException.class,
+        () -> route.fetch(new Route.FetchOptions().setTimeout(1000)));
+      assertTrue(error.getMessage().contains("Request timed out after 1000ms"), error.getMessage());
+    });
+    PlaywrightException error = assertThrows(PlaywrightException.class,
+      () -> page.navigate(server.PREFIX + "/slow", new Page.NavigateOptions().setTimeout(2000)));
+    assertTrue(error.getMessage().contains("Timeout 2000ms exceeded"), error.getMessage());
   }
 
   @Test

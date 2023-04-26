@@ -252,7 +252,7 @@ class Utils {
   static void writeToFile(InputStream inputStream, Path path) {
     mkParentDirs(path);
     try (FileOutputStream out = new FileOutputStream(path.toFile())) {
-      byte[] buf = new byte[8192];
+      byte[] buf = new byte[1024 * 1024];
       int length;
       while ((length = inputStream.read(buf)) > 0) {
         out.write(buf, 0, length);
