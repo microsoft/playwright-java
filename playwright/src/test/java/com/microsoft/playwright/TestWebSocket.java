@@ -185,7 +185,7 @@ public class TestWebSocket extends TestBase {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       ws.waitForFrameSent(() -> page.evaluate("window.ws.close()"));
     });
-    assertTrue(e.getMessage().contains("Socket closed"), e.getMessage());
+    assertTrue(e.getMessage().matches("Socket closed|Socket error"), e.getMessage());
   }
 
   @Test
