@@ -54,6 +54,7 @@ if [[ "$RELEASE_CHANNEL" == "stable" ]]; then
   JAMMY_TAGS+=("jammy")
   JAMMY_TAGS+=("latest")
   JAMMY_TAGS+=("v${PW_VERSION}")
+  JAMMY_TAGS+=("v${PW_VERSION}-jammy")
 fi
 
 tag_and_push() {
