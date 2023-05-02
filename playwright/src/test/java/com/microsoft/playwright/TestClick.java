@@ -405,6 +405,12 @@ public class TestClick extends TestBase {
     assertEquals(isWebKit() ? 1910 + 8 : 1910, page.evaluate("offsetY"));
   }
 
+  private static void expectCloseTo(double expected, double actual) {
+    if (Math.abs(expected - actual) > 2)
+      fail("Expected: " + expected + ", received: " + actual);
+  }
+
+
   @Test
   @DisabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
   void shouldClickTheButtonWithOffsetWithPageScale() {
@@ -419,28 +425,10 @@ public class TestClick extends TestBase {
       "}");
     page.click("button", new Page.ClickOptions().setPosition(20, 10));
     assertEquals("Clicked", page.evaluate("result"));
-    // 20;10 + 8px of border in each direction
-    int expectedX = 28;
-    int expectedY = 18;
-
-    if (isWebKit()) {
-      // WebKit for macOS 12 has different expectations starting r1829.
-      if (isMac && Utils.osVersion() < 12) {
-        // WebKit rounds up during css -> dip -> css conversion.
-        expectedX = 26;
-        expectedY = 17;
-      } else {
-        expectedX = 29;
-        expectedY = 19;
-      }
-    } else if (isChromium() && !headful) {
-      // Headless Chromium rounds down during css -> dip -> css conversion.
-      expectedX = 27;
-      expectedY = 18;
-    }
-
-    assertEquals(expectedX, Math.round((Integer) page.evaluate("pageX") + 0.01));
-    assertEquals(expectedY, Math.round((Integer) page.evaluate("pageY") + 0.01));
+    // Expect 20;10 + 8px of border in each direction. Allow some delta as different
+    // browsers round up or down differently during css -> dip -> css conversion.
+    expectCloseTo(28, (Integer) page.evaluate("pageX"));
+    expectCloseTo(18, (Integer) page.evaluate("pageY"));
     context.close();
   }
 
