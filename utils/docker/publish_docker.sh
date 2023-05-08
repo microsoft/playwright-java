@@ -47,7 +47,6 @@ JAMMY_TAGS=(
   "next"
   "next-jammy"
   "sha-${GITHUB_SHA}"
-  "v${PW_VERSION}-jammy"
 )
 
 if [[ "$RELEASE_CHANNEL" == "stable" ]]; then
