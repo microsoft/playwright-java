@@ -2057,6 +2057,20 @@ public interface Locator {
    */
   List<String> allTextContents();
   /**
+   * Creates a locator that matches both this locator and the argument locator.
+   *
+   * <p> **Usage**
+   *
+   * <p> The following example finds a button with a specific title.
+   * <pre>{@code
+   * Locator button = page.getByRole(AriaRole.BUTTON).and(page.getByTitle("Subscribe"));
+   * }</pre>
+   *
+   * @param locator Additional locator to match.
+   * @since v1.33
+   */
+  Locator and(Locator locator);
+  /**
    * Calls <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/blur">blur</a> on the element.
    *
    * @since v1.28

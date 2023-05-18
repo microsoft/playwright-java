@@ -82,6 +82,12 @@ public interface Dialog {
    */
   String message();
   /**
+   * The page that initiated this dialog, if available.
+   *
+   * @since v1.33
+   */
+  Page page();
+  /**
    * Returns dialog's type, can be one of {@code alert}, {@code beforeunload}, {@code confirm} or {@code prompt}.
    *
    * @since v1.8

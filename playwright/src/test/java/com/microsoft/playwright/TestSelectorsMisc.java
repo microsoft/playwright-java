@@ -206,6 +206,17 @@ public class TestSelectorsMisc extends TestBase {
     assertEquals(2, page.evalOnSelectorAll("section >> internal:has-not=\"article\"", "els => els.length"));
   }
 
+  @Test
+  void shouldWorkWithInternalAnd() {
+    page.setContent("<div class=foo>hello</div><div class=bar>world</div>\n" +
+      "    <span class=foo>hello2</span><span class=bar>world2</span>");
+    assertEquals(asList(), page.evalOnSelectorAll("div >> internal:and=\"span\"", "els => els.map(e => e.textContent)"));
+    assertEquals(asList("hello"), page.evalOnSelectorAll("div >> internal:and=\".foo\"", "els => els.map(e => e.textContent)"));
+    assertEquals(asList("world"), page.evalOnSelectorAll("div >> internal:and=\".bar\"", "els => els.map(e => e.textContent)"));
+    assertEquals(asList("hello2", "world2"), page.evalOnSelectorAll("span >> internal:and=\"span\"", "els => els.map(e => e.textContent)"));
+    assertEquals(asList("hello"), page.evalOnSelectorAll(".foo >> internal:and=\"div\"", "els => els.map(e => e.textContent)"));
+    assertEquals(asList("world2"), page.evalOnSelectorAll(".bar >> internal:and=\"span\"", "els => els.map(e => e.textContent)"));
+  }
 
   @Test
   void shouldWorkWithInternalOr() {

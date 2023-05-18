@@ -82,12 +82,12 @@ public class TestPageRoute extends TestBase {
       intercepted.add(4);
       route.fallback();
     };
-    page.route("**/empty.html", handler4);
+    page.route(Pattern.compile("empty.html"), handler4);
     page.navigate(server.EMPTY_PAGE);
     assertEquals(asList(4, 3, 2, 1), intercepted);
 
     intercepted.clear();
-    page.unroute("**/empty.html", handler4);
+    page.unroute(Pattern.compile("empty.html"), handler4);
     page.navigate(server.EMPTY_PAGE);
     assertEquals(asList(3, 2, 1), intercepted);
 

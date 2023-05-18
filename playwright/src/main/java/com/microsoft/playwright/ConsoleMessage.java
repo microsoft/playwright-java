@@ -57,6 +57,12 @@ public interface ConsoleMessage {
    */
   String location();
   /**
+   * The page that produced this console message, if any.
+   *
+   * @since v1.33
+   */
+  Page page();
+  /**
    * The text of the console message.
    *
    * @since v1.8

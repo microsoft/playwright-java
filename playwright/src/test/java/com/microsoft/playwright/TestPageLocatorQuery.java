@@ -182,6 +182,19 @@ public class TestPageLocatorQuery extends TestBase {
     assertThat(page.locator("div").filter(new Locator.FilterOptions().setHasNotText("foo"))).hasCount(2);
   }
 
+
+  @Test
+  void shouldSupportLocatorAnd() {
+    page.setContent("<div data-testid=foo>hello</div><div data-testid=bar>world</div>\n" +
+      "    <span data-testid=foo>hello2</span><span data-testid=bar>world2</span>");
+    assertThat(page.locator("div").and(page.locator("div"))).hasCount(2);
+    assertThat(page.locator("div").and(page.getByTestId("foo"))).hasText(new String[] { "hello" });
+    assertThat(page.locator("div").and(page.getByTestId("bar"))).hasText(new String[] { "world" });
+    assertThat(page.getByTestId("foo").and(page.locator("div"))).hasText(new String[] { "hello" });
+    assertThat(page.getByTestId("bar").and(page.locator("span"))).hasText(new String[] { "world2" });
+    assertThat(page.locator("span").and(page.getByTestId(Pattern.compile("bar|foo")))).hasCount(2);
+  }
+
   @Test
   void shouldSupportLocatorOr() {
     page.setContent("<div>hello</div><span>world</span>");
