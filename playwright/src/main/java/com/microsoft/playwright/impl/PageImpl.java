@@ -51,6 +51,8 @@ public class PageImpl extends ChannelOwner implements Page {
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
   private static final Map<EventType, String> eventSubscriptions() {
     Map<EventType, String> result = new HashMap<>();
+    result.put(EventType.CONSOLE, "console");
+    result.put(EventType.DIALOG, "dialog");
     result.put(EventType.REQUEST, "request");
     result.put(EventType.RESPONSE, "response");
     result.put(EventType.REQUESTFINISHED, "requestFinished");
@@ -113,22 +115,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
   @Override
   protected void handleEvent(String event, JsonObject params) {
-    if ("dialog".equals(event)) {
-      String guid = params.getAsJsonObject("dialog").get("guid").getAsString();
-      DialogImpl dialog = connection.getExistingObject(guid);
-      if (listeners.hasListeners(EventType.DIALOG)) {
-        listeners.notify(EventType.DIALOG, dialog);
-      } else {
-        if ("beforeunload".equals(dialog.type())) {
-          try {
-            dialog.accept();
-          } catch (PlaywrightException e) {
-          }
-        } else {
-          dialog.dismiss();
-        }
-      }
-    } else if ("worker".equals(event)) {
+    if ("worker".equals(event)) {
       String guid = params.getAsJsonObject("worker").get("guid").getAsString();
       WorkerImpl worker = connection.getExistingObject(guid);
       worker.page = this;
@@ -138,10 +125,6 @@ public class PageImpl extends ChannelOwner implements Page {
       String guid = params.getAsJsonObject("webSocket").get("guid").getAsString();
       WebSocketImpl webSocket = connection.getExistingObject(guid);
       listeners.notify(EventType.WEBSOCKET, webSocket);
-    } else if ("console".equals(event)) {
-      String guid = params.getAsJsonObject("message").get("guid").getAsString();
-      ConsoleMessageImpl message = connection.getExistingObject(guid);
-      listeners.notify(EventType.CONSOLE, message);
     } else if ("download".equals(event)) {
       String artifactGuid = params.getAsJsonObject("artifact").get("guid").getAsString();
       ArtifactImpl artifact = connection.getExistingObject(artifactGuid);

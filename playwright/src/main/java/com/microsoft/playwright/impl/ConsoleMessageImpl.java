@@ -20,6 +20,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.ConsoleMessage;
 import com.microsoft.playwright.JSHandle;
+import com.microsoft.playwright.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,16 @@ import java.util.List;
 import static com.microsoft.playwright.impl.Serialization.gson;
 
 public class ConsoleMessageImpl extends ChannelOwner implements ConsoleMessage {
+  private PageImpl page;
+
   public ConsoleMessageImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
+    // Note: currently, we only report console messages for pages and they always have a page.
+    // However, in the future we might report console messages for service workers or something else,
+    // where page() would be null.
+    if (initializer.has("page")) {
+      page = connection.getExistingObject(initializer.getAsJsonObject("page").get("guid").getAsString());
+    }
   }
 
   public String type() {
@@ -54,5 +63,10 @@ public class ConsoleMessageImpl extends ChannelOwner implements ConsoleMessage {
     return location.get("url").getAsString() + ":" +
       location.get("lineNumber").getAsNumber() + ":" +
       location.get("columnNumber").getAsNumber();
+  }
+
+  @Override
+  public PageImpl page() {
+    return page;
   }
 }

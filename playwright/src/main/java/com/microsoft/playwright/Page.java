@@ -82,15 +82,15 @@ public interface Page extends AutoCloseable {
    * Emitted when JavaScript within the page calls one of console API methods, e.g. {@code console.log} or {@code
    * console.dir}. Also emitted if the page throws an error or a warning.
    *
-   * <p> The arguments passed into {@code console.log} appear as arguments on the event handler.
+   * <p> The arguments passed into {@code console.log} are available on the {@code ConsoleMessage} event handler argument.
    *
-   * <p> An example of handling {@code console} event:
+   * <p> **Usage**
    * <pre>{@code
    * page.onConsoleMessage(msg -> {
    *   for (int i = 0; i < msg.args().size(); ++i)
    *     System.out.println(i + ": " + msg.args().get(i).jsonValue());
    * });
-   * page.evaluate("() => console.log('hello', 5, {foo: 'bar'})");
+   * page.evaluate("() => console.log('hello', 5, { foo: 'bar' })");
    * }</pre>
    */
   void onConsoleMessage(Consumer<ConsoleMessage> handler);
@@ -127,13 +127,16 @@ public interface Page extends AutoCloseable {
    * the dialog - otherwise the page will <a
    * href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop#never_blocking">freeze</a> waiting for the
    * dialog, and actions like click will never finish.
+   *
+   * <p> **Usage**
    * <pre>{@code
    * page.onDialog(dialog -> {
    *   dialog.accept();
    * });
    * }</pre>
    *
-   * <p> <strong>NOTE:</strong> When no {@link Page#onDialog Page.onDialog()} listeners are present, all dialogs are automatically dismissed.
+   * <p> <strong>NOTE:</strong> When no {@link Page#onDialog Page.onDialog()} or {@link BrowserContext#onDialog BrowserContext.onDialog()} listeners are
+   * present, all dialogs are automatically dismissed.
    */
   void onDialog(Consumer<Dialog> handler);
   /**
@@ -2394,7 +2397,7 @@ public interface Page extends AutoCloseable {
      */
     public ScreenshotCaret caret;
     /**
-     * An object which specifies clipping of the resulting image. Should have the following fields:
+     * An object which specifies clipping of the resulting image.
      */
     public Clip clip;
     /**
@@ -2464,13 +2467,13 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
-     * An object which specifies clipping of the resulting image. Should have the following fields:
+     * An object which specifies clipping of the resulting image.
      */
     public ScreenshotOptions setClip(double x, double y, double width, double height) {
       return setClip(new Clip(x, y, width, height));
     }
     /**
-     * An object which specifies clipping of the resulting image. Should have the following fields:
+     * An object which specifies clipping of the resulting image.
      */
     public ScreenshotOptions setClip(Clip clip) {
       this.clip = clip;

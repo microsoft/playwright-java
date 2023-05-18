@@ -90,6 +90,11 @@ class UrlMatcher {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     UrlMatcher that = (UrlMatcher) o;
+    if (rawSource instanceof Pattern && that.rawSource instanceof Pattern) {
+      Pattern a = (Pattern) rawSource;
+      Pattern b = (Pattern) that.rawSource;
+      return a.pattern().equals(b.pattern()) && a.flags() == b.flags();
+    }
     return Objects.equals(rawSource, that.rawSource);
   }
 

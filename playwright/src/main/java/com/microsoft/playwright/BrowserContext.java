@@ -59,6 +59,51 @@ public interface BrowserContext extends AutoCloseable {
   void offClose(Consumer<BrowserContext> handler);
 
   /**
+   * Emitted when JavaScript within the page calls one of console API methods, e.g. {@code console.log} or {@code
+   * console.dir}. Also emitted if the page throws an error or a warning.
+   *
+   * <p> The arguments passed into {@code console.log} and the page are available on the {@code ConsoleMessage} event handler
+   * argument.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * context.onConsoleMessage(msg -> {
+   *   for (int i = 0; i < msg.args().size(); ++i)
+   *     System.out.println(i + ": " + msg.args().get(i).jsonValue());
+   * });
+   * page.evaluate("() => console.log('hello', 5, { foo: 'bar' })");
+   * }</pre>
+   */
+  void onConsoleMessage(Consumer<ConsoleMessage> handler);
+  /**
+   * Removes handler that was previously added with {@link #onConsoleMessage onConsoleMessage(handler)}.
+   */
+  void offConsoleMessage(Consumer<ConsoleMessage> handler);
+
+  /**
+   * Emitted when a JavaScript dialog appears, such as {@code alert}, {@code prompt}, {@code confirm} or {@code
+   * beforeunload}. Listener **must** either {@link Dialog#accept Dialog.accept()} or {@link Dialog#dismiss Dialog.dismiss()}
+   * the dialog - otherwise the page will <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop#never_blocking">freeze</a> waiting for the
+   * dialog, and actions like click will never finish.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * context.onDialog(dialog -> {
+   *   dialog.accept();
+   * });
+   * }</pre>
+   *
+   * <p> <strong>NOTE:</strong> When no {@link Page#onDialog Page.onDialog()} or {@link BrowserContext#onDialog BrowserContext.onDialog()} listeners are
+   * present, all dialogs are automatically dismissed.
+   */
+  void onDialog(Consumer<Dialog> handler);
+  /**
+   * Removes handler that was previously added with {@link #onDialog onDialog(handler)}.
+   */
+  void offDialog(Consumer<Dialog> handler);
+
+  /**
    * The event is emitted when a new Page is created in the BrowserContext. The page may still be loading. The event will
    * also fire for popup pages. See also {@link Page#onPopup Page.onPopup()} to receive events about popups relevant to a
    * specific page.
@@ -295,6 +340,33 @@ public interface BrowserContext extends AutoCloseable {
       return this;
     }
   }
+  class WaitForConsoleMessageOptions {
+    /**
+     * Receives the {@code ConsoleMessage} object and resolves to truthy value when the waiting should resolve.
+     */
+    public Predicate<ConsoleMessage> predicate;
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     */
+    public Double timeout;
+
+    /**
+     * Receives the {@code ConsoleMessage} object and resolves to truthy value when the waiting should resolve.
+     */
+    public WaitForConsoleMessageOptions setPredicate(Predicate<ConsoleMessage> predicate) {
+      this.predicate = predicate;
+      return this;
+    }
+    /**
+     * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
+     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}.
+     */
+    public WaitForConsoleMessageOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class WaitForPageOptions {
     /**
      * Receives the {@code Page} object and resolves to truthy value when the waiting should resolve.
@@ -331,6 +403,9 @@ public interface BrowserContext extends AutoCloseable {
    * browserContext.addCookies(Arrays.asList(cookieObject1, cookieObject2));
    * }</pre>
    *
+   * @param cookies Adds cookies to the browser context.
+   *
+   * <p> For the cookie to apply to all subdomains as well, prefix domain with a dot, like this: ".example.com".
    * @since v1.8
    */
   void addCookies(List<Cookie> cookies);
@@ -1242,6 +1317,28 @@ public interface BrowserContext extends AutoCloseable {
    * @since v1.32
    */
   void waitForCondition(BooleanSupplier condition, WaitForConditionOptions options);
+  /**
+   * Performs action and waits for a {@code ConsoleMessage} to be logged by in the pages in the context. If predicate is
+   * provided, it passes {@code ConsoleMessage} value into the {@code predicate} function and waits for {@code
+   * predicate(message)} to return a truthy value. Will throw an error if the page is closed before the {@link
+   * BrowserContext#onConsoleMessage BrowserContext.onConsoleMessage()} event is fired.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   * @since v1.34
+   */
+  default ConsoleMessage waitForConsoleMessage(Runnable callback) {
+    return waitForConsoleMessage(null, callback);
+  }
+  /**
+   * Performs action and waits for a {@code ConsoleMessage} to be logged by in the pages in the context. If predicate is
+   * provided, it passes {@code ConsoleMessage} value into the {@code predicate} function and waits for {@code
+   * predicate(message)} to return a truthy value. Will throw an error if the page is closed before the {@link
+   * BrowserContext#onConsoleMessage BrowserContext.onConsoleMessage()} event is fired.
+   *
+   * @param callback Callback that performs the action triggering the event.
+   * @since v1.34
+   */
+  ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable callback);
   /**
    * Performs action and waits for a new {@code Page} to be created in the context. If predicate is provided, it passes
    * {@code Page} value into the {@code predicate} function and waits for {@code predicate(event)} to return a truthy value.

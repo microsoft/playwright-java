@@ -92,6 +92,14 @@ class LocatorImpl implements Locator {
   }
 
   @Override
+  public Locator and(Locator locator) {
+    LocatorImpl other = (LocatorImpl) locator;
+    if (other.frame != frame)
+      throw new Error("Locators must belong to the same frame.");
+    return new LocatorImpl(frame, selector + " >> internal:and=" + gson().toJson(other.selector), null);
+  }
+
+  @Override
   public void blur(BlurOptions options) {
     frame.withLogging("Locator.blur", () -> blurImpl(options));
   }

@@ -53,6 +53,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   PageImpl ownerPage;
   private static final Map<EventType, String> eventSubscriptions() {
     Map<EventType, String> result = new HashMap<>();
+    result.put(EventType.CONSOLE, "console");
+    result.put(EventType.DIALOG, "dialog");
     result.put(EventType.REQUEST, "request");
     result.put(EventType.RESPONSE, "response");
     result.put(EventType.REQUESTFINISHED, "requestFinished");
@@ -77,6 +79,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   enum EventType {
     CLOSE,
+    CONSOLE,
+    DIALOG,
     PAGE,
     REQUEST,
     REQUESTFAILED,
@@ -118,6 +122,26 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   public void offClose(Consumer<BrowserContext> handler) {
     listeners.remove(EventType.CLOSE, handler);
+  }
+
+  @Override
+  public void onConsoleMessage(Consumer<ConsoleMessage> handler) {
+    listeners.add(EventType.CONSOLE, handler);
+  }
+
+  @Override
+  public void offConsoleMessage(Consumer<ConsoleMessage> handler) {
+    listeners.remove(EventType.CONSOLE, handler);
+  }
+
+  @Override
+  public void onDialog(Consumer<Dialog> handler) {
+    listeners.add(EventType.DIALOG, handler);
+  }
+
+  @Override
+  public void offDialog(Consumer<Dialog> handler) {
+    listeners.remove(EventType.DIALOG, handler);
   }
 
   @Override
@@ -516,6 +540,18 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     runUntil(() -> {}, new WaitableRace<>(waitables));
   }
 
+  @Override
+  public ConsoleMessage waitForConsoleMessage(WaitForConsoleMessageOptions options, Runnable code) {
+    return withWaitLogging("BrowserContext.waitForConsoleMessage", logger -> waitForConsoleMessageImpl(options, code));
+  }
+
+  private ConsoleMessage waitForConsoleMessageImpl(WaitForConsoleMessageOptions options, Runnable code) {
+    if (options == null) {
+      options = new WaitForConsoleMessageOptions();
+    }
+    return waitForEventWithTimeout(EventType.CONSOLE, code, options.predicate, options.timeout);
+  }
+
   private class WaitableContextClose<R> extends WaitableEvent<EventType, R> {
     WaitableContextClose() {
       super(BrowserContextImpl.this.listeners, EventType.CLOSE);
@@ -554,7 +590,36 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
   @Override
   protected void handleEvent(String event, JsonObject params) {
-    if ("route".equals(event)) {
+    if ("dialog".equals(event)) {
+      String guid = params.getAsJsonObject("dialog").get("guid").getAsString();
+      DialogImpl dialog = connection.getExistingObject(guid);
+      boolean hasListeners = false;
+      if (listeners.hasListeners(EventType.DIALOG)) {
+        hasListeners = true;
+        listeners.notify(EventType.DIALOG, dialog);
+      }
+      PageImpl page = dialog.page();
+      if (page != null) {
+        if (page.listeners.hasListeners(PageImpl.EventType.DIALOG)) {
+          hasListeners = true;
+          page.listeners.notify(PageImpl.EventType.DIALOG, dialog);
+        }
+      }
+      // Although we do similar handling on the server side, we still need this logic
+      // on the client side due to a possible race condition between two async calls:
+      // a) removing "dialog" listener subscription (client->server)
+      // b) actual "dialog" event (server->client)
+      if (!hasListeners) {
+        if ("beforeunload".equals(dialog.type())) {
+          try {
+            dialog.accept();
+          } catch (PlaywrightException e) {
+          }
+        } else {
+          dialog.dismiss();
+        }
+      }
+    } else if ("route".equals(event)) {
       RouteImpl route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
       handleRoute(route);
     } else if ("page".equals(event)) {
@@ -569,6 +634,14 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       BindingCallback binding = bindings.get(bindingCall.name());
       if (binding != null) {
         bindingCall.call(binding);
+      }
+    } else if ("console".equals(event)) {
+      String guid = params.getAsJsonObject("message").get("guid").getAsString();
+      ConsoleMessageImpl message = connection.getExistingObject(guid);
+      listeners.notify(BrowserContextImpl.EventType.CONSOLE, message);
+      PageImpl page = message.page();
+      if (page != null) {
+        page.listeners.notify(PageImpl.EventType.CONSOLE, message);
       }
     } else if ("request".equals(event)) {
       String guid = params.getAsJsonObject("request").get("guid").getAsString();
