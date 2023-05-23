@@ -65,7 +65,7 @@ You can find Maven project with the examples [here](./examples).
 
 #### Page screenshot
 
-This code snippet navigates to whatsmyuseragent.org in Chromium, Firefox and WebKit, and saves 3 screenshots.
+This code snippet navigates to Playwright homepage in Chromium, Firefox and WebKit, and saves 3 screenshots.
 
 ```java
 import com.microsoft.playwright.*;
@@ -86,7 +86,7 @@ public class PageScreenshot {
         try (Browser browser = browserType.launch()) {
           BrowserContext context = browser.newContext();
           Page page = context.newPage();
-          page.navigate("http://whatsmyuseragent.org/");
+          page.navigate("https://playwright.dev/");
           page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("screenshot-" + browserType.name() + ".png")));
         }
       }
