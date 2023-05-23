@@ -34,7 +34,7 @@ public class PageScreenshot {
         try (Browser browser = browserType.launch()) {
           BrowserContext context = browser.newContext();
           Page page = context.newPage();
-          page.navigate("http://whatsmyuseragent.org/");
+          page.navigate("https://playwright.dev/");
           page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("screenshot-" + browserType.name() + ".png")));
         }
       }
