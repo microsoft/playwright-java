@@ -946,9 +946,6 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   private byte[] pdfImpl(PdfOptions options) {
-    if (!browserContext.browser().isChromium()) {
-      throw new PlaywrightException("Page.pdf only supported in headless Chromium");
-    }
     if (options == null) {
       options = new PdfOptions();
     }
