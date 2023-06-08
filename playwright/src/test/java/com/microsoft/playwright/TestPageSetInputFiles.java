@@ -100,10 +100,6 @@ public class TestPageSetInputFiles extends TestBase {
   @Test
   void shouldUploadMultipleLargeFiles(@TempDir Path tmpDir) throws IOException, ExecutionException, InterruptedException {
     Assumptions.assumeTrue(3 <= (Runtime.getRuntime().maxMemory() >> 30), "Fails if max heap size is < 3Gb");
-
-//    it.skip(browserName === "webkit" && isMac && parseInt(os.release(), 10) < 20, "WebKit for macOS 10.15 is frozen and does not have corresponding protocol features.");
-//    it.skip(isAndroid);
-//    it.slow();
     int filesCount = 10;
     page.navigate(server.PREFIX + "/input/fileupload-multi.html");
     Path uploadFile = tmpDir.resolve("50MB_1.zip");
