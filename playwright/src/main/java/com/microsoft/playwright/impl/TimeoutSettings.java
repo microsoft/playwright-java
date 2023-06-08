@@ -30,6 +30,13 @@ class TimeoutSettings {
     this.parent = parent;
   }
 
+  Double defaultTimeout() {
+    return defaultTimeout;
+  }
+  Double defaultNavigationTimeout() {
+    return defaultNavigationTimeout;
+  }
+
   void setDefaultTimeout(double timeout) {
     defaultTimeout = timeout;
   }
@@ -73,5 +80,4 @@ class TimeoutSettings {
     }
     return new WaitableTimeout<>(timeout(timeout));
   }
-
 }

@@ -936,7 +936,16 @@ public class PageImpl extends ChannelOwner implements Page {
   @Override
   public void pause() {
     withLogging("Page.pause", () -> {
-      runUntil(() -> {}, new WaitableRace<>(asList(context().pause(), (Waitable<JsonElement>) waitableClosedOrCrashed)));
+      Double defaultNavigationTimeout = browserContext.timeoutSettings.defaultNavigationTimeout();
+      Double defaultTimeout = browserContext.timeoutSettings.defaultTimeout();
+      browserContext.setDefaultNavigationTimeout(0);
+      browserContext.setDefaultTimeout(0);
+      try {
+        runUntil(() -> {}, new WaitableRace<>(asList(context().pause(), (Waitable<JsonElement>) waitableClosedOrCrashed)));
+      } finally {
+        browserContext.setDefaultNavigationTimeout(defaultNavigationTimeout);
+        browserContext.setDefaultTimeout(defaultTimeout);
+      }
     });
   }
 

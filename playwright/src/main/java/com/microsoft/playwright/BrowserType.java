@@ -382,7 +382,7 @@ public interface BrowserType {
      * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
      * Page.waitForResponse()} it takes the base URL in consideration by using the <a
      * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
-     * corresponding URL. Examples:
+     * corresponding URL. Unset by default. Examples:
      * <ul>
      * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code
      * http://localhost:3000/bar.html}</li>
@@ -394,7 +394,7 @@ public interface BrowserType {
      */
     public String baseURL;
     /**
-     * Toggles bypassing page's Content-Security-Policy.
+     * Toggles bypassing page's Content-Security-Policy. Defaults to {@code false}.
      */
     public Boolean bypassCSP;
     /**
@@ -440,7 +440,7 @@ public interface BrowserType {
      */
     public Path executablePath;
     /**
-     * An object containing additional HTTP headers to be sent with every request.
+     * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
     public Map<String, String> extraHTTPHeaders;
     /**
@@ -506,8 +506,9 @@ public interface BrowserType {
     public Boolean javaScriptEnabled;
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
-     * {@code Accept-Language} request header value as well as number and date formatting rules. Learn more about emulation in
-     * our <a href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
+     * {@code Accept-Language} request header value as well as number and date formatting rules. Defaults to the system default
+     * locale. Learn more about emulation in our <a
+     * href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
     public String locale;
     /**
@@ -517,7 +518,7 @@ public interface BrowserType {
     public Boolean offline;
     /**
      * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
-     * BrowserContext.grantPermissions()} for more details.
+     * BrowserContext.grantPermissions()} for more details. Defaults to none.
      */
     public List<String> permissions;
     /**
@@ -585,7 +586,8 @@ public interface BrowserType {
     /**
      * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
      * that imply single target DOM element will throw when more than one element matches the selector. This option does not
-     * affect any Locator APIs (Locators are always strict). See {@code Locator} to learn more about the strict mode.
+     * affect any Locator APIs (Locators are always strict). Defaults to {@code false}. See {@code Locator} to learn more about
+     * the strict mode.
      */
     public Boolean strictSelectors;
     /**
@@ -596,7 +598,7 @@ public interface BrowserType {
     /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
-     * metaZones.txt</a> for a list of supported timezone IDs.
+     * metaZones.txt</a> for a list of supported timezone IDs. Defaults to the system timezone.
      */
     public String timezoneId;
     /**
@@ -637,7 +639,7 @@ public interface BrowserType {
      * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
      * Page.waitForResponse()} it takes the base URL in consideration by using the <a
      * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
-     * corresponding URL. Examples:
+     * corresponding URL. Unset by default. Examples:
      * <ul>
      * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code
      * http://localhost:3000/bar.html}</li>
@@ -652,7 +654,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Toggles bypassing page's Content-Security-Policy.
+     * Toggles bypassing page's Content-Security-Policy. Defaults to {@code false}.
      */
     public LaunchPersistentContextOptions setBypassCSP(boolean bypassCSP) {
       this.bypassCSP = bypassCSP;
@@ -735,7 +737,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * An object containing additional HTTP headers to be sent with every request.
+     * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
     public LaunchPersistentContextOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
@@ -853,8 +855,9 @@ public interface BrowserType {
     }
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
-     * {@code Accept-Language} request header value as well as number and date formatting rules. Learn more about emulation in
-     * our <a href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
+     * {@code Accept-Language} request header value as well as number and date formatting rules. Defaults to the system default
+     * locale. Learn more about emulation in our <a
+     * href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
     public LaunchPersistentContextOptions setLocale(String locale) {
       this.locale = locale;
@@ -870,7 +873,7 @@ public interface BrowserType {
     }
     /**
      * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
-     * BrowserContext.grantPermissions()} for more details.
+     * BrowserContext.grantPermissions()} for more details. Defaults to none.
      */
     public LaunchPersistentContextOptions setPermissions(List<String> permissions) {
       this.permissions = permissions;
@@ -1002,7 +1005,8 @@ public interface BrowserType {
     /**
      * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
      * that imply single target DOM element will throw when more than one element matches the selector. This option does not
-     * affect any Locator APIs (Locators are always strict). See {@code Locator} to learn more about the strict mode.
+     * affect any Locator APIs (Locators are always strict). Defaults to {@code false}. See {@code Locator} to learn more about
+     * the strict mode.
      */
     public LaunchPersistentContextOptions setStrictSelectors(boolean strictSelectors) {
       this.strictSelectors = strictSelectors;
@@ -1019,7 +1023,7 @@ public interface BrowserType {
     /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
-     * metaZones.txt</a> for a list of supported timezone IDs.
+     * metaZones.txt</a> for a list of supported timezone IDs. Defaults to the system timezone.
      */
     public LaunchPersistentContextOptions setTimezoneId(String timezoneId) {
       this.timezoneId = timezoneId;

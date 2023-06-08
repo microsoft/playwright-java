@@ -39,12 +39,12 @@ import java.util.regex.Pattern;
 public interface PageAssertions {
   class HasTitleOptions {
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public HasTitleOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -53,12 +53,12 @@ public interface PageAssertions {
   }
   class HasURLOptions {
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public HasURLOptions setTimeout(double timeout) {
       this.timeout = timeout;

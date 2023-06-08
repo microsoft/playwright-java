@@ -40,7 +40,7 @@ public interface LocatorAssertions {
   class IsAttachedOptions {
     public Boolean attached;
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
@@ -49,7 +49,7 @@ public interface LocatorAssertions {
       return this;
     }
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public IsAttachedOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -59,7 +59,7 @@ public interface LocatorAssertions {
   class IsCheckedOptions {
     public Boolean checked;
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
@@ -68,7 +68,7 @@ public interface LocatorAssertions {
       return this;
     }
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public IsCheckedOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -77,12 +77,12 @@ public interface LocatorAssertions {
   }
   class IsDisabledOptions {
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public IsDisabledOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -92,7 +92,7 @@ public interface LocatorAssertions {
   class IsEditableOptions {
     public Boolean editable;
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
@@ -101,7 +101,7 @@ public interface LocatorAssertions {
       return this;
     }
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public IsEditableOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -110,12 +110,12 @@ public interface LocatorAssertions {
   }
   class IsEmptyOptions {
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public IsEmptyOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -125,7 +125,7 @@ public interface LocatorAssertions {
   class IsEnabledOptions {
     public Boolean enabled;
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
@@ -134,7 +134,7 @@ public interface LocatorAssertions {
       return this;
     }
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public IsEnabledOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -143,12 +143,12 @@ public interface LocatorAssertions {
   }
   class IsFocusedOptions {
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public IsFocusedOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -157,12 +157,12 @@ public interface LocatorAssertions {
   }
   class IsHiddenOptions {
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public IsHiddenOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -176,7 +176,7 @@ public interface LocatorAssertions {
      */
     public Double ratio;
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
@@ -189,7 +189,7 @@ public interface LocatorAssertions {
       return this;
     }
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public IsInViewportOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -198,13 +198,13 @@ public interface LocatorAssertions {
   }
   class IsVisibleOptions {
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
     public Boolean visible;
 
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -222,7 +222,7 @@ public interface LocatorAssertions {
      */
     public Boolean ignoreCase;
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
     /**
@@ -239,7 +239,7 @@ public interface LocatorAssertions {
       return this;
     }
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public ContainsTextOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -255,12 +255,12 @@ public interface LocatorAssertions {
   }
   class HasAttributeOptions {
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public HasAttributeOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -269,12 +269,12 @@ public interface LocatorAssertions {
   }
   class HasClassOptions {
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public HasClassOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -283,12 +283,12 @@ public interface LocatorAssertions {
   }
   class HasCountOptions {
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public HasCountOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -297,12 +297,12 @@ public interface LocatorAssertions {
   }
   class HasCSSOptions {
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public HasCSSOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -311,12 +311,12 @@ public interface LocatorAssertions {
   }
   class HasIdOptions {
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public HasIdOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -325,12 +325,12 @@ public interface LocatorAssertions {
   }
   class HasJSPropertyOptions {
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public HasJSPropertyOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -344,7 +344,7 @@ public interface LocatorAssertions {
      */
     public Boolean ignoreCase;
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
     /**
@@ -361,7 +361,7 @@ public interface LocatorAssertions {
       return this;
     }
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public HasTextOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -377,12 +377,12 @@ public interface LocatorAssertions {
   }
   class HasValueOptions {
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public HasValueOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -391,12 +391,12 @@ public interface LocatorAssertions {
   }
   class HasValuesOptions {
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
     /**
-     * Time to retry the assertion for.
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public HasValuesOptions setTimeout(double timeout) {
       this.timeout = timeout;

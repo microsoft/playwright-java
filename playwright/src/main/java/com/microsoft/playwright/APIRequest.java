@@ -42,7 +42,7 @@ public interface APIRequest {
      */
     public String baseURL;
     /**
-     * An object containing additional HTTP headers to be sent with every request.
+     * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
     public Map<String, String> extraHTTPHeaders;
     /**
@@ -100,7 +100,7 @@ public interface APIRequest {
       return this;
     }
     /**
-     * An object containing additional HTTP headers to be sent with every request.
+     * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
     public NewContextOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;

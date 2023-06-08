@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.FilePayload;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
@@ -94,6 +95,38 @@ public class TestPageSetInputFiles extends TestBase {
     assertEquals(1, fields.size());
     assertEquals("200MB.zip", fields.get(0).filename);
     assertEquals(200 * 1024 * 1024, fields.get(0).content.length());
+  }
+
+  @Test
+  void shouldUploadMultipleLargeFiles(@TempDir Path tmpDir) throws IOException, ExecutionException, InterruptedException {
+    Assumptions.assumeTrue(3 <= (Runtime.getRuntime().maxMemory() >> 30), "Fails if max heap size is < 3Gb");
+
+//    it.skip(browserName === "webkit" && isMac && parseInt(os.release(), 10) < 20, "WebKit for macOS 10.15 is frozen and does not have corresponding protocol features.");
+//    it.skip(isAndroid);
+//    it.slow();
+    int filesCount = 10;
+    page.navigate(server.PREFIX + "/input/fileupload-multi.html");
+    Path uploadFile = tmpDir.resolve("50MB_1.zip");
+    String str = String.join("", Collections.nCopies(1024, "A"));
+
+    try (Writer stream = new OutputStreamWriter(Files.newOutputStream(uploadFile))) {
+      for (int i = 0; i < 49 * 1024; i++) {
+        stream.write(str);
+      }
+    }
+    Locator input = page.locator("input[type='file']");
+    List<Path> uploadFiles = new ArrayList<>();
+    uploadFiles.add(uploadFile);
+    for (int i = 1; i < filesCount; i++) {
+      Path dstFile = tmpDir.resolve("50MB_" + i + ".zip");
+      Files.copy(uploadFile, dstFile);
+      uploadFiles.add(dstFile);
+    }
+    FileChooser fileChooser = page.waitForFileChooser(() -> input.click());
+    fileChooser.setFiles(uploadFiles.toArray(new Path[0]));
+    Object filesLen = page.getByRole(AriaRole.TEXTBOX).evaluate("e => e.files.length");
+    assertTrue(fileChooser.isMultiple());
+    assertEquals(filesCount, filesLen);
   }
 
   @Test

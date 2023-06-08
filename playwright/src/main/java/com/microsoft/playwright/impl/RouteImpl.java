@@ -58,9 +58,13 @@ public class RouteImpl extends ChannelOwner implements Route {
 
   @Override
   public void resume(ResumeOptions options) {
+    resume(options, false);
+  }
+
+  void resume(ResumeOptions options, boolean isFallback) {
     startHandling();
     applyOverrides(convertType(options, FallbackOptions.class));
-    withLogging("Route.resume", () -> resumeImpl(request().fallbackOverridesForResume()));
+    withLogging("Route.resume", () -> resumeImpl(request().fallbackOverridesForResume(), isFallback));
   }
 
   @Override
@@ -71,7 +75,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     }
     applyOverrides(options);
     if (shouldResumeIfFallbackIsCalled) {
-      resume();
+      resume(null, true);
     }
   }
 
@@ -114,7 +118,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     request().applyFallbackOverrides(overrides);
   }
 
-  private void resumeImpl(RequestImpl.FallbackOverrides options) {
+  private void resumeImpl(RequestImpl.FallbackOverrides options, boolean isFallback) {
     JsonObject params = new JsonObject();
     if (options != null) {
       if (options.url != null) {
@@ -132,6 +136,7 @@ public class RouteImpl extends ChannelOwner implements Route {
       }
     }
     params.addProperty("requestUrl", request.initializer.get("url").getAsString());
+    params.addProperty("isFallback", isFallback);
     sendMessageAsync("continue", params);
   }
 
