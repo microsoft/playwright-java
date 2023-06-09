@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.condition.EnabledIf;
@@ -27,6 +28,11 @@ import static com.microsoft.playwright.Utils.attachFrame;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestWorkers extends TestBase {
+
+  private int browserMajorVersion() {
+    String version = browser.version();
+    return Integer.parseInt(version.split("\\.")[0]);
+  }
 
   @Test
   void pageWorkers() {
@@ -145,6 +151,7 @@ public class TestWorkers extends TestBase {
 
   @Test
   void shouldReportNetworkActivity() {
+    Assumptions.assumeFalse(isFirefox() && browserMajorVersion() < 114);
     Worker worker = page.waitForWorker(() -> page.navigate(server.PREFIX + "/worker/worker.html"));
     String url = server.PREFIX + "/one-style.css";
     Request[] request = {null};
@@ -160,6 +167,7 @@ public class TestWorkers extends TestBase {
 
   @Test
   void shouldReportNetworkActivityOnWorkerCreation() {
+    Assumptions.assumeFalse(isFirefox() && browserMajorVersion() < 114);
     // Chromium needs waitForDebugger enabled for this one.
     page.navigate(server.EMPTY_PAGE);
     String url = server.PREFIX + "/one-style.css";

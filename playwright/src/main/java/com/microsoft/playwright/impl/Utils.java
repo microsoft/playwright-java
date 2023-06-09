@@ -162,16 +162,15 @@ class Utils {
   static final int maxUplodBufferSize = 50 * 1024 * 1024;
 
   static boolean hasLargeFile(Path[] files) {
+    int totalSize = 0;
     for (Path file: files) {
       try {
-        if (Files.size(file)> maxUplodBufferSize) {
-          return true;
-        }
+        totalSize += Files.size(file);
       } catch (IOException e) {
         throw new PlaywrightException("Cannot get file size.", e);
       }
     }
-    return false;
+    return totalSize > maxUplodBufferSize;
   }
 
   static void addLargeFileUploadParams(Path[] files, JsonObject params, BrowserContextImpl context) {
@@ -202,10 +201,12 @@ class Utils {
   }
 
   static void checkFilePayloadSize(FilePayload[] files) {
+    int totalSize = 0;
     for (FilePayload file: files) {
-      if (file.buffer.length > maxUplodBufferSize) {
-        throw new PlaywrightException("Cannot set buffer larger than 50Mb, please write it to a file and pass its path instead.");
-      }
+      totalSize += file.buffer.length;
+    }
+    if (totalSize > maxUplodBufferSize) {
+      throw new PlaywrightException("Cannot set buffer larger than 50Mb, please write it to a file and pass its path instead.");
     }
   }
 

@@ -602,9 +602,15 @@ public interface ElementHandle extends JSHandle {
     public ScreenshotCaret caret;
     /**
      * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlaid with a pink box
-     * {@code #FF00FF} that completely covers its bounding box.
+     * {@code #FF00FF} (customized by {@code maskColor}) that completely covers its bounding box.
      */
     public List<Locator> mask;
+    /**
+     * Specify the color of the overlay box for masked elements, in <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value">CSS color format</a>. Default color is pink {@code
+     * #FF00FF}.
+     */
+    public String maskColor;
     /**
      * Hides default white background and allows capturing screenshots with transparency. Not applicable to {@code jpeg}
      * images. Defaults to {@code false}.
@@ -663,10 +669,19 @@ public interface ElementHandle extends JSHandle {
     }
     /**
      * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlaid with a pink box
-     * {@code #FF00FF} that completely covers its bounding box.
+     * {@code #FF00FF} (customized by {@code maskColor}) that completely covers its bounding box.
      */
     public ScreenshotOptions setMask(List<Locator> mask) {
       this.mask = mask;
+      return this;
+    }
+    /**
+     * Specify the color of the overlay box for masked elements, in <a
+     * href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value">CSS color format</a>. Default color is pink {@code
+     * #FF00FF}.
+     */
+    public ScreenshotOptions setMaskColor(String maskColor) {
+      this.maskColor = maskColor;
       return this;
     }
     /**

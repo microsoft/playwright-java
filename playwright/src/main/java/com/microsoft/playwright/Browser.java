@@ -66,7 +66,7 @@ public interface Browser extends AutoCloseable {
      * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
      * Page.waitForResponse()} it takes the base URL in consideration by using the <a
      * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
-     * corresponding URL. Examples:
+     * corresponding URL. Unset by default. Examples:
      * <ul>
      * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code
      * http://localhost:3000/bar.html}</li>
@@ -78,7 +78,7 @@ public interface Browser extends AutoCloseable {
      */
     public String baseURL;
     /**
-     * Toggles bypassing page's Content-Security-Policy.
+     * Toggles bypassing page's Content-Security-Policy. Defaults to {@code false}.
      */
     public Boolean bypassCSP;
     /**
@@ -93,7 +93,7 @@ public interface Browser extends AutoCloseable {
      */
     public Double deviceScaleFactor;
     /**
-     * An object containing additional HTTP headers to be sent with every request.
+     * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
     public Map<String, String> extraHTTPHeaders;
     /**
@@ -130,8 +130,9 @@ public interface Browser extends AutoCloseable {
     public Boolean javaScriptEnabled;
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
-     * {@code Accept-Language} request header value as well as number and date formatting rules. Learn more about emulation in
-     * our <a href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
+     * {@code Accept-Language} request header value as well as number and date formatting rules. Defaults to the system default
+     * locale. Learn more about emulation in our <a
+     * href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
     public String locale;
     /**
@@ -141,11 +142,11 @@ public interface Browser extends AutoCloseable {
     public Boolean offline;
     /**
      * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
-     * BrowserContext.grantPermissions()} for more details.
+     * BrowserContext.grantPermissions()} for more details. Defaults to none.
      */
     public List<String> permissions;
     /**
-     * Network proxy settings to use with this context.
+     * Network proxy settings to use with this context. Defaults to none.
      *
      * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
      * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
@@ -220,13 +221,14 @@ public interface Browser extends AutoCloseable {
     /**
      * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
      * that imply single target DOM element will throw when more than one element matches the selector. This option does not
-     * affect any Locator APIs (Locators are always strict). See {@code Locator} to learn more about the strict mode.
+     * affect any Locator APIs (Locators are always strict). Defaults to {@code false}. See {@code Locator} to learn more about
+     * the strict mode.
      */
     public Boolean strictSelectors;
     /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
-     * metaZones.txt</a> for a list of supported timezone IDs.
+     * metaZones.txt</a> for a list of supported timezone IDs. Defaults to the system timezone.
      */
     public String timezoneId;
     /**
@@ -255,7 +257,7 @@ public interface Browser extends AutoCloseable {
      * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
      * Page.waitForResponse()} it takes the base URL in consideration by using the <a
      * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
-     * corresponding URL. Examples:
+     * corresponding URL. Unset by default. Examples:
      * <ul>
      * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code
      * http://localhost:3000/bar.html}</li>
@@ -270,7 +272,7 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Toggles bypassing page's Content-Security-Policy.
+     * Toggles bypassing page's Content-Security-Policy. Defaults to {@code false}.
      */
     public NewContextOptions setBypassCSP(boolean bypassCSP) {
       this.bypassCSP = bypassCSP;
@@ -294,7 +296,7 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * An object containing additional HTTP headers to be sent with every request.
+     * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
     public NewContextOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
@@ -365,8 +367,9 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
-     * {@code Accept-Language} request header value as well as number and date formatting rules. Learn more about emulation in
-     * our <a href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
+     * {@code Accept-Language} request header value as well as number and date formatting rules. Defaults to the system default
+     * locale. Learn more about emulation in our <a
+     * href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
     public NewContextOptions setLocale(String locale) {
       this.locale = locale;
@@ -382,14 +385,14 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
-     * BrowserContext.grantPermissions()} for more details.
+     * BrowserContext.grantPermissions()} for more details. Defaults to none.
      */
     public NewContextOptions setPermissions(List<String> permissions) {
       this.permissions = permissions;
       return this;
     }
     /**
-     * Network proxy settings to use with this context.
+     * Network proxy settings to use with this context. Defaults to none.
      *
      * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
      * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
@@ -399,7 +402,7 @@ public interface Browser extends AutoCloseable {
       return setProxy(new Proxy(server));
     }
     /**
-     * Network proxy settings to use with this context.
+     * Network proxy settings to use with this context. Defaults to none.
      *
      * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
      * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
@@ -532,7 +535,8 @@ public interface Browser extends AutoCloseable {
     /**
      * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
      * that imply single target DOM element will throw when more than one element matches the selector. This option does not
-     * affect any Locator APIs (Locators are always strict). See {@code Locator} to learn more about the strict mode.
+     * affect any Locator APIs (Locators are always strict). Defaults to {@code false}. See {@code Locator} to learn more about
+     * the strict mode.
      */
     public NewContextOptions setStrictSelectors(boolean strictSelectors) {
       this.strictSelectors = strictSelectors;
@@ -541,7 +545,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
-     * metaZones.txt</a> for a list of supported timezone IDs.
+     * metaZones.txt</a> for a list of supported timezone IDs. Defaults to the system timezone.
      */
     public NewContextOptions setTimezoneId(String timezoneId) {
       this.timezoneId = timezoneId;
@@ -588,7 +592,7 @@ public interface Browser extends AutoCloseable {
      * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
      * Page.waitForResponse()} it takes the base URL in consideration by using the <a
      * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
-     * corresponding URL. Examples:
+     * corresponding URL. Unset by default. Examples:
      * <ul>
      * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code
      * http://localhost:3000/bar.html}</li>
@@ -600,7 +604,7 @@ public interface Browser extends AutoCloseable {
      */
     public String baseURL;
     /**
-     * Toggles bypassing page's Content-Security-Policy.
+     * Toggles bypassing page's Content-Security-Policy. Defaults to {@code false}.
      */
     public Boolean bypassCSP;
     /**
@@ -615,7 +619,7 @@ public interface Browser extends AutoCloseable {
      */
     public Double deviceScaleFactor;
     /**
-     * An object containing additional HTTP headers to be sent with every request.
+     * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
     public Map<String, String> extraHTTPHeaders;
     /**
@@ -652,8 +656,9 @@ public interface Browser extends AutoCloseable {
     public Boolean javaScriptEnabled;
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
-     * {@code Accept-Language} request header value as well as number and date formatting rules. Learn more about emulation in
-     * our <a href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
+     * {@code Accept-Language} request header value as well as number and date formatting rules. Defaults to the system default
+     * locale. Learn more about emulation in our <a
+     * href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
     public String locale;
     /**
@@ -663,11 +668,11 @@ public interface Browser extends AutoCloseable {
     public Boolean offline;
     /**
      * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
-     * BrowserContext.grantPermissions()} for more details.
+     * BrowserContext.grantPermissions()} for more details. Defaults to none.
      */
     public List<String> permissions;
     /**
-     * Network proxy settings to use with this context.
+     * Network proxy settings to use with this context. Defaults to none.
      *
      * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
      * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
@@ -742,13 +747,14 @@ public interface Browser extends AutoCloseable {
     /**
      * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
      * that imply single target DOM element will throw when more than one element matches the selector. This option does not
-     * affect any Locator APIs (Locators are always strict). See {@code Locator} to learn more about the strict mode.
+     * affect any Locator APIs (Locators are always strict). Defaults to {@code false}. See {@code Locator} to learn more about
+     * the strict mode.
      */
     public Boolean strictSelectors;
     /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
-     * metaZones.txt</a> for a list of supported timezone IDs.
+     * metaZones.txt</a> for a list of supported timezone IDs. Defaults to the system timezone.
      */
     public String timezoneId;
     /**
@@ -777,7 +783,7 @@ public interface Browser extends AutoCloseable {
      * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
      * Page.waitForResponse()} it takes the base URL in consideration by using the <a
      * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
-     * corresponding URL. Examples:
+     * corresponding URL. Unset by default. Examples:
      * <ul>
      * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code
      * http://localhost:3000/bar.html}</li>
@@ -792,7 +798,7 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Toggles bypassing page's Content-Security-Policy.
+     * Toggles bypassing page's Content-Security-Policy. Defaults to {@code false}.
      */
     public NewPageOptions setBypassCSP(boolean bypassCSP) {
       this.bypassCSP = bypassCSP;
@@ -816,7 +822,7 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * An object containing additional HTTP headers to be sent with every request.
+     * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
     public NewPageOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
@@ -887,8 +893,9 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Specify user locale, for example {@code en-GB}, {@code de-DE}, etc. Locale will affect {@code navigator.language} value,
-     * {@code Accept-Language} request header value as well as number and date formatting rules. Learn more about emulation in
-     * our <a href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
+     * {@code Accept-Language} request header value as well as number and date formatting rules. Defaults to the system default
+     * locale. Learn more about emulation in our <a
+     * href="https://playwright.dev/java/docs/emulation#locale--timezone">emulation guide</a>.
      */
     public NewPageOptions setLocale(String locale) {
       this.locale = locale;
@@ -904,14 +911,14 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
-     * BrowserContext.grantPermissions()} for more details.
+     * BrowserContext.grantPermissions()} for more details. Defaults to none.
      */
     public NewPageOptions setPermissions(List<String> permissions) {
       this.permissions = permissions;
       return this;
     }
     /**
-     * Network proxy settings to use with this context.
+     * Network proxy settings to use with this context. Defaults to none.
      *
      * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
      * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
@@ -921,7 +928,7 @@ public interface Browser extends AutoCloseable {
       return setProxy(new Proxy(server));
     }
     /**
-     * Network proxy settings to use with this context.
+     * Network proxy settings to use with this context. Defaults to none.
      *
      * <p> <strong>NOTE:</strong> For Chromium on Windows the browser needs to be launched with the global proxy for this option to work. If all contexts
      * override the proxy, global proxy will be never used and can be any string, for example {@code launch({ proxy: { server:
@@ -1054,7 +1061,8 @@ public interface Browser extends AutoCloseable {
     /**
      * If set to true, enables strict selectors mode for this context. In the strict selectors mode all operations on selectors
      * that imply single target DOM element will throw when more than one element matches the selector. This option does not
-     * affect any Locator APIs (Locators are always strict). See {@code Locator} to learn more about the strict mode.
+     * affect any Locator APIs (Locators are always strict). Defaults to {@code false}. See {@code Locator} to learn more about
+     * the strict mode.
      */
     public NewPageOptions setStrictSelectors(boolean strictSelectors) {
       this.strictSelectors = strictSelectors;
@@ -1063,7 +1071,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Changes the timezone of the context. See <a
      * href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1">ICU's
-     * metaZones.txt</a> for a list of supported timezone IDs.
+     * metaZones.txt</a> for a list of supported timezone IDs. Defaults to the system timezone.
      */
     public NewPageOptions setTimezoneId(String timezoneId) {
       this.timezoneId = timezoneId;

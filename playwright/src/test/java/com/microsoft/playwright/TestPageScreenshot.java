@@ -35,6 +35,7 @@ import java.util.Arrays;
 import static com.microsoft.playwright.options.ScreenshotAnimations.DISABLED;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 // TODO: suite.skip(browserName === "firefox" && headful");
 public class TestPageScreenshot extends TestBase {
@@ -233,4 +234,19 @@ public class TestPageScreenshot extends TestBase {
     }
     assertTrue(hasDifferentScreenshots);
   }
+
+  @Test
+  void shouldWorkWhenMaskColorIsNotPinkF0F() {
+    page.setViewportSize(500, 500);
+    page.navigate(server.PREFIX + "/grid.html");
+    byte[] screenshot1 = page.screenshot(
+      new Page.ScreenshotOptions()
+        .setMask(asList(page.locator("div").nth(5)))
+        .setMaskColor("#00FF00"));
+    byte[] screenshot2 = page.screenshot(
+      new Page.ScreenshotOptions()
+        .setMask(asList(page.locator("div").nth(5))));
+    assertThrows(AssertionError.class, () -> assertArrayEquals(screenshot1, screenshot2));
+  }
+
 }

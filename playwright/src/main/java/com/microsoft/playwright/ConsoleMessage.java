@@ -59,7 +59,7 @@ public interface ConsoleMessage {
   /**
    * The page that produced this console message, if any.
    *
-   * @since v1.33
+   * @since v1.34
    */
   Page page();
   /**

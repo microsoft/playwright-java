@@ -580,7 +580,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       updateInterceptionPatterns();
     }
     if (handled == Router.HandleResult.NoMatchingHandler || handled == Router.HandleResult.Fallback) {
-      route.resume();
+      route.resume(null, true);
     }
   }
 
