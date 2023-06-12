@@ -16,13 +16,12 @@
 
 package com.microsoft.playwright.impl.driver;
 
+import static com.microsoft.playwright.impl.driver.DriverLogging.logWithTimestamp;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static com.microsoft.playwright.impl.driver.DriverLogging.logWithTimestamp;
 
 /**
  * This class provides access to playwright-cli. It can be either preinstalled
@@ -30,6 +29,8 @@ import static com.microsoft.playwright.impl.driver.DriverLogging.logWithTimestam
  * loaded from the driver-bundle module if that module is in the classpath.
  */
 public abstract class Driver {
+  public static final String PLAYWRIGHT_BROWSERS_TO_INSTALL = "PLAYWRIGHT_BROWSERS_TO_INSTALL";
+  
   protected final Map<String, String> env = new LinkedHashMap<>();
 
   private static Driver instance;

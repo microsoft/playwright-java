@@ -16,17 +16,17 @@
 
 package com.microsoft.playwright.impl;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.APIRequest;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Selectors;
 import com.microsoft.playwright.impl.driver.Driver;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private Process driverProcess;
@@ -36,10 +36,17 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   }
 
   public static PlaywrightImpl createImpl(CreateOptions options, boolean forceNewDriverInstanceForTests) {
-    Map<String, String> env = Collections.emptyMap();
-    if (options != null && options.env != null) {
-      env = options.env;
+    Map<String, String> env = new HashMap<>();
+    if (options != null) {
+      if (options.env != null) {
+          env.putAll(options.env);
+      }
+      
+      if (options.browsersToInstall != null) {
+          env.put(Driver.PLAYWRIGHT_BROWSERS_TO_INSTALL, String.join(",", options.browsersToInstall));
+      }
     }
+    
     Driver driver = forceNewDriverInstanceForTests ?
       Driver.createAndInstall(env, true) :
       Driver.ensureDriverInstalled(env, true);

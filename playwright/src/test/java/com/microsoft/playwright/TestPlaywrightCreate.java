@@ -58,7 +58,7 @@ public class TestPlaywrightCreate {
     Map<String, String> env = mapOf("PLAYWRIGHT_BROWSERS_PATH", browsersDir.toString());
     Playwright.CreateOptions options = new Playwright.CreateOptions().setEnv(env);
 
-    try (Playwright playwright = Playwright.create(options)) {
+    try (Playwright playwright = PlaywrightImpl.createImpl(options, true)) {
       try (Browser browser = playwright.chromium().launch()) {
         assertNotNull(browser);
       }
@@ -70,4 +70,48 @@ public class TestPlaywrightCreate {
       }
     }
   }
+  
+ //This test is too slow, so we don't run it.
+ void shouldOnlyInstallChromiumWhenBrowsersToInstallIsSetToChromium(@TempDir Path browsersDir) throws IOException {
+   Map<String, String> env = mapOf("PLAYWRIGHT_BROWSERS_PATH", browsersDir.toString());
+   Playwright.CreateOptions options = new Playwright.CreateOptions().setEnv(env).setBrowsersToInstall("chromium");
+
+   try (Playwright playwright = PlaywrightImpl.createImpl(options, true)) {
+     try (Browser browser = playwright.chromium().launch()) {
+       assertNotNull(browser);
+     }
+     
+     PlaywrightException fireFoxException = assertThrows(PlaywrightException.class, () -> {
+         try(Browser browser = playwright.firefox().launch()) { }
+     });
+     assertTrue(fireFoxException.getMessage().contains("Executable doesn't exist"));
+     
+     PlaywrightException webkitException = assertThrows(PlaywrightException.class, () -> {
+         try(Browser browser = playwright.webkit().launch()) { }
+     });
+     assertTrue(webkitException.getMessage().contains("Executable doesn't exist"));
+   }
+ }
+ 
+ //This test is too slow, so we don't run it.
+ void shouldOnlyInstallFireFoxAndWebkitWhenBrowsersToInstallIsSetToFireFoxAndWebkit(@TempDir Path browsersDir) throws IOException {
+   Map<String, String> env = mapOf("PLAYWRIGHT_BROWSERS_PATH", browsersDir.toString());
+   Playwright.CreateOptions options = new Playwright.CreateOptions().setEnv(env).setBrowsersToInstall("firefox", "webkit");
+
+   try (Playwright playwright = PlaywrightImpl.createImpl(options, true)) {
+     try (Browser browser = playwright.firefox().launch()) {
+       assertNotNull(browser);
+     }
+     
+     try (Browser browser = playwright.webkit().launch()) {
+       assertNotNull(browser);
+     }
+     
+     PlaywrightException fireFoxException = assertThrows(PlaywrightException.class, () -> {
+         try(Browser browser = playwright.chromium().launch()) { }
+     });
+     assertTrue(fireFoxException.getMessage().contains("Executable doesn't exist"));
+     
+   }
+ }
 }

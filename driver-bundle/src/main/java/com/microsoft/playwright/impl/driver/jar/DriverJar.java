@@ -16,15 +16,23 @@
 
 package com.microsoft.playwright.impl.driver.jar;
 
-import com.microsoft.playwright.impl.driver.Driver;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.*;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystemAlreadyExistsException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import com.microsoft.playwright.impl.driver.Driver;
 
 public class DriverJar extends Driver {
   private static final String PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD";
@@ -86,8 +94,20 @@ public class DriverJar extends Driver {
     if (!Files.exists(driver)) {
       throw new RuntimeException("Failed to find driver: " + driver);
     }
+    
+    List<String> installCommandAndArguments = new ArrayList<>();
+    installCommandAndArguments.add("install");
+    
+    String browsersToInstall = env.get(Driver.PLAYWRIGHT_BROWSERS_TO_INSTALL);
+    
+    if (browsersToInstall != null && !browsersToInstall.trim().isEmpty()) {
+        logMessage("Browsers to install are: " + browsersToInstall);
+        
+        installCommandAndArguments.addAll(Arrays.asList(browsersToInstall.split(",")));
+    }
+    
     ProcessBuilder pb = createProcessBuilder();
-    pb.command().add("install");
+    pb.command().addAll(installCommandAndArguments);
     pb.redirectError(ProcessBuilder.Redirect.INHERIT);
     pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
     Process p = pb.start();

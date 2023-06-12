@@ -16,8 +16,12 @@
 
 package com.microsoft.playwright;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.microsoft.playwright.impl.PlaywrightImpl;
-import java.util.*;
 
 /**
  * Playwright module provides a method to launch a browser instance. The following is a typical example of using Playwright
@@ -46,6 +50,11 @@ public interface Playwright extends AutoCloseable {
      * environment variables of the Playwright process.
      */
     public Map<String, String> env;
+    
+    /**
+     * Browsers to install. If there is no browsers specified then all of them are installed.
+     */
+    public Set<String> browsersToInstall;
 
     /**
      * Additional environment variables that will be passed to the driver process. By default driver process inherits
@@ -53,6 +62,14 @@ public interface Playwright extends AutoCloseable {
      */
     public CreateOptions setEnv(Map<String, String> env) {
       this.env = env;
+      return this;
+    }
+    
+    /**
+     * Browsers to install. If there is no browsers specified then all of them are installed.
+     */
+    public CreateOptions setBrowsersToInstall(String... browsers) {
+      this.browsersToInstall = new HashSet<>(Arrays.asList(browsers));
       return this;
     }
   }
