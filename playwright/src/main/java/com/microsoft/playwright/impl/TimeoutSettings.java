@@ -37,11 +37,11 @@ class TimeoutSettings {
     return defaultNavigationTimeout;
   }
 
-  void setDefaultTimeout(double timeout) {
+  void setDefaultTimeout(Double timeout) {
     defaultTimeout = timeout;
   }
 
-  void setDefaultNavigationTimeout(double timeout) {
+  void setDefaultNavigationTimeout(Double timeout) {
     defaultNavigationTimeout = timeout;
   }
 
