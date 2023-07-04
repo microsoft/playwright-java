@@ -94,7 +94,7 @@ class Utils {
   static String globToRegex(String glob) {
     StringBuilder tokens = new StringBuilder();
     tokens.append('^');
-    boolean inGroup = false;
+    int groupPos = -1;
     for (int i = 0; i < glob.length(); ++i) {
       char c = glob.charAt(i);
       if (escapeGlobChars.contains(c)) {
@@ -102,7 +102,7 @@ class Utils {
         continue;
       }
       if (c == '*') {
-        boolean beforeDeep = i < 1 || glob.charAt(i - 1) == '/';
+        boolean beforeDeep = i - groupPos <= 1 || glob.charAt(i - 1) == '/';
         int starCount = 1;
         while (i + 1 < glob.length() && glob.charAt(i + 1) == '*') {
           starCount++;
@@ -124,16 +124,17 @@ class Utils {
           tokens.append('.');
           break;
         case '{':
-          inGroup = true;
+          groupPos = i;
           tokens.append('(');
           break;
         case '}':
-          inGroup = false;
+          groupPos = -1;
           tokens.append(')');
           break;
         case ',':
-          if (inGroup) {
+          if (groupPos >= 0) {
             tokens.append('|');
+            groupPos = i;
             break;
           }
           tokens.append("\\").append(c);
