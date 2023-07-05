@@ -753,6 +753,26 @@ public interface BrowserContext extends AutoCloseable {
    */
   void grantPermissions(List<String> permissions, GrantPermissionsOptions options);
   /**
+   * <strong>NOTE:</strong> CDP sessions are only supported on Chromium-based browsers.
+   *
+   * <p> Returns the newly created session.
+   *
+   * @param page Target to create new session for. For backwards-compatibility, this parameter is named {@code page}, but it can be a
+   * {@code Page} or {@code Frame} type.
+   * @since v1.11
+   */
+  CDPSession newCDPSession(Page page);
+  /**
+   * <strong>NOTE:</strong> CDP sessions are only supported on Chromium-based browsers.
+   *
+   * <p> Returns the newly created session.
+   *
+   * @param page Target to create new session for. For backwards-compatibility, this parameter is named {@code page}, but it can be a
+   * {@code Page} or {@code Frame} type.
+   * @since v1.11
+   */
+  CDPSession newCDPSession(Frame page);
+  /**
    * Creates a new page in the browser context.
    *
    * @since v1.8

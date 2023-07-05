@@ -964,7 +964,7 @@ class Interface extends TypeDefinition {
     if (asList("Page", "Frame", "ElementHandle", "Locator", "APIRequest", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright").contains(jsonName)) {
       output.add("import java.util.*;");
     }
-    if (asList("Page", "Browser", "BrowserContext", "WebSocket", "Worker").contains(jsonName)) {
+    if (asList("Page", "Browser", "BrowserContext", "WebSocket", "Worker", "CDPSession").contains(jsonName)) {
       output.add("import java.util.function.Consumer;");
     }
     if (asList("Page", "BrowserContext").contains(jsonName)) {
@@ -976,6 +976,9 @@ class Interface extends TypeDefinition {
     }
     if (asList("Page", "Frame", "FrameLocator", "Locator", "Browser", "BrowserType", "BrowserContext", "PageAssertions", "LocatorAssertions").contains(jsonName)) {
       output.add("import java.util.regex.Pattern;");
+    }
+    if ("CDPSession".equals(jsonName)) {
+      output.add("import com.google.gson.JsonObject;");
     }
     if ("PlaywrightAssertions".equals(jsonName)) {
       output.add("import com.microsoft.playwright.APIResponse;");

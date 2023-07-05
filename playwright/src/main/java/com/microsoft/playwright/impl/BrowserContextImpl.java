@@ -215,6 +215,22 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
+  public CDPSession newCDPSession(Page page) {
+    JsonObject params = new JsonObject();
+    params.add("page", ((PageImpl) page).toProtocolRef());
+    JsonObject result = sendMessage("newCDPSession", params).getAsJsonObject();
+    return connection.getExistingObject(result.getAsJsonObject("session").get("guid").getAsString());
+  }
+
+  @Override
+  public CDPSession newCDPSession(Frame frame) {
+    JsonObject params = new JsonObject();
+    params.add("frame", ((FrameImpl) frame).toProtocolRef());
+    JsonObject result = sendMessage("newCDPSession", params).getAsJsonObject();
+    return connection.getExistingObject(result.getAsJsonObject("session").get("guid").getAsString());
+  }
+
+  @Override
   public void close() {
     withLogging("BrowserContext.close", () -> closeImpl());
   }
