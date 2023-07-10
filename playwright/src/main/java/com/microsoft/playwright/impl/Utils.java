@@ -89,7 +89,8 @@ class Utils {
   }
 
 
-  static Set<Character> escapeGlobChars = new HashSet<>(Arrays.asList('/', '$', '^', '+', '.', '(', ')', '=', '!', '|'));
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions#escaping
+  static Set<Character> escapeGlobChars = new HashSet<>(Arrays.asList('$', '^', '+', '.', '*', '(', ')', '|', '\\', '?', '{', '}', '[', ']'));
 
   static String globToRegex(String glob) {
     StringBuilder tokens = new StringBuilder();
@@ -97,8 +98,12 @@ class Utils {
     boolean inGroup = false;
     for (int i = 0; i < glob.length(); ++i) {
       char c = glob.charAt(i);
-      if (escapeGlobChars.contains(c)) {
-        tokens.append("\\").append(c);
+      if (c == '\\' && i + 1 < glob.length()) {
+        char nextChar = glob.charAt(++i);
+        if (escapeGlobChars.contains(nextChar)) {
+          tokens.append('\\');
+        }
+        tokens.append(nextChar);
         continue;
       }
       if (c == '*') {
@@ -139,7 +144,11 @@ class Utils {
           tokens.append("\\").append(c);
           break;
         default:
+          if (escapeGlobChars.contains(c)) {
+            tokens.append('\\');
+          }
           tokens.append(c);
+          break;
       }
     }
     tokens.append('$');
