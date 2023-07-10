@@ -98,6 +98,42 @@ public class TestPageRoute extends TestBase {
   }
 
   @Test
+  void shouldSupportQuestionMarkInGlobPattern() {
+    server.setRoute("/index", exchange -> {
+      exchange.sendResponseHeaders(200, 0);
+      try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write("index-no-hello");
+      }
+    });
+    server.setRoute("/index123hello", exchange -> {
+      exchange.sendResponseHeaders(200, 0);
+      try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write("index123hello");
+      }
+    });
+
+    page.route("**/index?hello", route -> {
+      route.fulfill(new Route.FulfillOptions().setBody("intercepted any character"));
+    });
+
+    page.route("**/index\\?hello", route -> {
+      route.fulfill(new Route.FulfillOptions().setBody("intercepted question mark"));
+    });
+
+    page.navigate(server.PREFIX + "/index?hello");
+    assertTrue(page.content().contains("intercepted question mark"), page.content());
+
+    page.navigate(server.PREFIX + "/index");
+    assertTrue(page.content().contains("index-no-hello"), page.content());
+
+    page.navigate(server.PREFIX + "/index1hello");
+    assertTrue(page.content().contains("intercepted any character"), page.content());
+
+    page.navigate(server.PREFIX + "/index123hello");
+    assertTrue(page.content().contains("index123hello"), page.content());
+  }
+
+  @Test
   void shouldUnroutePredicate() {
     List<Integer> intercepted = new ArrayList<>();
     Predicate<String> predicate = r -> true;
