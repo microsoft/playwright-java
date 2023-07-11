@@ -73,6 +73,6 @@ public class TestPageSetExtraHttpHeaders extends TestBase {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       browser.newContext(new Browser.NewContextOptions().setExtraHTTPHeaders(mapOf("foo", null)));
     });
-    assertTrue(e.getMessage().contains("expected string, got undefined"));
+    assertTrue(e.getMessage().contains("Value cannot be null"));
   }
 }

@@ -330,6 +330,11 @@ class Serialization {
   }
 
   static JsonArray toProtocol(Map<String, String> map) {
+    for (String value : map.values()) {
+      if (value == null) {
+        throw new PlaywrightException("Value cannot be null");
+      }
+    }
     return toNameValueArray(map);
   }
 
