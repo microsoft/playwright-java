@@ -348,7 +348,11 @@ class Serialization {
     for (Map.Entry<String, ?> e : map.entrySet()) {
       JsonObject item = new JsonObject();
       item.addProperty("name", e.getKey());
-      item.add("value", gson().toJsonTree(e.getValue()));
+      if (e.getValue() instanceof FilePayload) {
+        item.add("value", gson().toJsonTree(e.getValue()));
+      } else {
+        item.addProperty("value", "" + e.getValue());
+      }
       array.add(item);
     }
     return array;

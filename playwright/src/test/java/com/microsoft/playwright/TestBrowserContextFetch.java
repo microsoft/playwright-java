@@ -511,14 +511,18 @@ public class TestBrowserContextFetch extends TestBase {
       FormData.create()
         .set("firstName", "John")
         .set("lastName", "Doe")
+        .set("age", 30)
+        .set("isMale", true)
         .set("file", "f.js")));
 
     assertEquals("POST", req.get().method);
     assertEquals(asList("application/x-www-form-urlencoded"), req.get().headers.get("content-type"));
     String body = new String(req.get().postBody);
-    assertTrue(body.contains("firstName=John"));
-    assertTrue(body.contains("lastName=Doe"));
-    assertTrue(body.contains("file=f.js"));
+    assertTrue(body.contains("firstName=John"), body);
+    assertTrue(body.contains("lastName=Doe"), body);
+    assertTrue(body.contains("age=30"), body);
+    assertTrue(body.contains("isMale=true"), body);
+    assertTrue(body.contains("file=f.js"), body);
   }
 
   @Test
@@ -526,6 +530,8 @@ public class TestBrowserContextFetch extends TestBase {
     Map<String, Object> data = mapOf(
       "firstName", "John",
       "lastName", "Doe",
+      "age", 30,
+      "isMale", true,
       "file", mapOf("name", "f.js")
     );
     Future<Server.Request> req = server.futureRequest("/empty.html");
