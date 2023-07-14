@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Type;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -162,6 +163,8 @@ class Serialization {
         result.d = ((LocalDateTime)value).atZone(ZoneId.systemDefault()).toInstant().toString();
       } else if (value instanceof URL) {
         result.u = ((URL)value).toString();
+      } else if (value instanceof BigInteger) {
+        result.bi = ((BigInteger)value).toString();
       } else if (value instanceof Pattern) {
         result.r = new SerializedValue.R();
         result.r.p = ((Pattern)value).pattern();
@@ -235,6 +238,9 @@ class Serialization {
       } catch (MalformedURLException e) {
         throw new PlaywrightException("Unexpected value: " + value.u, e);
       }
+    }
+    if (value.bi != null) {
+      return (T) new BigInteger(value.bi);
     }
     if (value.d != null)
       return (T)(Date.from(Instant.parse(value.d)));

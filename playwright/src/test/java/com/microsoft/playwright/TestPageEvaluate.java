@@ -19,6 +19,7 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
+import java.math.BigInteger;
 import java.time.*;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -113,6 +114,12 @@ public class TestPageEvaluate extends TestBase {
   void shouldTransferArraysAsArraysNotObjects() {
     Object result = page.evaluate("a => Array.isArray(a)", asList(1, 2, 3));
     assertEquals(true, result);
+  }
+
+  @Test
+  void shouldTransferBigint() {
+    assertEquals(new BigInteger("42", 10), page.evaluate("() => 42n"));
+    assertEquals(new BigInteger("17", 10), page.evaluate("a => a", new BigInteger("17", 10)));
   }
 
   //  @Test
