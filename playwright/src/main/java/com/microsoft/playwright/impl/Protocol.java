@@ -32,6 +32,7 @@ class SerializedValue{
   String v;
   String d;
   String u;
+  String bi;
   public static class R {
     String p;
     String f;
