@@ -1,17 +1,20 @@
-package com.microsoft.playwright.impl;
+package com.microsoft.playwright.assertions;
 
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.assertions.PageAssertions;
 import org.opentest4j.AssertionFailedError;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SoftAssertions {
+class SoftAssertionsImpl implements SoftAssertions {
   final List<Throwable> results;
 
-  public SoftAssertions() {
+  SoftAssertionsImpl() {
     this.results = new ArrayList<>();
+  }
+
+  public static SoftAssertions create() {
+    return new SoftAssertionsImpl();
   }
 
   public PageAssertions assertThat(Page page) {

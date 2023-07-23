@@ -1,7 +1,7 @@
-package com.microsoft.playwright.impl;
+package com.microsoft.playwright.assertions;
 
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.assertions.PageAssertions;
+import com.microsoft.playwright.impl.PageAssertionsImpl;
 
 import java.util.List;
 import java.util.regex.Pattern;

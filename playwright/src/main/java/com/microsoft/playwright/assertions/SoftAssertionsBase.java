@@ -1,4 +1,4 @@
-package com.microsoft.playwright.impl;
+package com.microsoft.playwright.assertions;
 
 import com.microsoft.playwright.PlaywrightException;
 import org.opentest4j.AssertionFailedError;

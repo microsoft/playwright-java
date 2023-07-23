@@ -1,7 +1,7 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.assertions.PageAssertions;
-import com.microsoft.playwright.impl.SoftAssertions;
+import com.microsoft.playwright.assertions.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -17,7 +17,7 @@ public class TestSoftPageAssertions extends TestBase {
 
   @BeforeEach
   void beforeEach() {
-    softly = new SoftAssertions();
+    softly = SoftAssertions.create();
   }
 
   @Test
