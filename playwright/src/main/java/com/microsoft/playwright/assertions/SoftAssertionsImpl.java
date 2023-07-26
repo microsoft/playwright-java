@@ -13,14 +13,12 @@ class SoftAssertionsImpl implements SoftAssertions {
     this.results = new ArrayList<>();
   }
 
-  public static SoftAssertions create() {
-    return new SoftAssertionsImpl();
-  }
-
+  @Override
   public PageAssertions assertThat(Page page) {
     return new PageAssertionsProxy(page, results);
   }
 
+  @Override
   public void assertAll() {
     if (!results.isEmpty()) {
       throw new AssertionFailedError(getFormattedErrorMessage());

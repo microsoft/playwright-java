@@ -8,6 +8,6 @@ public interface SoftAssertions {
   void assertAll();
 
   static SoftAssertions create() {
-    return SoftAssertionsImpl.create();
+    return new SoftAssertionsImpl();
   }
 }
