@@ -15,7 +15,7 @@ class SoftAssertionsImpl implements SoftAssertions {
 
   @Override
   public PageAssertions assertThat(Page page) {
-    return new PageAssertionsProxy(page, results);
+    return new PageAssertionsImplProxy(page, results);
   }
 
   @Override
@@ -39,5 +39,4 @@ class SoftAssertionsImpl implements SoftAssertions {
 
     return message.toString();
   }
-
 }

@@ -19,8 +19,10 @@ package com.microsoft.playwright;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.microsoft.playwright.assertions.SoftAssertions;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -213,5 +215,17 @@ class Utils {
 
   static String generateDifferentOriginPort(final Server server){
     return server.PREFIX.replace(String.valueOf(server.PORT), String.valueOf(server.PORT+1));
+  }
+
+  static void assertFailureCount(SoftAssertions softAssertions, int expectedCount) {
+    try {
+      Class<? extends SoftAssertions> clazz = softAssertions.getClass();
+      Field resultsField = clazz.getDeclaredField("results");
+      resultsField.setAccessible(true);
+      List<Throwable> results = (List<Throwable>) resultsField.get(softAssertions);
+      assertEquals(results.size(), expectedCount);
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

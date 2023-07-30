@@ -6,7 +6,7 @@ import org.opentest4j.AssertionFailedError;
 import java.util.List;
 
 class SoftAssertionsBase {
-  private final List<Throwable> results;
+  final List<Throwable> results;
 
   public SoftAssertionsBase(List<Throwable> results) {
     this.results = results;
