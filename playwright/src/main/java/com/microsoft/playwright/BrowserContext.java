@@ -1116,7 +1116,7 @@ public interface BrowserContext extends AutoCloseable {
   void route(Predicate<String> url, Consumer<Route> handler, RouteOptions options);
   /**
    * If specified the network requests that are made in the context will be served from the HAR file. Read more about <a
-   * href="https://playwright.dev/java/docs/network#replaying-from-har">Replaying from HAR</a>.
+   * href="https://playwright.dev/java/docs/mock#replaying-from-har">Replaying from HAR</a>.
    *
    * <p> Playwright will not serve requests intercepted by Service Worker from the HAR file. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when
@@ -1131,7 +1131,7 @@ public interface BrowserContext extends AutoCloseable {
   }
   /**
    * If specified the network requests that are made in the context will be served from the HAR file. Read more about <a
-   * href="https://playwright.dev/java/docs/network#replaying-from-har">Replaying from HAR</a>.
+   * href="https://playwright.dev/java/docs/mock#replaying-from-har">Replaying from HAR</a>.
    *
    * <p> Playwright will not serve requests intercepted by Service Worker from the HAR file. See <a
    * href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers when

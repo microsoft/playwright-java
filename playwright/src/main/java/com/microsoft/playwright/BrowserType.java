@@ -44,6 +44,26 @@ import java.util.regex.Pattern;
 public interface BrowserType {
   class ConnectOptions {
     /**
+     * This option exposes network available on the connecting client to the browser being connected to. Consists of a list of
+     * rules separated by comma.
+     *
+     * <p> Available rules:
+     * <ol>
+     * <li> Hostname pattern, for example: {@code example.com}, {@code *.org:99}, {@code x.*.y.com}, {@code *foo.org}.</li>
+     * <li> IP literal, for example: {@code 127.0.0.1}, {@code 0.0.0.0:99}, {@code [::1]}, {@code [0:0::1]:99}.</li>
+     * <li> {@code <loopback>} that matches local loopback interfaces: {@code localhost}, {@code *.localhost}, {@code 127.0.0.1},
+     * {@code [::1]}.</li>
+     * </ol>
+     *
+     * <p> Some common examples:
+     * <ol>
+     * <li> {@code "*"} to expose all network.</li>
+     * <li> {@code "<loopback>"} to expose localhost network.</li>
+     * <li> {@code "*.test.internal-domain,*.staging.internal-domain,<loopback>"} to expose test/staging deployments and localhost.</li>
+     * </ol>
+     */
+    public String exposeNetwork;
+    /**
      * Additional HTTP headers to be sent with web socket connect request. Optional.
      */
     public Map<String, String> headers;
@@ -57,6 +77,29 @@ public interface BrowserType {
      */
     public Double timeout;
 
+    /**
+     * This option exposes network available on the connecting client to the browser being connected to. Consists of a list of
+     * rules separated by comma.
+     *
+     * <p> Available rules:
+     * <ol>
+     * <li> Hostname pattern, for example: {@code example.com}, {@code *.org:99}, {@code x.*.y.com}, {@code *foo.org}.</li>
+     * <li> IP literal, for example: {@code 127.0.0.1}, {@code 0.0.0.0:99}, {@code [::1]}, {@code [0:0::1]:99}.</li>
+     * <li> {@code <loopback>} that matches local loopback interfaces: {@code localhost}, {@code *.localhost}, {@code 127.0.0.1},
+     * {@code [::1]}.</li>
+     * </ol>
+     *
+     * <p> Some common examples:
+     * <ol>
+     * <li> {@code "*"} to expose all network.</li>
+     * <li> {@code "<loopback>"} to expose localhost network.</li>
+     * <li> {@code "*.test.internal-domain,*.staging.internal-domain,<loopback>"} to expose test/staging deployments and localhost.</li>
+     * </ol>
+     */
+    public ConnectOptions setExposeNetwork(String exposeNetwork) {
+      this.exposeNetwork = exposeNetwork;
+      return this;
+    }
     /**
      * Additional HTTP headers to be sent with web socket connect request. Optional.
      */
@@ -496,7 +539,7 @@ public interface BrowserType {
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
      * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
-     * about <a href="https://playwright.dev/java/docs/emulation#isMobile">mobile emulation</a>.
+     * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
     public Boolean isMobile;
     /**
@@ -610,8 +653,8 @@ public interface BrowserType {
      */
     public String userAgent;
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
-     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
+     * viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
      * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
@@ -839,7 +882,7 @@ public interface BrowserType {
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
      * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
-     * about <a href="https://playwright.dev/java/docs/emulation#isMobile">mobile emulation</a>.
+     * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
     public LaunchPersistentContextOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
@@ -1044,8 +1087,8 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
-     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
+     * viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
      * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
@@ -1055,8 +1098,8 @@ public interface BrowserType {
       return setViewportSize(new ViewportSize(width, height));
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
-     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
+     * viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
      * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the

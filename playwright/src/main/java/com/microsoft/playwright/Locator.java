@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 /**
  * Locators are the central piece of Playwright's auto-waiting and retry-ability. In a nutshell, locators represent a way
- * to find element(s) on the page at any moment. Locator can be created with the {@link Page#locator Page.locator()}
+ * to find element(s) on the page at any moment. A locator can be created with the {@link Page#locator Page.locator()}
  * method.
  *
  * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
@@ -2033,7 +2033,7 @@ public interface Locator {
     }
   }
   /**
-   * When locator points to a list of elements, returns array of locators, pointing to respective elements.
+   * When the locator points to a list of elements, this returns an array of locators, pointing to their respective elements.
    *
    * <p> <strong>NOTE:</strong> {@link Locator#all Locator.all()} does not wait for elements to match the locator, and instead immediately returns
    * whatever is present in the page.  When the list of elements changes dynamically, {@link Locator#all Locator.all()} will
@@ -4865,7 +4865,10 @@ public interface Locator {
    */
   String textContent(TextContentOptions options);
   /**
-   * Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each
+   * <strong>NOTE:</strong> In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to type characters if there is
+   * special keyboard handling on the page.
+   *
+   * <p> Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each
    * character in the text.
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Locator#press Locator.press()}.
@@ -4890,7 +4893,10 @@ public interface Locator {
     type(text, null);
   }
   /**
-   * Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each
+   * <strong>NOTE:</strong> In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to type characters if there is
+   * special keyboard handling on the page.
+   *
+   * <p> Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each
    * character in the text.
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Locator#press Locator.press()}.
