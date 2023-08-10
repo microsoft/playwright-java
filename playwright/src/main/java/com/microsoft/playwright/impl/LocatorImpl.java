@@ -398,7 +398,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator locator(String selector, LocatorOptions options) {
-    return new LocatorImpl(frame, this.selector + " >> " + selector, options);
+    return new LocatorImpl(frame, this.selector + " >> internal:chain=" + gson().toJson(selector), options);
   }
 
   @Override
