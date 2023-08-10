@@ -1187,6 +1187,14 @@ public interface Browser extends AutoCloseable {
    */
   boolean isConnected();
   /**
+   * <strong>NOTE:</strong> CDP Sessions are only supported on Chromium-based browsers.
+   *
+   * <p> Returns the newly created browser session.
+   *
+   * @since v1.11
+   */
+  CDPSession newBrowserCDPSession();
+  /**
    * Creates a new browser context. It won't share cookies/cache with other browser contexts.
    *
    * <p> <strong>NOTE:</strong> If directly using this method to create {@code BrowserContext}s, it is best practice to explicitly close the returned

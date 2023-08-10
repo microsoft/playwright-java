@@ -276,6 +276,13 @@ class BrowserImpl extends ChannelOwner implements Browser {
     }
   }
 
+  @Override
+  public CDPSession newBrowserCDPSession() {
+    JsonObject params = new JsonObject();
+    JsonObject result = sendMessage("newBrowserCDPSession", params).getAsJsonObject();
+    return connection.getExistingObject(result.getAsJsonObject("session").get("guid").getAsString());
+  }
+
   private void didClose() {
     isConnected = false;
     listeners.notify(EventType.DISCONNECTED, this);

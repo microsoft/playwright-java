@@ -359,6 +359,9 @@ public class Connection {
       case "WritableStream":
         result = new WritableStream(parent, type, guid, initializer);
         break;
+      case "CDPSession":
+        result = new CDPSessionImpl(parent, type, guid, initializer);
+        break;
       default:
         throw new PlaywrightException("Unknown type " + type);
     }

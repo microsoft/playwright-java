@@ -16,10 +16,14 @@
 
 package com.microsoft.playwright;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.microsoft.playwright.options.BrowserChannel;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIf;
 
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -97,5 +101,30 @@ public class TestBrowser extends TestBase {
   @Test
   void shouldReturnBrowserType() {
     assertEquals(browserType, browser.browserType());
+  }
+
+  @Test
+  @EnabledIf(value = "com.microsoft.playwright.TestBase#isChromium", disabledReason = "Chrome Devtools Protocol supported by chromium only")
+  void shouldWorkWithNewBrowserCDPSession() {
+    CDPSession session = browser.newBrowserCDPSession();
+
+    JsonElement response = session.send("Browser.getVersion");
+    assertNotNull(response.getAsJsonObject().get("userAgent").toString());
+
+    AtomicReference<Boolean> gotEvent = new AtomicReference<>(false);
+
+    session.on("Target.targetCreated", jsonElement -> {
+      gotEvent.set(true);
+    });
+
+    JsonObject params = new JsonObject();
+    params.addProperty("discover", true);
+    session.send("Target.setDiscoverTargets", params);
+
+    Page page = browser.newPage();
+    assertTrue(gotEvent.get());
+    page.close();
+
+    session.detach();
   }
 }
