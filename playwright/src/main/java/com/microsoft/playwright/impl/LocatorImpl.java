@@ -398,7 +398,7 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator locator(String selector, LocatorOptions options) {
-    return new LocatorImpl(frame, this.selector + " >> internal:chain=" + gson().toJson(selector), options);
+    return new LocatorImpl(frame, this.selector + " >> " + selector, options);
   }
 
   @Override
@@ -407,7 +407,7 @@ class LocatorImpl implements Locator {
     if (other.frame != frame) {
       throw new PlaywrightException("Locators must belong to the same frame.");
     }
-    return locator(other.selector, options);
+    return new LocatorImpl(frame, this.selector + " >> internal:chain=" + gson().toJson(other.selector), options);
   }
 
   @Override
