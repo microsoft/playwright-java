@@ -28,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.addHarUrlFilter;
 import static com.microsoft.playwright.impl.Serialization.gson;
@@ -42,6 +41,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
   private boolean isConnected = true;
   BrowserTypeImpl browserType;
   BrowserType.LaunchOptions launchOptions;
+  private Path tracePath;
 
   enum EventType {
     DISCONNECTED,
@@ -231,6 +231,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
     if (options == null) {
       options = new StartTracingOptions();
     }
+    tracePath = options.path;
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     if (page != null) {
       params.add("page", ((PageImpl) page).toProtocolRef());
@@ -245,7 +246,19 @@ class BrowserImpl extends ChannelOwner implements Browser {
 
   private byte[] stopTracingImpl() {
     JsonObject json = sendMessage("stopTracing").getAsJsonObject();
-    return Base64.getDecoder().decode(json.get("binary").getAsString());
+    ArtifactImpl artifact = connection.getExistingObject(json.getAsJsonObject().getAsJsonObject("artifact").get("guid").getAsString());
+    byte[] data = artifact.readAllBytes();
+    artifact.delete();
+    if (tracePath != null) {
+      try {
+        Files.createDirectories(tracePath.getParent());
+        Files.write(tracePath, data);
+        tracePath = null;
+      } catch (IOException e) {
+        throw new PlaywrightException("Failed to write trace file", e);
+      }
+    }
+    return data;
   }
 
   private Page newPageImpl(NewPageOptions options) {
