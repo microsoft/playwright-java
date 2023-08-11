@@ -230,4 +230,13 @@ public class TestSelectorsMisc extends TestBase {
     assertEquals("hello", page.locator("div >> internal:or=\"article\"").textContent());
     assertEquals("world", page.locator("span >> internal:or=\"article\"").textContent());
   }
+  @Test
+  void shouldWorkWithInternalChain() {
+    page.setContent("<div>one <span>two</span> <button>three</button> </div>\n" +
+      "    <span>four</span>\n" +
+      "    <button>five</button>");
+    assertEquals(asList("three"), page.evalOnSelectorAll("div >> internal:chain=\"button\"", "els => els.map(e => e.textContent)"));
+    assertEquals(asList("two", "three"), page.evalOnSelectorAll("div >> internal:chain=\"span >> internal:or=\\\"button\\\"\"", "els => els.map(e => e.textContent)"));
+  }
+
 }

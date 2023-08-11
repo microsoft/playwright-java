@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.AriaRole;
 import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
@@ -207,4 +208,21 @@ public class TestPageLocatorQuery extends TestBase {
     assertThat(page.locator("div").or(page.locator("article"))).hasText("hello");
     assertThat(page.locator("span").or(page.locator("article"))).hasText("world");
   }
+
+  @Test
+  void shouldSupportLocatorLocatorWithAndOr() {
+    page.setContent("\n" +
+      "    <div>one <span>two</span> <button>three</button> </div>\n" +
+      "    <span>four</span>\n" +
+      "    <button>five</button>\n" +
+      "  ");
+
+    assertThat(page.locator("div").locator(page.locator("button"))).hasText(new String[] {"three"});
+    assertThat(page.locator("div").locator(page.locator("button").or(page.locator("span")))).hasText(new String[]{"two", "three"});
+    assertThat(page.locator("button").or(page.locator("span"))).hasText(new String[]{"two", "three", "four", "five"});
+
+    assertThat(page.locator("div").locator(page.locator("button").and(page.getByRole(AriaRole.BUTTON)))).hasText(new String[]{"three"});
+    assertThat(page.locator("button").and(page.getByRole(AriaRole.BUTTON))).hasText(new String[]{"three", "five"});
+  }
+
 }

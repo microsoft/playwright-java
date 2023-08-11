@@ -19,6 +19,8 @@ package com.microsoft.playwright.impl;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -37,6 +39,20 @@ class ArtifactImpl extends ChannelOwner {
     }
     Stream stream = connection.getExistingObject(result.getAsJsonObject("stream").get("guid").getAsString());
     return stream.stream();
+  }
+
+  byte[] readAllBytes() {
+    final int bufLen = 1024 * 1024;
+    byte[] buf = new byte[bufLen];
+    int readLen;
+    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); InputStream stream = createReadStream()) {
+      while ((readLen = stream.read(buf, 0, bufLen)) != -1) {
+        outputStream.write(buf, 0, readLen);
+      }
+      return outputStream.toByteArray();
+    } catch (IOException e) {
+      throw new PlaywrightException("Failed to read artifact",  e);
+    }
   }
 
   public void cancel() {

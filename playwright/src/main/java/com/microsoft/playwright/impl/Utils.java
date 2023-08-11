@@ -128,6 +128,12 @@ class Utils {
         case '?':
           tokens.append('.');
           break;
+        case '[':
+          tokens.append('[');
+          break;
+        case ']':
+          tokens.append(']');
+          break;
         case '{':
           inGroup = true;
           tokens.append('(');

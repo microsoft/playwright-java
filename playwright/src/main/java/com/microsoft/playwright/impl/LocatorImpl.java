@@ -407,7 +407,7 @@ class LocatorImpl implements Locator {
     if (other.frame != frame) {
       throw new PlaywrightException("Locators must belong to the same frame.");
     }
-    return locator(other.selector, options);
+    return new LocatorImpl(frame, this.selector + " >> internal:chain=" + gson().toJson(other.selector), options);
   }
 
   @Override

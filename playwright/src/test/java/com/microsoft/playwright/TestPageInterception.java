@@ -124,4 +124,15 @@ public class TestPageInterception extends TestBase {
     page.navigate(server.PREFIX + "/foo");
     assertTrue(page.content().contains("hello"));
   }
+
+  @Test
+  void shouldProperlyHandleCharacterSetsInGlobs() {
+    page.route("**/[a-z]*.html", route -> {
+      APIResponse response = route.fetch(new Route.FetchOptions().setUrl(server.PREFIX + "/one-style.html"));
+      route.fulfill(new Route.FulfillOptions().setResponse(response));
+    });
+    Response response = page.navigate(server.PREFIX + "/empty.html");
+    assertEquals(200, response.status());
+    assertTrue(response.text().contains("one-style.css"), response.text());
+  }
 }

@@ -4473,7 +4473,9 @@ public interface Frame {
    */
   void setChecked(String selector, boolean checked, SetCheckedOptions options);
   /**
-   *
+   * This method internally calls <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Document/write">document.write()</a>, inheriting all its specific
+   * characteristics and behaviors.
    *
    * @param html HTML markup to assign to the page.
    * @since v1.8
@@ -4482,7 +4484,9 @@ public interface Frame {
     setContent(html, null);
   }
   /**
-   *
+   * This method internally calls <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Document/write">document.write()</a>, inheriting all its specific
+   * characteristics and behaviors.
    *
    * @param html HTML markup to assign to the page.
    * @since v1.8

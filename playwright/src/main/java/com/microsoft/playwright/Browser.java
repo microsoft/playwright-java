@@ -120,7 +120,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
      * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
-     * about <a href="https://playwright.dev/java/docs/emulation#isMobile">mobile emulation</a>.
+     * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
     public Boolean isMobile;
     /**
@@ -236,8 +236,8 @@ public interface Browser extends AutoCloseable {
      */
     public String userAgent;
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
-     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
+     * viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
      * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
@@ -351,7 +351,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
      * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
-     * about <a href="https://playwright.dev/java/docs/emulation#isMobile">mobile emulation</a>.
+     * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
     public NewContextOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
@@ -559,8 +559,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
-     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
+     * viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
      * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
@@ -570,8 +570,8 @@ public interface Browser extends AutoCloseable {
       return setViewportSize(new ViewportSize(width, height));
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
-     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
+     * viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
      * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
@@ -646,7 +646,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
      * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
-     * about <a href="https://playwright.dev/java/docs/emulation#isMobile">mobile emulation</a>.
+     * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
     public Boolean isMobile;
     /**
@@ -762,8 +762,8 @@ public interface Browser extends AutoCloseable {
      */
     public String userAgent;
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
-     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
+     * viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
      * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
@@ -877,7 +877,7 @@ public interface Browser extends AutoCloseable {
     /**
      * Whether the {@code meta viewport} tag is taken into account and touch events are enabled. isMobile is a part of device,
      * so you don't actually need to set it manually. Defaults to {@code false} and is not supported in Firefox. Learn more
-     * about <a href="https://playwright.dev/java/docs/emulation#isMobile">mobile emulation</a>.
+     * about <a href="https://playwright.dev/java/docs/emulation#ismobile">mobile emulation</a>.
      */
     public NewPageOptions setIsMobile(boolean isMobile) {
       this.isMobile = isMobile;
@@ -1085,8 +1085,8 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
-     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
+     * viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
      * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
@@ -1096,8 +1096,8 @@ public interface Browser extends AutoCloseable {
       return setViewportSize(new ViewportSize(width, height));
     }
     /**
-     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport.  Use {@code null} to disable the
-     * consistent viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
+     * Emulates consistent viewport for each page. Defaults to an 1280x720 viewport. Use {@code null} to disable the consistent
+     * viewport emulation. Learn more about <a href="https://playwright.dev/java/docs/emulation#viewport">viewport
      * emulation</a>.
      *
      * <p> <strong>NOTE:</strong> The {@code null} value opts out from the default presets, makes viewport depend on the host window size defined by the
