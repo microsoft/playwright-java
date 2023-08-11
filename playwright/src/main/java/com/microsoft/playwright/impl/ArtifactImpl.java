@@ -42,11 +42,10 @@ class ArtifactImpl extends ChannelOwner {
   }
 
   byte[] readAllBytes() {
-    InputStream stream = createReadStream();
     final int bufLen = 1024 * 1024;
     byte[] buf = new byte[bufLen];
     int readLen;
-    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); InputStream stream = createReadStream()) {
       while ((readLen = stream.read(buf, 0, bufLen)) != -1) {
         outputStream.write(buf, 0, readLen);
       }

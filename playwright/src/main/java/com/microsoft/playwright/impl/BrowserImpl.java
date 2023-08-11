@@ -253,9 +253,10 @@ class BrowserImpl extends ChannelOwner implements Browser {
       try {
         Files.createDirectories(tracePath.getParent());
         Files.write(tracePath, data);
-        tracePath = null;
       } catch (IOException e) {
         throw new PlaywrightException("Failed to write trace file", e);
+      } finally {
+        tracePath = null;
       }
     }
     return data;
