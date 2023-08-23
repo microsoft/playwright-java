@@ -24,14 +24,16 @@ import java.nio.file.Path;
  *
  * <p> All the downloaded files belonging to the browser context are deleted when the browser context is closed.
  *
- * <p> Download event is emitted once the download starts. Download path becomes available once download completes:
+ * <p> Download event is emitted once the download starts. Download path becomes available once download completes.
  * <pre>{@code
- * // wait for download to start
+ * // Wait for the download to start
  * Download download = page.waitForDownload(() -> {
- *   page.getByText("Download file").click();
+ *     // Perform the action that initiates download
+ *     page.getByText("Download file").click();
  * });
- * // wait for download to complete
- * Path path = download.path();
+ *
+ * // Wait for the download process to complete and save the downloaded file somewhere
+ * download.saveAs(Paths.get("/path/to/save/at/", download.suggestedFilename()));
  * }</pre>
  */
 public interface Download {
@@ -79,6 +81,11 @@ public interface Download {
   /**
    * Copy the download to a user-specified path. It is safe to call this method while the download is still in progress. Will
    * wait for the download to finish if necessary.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * download.saveAs(Paths.get("/path/to/save/at/", download.suggestedFilename()));
+   * }</pre>
    *
    * @param path Path where the download should be copied.
    * @since v1.8

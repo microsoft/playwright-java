@@ -688,6 +688,13 @@ class Method extends Element {
       output.add("");
       return;
     }
+    if ("SoftAssertions.create".equals(jsonPath)) {
+      writeJavadoc(params, output, offset);
+      output.add(offset + "static SoftAssertions create() {");
+      output.add(offset + "  return new SoftAssertionsImpl();");
+      output.add(offset + "}");
+      return;
+    }
     int numOverloads = 1;
     for (int i = 0; i < params.size(); i++) {
       if (params.get(i).type.isTypeUnion()) {
@@ -988,6 +995,11 @@ class Interface extends TypeDefinition {
       output.add("import com.microsoft.playwright.impl.AssertionsTimeout;");
       output.add("import com.microsoft.playwright.impl.LocatorAssertionsImpl;");
       output.add("import com.microsoft.playwright.impl.PageAssertionsImpl;");
+    }
+    if ("SoftAssertions".equals(jsonName)) {
+      output.add("import com.microsoft.playwright.APIResponse;");
+      output.add("import com.microsoft.playwright.Locator;");
+      output.add("import com.microsoft.playwright.Page;");
     }
     output.add("");
 
