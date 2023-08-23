@@ -27,7 +27,7 @@ public class TestSoftAssertions extends TestBase {
     assertDoesNotThrow(() -> softly.assertThat(locator).hasClass("foo bar"));
     assertDoesNotThrow(() -> softly.assertThat(locator).hasId("node"));
     softly.assertAll();
-    assertFailureCount(softly, 0);
+    assertFailureCount(0);
   }
 
   @Test
@@ -46,15 +46,15 @@ public class TestSoftAssertions extends TestBase {
     assertTrue(e.getMessage().contains("Received: foo bar"));
     assertTrue(e.getMessage().contains("Locator expected to have ID: foo"));
     assertTrue(e.getMessage().contains("Received: node"));
-    assertFailureCount(softly, 3);
+    assertFailureCount(3);
   }
 
-  private static void assertFailureCount(SoftAssertions softAssertions, int expectedFailureCount) {
+  private void assertFailureCount(int expectedFailureCount) {
     try {
-      Class<? extends SoftAssertions> clazz = softAssertions.getClass();
+      Class<? extends SoftAssertions> clazz = softly.getClass();
       Field resultsField = clazz.getDeclaredField("results");
       resultsField.setAccessible(true);
-      List<Throwable> results = (List<Throwable>) resultsField.get(softAssertions);
+      List<Throwable> results = (List<Throwable>) resultsField.get(softly);
       assertEquals(expectedFailureCount, results.size());
     } catch (NoSuchFieldException | IllegalAccessException e) {
       throw new RuntimeException(e);
