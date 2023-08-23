@@ -20,10 +20,17 @@ import org.junit.jupiter.api.*;
 
 import com.microsoft.playwright.options.SameSiteAttribute;
 
+import javax.sql.rowset.Predicate;
 import java.io.IOException;
+import java.security.Provider;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 import static com.microsoft.playwright.Utils.getBrowserNameFromEnv;
 import static com.microsoft.playwright.Utils.nextFreePort;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestBase {
@@ -148,6 +155,13 @@ public class TestBase {
       context = null;
       page = null;
     }
+  }
+
+  void waitForCondition(BooleanSupplier predicate) {
+    waitForCondition(predicate, 5_000);
+  }
+  void waitForCondition(BooleanSupplier predicate, int timeoutMs) {
+    page.waitForCondition(predicate, new Page.WaitForConditionOptions().setTimeout(timeoutMs));
   }
 
   private static SameSiteAttribute initSameSiteAttribute() {

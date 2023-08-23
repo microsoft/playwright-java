@@ -78,7 +78,13 @@ public class RequestImpl extends ChannelOwner implements Request {
 
   @Override
   public FrameImpl frame() {
-    return connection.getExistingObject(initializer.getAsJsonObject("frame").get("guid").getAsString());
+    FrameImpl frame = connection.getExistingObject(initializer.getAsJsonObject("frame").get("guid").getAsString());
+    if (frame.page == null) {
+      throw new PlaywrightException("Frame for this navigation request is not available, because the request\n" +
+        "was issued before the frame is created. You can check whether the request\n" +
+        "is a navigation request by calling isNavigationRequest() method.");
+    }
+    return frame;
   }
 
   @Override

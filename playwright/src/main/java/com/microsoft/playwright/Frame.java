@@ -4677,19 +4677,8 @@ public interface Frame {
    */
   String title();
   /**
-   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code
-   * frame.type} can be used to send fine-grained keyboard events. To fill values in form fields, use {@link Frame#fill
-   * Frame.fill()}.
-   *
-   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Keyboard#press Keyboard.press()}.
-   *
-   * <p> **Usage**
-   * <pre>{@code
-   * // Types instantly
-   * frame.type("#mytextarea", "Hello");
-   * // Types slower, like a user
-   * frame.type("#mytextarea", "World", new Frame.TypeOptions().setDelay(100));
-   * }</pre>
+   * @deprecated Use locator-based {@link Locator#pressSequentially Locator.pressSequentially()} instead. Read more about <a
+   * href="https://playwright.dev/java/docs/locators">locators</a>.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param text A text to type into a focused element.
@@ -4699,19 +4688,8 @@ public interface Frame {
     type(selector, text, null);
   }
   /**
-   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text. {@code
-   * frame.type} can be used to send fine-grained keyboard events. To fill values in form fields, use {@link Frame#fill
-   * Frame.fill()}.
-   *
-   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Keyboard#press Keyboard.press()}.
-   *
-   * <p> **Usage**
-   * <pre>{@code
-   * // Types instantly
-   * frame.type("#mytextarea", "Hello");
-   * // Types slower, like a user
-   * frame.type("#mytextarea", "World", new Frame.TypeOptions().setDelay(100));
-   * }</pre>
+   * @deprecated Use locator-based {@link Locator#pressSequentially Locator.pressSequentially()} instead. Read more about <a
+   * href="https://playwright.dev/java/docs/locators">locators</a>.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param text A text to type into a focused element.

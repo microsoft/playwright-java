@@ -437,6 +437,11 @@ class LocatorImpl implements Locator {
   }
 
   @Override
+  public void pressSequentially(String text, PressSequentiallyOptions options) {
+    type(text, convertType(options, TypeOptions.class));
+  }
+
+  @Override
   public byte[] screenshot(ScreenshotOptions options) {
     return withElement((h, o) -> h.screenshot(o), convertType(options, ElementHandle.ScreenshotOptions.class));
   }

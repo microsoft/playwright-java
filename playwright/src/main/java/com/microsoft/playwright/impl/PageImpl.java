@@ -171,6 +171,7 @@ public class PageImpl extends ChannelOwner implements Page {
       listeners.notify(EventType.FRAMEDETACHED, frame);
     } else if ("route".equals(event)) {
       RouteImpl route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
+      route.browserContext = browserContext;
       Router.HandleResult handled = routes.handle(route);
       if (handled != Router.HandleResult.NoMatchingHandler) {
         updateInterceptionPatterns();

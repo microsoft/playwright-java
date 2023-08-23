@@ -1582,7 +1582,7 @@ public interface ElementHandle extends JSHandle {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
    * instead.
    *
-   * <p> To send fine-grained keyboard events, use {@link ElementHandle#type ElementHandle.type()}.
+   * <p> To send fine-grained keyboard events, use {@link Keyboard#type Keyboard.type()}.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    * @since v1.8
@@ -1600,7 +1600,7 @@ public interface ElementHandle extends JSHandle {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
    * instead.
    *
-   * <p> To send fine-grained keyboard events, use {@link ElementHandle#type ElementHandle.type()}.
+   * <p> To send fine-grained keyboard events, use {@link Keyboard#type Keyboard.type()}.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    * @since v1.8
@@ -2450,24 +2450,8 @@ public interface ElementHandle extends JSHandle {
    */
   String textContent();
   /**
-   * Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each
-   * character in the text.
-   *
-   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link ElementHandle#press
-   * ElementHandle.press()}.
-   *
-   * <p> **Usage**
-   * <pre>{@code
-   * elementHandle.type("Hello"); // Types instantly
-   * elementHandle.type("World", new ElementHandle.TypeOptions().setDelay(100)); // Types slower, like a user
-   * }</pre>
-   *
-   * <p> An example of typing into a text field and then submitting the form:
-   * <pre>{@code
-   * ElementHandle elementHandle = page.querySelector("input");
-   * elementHandle.type("some text");
-   * elementHandle.press("Enter");
-   * }</pre>
+   * @deprecated Use locator-based {@link Locator#pressSequentially Locator.pressSequentially()} instead. Read more about <a
+   * href="https://playwright.dev/java/docs/locators">locators</a>.
    *
    * @param text A text to type into a focused element.
    * @since v1.8
@@ -2476,24 +2460,8 @@ public interface ElementHandle extends JSHandle {
     type(text, null);
   }
   /**
-   * Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each
-   * character in the text.
-   *
-   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link ElementHandle#press
-   * ElementHandle.press()}.
-   *
-   * <p> **Usage**
-   * <pre>{@code
-   * elementHandle.type("Hello"); // Types instantly
-   * elementHandle.type("World", new ElementHandle.TypeOptions().setDelay(100)); // Types slower, like a user
-   * }</pre>
-   *
-   * <p> An example of typing into a text field and then submitting the form:
-   * <pre>{@code
-   * ElementHandle elementHandle = page.querySelector("input");
-   * elementHandle.type("some text");
-   * elementHandle.press("Enter");
-   * }</pre>
+   * @deprecated Use locator-based {@link Locator#pressSequentially Locator.pressSequentially()} instead. Read more about <a
+   * href="https://playwright.dev/java/docs/locators">locators</a>.
    *
    * @param text A text to type into a focused element.
    * @since v1.8

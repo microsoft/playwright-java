@@ -82,6 +82,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     CONSOLE,
     DIALOG,
     PAGE,
+    PAGEERROR,
     REQUEST,
     REQUESTFAILED,
     REQUESTFINISHED,
@@ -152,6 +153,16 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   @Override
   public void offPage(Consumer<Page> handler) {
     listeners.remove(EventType.PAGE, handler);
+  }
+
+  @Override
+  public void onPageError(Consumer<PageError> handler) {
+    listeners.add(EventType.PAGEERROR, handler);
+  }
+
+  @Override
+  public void offPageError(Consumer<PageError> handler) {
+    listeners.remove(EventType.PAGEERROR, handler);
   }
 
   @Override
@@ -645,6 +656,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       }
     } else if ("route".equals(event)) {
       RouteImpl route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
+      route.browserContext = this;
       handleRoute(route);
     } else if ("page".equals(event)) {
       PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
@@ -710,6 +722,17 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
         page.listeners.notify(PageImpl.EventType.RESPONSE, response);
       }
+    } else if ("pageError".equals(event)) {
+      SerializedError error = gson().fromJson(params.getAsJsonObject("error"), SerializedError.class);
+      String errorStr = "";
+      if (error.error != null) {
+        errorStr = error.error.name + ": " + error.error.message;
+        if (error.error.stack != null && !error.error.stack.isEmpty()) {
+          errorStr += "\n" + error.error.stack;
+        }
+      }
+      PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
+      listeners.notify(BrowserContextImpl.EventType.PAGEERROR, new PageErrorImpl(page, errorStr));
     } else if ("close".equals(event)) {
       didClose();
     }

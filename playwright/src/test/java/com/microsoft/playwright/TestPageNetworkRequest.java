@@ -21,6 +21,8 @@ import com.microsoft.playwright.options.HttpHeader;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -113,4 +115,24 @@ public class TestPageNetworkRequest extends TestBase {
     assertEquals("POST", request.method());
     assertEquals(403, request.response().status());
   }
+
+  @Test
+  void shouldNotAllowToAccessFrameOnPopupMainRequest() {
+    page.setContent("<a target=_blank href='" + server.EMPTY_PAGE + "'>click me</a>");
+    Request[] request = { null };
+    PlaywrightException[] error = { null };
+    page.context().onRequest(req -> {
+      request[0] = req;
+      try {
+        req.frame();
+      } catch (PlaywrightException e) {
+        error[0] = e;
+      }
+    });
+    page.getByText("click me").click();
+    waitForCondition(() -> request[0] != null);
+    assertTrue(request[0].isNavigationRequest());
+    assertTrue(error[0].getMessage().contains("Frame for this navigation request is not available"), error[0].getMessage());
+  }
+
 }

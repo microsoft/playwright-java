@@ -116,4 +116,11 @@ public class TestLocatorMisc extends TestBase{
     assertEquals("outer", divLocator.locator("input").inputValue());
     assertEquals("inner", page.frameLocator("iframe").locator(divLocator).locator("input").inputValue());
   }
+
+  @Test
+  void shouldPressSequentially() {
+    page.setContent("<input type='text' />");
+    page.locator("input").pressSequentially("hello");
+    assertEquals("hello", page.evalOnSelector("input", "input => input.value"));
+  }
 }
