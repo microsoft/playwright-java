@@ -6,7 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
-import static com.microsoft.playwright.Utils.assertFailureCount;
+import java.lang.reflect.Field;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSoftAssertions extends TestBase {
@@ -45,5 +47,17 @@ public class TestSoftAssertions extends TestBase {
     assertTrue(e.getMessage().contains("Locator expected to have ID: foo"));
     assertTrue(e.getMessage().contains("Received: node"));
     assertFailureCount(softly, 3);
+  }
+
+  private static void assertFailureCount(SoftAssertions softAssertions, int expectedFailureCount) {
+    try {
+      Class<? extends SoftAssertions> clazz = softAssertions.getClass();
+      Field resultsField = clazz.getDeclaredField("results");
+      resultsField.setAccessible(true);
+      List<Throwable> results = (List<Throwable>) resultsField.get(softAssertions);
+      assertEquals(expectedFailureCount, results.size());
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

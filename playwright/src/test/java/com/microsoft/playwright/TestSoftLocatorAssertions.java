@@ -9,9 +9,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.Utils.createProxy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -24,11 +28,11 @@ public class TestSoftLocatorAssertions {
   private final static Pattern pattern = Pattern.compile("");
   private final static Pattern[] patternArray = new Pattern[]{};
   private final static String[] stringArray = new String[]{};
-  LocatorAssertionsImplProxy proxy;
+  private LocatorAssertionsImplProxy proxy;
 
   @BeforeEach
   void beforeEach() {
-    proxy = new LocatorAssertionsImplProxy(new ArrayList<>(), locatorAssertionsMock);
+    proxy = createProxy(LocatorAssertionsImplProxy.class, locatorAssertionsMock);
   }
 
   @Test

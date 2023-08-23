@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.Utils.createProxy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -21,12 +22,12 @@ import static org.mockito.Mockito.verify;
 public class TestSoftPageAssertions {
   @Mock
   private PageAssertionsImpl pageAssertionsMock;
-  PageAssertionsImplProxy proxy;
+  private PageAssertionsImplProxy proxy;
   private final static Pattern pattern = Pattern.compile("");
 
   @BeforeEach
   void beforeEach() {
-    proxy = new PageAssertionsImplProxy(new ArrayList<>(), pageAssertionsMock);
+    proxy = createProxy(PageAssertionsImplProxy.class, pageAssertionsMock);
   }
 
   @Test

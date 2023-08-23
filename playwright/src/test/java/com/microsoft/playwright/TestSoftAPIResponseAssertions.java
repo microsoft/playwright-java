@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 
+import static com.microsoft.playwright.Utils.createProxy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -20,11 +21,11 @@ import static org.mockito.Mockito.verify;
 public class TestSoftAPIResponseAssertions {
   @Mock
   private APIResponseAssertionsImpl apiResponseAssertionsMock;
-  APIResponseAssertionsImplProxy proxy;
+  private APIResponseAssertionsImplProxy proxy;
 
   @BeforeEach
   void beforeEach() {
-    proxy = new APIResponseAssertionsImplProxy(new ArrayList<>(), apiResponseAssertionsMock);
+    proxy = createProxy(APIResponseAssertionsImplProxy.class, apiResponseAssertionsMock);
   }
 
   @Test

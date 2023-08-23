@@ -9,11 +9,11 @@ import java.util.regex.Pattern;
 public class LocatorAssertionsImplProxy extends SoftAssertionsBase implements LocatorAssertions {
   private final LocatorAssertionsImpl locatorAssertionsImpl;
 
-  public LocatorAssertionsImplProxy(Locator locator, List<Throwable> results) {
+  LocatorAssertionsImplProxy(Locator locator, List<Throwable> results) {
     this(results, new LocatorAssertionsImpl(locator));
   }
 
-  public LocatorAssertionsImplProxy(List<Throwable> results, LocatorAssertionsImpl locatorAssertionsImpl) {
+  private LocatorAssertionsImplProxy(List<Throwable> results, LocatorAssertionsImpl locatorAssertionsImpl) {
     super(results);
     this.locatorAssertionsImpl = locatorAssertionsImpl;
   }

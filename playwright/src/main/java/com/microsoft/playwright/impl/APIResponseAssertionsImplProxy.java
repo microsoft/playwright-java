@@ -28,7 +28,7 @@ public class APIResponseAssertionsImplProxy extends SoftAssertionsBase implement
     this(results, new APIResponseAssertionsImpl(response));
   }
 
-  public APIResponseAssertionsImplProxy(List<Throwable> results, APIResponseAssertionsImpl apiResponseAssertionsImpl) {
+  private APIResponseAssertionsImplProxy(List<Throwable> results, APIResponseAssertionsImpl apiResponseAssertionsImpl) {
     super(results);
     this.apiResponseAssertionsImpl = apiResponseAssertionsImpl;
   }

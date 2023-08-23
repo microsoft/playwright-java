@@ -22,19 +22,19 @@ import com.google.gson.JsonParser;
 import com.microsoft.playwright.assertions.SoftAssertions;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mockingDetails;
 
 class Utils {
   private static final AtomicInteger nextUnusedPort = new AtomicInteger(9000);
@@ -217,15 +217,13 @@ class Utils {
     return server.PREFIX.replace(String.valueOf(server.PORT), String.valueOf(server.PORT+1));
   }
 
-  static void assertFailureCount(SoftAssertions softAssertions, int expectedFailureCount) {
+  static <T> T createProxy(Class<?> proxyToCreate, Object underlyingObject) {
     try {
-      Class<? extends SoftAssertions> clazz = softAssertions.getClass();
-      Field resultsField = clazz.getDeclaredField("results");
-      resultsField.setAccessible(true);
-      List<Throwable> results = (List<Throwable>) resultsField.get(softAssertions);
-      assertEquals(expectedFailureCount, results.size());
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      throw new RuntimeException(e);
+      Constructor<?> constructor = proxyToCreate.getDeclaredConstructor(List.class, mockingDetails(underlyingObject).getMockCreationSettings().getTypeToMock());
+      constructor.setAccessible(true);
+      return (T) proxyToCreate.cast(constructor.newInstance(new ArrayList<>(), underlyingObject));
+    } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+      throw new RuntimeException("Unable to create proxy", e);
     }
   }
 }

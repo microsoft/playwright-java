@@ -29,7 +29,7 @@ public class PageAssertionsImplProxy extends SoftAssertionsBase implements PageA
     this(results, new PageAssertionsImpl(page));
   }
 
-  public PageAssertionsImplProxy(List<Throwable> results, PageAssertionsImpl pageAssertionsImpl) {
+  private PageAssertionsImplProxy(List<Throwable> results, PageAssertionsImpl pageAssertionsImpl) {
     super(results);
     this.pageAssertionsImpl = pageAssertionsImpl;
   }
