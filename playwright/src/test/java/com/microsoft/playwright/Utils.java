@@ -19,11 +19,9 @@ package com.microsoft.playwright;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.microsoft.playwright.assertions.SoftAssertions;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.nio.file.Files;

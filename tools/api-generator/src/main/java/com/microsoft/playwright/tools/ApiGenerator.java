@@ -1168,16 +1168,11 @@ public class ApiGenerator {
 
     File assertionsDir = new File(cwd,"playwright/src/main/java/com/microsoft/playwright/assertions");
     System.out.println("Writing assertion files to: " + dir.getCanonicalPath());
-    generate(api, assertionsDir, "com.microsoft.playwright.assertions", isAssertion().and(isSoftAssertion().negate()));
+    generate(api, assertionsDir, "com.microsoft.playwright.assertions", isAssertion());
   }
 
   private static Predicate<String> isAssertion() {
     return className -> className.toLowerCase().contains("assert");
-  }
-
-  // TODO: Remove this predicate once SoftAssertions are implemented.
-  private static Predicate<String> isSoftAssertion() {
-    return className -> className.contains("SoftAssertions");
   }
 
   private void generate(JsonArray api, File dir, String packageName, Predicate<String> classFilter) throws IOException {
