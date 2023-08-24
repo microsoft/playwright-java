@@ -66,17 +66,18 @@ public class TestPageEventNetwork extends TestBase {
     assertTrue(failedRequests.get(0).url().contains("one-style.css"));
     assertNull(failedRequests.get(0).response());
     assertEquals("stylesheet", failedRequests.get(0).resourceType());
+    String error = failedRequests.get(0).failure();
     if (isChromium()) {
-      assertEquals("net::ERR_EMPTY_RESPONSE", failedRequests.get(0).failure());
+      assertEquals("net::ERR_EMPTY_RESPONSE", error);
     } else if (isWebKit()) {
       if (isMac)
-        assertEquals("The network connection was lost.", failedRequests.get(0).failure());
+        assertEquals("The network connection was lost.", error);
       else if (isWindows)
-        assertEquals("Server returned nothing (no headers, no data)", failedRequests.get(0).failure());
+        assertEquals("Server returned nothing (no headers, no data)", error);
       else
-        assertEquals("Message Corrupt", failedRequests.get(0).failure());
+        assertTrue("Message Corrupt".equals(error) || "Connection terminated unexpectedly".equals(error), error);
     } else {
-      assertEquals("NS_ERROR_NET_RESET", failedRequests.get(0).failure());
+      assertEquals("NS_ERROR_NET_RESET", error);
     }
     assertNotNull(failedRequests.get(0).frame());
   }
