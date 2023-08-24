@@ -1388,6 +1388,50 @@ public interface Locator {
       return this;
     }
   }
+  class PressSequentiallyOptions {
+    /**
+     * Time to wait between key presses in milliseconds. Defaults to 0.
+     */
+    public Double delay;
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
+    public Boolean noWaitAfter;
+    /**
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     */
+    public Double timeout;
+
+    /**
+     * Time to wait between key presses in milliseconds. Defaults to 0.
+     */
+    public PressSequentiallyOptions setDelay(double delay) {
+      this.delay = delay;
+      return this;
+    }
+    /**
+     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
+     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
+     * inaccessible pages. Defaults to {@code false}.
+     */
+    public PressSequentiallyOptions setNoWaitAfter(boolean noWaitAfter) {
+      this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    /**
+     * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
+     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
+     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     */
+    public PressSequentiallyOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class ScreenshotOptions {
     /**
      * When set to {@code "disabled"}, stops CSS animations, CSS transitions and Web Animations. Animations get different
@@ -2832,7 +2876,7 @@ public interface Locator {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
    * instead.
    *
-   * <p> To send fine-grained keyboard events, use {@link Locator#type Locator.type()}.
+   * <p> To send fine-grained keyboard events, use {@link Locator#pressSequentially Locator.pressSequentially()}.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    * @since v1.14
@@ -2859,7 +2903,7 @@ public interface Locator {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
    * instead.
    *
-   * <p> To send fine-grained keyboard events, use {@link Locator#type Locator.type()}.
+   * <p> To send fine-grained keyboard events, use {@link Locator#pressSequentially Locator.pressSequentially()}.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    * @since v1.14
@@ -3957,6 +4001,60 @@ public interface Locator {
    */
   void press(String key, PressOptions options);
   /**
+   * <strong>NOTE:</strong> In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to press keys one by one if
+   * there is special keyboard handling on the page.
+   *
+   * <p> Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each
+   * character in the text.
+   *
+   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Locator#press Locator.press()}.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * locator.pressSequentially("Hello"); // Types instantly
+   * locator.pressSequentially("World", new Locator.pressSequentiallyOptions().setDelay(100)); // Types slower, like a user
+   * }</pre>
+   *
+   * <p> An example of typing into a text field and then submitting the form:
+   * <pre>{@code
+   * Locator locator = page.getByLabel("Password");
+   * locator.pressSequentially("my password");
+   * locator.press("Enter");
+   * }</pre>
+   *
+   * @param text String of characters to sequentially press into a focused element.
+   * @since v1.38
+   */
+  default void pressSequentially(String text) {
+    pressSequentially(text, null);
+  }
+  /**
+   * <strong>NOTE:</strong> In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to press keys one by one if
+   * there is special keyboard handling on the page.
+   *
+   * <p> Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each
+   * character in the text.
+   *
+   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Locator#press Locator.press()}.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * locator.pressSequentially("Hello"); // Types instantly
+   * locator.pressSequentially("World", new Locator.pressSequentiallyOptions().setDelay(100)); // Types slower, like a user
+   * }</pre>
+   *
+   * <p> An example of typing into a text field and then submitting the form:
+   * <pre>{@code
+   * Locator locator = page.getByLabel("Password");
+   * locator.pressSequentially("my password");
+   * locator.press("Enter");
+   * }</pre>
+   *
+   * @param text String of characters to sequentially press into a focused element.
+   * @since v1.38
+   */
+  void pressSequentially(String text, PressSequentiallyOptions options);
+  /**
    * Take a screenshot of the element matching the locator.
    *
    * <p> **Usage**
@@ -4865,26 +4963,9 @@ public interface Locator {
    */
   String textContent(TextContentOptions options);
   /**
-   * <strong>NOTE:</strong> In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to type characters if there is
-   * special keyboard handling on the page.
-   *
-   * <p> Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each
-   * character in the text.
-   *
-   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Locator#press Locator.press()}.
-   *
-   * <p> **Usage**
-   * <pre>{@code
-   * element.type("Hello"); // Types instantly
-   * element.type("World", new Locator.TypeOptions().setDelay(100)); // Types slower, like a user
-   * }</pre>
-   *
-   * <p> An example of typing into a text field and then submitting the form:
-   * <pre>{@code
-   * Locator element = page.getByLabel("Password");
-   * element.type("my password");
-   * element.press("Enter");
-   * }</pre>
+   * @deprecated In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to press keys one by one if
+   * there is special keyboard handling on the page - in this case use {@link Locator#pressSequentially
+   * Locator.pressSequentially()}.
    *
    * @param text A text to type into a focused element.
    * @since v1.14
@@ -4893,26 +4974,9 @@ public interface Locator {
     type(text, null);
   }
   /**
-   * <strong>NOTE:</strong> In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to type characters if there is
-   * special keyboard handling on the page.
-   *
-   * <p> Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each
-   * character in the text.
-   *
-   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Locator#press Locator.press()}.
-   *
-   * <p> **Usage**
-   * <pre>{@code
-   * element.type("Hello"); // Types instantly
-   * element.type("World", new Locator.TypeOptions().setDelay(100)); // Types slower, like a user
-   * }</pre>
-   *
-   * <p> An example of typing into a text field and then submitting the form:
-   * <pre>{@code
-   * Locator element = page.getByLabel("Password");
-   * element.type("my password");
-   * element.press("Enter");
-   * }</pre>
+   * @deprecated In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to press keys one by one if
+   * there is special keyboard handling on the page - in this case use {@link Locator#pressSequentially
+   * Locator.pressSequentially()}.
    *
    * @param text A text to type into a focused element.
    * @since v1.14

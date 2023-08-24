@@ -32,7 +32,7 @@ import static com.microsoft.playwright.impl.Utils.convertType;
 public class RouteImpl extends ChannelOwner implements Route {
   private final RequestImpl request;
   private boolean handled;
-
+  BrowserContextImpl browserContext;
   boolean fallbackCalled;
   boolean shouldResumeIfFallbackIsCalled;
 
@@ -99,7 +99,7 @@ public class RouteImpl extends ChannelOwner implements Route {
     if (fetchOptions != null && fetchOptions.timeout != null) {
       options.timeout = fetchOptions.timeout;
     }
-    APIRequestContextImpl apiRequest = request.frame().page().context().request();
+    APIRequestContextImpl apiRequest = browserContext.request();
     String url = (fetchOptions == null || fetchOptions.url == null) ? request().url() : fetchOptions.url;
     return apiRequest.fetch(url, options);
   }
