@@ -731,8 +731,16 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
           errorStr += "\n" + error.error.stack;
         }
       }
-      PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
+      PageImpl page;
+      try {
+        page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
+      } catch (PlaywrightException e) {
+        page = null;
+      }
       listeners.notify(BrowserContextImpl.EventType.PAGEERROR, new PageErrorImpl(page, errorStr));
+      if (page != null) {
+        page.listeners.notify(PageImpl.EventType.PAGEERROR, errorStr);
+      }
     } else if ("close".equals(event)) {
       didClose();
     }

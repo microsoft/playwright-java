@@ -183,16 +183,6 @@ public class PageImpl extends ChannelOwner implements Page {
       String artifactGuid = params.getAsJsonObject("artifact").get("guid").getAsString();
       ArtifactImpl artifact = connection.getExistingObject(artifactGuid);
       forceVideo().setArtifact(artifact);
-    } else if ("pageError".equals(event)) {
-      SerializedError error = gson().fromJson(params.getAsJsonObject("error"), SerializedError.class);
-      String errorStr = "";
-      if (error.error != null) {
-        errorStr = error.error.name + ": " + error.error.message;
-        if (error.error.stack != null && !error.error.stack.isEmpty()) {
-          errorStr += "\n" + error.error.stack;
-        }
-      }
-      listeners.notify(EventType.PAGEERROR, errorStr);
     } else if ("crash".equals(event)) {
       listeners.notify(EventType.CRASH, this);
     } else if ("close".equals(event)) {
