@@ -42,6 +42,6 @@ public interface PageError {
    *
    * @since v1.38
    */
-  Error error();
+  String error();
 }
 

@@ -62,6 +62,22 @@ public interface Request {
   /**
    * Returns the {@code Frame} that initiated this request.
    *
+   * <p> **Usage**
+   * <pre>{@code
+   * String frameUrl = request.frame().url();
+   * }</pre>
+   *
+   * <p> **Details**
+   *
+   * <p> Note that in some cases the frame is not available, and this method will throw.
+   * <ul>
+   * <li> When request originates in the Service Worker. You can use {@code request.serviceWorker()} to check that.</li>
+   * <li> When navigation request is issued before the corresponding frame is created. You can use {@link
+   * Request#isNavigationRequest Request.isNavigationRequest()} to check that.</li>
+   * </ul>
+   *
+   * <p> Here is an example that handles all the cases:
+   *
    * @since v1.8
    */
   Frame frame();
@@ -90,6 +106,9 @@ public interface Request {
   String headerValue(String name);
   /**
    * Whether this request is driving frame's navigation.
+   *
+   * <p> Some navigation requests are issued before the corresponding frame is created, and therefore do not have {@link
+   * Request#frame Request.frame()} available.
    *
    * @since v1.8
    */

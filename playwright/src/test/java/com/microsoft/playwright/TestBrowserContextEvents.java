@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestBrowserContextEvents extends TestBase {
   @Test
@@ -156,4 +157,17 @@ public class TestBrowserContextEvents extends TestBase {
     page.waitForCondition(() -> "hello".equals(popup.evaluate("window.result")),
       new Page.WaitForConditionOptions().setTimeout(5_000));
   }
+
+  @Test
+  void pageErrorEventShouldWork() {
+    PageError[] pageerror = { null };
+    context.onPageError(e -> {
+      pageerror[0] = e;
+    });
+    page.setContent("<script>throw new Error('boom')</script>");
+    waitForCondition(() -> pageerror[0] != null);
+    assertEquals(page, pageerror[0].page());
+    assertTrue(pageerror[0].error().contains("boom"), pageerror[0].error());
+  }
+
 }

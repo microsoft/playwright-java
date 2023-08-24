@@ -223,6 +223,10 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
         params.addProperty("noDefaultViewport", true);
       }
     }
+    params.remove("acceptDownloads");
+    if (options.acceptDownloads != null) {
+      params.addProperty("acceptDownloads", options.acceptDownloads ? "accept" : "deny");
+    }
     JsonObject json = sendMessage("launchPersistentContext", params).getAsJsonObject();
     BrowserContextImpl context = connection.getExistingObject(json.getAsJsonObject("context").get("guid").getAsString());
     context.videosDir = options.recordVideoDir;
