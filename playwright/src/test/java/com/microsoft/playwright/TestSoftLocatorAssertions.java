@@ -4,6 +4,7 @@ import com.microsoft.playwright.assertions.LocatorAssertions;
 import com.microsoft.playwright.impl.LocatorAssertionsImpl;
 import com.microsoft.playwright.impl.LocatorAssertionsImplProxy;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 
 // The only thing we want to verify in these tests is that the correct method was called
+@Tag("mockito")
 @ExtendWith(MockitoExtension.class)
 public class TestSoftLocatorAssertions {
   @Mock
