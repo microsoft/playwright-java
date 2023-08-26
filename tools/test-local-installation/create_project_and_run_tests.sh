@@ -14,6 +14,6 @@ cp -R ../../driver-bundle/src/test/ $PROJECT_DIR/src/
 cp -R ../../playwright/src/test/ $PROJECT_DIR/src/
 cd $PROJECT_DIR
 
-mvn test -DexcludedGroups=mockito --no-transfer-progress
+mvn test --no-transfer-progress
 
 rm -rf $PROJECT_DIR
