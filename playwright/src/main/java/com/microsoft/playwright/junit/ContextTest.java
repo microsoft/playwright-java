@@ -20,13 +20,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.Browser.NewContextOptions;
 
 public class ContextTest extends BrowserTest {
   public BrowserContext context;
 
   @BeforeEach
   void createContext() {
-    context = browser.newContext();
+    context = browser.newContext(contextOptions());
+  }
+
+  public NewContextOptions contextOptions() {
+    return null;
   }
 
   @AfterEach
