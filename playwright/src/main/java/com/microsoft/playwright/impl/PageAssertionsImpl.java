@@ -67,7 +67,7 @@ public class PageAssertionsImpl extends AssertionsBase implements PageAssertions
   }
 
   @Override
-  public PageAssertions not() {
+  public PageAssertionsImpl not() {
     return new PageAssertionsImpl(actualPage, !isNot);
   }
 }

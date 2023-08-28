@@ -688,6 +688,13 @@ class Method extends Element {
       output.add("");
       return;
     }
+    if ("SoftAssertions.create".equals(jsonPath)) {
+      writeJavadoc(params, output, offset);
+      output.add(offset + "static SoftAssertions create() {");
+      output.add(offset + "  return new SoftAssertionsImpl();");
+      output.add(offset + "}");
+      return;
+    }
     int numOverloads = 1;
     for (int i = 0; i < params.size(); i++) {
       if (params.get(i).type.isTypeUnion()) {
@@ -989,6 +996,11 @@ class Interface extends TypeDefinition {
       output.add("import com.microsoft.playwright.impl.LocatorAssertionsImpl;");
       output.add("import com.microsoft.playwright.impl.PageAssertionsImpl;");
     }
+    if ("SoftAssertions".equals(jsonName)) {
+      output.add("import com.microsoft.playwright.APIResponse;");
+      output.add("import com.microsoft.playwright.Locator;");
+      output.add("import com.microsoft.playwright.Page;");
+    }
     output.add("");
 
     List<String> superInterfaces = new ArrayList<>();
@@ -1156,16 +1168,11 @@ public class ApiGenerator {
 
     File assertionsDir = new File(cwd,"playwright/src/main/java/com/microsoft/playwright/assertions");
     System.out.println("Writing assertion files to: " + dir.getCanonicalPath());
-    generate(api, assertionsDir, "com.microsoft.playwright.assertions", isAssertion().and(isSoftAssertion().negate()));
+    generate(api, assertionsDir, "com.microsoft.playwright.assertions", isAssertion());
   }
 
   private static Predicate<String> isAssertion() {
     return className -> className.toLowerCase().contains("assert");
-  }
-
-  // TODO: Remove this predicate once SoftAssertions are implemented.
-  private static Predicate<String> isSoftAssertion() {
-    return className -> className.contains("SoftAssertions");
   }
 
   private void generate(JsonArray api, File dir, String packageName, Predicate<String> classFilter) throws IOException {

@@ -37,7 +37,7 @@ public class APIResponseAssertionsImpl implements APIResponseAssertions {
   }
 
   @Override
-  public APIResponseAssertions not() {
+  public APIResponseAssertionsImpl not() {
     return new APIResponseAssertionsImpl(actual, !isNot);
   }
 
