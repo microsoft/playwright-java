@@ -17,14 +17,14 @@
 package com.microsoft.playwright.junit;
 
 public class PlaywrightSettings {
-  static boolean headless() {
+  protected static boolean headless() {
     if ("1".equals(System.getenv("HEADED"))) {
       return false;
     }
     return true;
   }
 
-  static String browserName() {
+  protected static String browserName() {
     if ("firefox".equals(System.getenv("BROWSER"))) {
       return "firefox";
     }

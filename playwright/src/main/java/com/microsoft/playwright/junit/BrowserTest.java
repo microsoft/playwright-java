@@ -23,11 +23,11 @@ import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 
 public class BrowserTest extends PlaywrightTest {
-  public Browser browser;
-  public String browserName;
+  protected Browser browser;
+  protected String browserName;
 
   @BeforeAll
-  void launchBrowser() {
+  protected void launchBrowser() {
     BrowserType browserType;
     if ("firefox".equals(PlaywrightSettings.browserName())) {
       browserType = playwright.firefox();
@@ -43,7 +43,7 @@ public class BrowserTest extends PlaywrightTest {
   }
 
   @AfterAll
-  void closeBrowser() {
+  protected void closeBrowser() {
     browser.close();
   }
 }

@@ -24,15 +24,15 @@ import com.microsoft.playwright.Playwright;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PlaywrightTest {
-  public Playwright playwright;
+  protected Playwright playwright;
 
   @BeforeAll
-  void createPlaywright() {
+  protected void createPlaywright() {
     playwright = Playwright.create();
   }
 
   @AfterAll
-  void closePlaywright() {
+  protected void closePlaywright() {
     playwright.close();
   }
 }

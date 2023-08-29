@@ -21,10 +21,10 @@ import org.junit.jupiter.api.BeforeEach;
 import com.microsoft.playwright.Page;
 
 public class PageTest extends ContextTest {
-  public Page page;
+  protected Page page;
 
   @BeforeEach
-  void createPage() {
+  protected void createPage() {
     page = context.newPage();
   }
 }

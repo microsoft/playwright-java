@@ -23,19 +23,19 @@ import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Browser.NewContextOptions;
 
 public class ContextTest extends BrowserTest {
-  public BrowserContext context;
+  protected BrowserContext context;
 
   @BeforeEach
-  void createContext() {
+  protected void createContext() {
     context = browser.newContext(contextOptions());
   }
 
-  public NewContextOptions contextOptions() {
+  protected NewContextOptions contextOptions() {
     return null;
   }
 
   @AfterEach
-  void closeContext() {
+  protected void closeContext() {
     context.close();
   }
 }
