@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.junit;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import com.microsoft.playwright.Page;
@@ -26,5 +27,13 @@ public class PageTest extends ContextTest {
   @BeforeEach
   protected void createPage() {
     page = context.newPage();
+  }
+
+  @AfterEach
+  protected void closePage() {
+    if (page != null) {
+      page.close();
+      page = null;
+    }
   }
 }

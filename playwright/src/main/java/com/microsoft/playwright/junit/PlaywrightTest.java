@@ -33,6 +33,9 @@ public class PlaywrightTest {
 
   @AfterAll
   protected void closePlaywright() {
-    playwright.close();
+    if (playwright != null) {
+      playwright.close();
+      playwright = null;
+    }
   }
 }

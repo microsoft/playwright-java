@@ -44,6 +44,9 @@ public class BrowserTest extends PlaywrightTest {
 
   @AfterAll
   protected void closeBrowser() {
+    if (browser != null) {
     browser.close();
+    browser = null;
+    }
   }
 }

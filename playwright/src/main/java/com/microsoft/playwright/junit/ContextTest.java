@@ -36,6 +36,9 @@ public class ContextTest extends BrowserTest {
 
   @AfterEach
   protected void closeContext() {
-    context.close();
+    if (context != null) {
+      context.close();
+      context = null;
+    }
   }
 }
