@@ -25,14 +25,12 @@ public class PlaywrightSettings {
   }
 
   protected static String browserName() {
-    if ("firefox".equals(System.getenv("BROWSER"))) {
+    String browser = System.getenv("BROWSER");
+    if ("firefox".equals(browser)) {
       return "firefox";
     }
-    if ("webkit".equals(System.getenv("BROWSER"))) {
+    if ("webkit".equals(browser)) {
       return "webkit";
-    }
-    if ("chromium".equals(System.getenv("BROWSER"))) {
-      return "chromium";
     }
     return "chromium";
   };
