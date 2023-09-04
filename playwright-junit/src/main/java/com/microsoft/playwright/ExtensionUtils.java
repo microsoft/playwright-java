@@ -7,8 +7,9 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import java.util.Locale;
 
 import static org.junit.platform.commons.support.AnnotationSupport.findAnnotation;
+import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
 
-class JUnitUtils {
+class ExtensionUtils {
   // Necessary because of https://github.com/junit-team/junit5/issues/3447
   static ExecutionMode getExecutionMode(ExtensionContext extensionContext) {
     return findAnnotation(extensionContext.getTestMethod(), Execution.class)
@@ -18,5 +19,10 @@ class JUnitUtils {
         .orElseGet(() -> extensionContext.getConfigurationParameter("junit.jupiter.execution.parallel.mode.default")
           .map(paramValue -> ExecutionMode.valueOf(paramValue.toUpperCase(Locale.ROOT)))
           .orElse(ExecutionMode.SAME_THREAD)));
+  }
+
+  static boolean hasProperAnnotation(ExtensionContext extensionContext) {
+    return isAnnotated(extensionContext.getTestMethod(), UseBrowserFactory.class) ||
+      isAnnotated(extensionContext.getTestClass(), UseBrowserFactory.class);
   }
 }

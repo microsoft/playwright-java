@@ -7,7 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@ExtendWith(PlaywrightExtension.class)
+@ExtendWith({PlaywrightExtension.class, BrowserExtension.class, PlaywrightCleanupExtension.class})
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface UseBrowserFactory {

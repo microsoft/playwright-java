@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @UseBrowserFactory
 public class PlaywrightConcurrentTests {
   private Playwright p;
+
   @BeforeEach
   void beforeEach(Playwright playwright) {
     assert playwright != null;
