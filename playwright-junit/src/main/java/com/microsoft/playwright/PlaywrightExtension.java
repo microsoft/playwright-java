@@ -6,7 +6,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.microsoft.playwright.JUnitUtils.getDefaultExecutionMode;
+import static com.microsoft.playwright.JUnitUtils.getExecutionMode;
 import static org.junit.platform.commons.support.AnnotationSupport.findAnnotation;
 import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
 
@@ -21,14 +21,11 @@ public class PlaywrightExtension implements ParameterResolver, AfterAllCallback,
 
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    if (hasProperAnnotations(extensionContext)) {
-      if (getDefaultExecutionMode(extensionContext) == ExecutionMode.CONCURRENT) {
-        return extensionContext.getTestMethod().isPresent();
-      }
-      Class<?> clazz = parameterContext.getParameter().getType();
-      return Playwright.class.equals(clazz) || Browser.class.equals(clazz);
+    if(!hasProperAnnotation(extensionContext)) {
+      return false;
     }
-    return false;
+    Class<?> clazz = parameterContext.getParameter().getType();
+    return Playwright.class.equals(clazz) || Browser.class.equals(clazz);
   }
 
   @Override
@@ -39,7 +36,8 @@ public class PlaywrightExtension implements ParameterResolver, AfterAllCallback,
     }
 
     if (Browser.class.equals(clazz)) {
-      return getOrCreateBrowser(extensionContext);
+      BrowserFactory factory = getBrowserFactoryInstance(extensionContext);
+      return getOrCreateBrowser(factory);
     }
 
     throw new ParameterResolutionException("Unable to resolve Playwright-related parameter");
@@ -47,7 +45,7 @@ public class PlaywrightExtension implements ParameterResolver, AfterAllCallback,
 
   @Override
   public void afterAll(ExtensionContext extensionContext) {
-    if (getDefaultExecutionMode(extensionContext) == ExecutionMode.SAME_THREAD) {
+    if (getExecutionMode(extensionContext) == ExecutionMode.SAME_THREAD) {
       threadLocalBrowserMap.get().keySet().forEach(PlaywrightExtension::closeBrowser);
       threadLocalBrowserMap.remove();
       closePlaywright();
@@ -56,7 +54,7 @@ public class PlaywrightExtension implements ParameterResolver, AfterAllCallback,
 
   @Override
   public void afterEach(ExtensionContext extensionContext) {
-    if (getDefaultExecutionMode(extensionContext) == ExecutionMode.CONCURRENT) {
+    if (getExecutionMode(extensionContext) == ExecutionMode.CONCURRENT) {
       threadLocalBrowserMap.get().keySet().forEach(PlaywrightExtension::closeBrowser);
       threadLocalBrowserMap.remove();
       closePlaywright();
@@ -91,8 +89,7 @@ public class PlaywrightExtension implements ParameterResolver, AfterAllCallback,
     }
   }
 
-  public static Browser getOrCreateBrowser(ExtensionContext extensionContext) {
-    BrowserFactory factory = getBrowserFactoryInstance(extensionContext);
+  public static Browser getOrCreateBrowser(BrowserFactory factory) {
     Class<? extends BrowserFactory> browserFactoryClass = factory.getClass();
 
     if (getBrowser(browserFactoryClass) != null) {
@@ -110,7 +107,7 @@ public class PlaywrightExtension implements ParameterResolver, AfterAllCallback,
     return threadLocalBrowserMap.get().get(browserFactoryClass);
   }
 
-  private boolean hasProperAnnotations(ExtensionContext extensionContext) {
+  private boolean hasProperAnnotation(ExtensionContext extensionContext) {
     return isAnnotated(extensionContext.getTestMethod(), UseBrowserFactory.class) ||
       isAnnotated(extensionContext.getTestClass(), UseBrowserFactory.class);
   }

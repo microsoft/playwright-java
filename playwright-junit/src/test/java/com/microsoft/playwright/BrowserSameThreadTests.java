@@ -6,7 +6,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@TestMethodOrder(MethodOrderer.MethodName.class) // this is here to customBrowserTest1 to run before customBrowserTest2
+@TestMethodOrder(MethodOrderer.MethodName.class) // this is here to force customBrowserTest1 to run before customBrowserTest2
 @Execution(ExecutionMode.SAME_THREAD)
 @UseBrowserFactory
 public class BrowserSameThreadTests {
