@@ -25,11 +25,7 @@ public class PlaywrightExtension implements ParameterResolver {
 
   @Override
   public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    Class<?> clazz = parameterContext.getParameter().getType();
-    if (Playwright.class.equals(clazz)) {
-      return getOrCreatePlaywright();
-    }
-    throw new ParameterResolutionException("Unable to resolve Playwright-related parameter");
+    return getOrCreatePlaywright();
   }
 
   public static Playwright getOrCreatePlaywright() {

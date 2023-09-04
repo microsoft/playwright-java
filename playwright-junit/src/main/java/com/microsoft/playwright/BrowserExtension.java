@@ -30,13 +30,8 @@ public class BrowserExtension implements ParameterResolver {
 
   @Override
   public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    Class<?> clazz = parameterContext.getParameter().getType();
-    if (Browser.class.equals(clazz)) {
-      BrowserFactory factory = getBrowserFactoryInstance(extensionContext);
-      return getOrCreateBrowser(factory);
-    }
-
-    throw new ParameterResolutionException("Unable to resolve Playwright-related parameter");
+    BrowserFactory factory = getBrowserFactoryInstance(extensionContext);
+    return getOrCreateBrowser(factory);
   }
 
   public static Browser getOrCreateBrowser(BrowserFactory factory) {
