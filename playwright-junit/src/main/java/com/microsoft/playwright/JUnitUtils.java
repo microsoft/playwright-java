@@ -11,12 +11,10 @@ import static org.junit.platform.commons.support.AnnotationSupport.findAnnotatio
 class JUnitUtils {
   // Necessary because of https://github.com/junit-team/junit5/issues/3447
   static ExecutionMode getExecutionMode(ExtensionContext extensionContext) {
-    Execution execution = findAnnotation(extensionContext.getTestClass(), Execution.class).orElse(null);
-    if(execution == null) {
-      String param = extensionContext.getConfigurationParameter("junit.jupiter.execution.parallel.mode.default").orElse(null);
-      assert param != null;
-      return ExecutionMode.valueOf(param.toUpperCase(Locale.ROOT));
-    }
-    return execution.value();
+    return findAnnotation(extensionContext.getTestClass(), Execution.class)
+      .map(Execution::value)
+      .orElseGet(() -> extensionContext.getConfigurationParameter("junit.jupiter.execution.parallel.mode.default")
+        .map(paramValue -> ExecutionMode.valueOf(paramValue.toUpperCase(Locale.ROOT)))
+        .orElse(ExecutionMode.SAME_THREAD));
   }
 }
