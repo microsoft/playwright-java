@@ -51,6 +51,10 @@ class BrowserImpl extends ChannelOwner implements Browser {
     super(parent, type, guid, initializer);
   }
 
+  public String getName() {
+    return initializer.get("name").getAsString();
+  }
+
   @Override
   public void onDisconnected(Consumer<Browser> handler) {
     listeners.add(EventType.DISCONNECTED, handler);

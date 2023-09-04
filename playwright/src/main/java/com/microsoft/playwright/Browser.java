@@ -43,6 +43,8 @@ import java.util.regex.Pattern;
  */
 public interface Browser extends AutoCloseable {
 
+  String getName();
+
   /**
    * Emitted when Browser gets disconnected from the browser application. This might happen because of one of the following:
    * <ul>
