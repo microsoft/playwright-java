@@ -1,13 +1,11 @@
-package com.microsoft.playwright;
+package com.microsoft.playwright.junit;
 
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
-import org.junit.jupiter.api.extension.ParameterResolver;
+import com.microsoft.playwright.Playwright;
+import org.junit.jupiter.api.extension.*;
 
-import static com.microsoft.playwright.ExtensionUtils.hasProperAnnotation;
+import static com.microsoft.playwright.junit.ExtensionUtils.hasProperAnnotation;
 
-public class PlaywrightExtension implements ParameterResolver {
+public class PlaywrightExtension implements ParameterResolver, AfterAllCallback {
   private static final ThreadLocal<Playwright> playwrightThreadLocal;
 
   static {
@@ -28,7 +26,7 @@ public class PlaywrightExtension implements ParameterResolver {
     return getOrCreatePlaywright();
   }
 
-  public static Playwright getOrCreatePlaywright() {
+  static Playwright getOrCreatePlaywright() {
     if (playwrightThreadLocal.get() == null) {
       playwrightThreadLocal.set(Playwright.create());
       System.out.println("Created Playwright " + getPlaywright());
@@ -36,15 +34,20 @@ public class PlaywrightExtension implements ParameterResolver {
     return getPlaywright();
   }
 
-  public static Playwright getPlaywright() {
+  private static Playwright getPlaywright() {
     return playwrightThreadLocal.get();
   }
 
-  public static void closePlaywright() {
+  private static void closePlaywright() {
     if (getPlaywright() != null) {
       System.out.println("Closing Playwright " + getPlaywright());
       getPlaywright().close();
       playwrightThreadLocal.remove();
     }
+  }
+
+  @Override
+  public void afterAll(ExtensionContext extensionContext) {
+    closePlaywright();
   }
 }

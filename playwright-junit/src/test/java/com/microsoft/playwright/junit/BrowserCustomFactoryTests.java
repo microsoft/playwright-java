@@ -1,30 +1,21 @@
-package com.microsoft.playwright;
+package com.microsoft.playwright.junit;
 
+import com.microsoft.playwright.Browser;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@TestMethodOrder(MethodOrderer.MethodName.class)
-// this is here to force customBrowserTest1 to run before customBrowserTest2
-@Execution(ExecutionMode.SAME_THREAD)
-@UseBrowserFactory
-public class BrowserSameThreadTests {
+@UseBrowserFactory(CustomBrowserFactory.class)
+public class BrowserCustomFactoryTests {
   private Browser browserFromBeforeEach;
   private static Browser browserFromBeforeAll;
-
-  // this is static because in order to test that the custom browser created in the customBrowserTest1
-  // is the same as the browser being used in customBrowserTest2
-  // JUnit creates a new instance of a test class for each test so we need this static to test that the same browser
-  // is being used.
-  private static Browser customBrowser;
 
   @BeforeAll
   static void beforeAll(Browser browser) {
     assert browser != null;
     System.out.println("BeforeAll " + browser);
     browserFromBeforeAll = browser;
+    assertEquals("firefox", browser.browserType().name());
   }
 
   @AfterAll
@@ -45,22 +36,6 @@ public class BrowserSameThreadTests {
   void afterEach(Browser browser) {
     assert browser != null;
     System.out.println("AfterEach " + browser);
-  }
-
-  @UseBrowserFactory(CustomBrowserFactory.class)
-  @Test
-  void customBrowserTest1(Browser browser) {
-    assert browser != null;
-    assertEquals("firefox", browser.getName());
-    customBrowser = browser;
-  }
-
-  @UseBrowserFactory(CustomBrowserFactory.class)
-  @Test
-  void customBrowserTest2(Browser browser) {
-    assert browser != null;
-    assertEquals("firefox", browser.getName());
-    assertEquals(customBrowser, browser, "Custom browser is not the same as the one created in the first test that uses this browser");
   }
 
 

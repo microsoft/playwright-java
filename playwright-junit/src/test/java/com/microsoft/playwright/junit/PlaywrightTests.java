@@ -1,14 +1,12 @@
-package com.microsoft.playwright;
+package com.microsoft.playwright.junit;
 
+import com.microsoft.playwright.Playwright;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Execution(ExecutionMode.SAME_THREAD)
 @UseBrowserFactory
-public class PlaywrightSameThreadTests {
+public class PlaywrightTests {
   private Playwright p;
   private static Playwright ps;
 

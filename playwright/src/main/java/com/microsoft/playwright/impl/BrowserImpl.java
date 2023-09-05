@@ -51,10 +51,6 @@ class BrowserImpl extends ChannelOwner implements Browser {
     super(parent, type, guid, initializer);
   }
 
-  public String getName() {
-    return initializer.get("name").getAsString();
-  }
-
   @Override
   public void onDisconnected(Consumer<Browser> handler) {
     listeners.add(EventType.DISCONNECTED, handler);
@@ -206,10 +202,6 @@ class BrowserImpl extends ChannelOwner implements Browser {
         params.remove("viewportSize");
         params.addProperty("noDefaultViewport", true);
       }
-    }
-    params.remove("acceptDownloads");
-    if (options.acceptDownloads != null) {
-      params.addProperty("acceptDownloads", options.acceptDownloads ? "accept" : "deny");
     }
     JsonElement result = sendMessage("newContext", params);
     BrowserContextImpl context = connection.getExistingObject(result.getAsJsonObject().getAsJsonObject("context").get("guid").getAsString());

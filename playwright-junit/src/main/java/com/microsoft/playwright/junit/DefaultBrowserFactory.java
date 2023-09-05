@@ -1,4 +1,7 @@
-package com.microsoft.playwright;
+package com.microsoft.playwright.junit;
+
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.Playwright;
 
 // This default factory was created to simplify the API for users of this extension.
 // Without this, users that want to use the default configuration would have to register the extensions with

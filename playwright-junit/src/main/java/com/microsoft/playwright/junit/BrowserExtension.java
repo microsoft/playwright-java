@@ -1,22 +1,24 @@
-package com.microsoft.playwright;
+package com.microsoft.playwright.junit;
 
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
-import org.junit.jupiter.api.extension.ParameterResolver;
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.PlaywrightException;
+import org.junit.jupiter.api.extension.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.microsoft.playwright.ExtensionUtils.hasProperAnnotation;
-import static com.microsoft.playwright.PlaywrightExtension.getOrCreatePlaywright;
+import static com.microsoft.playwright.junit.ExtensionUtils.hasProperAnnotation;
+import static com.microsoft.playwright.junit.PlaywrightExtension.getOrCreatePlaywright;
 import static org.junit.platform.commons.support.AnnotationSupport.findAnnotation;
 
-public class BrowserExtension implements ParameterResolver {
+public class BrowserExtension implements ParameterResolver, AfterAllCallback {
   private static final ThreadLocal<Map<Class<? extends BrowserFactory>, Browser>> threadLocalBrowserMap;
+  private static final ThreadLocal<Map<Class<? extends BrowserFactory>, BrowserFactory>> threadLocalBrowserFactoryMap;
 
   static {
     threadLocalBrowserMap = ThreadLocal.withInitial(HashMap::new);
+    threadLocalBrowserFactoryMap = ThreadLocal.withInitial(HashMap::new);
   }
 
   @Override
@@ -37,18 +39,19 @@ public class BrowserExtension implements ParameterResolver {
   public static Browser getOrCreateBrowser(BrowserFactory factory) {
     Class<? extends BrowserFactory> browserFactoryClass = factory.getClass();
 
-    if (getBrowser(browserFactoryClass) != null) {
-      return getBrowser(factory.getClass());
+    Browser browser = getBrowser(browserFactoryClass);
+    if (browser != null) {
+      return browser;
     }
 
     Playwright playwright = getOrCreatePlaywright();
-    Browser browser = factory.newBrowser(playwright);
+    browser = factory.newBrowser(playwright);
     System.out.println("Created Browser " + browser);
     threadLocalBrowserMap.get().put(browserFactoryClass, browser);
     return browser;
   }
 
-  static void closeAllBrowsers() {
+  private static void closeAllBrowsers() {
     threadLocalBrowserMap.get().keySet().forEach(browserFactoryClass -> {
       Browser browser = getBrowser(browserFactoryClass);
       if (browser != null) {
@@ -64,15 +67,24 @@ public class BrowserExtension implements ParameterResolver {
   }
 
   private static BrowserFactory getBrowserFactoryInstance(ExtensionContext extensionContext) {
-    UseBrowserFactory useBrowserFactory =
-      findAnnotation(extensionContext.getTestMethod(), UseBrowserFactory.class)
-        .orElse(findAnnotation(extensionContext.getTestClass(), UseBrowserFactory.class)
-          .orElseThrow(() -> new PlaywrightException("UseBrowserFactory annotation not found.")));
+    UseBrowserFactory useBrowserFactory = findAnnotation(extensionContext.getTestClass(), UseBrowserFactory.class)
+      .orElseThrow(() -> new PlaywrightException("UseBrowserFactory annotation not found."));
+
+    if(threadLocalBrowserFactoryMap.get().containsKey(useBrowserFactory.value())) {
+      return threadLocalBrowserFactoryMap.get().get(useBrowserFactory.value());
+    }
 
     try {
-      return useBrowserFactory.value().newInstance();
+      BrowserFactory browserFactory =  useBrowserFactory.value().newInstance();
+      threadLocalBrowserFactoryMap.get().put(useBrowserFactory.value(), browserFactory);
+      return browserFactory;
     } catch (InstantiationException | IllegalAccessException e) {
       throw new PlaywrightException("Unable to create an instance of the supplied BrowserFactory", e);
     }
+  }
+
+  @Override
+  public void afterAll(ExtensionContext extensionContext) {
+    closeAllBrowsers();
   }
 }
