@@ -8,9 +8,9 @@ import org.junit.jupiter.api.extension.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.microsoft.playwright.junit.ExtensionUtils.hasProperAnnotation;
 import static com.microsoft.playwright.junit.PlaywrightExtension.getOrCreatePlaywright;
 import static org.junit.platform.commons.support.AnnotationSupport.findAnnotation;
+import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
 
 public class BrowserExtension implements ParameterResolver, AfterAllCallback {
   private static final ThreadLocal<Map<Class<? extends BrowserFactory>, Browser>> threadLocalBrowserMap;
@@ -23,7 +23,7 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
 
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    if (!hasProperAnnotation(extensionContext)) {
+    if (!isAnnotated(extensionContext.getTestClass(), UseBrowserFactory.class)) {
       return false;
     }
     Class<?> clazz = parameterContext.getParameter().getType();
@@ -70,12 +70,12 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
     UseBrowserFactory useBrowserFactory = findAnnotation(extensionContext.getTestClass(), UseBrowserFactory.class)
       .orElseThrow(() -> new PlaywrightException("UseBrowserFactory annotation not found."));
 
-    if(threadLocalBrowserFactoryMap.get().containsKey(useBrowserFactory.value())) {
+    if (threadLocalBrowserFactoryMap.get().containsKey(useBrowserFactory.value())) {
       return threadLocalBrowserFactoryMap.get().get(useBrowserFactory.value());
     }
 
     try {
-      BrowserFactory browserFactory =  useBrowserFactory.value().newInstance();
+      BrowserFactory browserFactory = useBrowserFactory.value().newInstance();
       threadLocalBrowserFactoryMap.get().put(useBrowserFactory.value(), browserFactory);
       return browserFactory;
     } catch (InstantiationException | IllegalAccessException e) {

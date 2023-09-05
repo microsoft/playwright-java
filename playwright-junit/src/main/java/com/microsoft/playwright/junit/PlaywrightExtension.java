@@ -3,7 +3,7 @@ package com.microsoft.playwright.junit;
 import com.microsoft.playwright.Playwright;
 import org.junit.jupiter.api.extension.*;
 
-import static com.microsoft.playwright.junit.ExtensionUtils.hasProperAnnotation;
+import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
 
 public class PlaywrightExtension implements ParameterResolver, AfterAllCallback {
   private static final ThreadLocal<Playwright> playwrightThreadLocal;
@@ -14,7 +14,7 @@ public class PlaywrightExtension implements ParameterResolver, AfterAllCallback 
 
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    if (!hasProperAnnotation(extensionContext)) {
+    if (!isAnnotated(extensionContext.getTestClass(), UseBrowserFactory.class)) {
       return false;
     }
     Class<?> clazz = parameterContext.getParameter().getType();
