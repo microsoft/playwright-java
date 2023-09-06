@@ -21,18 +21,18 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mockingDetails;
 
 class Utils {
   private static final AtomicInteger nextUnusedPort = new AtomicInteger(9000);
@@ -213,15 +213,5 @@ class Utils {
 
   static String generateDifferentOriginPort(final Server server){
     return server.PREFIX.replace(String.valueOf(server.PORT), String.valueOf(server.PORT+1));
-  }
-
-  static <T> T createProxy(Class<?> proxyToCreate, Object underlyingObject) {
-    try {
-      Constructor<?> constructor = proxyToCreate.getDeclaredConstructor(List.class, mockingDetails(underlyingObject).getMockCreationSettings().getTypeToMock());
-      constructor.setAccessible(true);
-      return (T) proxyToCreate.cast(constructor.newInstance(new ArrayList<>(), underlyingObject));
-    } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-      throw new RuntimeException("Unable to create proxy", e);
-    }
   }
 }

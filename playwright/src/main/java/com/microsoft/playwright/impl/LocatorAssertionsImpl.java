@@ -353,7 +353,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   }
 
   @Override
-  public LocatorAssertionsImpl not() {
+  public LocatorAssertions not() {
     return new LocatorAssertionsImpl(actualLocator, !isNot);
   }
 
