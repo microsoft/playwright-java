@@ -281,10 +281,14 @@ class Serialization {
       return (T) map;
     }
     if (value.m != null) {
-      return (T) new LinkedHashMap();
+      Map<?, ?> map = new LinkedHashMap<>();
+      idToValue.put(value.id, map);
+      return (T) map;
     }
     if (value.se != null) {
-      return (T) new LinkedHashMap();
+      Map<?, ?> map = new LinkedHashMap<>();
+      idToValue.put(value.id, map);
+      return (T) map;
     }
     throw new PlaywrightException("Unexpected result: " + gson().toJson(value));
   }
