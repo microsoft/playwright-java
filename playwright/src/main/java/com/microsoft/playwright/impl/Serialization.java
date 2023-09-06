@@ -280,6 +280,16 @@ class Serialization {
       }
       return (T) map;
     }
+    if (value.m != null) {
+      Map<?, ?> map = new LinkedHashMap<>();
+      idToValue.put(value.id, map);
+      return (T) map;
+    }
+    if (value.se != null) {
+      Map<?, ?> map = new LinkedHashMap<>();
+      idToValue.put(value.id, map);
+      return (T) map;
+    }
     throw new PlaywrightException("Unexpected result: " + gson().toJson(value));
   }
 
