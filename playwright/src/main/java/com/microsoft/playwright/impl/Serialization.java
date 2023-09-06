@@ -280,6 +280,17 @@ class Serialization {
       }
       return (T) map;
     }
+    if (value.m != null) {
+      List<List<Object>> entries = deserialize(value.m);
+      LinkedHashMap map = new LinkedHashMap();
+      for (List<Object> entry: entries) {
+        map.put(entry.get(0), entry.get(1));
+      }
+      return (T) map;
+    }
+    if (value.se != null) {
+      return (T) deserialize(value.se);
+    }
     throw new PlaywrightException("Unexpected result: " + gson().toJson(value));
   }
 

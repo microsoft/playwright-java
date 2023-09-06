@@ -645,4 +645,14 @@ public class TestPageEvaluate extends TestBase {
     assertTrue(object instanceof Date);
     assertEquals(Date.from(instant), object);
   }
+
+  @Test
+  void shouldTransferMaps() {
+    assertEquals(mapOf(1, mapOf("test", new BigInteger("42", 10))), page.evaluate("() => new Map([[1, { test: 42n }]])"));
+  }
+
+  @Test
+  void shouldTransferSets() {
+    assertEquals(asList(1, mapOf("test", new BigInteger("42", 10))), page.evaluate("() => new Set([1, { test: 42n }])"));
+  }
 }

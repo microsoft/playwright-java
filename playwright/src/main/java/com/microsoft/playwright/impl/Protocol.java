@@ -47,6 +47,10 @@ class SerializedValue{
   Number h;
   Integer id;
   Integer ref;
+  // JS representation of Map: [[key1, value1], [key2, value2], ...].
+  SerializedValue m;
+  // JS representation of Set: [item1, item2, ...].
+  SerializedValue se;
 }
 
 class SerializedArgument{
