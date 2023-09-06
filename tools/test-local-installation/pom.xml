@@ -13,7 +13,6 @@
     <junit.version>5.7.0</junit.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <websocket.version>1.5.1</websocket.version>
-    <mockito.version>4.11.0</mockito.version>
   </properties>
   <dependencies>
     <dependency>
@@ -43,12 +42,6 @@
       <groupId>org.java-websocket</groupId>
       <artifactId>Java-WebSocket</artifactId>
       <version>${websocket.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-junit-jupiter</artifactId>
-      <version>${mockito.version}</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>

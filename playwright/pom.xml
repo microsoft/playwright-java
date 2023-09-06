@@ -73,9 +73,5 @@
       <groupId>com.microsoft.playwright</groupId>
       <artifactId>driver-bundle</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-junit-jupiter</artifactId>
-    </dependency>
   </dependencies>
 </project>
