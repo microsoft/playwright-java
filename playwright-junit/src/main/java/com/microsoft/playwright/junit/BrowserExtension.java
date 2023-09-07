@@ -5,20 +5,17 @@ import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
 import org.junit.jupiter.api.extension.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static com.microsoft.playwright.junit.PlaywrightExtension.getOrCreatePlaywright;
 import static org.junit.platform.commons.support.AnnotationSupport.findAnnotation;
 import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
 
 public class BrowserExtension implements ParameterResolver, AfterAllCallback {
-  private static final ThreadLocal<Map<Class<? extends BrowserFactory>, Browser>> threadLocalBrowserMap;
-  private static final ThreadLocal<Map<Class<? extends BrowserFactory>, BrowserFactory>> threadLocalBrowserFactoryMap;
+  private static final ThreadLocal<Browser> threadLocalBrowser;
+  private static final ThreadLocal<BrowserFactory> threadLocalBrowserFactory;
 
   static {
-    threadLocalBrowserMap = ThreadLocal.withInitial(HashMap::new);
-    threadLocalBrowserFactoryMap = ThreadLocal.withInitial(HashMap::new);
+    threadLocalBrowser = new ThreadLocal<>();
+    threadLocalBrowserFactory = new ThreadLocal<>();
   }
 
   @Override
@@ -37,9 +34,7 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
   }
 
   public static Browser getOrCreateBrowser(BrowserFactory factory) {
-    Class<? extends BrowserFactory> browserFactoryClass = factory.getClass();
-
-    Browser browser = getBrowser(browserFactoryClass);
+    Browser browser = getBrowser();
     if (browser != null) {
       return browser;
     }
@@ -47,36 +42,24 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
     Playwright playwright = getOrCreatePlaywright();
     browser = factory.newBrowser(playwright);
     System.out.println("Created Browser " + browser);
-    threadLocalBrowserMap.get().put(browserFactoryClass, browser);
+    threadLocalBrowser.set(browser);
     return browser;
   }
 
-  private static void closeAllBrowsers() {
-    threadLocalBrowserMap.get().keySet().forEach(browserFactoryClass -> {
-      Browser browser = getBrowser(browserFactoryClass);
-      if (browser != null) {
-        System.out.println("Closing Browser " + browser);
-        browser.close();
-      }
-    });
-    threadLocalBrowserMap.remove();
-  }
-
-  private static Browser getBrowser(Class<? extends BrowserFactory> browserFactoryClass) {
-    return threadLocalBrowserMap.get().get(browserFactoryClass);
+  private static Browser getBrowser() {
+    return threadLocalBrowser.get();
   }
 
   private static BrowserFactory getBrowserFactoryInstance(ExtensionContext extensionContext) {
-    UseBrowserFactory useBrowserFactory = findAnnotation(extensionContext.getTestClass(), UseBrowserFactory.class)
-      .orElseThrow(() -> new PlaywrightException("UseBrowserFactory annotation not found."));
-
-    if (threadLocalBrowserFactoryMap.get().containsKey(useBrowserFactory.value())) {
-      return threadLocalBrowserFactoryMap.get().get(useBrowserFactory.value());
+    if (threadLocalBrowserFactory.get() != null) {
+      return threadLocalBrowserFactory.get();
     }
+
+    UseBrowserFactory useBrowserFactory = findAnnotation(extensionContext.getTestClass(), UseBrowserFactory.class).get();
 
     try {
       BrowserFactory browserFactory = useBrowserFactory.value().newInstance();
-      threadLocalBrowserFactoryMap.get().put(useBrowserFactory.value(), browserFactory);
+      threadLocalBrowserFactory.set(browserFactory);
       return browserFactory;
     } catch (InstantiationException | IllegalAccessException e) {
       throw new PlaywrightException("Unable to create an instance of the supplied BrowserFactory", e);
@@ -85,6 +68,12 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
 
   @Override
   public void afterAll(ExtensionContext extensionContext) {
-    closeAllBrowsers();
+    Browser browser = getBrowser();
+    if (browser != null) {
+      System.out.println("Closing Browser " + browser);
+      browser.close();
+    }
+    threadLocalBrowser.remove();
+    threadLocalBrowserFactory.remove();
   }
 }
