@@ -48,7 +48,7 @@ steps:
 
 - task: EsrpRelease@2
   inputs:
-    ConnectedServiceName: 'Playwright-Java-ESRP'
+    ConnectedServiceName: 'Playwright-ESRP'
     Intent: 'PackageDistribution'
     ContentType: 'Maven'
     PackageLocation: './local-build'
