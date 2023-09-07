@@ -46,15 +46,17 @@ steps:
     done
   displayName: 'Create .sha256 files'
 
-- task: EsrpRelease@2
+- task: EsrpRelease@4
   inputs:
     ConnectedServiceName: 'Playwright-ESRP'
     Intent: 'PackageDistribution'
     ContentType: 'Maven'
-    PackageLocation: './local-build'
+    ContentSource: 'Folder'
+    FolderLocation: './local-build'
+    WaitForReleaseCompletion: true
     Owners: 'yurys@microsoft.com'
     Approvers: 'maxschmitt@microsoft.com'
     ServiceEndpointUrl: 'https://api.esrp.microsoft.com'
-    MainPublisher: 'PlaywrightJava'
+    MainPublisher: 'Playwright'
     DomainTenantId: '72f988bf-86f1-41af-91ab-2d7cd011db47'
   displayName: 'ESRP Release to Maven'
