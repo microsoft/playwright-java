@@ -1,12 +1,12 @@
 package com.microsoft.playwright.impl;
 
-import com.microsoft.playwright.PageError;
+import com.microsoft.playwright.WebError;
 
-public class PageErrorImpl implements PageError {
+public class WebErrorImpl implements WebError {
   private final PageImpl page;
   private final String error;
 
-  PageErrorImpl(PageImpl page, String error) {
+  WebErrorImpl(PageImpl page, String error) {
     this.page = page;
     this.error = error;
   }

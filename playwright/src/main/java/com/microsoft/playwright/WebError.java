@@ -18,19 +18,19 @@ package com.microsoft.playwright;
 
 
 /**
- * {@code PageError} class represents objects created by context when there are unhandled execeptions thrown on the pages
- * and dispatched via the {@link BrowserContext#onPageError BrowserContext.onPageError()} event.
+ * {@code WebError} class represents an unhandled exeception thrown in the page. It is dispatched via the {@link
+ * BrowserContext#onWebError BrowserContext.onWebError()} event.
  * <pre>{@code
  * // Log all uncaught errors to the terminal
- * context.onPageError(pagerror -> {
- *   System.out.println("Uncaught exception: " + pagerror.error());
+ * context.onWebError(webError -> {
+ *   System.out.println("Uncaught exception: " + webError.error());
  * });
  *
  * // Navigate to a page with an exception.
  * page.navigate("data:text/html,<script>throw new Error('Test')</script>");
  * }</pre>
  */
-public interface PageError {
+public interface WebError {
   /**
    * The page that produced this unhandled exception, if any.
    *
