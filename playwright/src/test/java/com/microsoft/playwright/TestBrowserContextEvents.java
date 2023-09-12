@@ -160,14 +160,14 @@ public class TestBrowserContextEvents extends TestBase {
 
   @Test
   void pageErrorEventShouldWork() {
-    PageError[] pageerror = { null };
-    context.onPageError(e -> {
-      pageerror[0] = e;
+    WebError[] webError = { null };
+    context.onWebError(e -> {
+      webError[0] = e;
     });
     page.setContent("<script>throw new Error('boom')</script>");
-    waitForCondition(() -> pageerror[0] != null);
-    assertEquals(page, pageerror[0].page());
-    assertTrue(pageerror[0].error().contains("boom"), pageerror[0].error());
+    waitForCondition(() -> webError[0] != null);
+    assertEquals(page, webError[0].page());
+    assertTrue(webError[0].error().contains("boom"), webError[0].error());
   }
 
 }

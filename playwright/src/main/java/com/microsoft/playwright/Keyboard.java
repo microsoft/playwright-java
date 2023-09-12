@@ -132,7 +132,9 @@ public interface Keyboard {
    */
   void insertText(String text);
   /**
-   * {@code key} can specify the intended <a
+   * <strong>NOTE:</strong> In most cases, you should use {@link Locator#press Locator.press()} instead.
+   *
+   * <p> {@code key} can specify the intended <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key">keyboardEvent.key</a> value or a single
    * character to generate the text for. A superset of the {@code key} values can be found <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
@@ -175,7 +177,9 @@ public interface Keyboard {
     press(key, null);
   }
   /**
-   * {@code key} can specify the intended <a
+   * <strong>NOTE:</strong> In most cases, you should use {@link Locator#press Locator.press()} instead.
+   *
+   * <p> {@code key} can specify the intended <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key">keyboardEvent.key</a> value or a single
    * character to generate the text for. A superset of the {@code key} values can be found <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values">here</a>. Examples of the keys are:
@@ -216,7 +220,11 @@ public interface Keyboard {
    */
   void press(String key, PressOptions options);
   /**
-   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
+   * <strong>NOTE:</strong> In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to press keys one by one if
+   * there is special keyboard handling on the page - in this case use {@link Locator#pressSequentially
+   * Locator.pressSequentially()}.
+   *
+   * <p> Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Keyboard#press Keyboard.press()}.
    *
@@ -239,7 +247,11 @@ public interface Keyboard {
     type(text, null);
   }
   /**
-   * Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
+   * <strong>NOTE:</strong> In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to press keys one by one if
+   * there is special keyboard handling on the page - in this case use {@link Locator#pressSequentially
+   * Locator.pressSequentially()}.
+   *
+   * <p> Sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each character in the text.
    *
    * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Keyboard#press Keyboard.press()}.
    *

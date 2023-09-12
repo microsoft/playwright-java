@@ -82,7 +82,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     CONSOLE,
     DIALOG,
     PAGE,
-    PAGEERROR,
+    WEBERROR,
     REQUEST,
     REQUESTFAILED,
     REQUESTFINISHED,
@@ -156,13 +156,13 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void onPageError(Consumer<PageError> handler) {
-    listeners.add(EventType.PAGEERROR, handler);
+  public void onWebError(Consumer<WebError> handler) {
+    listeners.add(EventType.WEBERROR, handler);
   }
 
   @Override
-  public void offPageError(Consumer<PageError> handler) {
-    listeners.remove(EventType.PAGEERROR, handler);
+  public void offWebError(Consumer<WebError> handler) {
+    listeners.remove(EventType.WEBERROR, handler);
   }
 
   @Override
@@ -737,7 +737,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       } catch (PlaywrightException e) {
         page = null;
       }
-      listeners.notify(BrowserContextImpl.EventType.PAGEERROR, new PageErrorImpl(page, errorStr));
+      listeners.notify(BrowserContextImpl.EventType.WEBERROR, new WebErrorImpl(page, errorStr));
       if (page != null) {
         page.listeners.notify(PageImpl.EventType.PAGEERROR, errorStr);
       }

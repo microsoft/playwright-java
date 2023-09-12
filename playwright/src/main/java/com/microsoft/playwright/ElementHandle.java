@@ -1582,7 +1582,7 @@ public interface ElementHandle extends JSHandle {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
    * instead.
    *
-   * <p> To send fine-grained keyboard events, use {@link Keyboard#type Keyboard.type()}.
+   * <p> To send fine-grained keyboard events, use {@link Locator#pressSequentially Locator.pressSequentially()}.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    * @since v1.8
@@ -1600,7 +1600,7 @@ public interface ElementHandle extends JSHandle {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
    * instead.
    *
-   * <p> To send fine-grained keyboard events, use {@link Keyboard#type Keyboard.type()}.
+   * <p> To send fine-grained keyboard events, use {@link Locator#pressSequentially Locator.pressSequentially()}.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    * @since v1.8
@@ -2450,8 +2450,9 @@ public interface ElementHandle extends JSHandle {
    */
   String textContent();
   /**
-   * @deprecated Use locator-based {@link Locator#pressSequentially Locator.pressSequentially()} instead. Read more about <a
-   * href="https://playwright.dev/java/docs/locators">locators</a>.
+   * @deprecated In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to press keys one by one if
+   * there is special keyboard handling on the page - in this case use {@link Locator#pressSequentially
+   * Locator.pressSequentially()}.
    *
    * @param text A text to type into a focused element.
    * @since v1.8
@@ -2460,8 +2461,9 @@ public interface ElementHandle extends JSHandle {
     type(text, null);
   }
   /**
-   * @deprecated Use locator-based {@link Locator#pressSequentially Locator.pressSequentially()} instead. Read more about <a
-   * href="https://playwright.dev/java/docs/locators">locators</a>.
+   * @deprecated In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to press keys one by one if
+   * there is special keyboard handling on the page - in this case use {@link Locator#pressSequentially
+   * Locator.pressSequentially()}.
    *
    * @param text A text to type into a focused element.
    * @since v1.8
