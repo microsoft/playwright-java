@@ -5,7 +5,7 @@ import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@UseBrowserFactory
+@UsePlaywright
 public class BrowserDefaultFactoryTests {
   private Browser browserFromBeforeEach;
   private static Browser browserFromBeforeAll;

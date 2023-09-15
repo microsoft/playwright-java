@@ -5,8 +5,8 @@ import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@UseBrowserFactory
-public class PlaywrightTests {
+@UsePlaywright
+public class PlaywrightDefaultFactoryTests {
   private Playwright p;
   private static Playwright ps;
 

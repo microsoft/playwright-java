@@ -5,11 +5,10 @@ import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
 import org.junit.jupiter.api.extension.*;
 
-import static com.microsoft.playwright.junit.PlaywrightExtension.getOrCreatePlaywright;
-import static org.junit.platform.commons.support.AnnotationSupport.findAnnotation;
-import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
+import static com.microsoft.playwright.junit.ExtensionUtils.getUsePlaywrightAnnotation;
+import static com.microsoft.playwright.junit.ExtensionUtils.hasUsePlaywrightAnnotation;
 
-public class BrowserExtension implements ParameterResolver, AfterAllCallback {
+class BrowserExtension implements ParameterResolver, AfterAllCallback {
   private static final ThreadLocal<Browser> threadLocalBrowser;
   private static final ThreadLocal<BrowserFactory> threadLocalBrowserFactory;
 
@@ -20,7 +19,7 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
 
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    if (!isAnnotated(extensionContext.getTestClass(), UseBrowserFactory.class)) {
+    if (!hasUsePlaywrightAnnotation(extensionContext)) {
       return false;
     }
     Class<?> clazz = parameterContext.getParameter().getType();
@@ -29,25 +28,32 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
 
   @Override
   public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    BrowserFactory factory = getBrowserFactoryInstance(extensionContext);
-    return getOrCreateBrowser(factory);
+    return getOrCreateBrowser(extensionContext);
   }
 
-  public static Browser getOrCreateBrowser(BrowserFactory factory) {
-    Browser browser = getBrowser();
+  @Override
+  public void afterAll(ExtensionContext extensionContext) {
+    Browser browser = threadLocalBrowser.get();
+    if (browser != null) {
+      System.out.println("Closing Browser " + browser);
+      browser.close();
+    }
+    threadLocalBrowser.remove();
+    threadLocalBrowserFactory.remove();
+  }
+
+  static Browser getOrCreateBrowser(ExtensionContext extensionContext) {
+    Browser browser = threadLocalBrowser.get();
     if (browser != null) {
       return browser;
     }
 
-    Playwright playwright = getOrCreatePlaywright();
-    browser = factory.newBrowser(playwright);
+    Playwright playwright = PlaywrightExtension.getOrCreatePlaywright(extensionContext);
+    BrowserFactory browserFactory = getBrowserFactoryInstance(extensionContext);
+    browser = browserFactory.newBrowser(playwright);
     System.out.println("Created Browser " + browser);
     threadLocalBrowser.set(browser);
     return browser;
-  }
-
-  private static Browser getBrowser() {
-    return threadLocalBrowser.get();
   }
 
   private static BrowserFactory getBrowserFactoryInstance(ExtensionContext extensionContext) {
@@ -55,25 +61,14 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
       return threadLocalBrowserFactory.get();
     }
 
-    UseBrowserFactory useBrowserFactory = findAnnotation(extensionContext.getTestClass(), UseBrowserFactory.class).get();
+    UsePlaywright usePlaywrightAnnotation = getUsePlaywrightAnnotation(extensionContext);
 
     try {
-      BrowserFactory browserFactory = useBrowserFactory.value().newInstance();
+      BrowserFactory browserFactory = usePlaywrightAnnotation.browserFactory().newInstance();
       threadLocalBrowserFactory.set(browserFactory);
       return browserFactory;
     } catch (InstantiationException | IllegalAccessException e) {
       throw new PlaywrightException("Unable to create an instance of the supplied BrowserFactory", e);
     }
-  }
-
-  @Override
-  public void afterAll(ExtensionContext extensionContext) {
-    Browser browser = getBrowser();
-    if (browser != null) {
-      System.out.println("Closing Browser " + browser);
-      browser.close();
-    }
-    threadLocalBrowser.remove();
-    threadLocalBrowserFactory.remove();
   }
 }

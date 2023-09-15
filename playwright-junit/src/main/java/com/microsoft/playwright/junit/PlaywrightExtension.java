@@ -1,20 +1,24 @@
 package com.microsoft.playwright.junit;
 
 import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.PlaywrightException;
 import org.junit.jupiter.api.extension.*;
 
-import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
+import static com.microsoft.playwright.junit.ExtensionUtils.getUsePlaywrightAnnotation;
+import static com.microsoft.playwright.junit.ExtensionUtils.hasUsePlaywrightAnnotation;
 
-public class PlaywrightExtension implements ParameterResolver, AfterAllCallback {
-  private static final ThreadLocal<Playwright> playwrightThreadLocal;
+class PlaywrightExtension implements ParameterResolver, AfterAllCallback {
+  private static final ThreadLocal<Playwright> threadLocalPlaywright;
+  private static final ThreadLocal<PlaywrightFactory> threadLocalPlaywrightFactory;
 
   static {
-    playwrightThreadLocal = new ThreadLocal<>();
+    threadLocalPlaywright = new ThreadLocal<>();
+    threadLocalPlaywrightFactory = new ThreadLocal<>();
   }
 
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    if (!isAnnotated(extensionContext.getTestClass(), UseBrowserFactory.class)) {
+    if (!hasUsePlaywrightAnnotation(extensionContext)) {
       return false;
     }
     Class<?> clazz = parameterContext.getParameter().getType();
@@ -23,26 +27,44 @@ public class PlaywrightExtension implements ParameterResolver, AfterAllCallback 
 
   @Override
   public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    return getOrCreatePlaywright();
+    return getOrCreatePlaywright(extensionContext);
   }
 
-  static Playwright getOrCreatePlaywright() {
-    if (playwrightThreadLocal.get() == null) {
-      playwrightThreadLocal.set(Playwright.create());
-      System.out.println("Created Playwright " + getPlaywright());
+  static Playwright getOrCreatePlaywright(ExtensionContext extensionContext) {
+    Playwright playwright = threadLocalPlaywright.get();
+    if (playwright != null) {
+      return playwright;
     }
-    return getPlaywright();
+
+    PlaywrightFactory playwrightFactory = getPlaywrightFactoryInstance(extensionContext);
+    playwright = playwrightFactory.newPlaywright();
+    System.out.println("Created Playwright " + playwright);
+    threadLocalPlaywright.set(playwright);
+    return playwright;
   }
 
-  private static Playwright getPlaywright() {
-    return playwrightThreadLocal.get();
+  private static PlaywrightFactory getPlaywrightFactoryInstance(ExtensionContext extensionContext) {
+    if (threadLocalPlaywrightFactory.get() != null) {
+      return threadLocalPlaywrightFactory.get();
+    }
+
+    UsePlaywright usePlaywrightAnnotation = getUsePlaywrightAnnotation(extensionContext);
+
+    try {
+      PlaywrightFactory playwrightFactory = usePlaywrightAnnotation.playwrightFactory().newInstance();
+      System.out.println("Using PlaywrightFactory: " + playwrightFactory);
+      threadLocalPlaywrightFactory.set(playwrightFactory);
+      return playwrightFactory;
+    } catch (InstantiationException | IllegalAccessException e) {
+      throw new PlaywrightException("Unable to create an instance of the supplied PlaywrightFactory", e);
+    }
   }
 
   private static void closePlaywright() {
-    if (getPlaywright() != null) {
-      System.out.println("Closing Playwright " + getPlaywright());
-      getPlaywright().close();
-      playwrightThreadLocal.remove();
+    if (threadLocalPlaywright.get() != null) {
+      System.out.println("Closing Playwright " + threadLocalPlaywright.get());
+      threadLocalPlaywright.get().close();
+      threadLocalPlaywright.remove();
     }
   }
 
