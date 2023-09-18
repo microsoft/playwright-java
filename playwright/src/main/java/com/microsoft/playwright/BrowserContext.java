@@ -128,14 +128,14 @@ public interface BrowserContext extends AutoCloseable {
   void offPage(Consumer<Page> handler);
 
   /**
-   * Emitted when unhandled exceptions occur on any pages created through this context. To only listen for {@code pageError}
-   * events from a particular page, use {@link Page#onPageError Page.onPageError()}.
+   * Emitted when exception is unhandled in any of the pages in this context. To listen for errors from a particular page,
+   * use {@link Page#onPageError Page.onPageError()} instead.
    */
-  void onPageError(Consumer<PageError> handler);
+  void onWebError(Consumer<WebError> handler);
   /**
-   * Removes handler that was previously added with {@link #onPageError onPageError(handler)}.
+   * Removes handler that was previously added with {@link #onWebError onWebError(handler)}.
    */
-  void offPageError(Consumer<PageError> handler);
+  void offWebError(Consumer<WebError> handler);
 
   /**
    * Emitted when a request is issued from any pages created through this context. The [request] object is read-only. To only

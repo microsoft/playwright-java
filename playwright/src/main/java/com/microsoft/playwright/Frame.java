@@ -2987,7 +2987,7 @@ public interface Frame {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
    * instead.
    *
-   * <p> To send fine-grained keyboard events, use {@link Frame#type Frame.type()}.
+   * <p> To send fine-grained keyboard events, use {@link Locator#pressSequentially Locator.pressSequentially()}.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
@@ -3006,7 +3006,7 @@ public interface Frame {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
    * instead.
    *
-   * <p> To send fine-grained keyboard events, use {@link Frame#type Frame.type()}.
+   * <p> To send fine-grained keyboard events, use {@link Locator#pressSequentially Locator.pressSequentially()}.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
@@ -4677,8 +4677,9 @@ public interface Frame {
    */
   String title();
   /**
-   * @deprecated Use locator-based {@link Locator#pressSequentially Locator.pressSequentially()} instead. Read more about <a
-   * href="https://playwright.dev/java/docs/locators">locators</a>.
+   * @deprecated In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to press keys one by one if
+   * there is special keyboard handling on the page - in this case use {@link Locator#pressSequentially
+   * Locator.pressSequentially()}.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param text A text to type into a focused element.
@@ -4688,8 +4689,9 @@ public interface Frame {
     type(selector, text, null);
   }
   /**
-   * @deprecated Use locator-based {@link Locator#pressSequentially Locator.pressSequentially()} instead. Read more about <a
-   * href="https://playwright.dev/java/docs/locators">locators</a>.
+   * @deprecated In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to press keys one by one if
+   * there is special keyboard handling on the page - in this case use {@link Locator#pressSequentially
+   * Locator.pressSequentially()}.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param text A text to type into a focused element.
