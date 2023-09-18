@@ -59,7 +59,6 @@ class BrowserContextExtension implements ParameterResolver, BeforeEachCallback, 
     Browser browser = BrowserExtension.getOrCreateBrowser(extensionContext);
     BrowserContextFactory browserContextFactory = getBrowserContextFactoryInstance(extensionContext);
     browserContext = browserContextFactory.newBrowserContext(browser);
-    System.out.println("Created BrowserContext " + browserContext);
     threadLocalBrowserContext.set(browserContext);
     return browserContext;
   }
@@ -83,7 +82,6 @@ class BrowserContextExtension implements ParameterResolver, BeforeEachCallback, 
   private void cleanupBrowserContext() {
     BrowserContext browserContext = threadLocalBrowserContext.get();
     if (browserContext != null) {
-      System.out.println("Closing BrowserContext " + browserContext);
       browserContext.close();
       threadLocalBrowserContext.remove();
     }

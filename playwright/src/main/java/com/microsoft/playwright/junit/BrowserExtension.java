@@ -35,7 +35,6 @@ class BrowserExtension implements ParameterResolver, AfterAllCallback {
   public void afterAll(ExtensionContext extensionContext) {
     Browser browser = threadLocalBrowser.get();
     if (browser != null) {
-      System.out.println("Closing Browser " + browser);
       browser.close();
     }
     threadLocalBrowser.remove();
@@ -51,7 +50,6 @@ class BrowserExtension implements ParameterResolver, AfterAllCallback {
     Playwright playwright = PlaywrightExtension.getOrCreatePlaywright(extensionContext);
     BrowserFactory browserFactory = getBrowserFactoryInstance(extensionContext);
     browser = browserFactory.newBrowser(playwright);
-    System.out.println("Created Browser " + browser);
     threadLocalBrowser.set(browser);
     return browser;
   }

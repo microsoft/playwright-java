@@ -30,6 +30,11 @@ class PlaywrightExtension implements ParameterResolver, AfterAllCallback {
     return getOrCreatePlaywright(extensionContext);
   }
 
+  @Override
+  public void afterAll(ExtensionContext extensionContext) {
+    closePlaywright();
+  }
+
   static Playwright getOrCreatePlaywright(ExtensionContext extensionContext) {
     Playwright playwright = threadLocalPlaywright.get();
     if (playwright != null) {
@@ -38,7 +43,6 @@ class PlaywrightExtension implements ParameterResolver, AfterAllCallback {
 
     PlaywrightFactory playwrightFactory = getPlaywrightFactoryInstance(extensionContext);
     playwright = playwrightFactory.newPlaywright();
-    System.out.println("Created Playwright " + playwright);
     threadLocalPlaywright.set(playwright);
     return playwright;
   }
@@ -52,7 +56,6 @@ class PlaywrightExtension implements ParameterResolver, AfterAllCallback {
 
     try {
       PlaywrightFactory playwrightFactory = usePlaywrightAnnotation.playwrightFactory().newInstance();
-      System.out.println("Using PlaywrightFactory: " + playwrightFactory);
       threadLocalPlaywrightFactory.set(playwrightFactory);
       return playwrightFactory;
     } catch (InstantiationException | IllegalAccessException e) {
@@ -62,14 +65,8 @@ class PlaywrightExtension implements ParameterResolver, AfterAllCallback {
 
   private static void closePlaywright() {
     if (threadLocalPlaywright.get() != null) {
-      System.out.println("Closing Playwright " + threadLocalPlaywright.get());
       threadLocalPlaywright.get().close();
       threadLocalPlaywright.remove();
     }
-  }
-
-  @Override
-  public void afterAll(ExtensionContext extensionContext) {
-    closePlaywright();
   }
 }

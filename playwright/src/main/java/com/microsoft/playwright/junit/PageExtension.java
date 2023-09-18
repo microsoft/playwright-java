@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.*;
 
 import static com.microsoft.playwright.junit.ExtensionUtils.hasUsePlaywrightAnnotation;
 
-public class PageExtension implements ParameterResolver, BeforeEachCallback, AfterEachCallback, AfterAllCallback {
+class PageExtension implements ParameterResolver, BeforeEachCallback, AfterEachCallback, AfterAllCallback {
   private final static ThreadLocal<Page> threadLocalPage;
 
   static {
@@ -26,7 +26,6 @@ public class PageExtension implements ParameterResolver, BeforeEachCallback, Aft
   @Override
   public void beforeEach(ExtensionContext extensionContext) {
     // Cleanup class-level Page (for example, if one was requested in a BeforeAll callback)
-    // This will clean up the ThreadLocal Page for a new Page for the test
     cleanupPage();
   }
 
@@ -52,7 +51,6 @@ public class PageExtension implements ParameterResolver, BeforeEachCallback, Aft
 
     BrowserContext browserContext = BrowserContextExtension.getOrCreateBrowserContext(extensionContext);
     page = browserContext.newPage();
-    System.out.println("Creating Page " + page);
     threadLocalPage.set(page);
     return page;
   }
@@ -61,7 +59,6 @@ public class PageExtension implements ParameterResolver, BeforeEachCallback, Aft
     Page page = threadLocalPage.get();
     if (page != null) {
       if (!page.isClosed()) {
-        System.out.println("Closing Page " + page);
         page.close();
       }
       threadLocalPage.remove();

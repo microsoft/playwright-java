@@ -39,7 +39,6 @@
     <module>driver</module>
     <module>driver-bundle</module>
     <module>playwright</module>
-    <module>playwright-junit</module>
   </modules>
 
   <properties>
