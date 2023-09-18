@@ -174,13 +174,13 @@ class Utils {
     return mimeType;
   }
 
-  static final int maxUploadBufferSize = 50 * 1024 * 1024;
+  static final long maxUploadBufferSize = 50 * 1024 * 1024;
 
   static boolean hasLargeFile(Path[] files) {
     long totalSize = 0;
     for (Path file: files) {
       try {
-        totalSize = Math.addExact(Files.size(file), totalSize);
+        totalSize += Files.size(file);
       } catch (IOException e) {
         throw new PlaywrightException("Cannot get file size.", e);
       }
@@ -218,7 +218,7 @@ class Utils {
   static void checkFilePayloadSize(FilePayload[] files) {
     long totalSize = 0;
     for (FilePayload file: files) {
-      totalSize = Math.addExact(file.buffer.length, totalSize);
+      totalSize += file.buffer.length;
     }
     if (totalSize > maxUploadBufferSize) {
       throw new PlaywrightException("Cannot set buffer larger than 50Mb, please write it to a file and pass its path instead.");
