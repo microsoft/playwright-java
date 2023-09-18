@@ -174,19 +174,7 @@ class Utils {
     return mimeType;
   }
 
-  static final int maxUplodBufferSize = 50 * 1024 * 1024;
 
-  static boolean hasLargeFile(Path[] files) {
-    int totalSize = 0;
-    for (Path file: files) {
-      try {
-        totalSize += Files.size(file);
-      } catch (IOException e) {
-        throw new PlaywrightException("Cannot get file size.", e);
-      }
-    }
-    return totalSize > maxUplodBufferSize;
-  }
 
   static void addLargeFileUploadParams(Path[] files, JsonObject params, BrowserContextImpl context) {
     if (context.connection.isRemote) {
