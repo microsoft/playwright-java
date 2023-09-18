@@ -83,18 +83,14 @@ public class LocatorUtils {
     return toJsRegExp(re).replaceAll("(^|[^\\\\])(\\\\\\\\)*([\"'`])", "$1$2\\\\$3").replaceAll(">>", "\\\\>\\\\>");
   }
 
-  static String escapeForTextSelector(Object param, boolean exact) {
-    if (param instanceof Pattern) {
-      return escapeRegexForSelector((Pattern) param);
+  static String escapeForTextSelector(Object value, boolean exact) {
+    if (value instanceof Pattern) {
+      return escapeRegexForSelector((Pattern) value);
     }
-    if (param instanceof String) {
-      return gson().toJson(param) + (exact ? "s" : "i");
+    if (value instanceof String) {
+      return gson().toJson(value) + (exact ? "s" : "i");
     }
-    throw new IllegalArgumentException("text parameter must be Pattern or String: " + param);
-  }
-
-  private static String escapeForRegex(String text) {
-    return text.replaceAll("[.*+?^>${}()|\\[\\]\\\\]", "\\\\\\\\$0");
+    throw new IllegalArgumentException("text parameter must be Pattern or String: " + value);
   }
 
   private static String escapeForAttributeSelector(Object value, boolean exact) {
