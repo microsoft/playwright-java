@@ -16,20 +16,25 @@
 
 package com.microsoft.playwright;
 
-import org.junit.jupiter.api.Disabled;
+import com.microsoft.playwright.junit.UsePlaywright;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.microsoft.playwright.Utils.isWebKit;
 import static com.microsoft.playwright.Utils.verifyViewport;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestBrowserContextBasic extends TestBase {
+@Tag("fixtures") //temp tag to allow only tests with junit integration to run.  will be removed before merge.
+@UsePlaywright(browserFactory = BrowserFromEnv.class)
+public class TestBrowserContextBasic extends __TestBaseNew {
   @Test
-  void shouldCreateNewContext() {
+  void shouldCreateNewContext(Browser browser) {
+    //Failing: should be zero?
     assertEquals(1, browser.contexts().size());
     BrowserContext context = browser.newContext();
     assertEquals(2, browser.contexts().size());
@@ -41,7 +46,7 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  void windowOpenShouldUseParentTabContext() {
+  void windowOpenShouldUseParentTabContext(Browser browser) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
@@ -51,7 +56,7 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  void shouldIsolateLocalStorageAndCookies() {
+  void shouldIsolateLocalStorageAndCookies(Browser browser) {
     // Create two incognito contexts.
     BrowserContext context1 = browser.newContext();
     BrowserContext context2 = browser.newContext();
@@ -92,11 +97,12 @@ public class TestBrowserContextBasic extends TestBase {
     context1.close();
     context2.close();
 
+    //Failing is 1 expected because of the old TestBase class? Should it be zero since we are only creating 2 contexts and closing both?
     assertEquals(1, browser.contexts().size());
   }
 
   @Test
-  void shouldPropagateDefaultViewportToThePage() {
+  void shouldPropagateDefaultViewportToThePage(Browser browser) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(456, 789));
     Page page = context.newPage();
     verifyViewport(page, 456, 789);
@@ -108,7 +114,7 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  void shouldRespectDeviceScaleFactor() {
+  void shouldRespectDeviceScaleFactor(Browser browser) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setDeviceScaleFactor(3.0));
     Page page = context.newPage();
     assertEquals(3, page.evaluate("window.devicePixelRatio"));
@@ -117,7 +123,7 @@ public class TestBrowserContextBasic extends TestBase {
 
 
   @Test
-  void shouldNotAllowDeviceScaleFactorWithNullViewport() {
+  void shouldNotAllowDeviceScaleFactorWithNullViewport(Browser browser) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       browser.newContext(new Browser.NewContextOptions().setDeviceScaleFactor(1.0).setViewportSize(null));
     });
@@ -125,7 +131,7 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  void shouldNotAllowIsMobileWithNullViewport() {
+  void shouldNotAllowIsMobileWithNullViewport(Browser browser) {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       browser.newContext(new Browser.NewContextOptions().setIsMobile(true).setViewportSize(null));
     });
@@ -133,13 +139,13 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  void closeShouldWorkForEmptyContext() {
+  void closeShouldWorkForEmptyContext(Browser browser) {
     BrowserContext context = browser.newContext();
     context.close();
   }
 
   @Test
-  void closeShouldAbortFutureEvent() {
+  void closeShouldAbortFutureEvent(Browser browser) {
     BrowserContext context = browser.newContext();
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       context.waitForPage(() -> context.close());
@@ -148,7 +154,7 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  void closeShouldBeCallableTwice() {
+  void closeShouldBeCallableTwice(Browser browser) {
     BrowserContext context = browser.newContext();
     context.close();
     context.close();
@@ -156,7 +162,7 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  void shouldNotReportFramelessPagesOnError() {
+  void shouldNotReportFramelessPagesOnError(Browser browser) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     server.setRoute("/empty.html", exchange -> {
@@ -181,7 +187,7 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  void shouldReturnAllOfThePages() {
+  void shouldReturnAllOfThePages(Browser browser) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     Page second = context.newPage();
@@ -193,7 +199,7 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  void shouldCloseAllBelongingPagesOnceClosingContext() {
+  void shouldCloseAllBelongingPagesOnceClosingContext(Browser browser) {
     BrowserContext context = browser.newContext();
     context.newPage();
     assertEquals(1, context.pages().size());
@@ -202,7 +208,7 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  void shouldDisableJavascript() {
+  void shouldDisableJavascript(Browser browser) {
     {
       BrowserContext context = browser.newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
       Page page = context.newPage();
@@ -225,7 +231,7 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  void shouldBeAbleToNavigateAfterDisablingJavascript() {
+  void shouldBeAbleToNavigateAfterDisablingJavascript(Browser browser) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setJavaScriptEnabled(false));
     Page page = context.newPage();
     page.navigate(server.EMPTY_PAGE);
@@ -233,7 +239,7 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  void shouldWorkWithOfflineOption() {
+  void shouldWorkWithOfflineOption(Browser browser) {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setOffline(true));
     Page page = context.newPage();
     assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
@@ -245,7 +251,7 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  void shouldEmulateNavigatorOnLine() {
+  void shouldEmulateNavigatorOnLine(Browser browser) {
     BrowserContext context = browser.newContext();
     Page page = context.newPage();
     assertEquals(true, page.evaluate("() => window.navigator.onLine"));
@@ -257,7 +263,7 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  void shouldWaitForCondition() {
+  void shouldWaitForCondition(Page page, BrowserContext context) {
     List<String> messages = new ArrayList<>();
     page.onConsoleMessage(m -> messages.add(m.text()));
     page.evaluate("setTimeout(() => {\n" +
@@ -269,13 +275,13 @@ public class TestBrowserContextBasic extends TestBase {
   }
 
   @Test
-  void waitForConditionTimeout() {
+  void waitForConditionTimeout(BrowserContext context) {
     PlaywrightException e = assertThrows(PlaywrightException.class,
       () -> context.waitForCondition(() -> false, new BrowserContext.WaitForConditionOptions().setTimeout(100)));
     assertTrue(e.getMessage().contains("Timeout"), e.getMessage());
   }
   @Test
-  void waitForConditionPageClosed() {
+  void waitForConditionPageClosed(BrowserContext context) {
     PlaywrightException e = assertThrows(PlaywrightException.class,
       () -> context.waitForCondition(() -> {
         context.close();
