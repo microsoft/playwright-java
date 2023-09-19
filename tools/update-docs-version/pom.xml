@@ -6,7 +6,7 @@
 
   <groupId>com.microsoft.playwright</groupId>
   <artifactId>update-version</artifactId>
-  <version>1.38.0-SNAPSHOT</version>
+  <version>1.39.0-SNAPSHOT</version>
   <name>Playwright - Update Version in Documentation</name>
   <description>
     This is an internal module used to update versions in the documentation based on
