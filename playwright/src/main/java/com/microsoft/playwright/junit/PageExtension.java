@@ -5,17 +5,13 @@ import com.microsoft.playwright.Page;
 import org.junit.jupiter.api.extension.*;
 
 import static com.microsoft.playwright.junit.ExtensionUtils.hasUsePlaywrightAnnotation;
+import static com.microsoft.playwright.junit.ExtensionUtils.isClassHook;
 
-class PageExtension implements ParameterResolver, BeforeEachCallback, AfterEachCallback, AfterAllCallback {
+class PageExtension implements ParameterResolver, AfterEachCallback {
   private final static ThreadLocal<Page> threadLocalPage;
 
   static {
     threadLocalPage = new ThreadLocal<>();
-  }
-
-  @Override
-  public void afterAll(ExtensionContext extensionContext) {
-    cleanupPage();
   }
 
   @Override
@@ -24,14 +20,8 @@ class PageExtension implements ParameterResolver, BeforeEachCallback, AfterEachC
   }
 
   @Override
-  public void beforeEach(ExtensionContext extensionContext) {
-    // Cleanup class-level Page (for example, if one was requested in a BeforeAll callback)
-    cleanupPage();
-  }
-
-  @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    if (!hasUsePlaywrightAnnotation(extensionContext)) {
+    if (isClassHook(extensionContext) || !hasUsePlaywrightAnnotation(extensionContext)) {
       return false;
     }
     Class<?> clazz = parameterContext.getParameter().getType();
@@ -56,12 +46,16 @@ class PageExtension implements ParameterResolver, BeforeEachCallback, AfterEachC
   }
 
   private void cleanupPage() {
-    Page page = threadLocalPage.get();
-    if (page != null) {
-      if (!page.isClosed()) {
-        page.close();
+    try {
+      Page page = threadLocalPage.get();
+      if (page != null) {
+        if (!page.isClosed()) {
+          page.close();
+        }
       }
+    } finally {
       threadLocalPage.remove();
     }
+
   }
 }

@@ -5,10 +5,9 @@ import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.PlaywrightException;
 import org.junit.jupiter.api.extension.*;
 
-import static com.microsoft.playwright.junit.ExtensionUtils.getUsePlaywrightAnnotation;
-import static com.microsoft.playwright.junit.ExtensionUtils.hasUsePlaywrightAnnotation;
+import static com.microsoft.playwright.junit.ExtensionUtils.*;
 
-class BrowserContextExtension implements ParameterResolver, BeforeEachCallback, AfterEachCallback, AfterAllCallback {
+class BrowserContextExtension implements ParameterResolver, AfterEachCallback {
   private final static ThreadLocal<BrowserContext> threadLocalBrowserContext;
   private final static ThreadLocal<BrowserContextFactory> threadLocalBrowserContextFactory;
 
@@ -18,27 +17,14 @@ class BrowserContextExtension implements ParameterResolver, BeforeEachCallback, 
   }
 
   @Override
-  public void beforeEach(ExtensionContext extensionContext) {
-    // Cleanup class-level BrowserContext (for example, if one was requested in a BeforeAll callback)
-    // This will clean up the ThreadLocal BrowserContext for a new BrowserContext for the test
-    cleanupBrowserContext();
-  }
-
-  @Override
   public void afterEach(ExtensionContext extensionContext) {
     cleanupBrowserContext();
     cleanupBrowserContextFactory();
   }
 
   @Override
-  public void afterAll(ExtensionContext extensionContext) {
-    cleanupBrowserContext();
-    cleanupBrowserContextFactory();
-  }
-
-  @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    if (!hasUsePlaywrightAnnotation(extensionContext)) {
+    if (isClassHook(extensionContext) || !hasUsePlaywrightAnnotation(extensionContext)) {
       return false;
     }
     Class<?> clazz = parameterContext.getParameter().getType();
@@ -80,9 +66,12 @@ class BrowserContextExtension implements ParameterResolver, BeforeEachCallback, 
   }
 
   private void cleanupBrowserContext() {
-    BrowserContext browserContext = threadLocalBrowserContext.get();
-    if (browserContext != null) {
-      browserContext.close();
+    try {
+      BrowserContext browserContext = threadLocalBrowserContext.get();
+      if (browserContext != null) {
+        browserContext.close();
+      }
+    } finally {
       threadLocalBrowserContext.remove();
     }
   }

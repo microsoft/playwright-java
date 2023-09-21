@@ -16,9 +16,7 @@
 
 package com.microsoft.playwright;
 
-import com.microsoft.playwright.junit.UsePlaywright;
 import com.microsoft.playwright.options.Cookie;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -26,16 +24,14 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import static com.microsoft.playwright.Utils.*;
+import static com.microsoft.playwright.Utils.assertJsonEquals;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Tag("fixtures") //temp tag to allow only tests with junit integration to run.  will be removed before merge.
-@UsePlaywright(browserFactory = BrowserFromEnv.class)
-public class TestBrowserContextAddCookies extends __TestBaseNew {
+public class TestBrowserContextAddCookies extends TestBase {
   @Test
-  void shouldWork(Page page, BrowserContext context) {
+  void shouldWork() {
     page.navigate(server.EMPTY_PAGE);
     context.addCookies(asList(
       new Cookie("password", "123456").setUrl(server.EMPTY_PAGE)));
@@ -43,7 +39,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldRoundtripCookie(Page page, BrowserContext context) {
+  void shouldRoundtripCookie() {
     page.navigate(server.EMPTY_PAGE);
     // @see https://en.wikipedia.org/wiki/Year_2038_problem
     Object documentCookie = page.evaluate("() => {\n" +
@@ -61,7 +57,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldSendCookieHeader(BrowserContext context) throws ExecutionException, InterruptedException {
+  void shouldSendCookieHeader() throws ExecutionException, InterruptedException {
     Future<Server.Request> request = server.futureRequest("/empty.html");
     context.addCookies(asList(
       new Cookie("cookie", "value").setUrl(server.EMPTY_PAGE)));
@@ -72,7 +68,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldIsolateCookiesInBrowserContexts(Browser browser, BrowserContext context) {
+  void shouldIsolateCookiesInBrowserContexts() {
     BrowserContext anotherContext = browser.newContext();
     context.addCookies(asList(
       new Cookie("isolatecookie", "page1value").setUrl(server.EMPTY_PAGE)));
@@ -90,7 +86,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldIsolateSessionCookies(BrowserContext context, Browser browser) {
+  void shouldIsolateSessionCookies() {
     server.setRoute("/setcookie.html", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "session=value");
       exchange.sendResponseHeaders(200, 0);
@@ -118,7 +114,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldIsolatePersistentCookies(BrowserContext context, Browser browser) {
+  void shouldIsolatePersistentCookies() {
     server.setRoute("/setcookie.html", exchange -> {
       exchange.getResponseHeaders().add("Set-Cookie", "persistent=persistent-value; max-age=3600");
       exchange.sendResponseHeaders(200, 0);
@@ -143,7 +139,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldIsolateSendCookieHeader(BrowserContext context, Browser browser) throws ExecutionException, InterruptedException {
+  void shouldIsolateSendCookieHeader() throws ExecutionException, InterruptedException {
     context.addCookies(asList(
       new Cookie("sendcookie", "value").setUrl(server.EMPTY_PAGE)));
     {
@@ -154,20 +150,20 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
       assertEquals(asList("sendcookie=value"), cookies);
     }
     {
-      BrowserContext newContext = browser.newContext();
-      Page page = newContext.newPage();
+      BrowserContext context = browser.newContext();
+      Page page = context.newPage();
       Future<Server.Request> request = server.futureRequest("/empty.html");
       page.navigate(server.EMPTY_PAGE);
       List<String> cookies = request.get().headers.get("cookie");
       assertNull(cookies);
-      newContext.close();
+      context.close();
     }
   }
   @Test
-  void shouldIsolateCookiesBetweenLaunches(Playwright playwright) {
+  void shouldIsolateCookiesBetweenLaunches() {
 //    test.slow();
 // TODO:  const browser1 = browserType.launch(browserOptions);
-    Browser browser1 = getBrowserTypeFromEnv(playwright).launch();
+    Browser browser1 = browserType.launch();
     BrowserContext context1 = browser1.newContext();
     context1.addCookies(asList(new Cookie("cookie-in-context-1", "value")
       .setUrl(server.EMPTY_PAGE)
@@ -175,7 +171,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
     browser1.close();
 
 //  const browser2 = browserType.launch(browserOptions);
-    Browser browser2 = getBrowserTypeFromEnv(playwright).launch();
+    Browser browser2 = browserType.launch();
     BrowserContext context2 = browser2.newContext();
     List<Cookie> cookies = context2.cookies();
     assertEquals(0, cookies.size());
@@ -183,7 +179,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldSetMultipleCookies(Page page, BrowserContext context) {
+  void shouldSetMultipleCookies() {
     page.navigate(server.EMPTY_PAGE);
     context.addCookies(asList(
       new Cookie("multiple-1", "123456").setUrl(server.EMPTY_PAGE),
@@ -196,7 +192,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldHaveExpiresSetTo1ForSessionCookies(BrowserContext context) {
+  void shouldHaveExpiresSetTo1ForSessionCookies() {
     context.addCookies(asList(
       new Cookie("expires", "123456").setUrl(server.EMPTY_PAGE)));
     List<Cookie> cookies = context.cookies();
@@ -204,7 +200,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldSetCookieWithReasonableDefaults(BrowserContext context) {
+  void shouldSetCookieWithReasonableDefaults() {
     context.addCookies(asList(
       new Cookie("defaults", "123456").setUrl(server.EMPTY_PAGE)));
     List<Cookie> cookies = context.cookies();
@@ -221,7 +217,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldSetACookieWithAPath(Page page, BrowserContext context) {
+  void shouldSetACookieWithAPath() {
     page.navigate(server.PREFIX + "/grid.html");
     context.addCookies(asList(new Cookie("gridcookie", "GRID")
       .setDomain("localhost")
@@ -245,7 +241,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldNotSetACookieWithBlankPageURL(BrowserContext context) {
+  void shouldNotSetACookieWithBlankPageURL() {
     PlaywrightException e = assertThrows(PlaywrightException.class, () ->  context.addCookies(asList(
       new Cookie("example-cookie", "best").setUrl(server.EMPTY_PAGE),
       new Cookie("example-cookie-blank", "best").setUrl("about:blank")
@@ -254,7 +250,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldNotSetACookieOnADataURLPage(BrowserContext context) {
+  void shouldNotSetACookieOnADataURLPage() {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.addCookies(asList(
       new Cookie("example-cookie", "best").setUrl("data:,Hello%2C%20World!")
     )));
@@ -262,7 +258,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldDefaultToSettingSecureCookieForHTTPSWebsites(Page page, BrowserContext context) {
+  void shouldDefaultToSettingSecureCookieForHTTPSWebsites() {
     page.navigate(server.EMPTY_PAGE);
     String SECURE_URL = "https://example.com";
     context.addCookies(asList(
@@ -274,7 +270,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldBeAbleToSetUnsecureCookieForHTTPWebsite(Page page, BrowserContext context) {
+  void shouldBeAbleToSetUnsecureCookieForHTTPWebsite() {
     page.navigate(server.EMPTY_PAGE);
     String HTTP_URL = "http://example.com";
     context.addCookies(asList(
@@ -286,7 +282,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldSetACookieOnADifferentDomain(Page page, BrowserContext context) {
+  void shouldSetACookieOnADifferentDomain() {
     page.navigate(server.EMPTY_PAGE);
     context.addCookies(asList(
       new Cookie("example-cookie", "best").setUrl("https://www.example.com")
@@ -305,7 +301,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldSetCookiesForAFrame(Page page, BrowserContext context) {
+  void shouldSetCookiesForAFrame() {
     page.navigate(server.EMPTY_PAGE);
     context.addCookies(asList(
       new Cookie("frame-cookie", "value").setUrl(server.PREFIX)
@@ -323,7 +319,7 @@ public class TestBrowserContextAddCookies extends __TestBaseNew {
   }
 
   @Test
-  void shouldNotBlockThirdPartyCookies(Page page, BrowserContext context) {
+  void shouldNotBlockThirdPartyCookies() {
     page.navigate(server.EMPTY_PAGE);
     page.evaluate("src => {\n" +
       "  let fulfill;\n" +

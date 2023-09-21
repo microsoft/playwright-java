@@ -33,12 +33,15 @@ class BrowserExtension implements ParameterResolver, AfterAllCallback {
 
   @Override
   public void afterAll(ExtensionContext extensionContext) {
-    Browser browser = threadLocalBrowser.get();
-    if (browser != null) {
-      browser.close();
+    try {
+      Browser browser = threadLocalBrowser.get();
+      if (browser != null) {
+        browser.close();
+      }
+    } finally {
+      threadLocalBrowser.remove();
+      threadLocalBrowserFactory.remove();
     }
-    threadLocalBrowser.remove();
-    threadLocalBrowserFactory.remove();
   }
 
   static Browser getOrCreateBrowser(ExtensionContext extensionContext) {

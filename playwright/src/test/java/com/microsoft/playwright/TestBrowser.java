@@ -18,26 +18,24 @@ package com.microsoft.playwright;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.junit.UsePlaywright;
 import com.microsoft.playwright.options.BrowserChannel;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.BrowserFromEnv.createLaunchOptions;
-import static com.microsoft.playwright.Utils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Tag("fixtures") //temp tag to allow only tests with junit integration to run.  will be removed before merge.
-@UsePlaywright(browserFactory = BrowserFromEnv.class)
-public class TestBrowser extends __TestBaseNew {
+public class TestBrowser extends TestBase {
+  @Override
+  void createContextAndPage() {
+    // Do not create anything.
+  }
 
   @Test
-  void shouldCreateNewPage(Browser browser) {
+  void shouldCreateNewPage() {
     Page page1 = browser.newPage();
     assertEquals(1, browser.contexts().size());
 
@@ -52,7 +50,7 @@ public class TestBrowser extends __TestBaseNew {
   }
 
   @Test
-  void shouldThrowUponSecondCreateNewPage(Browser browser) {
+  void shouldThrowUponSecondCreateNewPage() {
     Page page = browser.newPage();
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.context().newPage());
     assertTrue(e.getMessage().contains("Please use browser.newContext()"));
@@ -60,7 +58,7 @@ public class TestBrowser extends __TestBaseNew {
   }
 
   @Test
-  void versionShouldWork(Browser browser) {
+  void versionShouldWork() {
     if (isChromium()) {
       assertTrue(Pattern.matches("^\\d+\\.\\d+\\.\\d+\\.\\d+$", browser.version()));
     } else if (isWebKit()) {
@@ -90,9 +88,8 @@ public class TestBrowser extends __TestBaseNew {
   }
 
   @Test
-  void shouldSupportDeprecatedChannelEnum(Playwright playwright) {
+  void shouldSupportDeprecatedChannelEnum() {
     BrowserChannel channel = getBrowserChannelEnumFromEnv();
-    BrowserType browserType = getBrowserTypeFromEnv(playwright);
     Assumptions.assumeTrue(channel != null);
     BrowserType.LaunchOptions options = createLaunchOptions();
     options.setChannel(channel);
@@ -102,14 +99,13 @@ public class TestBrowser extends __TestBaseNew {
   }
 
   @Test
-  void shouldReturnBrowserType(Playwright playwright, Browser browser) {
-    BrowserType browserType = getBrowserTypeFromEnv(playwright);
+  void shouldReturnBrowserType() {
     assertEquals(browserType, browser.browserType());
   }
 
   @Test
   @EnabledIf(value = "com.microsoft.playwright.TestBase#isChromium", disabledReason = "Chrome Devtools Protocol supported by chromium only")
-  void shouldWorkWithNewBrowserCDPSession(Browser browser) {
+  void shouldWorkWithNewBrowserCDPSession() {
     CDPSession session = browser.newBrowserCDPSession();
 
     JsonElement response = session.send("Browser.getVersion");
