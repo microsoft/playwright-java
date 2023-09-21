@@ -180,22 +180,6 @@ class Utils {
     return browserName;
   }
 
-  static boolean isChromium() {
-    return "chromium".equals(getBrowserNameFromEnv());
-  }
-
-  static boolean isWebKit() {
-    return "webkit".equals(getBrowserNameFromEnv());
-  }
-
-  static boolean isFirefox() {
-    return "firefox".equals(getBrowserNameFromEnv());
-  }
-
-  static String getBrowserChannelFromEnv() {
-    return System.getenv("BROWSER_CHANNEL");
-  }
-
   static BrowserType getBrowserTypeFromEnv(Playwright playwright) {
     String browserName = getBrowserNameFromEnv();
     switch (browserName) {
