@@ -1,5 +1,9 @@
 package com.microsoft.playwright.junit;
 
+import com.microsoft.playwright.junit.impl.BrowserContextExtension;
+import com.microsoft.playwright.junit.impl.BrowserExtension;
+import com.microsoft.playwright.junit.impl.PageExtension;
+import com.microsoft.playwright.junit.impl.PlaywrightExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.ElementType;

@@ -1,13 +1,13 @@
-package com.microsoft.playwright.junit;
+package com.microsoft.playwright.junit.impl;
 
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
 import org.junit.jupiter.api.extension.*;
 
-import static com.microsoft.playwright.junit.ExtensionUtils.hasUsePlaywrightAnnotation;
-import static com.microsoft.playwright.junit.ExtensionUtils.isClassHook;
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.hasUsePlaywrightAnnotation;
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.isClassHook;
 
-class PageExtension implements ParameterResolver, AfterEachCallback {
+public class PageExtension implements ParameterResolver, AfterEachCallback {
   private final static ThreadLocal<Page> threadLocalPage;
 
   static {

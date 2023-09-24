@@ -1,11 +1,10 @@
-package com.microsoft.playwright.junit;
+package com.microsoft.playwright.junit.impl;
 
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import static org.junit.platform.commons.support.AnnotationSupport.findAnnotation;
-import static org.junit.platform.commons.support.AnnotationSupport.isAnnotated;
 
 class ExtensionUtils {
   static boolean hasUsePlaywrightAnnotation(ExtensionContext extensionContext) {

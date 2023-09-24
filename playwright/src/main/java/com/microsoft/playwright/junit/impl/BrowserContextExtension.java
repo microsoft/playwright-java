@@ -1,13 +1,15 @@
-package com.microsoft.playwright.junit;
+package com.microsoft.playwright.junit.impl;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.junit.BrowserContextFactory;
+import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.extension.*;
 
-import static com.microsoft.playwright.junit.ExtensionUtils.*;
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.*;
 
-class BrowserContextExtension implements ParameterResolver, AfterEachCallback {
+public class BrowserContextExtension implements ParameterResolver, AfterEachCallback {
   private final static ThreadLocal<BrowserContext> threadLocalBrowserContext;
   private final static ThreadLocal<BrowserContextFactory> threadLocalBrowserContextFactory;
 

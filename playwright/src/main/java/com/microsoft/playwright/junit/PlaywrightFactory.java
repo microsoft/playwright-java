@@ -4,5 +4,4 @@ import com.microsoft.playwright.Playwright;
 
 public interface PlaywrightFactory {
   Playwright newPlaywright();
-
 }

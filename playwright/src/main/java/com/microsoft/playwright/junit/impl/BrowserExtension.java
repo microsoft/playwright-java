@@ -1,14 +1,16 @@
-package com.microsoft.playwright.junit;
+package com.microsoft.playwright.junit.impl;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.junit.BrowserFactory;
+import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.extension.*;
 
-import static com.microsoft.playwright.junit.ExtensionUtils.getUsePlaywrightAnnotation;
-import static com.microsoft.playwright.junit.ExtensionUtils.hasUsePlaywrightAnnotation;
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.getUsePlaywrightAnnotation;
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.hasUsePlaywrightAnnotation;
 
-class BrowserExtension implements ParameterResolver, AfterAllCallback {
+public class BrowserExtension implements ParameterResolver, AfterAllCallback {
   private static final ThreadLocal<Browser> threadLocalBrowser;
   private static final ThreadLocal<BrowserFactory> threadLocalBrowserFactory;
 

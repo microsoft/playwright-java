@@ -1,13 +1,15 @@
-package com.microsoft.playwright.junit;
+package com.microsoft.playwright.junit.impl;
 
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.junit.PlaywrightFactory;
+import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.extension.*;
 
-import static com.microsoft.playwright.junit.ExtensionUtils.getUsePlaywrightAnnotation;
-import static com.microsoft.playwright.junit.ExtensionUtils.hasUsePlaywrightAnnotation;
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.getUsePlaywrightAnnotation;
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.hasUsePlaywrightAnnotation;
 
-class PlaywrightExtension implements ParameterResolver, AfterAllCallback {
+public class PlaywrightExtension implements ParameterResolver, AfterAllCallback {
   private static final ThreadLocal<Playwright> threadLocalPlaywright;
   private static final ThreadLocal<PlaywrightFactory> threadLocalPlaywrightFactory;
 
