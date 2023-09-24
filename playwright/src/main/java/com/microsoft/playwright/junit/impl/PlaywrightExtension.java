@@ -66,8 +66,11 @@ public class PlaywrightExtension implements ParameterResolver, AfterAllCallback 
   }
 
   private static void closePlaywright() {
-    if (threadLocalPlaywright.get() != null) {
-      threadLocalPlaywright.get().close();
+    try {
+      if (threadLocalPlaywright.get() != null) {
+        threadLocalPlaywright.get().close();
+      }
+    } finally {
       threadLocalPlaywright.remove();
     }
   }
