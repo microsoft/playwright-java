@@ -3,6 +3,7 @@ package com.microsoft.playwright.junit;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.PlaywrightException;
 
 public class DefaultBrowserFactory implements BrowserFactory {
   private final boolean headed;
@@ -22,8 +23,10 @@ public class DefaultBrowserFactory implements BrowserFactory {
         return playwright.webkit().launch(launchOptions);
       case "firefox":
         return playwright.firefox().launch(launchOptions);
-      default:
+      case "chromium":
         return playwright.chromium().launch(launchOptions);
+      default:
+        throw new PlaywrightException("Invalid value set for BROWSER.  Must be one of: chromium, firefox, webkit");
     }
   }
 
