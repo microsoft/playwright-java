@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.*;
 
 import static com.microsoft.playwright.junit.impl.ExtensionUtils.*;
 
-public class BrowserContextExtension implements ParameterResolver, AfterEachCallback {
+public class BrowserContextExtension implements ParameterResolver, AfterEachCallback, AfterAllCallback {
   private final static ThreadLocal<BrowserContext> threadLocalBrowserContext;
   private final static ThreadLocal<BrowserContextFactory> threadLocalBrowserContextFactory;
 
@@ -21,6 +21,10 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
   @Override
   public void afterEach(ExtensionContext extensionContext) {
     cleanupBrowserContext();
+  }
+
+  @Override
+  public void afterAll(ExtensionContext extensionContext) {
     cleanupBrowserContextFactory();
   }
 
