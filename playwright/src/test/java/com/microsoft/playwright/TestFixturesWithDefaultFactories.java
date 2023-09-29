@@ -17,7 +17,8 @@ public class TestFixturesWithDefaultFactories {
   static void beforeAll(Playwright playwright, Browser browser) {
     assertNotNull(playwright);
     assertNotNull(browser);
-    assertEquals(System.getenv("BROWSER"), browser.browserType().name());
+    String browserName = System.getenv("BROWSER") == null ? "chromium" : System.getenv("BROWSER");
+    assertEquals(browserName, browser.browserType().name());
     playwrightFromBeforeAll = playwright;
     browserFromBeforeAll = browser;
   }
