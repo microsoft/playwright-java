@@ -1,10 +1,10 @@
 package com.microsoft.playwright.junit.impl;
 
 import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
-import com.microsoft.playwright.junit.BrowserFactory;
-import com.microsoft.playwright.junit.UsePlaywright;
+import com.microsoft.playwright.junit.*;
 import org.junit.jupiter.api.extension.*;
 
 import static com.microsoft.playwright.junit.impl.ExtensionUtils.getUsePlaywrightAnnotation;
@@ -54,10 +54,31 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
 
     Playwright playwright = PlaywrightExtension.getOrCreatePlaywright(extensionContext);
     BrowserFactory browserFactory = getBrowserFactoryInstance(extensionContext);
-    browser = browserFactory.newBrowser(playwright);
+
+    Config config = ConfigExtension.getConfig(extensionContext);
+    if (config == null) {
+      browser = browserFactory.newBrowser(playwright);
+    } else {
+      browser = newBrowser(playwright, config);
+    }
     threadLocalBrowser.set(browser);
     return browser;
   }
+
+  private static Browser newBrowser(Playwright playwright, Config config) {
+    BrowserType.LaunchOptions launchOptions = config.launchOptions();
+    switch (config.browserName()) {
+      case "webkit":
+        return playwright.webkit().launch(launchOptions);
+      case "firefox":
+        return playwright.firefox().launch(launchOptions);
+      case "chromium":
+        return playwright.chromium().launch(launchOptions);
+      default:
+        throw new PlaywrightException("Invalid value set for browserName.  Must be one of: chromium, firefox, webkit");
+    }
+  }
+
 
   private static BrowserFactory getBrowserFactoryInstance(ExtensionContext extensionContext) {
     if (threadLocalBrowserFactory.get() != null) {

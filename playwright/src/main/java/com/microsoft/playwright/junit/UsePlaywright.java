@@ -20,4 +20,6 @@ public @interface UsePlaywright {
   Class<? extends BrowserFactory> browserFactory() default DefaultBrowserFactory.class;
 
   Class<? extends BrowserContextFactory> browserContextFactory() default DefaultBrowserContextFactory.class;
+
+  Class<? extends ConfigFactory> configFactory() default DefaultConfigFactory.class;
 }

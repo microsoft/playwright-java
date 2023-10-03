@@ -2,6 +2,7 @@ package com.microsoft.playwright.junit.impl;
 
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.junit.Config;
 import com.microsoft.playwright.junit.PlaywrightFactory;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.extension.*;
@@ -43,8 +44,13 @@ public class PlaywrightExtension implements ParameterResolver, AfterAllCallback 
       return playwright;
     }
 
-    PlaywrightFactory playwrightFactory = getPlaywrightFactoryInstance(extensionContext);
-    playwright = playwrightFactory.newPlaywright();
+    Config config = ConfigExtension.getConfig(extensionContext);
+    if (config == null) {
+      PlaywrightFactory playwrightFactory = getPlaywrightFactoryInstance(extensionContext);
+      playwright = playwrightFactory.newPlaywright();
+    } else {
+      playwright = Playwright.create();
+    }
     threadLocalPlaywright.set(playwright);
     return playwright;
   }

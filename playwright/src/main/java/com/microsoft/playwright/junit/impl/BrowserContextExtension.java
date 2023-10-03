@@ -3,9 +3,15 @@ package com.microsoft.playwright.junit.impl;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.Tracing;
 import com.microsoft.playwright.junit.BrowserContextFactory;
+import com.microsoft.playwright.junit.Config;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.extension.*;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static com.microsoft.playwright.junit.impl.ExtensionUtils.*;
 
@@ -20,7 +26,7 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
 
   @Override
   public void afterEach(ExtensionContext extensionContext) {
-    cleanupBrowserContext();
+    cleanupBrowserContext(extensionContext);
   }
 
   @Override
@@ -49,8 +55,21 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
     }
 
     Browser browser = BrowserExtension.getOrCreateBrowser(extensionContext);
-    BrowserContextFactory browserContextFactory = getBrowserContextFactoryInstance(extensionContext);
-    browserContext = browserContextFactory.newBrowserContext(browser);
+
+    Config config = ConfigExtension.getConfig(extensionContext);
+    if (config == null) {
+      BrowserContextFactory browserContextFactory = getBrowserContextFactoryInstance(extensionContext);
+      browserContext = browserContextFactory.newBrowserContext(browser);
+    } else {
+      Browser.NewContextOptions options = config.contextOptions();
+      browserContext = browser.newContext(options);
+
+      if (config.trace()) {
+        // TODO: setSources
+        browserContext.tracing().start(new Tracing.StartOptions().setSnapshots(true).setScreenshots(true));
+      }
+    }
+
     threadLocalBrowserContext.set(browserContext);
     return browserContext;
   }
@@ -71,10 +90,20 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
     }
   }
 
-  private void cleanupBrowserContext() {
+  private void cleanupBrowserContext(ExtensionContext extensionContext) {
     try {
       BrowserContext browserContext = threadLocalBrowserContext.get();
       if (browserContext != null) {
+        Config config = ConfigExtension.getConfig(extensionContext);
+        if (config != null) {
+          Path dir = ConfigExtension.outputDirForTest(config, extensionContext);
+          try {
+            Files.createDirectories(dir);
+          } catch (IOException e) {
+            throw new PlaywrightException("Failed to create ouptut dir", e);
+          }
+          browserContext.tracing().stop(new Tracing.StopOptions().setPath(dir.resolve("trace.zip")));
+        }
         browserContext.close();
       }
     } finally {
