@@ -14,43 +14,7 @@ public class Config {
   private APIRequest.NewContextOptions apiRequestOptions = new APIRequest.NewContextOptions();
   private Map<String, Object> clientValues = new HashMap<>();
 
-  private boolean trace;
-  private boolean video;
-  private boolean screenshot;
   private String browserName = "chromium";
-  private Path outputDir;
-
-  public boolean trace() {
-    return trace;
-  }
-
-  public void setTrace(boolean enabled) {
-    trace = enabled;
-  }
-
-  public boolean screenshot() {
-    return screenshot;
-  }
-
-  public void setScreenshot(boolean screenshot) {
-    this.screenshot = screenshot;
-  }
-
-  public boolean video() {
-    return video;
-  }
-
-  public void setVideo(boolean video) {
-    this.video = video;
-  }
-
-  public void setOutputDir(Path dir) {
-    outputDir = dir;
-  }
-
-  public Path outputDir() {
-    return outputDir;
-  }
 
   public String browserName() {
     return browserName;

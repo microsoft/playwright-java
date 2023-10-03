@@ -34,15 +34,4 @@ public class ConfigExtension implements AfterAllCallback {
     }
     return config;
   }
-
-  static Path outputDirForTest(Config config, ExtensionContext extensionContext) {
-    Path dir = config.outputDir();
-    if (dir == null) {
-      // CWD
-      dir = FileSystems.getDefault().getPath("");
-    }
-    //          String className = extensionContext.getTestClass().get().getName();
-    String methodName = extensionContext.getTestMethod().get().getName();
-    return dir.resolve(methodName);
-  }
 }

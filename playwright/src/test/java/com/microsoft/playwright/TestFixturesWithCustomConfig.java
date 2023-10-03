@@ -17,9 +17,7 @@ public class TestFixturesWithCustomConfig {
     @Override
     public Config newConfig() {
       Config config = new Config();
-      config.setOutputDir(Paths.get("/tmp/tracing"));
       config.setBrowserName("webkit");
-      config.setTrace(true);
       config.contextOptions().setViewportSize(1280, 960);
       return config;
     }

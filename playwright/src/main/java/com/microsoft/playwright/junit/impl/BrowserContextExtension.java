@@ -63,11 +63,6 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
     } else {
       Browser.NewContextOptions options = config.contextOptions();
       browserContext = browser.newContext(options);
-
-      if (config.trace()) {
-        // TODO: setSources
-        browserContext.tracing().start(new Tracing.StartOptions().setSnapshots(true).setScreenshots(true));
-      }
     }
 
     threadLocalBrowserContext.set(browserContext);
@@ -94,16 +89,6 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
     try {
       BrowserContext browserContext = threadLocalBrowserContext.get();
       if (browserContext != null) {
-        Config config = ConfigExtension.getConfig(extensionContext);
-        if (config != null) {
-          Path dir = ConfigExtension.outputDirForTest(config, extensionContext);
-          try {
-            Files.createDirectories(dir);
-          } catch (IOException e) {
-            throw new PlaywrightException("Failed to create ouptut dir", e);
-          }
-          browserContext.tracing().stop(new Tracing.StopOptions().setPath(dir.resolve("trace.zip")));
-        }
         browserContext.close();
       }
     } finally {
