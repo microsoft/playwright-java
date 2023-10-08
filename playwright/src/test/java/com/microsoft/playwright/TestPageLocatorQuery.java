@@ -108,6 +108,39 @@ public class TestPageLocatorQuery extends TestBase {
   }
 
   @Test
+  void shouldFilterByRegexWithASingleQuote() {
+    page.setContent("<button>let's let's<span>hello</span></button>");
+    assertThat(page.locator("button", new Page.LocatorOptions().setHasText(Pattern.compile("let's", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(Pattern.compile("let's", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.locator("button", new Page.LocatorOptions().setHasText(Pattern.compile("let\'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.getByRole(AriaRole.BUTTON,  new Page.GetByRoleOptions().setName(Pattern.compile("let\'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.locator("button", new Page.LocatorOptions().setHasText(Pattern.compile("'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.getByRole(AriaRole.BUTTON,  new Page.GetByRoleOptions().setName(Pattern.compile("'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.locator("button", new Page.LocatorOptions().setHasText(Pattern.compile("\'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.getByRole(AriaRole.BUTTON,  new Page.GetByRoleOptions().setName(Pattern.compile("\'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.locator("button", new Page.LocatorOptions().setHasText(Pattern.compile("let['abc]s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.getByRole(AriaRole.BUTTON,  new Page.GetByRoleOptions().setName(Pattern.compile("let['abc]s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.locator("button", new Page.LocatorOptions().setHasText(Pattern.compile("let\\\\'s", Pattern.CASE_INSENSITIVE)))).not().isVisible();
+    assertThat(page.getByRole(AriaRole.BUTTON,  new Page.GetByRoleOptions().setName(Pattern.compile("let\\\\'s", Pattern.CASE_INSENSITIVE)))).not().isVisible();
+    assertThat(page.locator("button", new Page.LocatorOptions().setHasText(Pattern.compile("let's let\\'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.getByRole(AriaRole.BUTTON,  new Page.GetByRoleOptions().setName(Pattern.compile("let's let\\'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.locator("button", new Page.LocatorOptions().setHasText(Pattern.compile("let\\'s let's", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.getByRole(AriaRole.BUTTON,  new Page.GetByRoleOptions().setName(Pattern.compile("let\\'s let's", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+
+    page.setContent("<button>let\\'s let\\'s<span>hello</span></button>");
+    assertThat(page.locator("button", new Page.LocatorOptions().setHasText(Pattern.compile("let\\'s", Pattern.CASE_INSENSITIVE)))).not().isVisible();
+    assertThat(page.getByRole(AriaRole.BUTTON,  new Page.GetByRoleOptions().setName(Pattern.compile("let\\'s", Pattern.CASE_INSENSITIVE)))).not().isVisible();
+    assertThat(page.locator("button", new Page.LocatorOptions().setHasText(Pattern.compile("let\\\\'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.getByRole(AriaRole.BUTTON,  new Page.GetByRoleOptions().setName(Pattern.compile("let\\\\'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.locator("button", new Page.LocatorOptions().setHasText(Pattern.compile("let\\\\\\'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.getByRole(AriaRole.BUTTON,  new Page.GetByRoleOptions().setName(Pattern.compile("let\\\\\\'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.locator("button", new Page.LocatorOptions().setHasText(Pattern.compile("let\\\\'s let\\\\\\'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.getByRole(AriaRole.BUTTON,  new Page.GetByRoleOptions().setName(Pattern.compile("let\\\\'s let\\\\\\'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.locator("button", new Page.LocatorOptions().setHasText(Pattern.compile("let\\\\\\'s let\\\\'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+    assertThat(page.getByRole(AriaRole.BUTTON,  new Page.GetByRoleOptions().setName(Pattern.compile("let\\\\\\'s let\\\\'s", Pattern.CASE_INSENSITIVE))).locator("span")).hasText("hello");
+  }
+
+  @Test
   void shouldFilterByRegexAndRegexpFlags() {
     page.setContent("<div>Hello \"world\"</div><div>Hello world</div>");
     Pattern pattern = Pattern.compile("hElLo \"world\"", Pattern.CASE_INSENSITIVE);

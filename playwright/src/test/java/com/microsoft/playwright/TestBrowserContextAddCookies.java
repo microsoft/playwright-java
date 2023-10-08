@@ -38,6 +38,14 @@ public class TestBrowserContextAddCookies extends TestBase {
     assertEquals("password=123456", page.evaluate("document.cookie"));
   }
 
+  // Slightly different rounding on chromium win.
+  private static List<Cookie> normalizeExpires(List<Cookie> cookies) {
+    for (Cookie cookie: cookies) {
+      cookie.expires = (double) Math.round(cookie.expires);
+    }
+    return cookies;
+  }
+
   @Test
   void shouldRoundtripCookie() {
     page.navigate(server.EMPTY_PAGE);
@@ -53,7 +61,7 @@ public class TestBrowserContextAddCookies extends TestBase {
     context.clearCookies();
     assertEquals(0, context.cookies().size());
     context.addCookies(cookies);
-    assertJsonEquals(cookies, context.cookies());
+    assertJsonEquals(normalizeExpires(cookies), normalizeExpires(context.cookies()));
   }
 
   @Test

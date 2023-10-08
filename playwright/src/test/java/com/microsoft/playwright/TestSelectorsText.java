@@ -9,6 +9,18 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestSelectorsText extends TestBase {
+
+  @Test
+  void shouldWorkSmoke() {
+    page.setContent("<div>Hi&gt;&gt;<span></span></div>");
+    assertEquals("<span></span>", page.evalOnSelector("text=\"Hi>>\">>span", "e => e.outerHTML"));
+    assertEquals("<span></span>", page.evalOnSelector("text=/Hi\\>\\>/ >> span", "e => e.outerHTML"));
+
+    page.setContent("<div>let's<span>hello</span></div>");
+    assertEquals("<span>hello</span>", page.evalOnSelector("text=/let's/i >> span", "e => e.outerHTML"));
+    assertEquals("<span>hello</span>", page.evalOnSelector("text=/let\'s/i >> span", "e => e.outerHTML"));
+  }
+
   @Test
   void hasTextAndInternalTextShouldMatchFullNodeTextInStrictMode() {
     page.setContent("<div id=div1>hello<span>world</span></div>\n" +

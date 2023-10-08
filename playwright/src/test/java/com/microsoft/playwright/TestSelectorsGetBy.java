@@ -153,6 +153,25 @@ public class TestSelectorsGetBy extends TestBase {
     assertThat(page.getByTitle("my title", new Page.GetByTitleOptions().setExact(true))).hasCount(1, new LocatorAssertions.HasCountOptions().setTimeout(500));
     assertThat(page.getByTitle("my t\\itle", new Page.GetByTitleOptions().setExact(true))).hasCount(0, new LocatorAssertions.HasCountOptions().setTimeout(500));
     assertThat(page.getByTitle("my t\\\\itle", new Page.GetByTitleOptions().setExact(true))).hasCount(0, new LocatorAssertions.HasCountOptions().setTimeout(500));
+
+    page.setContent("<label for=target>foo &gt;&gt; bar</label><input id=target>");
+    page.evalOnSelector("input", "input => {\n" +
+      "    input.setAttribute('placeholder', 'foo >> bar');\n" +
+      "    input.setAttribute('title', 'foo >> bar');\n" +
+      "    input.setAttribute('alt', 'foo >> bar');\n" +
+      "  }");
+    assertEquals("foo >> bar", page.getByText("foo >> bar").textContent());
+    assertThat(page.locator("label")).hasText("foo >> bar");
+    assertThat(page.getByText("foo >> bar")).hasText("foo >> bar");
+    assertEquals("foo >> bar", page.getByText(Pattern.compile("foo >> bar")).textContent());
+    assertThat(page.getByLabel("foo >> bar")).hasAttribute("id", "target");
+    assertThat(page.getByLabel(Pattern.compile("foo >> bar"))).hasAttribute("id", "target");
+    assertThat(page.getByPlaceholder("foo >> bar")).hasAttribute("id", "target");
+    assertThat(page.getByAltText("foo >> bar")).hasAttribute("id", "target");
+    assertThat(page.getByTitle("foo >> bar")).hasAttribute("id", "target");
+    assertThat(page.getByPlaceholder(Pattern.compile("foo >> bar"))).hasAttribute("id", "target");
+    assertThat(page.getByAltText(Pattern.compile("foo >> bar"))).hasAttribute("id", "target");
+    assertThat(page.getByTitle(Pattern.compile("foo >> bar"))).hasAttribute("id", "target");
   }
 
   @Test

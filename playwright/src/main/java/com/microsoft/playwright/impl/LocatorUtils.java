@@ -5,6 +5,7 @@ import com.microsoft.playwright.options.AriaRole;
 
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 public class LocatorUtils {
@@ -25,10 +26,7 @@ public class LocatorUtils {
   }
 
   private static String getByAttributeTextSelector(String attrName, Object value, boolean exact) {
-    if (value instanceof Pattern) {
-      return "internal:attr=[" + attrName + "=" + toJsRegExp((Pattern) value) + "]";
-    }
-    return "internal:attr=[" + attrName + "=" + escapeForAttributeSelector((String) value, exact) + "]";
+    return "internal:attr=[" + attrName + "=" + escapeForAttributeSelector(value, exact) + "]";
   }
 
   static String getByTestIdSelector(Object testId) {
@@ -71,14 +69,7 @@ public class LocatorUtils {
       if (options.level != null)
         addAttr(result, "level", options.level.toString());
       if (options.name != null) {
-        String name;
-        if (options.name instanceof String) {
-          name = escapeForAttributeSelector((String) options.name, options.exact != null && options.exact);
-        } else if (options.name instanceof Pattern) {
-          name = toJsRegExp((Pattern) options.name);
-        } else {
-          throw new IllegalArgumentException("options.name can be String or Pattern, found: " + options.name);
-        }
+        String name = escapeForAttributeSelector(options.name, options.exact != null && options.exact);
         addAttr(result, "name", name);
       }
       if (options.pressed != null)
@@ -87,38 +78,33 @@ public class LocatorUtils {
     return result.toString();
   }
 
-  static String escapeForTextSelector(Object text, boolean exact) {
-    return escapeForTextSelector(text, exact, false);
+  private static String escapeRegexForSelector(Pattern re) {
+    // Even number of backslashes followed by the quote -> insert a backslash.
+    return toJsRegExp(re).replaceAll("(^|[^\\\\])(\\\\\\\\)*([\"'`])", "$1$2\\\\$3").replaceAll(">>", "\\\\>\\\\>");
   }
 
-  private static String escapeForTextSelector(Object param, boolean exact, boolean caseSensitive) {
-    if (param instanceof Pattern) {
-      return toJsRegExp((Pattern) param);
+  static String escapeForTextSelector(Object value, boolean exact) {
+    if (value instanceof Pattern) {
+      return escapeRegexForSelector((Pattern) value);
     }
-    if (!(param instanceof String)) {
-      throw new IllegalArgumentException("text parameter must be Pattern or String: " + param);
+    if (value instanceof String) {
+      return gson().toJson(value) + (exact ? "s" : "i");
     }
-    String text = (String) param;
-    if (exact) {
-      return '"' + text.replace("\"", "\\\"") + '"';
-    }
-
-    if (text.contains("\"") || text.contains(">>") || text.startsWith("/")) {
-      return "/" + escapeForRegex(text).replaceAll("\\s+", "\\\\s+") + "/" + (caseSensitive ? "" : "i");
-    }
-    return text;
+    throw new IllegalArgumentException("text parameter must be Pattern or String: " + value);
   }
 
-  private static String escapeForRegex(String text) {
-    return text.replaceAll("[.*+?^>${}()|\\[\\]\\\\]", "\\\\\\\\$0");
-  }
-
-  private static String escapeForAttributeSelector(String value, boolean exact) {
-    // TODO: this should actually be
-    //   cssEscape(value).replace(/\\ /g, ' ')
-    // However, our attribute selectors do not conform to CSS parsing spec,
-    // so we escape them differently.
-    return '"' + value.replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"") + '"' + (exact ? "" : "i");
+  private static String escapeForAttributeSelector(Object value, boolean exact) {
+    if (value instanceof Pattern) {
+      return escapeRegexForSelector((Pattern) value);
+    }
+    if (value instanceof String) {
+      // TODO: this should actually be
+      //   cssEscape(value).replace(/\\ /g, ' ')
+      // However, our attribute selectors do not conform to CSS parsing spec,
+      // so we escape them differently.
+      return '"' + ((String) value).replaceAll("\\\\", "\\\\\\\\").replaceAll("\"", "\\\\\"") + '"' + (exact ? "" : "i");
+    }
+    throw new IllegalArgumentException("Attribute can be String or Pattern, found: " + value);
   }
 
   private static String toJsRegExp(Pattern pattern) {
