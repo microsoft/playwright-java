@@ -4058,7 +4058,7 @@ public interface Frame {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -4091,7 +4091,7 @@ public interface Frame {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -4122,7 +4122,7 @@ public interface Frame {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -4155,7 +4155,7 @@ public interface Frame {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -4186,7 +4186,7 @@ public interface Frame {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -4219,7 +4219,7 @@ public interface Frame {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -4250,7 +4250,7 @@ public interface Frame {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -4283,7 +4283,7 @@ public interface Frame {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -4314,7 +4314,7 @@ public interface Frame {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -4347,7 +4347,7 @@ public interface Frame {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -4378,7 +4378,7 @@ public interface Frame {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -4411,7 +4411,7 @@ public interface Frame {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * frame.selectOption("select#colors", new SelectOption().setLabel("Blue"));

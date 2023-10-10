@@ -1878,7 +1878,7 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * handle.selectOption("blue");
    * // single selection matching the label
    * handle.selectOption(new SelectOption().setLabel("Blue"));
@@ -1909,7 +1909,7 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * handle.selectOption("blue");
    * // single selection matching the label
    * handle.selectOption(new SelectOption().setLabel("Blue"));
@@ -1938,7 +1938,7 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * handle.selectOption("blue");
    * // single selection matching the label
    * handle.selectOption(new SelectOption().setLabel("Blue"));
@@ -1969,7 +1969,7 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * handle.selectOption("blue");
    * // single selection matching the label
    * handle.selectOption(new SelectOption().setLabel("Blue"));
@@ -1998,7 +1998,7 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * handle.selectOption("blue");
    * // single selection matching the label
    * handle.selectOption(new SelectOption().setLabel("Blue"));
@@ -2029,7 +2029,7 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * handle.selectOption("blue");
    * // single selection matching the label
    * handle.selectOption(new SelectOption().setLabel("Blue"));
@@ -2058,7 +2058,7 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * handle.selectOption("blue");
    * // single selection matching the label
    * handle.selectOption(new SelectOption().setLabel("Blue"));
@@ -2089,7 +2089,7 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * handle.selectOption("blue");
    * // single selection matching the label
    * handle.selectOption(new SelectOption().setLabel("Blue"));
@@ -2118,7 +2118,7 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * handle.selectOption("blue");
    * // single selection matching the label
    * handle.selectOption(new SelectOption().setLabel("Blue"));
@@ -2149,7 +2149,7 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * handle.selectOption("blue");
    * // single selection matching the label
    * handle.selectOption(new SelectOption().setLabel("Blue"));
@@ -2178,7 +2178,7 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * handle.selectOption("blue");
    * // single selection matching the label
    * handle.selectOption(new SelectOption().setLabel("Blue"));
@@ -2209,7 +2209,7 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * handle.selectOption("blue");
    * // single selection matching the label
    * handle.selectOption(new SelectOption().setLabel("Blue"));
