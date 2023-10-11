@@ -27,17 +27,20 @@ import java.util.List;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
 
-public class ConsoleMessageImpl extends ChannelOwner implements ConsoleMessage {
+public class ConsoleMessageImpl implements ConsoleMessage {
+  private final Connection connection;
   private PageImpl page;
+  private final JsonObject initializer;
 
-  public ConsoleMessageImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
-    super(parent, type, guid, initializer);
+  public ConsoleMessageImpl(Connection connection, JsonObject initializer) {
+    this.connection = connection;
     // Note: currently, we only report console messages for pages and they always have a page.
     // However, in the future we might report console messages for service workers or something else,
     // where page() would be null.
     if (initializer.has("page")) {
       page = connection.getExistingObject(initializer.getAsJsonObject("page").get("guid").getAsString());
     }
+    this.initializer = initializer;
   }
 
   public String type() {
