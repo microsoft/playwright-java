@@ -203,7 +203,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     }
     if (options.recordVideoDir != null) {
       JsonObject recordVideo = new JsonObject();
-      recordVideo.addProperty("dir", options.recordVideoDir.toString());
+      recordVideo.addProperty("dir", options.recordVideoDir.toAbsolutePath().toString());
       if (options.recordVideoSize != null) {
         recordVideo.add("size", gson().toJsonTree(options.recordVideoSize));
       }
