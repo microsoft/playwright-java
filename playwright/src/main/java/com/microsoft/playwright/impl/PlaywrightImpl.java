@@ -63,7 +63,6 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
   private final BrowserTypeImpl webkit;
   private final SelectorsImpl selectors;
   private final APIRequestImpl apiRequest;
-  private final LocalUtils localUtils;
   private SharedSelectors sharedSelectors;
 
   PlaywrightImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
@@ -74,10 +73,6 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
 
     selectors = connection.getExistingObject(initializer.getAsJsonObject("selectors").get("guid").getAsString());
     apiRequest = new APIRequestImpl(this);
-    localUtils = connection.getExistingObject(initializer.getAsJsonObject("utils").get("guid").getAsString());
-    chromium.localUtils = localUtils;
-    firefox.localUtils = localUtils;
-    webkit.localUtils = localUtils;
   }
 
   void initSharedSelectors(PlaywrightImpl parent) {

@@ -33,8 +33,6 @@ import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
 class BrowserTypeImpl extends ChannelOwner implements BrowserType {
-  LocalUtils localUtils;
-
   BrowserTypeImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
