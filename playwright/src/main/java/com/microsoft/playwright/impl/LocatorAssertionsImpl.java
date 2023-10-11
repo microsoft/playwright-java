@@ -105,7 +105,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
     if (expectedValue instanceof Pattern) {
       message += " matching regex";
     }
-    expectImpl("to.have.attribute", expectedText, expectedValue, message, commonOptions);
+    expectImpl("to.have.attribute.value", expectedText, expectedValue, message, commonOptions);
   }
 
   @Override

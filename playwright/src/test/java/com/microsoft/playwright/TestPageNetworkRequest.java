@@ -135,4 +135,14 @@ public class TestPageNetworkRequest extends TestBase {
     assertTrue(error[0].getMessage().contains("Frame for this navigation request is not available"), error[0].getMessage());
   }
 
+  @Test
+  void shouldThrowIfRequestWasGCed() {
+    List<Request> requests = new ArrayList<>();
+    page.onRequest(req -> requests.add(req));
+    for (int i = 0; i < 1001; i++) {
+      page.navigate(server.EMPTY_PAGE);
+    }
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> requests.get(0).response());
+    assertEquals("The object has been collected to prevent unbounded heap growth.", e.getMessage());
+  }
 }

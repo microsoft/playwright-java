@@ -78,18 +78,7 @@ class TracingImpl extends ChannelOwner implements Tracing {
   }
 
   @Override
-  public void start(StartOptions options) {
-    withLogging("Tracing.start", () -> startImpl(options));
-  }
-
-  @Override
   public void startChunk(StartChunkOptions options) {
-    withLogging("Tracing.startChunk", () -> {
-      startChunkImpl(options);
-    });
-  }
-
-  private void startChunkImpl(StartChunkOptions options) {
     if (options == null) {
       options = new StartChunkOptions();
     }
@@ -116,7 +105,8 @@ class TracingImpl extends ChannelOwner implements Tracing {
     stacksId = connection.localUtils().tracingStarted(tracesDir == null ? null : tracesDir.toString(), traceName);
   }
 
-  private void startImpl(StartOptions options) {
+  @Override
+  public void start(StartOptions options) {
     if (options == null) {
       options = new StartOptions();
     }
@@ -131,17 +121,13 @@ class TracingImpl extends ChannelOwner implements Tracing {
 
   @Override
   public void stop(StopOptions options) {
-    withLogging("Tracing.stop", () -> {
-      stopChunkImpl(options == null ? null : options.path);
-      sendMessage("tracingStop");
-    });
+    stopChunkImpl(options == null ? null : options.path);
+    sendMessage("tracingStop");
   }
 
   @Override
   public void stopChunk(StopChunkOptions options) {
-    withLogging("Tracing.stopChunk", () -> {
-      stopChunkImpl(options == null ? null : options.path);
-    });
+    stopChunkImpl(options == null ? null : options.path);
   }
 
   void setTracesDir(Path tracesDir) {

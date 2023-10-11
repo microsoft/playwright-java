@@ -21,6 +21,7 @@ import com.microsoft.playwright.options.FilePayload;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -36,6 +37,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
+import static com.microsoft.playwright.Utils.relativePathOrSkipTest;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -145,8 +147,7 @@ public class TestPageSetInputFiles extends TestBase {
       "    return events;\n" +
       "  }");
 
-    Path cwd = Paths.get("").toAbsolutePath();
-    Path relativeUploadPath = cwd.relativize(uploadFile);
+    Path relativeUploadPath = relativePathOrSkipTest(uploadFile);
     assertFalse(relativeUploadPath.isAbsolute());
     input.setInputFiles(relativeUploadPath);
     assertEquals("200MB.zip", input.evaluate("e => e.files[0].name"));

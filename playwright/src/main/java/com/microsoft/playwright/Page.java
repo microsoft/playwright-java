@@ -6257,7 +6257,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * page.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * page.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -6290,7 +6290,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * page.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * page.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -6321,7 +6321,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * page.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * page.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -6354,7 +6354,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * page.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * page.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -6385,7 +6385,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * page.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * page.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -6418,7 +6418,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * page.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * page.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -6449,7 +6449,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * page.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * page.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -6482,7 +6482,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * page.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * page.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -6513,7 +6513,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * page.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * page.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -6546,7 +6546,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * page.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * page.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -6577,7 +6577,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * page.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * page.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -6610,7 +6610,7 @@ public interface Page extends AutoCloseable {
    *
    * <p> **Usage**
    * <pre>{@code
-   * // single selection matching the value
+   * // Single selection matching the value or label
    * page.selectOption("select#colors", "blue");
    * // single selection matching both the value and the label
    * page.selectOption("select#colors", new SelectOption().setLabel("Blue"));
@@ -7818,8 +7818,8 @@ public interface Page extends AutoCloseable {
    */
   ElementHandle waitForSelector(String selector, WaitForSelectorOptions options);
   /**
-   * The method will block until the codition returns true. All Playwright events will be dispatched while the method is
-   * waiting for the codition.
+   * The method will block until the condition returns true. All Playwright events will be dispatched while the method is
+   * waiting for the condition.
    *
    * <p> **Usage**
    *
@@ -7831,15 +7831,15 @@ public interface Page extends AutoCloseable {
    * page.waitForCondition(() -> messages.size() > 3);
    * }</pre>
    *
-   * @param condition Codition to wait for.
+   * @param condition Condition to wait for.
    * @since v1.32
    */
   default void waitForCondition(BooleanSupplier condition) {
     waitForCondition(condition, null);
   }
   /**
-   * The method will block until the codition returns true. All Playwright events will be dispatched while the method is
-   * waiting for the codition.
+   * The method will block until the condition returns true. All Playwright events will be dispatched while the method is
+   * waiting for the condition.
    *
    * <p> **Usage**
    *
@@ -7851,7 +7851,7 @@ public interface Page extends AutoCloseable {
    * page.waitForCondition(() -> messages.size() > 3);
    * }</pre>
    *
-   * @param condition Codition to wait for.
+   * @param condition Condition to wait for.
    * @since v1.32
    */
   void waitForCondition(BooleanSupplier condition, WaitForConditionOptions options);

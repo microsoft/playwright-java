@@ -661,9 +661,22 @@ public interface LocatorAssertions {
    * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/actionability#attached">attached</a>
    * and <a href="https://playwright.dev/java/docs/actionability#visible">visible</a> DOM node.
    *
+   * <p> To check that at least one element from the list is visible, use {@link Locator#first Locator.first()}.
+   *
    * <p> **Usage**
    * <pre>{@code
+   * // A specific element is visible.
    * assertThat(page.getByText("Welcome")).isVisible();
+   *
+   * // At least one item in the list is visible.
+   * asserThat(page.getByTestId("todo-item").first()).isVisible();
+   *
+   * // At least one of the two elements is visible, possibly both.
+   * asserThat(
+   *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign in"))
+   *     .or(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign up")))
+   *     .first()
+   * ).isVisible();
    * }</pre>
    *
    * @since v1.20
@@ -675,9 +688,22 @@ public interface LocatorAssertions {
    * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/actionability#attached">attached</a>
    * and <a href="https://playwright.dev/java/docs/actionability#visible">visible</a> DOM node.
    *
+   * <p> To check that at least one element from the list is visible, use {@link Locator#first Locator.first()}.
+   *
    * <p> **Usage**
    * <pre>{@code
+   * // A specific element is visible.
    * assertThat(page.getByText("Welcome")).isVisible();
+   *
+   * // At least one item in the list is visible.
+   * asserThat(page.getByTestId("todo-item").first()).isVisible();
+   *
+   * // At least one of the two elements is visible, possibly both.
+   * asserThat(
+   *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign in"))
+   *     .or(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign up")))
+   *     .first()
+   * ).isVisible();
    * }</pre>
    *
    * @since v1.20

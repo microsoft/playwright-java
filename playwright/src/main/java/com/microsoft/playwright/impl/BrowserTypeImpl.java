@@ -33,8 +33,6 @@ import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
 class BrowserTypeImpl extends ChannelOwner implements BrowserType {
-  LocalUtils localUtils;
-
   BrowserTypeImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
   }
@@ -203,7 +201,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
     }
     if (options.recordVideoDir != null) {
       JsonObject recordVideo = new JsonObject();
-      recordVideo.addProperty("dir", options.recordVideoDir.toString());
+      recordVideo.addProperty("dir", options.recordVideoDir.toAbsolutePath().toString());
       if (options.recordVideoSize != null) {
         recordVideo.add("size", gson().toJsonTree(options.recordVideoSize));
       }

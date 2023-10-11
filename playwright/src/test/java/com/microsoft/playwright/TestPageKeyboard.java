@@ -379,11 +379,7 @@ public class TestPageKeyboard extends TestBase {
     } else {
       assertEquals("Meta", eventData.get("key"));
     }
-    if (isFirefox()) {
-      assertEquals("OSLeft", eventData.get("code"));
-    } else {
-      assertEquals("MetaLeft", eventData.get("code"));
-    }
+    assertEquals("MetaLeft", eventData.get("code"));
     if (isFirefox() && !isMac) {
       assertFalse((Boolean) eventData.get("metaKey"), eventData.toString());
     } else {

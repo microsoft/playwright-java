@@ -672,8 +672,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         bindingCall.call(binding);
       }
     } else if ("console".equals(event)) {
-      String guid = params.getAsJsonObject("message").get("guid").getAsString();
-      ConsoleMessageImpl message = connection.getExistingObject(guid);
+      ConsoleMessageImpl message = new ConsoleMessageImpl(connection, params);
       listeners.notify(BrowserContextImpl.EventType.CONSOLE, message);
       PageImpl page = message.page();
       if (page != null) {

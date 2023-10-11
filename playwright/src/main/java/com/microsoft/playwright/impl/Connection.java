@@ -252,7 +252,8 @@ public class Connection {
       return;
     }
     if (message.method.equals("__dispose__")) {
-      object.disconnect();
+      boolean wasCollected = message.params.has("reason") && "gc".equals(message.params.get("reason").getAsString());
+      object.disposeChannelOwner(wasCollected);
       return;
     }
     object.handleEvent(message.method, message.params);
@@ -292,9 +293,6 @@ public class Connection {
         break;
       case "BrowserContext":
         result = new BrowserContextImpl(parent, type, guid, initializer);
-        break;
-      case "ConsoleMessage":
-        result = new ConsoleMessageImpl(parent, type, guid, initializer);
         break;
       case "Dialog":
         result = new DialogImpl(parent, type, guid, initializer);

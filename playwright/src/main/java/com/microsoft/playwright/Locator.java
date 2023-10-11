@@ -2096,6 +2096,10 @@ public interface Locator {
   /**
    * Returns an array of {@code node.innerText} values for all matching nodes.
    *
+   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link LocatorAssertions#hasText LocatorAssertions.hasText()} with {@code
+   * useInnerText} option to avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions
+   * guide</a> for more details.
+   *
    * <p> **Usage**
    * <pre>{@code
    * String[] texts = page.getByRole(AriaRole.LINK).allInnerTexts();
@@ -2106,6 +2110,9 @@ public interface Locator {
   List<String> allInnerTexts();
   /**
    * Returns an array of {@code node.textContent} values for all matching nodes.
+   *
+   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link LocatorAssertions#hasText LocatorAssertions.hasText()} to avoid
+   * flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -2379,6 +2386,10 @@ public interface Locator {
   void click(ClickOptions options);
   /**
    * Returns the number of elements matching the locator.
+   *
+   * <p> <strong>NOTE:</strong> If you need to assert the number of elements on the page, prefer {@link LocatorAssertions#hasCount
+   * LocatorAssertions.hasCount()} to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -2986,6 +2997,10 @@ public interface Locator {
   /**
    * Returns the matching element's attribute value.
    *
+   * <p> <strong>NOTE:</strong> If you need to assert an element's attribute, prefer {@link LocatorAssertions#hasAttribute
+   * LocatorAssertions.hasAttribute()} to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   *
    * @param name Attribute name to get the value for.
    * @since v1.14
    */
@@ -2994,6 +3009,10 @@ public interface Locator {
   }
   /**
    * Returns the matching element's attribute value.
+   *
+   * <p> <strong>NOTE:</strong> If you need to assert an element's attribute, prefer {@link LocatorAssertions#hasAttribute
+   * LocatorAssertions.hasAttribute()} to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
    * @param name Attribute name to get the value for.
    * @since v1.14
@@ -3634,6 +3653,10 @@ public interface Locator {
    * Returns the <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/innerText">{@code
    * element.innerText}</a>.
    *
+   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link LocatorAssertions#hasText LocatorAssertions.hasText()} with {@code
+   * useInnerText} option to avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions
+   * guide</a> for more details.
+   *
    * @since v1.14
    */
   default String innerText() {
@@ -3643,11 +3666,18 @@ public interface Locator {
    * Returns the <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/innerText">{@code
    * element.innerText}</a>.
    *
+   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link LocatorAssertions#hasText LocatorAssertions.hasText()} with {@code
+   * useInnerText} option to avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions
+   * guide</a> for more details.
+   *
    * @since v1.14
    */
   String innerText(InnerTextOptions options);
   /**
    * Returns the value for the matching {@code <input>} or {@code <textarea>} or {@code <select>} element.
+   *
+   * <p> <strong>NOTE:</strong> If you need to assert input value, prefer {@link LocatorAssertions#hasValue LocatorAssertions.hasValue()} to avoid
+   * flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -3669,6 +3699,9 @@ public interface Locator {
   /**
    * Returns the value for the matching {@code <input>} or {@code <textarea>} or {@code <select>} element.
    *
+   * <p> <strong>NOTE:</strong> If you need to assert input value, prefer {@link LocatorAssertions#hasValue LocatorAssertions.hasValue()} to avoid
+   * flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   *
    * <p> **Usage**
    * <pre>{@code
    * String value = page.getByRole(AriaRole.TEXTBOX).inputValue();
@@ -3687,6 +3720,10 @@ public interface Locator {
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
+   * <p> <strong>NOTE:</strong> If you need to assert that checkbox is checked, prefer {@link LocatorAssertions#isChecked LocatorAssertions.isChecked()}
+   * to avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more
+   * details.
+   *
    * <p> **Usage**
    * <pre>{@code
    * boolean checked = page.getByRole(AriaRole.CHECKBOX).isChecked();
@@ -3700,6 +3737,10 @@ public interface Locator {
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
+   * <p> <strong>NOTE:</strong> If you need to assert that checkbox is checked, prefer {@link LocatorAssertions#isChecked LocatorAssertions.isChecked()}
+   * to avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more
+   * details.
+   *
    * <p> **Usage**
    * <pre>{@code
    * boolean checked = page.getByRole(AriaRole.CHECKBOX).isChecked();
@@ -3711,6 +3752,10 @@ public interface Locator {
   /**
    * Returns whether the element is disabled, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
+   *
+   * <p> <strong>NOTE:</strong> If you need to assert that an element is disabled, prefer {@link LocatorAssertions#isDisabled
+   * LocatorAssertions.isDisabled()} to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -3726,6 +3771,10 @@ public interface Locator {
    * Returns whether the element is disabled, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
+   * <p> <strong>NOTE:</strong> If you need to assert that an element is disabled, prefer {@link LocatorAssertions#isDisabled
+   * LocatorAssertions.isDisabled()} to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   *
    * <p> **Usage**
    * <pre>{@code
    * boolean disabled = page.getByRole(AriaRole.BUTTON).isDisabled();
@@ -3736,6 +3785,10 @@ public interface Locator {
   boolean isDisabled(IsDisabledOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
+   *
+   * <p> <strong>NOTE:</strong> If you need to assert that an element is editable, prefer {@link LocatorAssertions#isEditable
+   * LocatorAssertions.isEditable()} to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -3750,6 +3803,10 @@ public interface Locator {
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
    *
+   * <p> <strong>NOTE:</strong> If you need to assert that an element is editable, prefer {@link LocatorAssertions#isEditable
+   * LocatorAssertions.isEditable()} to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   *
    * <p> **Usage**
    * <pre>{@code
    * boolean editable = page.getByRole(AriaRole.TEXTBOX).isEditable();
@@ -3760,6 +3817,10 @@ public interface Locator {
   boolean isEditable(IsEditableOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
+   *
+   * <p> <strong>NOTE:</strong> If you need to assert that an element is enabled, prefer {@link LocatorAssertions#isEnabled
+   * LocatorAssertions.isEnabled()} to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -3774,6 +3835,10 @@ public interface Locator {
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
+   * <p> <strong>NOTE:</strong> If you need to assert that an element is enabled, prefer {@link LocatorAssertions#isEnabled
+   * LocatorAssertions.isEnabled()} to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   *
    * <p> **Usage**
    * <pre>{@code
    * boolean enabled = page.getByRole(AriaRole.BUTTON).isEnabled();
@@ -3785,6 +3850,9 @@ public interface Locator {
   /**
    * Returns whether the element is hidden, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
+   *
+   * <p> <strong>NOTE:</strong> If you need to assert that element is hidden, prefer {@link LocatorAssertions#isHidden LocatorAssertions.isHidden()} to
+   * avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -3800,6 +3868,9 @@ public interface Locator {
    * Returns whether the element is hidden, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
    *
+   * <p> <strong>NOTE:</strong> If you need to assert that element is hidden, prefer {@link LocatorAssertions#isHidden LocatorAssertions.isHidden()} to
+   * avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   *
    * <p> **Usage**
    * <pre>{@code
    * boolean hidden = page.getByRole(AriaRole.BUTTON).isHidden();
@@ -3810,6 +3881,10 @@ public interface Locator {
   boolean isHidden(IsHiddenOptions options);
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
+   *
+   * <p> <strong>NOTE:</strong> If you need to assert that element is visible, prefer {@link LocatorAssertions#isVisible LocatorAssertions.isVisible()}
+   * to avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more
+   * details.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -3823,6 +3898,10 @@ public interface Locator {
   }
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
+   *
+   * <p> <strong>NOTE:</strong> If you need to assert that element is visible, prefer {@link LocatorAssertions#isVisible LocatorAssertions.isVisible()}
+   * to avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more
+   * details.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -4951,6 +5030,9 @@ public interface Locator {
   /**
    * Returns the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent">{@code node.textContent}</a>.
    *
+   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link LocatorAssertions#hasText LocatorAssertions.hasText()} to avoid
+   * flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   *
    * @since v1.14
    */
   default String textContent() {
@@ -4958,6 +5040,9 @@ public interface Locator {
   }
   /**
    * Returns the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent">{@code node.textContent}</a>.
+   *
+   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link LocatorAssertions#hasText LocatorAssertions.hasText()} to avoid
+   * flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
    * @since v1.14
    */
