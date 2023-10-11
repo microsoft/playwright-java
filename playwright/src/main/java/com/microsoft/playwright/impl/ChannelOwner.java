@@ -18,11 +18,11 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.PlaywrightException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -34,6 +34,7 @@ class ChannelOwner extends LoggingSupport {
   final String type;
   final String guid;
   final JsonObject initializer;
+  private boolean wasCollected;
 
   protected ChannelOwner(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     this(parent.connection, parent, type, guid, initializer);
@@ -57,15 +58,16 @@ class ChannelOwner extends LoggingSupport {
     }
   }
 
-  void disconnect() {
+  void disposeChannelOwner(boolean wasGarbageCollected) {
     // Clean up from parent and connection.
     if (parent != null) {
       parent.objects.remove(guid);
     }
     connection.unregisterObject(guid);
+    wasCollected = wasGarbageCollected;
     // Dispose all children.
     for (ChannelOwner child : new ArrayList<>(objects.values())) {
-      child.disconnect();
+      child.disposeChannelOwner(wasGarbageCollected);
     }
     objects.clear();
   }
@@ -91,6 +93,7 @@ class ChannelOwner extends LoggingSupport {
   }
 
   WaitableResult<JsonElement> sendMessageAsync(String method, JsonObject params) {
+    checkNotCollected();
     return connection.sendMessageAsync(guid, method, params);
   }
 
@@ -99,7 +102,13 @@ class ChannelOwner extends LoggingSupport {
   }
 
   JsonElement sendMessage(String method, JsonObject params) {
+    checkNotCollected();
     return connection.sendMessage(guid, method, params);
+  }
+
+  private void checkNotCollected() {
+    if (wasCollected)
+      throw new PlaywrightException("The object has been collected to prevent unbounded heap growth.");
   }
 
   <T> T runUntil(Runnable code, Waitable<T> waitable) {

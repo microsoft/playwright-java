@@ -252,7 +252,7 @@ public class Connection {
       return;
     }
     if (message.method.equals("__dispose__")) {
-      object.disconnect();
+      object.disposeChannelOwner("gc".equals(message.params.get("reason").getAsString()));
       return;
     }
     object.handleEvent(message.method, message.params);
