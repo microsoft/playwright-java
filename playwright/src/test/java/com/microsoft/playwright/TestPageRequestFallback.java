@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import static com.microsoft.playwright.Utils.mapOf;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -128,6 +129,13 @@ public class TestPageRequestFallback extends TestBase {
 
   @Test
   void shouldChainOnce() {
+    Playwright playwright1 = Playwright.create(new Playwright.CreateOptions().setEnv(mapOf("DEBUG", "pw:channel")));
+    BrowserType browserType1 = Utils.getBrowserTypeFromEnv(playwright1);
+    BrowserType.LaunchOptions launchOptions = createLaunchOptions();
+    Browser browser1 = browserType1.launch(launchOptions);
+    BrowserContext contex1 = browser1.newContext();
+    Page page = contex1.newPage();
+
     boolean didFulfill[] = {false};
     page.route("**/title.html", route -> {
       route.fulfill(new Route.FulfillOptions().setStatus(200).setBody("fulfilled one"));
@@ -139,6 +147,9 @@ public class TestPageRequestFallback extends TestBase {
     Response response = page.navigate(server.PREFIX + "/title.html");
     assertTrue(didFulfill[0]);
     assertEquals("fulfilled one", response.text());
+
+    browser1.close();
+    playwright1.close();
   }
 
   @Test
