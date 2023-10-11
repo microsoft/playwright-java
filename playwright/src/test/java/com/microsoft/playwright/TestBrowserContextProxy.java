@@ -175,17 +175,33 @@ public class TestBrowserContextProxy extends TestBase {
       // @see https://gist.github.com/CollinChaffin/24f6c9652efb3d6d5ef2f5502720ef00
       .setBypass("1.non.existent.domain.for.the.test, 2.non.existent.domain.for.the.test, .another.test")));
 
-    Page page = context.newPage();
-    page.navigate("http://0.non.existent.domain.for.the.test/target.html");
-    assertEquals("Served by the proxy", page.title());
-
-    assertThrows(PlaywrightException.class, () -> page.navigate("http://1.non.existent.domain.for.the.test/target.html"));
-    assertThrows(PlaywrightException.class, () -> page.navigate("http://2.non.existent.domain.for.the.test/target.html"));
-    assertThrows(PlaywrightException.class, () -> page.navigate("http://foo.is.the.another.test/target.html"));
-
-    page.navigate("http://3.non.existent.domain.for.the.test/target.html");
-    assertEquals("Served by the proxy", page.title());
-
+    {
+      Page page = context.newPage();
+      page.navigate("http://0.non.existent.domain.for.the.test/target.html");
+      assertEquals("Served by the proxy", page.title());
+      page.close();
+    }
+    {
+      Page page = context.newPage();
+      assertThrows(PlaywrightException.class, () -> page.navigate("http://1.non.existent.domain.for.the.test/target.html"));
+      page.close();
+    }
+    {
+      Page page = context.newPage();
+      assertThrows(PlaywrightException.class, () -> page.navigate("http://2.non.existent.domain.for.the.test/target.html"));
+      page.close();
+    }
+    {
+      Page page = context.newPage();
+      assertThrows(PlaywrightException.class, () -> page.navigate("http://foo.is.the.another.test/target.html"));
+      page.close();
+    }
+    {
+      Page page = context.newPage();
+      page.navigate("http://3.non.existent.domain.for.the.test/target.html");
+      assertEquals("Served by the proxy", page.title());
+      page.close();
+    }
     context.close();
   }
 
