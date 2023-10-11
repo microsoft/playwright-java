@@ -389,7 +389,7 @@ public class TestPageRoute extends TestBase {
     Request r = intercepted.get(1);
     for (String url : asList("/one-style.css", "/two-style.css", "/three-style.css", "/four-style.css")) {
       assertEquals("stylesheet", r.resourceType());
-      assertTrue(r.url().contains(url));
+      assertTrue(r.url().contains(url), "actual: " + r.url() + "; expected: " + url);
       r = r.redirectedTo();
     }
     assertNull(r);

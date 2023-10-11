@@ -19,11 +19,13 @@ package com.microsoft.playwright;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import org.junit.jupiter.api.Assumptions;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -213,5 +215,18 @@ class Utils {
 
   static String generateDifferentOriginPort(final Server server){
     return server.PREFIX.replace(String.valueOf(server.PORT), String.valueOf(server.PORT+1));
+  }
+
+  static Path relativePathOrSkipTest(Path path) {
+    Path cwd = Paths.get("").toAbsolutePath();
+    try  {
+      return cwd.relativize(path.toAbsolutePath());
+    } catch (IllegalArgumentException e) {
+      // May happen on Windows when the path and temp are on different disks.
+      if (e.getMessage().contains("has different root")) {
+        Assumptions.assumeTrue(false, "cwd is on another disk, skipping the test.");
+      }
+      throw e;
+    }
   }
 }

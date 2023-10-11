@@ -5,15 +5,14 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
+import static com.microsoft.playwright.Utils.relativePathOrSkipTest;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestVideo extends TestBase {
   @Test
   void shouldWorkWithRelativePathForRecordVideoDir(@TempDir Path tmpDir) {
-    Path cwd = Paths.get("");
-    Path relativeDir = cwd.toAbsolutePath().relativize(tmpDir.toAbsolutePath());
+    Path relativeDir = relativePathOrSkipTest(tmpDir);
     BrowserContext context = browser.newContext(new Browser.NewContextOptions()
       .setRecordVideoSize(320, 240).setRecordVideoDir(relativeDir));
     Page page = context.newPage();
