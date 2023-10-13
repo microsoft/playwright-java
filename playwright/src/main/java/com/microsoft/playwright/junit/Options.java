@@ -15,6 +15,9 @@ public class Options {
   private String channel;
   private boolean headless;
   private String browserName;
+  private BrowserType.LaunchOptions launchOptions;
+  private Browser.NewContextOptions contextOption;
+  private APIRequest.NewContextOptions apiRequestOptions;
 
   public BrowserType.LaunchOptions getLaunchOptions() {
     return launchOptions;
@@ -42,10 +45,6 @@ public class Options {
     this.apiRequestOptions = apiRequestOptions;
     return this;
   }
-
-  private BrowserType.LaunchOptions launchOptions;
-  private Browser.NewContextOptions contextOption;
-  private APIRequest.NewContextOptions apiRequestOptions;
 
   public String getBaseUrl() {
     return baseUrl;
