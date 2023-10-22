@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class Options {
   private String baseUrl;
-  private Path storageState;
+  private Path storageStatePath;
   private Viewport viewport;
   private String channel;
   private boolean headless;
@@ -55,12 +55,12 @@ public class Options {
     return this;
   }
 
-  public Path getStorageState() {
-    return storageState;
+  public Path getStorageStatePath() {
+    return storageStatePath;
   }
 
-  public Options setStorageState(Path storageState) {
-    this.storageState = storageState;
+  public Options setStorageStatePath(Path storageStatePath) {
+    this.storageStatePath = storageStatePath;
     return this;
   }
 
