@@ -3,6 +3,7 @@ package com.microsoft.playwright.junit;
 import com.microsoft.playwright.APIRequest;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.Playwright;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -14,10 +15,20 @@ public class Options {
   private Viewport viewport;
   private String channel;
   private boolean headless;
-  private String browserName;
+  private String browserName = "chromium";
   private BrowserType.LaunchOptions launchOptions;
   private Browser.NewContextOptions contextOption;
   private APIRequest.NewContextOptions apiRequestOptions;
+  private Playwright.CreateOptions playwrightCreateOptions;
+
+  public Playwright.CreateOptions getPlaywrightCreateOptions() {
+    return playwrightCreateOptions;
+  }
+
+  public Options setPlaywrightCreateOptions(Playwright.CreateOptions playwrightCreateOptions) {
+    this.playwrightCreateOptions = playwrightCreateOptions;
+    return this;
+  }
 
   public BrowserType.LaunchOptions getLaunchOptions() {
     return launchOptions;
