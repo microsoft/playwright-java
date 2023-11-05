@@ -5,11 +5,7 @@ import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
 public class PlaywrightExtension implements ParameterResolver, AfterAllCallback {
-  private static final ThreadLocal<Playwright> threadLocalPlaywright;
-
-  static {
-    threadLocalPlaywright = new ThreadLocal<>();
-  }
+  private static final ThreadLocal<Playwright> threadLocalPlaywright = new ThreadLocal<>();
 
   @Override
   public void afterAll(ExtensionContext extensionContext) {

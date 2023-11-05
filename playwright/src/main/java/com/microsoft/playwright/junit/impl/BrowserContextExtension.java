@@ -10,6 +10,7 @@ import static com.microsoft.playwright.junit.impl.ExtensionUtils.isClassHook;
 
 public class BrowserContextExtension implements ParameterResolver, AfterEachCallback {
   private static final ThreadLocal<BrowserContext> threadLocalBrowserContext = new ThreadLocal<>();
+
   @Override
   public void afterEach(ExtensionContext extensionContext) {
     BrowserContext browserContext = threadLocalBrowserContext.get();
