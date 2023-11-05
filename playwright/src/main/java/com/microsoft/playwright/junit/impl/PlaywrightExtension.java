@@ -13,13 +13,10 @@ public class PlaywrightExtension implements ParameterResolver, AfterAllCallback 
 
   @Override
   public void afterAll(ExtensionContext extensionContext) {
-    try {
-      Playwright playwright = threadLocalPlaywright.get();
-      if (playwright != null) {
-        playwright.close();
-      }
-    } finally {
-      threadLocalPlaywright.remove();
+    Playwright playwright = threadLocalPlaywright.get();
+    threadLocalPlaywright.remove();
+    if (playwright != null) {
+      playwright.close();
     }
   }
 

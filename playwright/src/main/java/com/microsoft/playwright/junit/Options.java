@@ -4,15 +4,14 @@ import com.microsoft.playwright.APIRequest;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.options.ViewportSize;
 
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
 
 public class Options {
   private String baseUrl;
   private Path storageStatePath;
-  private Viewport viewport;
+  private ViewportSize viewportSize;
   private String channel;
   private boolean headless;
   private String browserName = "chromium";
@@ -75,15 +74,6 @@ public class Options {
     return this;
   }
 
-  public Viewport getViewport() {
-    return viewport;
-  }
-
-  public Options setViewport(Viewport viewport) {
-    this.viewport = viewport;
-    return this;
-  }
-
   public String getBrowserName() {
     return browserName;
   }
@@ -111,27 +101,12 @@ public class Options {
     return this;
   }
 
-  public static class Viewport {
-    private String width;
-    private String height;
-
-    public String getWidth() {
-      return width;
-    }
-
-    public Viewport setWidth(String width) {
-      this.width = width;
-      return this;
-    }
-
-    public String getHeight() {
-      return height;
-    }
-
-    public Viewport setHeight(String height) {
-      this.height = height;
-      return this;
-    }
+  public ViewportSize getViewportSize() {
+    return viewportSize;
   }
 
+  public Options setViewportSize(ViewportSize viewportSize) {
+    this.viewportSize = viewportSize;
+    return this;
+  }
 }

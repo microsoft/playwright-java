@@ -14,13 +14,10 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
 
   @Override
   public void afterAll(ExtensionContext extensionContext) {
-    try {
-      Browser browser = threadLocalBrowser.get();
-      if (browser != null) {
-        browser.close();
-      }
-    } finally {
-      threadLocalBrowser.remove();
+    Browser browser = threadLocalBrowser.get();
+    threadLocalBrowser.remove();
+    if (browser != null) {
+      browser.close();
     }
   }
 
@@ -51,13 +48,13 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
 
     switch (options.getBrowserName()) {
       case "webkit":
-        browser =  playwright.webkit().launch(launchOptions);
+        browser = playwright.webkit().launch(launchOptions);
         break;
       case "firefox":
-        browser =  playwright.firefox().launch(launchOptions);
+        browser = playwright.firefox().launch(launchOptions);
         break;
       case "chromium":
-        browser =  playwright.chromium().launch(launchOptions);
+        browser = playwright.chromium().launch(launchOptions);
         break;
       default:
         throw new PlaywrightException("Invalid browser name.");
@@ -69,13 +66,13 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
 
   private static BrowserType.LaunchOptions getLaunchOptions(Options options) {
     BrowserType.LaunchOptions launchOptions = options.getLaunchOptions();
-    if(launchOptions == null) {
+    if (launchOptions == null) {
       launchOptions = new BrowserType.LaunchOptions();
     }
 
     launchOptions.setHeadless(options.isHeadless());
 
-    if(options.getChannel() != null) {
+    if (options.getChannel() != null) {
       options.setChannel(options.getChannel());
     }
 
