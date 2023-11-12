@@ -7,7 +7,7 @@ import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
-import static com.microsoft.playwright.junit.impl.ExtensionUtils.hasUsePlaywrightAnnotation;
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.isParameterSupported;
 
 public class BrowserExtension implements ParameterResolver, AfterAllCallback {
   private static final ThreadLocal<Browser> threadLocalBrowser = new ThreadLocal<>();
@@ -23,11 +23,7 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
 
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    if (!hasUsePlaywrightAnnotation(extensionContext)) {
-      return false;
-    }
-    Class<?> clazz = parameterContext.getParameter().getType();
-    return Browser.class.equals(clazz);
+    return isParameterSupported(parameterContext, extensionContext, Browser.class);
   }
 
   @Override
@@ -70,7 +66,9 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
       launchOptions = new BrowserType.LaunchOptions();
     }
 
-    launchOptions.setHeadless(options.isHeadless());
+    if (options.isHeadless() != null) {
+      launchOptions.setHeadless(options.isHeadless());
+    }
 
     if (options.getChannel() != null) {
       options.setChannel(options.getChannel());

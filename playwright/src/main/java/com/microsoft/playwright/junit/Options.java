@@ -13,7 +13,7 @@ public class Options {
   private Path storageStatePath;
   private ViewportSize viewportSize;
   private String channel;
-  private boolean headless;
+  private Boolean headless;
   private String browserName = "chromium";
   private BrowserType.LaunchOptions launchOptions;
   private Browser.NewContextOptions contextOption;
@@ -92,11 +92,11 @@ public class Options {
     return this;
   }
 
-  public boolean isHeadless() {
+  public Boolean isHeadless() {
     return headless;
   }
 
-  public Options setHeadless(boolean headless) {
+  public Options setHeadless(Boolean headless) {
     this.headless = headless;
     return this;
   }

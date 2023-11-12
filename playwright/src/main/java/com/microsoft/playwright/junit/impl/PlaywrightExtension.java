@@ -1,8 +1,11 @@
 package com.microsoft.playwright.junit.impl;
 
+import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
+
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.isParameterSupported;
 
 public class PlaywrightExtension implements ParameterResolver, AfterAllCallback {
   private static final ThreadLocal<Playwright> threadLocalPlaywright = new ThreadLocal<>();
@@ -18,11 +21,8 @@ public class PlaywrightExtension implements ParameterResolver, AfterAllCallback 
 
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    if (!ExtensionUtils.hasUsePlaywrightAnnotation(extensionContext)) {
-      return false;
-    }
-    Class<?> clazz = parameterContext.getParameter().getType();
-    return Playwright.class.equals(clazz);
+    return isParameterSupported(parameterContext, extensionContext, Playwright.class);
+
   }
 
   @Override

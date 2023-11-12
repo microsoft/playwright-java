@@ -4,8 +4,7 @@ import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
 import org.junit.jupiter.api.extension.*;
 
-import static com.microsoft.playwright.junit.impl.ExtensionUtils.hasUsePlaywrightAnnotation;
-import static com.microsoft.playwright.junit.impl.ExtensionUtils.isClassHook;
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.*;
 
 public class PageExtension implements ParameterResolver, AfterEachCallback {
   private static final ThreadLocal<Page> threadLocalPage = new ThreadLocal<>();
@@ -20,11 +19,7 @@ public class PageExtension implements ParameterResolver, AfterEachCallback {
 
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    if (isClassHook(extensionContext) || !hasUsePlaywrightAnnotation(extensionContext)) {
-      return false;
-    }
-    Class<?> clazz = parameterContext.getParameter().getType();
-    return Page.class.equals(clazz);
+    return isParameterSupported(parameterContext, extensionContext, Page.class);
   }
 
   @Override

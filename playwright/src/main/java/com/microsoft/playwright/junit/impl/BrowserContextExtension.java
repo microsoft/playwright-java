@@ -5,8 +5,7 @@ import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
-import static com.microsoft.playwright.junit.impl.ExtensionUtils.hasUsePlaywrightAnnotation;
-import static com.microsoft.playwright.junit.impl.ExtensionUtils.isClassHook;
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.*;
 
 public class BrowserContextExtension implements ParameterResolver, AfterEachCallback {
   private static final ThreadLocal<BrowserContext> threadLocalBrowserContext = new ThreadLocal<>();
@@ -22,11 +21,7 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
 
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    if (isClassHook(extensionContext) || !hasUsePlaywrightAnnotation(extensionContext)) {
-      return false;
-    }
-    Class<?> clazz = parameterContext.getParameter().getType();
-    return BrowserContext.class.equals(clazz);
+    return isParameterSupported(parameterContext, extensionContext, BrowserContext.class);
   }
 
   @Override

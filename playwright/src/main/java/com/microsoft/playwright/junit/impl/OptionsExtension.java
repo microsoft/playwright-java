@@ -2,7 +2,6 @@ package com.microsoft.playwright.junit.impl;
 
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.junit.Options;
-import com.microsoft.playwright.junit.OptionsFactory;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -25,8 +24,7 @@ public class OptionsExtension implements AfterAllCallback {
 
     UsePlaywright usePlaywrightAnnotation = getUsePlaywrightAnnotation(extensionContext);
     try {
-      OptionsFactory configFactory = usePlaywrightAnnotation.optionsFactory().newInstance();
-      options = configFactory.getOptions();
+      options = usePlaywrightAnnotation.options().newInstance();
       threadLocalOptions.set(options);
     } catch (InstantiationException | IllegalAccessException e) {
       throw new PlaywrightException("Failed to create options", e);
