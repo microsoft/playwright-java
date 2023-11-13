@@ -338,4 +338,13 @@ public class TestPageBasic extends TestBase {
       }));
     assertTrue(e.getMessage().contains("Page closed"), e.getMessage());
   }
+
+  @Test
+  void shouldPropagateCloseReasonToPendingActions() {
+    Page page = context.newPage();
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.waitForPopup(() -> {
+      page.close(new Page.CloseOptions().setReason("The reason."));
+    }));
+    assertTrue(e.getMessage().contains("The reason."), e.getMessage());
+  }
 }

@@ -122,7 +122,7 @@ public class TestEvalOnSelector extends TestBase {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       page.evalOnSelector("section", "e => e.id");
     });
-    assertTrue(e.getMessage().contains("failed to find element matching selector \"section\""));
+    assertTrue(e.getMessage().contains("Failed to find element matching selector \"section\""), e.getMessage());
   }
 
   @Test

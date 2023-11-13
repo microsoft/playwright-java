@@ -487,6 +487,11 @@ public interface BrowserType {
      */
     public Map<String, String> extraHTTPHeaders;
     /**
+     * Firefox user preferences. Learn more about the Firefox user preferences at <a
+     * href="https://support.mozilla.org/en-US/kb/about-config-editor-firefox">{@code about:config}</a>.
+     */
+    public Map<String, Object> firefoxUserPrefs;
+    /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link
      * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
      * Defaults to {@code "none"}.
@@ -784,6 +789,14 @@ public interface BrowserType {
      */
     public LaunchPersistentContextOptions setExtraHTTPHeaders(Map<String, String> extraHTTPHeaders) {
       this.extraHTTPHeaders = extraHTTPHeaders;
+      return this;
+    }
+    /**
+     * Firefox user preferences. Learn more about the Firefox user preferences at <a
+     * href="https://support.mozilla.org/en-US/kb/about-config-editor-firefox">{@code about:config}</a>.
+     */
+    public LaunchPersistentContextOptions setFirefoxUserPrefs(Map<String, Object> firefoxUserPrefs) {
+      this.firefoxUserPrefs = firefoxUserPrefs;
       return this;
     }
     /**

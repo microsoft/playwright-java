@@ -25,7 +25,9 @@ import com.microsoft.playwright.TimeoutError;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
@@ -38,6 +40,7 @@ class Message {
   JsonObject params;
   JsonElement result;
   SerializedError error;
+  JsonArray log;
 
   @Override
   public String toString() {
@@ -206,6 +209,30 @@ public class Connection {
     dispatch(messageObj);
   }
 
+  private static String formatCallLog(JsonArray log) {
+    if (log == null) {
+      return "";
+    }
+    boolean allEmpty = true;
+    for (JsonElement e: log) {
+      if (!e.getAsString().isEmpty()) {
+        allEmpty = false;
+        break;
+      }
+    }
+    if (allEmpty) {
+      return "";
+    }
+    List<String> lines = new ArrayList<>();
+    lines.add("");
+    lines.add("Call log:");
+    for (JsonElement e: log) {
+      lines.add("- " + e.getAsString());
+    }
+    lines.add("");
+    return String.join("\n", lines);
+  }
+
   private void dispatch(Message message) {
 //    System.out.println("Message: " + message.method + " " + message.id);
     if (message.id != 0) {
@@ -218,12 +245,18 @@ public class Connection {
       if (message.error == null) {
         callback.complete(message.result);
       } else {
+        String callLog = formatCallLog(message.log);
         if (message.error.error == null) {
-          callback.completeExceptionally(new PlaywrightException(message.error.toString()));
+          callback.completeExceptionally(new PlaywrightException(message.error + callLog));
+        } else if ("Expect".equals(message.error.error.name)) {
+          callback.complete(message.result);
         } else if ("TimeoutError".equals(message.error.error.name)) {
-          callback.completeExceptionally(new TimeoutError(message.error.error.toString()));
+          callback.completeExceptionally(new TimeoutError(message.error.error + callLog));
+        } else if ("TargetClosedError".equals(message.error.error.name)) {
+          callback.completeExceptionally(new TargetClosedError(message.error.error + callLog));
+
         } else {
-          callback.completeExceptionally(new DriverException(message.error.error));
+          callback.completeExceptionally(new DriverException(message.error.error + callLog));
         }
       }
       return;

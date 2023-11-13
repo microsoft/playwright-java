@@ -18,11 +18,9 @@ package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.FilePayload;
 import com.microsoft.playwright.options.HttpHeader;
-import com.microsoft.playwright.options.SelectOption;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,6 +30,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -174,26 +173,21 @@ class Utils {
     return mimeType;
   }
 
-  static final long maxUploadBufferSize = 50 * 1024 * 1024;
-
-  static boolean hasLargeFile(Path[] files) {
-    long totalSize = 0;
-    for (Path file: files) {
-      try {
-        totalSize += Files.size(file);
-      } catch (IOException e) {
-        throw new PlaywrightException("Cannot get file size.", e);
-      }
-    }
-    return totalSize > maxUploadBufferSize;
-  }
-
-  static void addLargeFileUploadParams(Path[] files, JsonObject params, BrowserContextImpl context) {
-    if (context.connection.isRemote) {
+  static void addFilePathUploadParams(Path[] files, JsonObject params, BrowserContextImpl context) {
+    if (files.length == 0) {
+      // FIXME: shouldBeAbleToResetSelectedFilesWithEmptyFileList tesst hangs in Chromium if we pass empty paths list.
+      params.add("payloads", new JsonArray());
+    } else if (context.connection.isRemote) {
       List<WritableStream> streams = new ArrayList<>();
       JsonArray jsonStreams = new JsonArray();
       for (Path path : files) {
-        WritableStream temp = context.createTempFile(path.getFileName().toString());
+        long lastModifiedMs;
+        try {
+          lastModifiedMs = Files.getLastModifiedTime(path).toMillis();
+        } catch (IOException e) {
+          throw new PlaywrightException("Cannot read file timestamp: " + path, e);
+        }
+        WritableStream temp = context.createTempFile(path.getFileName().toString(), lastModifiedMs);
         streams.add(temp);
         try (OutputStream out = temp.stream()) {
           Files.copy(path, out);
@@ -220,7 +214,7 @@ class Utils {
     for (FilePayload file: files) {
       totalSize += file.buffer.length;
     }
-    if (totalSize > maxUploadBufferSize) {
+    if (totalSize > 50 * 1024 * 1024) {
       throw new PlaywrightException("Cannot set buffer larger than 50Mb, please write it to a file and pass its path instead.");
     }
   }

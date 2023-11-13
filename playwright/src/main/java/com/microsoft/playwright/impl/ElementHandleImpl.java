@@ -28,13 +28,12 @@ import com.microsoft.playwright.options.SelectOption;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
 import static com.microsoft.playwright.impl.Serialization.*;
 import static com.microsoft.playwright.impl.Utils.*;
-import static com.microsoft.playwright.impl.Utils.addLargeFileUploadParams;
+import static com.microsoft.playwright.impl.Utils.addFilePathUploadParams;
 import static com.microsoft.playwright.options.ScreenshotType.JPEG;
 import static com.microsoft.playwright.options.ScreenshotType.PNG;
 
@@ -467,16 +466,12 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
     if (frame == null) {
       throw new Error("Cannot set input files to detached element");
     }
-    if (hasLargeFile(files)) {
-      if (options == null) {
-        options = new SetInputFilesOptions();
-      }
-      JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-      addLargeFileUploadParams(files, params, frame.page().context());
-      sendMessage("setInputFilePaths", params);
-    } else {
-      setInputFilesImpl(Utils.toFilePayloads(files), options);
+    if (options == null) {
+      options = new SetInputFilesOptions();
     }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    addFilePathUploadParams(files, params, frame.page().context());
+    sendMessage("setInputFiles", params);
   }
 
   @Override

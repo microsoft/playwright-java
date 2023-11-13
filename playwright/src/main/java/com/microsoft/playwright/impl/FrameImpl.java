@@ -761,17 +761,13 @@ public class FrameImpl extends ChannelOwner implements Frame {
   }
 
   void setInputFilesImpl(String selector, Path[] files, SetInputFilesOptions options) {
-    if (hasLargeFile(files)) {
-      if (options == null) {
-        options = new SetInputFilesOptions();
-      }
-      JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-      addLargeFileUploadParams(files, params, page.context());
-      params.addProperty("selector", selector);
-      sendMessage("setInputFilePaths", params);
-    } else {
-      setInputFilesImpl(selector, Utils.toFilePayloads(files), options);
+    if (options == null) {
+      options = new SetInputFilesOptions();
     }
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    addFilePathUploadParams(files, params, page.context());
+    params.addProperty("selector", selector);
+    sendMessage("setInputFiles", params);
   }
 
   @Override
@@ -791,7 +787,7 @@ public class FrameImpl extends ChannelOwner implements Frame {
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("selector", selector);
-    params.add("files", toJsonArray(files));
+    params.add("payloads", toJsonArray(files));
     sendMessage("setInputFiles", params);
   }
 

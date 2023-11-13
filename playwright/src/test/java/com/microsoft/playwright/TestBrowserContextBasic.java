@@ -284,4 +284,13 @@ public class TestBrowserContextBasic extends TestBase {
     assertTrue(e.getMessage().contains("Context closed"), e.getMessage());
   }
 
+  @Test
+  void shouldPropagateCloseReasonToPendingActions() {
+    BrowserContext context = browser.newContext();
+    Page page = context.newPage();
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.waitForPopup(() -> {
+      context.close(new BrowserContext.CloseOptions().setReason("The reason."));
+    }));
+    assertTrue(e.getMessage().contains("The reason."), e.getMessage());
+  }
 }

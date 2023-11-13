@@ -28,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -39,6 +40,8 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBrowserTypeConnect extends TestBase {
+  static Path FILE_TO_UPLOAD = Paths.get("src/test/resources/file-to-upload.txt");
+
   private Process browserServer;
   private String wsEndpoint;
 
@@ -349,7 +352,7 @@ public class TestBrowserTypeConnect extends TestBase {
     }
     browser.close();
   }
-  
+
   @Test
   void shouldSaveAsVideosFromRemoteBrowser(@TempDir Path tempDir) {
     Path videosPath = tempDir.resolve("videosPath");
@@ -500,5 +503,18 @@ public class TestBrowserTypeConnect extends TestBase {
     assertEquals(1, fields.size());
     assertEquals("200MB.zip", fields.get(0).filename);
     assertEquals(200 * 1024 * 1024, fields.get(0).content.length());
+  }
+
+  @Test
+  void setInputFilesDhouldPreserveLastModifiedTimestamp() throws IOException {
+    page.setContent("<input type=file multiple=true/>");
+    Locator input = page.locator("input");
+    input.setInputFiles(FILE_TO_UPLOAD);
+    assertEquals(asList("file-to-upload.txt"), input.evaluate("e => [...e.files].map(f => f.name)"));
+    List<Double> timestamps = (List<Double>) input.evaluate("e => [...e.files].map(f => f.lastModified)");
+    FileTime expected = Files.getLastModifiedTime(FILE_TO_UPLOAD);
+    // On Linux browser sometimes reduces the timestamp by 1ms: 1696272058110.0715  -> 1696272058109 or even
+    // rounds it to seconds in WebKit: 1696272058110 -> 1696272058000.
+    assertTrue(Math.abs(timestamps.get(0) - expected.toMillis()) < 1000, "expected: " + expected.toMillis() + "; actual: " + timestamps.get(0));
   }
 }

@@ -51,6 +51,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private final WaitableEvent<EventType, ?> closePromise;
   final Map<String, BindingCallback> bindings = new HashMap<>();
   PageImpl ownerPage;
+  private String closeReason;
+
   private static final Map<EventType, String> eventSubscriptions() {
     Map<EventType, String> result = new HashMap<>();
     result.put(EventType.CONSOLE, "console");
@@ -113,6 +115,16 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     } catch (MalformedURLException e) {
       this.baseUrl = null;
     }
+  }
+
+  String effectiveCloseReason() {
+    if (closeReason != null) {
+      return closeReason;
+    }
+    if (browser != null) {
+      return browser.closeReason;
+    }
+    return null;
   }
 
   @Override
@@ -242,8 +254,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void close() {
-    withLogging("BrowserContext.close", () -> closeImpl());
+  public void close(CloseOptions options) {
+    withLogging("BrowserContext.close", () -> closeImpl(options));
   }
 
   @Override
@@ -251,9 +263,13 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     return cookies(url == null ? new ArrayList<>() : Collections.singletonList(url));
   }
 
-  private void closeImpl() {
+  private void closeImpl(CloseOptions options) {
     if (!closeWasCalled) {
       closeWasCalled = true;
+      if (options == null) {
+        options = new CloseOptions();
+      }
+      closeReason = options.reason;
       for (Map.Entry<String, HarRecorder> entry : harRecorders.entrySet()) {
         JsonObject params = new JsonObject();
         params.addProperty("harId", entry.getKey());
@@ -275,7 +291,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         }
         artifact.delete();
       }
-      sendMessage("close");
+      JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+      sendMessage("close", params);
     }
     runUntil(() -> {}, closePromise);
   }
@@ -594,7 +611,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
 
     @Override
     public R get() {
-      throw new PlaywrightException("Context closed");
+      throw new TargetClosedError(effectiveCloseReason());
     }
   }
 
@@ -752,9 +769,10 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     listeners.notify(EventType.CLOSE, this);
   }
 
-  WritableStream createTempFile(String name) {
+  WritableStream createTempFile(String name, long lastModifiedMs) {
     JsonObject params = new JsonObject();
     params.addProperty("name", name);
+    params.addProperty("lastModifiedMs", lastModifiedMs);
     JsonObject json = sendMessage("createTempFile", params).getAsJsonObject();
     return connection.getExistingObject(json.getAsJsonObject("writableStream").get("guid").getAsString());
   }

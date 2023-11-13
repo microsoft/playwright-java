@@ -42,6 +42,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
   BrowserTypeImpl browserType;
   BrowserType.LaunchOptions launchOptions;
   private Path tracePath;
+  String closeReason;
 
   enum EventType {
     DISCONNECTED,
@@ -67,11 +68,15 @@ class BrowserImpl extends ChannelOwner implements Browser {
   }
 
   @Override
-  public void close() {
-    withLogging("Browser.close", () -> closeImpl());
+  public void close(CloseOptions options) {
+    withLogging("Browser.close", () -> closeImpl(options));
   }
 
-  private void closeImpl() {
+  private void closeImpl(CloseOptions options) {
+    if (options == null) {
+      options = new CloseOptions();
+    }
+    closeReason = options.reason;
     if (isConnectedOverWebSocket) {
       try {
         connection.close();

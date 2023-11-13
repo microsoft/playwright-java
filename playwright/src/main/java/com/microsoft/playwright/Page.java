@@ -651,11 +651,22 @@ public interface Page extends AutoCloseable {
   }
   class CloseOptions {
     /**
+     * The reason to be reported to the operations interrupted by the page closure.
+     */
+    public String reason;
+    /**
      * Defaults to {@code false}. Whether to run the <a
      * href="https://developer.mozilla.org/en-US/docs/Web/Events/beforeunload">before unload</a> page handlers.
      */
     public Boolean runBeforeUnload;
 
+    /**
+     * The reason to be reported to the operations interrupted by the page closure.
+     */
+    public CloseOptions setReason(String reason) {
+      this.reason = reason;
+      return this;
+    }
     /**
      * Defaults to {@code false}. Whether to run the <a
      * href="https://developer.mozilla.org/en-US/docs/Web/Events/beforeunload">before unload</a> page handlers.

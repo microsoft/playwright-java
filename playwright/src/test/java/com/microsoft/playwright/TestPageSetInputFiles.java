@@ -27,6 +27,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import static com.microsoft.playwright.Utils.relativePathOrSkipTest;
@@ -402,6 +404,19 @@ public class TestPageSetInputFiles extends TestBase {
     page.setContent("<input multiple webkitdirectory type=file>");
     FileChooser fileChooser = page.waitForFileChooser(() -> page.click("input"));
     assertTrue(fileChooser.isMultiple());
+  }
+
+  @Test
+  void shouldPreserveLastModifiedTimestamp() throws IOException {
+    page.setContent("<input type=file multiple=true/>");
+    Locator input = page.locator("input");
+    input.setInputFiles(FILE_TO_UPLOAD);
+    assertEquals(asList("file-to-upload.txt"), input.evaluate("e => [...e.files].map(f => f.name)"));
+    List<Double> timestamps = (List<Double>) input.evaluate("e => [...e.files].map(f => f.lastModified)");
+    FileTime expected = Files.getLastModifiedTime(FILE_TO_UPLOAD);
+    // On Linux browser sometimes reduces the timestamp by 1ms: 1696272058110.0715  -> 1696272058109 or even
+    // rounds it to seconds in WebKit: 1696272058110 -> 1696272058000.
+    assertTrue(Math.abs(timestamps.get(0) - expected.toMillis()) < 1000, "expected: " + expected.toMillis() + "; actual: " + timestamps.get(0));
   }
 }
 

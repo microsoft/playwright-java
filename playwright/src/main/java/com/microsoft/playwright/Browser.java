@@ -56,6 +56,20 @@ public interface Browser extends AutoCloseable {
    */
   void offDisconnected(Consumer<Browser> handler);
 
+  class CloseOptions {
+    /**
+     * The reason to be reported to the operations interrupted by the browser closure.
+     */
+    public String reason;
+
+    /**
+     * The reason to be reported to the operations interrupted by the browser closure.
+     */
+    public CloseOptions setReason(String reason) {
+      this.reason = reason;
+      return this;
+    }
+  }
   class NewContextOptions {
     /**
      * Whether to automatically download all the attachments. Defaults to {@code true} where all the downloads are accepted.
@@ -1165,7 +1179,25 @@ public interface Browser extends AutoCloseable {
    *
    * @since v1.8
    */
-  void close();
+  default void close() {
+    close(null);
+  }
+  /**
+   * In case this browser is obtained using {@link BrowserType#launch BrowserType.launch()}, closes the browser and all of
+   * its pages (if any were opened).
+   *
+   * <p> In case this browser is connected to, clears all created contexts belonging to this browser and disconnects from the
+   * browser server.
+   *
+   * <p> <strong>NOTE:</strong> This is similar to force quitting the browser. Therefore, you should call {@link BrowserContext#close
+   * BrowserContext.close()} on any {@code BrowserContext}'s you explicitly created earlier with {@link Browser#newContext
+   * Browser.newContext()} **before** calling {@link Browser#close Browser.close()}.
+   *
+   * <p> The {@code Browser} object itself is considered to be disposed and cannot be used anymore.
+   *
+   * @since v1.8
+   */
+  void close(CloseOptions options);
   /**
    * Returns an array of all open browser contexts. In a newly created browser, this will return zero browser contexts.
    *
