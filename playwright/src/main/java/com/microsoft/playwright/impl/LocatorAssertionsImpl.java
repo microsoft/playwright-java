@@ -86,12 +86,14 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   public void hasAttribute(String name, String text, HasAttributeOptions options) {
     ExpectedTextValue expected = new ExpectedTextValue();
     expected.string = text;
+    expected.ignoreCase = shouldIgnoreCase(options);
     hasAttribute(name, expected, text, options);
   }
 
   @Override
   public void hasAttribute(String name, Pattern pattern, HasAttributeOptions options) {
     ExpectedTextValue expected = expectedRegex(pattern);
+    expected.ignoreCase = shouldIgnoreCase(options);
     hasAttribute(name, expected, pattern, options);
   }
 

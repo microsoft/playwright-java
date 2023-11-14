@@ -19,10 +19,14 @@ package com.microsoft.playwright;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.nio.file.Path;
 
 import static com.microsoft.playwright.Utils.mapOf;
 import static org.junit.jupiter.api.Assertions.*;
 
+@EnabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
 public class TestFirefoxLauncher extends TestBase {
 
   @Override
@@ -37,7 +41,6 @@ public class TestFirefoxLauncher extends TestBase {
   }
 
   @Test
-  @EnabledIf(value="com.microsoft.playwright.TestBase#isFirefox", disabledReason="skip")
   void shouldPassFirefoxUserPreferences() {
     BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().setFirefoxUserPrefs(
       mapOf(
@@ -46,6 +49,21 @@ public class TestFirefoxLauncher extends TestBase {
         "network.proxy.http_port", 3333));
     launchBrowser(options);
     Page page = browser.newPage();
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.navigate("http://example.com"));
+    assertTrue(e.getMessage().contains("NS_ERROR_PROXY_CONNECTION_REFUSED"));
+  }
+
+  @Test
+  void shouldPassFirefoxUserPreferencesInPersistent(@TempDir Path tmpDir) {
+    BrowserType.LaunchPersistentContextOptions options = new BrowserType.LaunchPersistentContextOptions().setFirefoxUserPrefs(
+      mapOf(
+        "network.proxy.type", 1,
+        "network.proxy.http", "127.0.0.1",
+        "network.proxy.http_port", 3333));
+    initBrowserType();
+    context = browserType.launchPersistentContext(tmpDir.resolve("user-data-dir"), options);
+    assertNotNull(context);
+    Page page = context.pages().get(0);
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.navigate("http://example.com"));
     assertTrue(e.getMessage().contains("NS_ERROR_PROXY_CONNECTION_REFUSED"));
   }

@@ -45,7 +45,7 @@ public interface Download {
    */
   void cancel();
   /**
-   * Returns readable stream for current download or {@code null} if download failed.
+   * Returns a readable stream for a successful download, or throws for a failed/canceled download.
    *
    * @since v1.8
    */
@@ -69,8 +69,8 @@ public interface Download {
    */
   Page page();
   /**
-   * Returns path to the downloaded file in case of successful download. The method will wait for the download to finish if
-   * necessary. The method throws when connected remotely.
+   * Returns path to the downloaded file for a successful download, or throws for a failed/canceled download. The method will
+   * wait for the download to finish if necessary. The method throws when connected remotely.
    *
    * <p> Note that the download's file name is a random GUID, use {@link Download#suggestedFilename Download.suggestedFilename()}
    * to get suggested file name.
