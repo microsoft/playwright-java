@@ -391,7 +391,7 @@ public class TestPageEvaluate extends TestBase {
     assertNotNull(element);
     element.dispose();
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.evaluate("e => e.textContent", element));
-    assertTrue(e.getMessage().contains("JSHandle is disposed"));
+    assertTrue(e.getMessage().contains("no object with guid"), e.getMessage());
   }
 
   @Test

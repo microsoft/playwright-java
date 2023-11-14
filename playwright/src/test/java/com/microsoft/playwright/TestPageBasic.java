@@ -112,12 +112,12 @@ public class TestPageBasic extends TestBase {
         PlaywrightException e2 = assertThrows(PlaywrightException.class, () -> {
           newPage.waitForRequest(server.EMPTY_PAGE, () -> newPage.close());
         });
-        assertTrue(e2.getMessage().contains("Page closed"));
-        assertFalse(e2.getMessage().contains("Timeout"));
+        assertTrue(e2.getMessage().contains("Target page, context or browser has been closed"), e2.getMessage());
+        assertFalse(e2.getMessage().contains("Timeout"), e2.getMessage());
       });
     });
-    assertTrue(e1.getMessage().contains("Page closed"));
-    assertFalse(e1.getMessage().contains("Timeout"));
+    assertTrue(e1.getMessage().contains("Target page, context or browser has been closed"), e1.getMessage());
+    assertFalse(e1.getMessage().contains("Timeout"), e1.getMessage());
   }
 
   @Test
@@ -336,6 +336,15 @@ public class TestPageBasic extends TestBase {
         page.close();
         return false;
       }));
-    assertTrue(e.getMessage().contains("Page closed"), e.getMessage());
+    assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
+  }
+
+  @Test
+  void shouldPropagateCloseReasonToPendingActions() {
+    Page page = context.newPage();
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.waitForPopup(() -> {
+      page.close(new Page.CloseOptions().setReason("The reason."));
+    }));
+    assertTrue(e.getMessage().contains("The reason."), e.getMessage());
   }
 }

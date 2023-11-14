@@ -80,8 +80,8 @@ public interface APIRequestContext {
   APIResponse delete(String url, RequestOptions params);
   /**
    * All responses returned by {@link APIRequestContext#get APIRequestContext.get()} and similar methods are stored in the
-   * memory, so that you can later call {@link APIResponse#body APIResponse.body()}. This method discards all stored
-   * responses, and makes {@link APIResponse#body APIResponse.body()} throw "Response disposed" error.
+   * memory, so that you can later call {@link APIResponse#body APIResponse.body()}.This method discards all its resources,
+   * calling any method on disposed {@code APIRequestContext} will throw an exception.
    *
    * @since v1.16
    */

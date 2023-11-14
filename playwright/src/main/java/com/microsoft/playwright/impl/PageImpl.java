@@ -68,6 +68,7 @@ public class PageImpl extends ChannelOwner implements Page {
   private final TimeoutSettings timeoutSettings;
   private VideoImpl video;
   private final PageImpl opener;
+  private String closeReason;
 
   enum EventType {
     CLOSE,
@@ -198,6 +199,13 @@ public class PageImpl extends ChannelOwner implements Page {
     isClosed = true;
     browserContext.pages.remove(this);
     listeners.notify(EventType.CLOSE, this);
+  }
+
+  private String effectiveCloseReason() {
+    if (closeReason != null) {
+      return closeReason;
+    }
+    return browserContext.effectiveCloseReason();
   }
 
   @Override
@@ -488,6 +496,7 @@ public class PageImpl extends ChannelOwner implements Page {
     if (options == null) {
       options = new CloseOptions();
     }
+    closeReason = options.reason;
     try {
       if (ownedContext != null) {
         ownedContext.close();
@@ -1341,7 +1350,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
     @Override
     public T get() {
-      throw new PlaywrightException("Page closed");
+      throw new TargetClosedError(effectiveCloseReason());
     }
   }
 
@@ -1352,7 +1361,7 @@ public class PageImpl extends ChannelOwner implements Page {
 
     @Override
     public T get() {
-      throw new PlaywrightException("Page crashed");
+      throw new TargetClosedError("Page crashed");
     }
   }
 

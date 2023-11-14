@@ -28,6 +28,12 @@ class WritableStream extends ChannelOwner {
         params.addProperty("binary", new String(encoded.array(), StandardCharsets.UTF_8));
         sendMessage("write", params);
       }
+
+      @Override
+      public void close() throws IOException {
+        super.close();
+        sendMessage("close");
+      }
     };
   }
 }

@@ -57,7 +57,7 @@ public class TestWorkers extends TestBase {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       workerThisObj.getProperty("self");
     });
-    assertTrue(e.getMessage().contains("Target closed") || e.getMessage().contains("Worker was closed"), e.getMessage());
+    assertTrue(e.getMessage().contains("Target page, context or browser has been closed") || e.getMessage().contains("Worker was closed"), e.getMessage());
 
   }
 

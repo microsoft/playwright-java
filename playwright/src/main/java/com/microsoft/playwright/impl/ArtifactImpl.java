@@ -34,9 +34,6 @@ class ArtifactImpl extends ChannelOwner {
 
   public InputStream createReadStream() {
     JsonObject result = sendMessage("stream").getAsJsonObject();
-    if (!result.has("stream")) {
-      return null;
-    }
     Stream stream = connection.getExistingObject(result.getAsJsonObject("stream").get("guid").getAsString());
     return stream.stream();
   }

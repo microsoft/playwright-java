@@ -1,8 +1,7 @@
 package com.microsoft.playwright.impl;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
 import com.microsoft.playwright.APIRequestContext;
 import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.PlaywrightException;
@@ -11,6 +10,7 @@ import com.microsoft.playwright.options.FilePayload;
 import com.microsoft.playwright.options.RequestOptions;
 
 import java.io.File;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Base64;
@@ -85,11 +85,14 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
       byte[] bytes = null;
       if (options.data instanceof byte[]) {
         bytes = (byte[]) options.data;
-      } else if (options.data instanceof String && !isJsonContentType(options.headers)) {
-        bytes = ((String) options.data).getBytes(StandardCharsets.UTF_8);
+      } else if (options.data instanceof String) {
+        String stringData = (String) options.data;
+        if (!isJsonContentType(options.headers) || isJsonParsable(stringData)) {
+          bytes = (stringData).getBytes(StandardCharsets.UTF_8);
+        }
       }
       if (bytes == null) {
-        params.add("jsonData", gson().toJsonTree(options.data));
+        params.addProperty("jsonData", gson().toJson(options.data));
       } else {
         String base64 = Base64.getEncoder().encodeToString(bytes);
         params.addProperty("postData", base64);
@@ -201,5 +204,22 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
       impl.method = method;
     }
     return impl;
+  }
+
+  private static boolean isJsonParsable(String value) {
+    try {
+      JsonElement result = JsonParser.parseString(value);
+      if (result != null && result.isJsonPrimitive()) {
+        JsonPrimitive primitive = result.getAsJsonPrimitive();
+        if (primitive.isString() && value.equals(primitive.getAsString())) {
+          // Gson parses unquoted strings too, but we don't want to treat them
+          // as valid JSON.
+          return false;
+        }
+      }
+      return true;
+    } catch (JsonSyntaxException error) {
+      return false;
+    }
   }
 }

@@ -127,4 +127,15 @@ public class TestBrowser extends TestBase {
 
     session.detach();
   }
+
+  @Test
+  void shouldPropagateCloseReasonToPendingActions() {
+    Browser browser = browserType.launch();
+    BrowserContext context = browser.newContext();
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.waitForPage(() -> {
+      browser.close(new Browser.CloseOptions().setReason("The reason."));
+    }));
+    assertTrue(e.getMessage().contains("The reason."), e.getMessage());
+  }
+
 }

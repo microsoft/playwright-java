@@ -186,6 +186,20 @@ public interface BrowserContext extends AutoCloseable {
    */
   void offResponse(Consumer<Response> handler);
 
+  class CloseOptions {
+    /**
+     * The reason to be reported to the operations interrupted by the context closure.
+     */
+    public String reason;
+
+    /**
+     * The reason to be reported to the operations interrupted by the context closure.
+     */
+    public CloseOptions setReason(String reason) {
+      this.reason = reason;
+      return this;
+    }
+  }
   class ExposeBindingOptions {
     /**
      * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument is
@@ -504,7 +518,17 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @since v1.8
    */
-  void close();
+  default void close() {
+    close(null);
+  }
+  /**
+   * Closes the browser context. All the pages that belong to the browser context will be closed.
+   *
+   * <p> <strong>NOTE:</strong> The default browser context cannot be closed.
+   *
+   * @since v1.8
+   */
+  void close(CloseOptions options);
   /**
    * If no URLs are specified, this method returns all cookies. If URLs are specified, only cookies that affect those URLs
    * are returned.
