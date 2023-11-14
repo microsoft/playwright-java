@@ -247,6 +247,14 @@ public class TestLocatorAssertions extends TestBase {
   }
 
   @Test
+  void hasAttributeTextIgnoreCase() {
+    page.setContent("<div id=NoDe>Text content</div>");
+    Locator locator = page.locator("#NoDe");
+    assertThat(locator).hasAttribute("id", "node", new LocatorAssertions.HasAttributeOptions().setIgnoreCase(true));
+    assertThat(locator).not().hasAttribute("id", "node");
+  }
+
+  @Test
   void hasAttributeTextPass() {
     page.setContent("<div id=node>Text content</div>");
     Locator locator = page.locator("#node");

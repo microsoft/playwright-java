@@ -18,6 +18,8 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestElementHandleConvenience extends TestBase {
@@ -33,6 +35,17 @@ public class TestElementHandleConvenience extends TestBase {
     assertEquals("JSHandle@<div id=\"inner\">Text,↵more text</div>", inner.toString());
     assertEquals("JSHandle@#text=Text,↵more text", text.toString());
     assertEquals("JSHandle@<input checked id=\"check\" foo=\"bar\"\" type=\"checkbox\"/>", check.toString());
+  }
+
+  @Test
+  void shouldHaveANicePreviewForNonAsciiAttributesChildren() {
+    page.navigate(server.EMPTY_PAGE);
+    String text = String.join("", Collections.nCopies(100, "😛"));
+    page.setContent("<div title='" + text + "'>" + text + "</div>");
+    ElementHandle handle = page.querySelector("div");
+    context.waitForCondition(() -> "JSHandle@<div title=\"😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛…>😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛…</div>"
+        .equals(handle.toString()), new BrowserContext.WaitForConditionOptions().setTimeout(5_000));
+    assertEquals("JSHandle@<div title=\"😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛…>😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛😛…</div>", handle.toString());
   }
 
   @Test

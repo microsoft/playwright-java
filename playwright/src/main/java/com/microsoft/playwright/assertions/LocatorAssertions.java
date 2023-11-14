@@ -255,10 +255,23 @@ public interface LocatorAssertions {
   }
   class HasAttributeOptions {
     /**
+     * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
+     * expression flag if specified.
+     */
+    public Boolean ignoreCase;
+    /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public Double timeout;
 
+    /**
+     * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
+     * expression flag if specified.
+     */
+    public HasAttributeOptions setIgnoreCase(boolean ignoreCase) {
+      this.ignoreCase = ignoreCase;
+      return this;
+    }
     /**
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
@@ -713,6 +726,11 @@ public interface LocatorAssertions {
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
    * value as well.
    *
+   * <p> **Details**
+   *
+   * <p> When {@code expected} parameter is a string, Playwright will normalize whitespaces and line breaks both in the actual
+   * text and in the expected string before matching. When regular expression is used, the actual text is matched as is.
+   *
    * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).containsText("substring");
@@ -753,6 +771,11 @@ public interface LocatorAssertions {
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
    * value as well.
    *
+   * <p> **Details**
+   *
+   * <p> When {@code expected} parameter is a string, Playwright will normalize whitespaces and line breaks both in the actual
+   * text and in the expected string before matching. When regular expression is used, the actual text is matched as is.
+   *
    * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).containsText("substring");
@@ -790,6 +813,11 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
    * value as well.
+   *
+   * <p> **Details**
+   *
+   * <p> When {@code expected} parameter is a string, Playwright will normalize whitespaces and line breaks both in the actual
+   * text and in the expected string before matching. When regular expression is used, the actual text is matched as is.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -831,6 +859,11 @@ public interface LocatorAssertions {
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
    * value as well.
    *
+   * <p> **Details**
+   *
+   * <p> When {@code expected} parameter is a string, Playwright will normalize whitespaces and line breaks both in the actual
+   * text and in the expected string before matching. When regular expression is used, the actual text is matched as is.
+   *
    * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).containsText("substring");
@@ -868,6 +901,11 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
    * value as well.
+   *
+   * <p> **Details**
+   *
+   * <p> When {@code expected} parameter is a string, Playwright will normalize whitespaces and line breaks both in the actual
+   * text and in the expected string before matching. When regular expression is used, the actual text is matched as is.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -909,6 +947,11 @@ public interface LocatorAssertions {
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
    * value as well.
    *
+   * <p> **Details**
+   *
+   * <p> When {@code expected} parameter is a string, Playwright will normalize whitespaces and line breaks both in the actual
+   * text and in the expected string before matching. When regular expression is used, the actual text is matched as is.
+   *
    * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).containsText("substring");
@@ -946,6 +989,11 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
    * value as well.
+   *
+   * <p> **Details**
+   *
+   * <p> When {@code expected} parameter is a string, Playwright will normalize whitespaces and line breaks both in the actual
+   * text and in the expected string before matching. When regular expression is used, the actual text is matched as is.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -986,6 +1034,11 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
    * value as well.
+   *
+   * <p> **Details**
+   *
+   * <p> When {@code expected} parameter is a string, Playwright will normalize whitespaces and line breaks both in the actual
+   * text and in the expected string before matching. When regular expression is used, the actual text is matched as is.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1405,6 +1458,11 @@ public interface LocatorAssertions {
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
    * well.
    *
+   * <p> **Details**
+   *
+   * <p> When {@code expected} parameter is a string, Playwright will normalize whitespaces and line breaks both in the actual
+   * text and in the expected string before matching. When regular expression is used, the actual text is matched as is.
+   *
    * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).hasText("Welcome, Test User");
@@ -1445,6 +1503,11 @@ public interface LocatorAssertions {
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
    * well.
    *
+   * <p> **Details**
+   *
+   * <p> When {@code expected} parameter is a string, Playwright will normalize whitespaces and line breaks both in the actual
+   * text and in the expected string before matching. When regular expression is used, the actual text is matched as is.
+   *
    * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).hasText("Welcome, Test User");
@@ -1482,6 +1545,11 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
    * well.
+   *
+   * <p> **Details**
+   *
+   * <p> When {@code expected} parameter is a string, Playwright will normalize whitespaces and line breaks both in the actual
+   * text and in the expected string before matching. When regular expression is used, the actual text is matched as is.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1523,6 +1591,11 @@ public interface LocatorAssertions {
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
    * well.
    *
+   * <p> **Details**
+   *
+   * <p> When {@code expected} parameter is a string, Playwright will normalize whitespaces and line breaks both in the actual
+   * text and in the expected string before matching. When regular expression is used, the actual text is matched as is.
+   *
    * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).hasText("Welcome, Test User");
@@ -1560,6 +1633,11 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
    * well.
+   *
+   * <p> **Details**
+   *
+   * <p> When {@code expected} parameter is a string, Playwright will normalize whitespaces and line breaks both in the actual
+   * text and in the expected string before matching. When regular expression is used, the actual text is matched as is.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1601,6 +1679,11 @@ public interface LocatorAssertions {
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
    * well.
    *
+   * <p> **Details**
+   *
+   * <p> When {@code expected} parameter is a string, Playwright will normalize whitespaces and line breaks both in the actual
+   * text and in the expected string before matching. When regular expression is used, the actual text is matched as is.
+   *
    * <p> **Usage**
    * <pre>{@code
    * assertThat(page.locator(".title")).hasText("Welcome, Test User");
@@ -1638,6 +1721,11 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
    * well.
+   *
+   * <p> **Details**
+   *
+   * <p> When {@code expected} parameter is a string, Playwright will normalize whitespaces and line breaks both in the actual
+   * text and in the expected string before matching. When regular expression is used, the actual text is matched as is.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -1678,6 +1766,11 @@ public interface LocatorAssertions {
   /**
    * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
    * well.
+   *
+   * <p> **Details**
+   *
+   * <p> When {@code expected} parameter is a string, Playwright will normalize whitespaces and line breaks both in the actual
+   * text and in the expected string before matching. When regular expression is used, the actual text is matched as is.
    *
    * <p> **Usage**
    * <pre>{@code
