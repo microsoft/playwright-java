@@ -144,7 +144,7 @@ public class TestBrowserContextBasic extends TestBase {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> {
       context.waitForPage(() -> context.close());
     });
-    assertTrue(e.getMessage().contains("Context closed"));
+    assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
   }
 
   @Test
@@ -281,7 +281,7 @@ public class TestBrowserContextBasic extends TestBase {
         context.close();
         return false;
       }));
-    assertTrue(e.getMessage().contains("Context closed"), e.getMessage());
+    assertTrue(e.getMessage().contains("Target page, context or browser has been closed"), e.getMessage());
   }
 
   @Test
