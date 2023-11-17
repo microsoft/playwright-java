@@ -19,7 +19,7 @@ import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.convertType;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
-class LocatorImpl implements Locator {
+public class LocatorImpl implements Locator {
   final FrameImpl frame;
   final String selector;
 
