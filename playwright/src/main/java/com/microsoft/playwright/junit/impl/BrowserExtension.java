@@ -4,6 +4,7 @@ import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.impl.Utils;
 import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
@@ -41,7 +42,6 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
     Playwright playwright = PlaywrightExtension.getOrCreatePlaywright(extensionContext);
     BrowserType.LaunchOptions launchOptions = getLaunchOptions(options);
 
-
     switch (options.getBrowserName()) {
       case "webkit":
         browser = playwright.webkit().launch(launchOptions);
@@ -61,7 +61,7 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
   }
 
   private static BrowserType.LaunchOptions getLaunchOptions(Options options) {
-    BrowserType.LaunchOptions launchOptions = options.getLaunchOptions();
+    BrowserType.LaunchOptions launchOptions = Utils.clone(options.getLaunchOptions());
     if (launchOptions == null) {
       launchOptions = new BrowserType.LaunchOptions();
     }

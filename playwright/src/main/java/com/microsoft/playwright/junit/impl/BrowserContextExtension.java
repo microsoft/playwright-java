@@ -2,8 +2,11 @@ package com.microsoft.playwright.junit.impl;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.impl.Utils;
 import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
+
+import javax.rmi.CORBA.Util;
 
 import static com.microsoft.playwright.junit.impl.ExtensionUtils.*;
 
@@ -21,7 +24,7 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
 
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    return isParameterSupported(parameterContext, extensionContext, BrowserContext.class);
+    return !isClassHook(extensionContext) && isParameterSupported(parameterContext, extensionContext, BrowserContext.class);
   }
 
   @Override
@@ -44,7 +47,7 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
   }
 
   private static Browser.NewContextOptions getContextOptions(Options options) {
-    Browser.NewContextOptions contextOptions = options.getContextOption();
+    Browser.NewContextOptions contextOptions = Utils.clone(options.getContextOption());
     if(contextOptions == null) {
       contextOptions = new Browser.NewContextOptions();
     }

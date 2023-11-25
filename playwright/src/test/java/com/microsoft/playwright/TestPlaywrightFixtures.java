@@ -14,6 +14,7 @@ public class TestPlaywrightFixtures {
   private static Browser browserFromBeforeAll;
   private BrowserContext browserContextFromBeforeEach;
   private Page pageFromBeforeEach;
+  private APIRequestContext apiRequestContextFromBeforeEach;
 
   @BeforeAll
   public static void beforeAll(Playwright playwright, Browser browser) {
@@ -25,13 +26,15 @@ public class TestPlaywrightFixtures {
   }
 
   @BeforeEach
-  public void beforeEach(Playwright playwright, Browser browser, BrowserContext browserContext, Page page) {
+  public void beforeEach(Playwright playwright, Browser browser, BrowserContext browserContext, Page page, APIRequestContext apiRequestContext) {
     assertEquals(playwrightFromBeforeAll, playwright);
     assertEquals(browserFromBeforeAll, browser);
     assertNotNull(browserContext);
     assertNotNull(page);
+    assertNotNull(apiRequestContext);
     browserContextFromBeforeEach = browserContext;
     pageFromBeforeEach = page;
+    apiRequestContextFromBeforeEach = apiRequestContext;
   }
 
   @Test
@@ -41,8 +44,9 @@ public class TestPlaywrightFixtures {
   }
 
   @Test
-  public void objectShouldBeSameAsBeforeEach(BrowserContext browserContext, Page page) {
+  public void objectShouldBeSameAsBeforeEach(BrowserContext browserContext, Page page, APIRequestContext apiRequestContext) {
     assertEquals(browserContextFromBeforeEach, browserContext);
     assertEquals(pageFromBeforeEach, page);
+    assertEquals(apiRequestContextFromBeforeEach, apiRequestContext);
   }
 }

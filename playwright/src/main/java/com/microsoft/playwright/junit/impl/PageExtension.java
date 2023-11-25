@@ -19,7 +19,7 @@ public class PageExtension implements ParameterResolver, AfterEachCallback {
 
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    return isParameterSupported(parameterContext, extensionContext, Page.class);
+    return !isClassHook(extensionContext) && isParameterSupported(parameterContext, extensionContext, Page.class);
   }
 
   @Override

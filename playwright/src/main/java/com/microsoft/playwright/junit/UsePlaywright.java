@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @ExtendWith({OptionsExtension.class, PlaywrightExtension.class, BrowserExtension.class, BrowserContextExtension.class,
-             PageExtension.class})
+             PageExtension.class, APIRequestContextExtension.class})
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface UsePlaywright {

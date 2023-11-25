@@ -9,16 +9,16 @@ import com.microsoft.playwright.options.ViewportSize;
 import java.nio.file.Path;
 
 public class Options {
-  private String baseUrl;
-  private Path storageStatePath;
-  private ViewportSize viewportSize;
-  private String channel;
-  private Boolean headless;
-  private String browserName = "chromium";
-  private BrowserType.LaunchOptions launchOptions;
-  private Browser.NewContextOptions contextOption;
-  private APIRequest.NewContextOptions apiRequestOptions;
-  private Playwright.CreateOptions playwrightCreateOptions;
+  public String baseUrl;
+  public Path storageStatePath;
+  public ViewportSize viewportSize;
+  public String channel;
+  public Boolean headless;
+  public String browserName = "chromium";
+  public BrowserType.LaunchOptions launchOptions;
+  public Browser.NewContextOptions contextOption;
+  public APIRequest.NewContextOptions apiRequestOptions;
+  public Playwright.CreateOptions playwrightCreateOptions;
 
   public Playwright.CreateOptions getPlaywrightCreateOptions() {
     return playwrightCreateOptions;
