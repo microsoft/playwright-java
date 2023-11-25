@@ -4,15 +4,17 @@ import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
 import org.junit.jupiter.api.extension.*;
 
-import static com.microsoft.playwright.junit.impl.ExtensionUtils.*;
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.isClassHook;
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.isParameterSupported;
 
 public class PageExtension implements ParameterResolver, AfterEachCallback {
   private static final ThreadLocal<Page> threadLocalPage = new ThreadLocal<>();
+
   @Override
   public void afterEach(ExtensionContext extensionContext) {
     Page page = threadLocalPage.get();
     threadLocalPage.remove();
-    if(page != null) {
+    if (page != null) {
       page.close();
     }
   }
@@ -29,7 +31,7 @@ public class PageExtension implements ParameterResolver, AfterEachCallback {
 
   static Page getOrCreatePage(ExtensionContext extensionContext) {
     Page page = threadLocalPage.get();
-    if(page != null) {
+    if (page != null) {
       return page;
     }
 

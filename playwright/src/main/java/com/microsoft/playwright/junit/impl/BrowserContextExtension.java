@@ -6,9 +6,8 @@ import com.microsoft.playwright.impl.Utils;
 import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
-import javax.rmi.CORBA.Util;
-
-import static com.microsoft.playwright.junit.impl.ExtensionUtils.*;
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.isClassHook;
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.isParameterSupported;
 
 public class BrowserContextExtension implements ParameterResolver, AfterEachCallback {
   private static final ThreadLocal<BrowserContext> threadLocalBrowserContext = new ThreadLocal<>();
@@ -34,7 +33,7 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
 
   static BrowserContext getOrCreateBrowserContext(ExtensionContext extensionContext) {
     BrowserContext browserContext = threadLocalBrowserContext.get();
-    if(browserContext != null) {
+    if (browserContext != null) {
       return browserContext;
     }
 
@@ -48,19 +47,19 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
 
   private static Browser.NewContextOptions getContextOptions(Options options) {
     Browser.NewContextOptions contextOptions = Utils.clone(options.getContextOption());
-    if(contextOptions == null) {
+    if (contextOptions == null) {
       contextOptions = new Browser.NewContextOptions();
     }
 
-    if(options.getBaseUrl() != null) {
+    if (options.getBaseUrl() != null) {
       contextOptions.setBaseURL(options.getBaseUrl());
     }
 
-    if(options.getStorageStatePath() != null) {
+    if (options.getStorageStatePath() != null) {
       contextOptions.setStorageStatePath(options.getStorageStatePath());
     }
 
-    if(options.getViewportSize() != null) {
+    if (options.getViewportSize() != null) {
       contextOptions.setViewportSize(options.getViewportSize());
     }
 
