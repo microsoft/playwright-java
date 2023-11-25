@@ -2,11 +2,8 @@ package com.microsoft.playwright.junit.impl;
 
 import com.microsoft.playwright.APIRequestContext;
 import com.microsoft.playwright.Playwright;
-import com.microsoft.playwright.impl.Utils;
 import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
-
-import javax.rmi.CORBA.Util;
 
 import static com.microsoft.playwright.junit.impl.ExtensionUtils.isClassHook;
 import static com.microsoft.playwright.junit.impl.ExtensionUtils.isParameterSupported;
@@ -31,7 +28,7 @@ public class APIRequestContextExtension implements ParameterResolver, AfterEachC
 
   static APIRequestContext getOrCreateAPIRequestContext(ExtensionContext extensionContext) {
     APIRequestContext apiRequestContext = threadLocalAPIRequestContext.get();
-    if(apiRequestContext != null) {
+    if (apiRequestContext != null) {
       return apiRequestContext;
     }
 
