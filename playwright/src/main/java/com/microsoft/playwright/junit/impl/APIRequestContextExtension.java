@@ -5,20 +5,19 @@ import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
-import static com.microsoft.playwright.junit.impl.ExtensionUtils.isClassHook;
 import static com.microsoft.playwright.junit.impl.ExtensionUtils.isParameterSupported;
 
-public class APIRequestContextExtension implements ParameterResolver, AfterEachCallback {
+public class APIRequestContextExtension implements ParameterResolver, AfterAllCallback {
   private static final ThreadLocal<APIRequestContext> threadLocalAPIRequestContext = new ThreadLocal<>();
 
   @Override
-  public void afterEach(ExtensionContext extensionContext) {
+  public void afterAll(ExtensionContext extensionContext) {
     threadLocalAPIRequestContext.remove();
   }
 
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    return !isClassHook(extensionContext) && isParameterSupported(parameterContext, extensionContext, APIRequestContext.class);
+    return isParameterSupported(parameterContext, extensionContext, APIRequestContext.class);
   }
 
   @Override

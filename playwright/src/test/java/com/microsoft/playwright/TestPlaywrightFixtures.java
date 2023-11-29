@@ -14,39 +14,40 @@ public class TestPlaywrightFixtures {
   private static Browser browserFromBeforeAll;
   private BrowserContext browserContextFromBeforeEach;
   private Page pageFromBeforeEach;
-  private APIRequestContext apiRequestContextFromBeforeEach;
+  private static APIRequestContext apiRequestContextFromBeforeAll;
 
   @BeforeAll
-  public static void beforeAll(Playwright playwright, Browser browser) {
+  public static void beforeAll(Playwright playwright, Browser browser, APIRequestContext apiRequestContext) {
     assertNotNull(playwright);
     assertNotNull(browser);
+    assertNotNull(apiRequestContext);
 
     playwrightFromBeforeAll = playwright;
     browserFromBeforeAll = browser;
+    apiRequestContextFromBeforeAll = apiRequestContext;
   }
 
   @BeforeEach
   public void beforeEach(Playwright playwright, Browser browser, BrowserContext browserContext, Page page, APIRequestContext apiRequestContext) {
     assertEquals(playwrightFromBeforeAll, playwright);
     assertEquals(browserFromBeforeAll, browser);
+    assertEquals(apiRequestContextFromBeforeAll, apiRequestContext);
     assertNotNull(browserContext);
     assertNotNull(page);
-    assertNotNull(apiRequestContext);
     browserContextFromBeforeEach = browserContext;
     pageFromBeforeEach = page;
-    apiRequestContextFromBeforeEach = apiRequestContext;
   }
 
   @Test
-  public void objectShouldBeSameAsBeforeAll(Playwright playwright, Browser browser) {
+  public void objectShouldBeSameAsBeforeAll(Playwright playwright, Browser browser, APIRequestContext apiRequestContext) {
     assertEquals(playwrightFromBeforeAll, playwright);
     assertEquals(browserFromBeforeAll, browser);
+    assertEquals(apiRequestContextFromBeforeAll, apiRequestContext);
   }
 
   @Test
-  public void objectShouldBeSameAsBeforeEach(BrowserContext browserContext, Page page, APIRequestContext apiRequestContext) {
+  public void objectShouldBeSameAsBeforeEach(BrowserContext browserContext, Page page) {
     assertEquals(browserContextFromBeforeEach, browserContext);
     assertEquals(pageFromBeforeEach, page);
-    assertEquals(apiRequestContextFromBeforeEach, apiRequestContext);
   }
 }
