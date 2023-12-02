@@ -7,8 +7,13 @@ import org.junit.jupiter.api.extension.*;
 
 import static com.microsoft.playwright.junit.impl.ExtensionUtils.isParameterSupported;
 
-public class APIRequestContextExtension implements ParameterResolver, AfterAllCallback {
+public class APIRequestContextExtension implements ParameterResolver, BeforeEachCallback, AfterAllCallback {
   private static final ThreadLocal<APIRequestContext> threadLocalAPIRequestContext = new ThreadLocal<>();
+
+  @Override
+  public void beforeEach(ExtensionContext extensionContext) {
+    threadLocalAPIRequestContext.remove();
+  }
 
   @Override
   public void afterAll(ExtensionContext extensionContext) {
