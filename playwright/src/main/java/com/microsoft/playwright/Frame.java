@@ -1470,8 +1470,14 @@ public interface Frame {
   }
   class LocatorOptions {
     /**
-     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
-     * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     * Narrows down the results of the method to those which contain elements matching this relative locator. For example,
+     * {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     *
+     * <p> Inner locator **must be relative** to the outer locator and is queried starting with the outer locator match, not the
+     * document root. For example, you can find {@code content} that has {@code div} in {@code
+     * <article><content><div>Playwright</div></content></article>}. However, looking for {@code content} that has {@code
+     * article div} will fail, because the inner locator must be relative and should not use any elements outside the {@code
+     * content}.
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
@@ -1497,8 +1503,14 @@ public interface Frame {
     public Object hasText;
 
     /**
-     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
-     * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     * Narrows down the results of the method to those which contain elements matching this relative locator. For example,
+     * {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     *
+     * <p> Inner locator **must be relative** to the outer locator and is queried starting with the outer locator match, not the
+     * document root. For example, you can find {@code content} that has {@code div} in {@code
+     * <article><content><div>Playwright</div></content></article>}. However, looking for {@code content} that has {@code
+     * article div} will fail, because the inner locator must be relative and should not use any elements outside the {@code
+     * content}.
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */

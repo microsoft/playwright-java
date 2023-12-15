@@ -569,6 +569,14 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
+  public void unrouteAll() {
+    withLogging("BrowserContext.unrouteAll", () -> {
+      routes.removeAll();
+      updateInterceptionPatterns();
+    });
+  }
+
+  @Override
   public void unroute(String url, Consumer<Route> handler) {
     unroute(new UrlMatcher(this.baseUrl, url), handler);
   }

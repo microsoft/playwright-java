@@ -1261,6 +1261,13 @@ public interface BrowserContext extends AutoCloseable {
    */
   Tracing tracing();
   /**
+   * Removes all routes created with {@link BrowserContext#route BrowserContext.route()} and {@link
+   * BrowserContext#routeFromHAR BrowserContext.routeFromHAR()}.
+   *
+   * @since v1.41
+   */
+  void unrouteAll();
+  /**
    * Removes a route created with {@link BrowserContext#route BrowserContext.route()}. When {@code handler} is not specified,
    * removes all routes for the {@code url}.
    *

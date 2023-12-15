@@ -165,8 +165,10 @@ public interface BrowserType {
   }
   class LaunchOptions {
     /**
-     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
-     * href="http://peter.sh/experiments/chromium-command-line-switches/">here</a>.
+     * <strong>NOTE:</strong> Use custom browser args at your own risk, as some of them may break Playwright functionality.
+     *
+     * <p> Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
+     * href="https://peter.sh/experiments/chromium-command-line-switches/">here</a>.
      */
     public List<String> args;
     /**
@@ -253,8 +255,10 @@ public interface BrowserType {
     public Path tracesDir;
 
     /**
-     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
-     * href="http://peter.sh/experiments/chromium-command-line-switches/">here</a>.
+     * <strong>NOTE:</strong> Use custom browser args at your own risk, as some of them may break Playwright functionality.
+     *
+     * <p> Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
+     * href="https://peter.sh/experiments/chromium-command-line-switches/">here</a>.
      */
     public LaunchOptions setArgs(List<String> args) {
       this.args = args;
@@ -416,8 +420,10 @@ public interface BrowserType {
      */
     public Boolean acceptDownloads;
     /**
-     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
-     * href="http://peter.sh/experiments/chromium-command-line-switches/">here</a>.
+     * <strong>NOTE:</strong> Use custom browser args at your own risk, as some of them may break Playwright functionality.
+     *
+     * <p> Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
+     * href="https://peter.sh/experiments/chromium-command-line-switches/">here</a>.
      */
     public List<String> args;
     /**
@@ -675,8 +681,10 @@ public interface BrowserType {
       return this;
     }
     /**
-     * Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
-     * href="http://peter.sh/experiments/chromium-command-line-switches/">here</a>.
+     * <strong>NOTE:</strong> Use custom browser args at your own risk, as some of them may break Playwright functionality.
+     *
+     * <p> Additional arguments to pass to the browser instance. The list of Chromium flags can be found <a
+     * href="https://peter.sh/experiments/chromium-command-line-switches/">here</a>.
      */
     public LaunchPersistentContextOptions setArgs(List<String> args) {
       this.args = args;

@@ -635,6 +635,12 @@ public interface ElementHandle extends JSHandle {
      */
     public ScreenshotScale scale;
     /**
+     * Text of the stylesheet to apply while making the screenshot. This is where you can hide dynamic elements, make elements
+     * invisible or change their properties to help you creating repeatable screenshots. This stylesheet pierces the Shadow DOM
+     * and applies to the inner frames.
+     */
+    public String style;
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
@@ -717,6 +723,15 @@ public interface ElementHandle extends JSHandle {
      */
     public ScreenshotOptions setScale(ScreenshotScale scale) {
       this.scale = scale;
+      return this;
+    }
+    /**
+     * Text of the stylesheet to apply while making the screenshot. This is where you can hide dynamic elements, make elements
+     * invisible or change their properties to help you creating repeatable screenshots. This stylesheet pierces the Shadow DOM
+     * and applies to the inner frames.
+     */
+    public ScreenshotOptions setStyle(String style) {
+      this.style = style;
       return this;
     }
     /**
