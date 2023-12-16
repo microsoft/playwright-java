@@ -236,8 +236,17 @@ public class TestBrowserContextBasic extends TestBase {
   void shouldWorkWithOfflineOption() {
     BrowserContext context = browser.newContext(new Browser.NewContextOptions().setOffline(true));
     Page page = context.newPage();
-    assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
-
+    if (isFirefox()) {
+      // Firefox navigates to an error page, and this navigation might conflict with the
+      // next navigation we do in test.
+      // So we need to wait for the navigation explicitly.
+      boolean[] frameNavigated = { false };
+      page.onFrameNavigated(frame -> frameNavigated[0] = true);
+      assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
+      page.waitForCondition(() -> frameNavigated[0], new Page.WaitForConditionOptions().setTimeout(10_000));
+    } else {
+      assertThrows(PlaywrightException.class, () -> page.navigate(server.EMPTY_PAGE));
+    }
     context.setOffline(false);
     Response response = page.navigate(server.EMPTY_PAGE);
     assertEquals(200, response.status());
