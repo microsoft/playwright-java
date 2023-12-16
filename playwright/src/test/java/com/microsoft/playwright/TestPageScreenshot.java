@@ -253,7 +253,7 @@ public class TestPageScreenshot extends TestBase {
   }
 
   @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebkit", disabledReason="array lengths differ")
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="array lengths differ")
   void shouldHideElementsBasedOnAttr() throws IOException {
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");
@@ -269,7 +269,7 @@ public class TestPageScreenshot extends TestBase {
   }
 
   @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebkit", disabledReason="array lengths differ")
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="array lengths differ")
   void shouldRemoveElementsBasedOnAttr() throws IOException {
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");
