@@ -1924,8 +1924,14 @@ public interface Page extends AutoCloseable {
   }
   class LocatorOptions {
     /**
-     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
-     * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     * Narrows down the results of the method to those which contain elements matching this relative locator. For example,
+     * {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     *
+     * <p> Inner locator **must be relative** to the outer locator and is queried starting with the outer locator match, not the
+     * document root. For example, you can find {@code content} that has {@code div} in {@code
+     * <article><content><div>Playwright</div></content></article>}. However, looking for {@code content} that has {@code
+     * article div} will fail, because the inner locator must be relative and should not use any elements outside the {@code
+     * content}.
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
@@ -1951,8 +1957,14 @@ public interface Page extends AutoCloseable {
     public Object hasText;
 
     /**
-     * Matches elements containing an element that matches an inner locator. Inner locator is queried against the outer one.
-     * For example, {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     * Narrows down the results of the method to those which contain elements matching this relative locator. For example,
+     * {@code article} that has {@code text=Playwright} matches {@code <article><div>Playwright</div></article>}.
+     *
+     * <p> Inner locator **must be relative** to the outer locator and is queried starting with the outer locator match, not the
+     * document root. For example, you can find {@code content} that has {@code div} in {@code
+     * <article><content><div>Playwright</div></content></article>}. However, looking for {@code content} that has {@code
+     * article div} will fail, because the inner locator must be relative and should not use any elements outside the {@code
+     * content}.
      *
      * <p> Note that outer and inner locators must belong to the same frame. Inner locator must not contain {@code FrameLocator}s.
      */
@@ -2451,6 +2463,12 @@ public interface Page extends AutoCloseable {
      */
     public ScreenshotScale scale;
     /**
+     * Text of the stylesheet to apply while making the screenshot. This is where you can hide dynamic elements, make elements
+     * invisible or change their properties to help you creating repeatable screenshots. This stylesheet pierces the Shadow DOM
+     * and applies to the inner frames.
+     */
+    public String style;
+    /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
      * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
      * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
@@ -2554,6 +2572,15 @@ public interface Page extends AutoCloseable {
      */
     public ScreenshotOptions setScale(ScreenshotScale scale) {
       this.scale = scale;
+      return this;
+    }
+    /**
+     * Text of the stylesheet to apply while making the screenshot. This is where you can hide dynamic elements, make elements
+     * invisible or change their properties to help you creating repeatable screenshots. This stylesheet pierces the Shadow DOM
+     * and applies to the inner frames.
+     */
+    public ScreenshotOptions setStyle(String style) {
+      this.style = style;
       return this;
     }
     /**
@@ -7030,6 +7057,12 @@ public interface Page extends AutoCloseable {
    * @since v1.8
    */
   void uncheck(String selector, UncheckOptions options);
+  /**
+   * Removes all routes created with {@link Page#route Page.route()} and {@link Page#routeFromHAR Page.routeFromHAR()}.
+   *
+   * @since v1.41
+   */
+  void unrouteAll();
   /**
    * Removes a route created with {@link Page#route Page.route()}. When {@code handler} is not specified, removes all routes
    * for the {@code url}.

@@ -374,17 +374,9 @@ public class TestPageKeyboard extends TestBase {
     JSHandle lastEvent = captureLastKeyDown();
     page.keyboard().press("Meta");
     LinkedHashMap eventData = (LinkedHashMap) lastEvent.jsonValue();
-    if (isFirefox() && !isMac) {
-      assertEquals("OS", eventData.get("key"));
-    } else {
-      assertEquals("Meta", eventData.get("key"));
-    }
+    assertEquals("Meta", eventData.get("key"));
     assertEquals("MetaLeft", eventData.get("code"));
-    if (isFirefox() && !isMac) {
-      assertFalse((Boolean) eventData.get("metaKey"), eventData.toString());
-    } else {
-      assertTrue((Boolean) eventData.get("metaKey"), eventData.toString());
-    }
+    assertTrue((Boolean) eventData.get("metaKey"), eventData.toString());
   }
 
   @Test

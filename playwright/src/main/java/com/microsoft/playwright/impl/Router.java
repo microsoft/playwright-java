@@ -66,8 +66,8 @@ class Router {
       .collect(Collectors.toList());
   }
 
-  int size() {
-    return routes.size();
+  void removeAll() {
+    routes.clear();
   }
 
   enum HandleResult { NoMatchingHandler, Handled, Fallback, PendingHandler }

@@ -1227,6 +1227,14 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public void unrouteAll() {
+    withLogging("Page.unrouteAll", () -> {
+      routes.removeAll();
+      updateInterceptionPatterns();
+    });
+  }
+
+  @Override
   public void unroute(String url, Consumer<Route> handler) {
     unroute(new UrlMatcher(browserContext.baseUrl, url), handler);
   }

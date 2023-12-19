@@ -28,7 +28,10 @@ import org.opentest4j.AssertionFailedError;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
@@ -249,4 +252,40 @@ public class TestPageScreenshot extends TestBase {
     assertThrows(AssertionError.class, () -> assertArrayEquals(screenshot1, screenshot2));
   }
 
+  @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="array lengths differ")
+  void shouldHideElementsBasedOnAttr() throws IOException {
+    page.setViewportSize(500, 500);
+    page.navigate(server.PREFIX + "/grid.html");
+    page.locator("div").nth(5).evaluate("element => {\n" +
+      "  element.setAttribute('data-test-screenshot', 'hide');\n" +
+      "}");
+    byte[] actual = page.screenshot(new Page.ScreenshotOptions().setStyle("[data-test-screenshot=\"hide\"] {\n" +
+      "          visibility: hidden;\n" +
+      "        }"));
+    assertArrayEquals(expectedScreenshot("hide-should-work"), actual, "Screenshots should match");
+    Object visibility = page.locator("div").nth(5).evaluate("element => element.style.visibility");
+    assertEquals("", visibility);
+  }
+
+  @Test
+  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="array lengths differ")
+  void shouldRemoveElementsBasedOnAttr() throws IOException {
+    page.setViewportSize(500, 500);
+    page.navigate(server.PREFIX + "/grid.html");
+    page.locator("div").nth(5).evaluate("element => {\n" +
+      "        element.setAttribute('data-test-screenshot', 'remove');\n" +
+      "      }");
+    byte[] actual = page.screenshot(new Page.ScreenshotOptions().setStyle("[data-test-screenshot=\"remove\"] {\n" +
+      "          display: none;\n" +
+      "        }"));
+    assertArrayEquals(expectedScreenshot("remove-should-work"), actual, "Screenshots should match");
+    Object display = page.locator("div").nth(5).evaluate("element => element.style.display");
+    assertEquals("", display);
+  }
+
+  private byte[] expectedScreenshot(String name) throws IOException {
+    Path path = Paths.get("src/test/resources/expectations");
+    return Files.readAllBytes(path.resolve(name + "-" + browserType.name() + ".png"));
+  }
 }
