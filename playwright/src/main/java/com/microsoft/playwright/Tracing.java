@@ -38,8 +38,9 @@ import java.nio.file.Path;
 public interface Tracing {
   class StartOptions {
     /**
-     * If specified, the trace is going to be saved into the file with the given name inside the {@code tracesDir} folder
-     * specified in {@link BrowserType#launch BrowserType.launch()}.
+     * If specified, intermediate trace files are going to be saved into the files with the given name prefix inside the {@code
+     * tracesDir} folder specified in {@link BrowserType#launch BrowserType.launch()}. To specify the final trace zip file
+     * name, you need to pass {@code path} option to {@link Tracing#stop Tracing.stop()} instead.
      */
     public String name;
     /**
@@ -66,8 +67,9 @@ public interface Tracing {
     public String title;
 
     /**
-     * If specified, the trace is going to be saved into the file with the given name inside the {@code tracesDir} folder
-     * specified in {@link BrowserType#launch BrowserType.launch()}.
+     * If specified, intermediate trace files are going to be saved into the files with the given name prefix inside the {@code
+     * tracesDir} folder specified in {@link BrowserType#launch BrowserType.launch()}. To specify the final trace zip file
+     * name, you need to pass {@code path} option to {@link Tracing#stop Tracing.stop()} instead.
      */
     public StartOptions setName(String name) {
       this.name = name;
@@ -110,8 +112,9 @@ public interface Tracing {
   }
   class StartChunkOptions {
     /**
-     * If specified, the trace is going to be saved into the file with the given name inside the {@code tracesDir} folder
-     * specified in {@link BrowserType#launch BrowserType.launch()}.
+     * If specified, intermediate trace files are going to be saved into the files with the given name prefix inside the {@code
+     * tracesDir} folder specified in {@link BrowserType#launch BrowserType.launch()}. To specify the final trace zip file
+     * name, you need to pass {@code path} option to {@link Tracing#stopChunk Tracing.stopChunk()} instead.
      */
     public String name;
     /**
@@ -120,8 +123,9 @@ public interface Tracing {
     public String title;
 
     /**
-     * If specified, the trace is going to be saved into the file with the given name inside the {@code tracesDir} folder
-     * specified in {@link BrowserType#launch BrowserType.launch()}.
+     * If specified, intermediate trace files are going to be saved into the files with the given name prefix inside the {@code
+     * tracesDir} folder specified in {@link BrowserType#launch BrowserType.launch()}. To specify the final trace zip file
+     * name, you need to pass {@code path} option to {@link Tracing#stopChunk Tracing.stopChunk()} instead.
      */
     public StartChunkOptions setName(String name) {
       this.name = name;

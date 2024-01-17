@@ -2546,8 +2546,7 @@ public interface ElementHandle extends JSHandle {
    * <li> {@code "visible"} Wait until the element is <a
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.</li>
    * <li> {@code "hidden"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#visible">not
-   * visible</a> or <a href="https://playwright.dev/java/docs/actionability#attached">not attached</a>. Note that waiting for
-   * hidden does not throw when the element detaches.</li>
+   * visible</a> or not attached. Note that waiting for hidden does not throw when the element detaches.</li>
    * <li> {@code "stable"} Wait until the element is both <a
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a> and <a
    * href="https://playwright.dev/java/docs/actionability#stable">stable</a>.</li>
@@ -2577,8 +2576,7 @@ public interface ElementHandle extends JSHandle {
    * <li> {@code "visible"} Wait until the element is <a
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.</li>
    * <li> {@code "hidden"} Wait until the element is <a href="https://playwright.dev/java/docs/actionability#visible">not
-   * visible</a> or <a href="https://playwright.dev/java/docs/actionability#attached">not attached</a>. Note that waiting for
-   * hidden does not throw when the element detaches.</li>
+   * visible</a> or not attached. Note that waiting for hidden does not throw when the element detaches.</li>
    * <li> {@code "stable"} Wait until the element is both <a
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a> and <a
    * href="https://playwright.dev/java/docs/actionability#stable">stable</a>.</li>
