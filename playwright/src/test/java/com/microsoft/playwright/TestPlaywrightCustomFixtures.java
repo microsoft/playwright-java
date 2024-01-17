@@ -1,6 +1,7 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.junit.Options;
+import com.microsoft.playwright.junit.OptionsFactory;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.Test;
 
@@ -9,17 +10,12 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@UsePlaywright(options = TestPlaywrightCustomFixtures.CustomOptions.class)
+@UsePlaywright(TestPlaywrightCustomFixtures.CustomOptions.class)
 public class TestPlaywrightCustomFixtures {
-  public static class CustomOptions extends Options {
+  public static class CustomOptions implements OptionsFactory {
     @Override
-    public String getBaseUrl() {
-      return "https://bing.com";
-    }
-
-    @Override
-    public String getBrowserName() {
-      return "firefox";
+    public Options getOptions() {
+      return new Options().setBaseUrl("https://bing.com").setBrowserName("firefox");
     }
   }
 
