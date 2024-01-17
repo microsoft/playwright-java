@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.toJsonArray;
 
-public class Utils {
+class Utils {
   static <F, T> T convertType(F f, Class<T> t) {
     if (f == null) {
       return null;
@@ -80,7 +80,7 @@ public class Utils {
     }
   }
 
-  public static <T> T clone(T f) {
+  static <T> T clone(T f) {
     if (f == null) {
       return f;
     }
