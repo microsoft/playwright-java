@@ -42,6 +42,19 @@ public interface FormData {
   }
   /**
    * Sets a field on the form. File values can be passed either as {@code Path} or as {@code FilePayload}.
+   * <pre>{@code
+   * import com.microsoft.playwright.options.FormData;
+   * ...
+   * FormData form = FormData.create()
+   *     // Only name and value are set.
+   *     .set("firstName", "John")
+   *     // Name and value are set, filename and Content-Type are inferred from the file path.
+   *     .set("profilePicture1", Paths.get("john.jpg"))
+   *     // Name, value, filename and Content-Type are set.
+   *     .set("profilePicture2", new FilePayload("john.jpg", "image/jpeg", Files.readAllBytes(Paths.get("john.jpg"))));
+   *     .set("age", 30);
+   * page.request().post("http://localhost/submit", RequestOptions.create().setForm(form));
+   * }</pre>
    *
    * @param name Field name.
    * @param value Field value.
@@ -50,6 +63,19 @@ public interface FormData {
   FormData set(String name, String value);
   /**
    * Sets a field on the form. File values can be passed either as {@code Path} or as {@code FilePayload}.
+   * <pre>{@code
+   * import com.microsoft.playwright.options.FormData;
+   * ...
+   * FormData form = FormData.create()
+   *     // Only name and value are set.
+   *     .set("firstName", "John")
+   *     // Name and value are set, filename and Content-Type are inferred from the file path.
+   *     .set("profilePicture1", Paths.get("john.jpg"))
+   *     // Name, value, filename and Content-Type are set.
+   *     .set("profilePicture2", new FilePayload("john.jpg", "image/jpeg", Files.readAllBytes(Paths.get("john.jpg"))));
+   *     .set("age", 30);
+   * page.request().post("http://localhost/submit", RequestOptions.create().setForm(form));
+   * }</pre>
    *
    * @param name Field name.
    * @param value Field value.
@@ -58,6 +84,19 @@ public interface FormData {
   FormData set(String name, boolean value);
   /**
    * Sets a field on the form. File values can be passed either as {@code Path} or as {@code FilePayload}.
+   * <pre>{@code
+   * import com.microsoft.playwright.options.FormData;
+   * ...
+   * FormData form = FormData.create()
+   *     // Only name and value are set.
+   *     .set("firstName", "John")
+   *     // Name and value are set, filename and Content-Type are inferred from the file path.
+   *     .set("profilePicture1", Paths.get("john.jpg"))
+   *     // Name, value, filename and Content-Type are set.
+   *     .set("profilePicture2", new FilePayload("john.jpg", "image/jpeg", Files.readAllBytes(Paths.get("john.jpg"))));
+   *     .set("age", 30);
+   * page.request().post("http://localhost/submit", RequestOptions.create().setForm(form));
+   * }</pre>
    *
    * @param name Field name.
    * @param value Field value.
@@ -66,6 +105,19 @@ public interface FormData {
   FormData set(String name, int value);
   /**
    * Sets a field on the form. File values can be passed either as {@code Path} or as {@code FilePayload}.
+   * <pre>{@code
+   * import com.microsoft.playwright.options.FormData;
+   * ...
+   * FormData form = FormData.create()
+   *     // Only name and value are set.
+   *     .set("firstName", "John")
+   *     // Name and value are set, filename and Content-Type are inferred from the file path.
+   *     .set("profilePicture1", Paths.get("john.jpg"))
+   *     // Name, value, filename and Content-Type are set.
+   *     .set("profilePicture2", new FilePayload("john.jpg", "image/jpeg", Files.readAllBytes(Paths.get("john.jpg"))));
+   *     .set("age", 30);
+   * page.request().post("http://localhost/submit", RequestOptions.create().setForm(form));
+   * }</pre>
    *
    * @param name Field name.
    * @param value Field value.
@@ -74,6 +126,19 @@ public interface FormData {
   FormData set(String name, Path value);
   /**
    * Sets a field on the form. File values can be passed either as {@code Path} or as {@code FilePayload}.
+   * <pre>{@code
+   * import com.microsoft.playwright.options.FormData;
+   * ...
+   * FormData form = FormData.create()
+   *     // Only name and value are set.
+   *     .set("firstName", "John")
+   *     // Name and value are set, filename and Content-Type are inferred from the file path.
+   *     .set("profilePicture1", Paths.get("john.jpg"))
+   *     // Name, value, filename and Content-Type are set.
+   *     .set("profilePicture2", new FilePayload("john.jpg", "image/jpeg", Files.readAllBytes(Paths.get("john.jpg"))));
+   *     .set("age", 30);
+   * page.request().post("http://localhost/submit", RequestOptions.create().setForm(form));
+   * }</pre>
    *
    * @param name Field name.
    * @param value Field value.

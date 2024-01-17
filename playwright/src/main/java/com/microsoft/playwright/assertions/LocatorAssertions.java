@@ -427,8 +427,8 @@ public interface LocatorAssertions {
    */
   LocatorAssertions not();
   /**
-   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/actionability#attached">attached</a>
-   * DOM node.
+   * Ensures that {@code Locator} points to an element that is <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Node/isConnected">connected</a> to a Document or a ShadowRoot.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -441,8 +441,8 @@ public interface LocatorAssertions {
     isAttached(null);
   }
   /**
-   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/actionability#attached">attached</a>
-   * DOM node.
+   * Ensures that {@code Locator} points to an element that is <a
+   * href="https://developer.mozilla.org/en-US/docs/Web/API/Node/isConnected">connected</a> to a Document or a ShadowRoot.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -671,8 +671,8 @@ public interface LocatorAssertions {
    */
   void isInViewport(IsInViewportOptions options);
   /**
-   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/actionability#attached">attached</a>
-   * and <a href="https://playwright.dev/java/docs/actionability#visible">visible</a> DOM node.
+   * Ensures that {@code Locator} points to an attached and <a
+   * href="https://playwright.dev/java/docs/actionability#visible">visible</a> DOM node.
    *
    * <p> To check that at least one element from the list is visible, use {@link Locator#first Locator.first()}.
    *
@@ -698,8 +698,8 @@ public interface LocatorAssertions {
     isVisible(null);
   }
   /**
-   * Ensures that {@code Locator} points to an <a href="https://playwright.dev/java/docs/actionability#attached">attached</a>
-   * and <a href="https://playwright.dev/java/docs/actionability#visible">visible</a> DOM node.
+   * Ensures that {@code Locator} points to an attached and <a
+   * href="https://playwright.dev/java/docs/actionability#visible">visible</a> DOM node.
    *
    * <p> To check that at least one element from the list is visible, use {@link Locator#first Locator.first()}.
    *
@@ -723,8 +723,8 @@ public interface LocatorAssertions {
    */
   void isVisible(IsVisibleOptions options);
   /**
-   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
-   * value as well.
+   * Ensures the {@code Locator} points to an element that contains the given text. All nested elements will be considered
+   * when computing the text content of the element. You can use regular expressions for the value as well.
    *
    * <p> **Details**
    *
@@ -768,8 +768,8 @@ public interface LocatorAssertions {
     containsText(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
-   * value as well.
+   * Ensures the {@code Locator} points to an element that contains the given text. All nested elements will be considered
+   * when computing the text content of the element. You can use regular expressions for the value as well.
    *
    * <p> **Details**
    *
@@ -811,8 +811,8 @@ public interface LocatorAssertions {
    */
   void containsText(String expected, ContainsTextOptions options);
   /**
-   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
-   * value as well.
+   * Ensures the {@code Locator} points to an element that contains the given text. All nested elements will be considered
+   * when computing the text content of the element. You can use regular expressions for the value as well.
    *
    * <p> **Details**
    *
@@ -856,8 +856,8 @@ public interface LocatorAssertions {
     containsText(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
-   * value as well.
+   * Ensures the {@code Locator} points to an element that contains the given text. All nested elements will be considered
+   * when computing the text content of the element. You can use regular expressions for the value as well.
    *
    * <p> **Details**
    *
@@ -899,8 +899,8 @@ public interface LocatorAssertions {
    */
   void containsText(Pattern expected, ContainsTextOptions options);
   /**
-   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
-   * value as well.
+   * Ensures the {@code Locator} points to an element that contains the given text. All nested elements will be considered
+   * when computing the text content of the element. You can use regular expressions for the value as well.
    *
    * <p> **Details**
    *
@@ -944,8 +944,8 @@ public interface LocatorAssertions {
     containsText(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
-   * value as well.
+   * Ensures the {@code Locator} points to an element that contains the given text. All nested elements will be considered
+   * when computing the text content of the element. You can use regular expressions for the value as well.
    *
    * <p> **Details**
    *
@@ -987,8 +987,8 @@ public interface LocatorAssertions {
    */
   void containsText(String[] expected, ContainsTextOptions options);
   /**
-   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
-   * value as well.
+   * Ensures the {@code Locator} points to an element that contains the given text. All nested elements will be considered
+   * when computing the text content of the element. You can use regular expressions for the value as well.
    *
    * <p> **Details**
    *
@@ -1032,8 +1032,8 @@ public interface LocatorAssertions {
     containsText(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element that contains the given text. You can use regular expressions for the
-   * value as well.
+   * Ensures the {@code Locator} points to an element that contains the given text. All nested elements will be considered
+   * when computing the text content of the element. You can use regular expressions for the value as well.
    *
    * <p> **Details**
    *
@@ -1455,8 +1455,8 @@ public interface LocatorAssertions {
    */
   void hasJSProperty(String name, Object value, HasJSPropertyOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
-   * well.
+   * Ensures the {@code Locator} points to an element with the given text. All nested elements will be considered when
+   * computing the text content of the element. You can use regular expressions for the value as well.
    *
    * <p> **Details**
    *
@@ -1500,8 +1500,8 @@ public interface LocatorAssertions {
     hasText(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
-   * well.
+   * Ensures the {@code Locator} points to an element with the given text. All nested elements will be considered when
+   * computing the text content of the element. You can use regular expressions for the value as well.
    *
    * <p> **Details**
    *
@@ -1543,8 +1543,8 @@ public interface LocatorAssertions {
    */
   void hasText(String expected, HasTextOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
-   * well.
+   * Ensures the {@code Locator} points to an element with the given text. All nested elements will be considered when
+   * computing the text content of the element. You can use regular expressions for the value as well.
    *
    * <p> **Details**
    *
@@ -1588,8 +1588,8 @@ public interface LocatorAssertions {
     hasText(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
-   * well.
+   * Ensures the {@code Locator} points to an element with the given text. All nested elements will be considered when
+   * computing the text content of the element. You can use regular expressions for the value as well.
    *
    * <p> **Details**
    *
@@ -1631,8 +1631,8 @@ public interface LocatorAssertions {
    */
   void hasText(Pattern expected, HasTextOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
-   * well.
+   * Ensures the {@code Locator} points to an element with the given text. All nested elements will be considered when
+   * computing the text content of the element. You can use regular expressions for the value as well.
    *
    * <p> **Details**
    *
@@ -1676,8 +1676,8 @@ public interface LocatorAssertions {
     hasText(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
-   * well.
+   * Ensures the {@code Locator} points to an element with the given text. All nested elements will be considered when
+   * computing the text content of the element. You can use regular expressions for the value as well.
    *
    * <p> **Details**
    *
@@ -1719,8 +1719,8 @@ public interface LocatorAssertions {
    */
   void hasText(String[] expected, HasTextOptions options);
   /**
-   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
-   * well.
+   * Ensures the {@code Locator} points to an element with the given text. All nested elements will be considered when
+   * computing the text content of the element. You can use regular expressions for the value as well.
    *
    * <p> **Details**
    *
@@ -1764,8 +1764,8 @@ public interface LocatorAssertions {
     hasText(expected, null);
   }
   /**
-   * Ensures the {@code Locator} points to an element with the given text. You can use regular expressions for the value as
-   * well.
+   * Ensures the {@code Locator} points to an element with the given text. All nested elements will be considered when
+   * computing the text content of the element. You can use regular expressions for the value as well.
    *
    * <p> **Details**
    *
