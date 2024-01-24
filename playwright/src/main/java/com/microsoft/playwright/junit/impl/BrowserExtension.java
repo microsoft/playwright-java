@@ -71,7 +71,7 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
     }
 
     if (options.getChannel() != null) {
-      options.setChannel(options.getChannel());
+      launchOptions.setChannel(options.getChannel());
     }
 
     return launchOptions;

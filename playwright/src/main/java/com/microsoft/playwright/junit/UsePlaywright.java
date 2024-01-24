@@ -13,5 +13,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface UsePlaywright {
-  Class<? extends Options> options() default Options.class;
+  Class<? extends OptionsFactory> value() default DefaultOptions.class;
 }
