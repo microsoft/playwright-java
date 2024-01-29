@@ -139,4 +139,20 @@ public class TestBrowserContextStorageState extends TestBase {
     }
     context2.close();
   }
+
+  @Test
+  void shouldSerialiseStorageStateWithLoneSurrogates() {
+    page.navigate(server.EMPTY_PAGE);
+    page.evaluate("chars => window.localStorage.setItem('foo', String.fromCharCode(55934))");
+    String storageState = context.storageState();
+    assertJsonEquals("{" +
+      "cookies:[]," +
+      "origins:[{\n" +
+      "  origin: 'http://localhost:" + server.PORT + "',\n" +
+      "  localStorage: [{\n" +
+      "    name: 'foo',\n" +
+      "    value: '" + (char)55934 + "'\n" +
+      "  }]\n" +
+      "}]}", new Gson().fromJson(storageState, JsonObject.class));
+  }
 }
