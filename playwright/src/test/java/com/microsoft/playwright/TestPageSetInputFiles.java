@@ -308,7 +308,18 @@ public class TestPageSetInputFiles extends TestBase {
     assertEquals("file-to-upload.txt", page.evalOnSelector("input", "input => input.files[0].name"));
   }
 
-//  @Test
+  @Test
+  void shouldAcceptSingleFilePayload() {
+    page.setContent("<input type=file oninput='javascript:console.timeStamp()'>");
+    FileChooser fileChooser = page.waitForFileChooser(() -> page.click("input"));
+    assertEquals(page, fileChooser.page());
+    assertNotNull(fileChooser.element());
+    fileChooser.setFiles(new FilePayload("test.txt", "text/plain", "Hello!".getBytes()));
+    assertEquals(1, page.evalOnSelector("input", "input => input.files.length"));
+    assertEquals("test.txt", page.evalOnSelector("input", "input => input.files[0].name"));
+  }
+
+  //  @Test
   void shouldDetectMimeType() throws ExecutionException, InterruptedException {
     // TODO: Parse form fields on server
   }

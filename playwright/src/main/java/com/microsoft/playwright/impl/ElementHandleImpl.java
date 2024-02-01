@@ -490,7 +490,7 @@ public class ElementHandleImpl extends JSHandleImpl implements ElementHandle {
       options = new SetInputFilesOptions();
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    params.add("files", Serialization.toJsonArray(files));
+    params.add("payloads", Serialization.toJsonArray(files));
     sendMessage("setInputFiles", params);
   }
 
