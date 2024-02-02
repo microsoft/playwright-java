@@ -248,6 +248,8 @@ public class Connection {
         String callLog = formatCallLog(message.log);
         if (message.error.error == null) {
           callback.completeExceptionally(new PlaywrightException(message.error + callLog));
+        } else if ("Expect".equals(message.error.error.name)) {
+          callback.complete(message.result);
         } else if ("TimeoutError".equals(message.error.error.name)) {
           callback.completeExceptionally(new TimeoutError(message.error.error + callLog));
         } else if ("TargetClosedError".equals(message.error.error.name)) {
