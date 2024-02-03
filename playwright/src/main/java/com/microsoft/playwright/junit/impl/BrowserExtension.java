@@ -42,22 +42,32 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
     Playwright playwright = PlaywrightExtension.getOrCreatePlaywright(extensionContext);
     BrowserType.LaunchOptions launchOptions = getLaunchOptions(options);
 
-    switch (options.getBrowserName()) {
-      case "webkit":
-        browser = playwright.webkit().launch(launchOptions);
-        break;
-      case "firefox":
-        browser = playwright.firefox().launch(launchOptions);
-        break;
-      case "chromium":
-        browser = playwright.chromium().launch(launchOptions);
-        break;
-      default:
-        throw new PlaywrightException("Invalid browser name.");
+    BrowserType browserType = playwright.chromium();
+    if (options.getBrowserName() != null) {
+      browserType = getBrowserTypeForName(playwright, options.getBrowserName());
+    } else if (options.deviceName != null) {
+      DeviceDescriptor deviceDescriptor = DeviceDescriptor.findByName(playwright, options.deviceName);
+      if (deviceDescriptor != null && deviceDescriptor.defaultBrowserType != null) {
+          browserType = getBrowserTypeForName(playwright, deviceDescriptor.defaultBrowserType);
+      }
     }
+    browser = browserType.launch(launchOptions);
 
     threadLocalBrowser.set(browser);
     return browser;
+  }
+
+  private static BrowserType getBrowserTypeForName(Playwright playwright, String name) {
+    switch (name) {
+      case "webkit":
+        return playwright.webkit();
+      case "firefox":
+        return playwright.firefox();
+      case "chromium":
+        return playwright.chromium();
+      default:
+        throw new PlaywrightException("Invalid browser name.");
+    }
   }
 
   private static BrowserType.LaunchOptions getLaunchOptions(Options options) {

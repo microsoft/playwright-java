@@ -29,6 +29,10 @@ class LocalUtils extends ChannelOwner {
     super(parent, type, guid, initializer);
   }
 
+  JsonArray deviceDescriptors() {
+    return initializer.getAsJsonArray("deviceDescriptors");
+  }
+
   void zip(Path zipFile, JsonArray entries, String stacksId, boolean appendMode, boolean includeSources) {
     JsonObject params = new JsonObject();
     params.addProperty("zipFile", zipFile.toString());

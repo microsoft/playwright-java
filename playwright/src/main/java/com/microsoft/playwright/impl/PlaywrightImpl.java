@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright.impl;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.APIRequest;
 import com.microsoft.playwright.Playwright;
@@ -87,6 +88,10 @@ public class PlaywrightImpl extends ChannelOwner implements Playwright {
 
   void unregisterSelectors() {
     sharedSelectors.removeChannel(selectors);
+  }
+
+  public JsonArray deviceDescriptors() {
+    return connection.localUtils.deviceDescriptors();
   }
 
   @Override
