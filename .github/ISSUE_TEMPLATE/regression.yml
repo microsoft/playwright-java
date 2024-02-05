@@ -36,7 +36,7 @@ body:
       label: First Bad Version
       description: |
         First version of Playwright where the feature was broken.
-        Is it the [latest](https://github.com/microsoft/playwright/releases)? Test and see if the regression has already been fixed.
+        Is it the [latest](https://github.com/microsoft/playwright-java/releases)? Test and see if the regression has already been fixed.
       placeholder: ex. 1.41.1
     validations:
       required: true
