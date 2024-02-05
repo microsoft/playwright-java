@@ -37,7 +37,7 @@ body:
       label: Version
       description: |
         The version of Playwright you are using.
-        Is it the [latest](https://github.com/microsoft/playwright/releases)? Test and see if the bug has already been fixed.
+        Is it the [latest](https://github.com/microsoft/playwright-java/releases)? Test and see if the bug has already been fixed.
       placeholder: ex. 1.41.1
     validations:
       required: true
