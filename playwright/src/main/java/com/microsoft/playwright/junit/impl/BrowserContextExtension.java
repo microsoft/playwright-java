@@ -2,6 +2,8 @@ package com.microsoft.playwright.junit.impl;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.impl.Utils;
 import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
@@ -38,14 +40,15 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
     }
 
     Options options = OptionsExtension.getOptions(extensionContext);
+    Playwright playwright = PlaywrightExtension.getOrCreatePlaywright(extensionContext);
     Browser browser = BrowserExtension.getOrCreateBrowser(extensionContext);
-    Browser.NewContextOptions contextOptions = getContextOptions(options);
+    Browser.NewContextOptions contextOptions = getContextOptions(playwright, options);
     browserContext = browser.newContext(contextOptions);
     threadLocalBrowserContext.set(browserContext);
     return browserContext;
   }
 
-  private static Browser.NewContextOptions getContextOptions(Options options) {
+  private static Browser.NewContextOptions getContextOptions(Playwright playwright, Options options) {
     Browser.NewContextOptions contextOptions = Utils.clone(options.getContextOption());
     if (contextOptions == null) {
       contextOptions = new Browser.NewContextOptions();
@@ -57,6 +60,20 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
 
     if (options.getStorageStatePath() != null) {
       contextOptions.setStorageStatePath(options.getStorageStatePath());
+    }
+
+    if (options.getDeviceName() != null) {
+      DeviceDescriptor deviceDescriptor = DeviceDescriptor.findByName(playwright, options.getDeviceName());
+      if (deviceDescriptor == null) {
+        throw new PlaywrightException("Unknown device name: " + options.getDeviceName());
+      }
+      contextOptions.userAgent = deviceDescriptor.userAgent;
+      if (deviceDescriptor.viewport != null) {
+        contextOptions.setViewportSize(deviceDescriptor.viewport.width, deviceDescriptor.viewport.height);
+      }
+      contextOptions.deviceScaleFactor = deviceDescriptor.deviceScaleFactor;
+      contextOptions.isMobile = deviceDescriptor.isMobile;
+      contextOptions.hasTouch = deviceDescriptor.hasTouch;
     }
 
     if (options.getViewportSize() != null) {

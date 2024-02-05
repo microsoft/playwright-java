@@ -14,7 +14,8 @@ public class Options {
   public ViewportSize viewportSize;
   public String channel;
   public Boolean headless;
-  public String browserName = "chromium";
+  public String browserName;
+  public String deviceName;
   public BrowserType.LaunchOptions launchOptions;
   public Browser.NewContextOptions contextOption;
   public APIRequest.NewContextOptions apiRequestOptions;
@@ -80,6 +81,15 @@ public class Options {
 
   public Options setBrowserName(String browserName) {
     this.browserName = browserName;
+    return this;
+  }
+
+  public String getDeviceName() {
+    return deviceName;
+  }
+
+  public Options setDeviceName(String deviceName) {
+    this.deviceName = deviceName;
     return this;
   }
 
