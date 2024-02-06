@@ -1,62 +1,74 @@
-trigger:
-  none
-  
-# don't trigger for Pull Requests
+trigger: none
 pr: none
 
-pool:
-  vmImage: ubuntu-22.04
+resources:
+  repositories:
+  - repository: 1esPipelines
+    type: git
+    name: 1ESPipelineTemplates/1ESPipelineTemplates
+    ref: refs/tags/release
 
-steps:
-- bash: |
-    if [[ ! "$CURRENT_BRANCH" =~ ^release-.* ]]; then
-      echo "Can only publish from a release branch."
-      echo "Unexpected branch name: $CURRENT_BRANCH"
-      exit 1
-    fi
-  env:
-    CURRENT_BRANCH: ${{ variables['Build.SourceBranchName'] }}
-  displayName: "Check the branch is a release branch"
-
-- bash: |
-    echo "importing GPG key:"
-    # Pipeline variables do not preserve line ends so we use base64 instead of --armored as a workaround.
-    echo $GPG_PRIVATE_KEY_BASE64 | base64 -d | gpg --batch --import
-    echo "list keys after import:"
-    gpg --list-keys
-  env:
-   GPG_PRIVATE_KEY_BASE64: $(GPG_PRIVATE_KEY_BASE64) # secret variable has to be mapped to an env variable
-  displayName: "Import gpg key"
-
-- bash: ./scripts/download_driver_for_all_platforms.sh
-  displayName: 'Download driver'
-
-- bash: mvn -B deploy -D skipTests --no-transfer-progress --activate-profiles release -D gpg.passphrase=$GPG_PASSPHRASE -DaltDeploymentRepository=snapshot-repo::default::file:$(pwd)/local-build
-  displayName: 'Build and deploy to a local directory'
-  env:
-    GPG_PASSPHRASE: $(GPG_PASSPHRASE) # secret variable has to be mapped to an env variable
-
-- bash: |
-    for file in $(find snapshots -type f); do
-      echo "processing: $file"
-      if [[ $file =~ \.(md5|sha1|sha256)$ ]]; then
-        continue
-      fi
-      sha256sum "$file" | cut -f1 -d \ > "$file.sha256"
-    done
-  displayName: 'Create .sha256 files'
-
-- task: EsrpRelease@4
-  inputs:
-    ConnectedServiceName: 'Playwright-ESRP'
-    Intent: 'PackageDistribution'
-    ContentType: 'Maven'
-    ContentSource: 'Folder'
-    FolderLocation: './local-build'
-    WaitForReleaseCompletion: true
-    Owners: 'yurys@microsoft.com'
-    Approvers: 'maxschmitt@microsoft.com'
-    ServiceEndpointUrl: 'https://api.esrp.microsoft.com'
-    MainPublisher: 'Playwright'
-    DomainTenantId: '72f988bf-86f1-41af-91ab-2d7cd011db47'
-  displayName: 'ESRP Release to Maven'
+extends:
+  template: v1/1ES.Official.PipelineTemplate.yml@1esPipelines
+  parameters:
+    pool:
+      name: Azure-Pipelines-1ESPT-ExDShared
+      image: ubuntu-latest
+      os: linux
+    stages:
+    - stage: Stage
+      jobs:
+      - job: HostJob
+        steps:
+        - bash: |
+            if [[ ! "$CURRENT_BRANCH" =~ ^release-.* ]]; then
+              echo "Can only publish from a release branch."
+              echo "Unexpected branch name: $CURRENT_BRANCH"
+              exit 1
+            fi
+          env:
+            CURRENT_BRANCH: ${{ variables['Build.SourceBranchName'] }}
+          displayName: "Check the branch is a release branch"
+        
+        - bash: |
+            echo "importing GPG key:"
+            # Pipeline variables do not preserve line ends so we use base64 instead of --armored as a workaround.
+            echo $GPG_PRIVATE_KEY_BASE64 | base64 -d | gpg --batch --import
+            echo "list keys after import:"
+            gpg --list-keys
+          env:
+           GPG_PRIVATE_KEY_BASE64: $(GPG_PRIVATE_KEY_BASE64) # secret variable has to be mapped to an env variable
+          displayName: "Import gpg key"
+        
+        - bash: ./scripts/download_driver_for_all_platforms.sh
+          displayName: 'Download driver'
+        
+        - bash: mvn -B deploy -D skipTests --no-transfer-progress --activate-profiles release -D gpg.passphrase=$GPG_PASSPHRASE -DaltDeploymentRepository=snapshot-repo::default::file:$(pwd)/local-build
+          displayName: 'Build and deploy to a local directory'
+          env:
+            GPG_PASSPHRASE: $(GPG_PASSPHRASE) # secret variable has to be mapped to an env variable
+        
+        - bash: |
+            for file in $(find snapshots -type f); do
+              echo "processing: $file"
+              if [[ $file =~ \.(md5|sha1|sha256)$ ]]; then
+                continue
+              fi
+              sha256sum "$file" | cut -f1 -d \ > "$file.sha256"
+            done
+          displayName: 'Create .sha256 files'
+        
+        - task: EsrpRelease@4
+          inputs:
+            ConnectedServiceName: 'Playwright-ESRP'
+            Intent: 'PackageDistribution'
+            ContentType: 'Maven'
+            ContentSource: 'Folder'
+            FolderLocation: './local-build'
+            WaitForReleaseCompletion: true
+            Owners: 'yurys@microsoft.com'
+            Approvers: 'maxschmitt@microsoft.com'
+            ServiceEndpointUrl: 'https://api.esrp.microsoft.com'
+            MainPublisher: 'Playwright'
+            DomainTenantId: '72f988bf-86f1-41af-91ab-2d7cd011db47'
+          displayName: 'ESRP Release to Maven'
