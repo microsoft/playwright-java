@@ -17,7 +17,7 @@ public class TestPlaywrightCustomOptionFixtures {
   public static class CustomOptions implements OptionsFactory {
     @Override
     public Options getOptions() {
-      return new Options().setChannel("chrome").setApiRequestOptions(new APIRequest.NewContextOptions().setBaseURL(serverMap.get(TestPlaywrightCustomOptionFixtures.class).EMPTY_PAGE)).setContextOption(new Browser.NewContextOptions().setBaseURL(serverMap.get(TestPlaywrightCustomOptionFixtures.class).EMPTY_PAGE));
+      return new Options().setApiRequestOptions(new APIRequest.NewContextOptions().setBaseURL(serverMap.get(TestPlaywrightCustomOptionFixtures.class).EMPTY_PAGE)).setContextOption(new Browser.NewContextOptions().setBaseURL(serverMap.get(TestPlaywrightCustomOptionFixtures.class).EMPTY_PAGE));
     }
   }
 
