@@ -1,18 +1,18 @@
-package com.microsoft.playwright;
+package com.microsoft.playwright.junit;
 
-import com.microsoft.playwright.junit.Options;
-import com.microsoft.playwright.junit.OptionsFactory;
-import com.microsoft.playwright.junit.UsePlaywright;
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Server;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 
-import static com.microsoft.playwright.ServerLifecycle.serverMap;
+import static com.microsoft.playwright.junit.ServerLifecycle.serverMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 @FixtureTest
-@UsePlaywright(TestPlaywrightCustomFixturesChannel.CustomOptions.class)
+@UsePlaywright(TestFixtureChannelOption.CustomOptions.class)
 @EnabledIf("isChannelSpecified")
-public class TestPlaywrightCustomFixturesChannel {
+public class TestFixtureChannelOption {
 
   public static class CustomOptions implements OptionsFactory {
     @Override

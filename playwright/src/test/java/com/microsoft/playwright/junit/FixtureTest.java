@@ -1,4 +1,4 @@
-package com.microsoft.playwright;
+package com.microsoft.playwright.junit;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;

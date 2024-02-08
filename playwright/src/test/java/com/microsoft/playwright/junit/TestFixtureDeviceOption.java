@@ -1,17 +1,16 @@
-package com.microsoft.playwright;
+package com.microsoft.playwright.junit;
 
-import com.microsoft.playwright.junit.Options;
-import com.microsoft.playwright.junit.OptionsFactory;
-import com.microsoft.playwright.junit.UsePlaywright;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Server;
 import org.junit.jupiter.api.Test;
 
-import static com.microsoft.playwright.ServerLifecycle.serverMap;
+import static com.microsoft.playwright.junit.ServerLifecycle.serverMap;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @FixtureTest
-@UsePlaywright(TestPlaywrightDeviceOption.CustomOptions.class)
-public class TestPlaywrightDeviceOption {
+@UsePlaywright(TestFixtureDeviceOption.CustomOptions.class)
+public class TestFixtureDeviceOption {
 
   public static class CustomOptions implements OptionsFactory {
     @Override

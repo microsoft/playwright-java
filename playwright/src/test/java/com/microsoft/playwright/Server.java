@@ -52,7 +52,7 @@ public class Server implements HttpHandler {
     }
   }
 
-  static Server createHttp(int port) throws IOException {
+  public static Server createHttp(int port) throws IOException {
     return new Server(port, false);
   }
 
@@ -81,7 +81,7 @@ public class Server implements HttpHandler {
     server.start();
   }
 
-  void stop() {
+  public void stop() {
     server.stop(0);
   }
 
