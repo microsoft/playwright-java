@@ -10,9 +10,9 @@ import static com.microsoft.playwright.ServerLifecycle.serverMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 @FixtureTest
-@UsePlaywright(TestPlaywrightCurtomFixturesChannel.CustomOptions.class)
+@UsePlaywright(TestPlaywrightCustomFixturesChannel.CustomOptions.class)
 @EnabledIf("isChannelSpecified")
-public class TestPlaywrightCurtomFixturesChannel {
+public class TestPlaywrightCustomFixturesChannel {
 
   public static class CustomOptions implements OptionsFactory {
     @Override
