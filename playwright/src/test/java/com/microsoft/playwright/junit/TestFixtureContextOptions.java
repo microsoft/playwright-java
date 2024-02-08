@@ -1,23 +1,27 @@
-package com.microsoft.playwright;
+package com.microsoft.playwright.junit;
 
-import com.microsoft.playwright.junit.Options;
-import com.microsoft.playwright.junit.OptionsFactory;
-import com.microsoft.playwright.junit.UsePlaywright;
+import com.microsoft.playwright.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.ServerLifecycle.serverMap;
+import static com.microsoft.playwright.junit.ServerLifecycle.serverMap;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @FixtureTest
-@UsePlaywright(TestPlaywrightCustomOptionFixtures.CustomOptions.class)
-public class TestPlaywrightCustomOptionFixtures {
+@UsePlaywright(TestFixtureContextOptions.CustomOptions.class)
+public class TestFixtureContextOptions {
+
   public static class CustomOptions implements OptionsFactory {
     @Override
     public Options getOptions() {
-      return new Options().setApiRequestOptions(new APIRequest.NewContextOptions().setBaseURL(serverMap.get(TestPlaywrightCustomOptionFixtures.class).EMPTY_PAGE)).setContextOption(new Browser.NewContextOptions().setBaseURL(serverMap.get(TestPlaywrightCustomOptionFixtures.class).EMPTY_PAGE));
+      return new Options()
+        .setApiRequestOptions(new APIRequest.NewContextOptions()
+          .setBaseURL(serverMap.get(TestFixtureContextOptions.class).EMPTY_PAGE))
+        .setContextOption(new Browser.NewContextOptions()
+          .setBaseURL(serverMap.get(TestFixtureContextOptions.class).EMPTY_PAGE));
     }
   }
 

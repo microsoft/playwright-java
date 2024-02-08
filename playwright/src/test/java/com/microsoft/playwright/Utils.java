@@ -36,7 +36,7 @@ import java.util.zip.ZipInputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class Utils {
+public class Utils {
   private static final AtomicInteger nextUnusedPort = new AtomicInteger(9000);
 
   private static boolean available(int port) {
@@ -47,7 +47,7 @@ class Utils {
     }
   }
 
-  static int nextFreePort() {
+  public static int nextFreePort() {
     for (int i = 0; i < 100; i++) {
       int port = nextUnusedPort.getAndIncrement();
       if (available(port)) {

@@ -1,6 +1,6 @@
-package com.microsoft.playwright;
+package com.microsoft.playwright.junit;
 
-import com.microsoft.playwright.junit.UsePlaywright;
+import com.microsoft.playwright.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 @UsePlaywright
-public class TestPlaywrightFixtures {
+public class TestFixtures {
   private static Playwright playwrightFromBeforeAll;
   private static Browser browserFromBeforeAll;
   private BrowserContext browserContextFromBeforeEach;
