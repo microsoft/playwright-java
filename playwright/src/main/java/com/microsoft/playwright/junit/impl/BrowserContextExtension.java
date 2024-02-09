@@ -49,7 +49,7 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
   }
 
   private static Browser.NewContextOptions getContextOptions(Playwright playwright, Options options) {
-    Browser.NewContextOptions contextOptions = Utils.clone(options.getContextOption());
+    Browser.NewContextOptions contextOptions = Utils.clone(options.getContextOptions());
     if (contextOptions == null) {
       contextOptions = new Browser.NewContextOptions();
     }

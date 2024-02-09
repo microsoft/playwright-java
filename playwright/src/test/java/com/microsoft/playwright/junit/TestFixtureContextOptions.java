@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.junit.ServerLifecycle.serverMap;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @FixtureTest
@@ -20,7 +19,7 @@ public class TestFixtureContextOptions {
       return new Options()
         .setApiRequestOptions(new APIRequest.NewContextOptions()
           .setBaseURL(serverMap.get(TestFixtureContextOptions.class).EMPTY_PAGE))
-        .setContextOption(new Browser.NewContextOptions()
+        .setContextOptions(new Browser.NewContextOptions()
           .setBaseURL(serverMap.get(TestFixtureContextOptions.class).EMPTY_PAGE));
     }
   }

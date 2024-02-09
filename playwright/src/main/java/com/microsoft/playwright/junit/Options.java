@@ -17,7 +17,7 @@ public class Options {
   public String browserName;
   public String deviceName;
   public BrowserType.LaunchOptions launchOptions;
-  public Browser.NewContextOptions contextOption;
+  public Browser.NewContextOptions contextOptions;
   public APIRequest.NewContextOptions apiRequestOptions;
   public Playwright.CreateOptions playwrightCreateOptions;
 
@@ -39,12 +39,12 @@ public class Options {
     return this;
   }
 
-  public Browser.NewContextOptions getContextOption() {
-    return contextOption;
+  public Browser.NewContextOptions getContextOptions() {
+    return contextOptions;
   }
 
-  public Options setContextOption(Browser.NewContextOptions contextOption) {
-    this.contextOption = contextOption;
+  public Options setContextOptions(Browser.NewContextOptions contextOptions) {
+    this.contextOptions = contextOptions;
     return this;
   }
 
