@@ -4,14 +4,9 @@ import com.microsoft.playwright.APIRequest;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
-import com.microsoft.playwright.options.ViewportSize;
-
-import java.nio.file.Path;
 
 public class Options {
   public String baseUrl;
-  public Path storageStatePath;
-  public ViewportSize viewportSize;
   public String channel;
   public Boolean headless;
   public String browserName;
@@ -66,15 +61,6 @@ public class Options {
     return this;
   }
 
-  public Path getStorageStatePath() {
-    return storageStatePath;
-  }
-
-  public Options setStorageStatePath(Path storageStatePath) {
-    this.storageStatePath = storageStatePath;
-    return this;
-  }
-
   public String getBrowserName() {
     return browserName;
   }
@@ -108,15 +94,6 @@ public class Options {
 
   public Options setHeadless(Boolean headless) {
     this.headless = headless;
-    return this;
-  }
-
-  public ViewportSize getViewportSize() {
-    return viewportSize;
-  }
-
-  public Options setViewportSize(ViewportSize viewportSize) {
-    this.viewportSize = viewportSize;
     return this;
   }
 }

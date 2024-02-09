@@ -58,10 +58,6 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
       contextOptions.setBaseURL(options.getBaseUrl());
     }
 
-    if (options.getStorageStatePath() != null) {
-      contextOptions.setStorageStatePath(options.getStorageStatePath());
-    }
-
     if (options.getDeviceName() != null) {
       DeviceDescriptor deviceDescriptor = DeviceDescriptor.findByName(playwright, options.getDeviceName());
       if (deviceDescriptor == null) {
@@ -74,10 +70,6 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
       contextOptions.deviceScaleFactor = deviceDescriptor.deviceScaleFactor;
       contextOptions.isMobile = deviceDescriptor.isMobile;
       contextOptions.hasTouch = deviceDescriptor.hasTouch;
-    }
-
-    if (options.getViewportSize() != null) {
-      contextOptions.setViewportSize(options.getViewportSize());
     }
 
     return contextOptions;
