@@ -24,7 +24,7 @@ RUN apt-get update && \
     # Create the pwuser
     adduser pwuser
 
-RUN VERSION=3.9.4 && \
+RUN VERSION=3.9.6 && \
     curl -o - https://archive.apache.org/dist/maven/maven-3/$VERSION/binaries/apache-maven-$VERSION-bin.tar.gz | tar zxfv - -C /opt/ && \
     ln -s /opt/apache-maven-$VERSION/bin/mvn /usr/local/bin/
 
