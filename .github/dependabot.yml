@@ -1,0 +1,10 @@
+version: 2
+updates:
+  - package-ecosystem: "maven"
+    directory: "/" # Location of the pom.xml file
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    allow:
+      - dependency-type: "direct" # Optional: Only update direct dependencies
+      - dependency-type: "indirect" # Optional: Only update indirect (transitive) dependencies
