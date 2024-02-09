@@ -8,25 +8,23 @@ on:
         required: true
         type: boolean
         description: "Is this a release image?"
-    branches:
-      - release-*
 jobs:
   publish-canary-docker:
     name: publish to DockerHub
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.repository == 'microsoft/playwright-java'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - uses: azure/docker-login@v1
       with:
         login-server: playwright.azurecr.io
         username: playwright
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Set up Docker QEMU for arm64 docker builds
-      uses: docker/setup-qemu-action@v1
+      uses: docker/setup-qemu-action@v3
       with:
         platforms: arm64
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - run: ./utils/docker/publish_docker.sh stable
       if: (github.event_name != 'workflow_dispatch' && !github.event.release.prerelease) || (github.event_name == 'workflow_dispatch' && github.event.inputs.is_release == 'true')
     - run: ./utils/docker/publish_docker.sh canary
