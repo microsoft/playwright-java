@@ -54,6 +54,7 @@ RUN cd /tmp/pw-java && \
     mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
                      -D exec.args="mark-docker-image '${DOCKER_IMAGE_NAME_TEMPLATE}'" -f playwright/pom.xml --no-transfer-progress && \
     rm -rf /tmp/pw-java && \
+    rm -rf /root/.m2/ && \
     # Workaround for https://github.com/microsoft/playwright/issues/27313
     # While the gstreamer plugin load process can be in-process, it ended up throwing
     # an error that it can't have libsoup2 and libsoup3 in the same process because
