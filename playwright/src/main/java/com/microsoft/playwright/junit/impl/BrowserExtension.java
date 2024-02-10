@@ -43,8 +43,8 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
     BrowserType.LaunchOptions launchOptions = getLaunchOptions(options);
 
     BrowserType browserType = playwright.chromium();
-    if (options.getBrowserName() != null) {
-      browserType = getBrowserTypeForName(playwright, options.getBrowserName());
+    if (options.browserName != null) {
+      browserType = getBrowserTypeForName(playwright, options.browserName);
     } else if (options.deviceName != null) {
       DeviceDescriptor deviceDescriptor = DeviceDescriptor.findByName(playwright, options.deviceName);
       if (deviceDescriptor != null && deviceDescriptor.defaultBrowserType != null) {
@@ -71,17 +71,17 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
   }
 
   private static BrowserType.LaunchOptions getLaunchOptions(Options options) {
-    BrowserType.LaunchOptions launchOptions = Utils.clone(options.getLaunchOptions());
+    BrowserType.LaunchOptions launchOptions = Utils.clone(options.launchOptions);
     if (launchOptions == null) {
       launchOptions = new BrowserType.LaunchOptions();
     }
 
-    if (options.isHeadless() != null) {
-      launchOptions.setHeadless(options.isHeadless());
+    if (options.headless != null) {
+      launchOptions.setHeadless(options.headless);
     }
 
-    if (options.getChannel() != null) {
-      launchOptions.setChannel(options.getChannel());
+    if (options.channel != null) {
+      launchOptions.setChannel(options.channel);
     }
 
     return launchOptions;

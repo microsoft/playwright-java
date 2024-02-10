@@ -49,19 +49,19 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
   }
 
   private static Browser.NewContextOptions getContextOptions(Playwright playwright, Options options) {
-    Browser.NewContextOptions contextOptions = Utils.clone(options.getContextOptions());
+    Browser.NewContextOptions contextOptions = Utils.clone(options.contextOptions);
     if (contextOptions == null) {
       contextOptions = new Browser.NewContextOptions();
     }
 
-    if (options.getBaseUrl() != null) {
-      contextOptions.setBaseURL(options.getBaseUrl());
+    if (options.baseUrl != null) {
+      contextOptions.setBaseURL(options.baseUrl);
     }
 
-    if (options.getDeviceName() != null) {
-      DeviceDescriptor deviceDescriptor = DeviceDescriptor.findByName(playwright, options.getDeviceName());
+    if (options.deviceName != null) {
+      DeviceDescriptor deviceDescriptor = DeviceDescriptor.findByName(playwright, options.deviceName);
       if (deviceDescriptor == null) {
-        throw new PlaywrightException("Unknown device name: " + options.getDeviceName());
+        throw new PlaywrightException("Unknown device name: " + options.deviceName);
       }
       contextOptions.userAgent = deviceDescriptor.userAgent;
       if (deviceDescriptor.viewport != null) {
