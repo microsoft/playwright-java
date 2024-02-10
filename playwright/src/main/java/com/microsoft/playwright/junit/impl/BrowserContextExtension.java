@@ -49,17 +49,13 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
   }
 
   private static Browser.NewContextOptions getContextOptions(Playwright playwright, Options options) {
-    Browser.NewContextOptions contextOptions = Utils.clone(options.getContextOption());
+    Browser.NewContextOptions contextOptions = Utils.clone(options.getContextOptions());
     if (contextOptions == null) {
       contextOptions = new Browser.NewContextOptions();
     }
 
     if (options.getBaseUrl() != null) {
       contextOptions.setBaseURL(options.getBaseUrl());
-    }
-
-    if (options.getStorageStatePath() != null) {
-      contextOptions.setStorageStatePath(options.getStorageStatePath());
     }
 
     if (options.getDeviceName() != null) {
@@ -74,10 +70,6 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
       contextOptions.deviceScaleFactor = deviceDescriptor.deviceScaleFactor;
       contextOptions.isMobile = deviceDescriptor.isMobile;
       contextOptions.hasTouch = deviceDescriptor.hasTouch;
-    }
-
-    if (options.getViewportSize() != null) {
-      contextOptions.setViewportSize(options.getViewportSize());
     }
 
     return contextOptions;

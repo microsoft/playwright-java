@@ -4,20 +4,15 @@ import com.microsoft.playwright.APIRequest;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
-import com.microsoft.playwright.options.ViewportSize;
-
-import java.nio.file.Path;
 
 public class Options {
   public String baseUrl;
-  public Path storageStatePath;
-  public ViewportSize viewportSize;
   public String channel;
   public Boolean headless;
   public String browserName;
   public String deviceName;
   public BrowserType.LaunchOptions launchOptions;
-  public Browser.NewContextOptions contextOption;
+  public Browser.NewContextOptions contextOptions;
   public APIRequest.NewContextOptions apiRequestOptions;
   public Playwright.CreateOptions playwrightCreateOptions;
 
@@ -39,12 +34,12 @@ public class Options {
     return this;
   }
 
-  public Browser.NewContextOptions getContextOption() {
-    return contextOption;
+  public Browser.NewContextOptions getContextOptions() {
+    return contextOptions;
   }
 
-  public Options setContextOption(Browser.NewContextOptions contextOption) {
-    this.contextOption = contextOption;
+  public Options setContextOptions(Browser.NewContextOptions contextOptions) {
+    this.contextOptions = contextOptions;
     return this;
   }
 
@@ -63,15 +58,6 @@ public class Options {
 
   public Options setBaseUrl(String baseUrl) {
     this.baseUrl = baseUrl;
-    return this;
-  }
-
-  public Path getStorageStatePath() {
-    return storageStatePath;
-  }
-
-  public Options setStorageStatePath(Path storageStatePath) {
-    this.storageStatePath = storageStatePath;
     return this;
   }
 
@@ -108,15 +94,6 @@ public class Options {
 
   public Options setHeadless(Boolean headless) {
     this.headless = headless;
-    return this;
-  }
-
-  public ViewportSize getViewportSize() {
-    return viewportSize;
-  }
-
-  public Options setViewportSize(ViewportSize viewportSize) {
-    this.viewportSize = viewportSize;
     return this;
   }
 }
