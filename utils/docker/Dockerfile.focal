@@ -7,13 +7,7 @@ ARG DOCKER_IMAGE_NAME_TEMPLATE="mcr.microsoft.com/playwright/java:v%version%-foc
 # === INSTALL JDK and Maven ===
 
 RUN apt-get update && \
-    # Install install jdk 17 in a separate apt-get command so that
-    # installing maven doesn't bring in jdk 11
-    apt-get install -y --no-install-recommends openjdk-17-jdk && \
-    apt-get install -y --no-install-recommends \
-    # Ubuntu 22.04 and earlier come with Maven 3.6.3 which fails with
-    # Java 17, so we install latest Maven from Apache instead.
-    # maven \
+    apt-get install -y --no-install-recommends openjdk-21-jdk \
     # Install utilities required for downloading browsers
     curl \
     # Install utilities required for downloading driver
@@ -24,12 +18,14 @@ RUN apt-get update && \
     # Create the pwuser
     adduser pwuser
 
+# Ubuntu 22.04 and earlier come with Maven 3.6.3 which fails with
+# Java 21, so we install latest Maven from Apache instead.
 RUN VERSION=3.9.6 && \
     curl -o - https://archive.apache.org/dist/maven/maven-3/$VERSION/binaries/apache-maven-$VERSION-bin.tar.gz | tar zxfv - -C /opt/ && \
     ln -s /opt/apache-maven-$VERSION/bin/mvn /usr/local/bin/
 
 ARG PW_TARGET_ARCH
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-${PW_TARGET_ARCH}
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-${PW_TARGET_ARCH}
 
 # === BAKE BROWSERS INTO IMAGE ===
 
