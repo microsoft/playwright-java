@@ -25,12 +25,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.microsoft.playwright.impl.LocatorUtils.setTestIdAttributeName;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class SharedSelectors extends LoggingSupport implements Selectors {
   private final List<SelectorsImpl> channels = new ArrayList<>();
   private final List<Registration> registrations = new ArrayList<>();
+
+  String testIdAttributeName = "data-testid";
 
   private static class Registration {
     final String name;
@@ -64,8 +65,10 @@ public class SharedSelectors extends LoggingSupport implements Selectors {
 
   @Override
   public void setTestIdAttribute(String attributeName) {
-    // TODO: set it per playwright insttance
-    setTestIdAttributeName(attributeName);
+    if (attributeName == null) {
+      throw new PlaywrightException("Test id attribute cannot be null");
+    }
+    testIdAttributeName = attributeName;
   }
 
   void addChannel(SelectorsImpl channel) {

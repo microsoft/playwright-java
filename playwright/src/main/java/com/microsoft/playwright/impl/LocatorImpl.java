@@ -278,12 +278,12 @@ class LocatorImpl implements Locator {
 
   @Override
   public Locator getByTestId(String testId) {
-    return locator(getByTestIdSelector(testId));
+    return locator(getByTestIdSelector(testId, frame.connection.playwright));
   }
 
   @Override
   public Locator getByTestId(Pattern testId) {
-    return locator(getByTestIdSelector(testId));
+    return locator(getByTestIdSelector(testId, frame.connection.playwright));
   }
 
   @Override

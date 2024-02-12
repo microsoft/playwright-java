@@ -11,6 +11,9 @@ public class Options {
   public Boolean headless;
   public String browserName;
   public String deviceName;
+
+  // Custom attribute to be used in page.getByTestId(). data-testid is used by default.
+  public String testIdAttribute;
   public BrowserType.LaunchOptions launchOptions;
   public Browser.NewContextOptions contextOptions;
   public APIRequest.NewContextOptions apiRequestOptions;

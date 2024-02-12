@@ -21,6 +21,15 @@ public class TestSelectorsGetBy extends TestBase {
   }
 
   @Test
+  void getByTestIdWithCustomTestIdShouldWork() {
+    page.setContent("<div><div data-my-custom-testid='Hello'>Hello world</div></div>");
+    playwright.selectors().setTestIdAttribute("data-my-custom-testid");
+    assertThat(page.getByTestId("Hello")).hasText("Hello world");
+    assertThat(page.mainFrame().getByTestId("Hello")).hasText("Hello world");
+    assertThat(page.locator("div").getByTestId("Hello")).hasText("Hello world");
+  }
+
+  @Test
   void getByTestIdShouldEscapeId() {
     page.setContent("<div><div data-testid='He\"llo'>Hello world</div></div>");
     assertThat(page.getByTestId("He\"llo")).hasText("Hello world");

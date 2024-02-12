@@ -407,12 +407,12 @@ public class FrameImpl extends ChannelOwner implements Frame {
 
   @Override
   public Locator getByTestId(String testId) {
-    return locator(getByTestIdSelector(testId));
+    return locator(getByTestIdSelector(testId, connection.playwright));
   }
 
   @Override
   public Locator getByTestId(Pattern testId) {
-    return locator(getByTestIdSelector(testId));
+    return locator(getByTestIdSelector(testId, connection.playwright));
   }
 
   @Override
