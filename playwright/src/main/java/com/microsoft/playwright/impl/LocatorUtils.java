@@ -9,12 +9,6 @@ import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 
 public class LocatorUtils {
-  private static volatile String testIdAttributeName = "data-testid";;
-
-  static void setTestIdAttributeName(String name) {
-    testIdAttributeName = name;
-  }
-
   static String getByTextSelector(Object text, Locator.GetByTextOptions options) {
     boolean exact = options != null && options.exact != null && options.exact;
     return "internal:text=" + escapeForTextSelector(text, exact);
@@ -29,7 +23,8 @@ public class LocatorUtils {
     return "internal:attr=[" + attrName + "=" + escapeForAttributeSelector(value, exact) + "]";
   }
 
-  static String getByTestIdSelector(Object testId) {
+  static String getByTestIdSelector(Object testId, PlaywrightImpl playwright) {
+    String testIdAttributeName = ((SharedSelectors) playwright.selectors()).testIdAttributeName;
     return getByAttributeTextSelector(testIdAttributeName, testId, true);
   }
 
