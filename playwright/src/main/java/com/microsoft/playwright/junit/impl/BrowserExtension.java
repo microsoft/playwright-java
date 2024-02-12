@@ -42,9 +42,6 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
     Playwright playwright = PlaywrightExtension.getOrCreatePlaywright(extensionContext);
     BrowserType.LaunchOptions launchOptions = getLaunchOptions(options);
 
-    String testIdAttribute = options.testIdAttribute == null ? "data-testid" : options.testIdAttribute;
-    playwright.selectors().setTestIdAttribute(testIdAttribute);
-
     BrowserType browserType = playwright.chromium();
     if (options.browserName != null) {
       browserType = getBrowserTypeForName(playwright, options.browserName);

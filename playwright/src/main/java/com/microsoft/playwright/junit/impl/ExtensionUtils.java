@@ -1,5 +1,7 @@
 package com.microsoft.playwright.junit.impl;
 
+import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.junit.Options;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -26,5 +28,11 @@ class ExtensionUtils {
     }
     Class<?> clazz = parameterContext.getParameter().getType();
     return subject.equals(clazz);
+  }
+
+  static void setTestIdAttribute(Playwright playwright, Options options) {
+    String testIdAttribute = options.testIdAttribute == null ? "data-testid" : options.testIdAttribute;
+    playwright.selectors().setTestIdAttribute(testIdAttribute);
+
   }
 }
