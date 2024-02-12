@@ -25,17 +25,9 @@ public class Options {
     return this;
   }
 
-  public BrowserType.LaunchOptions getLaunchOptions() {
-    return launchOptions;
-  }
-
   public Options setLaunchOptions(BrowserType.LaunchOptions launchOptions) {
     this.launchOptions = launchOptions;
     return this;
-  }
-
-  public Browser.NewContextOptions getContextOptions() {
-    return contextOptions;
   }
 
   public Options setContextOptions(Browser.NewContextOptions contextOptions) {
@@ -43,17 +35,9 @@ public class Options {
     return this;
   }
 
-  public APIRequest.NewContextOptions getApiRequestOptions() {
-    return apiRequestOptions;
-  }
-
   public Options setApiRequestOptions(APIRequest.NewContextOptions apiRequestOptions) {
     this.apiRequestOptions = apiRequestOptions;
     return this;
-  }
-
-  public String getBaseUrl() {
-    return baseUrl;
   }
 
   public Options setBaseUrl(String baseUrl) {
@@ -61,17 +45,9 @@ public class Options {
     return this;
   }
 
-  public String getBrowserName() {
-    return browserName;
-  }
-
   public Options setBrowserName(String browserName) {
     this.browserName = browserName;
     return this;
-  }
-
-  public String getDeviceName() {
-    return deviceName;
   }
 
   public Options setDeviceName(String deviceName) {
@@ -79,17 +55,9 @@ public class Options {
     return this;
   }
 
-  public String getChannel() {
-    return channel;
-  }
-
   public Options setChannel(String channel) {
     this.channel = channel;
     return this;
-  }
-
-  public Boolean isHeadless() {
-    return headless;
   }
 
   public Options setHeadless(Boolean headless) {

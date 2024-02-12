@@ -38,7 +38,7 @@ public class APIRequestContextExtension implements ParameterResolver, BeforeEach
 
     Options options = OptionsExtension.getOptions(extensionContext);
     Playwright playwright = PlaywrightExtension.getOrCreatePlaywright(extensionContext);
-    apiRequestContext = playwright.request().newContext(options.getApiRequestOptions());
+    apiRequestContext = playwright.request().newContext(options.apiRequestOptions);
     threadLocalAPIRequestContext.set(apiRequestContext);
     return apiRequestContext;
   }
