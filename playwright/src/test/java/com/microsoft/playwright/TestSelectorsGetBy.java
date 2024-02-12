@@ -2,6 +2,7 @@ package com.microsoft.playwright;
 
 import com.microsoft.playwright.assertions.LocatorAssertions;
 import com.microsoft.playwright.options.AriaRole;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -12,6 +13,11 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSelectorsGetBy extends TestBase {
+
+  @AfterEach
+  void resetTestId() {
+    playwright.selectors().setTestIdAttribute("data-testid");
+  }
   @Test
   void getByTestIdShouldWork() {
     page.setContent("<div><div data-testid='Hello'>Hello world</div></div>");
@@ -28,6 +34,32 @@ public class TestSelectorsGetBy extends TestBase {
     assertThat(page.mainFrame().getByTestId("Hello")).hasText("Hello world");
     assertThat(page.locator("div").getByTestId("Hello")).hasText("Hello world");
   }
+
+  @Test
+  void shouldUseDataTestidInStrictErrors() {
+    playwright.selectors().setTestIdAttribute("data-custom-id");
+    page.setContent("" +
+      "      <div>\n" +
+      "      <div></div>\n" +
+      "        <div>\n" +
+      "          <div></div>\n" +
+      "          <div></div>\n" +
+      "        </div>\n" +
+      "      </div>\n" +
+      "      <div>\n" +
+      "        <div class='foo bar:0' data-custom-id='One'>\n" +
+      "        </div>\n" +
+      "        <div class='foo bar:1' data-custom-id='Two'>\n" +
+      "        </div>\n" +
+      "      </div>");
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.locator(".foo").hover());
+    assertTrue(e.getMessage().contains("strict mode violation"), e.getMessage());
+    assertTrue(e.getMessage().contains("<div class=\"foo bar:0"), e.getMessage());
+    assertTrue(e.getMessage().contains("<div class=\"foo bar:1"), e.getMessage());
+    assertTrue(e.getMessage().contains("aka getByTestId(\"One\")"), e.getMessage());
+    assertTrue(e.getMessage().contains("aka getByTestId(\"Two\")"), e.getMessage());
+  }
+
 
   @Test
   void getByTestIdShouldEscapeId() {

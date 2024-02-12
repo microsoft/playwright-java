@@ -69,10 +69,14 @@ public class SharedSelectors extends LoggingSupport implements Selectors {
       throw new PlaywrightException("Test id attribute cannot be null");
     }
     testIdAttributeName = attributeName;
+    channels.forEach(channel -> channel.setTestIdAttributeName(testIdAttributeName));
   }
 
   void addChannel(SelectorsImpl channel) {
-    registrations.forEach(r -> channel.registerImpl(r.name, r.script, r.options));
+    registrations.forEach(r -> {
+      channel.register(r.name, r.script, r.options);
+      channel.setTestIdAttributeName(testIdAttributeName);
+    });
     channels.add(channel);
   }
 
@@ -81,7 +85,7 @@ public class SharedSelectors extends LoggingSupport implements Selectors {
   }
 
   private void registerImpl(String name, String script, RegisterOptions options) {
-    channels.forEach(impl -> impl.registerImpl(name, script, options));
+    channels.forEach(impl -> impl.register(name, script, options));
     registrations.add(new Registration(name, script, options));
   }
 }
