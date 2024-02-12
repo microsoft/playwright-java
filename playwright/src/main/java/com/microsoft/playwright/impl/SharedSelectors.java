@@ -74,7 +74,11 @@ public class SharedSelectors extends LoggingSupport implements Selectors {
 
   void addChannel(SelectorsImpl channel) {
     registrations.forEach(r -> {
-      channel.register(r.name, r.script, r.options);
+      try {
+        channel.register(r.name, r.script, r.options);
+      } catch (PlaywrightException e) {
+        // This should not fail except for connection closure, but just in case we catch.
+      }
       channel.setTestIdAttributeName(testIdAttributeName);
     });
     channels.add(channel);

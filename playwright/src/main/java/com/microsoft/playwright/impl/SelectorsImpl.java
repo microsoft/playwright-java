@@ -33,7 +33,7 @@ class SelectorsImpl extends ChannelOwner {
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     params.addProperty("name", name);
     params.addProperty("source", script);
-    sendMessageAsync("register", params);
+    sendMessage("register", params);
   }
 
   void setTestIdAttributeName(String name) {
