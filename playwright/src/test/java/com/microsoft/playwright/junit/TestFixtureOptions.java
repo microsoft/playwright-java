@@ -19,7 +19,8 @@ public class TestFixtureOptions {
     public Options getOptions() {
       return new Options()
         .setBaseUrl(serverMap.get(TestFixtureOptions.class).EMPTY_PAGE)
-        .setBrowserName("webkit");
+        .setBrowserName("webkit")
+        .setTestIdAttribute("data-my-custom-testid");
     }
   }
 
@@ -32,5 +33,13 @@ public class TestFixtureOptions {
   public void testBaseUrl(Page page) {
     page.navigate("/");
     assertThat(page).hasURL(Pattern.compile("localhost"));
+  }
+
+  @Test
+  void testCustomTestId(Page page) {
+    page.setContent("<div><div data-my-custom-testid='Hello'>Hello world</div></div>");
+    assertThat(page.getByTestId("Hello")).hasText("Hello world");
+    assertThat(page.mainFrame().getByTestId("Hello")).hasText("Hello world");
+    assertThat(page.locator("div").getByTestId("Hello")).hasText("Hello world");
   }
 }

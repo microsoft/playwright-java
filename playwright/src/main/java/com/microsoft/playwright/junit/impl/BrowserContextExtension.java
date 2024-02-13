@@ -8,8 +8,7 @@ import com.microsoft.playwright.impl.Utils;
 import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
-import static com.microsoft.playwright.junit.impl.ExtensionUtils.isClassHook;
-import static com.microsoft.playwright.junit.impl.ExtensionUtils.isParameterSupported;
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.*;
 
 public class BrowserContextExtension implements ParameterResolver, AfterEachCallback {
   private static final ThreadLocal<BrowserContext> threadLocalBrowserContext = new ThreadLocal<>();
@@ -41,6 +40,7 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
 
     Options options = OptionsExtension.getOptions(extensionContext);
     Playwright playwright = PlaywrightExtension.getOrCreatePlaywright(extensionContext);
+    setTestIdAttribute(playwright, options);
     Browser browser = BrowserExtension.getOrCreateBrowser(extensionContext);
     Browser.NewContextOptions contextOptions = getContextOptions(playwright, options);
     browserContext = browser.newContext(contextOptions);

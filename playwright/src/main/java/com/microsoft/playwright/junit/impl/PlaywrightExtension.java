@@ -5,6 +5,7 @@ import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
 import static com.microsoft.playwright.junit.impl.ExtensionUtils.isParameterSupported;
+import static com.microsoft.playwright.junit.impl.ExtensionUtils.setTestIdAttribute;
 
 public class PlaywrightExtension implements ParameterResolver, AfterAllCallback {
   private static final ThreadLocal<Playwright> threadLocalPlaywright = new ThreadLocal<>();
@@ -38,6 +39,7 @@ public class PlaywrightExtension implements ParameterResolver, AfterAllCallback 
     Options options = OptionsExtension.getOptions(extensionContext);
     playwright = Playwright.create(options.getPlaywrightCreateOptions());
     threadLocalPlaywright.set(playwright);
+    setTestIdAttribute(playwright, options);
     return playwright;
   }
 }
