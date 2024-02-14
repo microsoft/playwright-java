@@ -19,13 +19,9 @@ public class TestFixtureDeviceOption {
     }
   }
 
-  private Server server() {
-    return serverMap.get(this.getClass());
-  }
-
   @Test
-  public void testPredifinedDeviceParameters(Page page) {
-    page.navigate(server().EMPTY_PAGE);
+  public void testPredefinedDeviceParameters(Server server, Page page) {
+    page.navigate(server.EMPTY_PAGE);
     assertEquals("webkit", page.context().browser().browserType().name());
     assertEquals(3, page.evaluate("window.devicePixelRatio"));
     assertEquals(980, page.evaluate("window.innerWidth"));

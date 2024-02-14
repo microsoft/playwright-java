@@ -29,14 +29,10 @@ public class TestFixtureChannelOption {
     return System.getenv("BROWSER_CHANNEL");
   }
 
-  private Server server() {
-    return serverMap.get(this.getClass());
-  }
-
   @Test
-  public void testBrowserChannel(Browser browser, Page page) {
+  public void testBrowserChannel(Server server, Browser browser, Page page) {
     assertEquals(browser.browserType().name(), "chromium");
-    page.navigate(server().EMPTY_PAGE);
+    page.navigate(server.EMPTY_PAGE);
     String brands = (String) page.evaluate("navigator.userAgentData?.brands.map(b => b.brand).join(', ') || ''");
     if (channel().contains("chrome")) {
       assertTrue(brands.contains("Google Chrome") || brands.contains("HeadlessChrome"), brands);
