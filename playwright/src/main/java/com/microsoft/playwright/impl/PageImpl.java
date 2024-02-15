@@ -49,6 +49,8 @@ public class PageImpl extends ChannelOwner implements Page {
   private ViewportSize viewport;
   private final Router routes = new Router();
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
+  private final Map<Integer, Runnable> locatorHandlers = new HashMap<>();
+
   private static final Map<EventType, String> eventSubscriptions() {
     Map<EventType, String> result = new HashMap<>();
     result.put(EventType.CONSOLE, "console");
@@ -170,6 +172,9 @@ public class PageImpl extends ChannelOwner implements Page {
         frame.parentFrame.childFrames.remove(frame);
       }
       listeners.notify(EventType.FRAMEDETACHED, frame);
+    } else if ("locatorHandlerTriggered".equals(event)) {
+      int uid = params.get("uid").getAsInt();
+      onLocatorHandlerTriggered(uid);
     } else if ("route".equals(event)) {
       RouteImpl route = connection.getExistingObject(params.getAsJsonObject("route").get("guid").getAsString());
       route.browserContext = browserContext;
@@ -524,6 +529,34 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public void addLocatorHandler(Locator locator, Runnable handler) {
+    LocatorImpl locatorImpl = (LocatorImpl) locator;
+    if (locatorImpl.frame != mainFrame) {
+      throw new PlaywrightException("Locator must belong to the main frame of this page");
+    }
+    withLogging("Page.addLocatorHandler", () -> {
+      JsonObject params = new JsonObject();
+      params.addProperty("selector", locatorImpl.selector);
+      JsonObject json = (JsonObject) sendMessage("registerLocatorHandler", params);
+      int uid = json.get("uid").getAsInt();
+      locatorHandlers.put(uid, handler);
+    });
+  }
+
+  private void onLocatorHandlerTriggered(int uid) {
+    try {
+      Runnable handler = locatorHandlers.get(uid);
+      if (handler != null) {
+        handler.run();
+      }
+    } finally {
+      JsonObject params = new JsonObject();
+      params.addProperty("uid", uid);
+      sendMessageAsync("resolveLocatorHandlerNoReply", params);
+    }
+  }
+
+  @Override
   public Object evalOnSelector(String selector, String pageFunction, Object arg, EvalOnSelectorOptions options) {
     return withLogging("Page.evalOnSelector", () -> mainFrame.evalOnSelectorImpl(
       selector, pageFunction, arg, convertType(options, Frame.EvalOnSelectorOptions.class)));
@@ -544,7 +577,8 @@ public class PageImpl extends ChannelOwner implements Page {
     withLogging("Page.addInitScript", () -> {
       try {
         byte[] bytes = readAllBytes(path);
-        addInitScriptImpl(new String(bytes, UTF_8));
+        String script = addSourceUrlToScript(new String(bytes, UTF_8), path);
+        addInitScriptImpl(script);
       } catch (IOException e) {
         throw new PlaywrightException("Failed to read script from file", e);
       }

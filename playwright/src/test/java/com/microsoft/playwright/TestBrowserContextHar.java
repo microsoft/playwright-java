@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.Utils.copy;
@@ -467,6 +468,39 @@ public class TestBrowserContextHar extends TestBase {
       page2.navigate(server.PREFIX + "/one-style.html");
       assertTrue(page2.content().contains("hello, world!"));
       assertThat(page2.locator("body")).hasCSS("background-color", "rgb(255, 192, 203)");
+    }
+  }
+
+  @Test
+  void shouldIgnoreAbortedRequests(@TempDir Path tmpDir) {
+    Path path = tmpDir.resolve("test.har");
+    try (BrowserContext context1 = browser.newContext()) {
+      server.setRoute("/x", exchange -> exchange.close());
+      context1.routeFromHAR(path, new BrowserContext.RouteFromHAROptions().setUpdate(true));
+      Page page1 = context1.newPage();
+      page1.navigate(server.EMPTY_PAGE);
+      Future<Server.Request> reqPromise = server.futureRequest("/x");
+      Object req = page1.evaluate("url => fetch(url).catch(e => 'cancelled')", server.PREFIX + "/x");
+      assertEquals("cancelled", req);
+    }
+    server.reset();
+
+    try (BrowserContext context2 = browser.newContext()) {
+      server.setRoute("/x", exchange -> {
+        exchange.getResponseHeaders().add("content-type", "text/html");
+        exchange.sendResponseHeaders(200, 4);
+        try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
+          writer.write("test");
+        }
+      });
+      context2.routeFromHAR(path);
+      Page page2 = context2.newPage();
+      page2.navigate(server.EMPTY_PAGE);
+      page2.evaluate("url => {\n" +
+        "  fetch(url).catch(e => 'cancelled').then(r => { window.result = r; })\n" +
+        "}", server.PREFIX + "/x");
+      page2.waitForTimeout(1000);
+      assertNull(page.evaluate("window.result"));
     }
   }
 }

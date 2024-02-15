@@ -341,4 +341,8 @@ public class Utils {
     }
     return flags;
   }
+
+  static String addSourceUrlToScript(String source, Path path) {
+    return source + "\n//# sourceURL=" + path.toString().replace("\n", "");
+  }
 }

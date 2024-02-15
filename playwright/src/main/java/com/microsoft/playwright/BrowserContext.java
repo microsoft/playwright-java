@@ -60,7 +60,7 @@ public interface BrowserContext extends AutoCloseable {
 
   /**
    * Emitted when JavaScript within the page calls one of console API methods, e.g. {@code console.log} or {@code
-   * console.dir}. Also emitted if the page throws an error or a warning.
+   * console.dir}.
    *
    * <p> The arguments passed into {@code console.log} and the page are available on the {@code ConsoleMessage} event handler
    * argument.

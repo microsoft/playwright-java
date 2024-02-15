@@ -1779,8 +1779,8 @@ public interface ElementHandle extends JSHandle {
    * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate
    * different respective texts.
    *
-   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with
-   * the modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   * <p> Shortcuts such as {@code key: "Control+o"}, {@code key: "Control++} or {@code key: "Control+Shift+T"} are supported as
+   * well. When specified with the modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    * @since v1.8
@@ -1809,8 +1809,8 @@ public interface ElementHandle extends JSHandle {
    * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate
    * different respective texts.
    *
-   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with
-   * the modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   * <p> Shortcuts such as {@code key: "Control+o"}, {@code key: "Control++} or {@code key: "Control+Shift+T"} are supported as
+   * well. When specified with the modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
    * @param key Name of the key to press or a character to generate, such as {@code ArrowLeft} or {@code a}.
    * @since v1.8
