@@ -73,6 +73,14 @@ public class HARRouter {
 
     if ("fulfill".equals(action)) {
       int status = response.get("status").getAsInt();
+      // If the response status is -1, the request was canceled or stalled, so we just stall it here.
+      // See https://github.com/microsoft/playwright/issues/29311.
+      // TODO: it'd be better to abort such requests, but then we likely need to respect the timing,
+      // because the request might have been stalled for a long time until the very end of the
+      // test when HAR was recorded but we'd abort it immediately.
+      if (status == -1) {
+        return;
+      }
       Map<String, String> headers = fromNameValues(response.getAsJsonArray("headers"));
       byte[] buffer = Base64.getDecoder().decode(response.get("body").getAsString());
       route.fulfill(new Route.FulfillOptions()

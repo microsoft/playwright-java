@@ -80,7 +80,7 @@ public interface Page extends AutoCloseable {
 
   /**
    * Emitted when JavaScript within the page calls one of console API methods, e.g. {@code console.log} or {@code
-   * console.dir}. Also emitted if the page throws an error or a warning.
+   * console.dir}.
    *
    * <p> The arguments passed into {@code console.log} are available on the {@code ConsoleMessage} event handler argument.
    *
@@ -5804,8 +5804,8 @@ public interface Page extends AutoCloseable {
    * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate
    * different respective texts.
    *
-   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with
-   * the modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   * <p> Shortcuts such as {@code key: "Control+o"}, {@code key: "Control++} or {@code key: "Control+Shift+T"} are supported as
+   * well. When specified with the modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -5847,8 +5847,8 @@ public interface Page extends AutoCloseable {
    * <p> If {@code key} is a single character, it is case-sensitive, so the values {@code a} and {@code A} will generate
    * different respective texts.
    *
-   * <p> Shortcuts such as {@code key: "Control+o"} or {@code key: "Control+Shift+T"} are supported as well. When specified with
-   * the modifier, modifier is pressed and being held while the subsequent key is being pressed.
+   * <p> Shortcuts such as {@code key: "Control+o"}, {@code key: "Control++} or {@code key: "Control+Shift+T"} are supported as
+   * well. When specified with the modifier, modifier is pressed and being held while the subsequent key is being pressed.
    *
    * <p> **Usage**
    * <pre>{@code
@@ -5895,6 +5895,77 @@ public interface Page extends AutoCloseable {
    * @since v1.9
    */
   List<ElementHandle> querySelectorAll(String selector);
+  /**
+   * Sometimes, the web page can show an overlay that obstructs elements behind it and prevents certain actions, like click,
+   * from completing. When such an overlay is shown predictably, we recommend dismissing it as a part of your test flow.
+   * However, sometimes such an overlay may appear non-deterministically, for example certain cookies consent dialogs behave
+   * this way. In this case, {@link Page#addLocatorHandler Page.addLocatorHandler()} allows handling an overlay during an
+   * action that it would block.
+   *
+   * <p> This method registers a handler for an overlay that is executed once the locator is visible on the page. The handler
+   * should get rid of the overlay so that actions blocked by it can proceed. This is useful for nondeterministic
+   * interstitial pages or dialogs, like a cookie consent dialog.
+   *
+   * <p> Note that execution time of the handler counts towards the timeout of the action/assertion that executed the handler.
+   *
+   * <p> You can register multiple handlers. However, only a single handler will be running at a time. Any actions inside a
+   * handler must not require another handler to run.
+   *
+   * <p> <strong>NOTE:</strong> Running the interceptor will alter your page state mid-test. For example it will change the currently focused element
+   * and move the mouse. Make sure that the actions that run after the interceptor are self-contained and do not rely on the
+   * focus and mouse state. <br /> <br /> For example, consider a test that calls {@link Locator#focus Locator.focus()}
+   * followed by {@link Keyboard#press Keyboard.press()}. If your handler clicks a button between these two actions, the
+   * focused element most likely will be wrong, and key press will happen on the unexpected element. Use {@link Locator#press
+   * Locator.press()} instead to avoid this problem. <br /> <br /> Another example is a series of mouse actions, where {@link
+   * Mouse#move Mouse.move()} is followed by {@link Mouse#down Mouse.down()}. Again, when the handler runs between these two
+   * actions, the mouse position will be wrong during the mouse down. Prefer methods like {@link Locator#click
+   * Locator.click()} that are self-contained.
+   *
+   * <p> **Usage**
+   *
+   * <p> An example that closes a cookie dialog when it appears:
+   * <pre>{@code
+   * // Setup the handler.
+   * page.addLocatorHandler(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Accept all cookies")), () => {
+   *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Reject all cookies")).click();
+   * });
+   *
+   * // Write the test as usual.
+   * page.goto("https://example.com");
+   * page.getByRole("button", Page.GetByRoleOptions().setName("Start here")).click();
+   * }</pre>
+   *
+   * <p> An example that skips the "Confirm your security details" page when it is shown:
+   * <pre>{@code
+   * // Setup the handler.
+   * page.addLocatorHandler(page.getByText("Confirm your security details")), () => {
+   *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Remind me later")).click();
+   * });
+   *
+   * // Write the test as usual.
+   * page.goto("https://example.com");
+   * page.getByRole("button", Page.GetByRoleOptions().setName("Start here")).click();
+   * }</pre>
+   *
+   * <p> An example with a custom callback on every actionability check. It uses a {@code <body>} locator that is always visible,
+   * so the handler is called before every actionability check:
+   * <pre>{@code
+   * // Setup the handler.
+   * page.addLocatorHandler(page.locator("body")), () => {
+   *   page.evaluate("window.removeObstructionsForTestIfNeeded()");
+   * });
+   *
+   * // Write the test as usual.
+   * page.goto("https://example.com");
+   * page.getByRole("button", Page.GetByRoleOptions().setName("Start here")).click();
+   * }</pre>
+   *
+   * @param locator Locator that triggers the handler.
+   * @param handler Function that should be run once {@code locator} appears. This function should get rid of the element that blocks
+   * actions like click.
+   * @since v1.42
+   */
+  void addLocatorHandler(Locator locator, Runnable handler);
   /**
    * This method reloads the current page, in the same way as if the user had triggered a browser refresh. Returns the main
    * resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect.
