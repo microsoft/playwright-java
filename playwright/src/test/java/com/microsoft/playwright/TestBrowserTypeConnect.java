@@ -66,7 +66,7 @@ public class TestBrowserTypeConnect extends TestBase {
       Driver driver = Driver.ensureDriverInstalled(Collections.emptyMap(), false);
       Path dir = driver.driverPath().getParent();
       String node = dir.resolve(isWindows ? "node.exe" : "node").toString();
-      String cliJs = dir.resolve("package/lib/cli/cli.js").toString();
+      String cliJs = dir.resolve("package/cli.js").toString();
       // We launch node process directly instead of using playwright.sh script as killing the script
       // process will leave node process running and killing it would be more hassle.
       ProcessBuilder pb = new ProcessBuilder(node, cliJs, "launch-server", "--browser", browserType.name());
