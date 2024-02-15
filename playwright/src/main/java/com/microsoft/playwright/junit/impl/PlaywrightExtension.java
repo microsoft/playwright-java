@@ -5,6 +5,7 @@ import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -22,7 +23,7 @@ public class PlaywrightExtension implements ParameterResolver, BeforeAllCallback
     isTestRunStarted = false;
     beforeLock = new ReentrantLock();
     threadLocalPlaywright = new ThreadLocal<>();
-    playwrightList = new ArrayList<>();
+    playwrightList = Collections.synchronizedList(new ArrayList<>());
   }
 
   // Before a Test class starts, we register a closeable resource
