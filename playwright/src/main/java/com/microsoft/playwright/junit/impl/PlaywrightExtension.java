@@ -69,7 +69,7 @@ public class PlaywrightExtension implements ParameterResolver, BeforeAllCallback
     }
 
     Options options = OptionsExtension.getOptions(extensionContext);
-    playwright = Playwright.create(options.getPlaywrightCreateOptions());
+    playwright = Playwright.create(options.playwrightCreateOptions);
     threadLocalPlaywright.set(playwright);
     playwrightList.add(playwright);
     setTestIdAttribute(playwright, options);

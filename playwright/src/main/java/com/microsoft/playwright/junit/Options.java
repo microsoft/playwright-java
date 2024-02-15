@@ -18,10 +18,6 @@ public class Options {
   public APIRequest.NewContextOptions apiRequestOptions;
   public Playwright.CreateOptions playwrightCreateOptions;
 
-  public Playwright.CreateOptions getPlaywrightCreateOptions() {
-    return playwrightCreateOptions;
-  }
-
   public Options setPlaywrightCreateOptions(Playwright.CreateOptions playwrightCreateOptions) {
     this.playwrightCreateOptions = playwrightCreateOptions;
     return this;
