@@ -46,10 +46,9 @@ public class PlaywrightExtension implements ParameterResolver, BeforeAllCallback
   @Override
   public void close() throws Throwable {
     for (Playwright playwright : playwrightList) {
-      if (playwright != null) {
-        playwright.close();
-      }
+      playwright.close();
     }
+    playwrightList.clear();
   }
 
   @Override
