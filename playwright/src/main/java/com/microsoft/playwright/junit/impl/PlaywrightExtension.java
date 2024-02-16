@@ -18,6 +18,7 @@ public class PlaywrightExtension implements ParameterResolver, BeforeAllCallback
   private static final List<Playwright> playwrightList;
   private final static Lock beforeLock;
   private static boolean isTestRunStarted;
+  private static final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(PlaywrightExtension.class);
 
   static {
     isTestRunStarted = false;
@@ -34,7 +35,7 @@ public class PlaywrightExtension implements ParameterResolver, BeforeAllCallback
       beforeLock.lock();
       if (!isTestRunStarted) {
         isTestRunStarted = true;
-        context.getRoot().getStore(ExtensionContext.Namespace.GLOBAL).put(context.getUniqueId(), this);
+        context.getRoot().getStore(namespace).put(context.getUniqueId(), this);
       }
     } finally {
       beforeLock.unlock();
