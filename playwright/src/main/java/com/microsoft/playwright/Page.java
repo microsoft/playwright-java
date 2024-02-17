@@ -2056,6 +2056,10 @@ public interface Page extends AutoCloseable {
      */
     public Margin margin;
     /**
+     * Whether or not to embed the document outline into the PDF. Defaults to {@code false}.
+     */
+    public Boolean outline;
+    /**
      * Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print all pages.
      */
     public String pageRanges;
@@ -2077,6 +2081,10 @@ public interface Page extends AutoCloseable {
      * Scale of the webpage rendering. Defaults to {@code 1}. Scale amount must be between 0.1 and 2.
      */
     public Double scale;
+    /**
+     * Whether or not to generate tagged (accessible) PDF. Defaults to {@code false}.
+     */
+    public Boolean tagged;
     /**
      * Paper width, accepts values labeled with units.
      */
@@ -2140,6 +2148,13 @@ public interface Page extends AutoCloseable {
       return this;
     }
     /**
+     * Whether or not to embed the document outline into the PDF. Defaults to {@code false}.
+     */
+    public PdfOptions setOutline(boolean outline) {
+      this.outline = outline;
+      return this;
+    }
+    /**
      * Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print all pages.
      */
     public PdfOptions setPageRanges(String pageRanges) {
@@ -2174,6 +2189,13 @@ public interface Page extends AutoCloseable {
      */
     public PdfOptions setScale(double scale) {
       this.scale = scale;
+      return this;
+    }
+    /**
+     * Whether or not to generate tagged (accessible) PDF. Defaults to {@code false}.
+     */
+    public PdfOptions setTagged(boolean tagged) {
+      this.tagged = tagged;
       return this;
     }
     /**

@@ -119,6 +119,7 @@ public class TestInstall {
   @Test
   void canPassPreinstalledNodeJsAsSystemProperty(@TempDir Path tmpDir) throws IOException, URISyntaxException, InterruptedException {
     String nodePath = extractNodeJsToTemp();
+    System.out.println(nodePath);
     System.setProperty("playwright.nodejs.path", nodePath);
     Driver driver = Driver.createAndInstall(Collections.emptyMap(), false);
     canSpecifyPreinstalledNodeJsShared(driver, tmpDir);
@@ -152,6 +153,7 @@ public class TestInstall {
 
     ProcessBuilder pb = driver.createProcessBuilder();
     pb.command().add("--version");
+    System.out.println("command: " + String.join(" ", pb.command()));
     pb.redirectError(ProcessBuilder.Redirect.INHERIT);
     Path out = tmpDir.resolve("out.txt");
     pb.redirectOutput(out.toFile());
