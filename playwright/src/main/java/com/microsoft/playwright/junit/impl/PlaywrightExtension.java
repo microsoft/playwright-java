@@ -18,8 +18,10 @@ public class PlaywrightExtension implements ParameterResolver {
   private static final ThreadLocal<Playwright> threadLocalPlaywright = new ThreadLocal<>();
   private static final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(PlaywrightExtension.class);
 
-  static
-  class PlaywrgihtRegistry implements ExtensionContext.Store.CloseableResource {
+  // There should be at most one instance of PlaywrgihtRegistry per test run, it keeps
+  // track of all created Playwright instances and calls `close()` on each of them after
+  // the tests finished.
+  static class PlaywrgihtRegistry implements ExtensionContext.Store.CloseableResource {
     private final List<Playwright> playwrightList = Collections.synchronizedList(new ArrayList<>());
 
     static synchronized PlaywrgihtRegistry getOrCreateFor(ExtensionContext extensionContext) {
