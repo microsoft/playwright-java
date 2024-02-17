@@ -2,54 +2,52 @@ package com.microsoft.playwright.junit.impl;
 
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.junit.Options;
-import org.junit.jupiter.api.extension.*;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.jupiter.api.extension.ParameterResolver;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static com.microsoft.playwright.junit.impl.ExtensionUtils.isParameterSupported;
 import static com.microsoft.playwright.junit.impl.ExtensionUtils.setTestIdAttribute;
 
-public class PlaywrightExtension implements ParameterResolver, BeforeAllCallback, ExtensionContext.Store.CloseableResource {
-  private static final ThreadLocal<Playwright> threadLocalPlaywright;
-  private static final List<Playwright> playwrightList;
-  private final static Lock beforeLock;
-  private static boolean isTestRunStarted;
+public class PlaywrightExtension implements ParameterResolver {
+  private static final ThreadLocal<Playwright> threadLocalPlaywright = new ThreadLocal<>();
   private static final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(PlaywrightExtension.class);
 
-  static {
-    isTestRunStarted = false;
-    beforeLock = new ReentrantLock();
-    threadLocalPlaywright = new ThreadLocal<>();
-    playwrightList = Collections.synchronizedList(new ArrayList<>());
-  }
+  static
+  class PlaywrgihtRegistry implements ExtensionContext.Store.CloseableResource {
+    private final List<Playwright> playwrightList = Collections.synchronizedList(new ArrayList<>());
 
-  // Before a Test class starts, we register a closeable resource
-  // We use a lock + boolean to ensure this only gets run once for the entire test run
-  @Override
-  public void beforeAll(final ExtensionContext context) {
-    try {
-      beforeLock.lock();
-      if (!isTestRunStarted) {
-        isTestRunStarted = true;
-        context.getRoot().getStore(namespace).put(context.getUniqueId(), this);
+    static synchronized PlaywrgihtRegistry getOrCreateFor(ExtensionContext extensionContext) {
+      ExtensionContext.Store rootStore = extensionContext.getRoot().getStore(namespace);
+      PlaywrgihtRegistry instance = (PlaywrgihtRegistry) rootStore.get(PlaywrgihtRegistry.class);
+      if (instance == null) {
+        instance = new PlaywrgihtRegistry();
+        rootStore.put(PlaywrgihtRegistry.class, instance);
       }
-    } finally {
-      beforeLock.unlock();
+      return instance;
     }
-  }
 
-  // This is a workaround for JUnit's lack of an "AfterTestRun" hook
-  // This will be called once after all tests have completed.
-  @Override
-  public void close() throws Throwable {
-    for (Playwright playwright : playwrightList) {
-      playwright.close();
+    Playwright createPlaywright(Playwright.CreateOptions options) {
+      Playwright playwright = Playwright.create(options);
+      playwrightList.add(playwright);
+      return playwright;
     }
-    playwrightList.clear();
+
+
+    // This is a workaround for JUnit's lack of an "AfterTestRun" hook
+    // This will be called once after all tests have completed.
+    @Override
+    public void close() throws Throwable {
+      for (Playwright playwright : playwrightList) {
+        playwright.close();
+      }
+      playwrightList.clear();
+    }
   }
 
   @Override
@@ -70,9 +68,10 @@ public class PlaywrightExtension implements ParameterResolver, BeforeAllCallback
     }
 
     Options options = OptionsExtension.getOptions(extensionContext);
-    playwright = Playwright.create(options.playwrightCreateOptions);
+    PlaywrgihtRegistry registry = PlaywrgihtRegistry.getOrCreateFor(extensionContext);
+    playwright = registry.createPlaywright(options.playwrightCreateOptions);
     threadLocalPlaywright.set(playwright);
-    playwrightList.add(playwright);
+
     setTestIdAttribute(playwright, options);
     return playwright;
   }
