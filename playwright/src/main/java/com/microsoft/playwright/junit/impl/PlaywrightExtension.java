@@ -18,18 +18,18 @@ public class PlaywrightExtension implements ParameterResolver {
   private static final ThreadLocal<Playwright> threadLocalPlaywright = new ThreadLocal<>();
   private static final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(PlaywrightExtension.class);
 
-  // There should be at most one instance of PlaywrgihtRegistry per test run, it keeps
+  // There should be at most one instance of PlaywrightRegistry per test run, it keeps
   // track of all created Playwright instances and calls `close()` on each of them after
   // the tests finished.
-  static class PlaywrgihtRegistry implements ExtensionContext.Store.CloseableResource {
+  static class PlaywrightRegistry implements ExtensionContext.Store.CloseableResource {
     private final List<Playwright> playwrightList = Collections.synchronizedList(new ArrayList<>());
 
-    static synchronized PlaywrgihtRegistry getOrCreateFor(ExtensionContext extensionContext) {
+    static synchronized PlaywrightRegistry getOrCreateFor(ExtensionContext extensionContext) {
       ExtensionContext.Store rootStore = extensionContext.getRoot().getStore(namespace);
-      PlaywrgihtRegistry instance = (PlaywrgihtRegistry) rootStore.get(PlaywrgihtRegistry.class);
+      PlaywrightRegistry instance = (PlaywrightRegistry) rootStore.get(PlaywrightRegistry.class);
       if (instance == null) {
-        instance = new PlaywrgihtRegistry();
-        rootStore.put(PlaywrgihtRegistry.class, instance);
+        instance = new PlaywrightRegistry();
+        rootStore.put(PlaywrightRegistry.class, instance);
       }
       return instance;
     }
@@ -70,7 +70,7 @@ public class PlaywrightExtension implements ParameterResolver {
     }
 
     Options options = OptionsExtension.getOptions(extensionContext);
-    PlaywrgihtRegistry registry = PlaywrgihtRegistry.getOrCreateFor(extensionContext);
+    PlaywrightRegistry registry = PlaywrightRegistry.getOrCreateFor(extensionContext);
     playwright = registry.createPlaywright(options.playwrightCreateOptions);
     threadLocalPlaywright.set(playwright);
 
