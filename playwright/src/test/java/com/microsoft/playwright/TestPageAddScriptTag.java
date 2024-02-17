@@ -17,6 +17,6 @@ public class TestPageAddScriptTag extends TestBase {
     Path path = Paths.get("src/test/resources/injectedfile.js");
     page.addScriptTag(new Page.AddScriptTagOptions().setPath(path));
     String result = (String) page.evaluate("() => window['__injectedError'].stack");
-    assertTrue(result.contains("resources" + File.pathSeparator + "injectedfile.js"), result);
+    assertTrue(result.contains("resources" + File.separator + "injectedfile.js"), result);
   }
 }
