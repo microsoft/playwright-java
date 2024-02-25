@@ -1,7 +1,9 @@
 package com.microsoft.playwright.junit.impl;
 
+import com.microsoft.playwright.APIRequest;
 import com.microsoft.playwright.APIRequestContext;
 import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.impl.Utils;
 import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
@@ -38,8 +40,20 @@ public class APIRequestContextExtension implements ParameterResolver, BeforeEach
 
     Options options = OptionsExtension.getOptions(extensionContext);
     Playwright playwright = PlaywrightExtension.getOrCreatePlaywright(extensionContext);
-    apiRequestContext = playwright.request().newContext(options.apiRequestOptions);
+    apiRequestContext = playwright.request().newContext(getContextOptions(options));
     threadLocalAPIRequestContext.set(apiRequestContext);
     return apiRequestContext;
+  }
+
+  private static APIRequest.NewContextOptions getContextOptions(Options options) {
+    APIRequest.NewContextOptions contextOptions = Utils.clone(options.apiRequestOptions);
+    if(contextOptions == null) {
+      contextOptions = new APIRequest.NewContextOptions();
+    }
+
+    if(options.ignoreHTTPSErrors != null) {
+      contextOptions.ignoreHTTPSErrors = options.ignoreHTTPSErrors;
+    }
+    return contextOptions;
   }
 }

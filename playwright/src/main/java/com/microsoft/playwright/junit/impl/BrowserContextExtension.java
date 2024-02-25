@@ -72,6 +72,10 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
       contextOptions.hasTouch = deviceDescriptor.hasTouch;
     }
 
+    if(options.ignoreHTTPSErrors != null) {
+      contextOptions.setIgnoreHTTPSErrors(options.ignoreHTTPSErrors);
+    }
+
     return contextOptions;
   }
 }
