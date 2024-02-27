@@ -13,6 +13,7 @@ public class Options {
   public String deviceName;
   // Custom attribute to be used in page.getByTestId(). data-testid is used by default.
   public String testIdAttribute;
+  public Boolean ignoreHTTPSErrors;
   public BrowserType.LaunchOptions launchOptions;
   public Browser.NewContextOptions contextOptions;
   public APIRequest.NewContextOptions apiRequestOptions;
@@ -65,6 +66,11 @@ public class Options {
 
   public Options setHeadless(Boolean headless) {
     this.headless = headless;
+    return this;
+  }
+
+  public Options setIgnoreHTTPSErrors(Boolean ignoreHTTPSErrors) {
+    this.ignoreHTTPSErrors = ignoreHTTPSErrors;
     return this;
   }
 }
