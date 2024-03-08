@@ -67,7 +67,7 @@ public class Utils {
   }
 
   @SuppressWarnings("unchecked")
-  static <K, V> Map<K, V> mapOf(Object... entries) {
+  static <K,V> Map<K, V> mapOf(Object... entries) {
     Map result = new HashMap();
     for (int i = 0; i + 1 < entries.length; i += 2) {
       result.put(entries[i], entries[i + 1]);
@@ -131,8 +131,7 @@ public class Utils {
   }
 
 
-  enum OS {WINDOWS, MAC, LINUX, UNKNOWN}
-
+  enum OS { WINDOWS, MAC, LINUX, UNKNOWN }
   static OS getOS() {
     String name = System.getProperty("os.name").toLowerCase();
     if (name.contains("win")) {
@@ -204,23 +203,23 @@ public class Utils {
     assertEquals(height, page.evaluate("window.innerHeight"));
   }
 
-  static String generateDifferentOriginScheme(final Server server) {
+  static String generateDifferentOriginScheme(final Server server){
     return server.PREFIX.startsWith("http://") ?
       server.PREFIX.replace("http://", "https://") :
       server.PREFIX.replace("https://", "http://");
   }
 
-  static String generateDifferentOriginHostname(final Server server) {
+  static String generateDifferentOriginHostname(final Server server){
     return server.PREFIX.replace("localhost", "mismatching-hostname");
   }
 
-  static String generateDifferentOriginPort(final Server server) {
-    return server.PREFIX.replace(String.valueOf(server.PORT), String.valueOf(server.PORT + 1));
+  static String generateDifferentOriginPort(final Server server){
+    return server.PREFIX.replace(String.valueOf(server.PORT), String.valueOf(server.PORT+1));
   }
 
   static Path relativePathOrSkipTest(Path path) {
     Path cwd = Paths.get("").toAbsolutePath();
-    try {
+    try  {
       return cwd.relativize(path.toAbsolutePath());
     } catch (IllegalArgumentException e) {
       // May happen on Windows when the path and temp are on different disks.
