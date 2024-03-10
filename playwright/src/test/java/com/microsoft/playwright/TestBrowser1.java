@@ -1,8 +1,8 @@
-package com.microsoft.playwright.junit;
+package com.microsoft.playwright;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.microsoft.playwright.*;
+import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 
@@ -62,7 +62,7 @@ public class TestBrowser1 {
   }
 
   @Test
-  @EnabledIf(value = "com.microsoft.playwright.junit.TestOptionsFactories#isChromium",
+  @EnabledIf(value = "com.microsoft.playwright.TestOptionsFactories#isChromium",
              disabledReason = "Chrome Devtools Protocol supported by chromium only")
   void shouldWorkWithNewBrowserCDPSession(Browser browser) {
     CDPSession session = browser.newBrowserCDPSession();

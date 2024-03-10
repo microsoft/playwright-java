@@ -1,48 +1,25 @@
-package com.microsoft.playwright.junit;
+package com.microsoft.playwright;
 
-import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.junit.Options;
+import com.microsoft.playwright.junit.OptionsFactory;
+import com.microsoft.playwright.junit.UsePlaywright;
 import com.microsoft.playwright.options.BrowserChannel;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Test;
 
-public class TestOptionsFactories {
-  private static String getBrowserChannelFromEnv() {
-    return System.getenv("BROWSER_CHANNEL");
-  }
+import static com.microsoft.playwright.TestBrowser2.ChannelOptionsFactory.getBrowserChannelEnumFromEnv;
+import static com.microsoft.playwright.TestOptionsFactories.createLaunchOptions;
+import static com.microsoft.playwright.TestOptionsFactories.getBrowserChannelFromEnv;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-  private static BrowserType.LaunchOptions createLaunchOptions() {
-    BrowserType.LaunchOptions options;
-    options = new BrowserType.LaunchOptions();
-    options.headless = !getHeadful();
-    return options;
-  }
-
-  private static boolean getHeadful() {
-    String headfulEnv = System.getenv("HEADFUL");
-    return headfulEnv != null && !"0".equals(headfulEnv) && !"false".equals(headfulEnv);
-  }
-
-  private static String getBrowserName() {
-    String browserName = System.getenv("BROWSER");
-    if (browserName == null) {
-      browserName = "chromium";
-    }
-    return browserName;
-  }
-
-  public static boolean isChromium() {
-    return getBrowserName().equals("chromium");
-  }
-
-  public static class BasicOptionsFactory implements OptionsFactory {
-    @Override
-    public Options getOptions() {
-      return new Options().setBrowserName(getBrowserName());
-    }
-  }
+@UsePlaywright(TestBrowser2.ChannelOptionsFactory.class)
+public class TestBrowser2 {
 
   public static class ChannelOptionsFactory implements OptionsFactory {
     @Override
     public Options getOptions() {
       BrowserChannel channel = getBrowserChannelEnumFromEnv();
+
       BrowserType.LaunchOptions launchOptions = createLaunchOptions();
       launchOptions.channel = channel;
       return new Options().setLaunchOptions(launchOptions);
@@ -76,4 +53,15 @@ public class TestOptionsFactories {
     }
   }
 
+  @Test
+  void shouldSupportDeprecatedChannelEnum(Playwright playwright) {
+    BrowserChannel channel = getBrowserChannelEnumFromEnv();
+    Assumptions.assumeTrue(channel != null);
+    BrowserType.LaunchOptions options = createLaunchOptions();
+    options.setChannel(channel);
+    BrowserType browserType = Utils.getBrowserTypeFromEnv(playwright);
+    Browser browser = browserType.launch(options);
+    assertNotNull(browser);
+    browser.close();
+  }
 }
