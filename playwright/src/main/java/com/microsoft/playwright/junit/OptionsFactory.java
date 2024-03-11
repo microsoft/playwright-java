@@ -16,6 +16,47 @@
 
 package com.microsoft.playwright.junit;
 
+/**
+ * <strong>NOTE:</strong> this API is experimental and is subject to changes.
+ *
+ * <p> Implement this interface to pass custom options to {@link UsePlaywright}
+ * annotation.
+ *
+ * <p> An example of implementing {@code @OptionsFactory}:
+ * <pre>{@code
+ * import com.microsoft.playwright.junit.Options;
+ * import com.microsoft.playwright.junit.OptionsFactory;
+ * import com.microsoft.playwright.junit.UsePlaywright;
+ *
+ * @UsePlaywright(MyTest.CustomOptions.class)
+ * public class MyTest {
+ *
+ *   public static class CustomOptions implements OptionsFactory {
+ *     @Override
+ *     public Options getOptions() {
+ *       return new Options()
+ *           .setHeadless(false)
+ *           .setContextOption(new Browser.NewContextOptions()
+ *               .setBaseURL("https://github.com"))
+ *           .setApiRequestOptions(new APIRequest.NewContextOptions()
+ *               .setBaseURL("https://playwright.dev"));
+ *     }
+ *   }
+ *
+ *   @Test
+ *   public void testWithCustomOptions(Page page, APIRequestContext request) {
+ *     page.navigate("/");
+ *     assertThat(page).hasURL(Pattern.compile("github"));
+ *
+ *     APIResponse response = request.get("/");
+ *     assertTrue(response.text().contains("Playwright"));
+ *   }
+ * }
+ * }</pre>
+ *
+ * <p>For more details and usage examples see our
+ * <a href="https://playwright.dev/java/docs/junit">JUnit guide</a>.
+ */
 public interface OptionsFactory {
   Options getOptions();
 }
