@@ -182,7 +182,7 @@ public class Utils {
     return browserName;
   }
 
-  static BrowserType getBrowserTypeFromEnv(Playwright playwright) {
+  public static BrowserType getBrowserTypeFromEnv(Playwright playwright) {
     String browserName = getBrowserNameFromEnv();
     switch (browserName) {
       case "webkit":
