@@ -6,7 +6,7 @@
 
   <groupId>com.microsoft.playwright</groupId>
   <artifactId>api-generator</artifactId>
-  <version>1.42.0-SNAPSHOT</version>
+  <version>1.43.0-SNAPSHOT</version>
   <name>Playwright - API Generator</name>
   <description>
     This is an internal module used to generate Java API from the upstream Playwright
