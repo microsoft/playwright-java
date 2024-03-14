@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class TestFixturesWithNestedClass {
 
   @Test
-  void worksWithParentClass(Page page) {
+  void worksWithOuterClass(Page page) {
     assertNotNull(page);
   }
 
