@@ -27,11 +27,13 @@ import static org.junit.platform.commons.support.AnnotationSupport.findAnnotatio
 
 class ExtensionUtils {
   static boolean hasUsePlaywrightAnnotation(ExtensionContext extensionContext) {
-    return AnnotationSupport.isAnnotated(extensionContext.getTestClass(), UsePlaywright.class);
+    Class<?> topLevelClass = getOuterClass(extensionContext.getRequiredTestClass());
+    return AnnotationSupport.isAnnotated(topLevelClass, UsePlaywright.class);
   }
 
   static UsePlaywright getUsePlaywrightAnnotation(ExtensionContext extensionContext) {
-    return findAnnotation(extensionContext.getTestClass(), UsePlaywright.class).get();
+    Class<?> topLevelClass = getOuterClass(extensionContext.getRequiredTestClass());
+    return findAnnotation(topLevelClass, UsePlaywright.class).get();
   }
 
   static boolean isClassHook(ExtensionContext extensionContext) {
@@ -49,6 +51,13 @@ class ExtensionUtils {
   static void setTestIdAttribute(Playwright playwright, Options options) {
     String testIdAttribute = options.testIdAttribute == null ? "data-testid" : options.testIdAttribute;
     playwright.selectors().setTestIdAttribute(testIdAttribute);
+  }
 
+  private static Class<?> getOuterClass(Class<?> clazz) {
+    if (clazz.getDeclaringClass() == null) {
+      return clazz;
+    } else {
+      return getOuterClass(clazz.getDeclaringClass());
+    }
   }
 }

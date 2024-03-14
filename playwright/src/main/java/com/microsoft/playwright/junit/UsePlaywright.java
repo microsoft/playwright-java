@@ -16,7 +16,6 @@
 
 package com.microsoft.playwright.junit;
 
-import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.junit.impl.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
