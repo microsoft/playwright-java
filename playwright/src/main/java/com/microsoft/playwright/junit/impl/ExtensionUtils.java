@@ -27,8 +27,8 @@ import static org.junit.platform.commons.support.AnnotationSupport.findAnnotatio
 
 class ExtensionUtils {
   static boolean hasUsePlaywrightAnnotation(ExtensionContext extensionContext) {
-    Class<?> topLevelClass = getOuterClass(extensionContext.getRequiredTestClass());
-    return AnnotationSupport.isAnnotated(topLevelClass, UsePlaywright.class);
+    Class<?> outerClass = getOuterClass(extensionContext.getRequiredTestClass());
+    return AnnotationSupport.isAnnotated(outerClass, UsePlaywright.class);
   }
 
   static UsePlaywright getUsePlaywrightAnnotation(ExtensionContext extensionContext) {
