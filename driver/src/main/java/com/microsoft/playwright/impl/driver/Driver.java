@@ -31,6 +31,7 @@ import static com.microsoft.playwright.impl.driver.DriverLogging.logWithTimestam
  */
 public abstract class Driver {
   protected final Map<String, String> env = new LinkedHashMap<>();
+  public static final String PLAYWRIGHT_NODEJS_PATH = "PLAYWRIGHT_NODEJS_PATH";
 
   private static Driver instance;
 
@@ -47,7 +48,7 @@ public abstract class Driver {
     }
 
     @Override
-    protected Path driverDir() {
+    public Path driverDir() {
       return driverDir;
     }
   }
@@ -65,14 +66,14 @@ public abstract class Driver {
   }
   protected abstract void initialize(Boolean installBrowsers) throws Exception;
 
-  public Path driverPath() {
-    String cliFileName = System.getProperty("os.name").toLowerCase().contains("windows") ?
-      "playwright.cmd" : "playwright.sh";
-    return driverDir().resolve(cliFileName);
-  }
-
   public ProcessBuilder createProcessBuilder() {
-    ProcessBuilder pb = new ProcessBuilder(driverPath().toString());
+    String nodePath = env.get("PLAYWRIGHT_NODEJS_PATH");
+    if (nodePath == null) {
+      String node = System.getProperty("os.name").toLowerCase().contains("windows") ? "node.exe" : "node";
+      nodePath = driverDir().resolve(node).toAbsolutePath().toString();
+    }
+    ProcessBuilder pb = new ProcessBuilder(nodePath);
+    pb.command().add(driverDir().resolve("package").resolve("cli.js").toAbsolutePath().toString());
     pb.environment().putAll(env);
     pb.environment().put("PW_LANG_NAME", "java");
     pb.environment().put("PW_LANG_NAME_VERSION", getMajorJavaVersion());
@@ -118,7 +119,7 @@ public abstract class Driver {
     return (Driver) jarDriver.getDeclaredConstructor().newInstance();
   }
 
-  protected abstract Path driverDir();
+  public abstract Path driverDir();
 
   protected static void logMessage(String message) {
     // This matches log format produced by the server.

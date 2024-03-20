@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.microsoft.playwright.impl.driver.jar.DriverJar.PLAYWRIGHT_NODEJS_PATH;
+import static com.microsoft.playwright.impl.driver.Driver.PLAYWRIGHT_NODEJS_PATH;
 import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -83,7 +83,7 @@ public class TestInstall {
   @Test
   void playwrightCliInstalled() throws Exception {
     Driver driver = Driver.createAndInstall(Collections.emptyMap(), false);
-    assertTrue(Files.exists(driver.driverPath()));
+    assertTrue(Files.exists(driver.driverDir()));
 
     ProcessBuilder pb = driver.createProcessBuilder();
     pb.command().add("install");
@@ -98,7 +98,7 @@ public class TestInstall {
   void playwrightDriverInAlternativeTmpdir(@TempDir Path tmpdir) throws Exception {
     System.setProperty("playwright.driver.tmpdir", tmpdir.toString());
     DriverJar driver = new DriverJar();
-    assertTrue(driver.driverPath().startsWith(tmpdir), "Driver path: " + driver.driverPath() + " tmp: " + tmpdir);
+    assertTrue(driver.driverDir().startsWith(tmpdir), "Driver path: " + driver.driverDir() + " tmp: " + tmpdir);
   }
 
   @Test
@@ -135,7 +135,7 @@ public class TestInstall {
   private static String extractNodeJsToTemp() throws URISyntaxException, IOException {
     DriverJar auxDriver = new DriverJar();
     auxDriver.extractDriverToTempDir();
-    String nodePath = auxDriver.driverPath().getParent().resolve(isWindows() ? "node.exe" : "node").toString();
+    String nodePath = auxDriver.driverDir().resolve(isWindows() ? "node.exe" : "node").toString();
     return nodePath;
   }
 
@@ -145,9 +145,9 @@ public class TestInstall {
   }
 
   private static void canSpecifyPreinstalledNodeJsShared(Driver driver, Path tmpDir) throws IOException, URISyntaxException, InterruptedException {
-    Path builtinNode = driver.driverPath().getParent().resolve("node");
+    Path builtinNode = driver.driverDir().resolve("node");
     assertFalse(Files.exists(builtinNode), builtinNode.toString());
-    Path builtinNodeExe = driver.driverPath().getParent().resolve("node.exe");
+    Path builtinNodeExe = driver.driverDir().resolve("node.exe");
     assertFalse(Files.exists(builtinNodeExe), builtinNodeExe.toString());
 
     ProcessBuilder pb = driver.createProcessBuilder();
