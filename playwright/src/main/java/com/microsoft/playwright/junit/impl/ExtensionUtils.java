@@ -54,7 +54,7 @@ class ExtensionUtils {
   }
 
   private static Class<?> getOuterClass(Class<?> clazz) {
-    if (clazz.getDeclaringClass() == null) {
+    if (clazz.getEnclosingClass() == null) {
       return clazz;
     } else {
       return getOuterClass(clazz.getDeclaringClass());
