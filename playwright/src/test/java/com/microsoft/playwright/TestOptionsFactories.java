@@ -19,6 +19,8 @@ package com.microsoft.playwright;
 import com.microsoft.playwright.junit.Options;
 import com.microsoft.playwright.junit.OptionsFactory;
 
+import static com.microsoft.playwright.Utils.getBrowserNameFromEnv;
+
 public class TestOptionsFactories {
 
   public static class BasicOptionsFactory implements OptionsFactory {
@@ -54,5 +56,13 @@ public class TestOptionsFactories {
 
   public static boolean isChromium() {
     return getBrowserName().equals("chromium");
+  }
+
+  public static boolean isFirefox() {
+    return getBrowserName().equals("firefox");
+  }
+
+  public static boolean isWebKit() {
+    return getBrowserName().equals("webkit");
   }
 }
