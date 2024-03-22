@@ -16,14 +16,10 @@
 
 package com.microsoft.playwright.junit;
 
-import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.junit.impl.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * <strong>NOTE:</strong> this API is experimental and is subject to changes.
@@ -80,6 +76,7 @@ import java.lang.annotation.Target;
              PageExtension.class, APIRequestContextExtension.class})
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Inherited
 public @interface UsePlaywright {
   Class<? extends OptionsFactory> value() default DefaultOptions.class;
 }
