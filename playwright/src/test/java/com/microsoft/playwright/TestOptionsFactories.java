@@ -55,4 +55,12 @@ public class TestOptionsFactories {
   public static boolean isChromium() {
     return getBrowserName().equals("chromium");
   }
+
+  public static boolean isFirefox() {
+    return getBrowserName().equals("firefox");
+  }
+
+  public static boolean isWebKit() {
+    return getBrowserName().equals("webkit");
+  }
 }

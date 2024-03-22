@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.junit.FixtureTest;
+import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
@@ -25,21 +27,23 @@ import java.io.Writer;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestAPIResponseAssertions extends TestBase {
+@FixtureTest
+@UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
+public class TestAPIResponseAssertions {
   @Test
-  void passWithResponse() {
+  void passWithResponse(Page page, Server server) {
     APIResponse res = page.request().get(server.EMPTY_PAGE);
     assertThat(res).isOK();
   }
 
   @Test
-  void passWithNot() {
+  void passWithNot(Page page, Server server) {
     APIResponse res = page.request().get(server.PREFIX + "/unknown");
     assertThat(res).not().isOK();
   }
 
   @Test
-  void fail() {
+  void fail(Page page, Server server) {
     APIResponse res = page.request().get(server.PREFIX + "/unknown");
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(res).isOK());
     assertTrue(e.getMessage().contains("→ GET " + server.PREFIX + "/unknown"), "Actual error: " + e.toString());
@@ -47,14 +51,14 @@ public class TestAPIResponseAssertions extends TestBase {
   }
 
   @Test
-  void shouldPrintResponseTextIfIdOkFails() {
+  void shouldPrintResponseTextIfIdOkFails(Page page, Server server) {
     APIResponse res = page.request().get(server.PREFIX + "/unknown");
     AssertionFailedError e = assertThrows(AssertionFailedError.class, () -> assertThat(res).isOK());
     assertTrue(e.getMessage().contains("File not found"), "Actual error: " + e.toString());
   }
 
   @Test
-  void shouldOnlyPrintResponseWithTextContentTypeIfIsOkFails() {
+  void shouldOnlyPrintResponseWithTextContentTypeIfIsOkFails(Page page, Server server) {
     {
       server.setRoute("/text-content-type", exchange -> {
         exchange.getResponseHeaders().set("Content-type", "text/plain");
