@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 import static com.microsoft.playwright.impl.Serialization.addHarUrlFilter;
 import static com.microsoft.playwright.impl.Serialization.gson;
 import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
+import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
@@ -335,8 +336,29 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public void clearCookies() {
-    withLogging("BrowserContext.clearCookies", () -> sendMessage("clearCookies"));
+  public void clearCookies(ClearCookiesOptions options) {
+    withLogging("BrowserContext.clearCookies", () -> clearCookiesImpl(options));
+  }
+
+  private void clearCookiesImpl(ClearCookiesOptions options) {
+    if (options == null) {
+      options = new ClearCookiesOptions();
+    }
+    JsonObject params = new JsonObject();
+    setStringOrRegex(params, "name", options.name);
+    setStringOrRegex(params, "domain", options.domain);
+    setStringOrRegex(params, "path", options.path);
+    sendMessage("clearCookies", params);
+  }
+
+  private static void setStringOrRegex(JsonObject params, String name, Object value) {
+    if (value instanceof String) {
+      params.addProperty(name, (String) value);
+    } else if (value instanceof Pattern) {
+      Pattern pattern = (Pattern) value;
+      params.addProperty(name + "RegexSource", pattern.pattern());
+      params.addProperty(name + "RegexFlags", toJsRegexFlags(pattern));
+    }
   }
 
   @Override

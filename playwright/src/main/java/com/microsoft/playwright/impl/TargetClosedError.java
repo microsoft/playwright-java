@@ -24,6 +24,10 @@ public class TargetClosedError extends PlaywrightException {
   }
 
   public TargetClosedError(String message) {
-    super(message != null ? message : "Target page, context or browser has been closed");
+    this(message, null);
+  }
+
+  public TargetClosedError(String message, Throwable cause) {
+    super(message != null ? message : "Target page, context or browser has been closed", cause);
   }
 }

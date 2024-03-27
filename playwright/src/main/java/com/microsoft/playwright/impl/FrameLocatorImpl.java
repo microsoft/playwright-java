@@ -133,4 +133,9 @@ class FrameLocatorImpl implements FrameLocator {
   public FrameLocator nth(int index) {
     return new FrameLocatorImpl(frame, frameSelector + " >> nth=" + index);
   }
+
+  @Override
+  public Locator owner() {
+    return new LocatorImpl(frame, frameSelector);
+  }
 }

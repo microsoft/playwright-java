@@ -9,13 +9,13 @@ cd "$(dirname "$0")/.."
 PLAYWRIGHT_CLI="unknown"
 case $(uname) in
 Darwin)
-  PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/mac/playwright.sh
+  PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/mac/package/cli.js
   ;;
 Linux)
-  PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/linux/playwright.sh
+  PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/linux/package/cli.js
   ;;
 MINGW64*)
-  PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/win32_x64/playwright.cmd
+  PLAYWRIGHT_CLI=./driver-bundle/src/main/resources/driver/win32_x64/package/cli.js
   ;;
 *)
   echo "Unknown platform '$(uname)'"
@@ -25,7 +25,7 @@ esac
 
 echo "Updating api.json from $($PLAYWRIGHT_CLI --version)"
 
-$PLAYWRIGHT_CLI print-api-json > ./tools/api-generator/src/main/resources/api.json
+node $PLAYWRIGHT_CLI print-api-json > ./tools/api-generator/src/main/resources/api.json
 
 mvn compile -f ./tools/api-generator --no-transfer-progress
 

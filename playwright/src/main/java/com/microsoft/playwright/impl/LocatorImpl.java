@@ -39,6 +39,10 @@ class LocatorImpl implements Locator {
   final FrameImpl frame;
   final String selector;
 
+  LocatorImpl(FrameImpl frame, String frameSelector) {
+    this(frame, frameSelector, null);
+  }
+
   public LocatorImpl(FrameImpl frame, String selector, LocatorOptions options) {
     this.frame = frame;
     if (options != null) {
@@ -201,6 +205,11 @@ class LocatorImpl implements Locator {
   @Override
   public List<ElementHandle> elementHandles() {
     return frame.querySelectorAll(selector);
+  }
+
+  @Override
+  public FrameLocator contentFrame() {
+    return new FrameLocatorImpl(frame, selector);
   }
 
   @Override

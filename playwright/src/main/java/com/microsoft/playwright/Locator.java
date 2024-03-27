@@ -2705,6 +2705,25 @@ public interface Locator {
    */
   List<ElementHandle> elementHandles();
   /**
+   * Returns a {@code FrameLocator} object pointing to the same {@code iframe} as this locator.
+   *
+   * <p> Useful when you have a {@code Locator} object obtained somewhere, and later on would like to interact with the content
+   * inside the frame.
+   *
+   * <p> For a reverse operation, use {@link FrameLocator#owner FrameLocator.owner()}.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * Locator locator = page.locator("iframe[name=\"embedded\"]");
+   * // ...
+   * FrameLocator frameLocator = locator.contentFrame();
+   * frameLocator.getByRole(AriaRole.BUTTON).click();
+   * }</pre>
+   *
+   * @since v1.43
+   */
+  FrameLocator contentFrame();
+  /**
    * Execute JavaScript code in the page, taking the matching element as an argument.
    *
    * <p> **Details**

@@ -41,7 +41,12 @@ public class JSHandleImpl extends ChannelOwner implements JSHandle {
 
   @Override
   public void dispose() {
-    withLogging("JSHandle.dispose", () -> sendMessage("dispose"));
+    withLogging("JSHandle.dispose", () -> {
+      try {
+        sendMessage("dispose");
+      } catch (TargetClosedError e) {
+      }
+    });
   }
 
   @Override

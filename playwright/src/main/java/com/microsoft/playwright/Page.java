@@ -5918,9 +5918,11 @@ public interface Page extends AutoCloseable {
    */
   List<ElementHandle> querySelectorAll(String selector);
   /**
-   * When testing a web page, sometimes unexpected overlays like a coookie consent dialog appear and block actions you want
-   * to automate, e.g. clicking a button. These overlays don't always show up in the same way or at the same time, making
-   * them tricky to handle in automated tests.
+   * <strong>NOTE:</strong> This method is experimental and its behavior may change in the upcoming releases.
+   *
+   * <p> When testing a web page, sometimes unexpected overlays like a "Sign up" dialog appear and block actions you want to
+   * automate, e.g. clicking a button. These overlays don't always show up in the same way or at the same time, making them
+   * tricky to handle in automated tests.
    *
    * <p> This method lets you set up a special function, called a handler, that activates when it detects that overlay is
    * visible. The handler's job is to remove the overlay, allowing your test to continue as if the overlay wasn't there.
@@ -5932,7 +5934,8 @@ public interface Page extends AutoCloseable {
    * <li> Playwright checks for the overlay every time before executing or retrying an action that requires an <a
    * href="https://playwright.dev/java/docs/actionability">actionability check</a>, or before performing an auto-waiting
    * assertion check. When overlay is visible, Playwright calls the handler first, and then proceeds with the
-   * action/assertion.</li>
+   * action/assertion. Note that the handler is only called when you perform an action/assertion - if the overlay becomes
+   * visible but you don't perform any actions, the handler will not be triggered.</li>
    * <li> The execution time of the handler counts towards the timeout of the action/assertion that executed the handler. If your
    * handler takes too long, it might cause timeouts.</li>
    * <li> You can register multiple handlers. However, only a single handler will be running at a time. Make sure the actions
@@ -5951,11 +5954,11 @@ public interface Page extends AutoCloseable {
    *
    * <p> **Usage**
    *
-   * <p> An example that closes a cookie consent dialog when it appears:
+   * <p> An example that closes a "Sign up to the newsletter" dialog when it appears:
    * <pre>{@code
    * // Setup the handler.
-   * page.addLocatorHandler(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Accept all cookies")), () => {
-   *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Reject all cookies")).click();
+   * page.addLocatorHandler(page.getByText("Sign up to the newsletter"), () => {
+   *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("No thanks")).click();
    * });
    *
    * // Write the test as usual.

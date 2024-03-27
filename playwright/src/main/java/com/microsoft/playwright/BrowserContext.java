@@ -186,6 +186,63 @@ public interface BrowserContext extends AutoCloseable {
    */
   void offResponse(Consumer<Response> handler);
 
+  class ClearCookiesOptions {
+    /**
+     * Only removes cookies with the given domain.
+     */
+    public Object domain;
+    /**
+     * Only removes cookies with the given name.
+     */
+    public Object name;
+    /**
+     * Only removes cookies with the given path.
+     */
+    public Object path;
+
+    /**
+     * Only removes cookies with the given domain.
+     */
+    public ClearCookiesOptions setDomain(String domain) {
+      this.domain = domain;
+      return this;
+    }
+    /**
+     * Only removes cookies with the given domain.
+     */
+    public ClearCookiesOptions setDomain(Pattern domain) {
+      this.domain = domain;
+      return this;
+    }
+    /**
+     * Only removes cookies with the given name.
+     */
+    public ClearCookiesOptions setName(String name) {
+      this.name = name;
+      return this;
+    }
+    /**
+     * Only removes cookies with the given name.
+     */
+    public ClearCookiesOptions setName(Pattern name) {
+      this.name = name;
+      return this;
+    }
+    /**
+     * Only removes cookies with the given path.
+     */
+    public ClearCookiesOptions setPath(String path) {
+      this.path = path;
+      return this;
+    }
+    /**
+     * Only removes cookies with the given path.
+     */
+    public ClearCookiesOptions setPath(Pattern path) {
+      this.path = path;
+      return this;
+    }
+  }
   class CloseOptions {
     /**
      * The reason to be reported to the operations interrupted by the context closure.
@@ -492,11 +549,41 @@ public interface BrowserContext extends AutoCloseable {
    */
   Browser browser();
   /**
-   * Clears context cookies.
+   * Removes cookies from context. Accepts optional filter.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * context.clearCookies();
+   * context.clearCookies(new BrowserContext.ClearCookiesOptions().setName("session-id"));
+   * context.clearCookies(new BrowserContext.ClearCookiesOptions().setDomain("my-origin.com"));
+   * context.clearCookies(new BrowserContext.ClearCookiesOptions().setPath("/api/v1"));
+   * context.clearCookies(new BrowserContext.ClearCookiesOptions()
+   *                          .setName("session-id")
+   *                          .setDomain("my-origin.com"));
+   * }</pre>
    *
    * @since v1.8
    */
-  void clearCookies();
+  default void clearCookies() {
+    clearCookies(null);
+  }
+  /**
+   * Removes cookies from context. Accepts optional filter.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * context.clearCookies();
+   * context.clearCookies(new BrowserContext.ClearCookiesOptions().setName("session-id"));
+   * context.clearCookies(new BrowserContext.ClearCookiesOptions().setDomain("my-origin.com"));
+   * context.clearCookies(new BrowserContext.ClearCookiesOptions().setPath("/api/v1"));
+   * context.clearCookies(new BrowserContext.ClearCookiesOptions()
+   *                          .setName("session-id")
+   *                          .setDomain("my-origin.com"));
+   * }</pre>
+   *
+   * @since v1.8
+   */
+  void clearCookies(ClearCookiesOptions options);
   /**
    * Clears all permission overrides for the browser context.
    *
