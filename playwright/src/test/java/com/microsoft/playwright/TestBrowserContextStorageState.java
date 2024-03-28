@@ -46,16 +46,16 @@ public class TestBrowserContextStorageState extends TestBase {
     assertJsonEquals("{" +
       "cookies:[]," +
       "origins:[{\n" +
-      "  origin: 'https://www.example.com',\n" +
-      "  localStorage: [{\n" +
-      "    name: 'name1',\n" +
-      "    value: 'value1'\n" +
-      "  }]\n" +
-      "}, {\n" +
       "  origin: 'https://www.domain.com',\n" +
       "  localStorage: [{\n" +
       "    name: 'name2',\n" +
       "    value: 'value2'\n" +
+      "  }]\n" +
+      "}, {\n" +
+      "  origin: 'https://www.example.com',\n" +
+      "  localStorage: [{\n" +
+      "    name: 'name1',\n" +
+      "    value: 'value1'\n" +
       "  }]\n" +
       "}]}", new Gson().fromJson(storageState, JsonObject.class));
   }

@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestLocatorFrame extends TestBase {
   private static void routeIframe(Page page) {
     page.route("**/empty.html", route -> route.fulfill(new Route.FulfillOptions()
-      .setBody("<iframe src='iframe.html'></iframe>").setContentType("text/html")));
+      .setBody("<iframe src='iframe.html' name='frame1'></iframe>").setContentType("text/html")));
     page.route("**/iframe.html", route -> {
       route.fulfill(new Route.FulfillOptions().setBody("<html>\n" +
         "  <div>\n" +
@@ -263,4 +263,25 @@ public class TestLocatorFrame extends TestBase {
     assertThat(input4).hasValue("");
   }
 
+  @Test
+  void locatorContentFrameShouldWork() {
+    routeIframe(page);
+    page.navigate(server.EMPTY_PAGE);
+    Locator locator = page.locator("iframe");
+    FrameLocator frameLocator = locator.contentFrame();
+    Locator button = frameLocator.locator("button");
+    assertEquals("Hello iframe", button.innerText());
+    assertThat(button).hasText("Hello iframe");
+    button.click();
+  }
+
+  @Test
+  void frameLocatorOwnerShouldWork() {
+    routeIframe(page);
+    page.navigate(server.EMPTY_PAGE);
+    FrameLocator frameLocator = page.frameLocator("iframe");
+    Locator locator = frameLocator.owner();
+    assertThat(locator).isVisible();
+    assertEquals("frame1", locator.getAttribute("name"));
+  }
 }

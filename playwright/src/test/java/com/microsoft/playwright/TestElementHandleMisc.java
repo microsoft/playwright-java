@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TestElementHandleMisc extends TestBase {
   @Test
@@ -108,4 +109,12 @@ public class TestElementHandleMisc extends TestBase {
     assertEquals(asList("blue"), page.evaluate("() => window['result'].onChange"));
   }
 
+  @Test
+  void shouldAllowDisposingTwice() {
+    page.setContent("<section>39</section>");
+    ElementHandle element = page.querySelector("section");
+    assertNotNull(element);
+    element.dispose();
+    element.dispose();
+  }
 }

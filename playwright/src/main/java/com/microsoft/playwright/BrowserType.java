@@ -182,8 +182,7 @@ public interface BrowserType {
      */
     public Boolean chromiumSandbox;
     /**
-     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code
-     * headless} option will be set {@code false}.
+     * @deprecated Use <a href="https://playwright.dev/java/docs/debug">debugging tools</a> instead.
      */
     public Boolean devtools;
     /**
@@ -291,8 +290,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code
-     * headless} option will be set {@code false}.
+     * @deprecated Use <a href="https://playwright.dev/java/docs/debug">debugging tools</a> instead.
      */
     public LaunchOptions setDevtools(boolean devtools) {
       this.devtools = devtools;
@@ -468,8 +466,7 @@ public interface BrowserType {
      */
     public Double deviceScaleFactor;
     /**
-     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code
-     * headless} option will be set {@code false}.
+     * @deprecated Use <a href="https://playwright.dev/java/docs/debug">debugging tools</a> instead.
      */
     public Boolean devtools;
     /**
@@ -760,8 +757,7 @@ public interface BrowserType {
       return this;
     }
     /**
-     * **Chromium-only** Whether to auto-open a Developer Tools panel for each tab. If this option is {@code true}, the {@code
-     * headless} option will be set {@code false}.
+     * @deprecated Use <a href="https://playwright.dev/java/docs/debug">debugging tools</a> instead.
      */
     public LaunchPersistentContextOptions setDevtools(boolean devtools) {
       this.devtools = devtools;

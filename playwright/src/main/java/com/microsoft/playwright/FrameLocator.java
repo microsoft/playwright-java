@@ -42,11 +42,13 @@ import java.util.regex.Pattern;
  *
  * <p> **Converting Locator to FrameLocator**
  *
- * <p> If you have a {@code Locator} object pointing to an {@code iframe} it can be converted to {@code FrameLocator} using <a
- * href="https://developer.mozilla.org/en-US/docs/Web/CSS/:scope">{@code :scope}</a> CSS selector:
- * <pre>{@code
- * Locator frameLocator = locator.frameLocator(':scope');
- * }</pre>
+ * <p> If you have a {@code Locator} object pointing to an {@code iframe} it can be converted to {@code FrameLocator} using
+ * {@link Locator#contentFrame Locator.contentFrame()}.
+ *
+ * <p> **Converting FrameLocator to Locator**
+ *
+ * <p> If you have a {@code FrameLocator} object it can be converted to {@code Locator} pointing to the same {@code iframe}
+ * using {@link FrameLocator#owner FrameLocator.owner()}.
  */
 public interface FrameLocator {
   class GetByAltTextOptions {
@@ -1003,5 +1005,24 @@ public interface FrameLocator {
    * @since v1.17
    */
   FrameLocator nth(int index);
+  /**
+   * Returns a {@code Locator} object pointing to the same {@code iframe} as this frame locator.
+   *
+   * <p> Useful when you have a {@code FrameLocator} object obtained somewhere, and later on would like to interact with the
+   * {@code iframe} element.
+   *
+   * <p> For a reverse operation, use {@link Locator#contentFrame Locator.contentFrame()}.
+   *
+   * <p> **Usage**
+   * <pre>{@code
+   * FrameLocator frameLocator = page.frameLocator("iframe[name=\"embedded\"]");
+   * // ...
+   * Locator locator = frameLocator.owner();
+   * assertThat(locator).isVisible();
+   * }</pre>
+   *
+   * @since v1.43
+   */
+  Locator owner();
 }
 
