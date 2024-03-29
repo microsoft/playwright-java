@@ -45,7 +45,13 @@ public class PageExtension implements ParameterResolver, AfterEachCallback {
     return getOrCreatePage(extensionContext);
   }
 
-  static Page getOrCreatePage(ExtensionContext extensionContext) {
+  /**
+   * Returns the Page that belongs to the current test.  Will be created if it doesn't already exist.
+   * <strong>NOTE:</strong> this method is subject to change.
+   * @param extensionContext the context in which the current test or container is being executed.
+   * @return The Page that belongs to the current test.
+   */
+  public static Page getOrCreatePage(ExtensionContext extensionContext) {
     Page page = threadLocalPage.get();
     if (page != null) {
       return page;
