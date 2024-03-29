@@ -47,7 +47,13 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
     return getOrCreateBrowser(extensionContext);
   }
 
-  static Browser getOrCreateBrowser(ExtensionContext extensionContext) {
+  /**
+   * Returns the Browser that belongs to the current test.  Will be created if it doesn't already exist.
+   * <strong>NOTE:</strong> this method is subject to change.
+   * @param extensionContext the context in which the current test or container is being executed.
+   * @return The Browser that belongs to the current test.
+   */
+  public static Browser getOrCreateBrowser(ExtensionContext extensionContext) {
     Browser browser = threadLocalBrowser.get();
     if (browser != null) {
       return browser;

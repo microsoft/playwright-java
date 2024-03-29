@@ -79,7 +79,13 @@ public class PlaywrightExtension implements ParameterResolver {
     return getOrCreatePlaywright(extensionContext);
   }
 
-  static Playwright getOrCreatePlaywright(ExtensionContext extensionContext) {
+  /**
+   * Returns the Playwright that belongs to the current test.  Will be created if it doesn't already exist.
+   * <strong>NOTE:</strong> this method is subject to change.
+   * @param extensionContext the context in which the current test or container is being executed.
+   * @return The Playwright that belongs to the current test.
+   */
+  public static Playwright getOrCreatePlaywright(ExtensionContext extensionContext) {
     Playwright playwright = threadLocalPlaywright.get();
     if (playwright != null) {
       return playwright;

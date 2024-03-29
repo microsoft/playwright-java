@@ -48,7 +48,13 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
     return getOrCreateBrowserContext(extensionContext);
   }
 
-  static BrowserContext getOrCreateBrowserContext(ExtensionContext extensionContext) {
+  /**
+   * Returns the BrowserContext that belongs to the current test.  Will be created if it doesn't already exist.
+   * <strong>NOTE:</strong> this method is subject to change.
+   * @param extensionContext the context in which the current test or container is being executed.
+   * @return The BrowserContext that belongs to the current test.
+   */
+  public static BrowserContext getOrCreateBrowserContext(ExtensionContext extensionContext) {
     BrowserContext browserContext = threadLocalBrowserContext.get();
     if (browserContext != null) {
       return browserContext;

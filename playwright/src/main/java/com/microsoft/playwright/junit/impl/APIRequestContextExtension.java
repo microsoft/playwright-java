@@ -48,7 +48,13 @@ public class APIRequestContextExtension implements ParameterResolver, BeforeEach
     return getOrCreateAPIRequestContext(extensionContext);
   }
 
-  static APIRequestContext getOrCreateAPIRequestContext(ExtensionContext extensionContext) {
+  /**
+   * Returns the APIRequestContext that belongs to the current test.  Will be created if it doesn't already exist.
+   * <strong>NOTE:</strong> this method is subject to change.
+   * @param extensionContext the context in which the current test or container is being executed.
+   * @return The APIRequestContext that belongs to the current test.
+   */
+  public static APIRequestContext getOrCreateAPIRequestContext(ExtensionContext extensionContext) {
     APIRequestContext apiRequestContext = threadLocalAPIRequestContext.get();
     if (apiRequestContext != null) {
       return apiRequestContext;
