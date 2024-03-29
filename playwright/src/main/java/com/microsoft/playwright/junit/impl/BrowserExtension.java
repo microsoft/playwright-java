@@ -53,7 +53,7 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
    * @param extensionContext the context in which the current test or container is being executed.
    * @return The Browser that belongs to the current test.
    */
-  pubilc static Browser getOrCreateBrowser(ExtensionContext extensionContext) {
+  public static Browser getOrCreateBrowser(ExtensionContext extensionContext) {
     Browser browser = threadLocalBrowser.get();
     if (browser != null) {
       return browser;
