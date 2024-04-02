@@ -47,6 +47,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private final TracingImpl tracing;
   private final APIRequestContextImpl request;
   final List<PageImpl> pages = new ArrayList<>();
+  final List<PageImpl> backgroundPages = new ArrayList<>();
+
   final Router routes = new Router();
   private boolean closeWasCalled;
   private final WaitableEvent<EventType, ?> closePromise;
@@ -81,6 +83,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   enum EventType {
+    BACKGROUNDPAGE,
     CLOSE,
     CONSOLE,
     DIALOG,
@@ -126,6 +129,16 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       return browser.closeReason;
     }
     return null;
+  }
+
+  @Override
+  public void onBackgroundPage(Consumer<Page> handler) {
+    listeners.add(EventType.BACKGROUNDPAGE, handler);
+  }
+
+  @Override
+  public void offBackgroundPage(Consumer<Page> handler) {
+    listeners.remove(EventType.BACKGROUNDPAGE, handler);
   }
 
   @Override
@@ -322,6 +335,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         throw new PlaywrightException("Failed to read script from file", e);
       }
     });
+  }
+
+  @Override
+  public List<Page> backgroundPages() {
+    return new ArrayList<>(backgroundPages);
   }
 
   private void addInitScriptImpl(String script) {
@@ -712,6 +730,10 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
       if (page.opener() != null && !page.opener().isClosed()) {
         page.opener().notifyPopup(page);
       }
+    } else if ("backgroundPage".equals(event)) {
+      PageImpl page = connection.getExistingObject(params.getAsJsonObject("page").get("guid").getAsString());
+      backgroundPages.add(page);
+      listeners.notify(EventType.BACKGROUNDPAGE, page);
     } else if ("bindingCall".equals(event)) {
       BindingCall bindingCall = connection.getExistingObject(params.getAsJsonObject("binding").get("guid").getAsString());
       BindingCallback binding = bindings.get(bindingCall.name());
