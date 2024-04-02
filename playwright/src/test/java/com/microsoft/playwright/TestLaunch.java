@@ -18,13 +18,13 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIf;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.microsoft.playwright.Utils.mapOf;
@@ -51,7 +51,17 @@ public class TestLaunch extends TestBase {
     launchBrowser(options);
   }
 
+  public static boolean canRunHeaded() {
+    // On linux headed browser requires xvfb.
+    return isHeadful() || isMac || isWindows;
+  }
+
+  public static boolean canRunExtensionTest() {
+    return canRunHeaded() && isChromium();
+  }
+
   @Test
+  @EnabledIf(value="com.microsoft.playwright.TestLaunch#canRunExtensionTest", disabledReason="Only Chromium Headed")
   void shouldReturnBackgroundPages(@TempDir Path tmpDir) throws IOException {
     Path profileDir = tmpDir.resolve("profile");
     Files.createDirectories(profileDir);
