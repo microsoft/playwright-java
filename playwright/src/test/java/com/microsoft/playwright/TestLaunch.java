@@ -65,7 +65,7 @@ public class TestLaunch extends TestBase {
   void shouldReturnBackgroundPages(@TempDir Path tmpDir) throws IOException {
     Path profileDir = tmpDir.resolve("profile");
     Files.createDirectories(profileDir);
-    String extensionPath = Paths.get("src/test/resources/simple-extension").toString();
+    String extensionPath = Paths.get("src/test/resources/simple-extension").toAbsolutePath().toString();
     initBrowserType();
     BrowserContext context = browserType.launchPersistentContext(profileDir, new BrowserType.LaunchPersistentContextOptions()
       .setHeadless(false)
