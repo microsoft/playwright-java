@@ -18,7 +18,8 @@ package com.microsoft.playwright;
 
 
 /**
- * {@code Dialog} objects are dispatched by page via the {@link Page#onDialog Page.onDialog()} event.
+ * {@code Dialog} objects are dispatched by page via the {@link com.microsoft.playwright.Page#onDialog Page.onDialog()}
+ * event.
  *
  * <p> An example of using {@code Dialog} class:
  * <pre>{@code
@@ -41,9 +42,9 @@ package com.microsoft.playwright;
  * }
  * }</pre>
  *
- * <p> <strong>NOTE:</strong> Dialogs are dismissed automatically, unless there is a {@link Page#onDialog Page.onDialog()} listener. When listener is
- * present, it **must** either {@link Dialog#accept Dialog.accept()} or {@link Dialog#dismiss Dialog.dismiss()} the dialog
- * - otherwise the page will <a
+ * <p> <strong>NOTE:</strong> Dialogs are dismissed automatically, unless there is a {@link com.microsoft.playwright.Page#onDialog Page.onDialog()}
+ * listener. When listener is present, it **must** either {@link com.microsoft.playwright.Dialog#accept Dialog.accept()} or
+ * {@link com.microsoft.playwright.Dialog#dismiss Dialog.dismiss()} the dialog - otherwise the page will <a
  * href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop#never_blocking">freeze</a> waiting for the
  * dialog, and actions like click will never finish.
  */

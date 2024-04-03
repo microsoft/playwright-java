@@ -39,8 +39,9 @@ public interface Tracing {
   class StartOptions {
     /**
      * If specified, intermediate trace files are going to be saved into the files with the given name prefix inside the {@code
-     * tracesDir} folder specified in {@link BrowserType#launch BrowserType.launch()}. To specify the final trace zip file
-     * name, you need to pass {@code path} option to {@link Tracing#stop Tracing.stop()} instead.
+     * tracesDir} folder specified in {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}. To specify the
+     * final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stop
+     * Tracing.stop()} instead.
      */
     public String name;
     /**
@@ -68,8 +69,9 @@ public interface Tracing {
 
     /**
      * If specified, intermediate trace files are going to be saved into the files with the given name prefix inside the {@code
-     * tracesDir} folder specified in {@link BrowserType#launch BrowserType.launch()}. To specify the final trace zip file
-     * name, you need to pass {@code path} option to {@link Tracing#stop Tracing.stop()} instead.
+     * tracesDir} folder specified in {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}. To specify the
+     * final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stop
+     * Tracing.stop()} instead.
      */
     public StartOptions setName(String name) {
       this.name = name;
@@ -113,8 +115,9 @@ public interface Tracing {
   class StartChunkOptions {
     /**
      * If specified, intermediate trace files are going to be saved into the files with the given name prefix inside the {@code
-     * tracesDir} folder specified in {@link BrowserType#launch BrowserType.launch()}. To specify the final trace zip file
-     * name, you need to pass {@code path} option to {@link Tracing#stopChunk Tracing.stopChunk()} instead.
+     * tracesDir} folder specified in {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}. To specify the
+     * final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stopChunk
+     * Tracing.stopChunk()} instead.
      */
     public String name;
     /**
@@ -124,8 +127,9 @@ public interface Tracing {
 
     /**
      * If specified, intermediate trace files are going to be saved into the files with the given name prefix inside the {@code
-     * tracesDir} folder specified in {@link BrowserType#launch BrowserType.launch()}. To specify the final trace zip file
-     * name, you need to pass {@code path} option to {@link Tracing#stopChunk Tracing.stopChunk()} instead.
+     * tracesDir} folder specified in {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}. To specify the
+     * final trace zip file name, you need to pass {@code path} option to {@link com.microsoft.playwright.Tracing#stopChunk
+     * Tracing.stopChunk()} instead.
      */
     public StartChunkOptions setName(String name) {
       this.name = name;
@@ -155,14 +159,14 @@ public interface Tracing {
   }
   class StopChunkOptions {
     /**
-     * Export trace collected since the last {@link Tracing#startChunk Tracing.startChunk()} call into the file with the given
-     * path.
+     * Export trace collected since the last {@link com.microsoft.playwright.Tracing#startChunk Tracing.startChunk()} call into
+     * the file with the given path.
      */
     public Path path;
 
     /**
-     * Export trace collected since the last {@link Tracing#startChunk Tracing.startChunk()} call into the file with the given
-     * path.
+     * Export trace collected since the last {@link com.microsoft.playwright.Tracing#startChunk Tracing.startChunk()} call into
+     * the file with the given path.
      */
     public StopChunkOptions setPath(Path path) {
       this.path = path;
@@ -172,7 +176,7 @@ public interface Tracing {
   /**
    * Start tracing.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * context.tracing().start(new Tracing.StartOptions()
    *   .setScreenshots(true)
@@ -191,7 +195,7 @@ public interface Tracing {
   /**
    * Start tracing.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * context.tracing().start(new Tracing.StartOptions()
    *   .setScreenshots(true)
@@ -207,10 +211,11 @@ public interface Tracing {
   void start(StartOptions options);
   /**
    * Start a new trace chunk. If you'd like to record multiple traces on the same {@code BrowserContext}, use {@link
-   * Tracing#start Tracing.start()} once, and then create multiple trace chunks with {@link Tracing#startChunk
-   * Tracing.startChunk()} and {@link Tracing#stopChunk Tracing.stopChunk()}.
+   * com.microsoft.playwright.Tracing#start Tracing.start()} once, and then create multiple trace chunks with {@link
+   * com.microsoft.playwright.Tracing#startChunk Tracing.startChunk()} and {@link com.microsoft.playwright.Tracing#stopChunk
+   * Tracing.stopChunk()}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * context.tracing().start(new Tracing.StartOptions()
    *   .setScreenshots(true)
@@ -238,10 +243,11 @@ public interface Tracing {
   }
   /**
    * Start a new trace chunk. If you'd like to record multiple traces on the same {@code BrowserContext}, use {@link
-   * Tracing#start Tracing.start()} once, and then create multiple trace chunks with {@link Tracing#startChunk
-   * Tracing.startChunk()} and {@link Tracing#stopChunk Tracing.stopChunk()}.
+   * com.microsoft.playwright.Tracing#start Tracing.start()} once, and then create multiple trace chunks with {@link
+   * com.microsoft.playwright.Tracing#startChunk Tracing.startChunk()} and {@link com.microsoft.playwright.Tracing#stopChunk
+   * Tracing.stopChunk()}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * context.tracing().start(new Tracing.StartOptions()
    *   .setScreenshots(true)
@@ -280,7 +286,8 @@ public interface Tracing {
    */
   void stop(StopOptions options);
   /**
-   * Stop the trace chunk. See {@link Tracing#startChunk Tracing.startChunk()} for more details about multiple trace chunks.
+   * Stop the trace chunk. See {@link com.microsoft.playwright.Tracing#startChunk Tracing.startChunk()} for more details
+   * about multiple trace chunks.
    *
    * @since v1.15
    */
@@ -288,7 +295,8 @@ public interface Tracing {
     stopChunk(null);
   }
   /**
-   * Stop the trace chunk. See {@link Tracing#startChunk Tracing.startChunk()} for more details about multiple trace chunks.
+   * Stop the trace chunk. See {@link com.microsoft.playwright.Tracing#startChunk Tracing.startChunk()} for more details
+   * about multiple trace chunks.
    *
    * @since v1.15
    */

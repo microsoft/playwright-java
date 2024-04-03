@@ -19,19 +19,20 @@ package com.microsoft.playwright;
 import java.util.*;
 
 /**
- * JSHandle represents an in-page JavaScript object. JSHandles can be created with the {@link Page#evaluateHandle
- * Page.evaluateHandle()} method.
+ * JSHandle represents an in-page JavaScript object. JSHandles can be created with the {@link
+ * com.microsoft.playwright.Page#evaluateHandle Page.evaluateHandle()} method.
  * <pre>{@code
  * JSHandle windowHandle = page.evaluateHandle("() => window");
  * // ...
  * }</pre>
  *
  * <p> JSHandle prevents the referenced JavaScript object being garbage collected unless the handle is exposed with {@link
- * JSHandle#dispose JSHandle.dispose()}. JSHandles are auto-disposed when their origin frame gets navigated or the parent
- * context gets destroyed.
+ * com.microsoft.playwright.JSHandle#dispose JSHandle.dispose()}. JSHandles are auto-disposed when their origin frame gets
+ * navigated or the parent context gets destroyed.
  *
- * <p> JSHandle instances can be used as an argument in {@link Page#evalOnSelector Page.evalOnSelector()}, {@link Page#evaluate
- * Page.evaluate()} and {@link Page#evaluateHandle Page.evaluateHandle()} methods.
+ * <p> JSHandle instances can be used as an argument in {@link com.microsoft.playwright.Page#evalOnSelector
+ * Page.evalOnSelector()}, {@link com.microsoft.playwright.Page#evaluate Page.evaluate()} and {@link
+ * com.microsoft.playwright.Page#evaluateHandle Page.evaluateHandle()} methods.
  */
 public interface JSHandle {
   /**
@@ -55,7 +56,7 @@ public interface JSHandle {
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@code
    * handle.evaluate} would wait for the promise to resolve and return its value.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * ElementHandle tweetHandle = page.querySelector(".tweet .retweets");
    * assertEquals("10 retweets", tweetHandle.evaluate("node => node.innerText"));
@@ -77,7 +78,7 @@ public interface JSHandle {
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@code
    * handle.evaluate} would wait for the promise to resolve and return its value.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * ElementHandle tweetHandle = page.querySelector(".tweet .retweets");
    * assertEquals("10 retweets", tweetHandle.evaluate("node => node.innerText"));
@@ -101,7 +102,7 @@ public interface JSHandle {
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@code
    * jsHandle.evaluateHandle} would wait for the promise to resolve and return its value.
    *
-   * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
+   * <p> See {@link com.microsoft.playwright.Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
@@ -122,7 +123,7 @@ public interface JSHandle {
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@code
    * jsHandle.evaluateHandle} would wait for the promise to resolve and return its value.
    *
-   * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
+   * <p> See {@link com.microsoft.playwright.Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
@@ -133,7 +134,7 @@ public interface JSHandle {
   /**
    * The method returns a map with **own property names** as keys and JSHandle instances for the property values.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * JSHandle handle = page.evaluateHandle("() => ({ window, document })");
    * Map<String, JSHandle> properties = handle.getProperties();

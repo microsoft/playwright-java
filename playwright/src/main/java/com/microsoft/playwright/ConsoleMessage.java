@@ -19,8 +19,9 @@ package com.microsoft.playwright;
 import java.util.*;
 
 /**
- * {@code ConsoleMessage} objects are dispatched by page via the {@link Page#onConsoleMessage Page.onConsoleMessage()}
- * event. For each console messages logged in the page there will be corresponding event in the Playwright context.
+ * {@code ConsoleMessage} objects are dispatched by page via the {@link com.microsoft.playwright.Page#onConsoleMessage
+ * Page.onConsoleMessage()} event. For each console messages logged in the page there will be corresponding event in the
+ * Playwright context.
  * <pre>{@code
  * // Listen for all console messages and print them to the standard output.
  * page.onConsoleMessage(msg -> System.out.println(msg.text()));
@@ -44,8 +45,8 @@ import java.util.*;
  */
 public interface ConsoleMessage {
   /**
-   * List of arguments passed to a {@code console} function call. See also {@link Page#onConsoleMessage
-   * Page.onConsoleMessage()}.
+   * List of arguments passed to a {@code console} function call. See also {@link
+   * com.microsoft.playwright.Page#onConsoleMessage Page.onConsoleMessage()}.
    *
    * @since v1.8
    */

@@ -29,7 +29,7 @@ import com.microsoft.playwright.impl.RequestOptionsImpl;
  *     .setData("My data"));
  * }</pre>
  *
- * <p> **Uploading html form data**
+ * <p> <strong>Uploading html form data</strong>
  *
  * <p> {@code FormData} class can be used to send a form to the server, by default the request will use {@code
  * application/x-www-form-urlencoded} encoding:

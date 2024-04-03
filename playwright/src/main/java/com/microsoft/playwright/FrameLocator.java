@@ -21,14 +21,15 @@ import java.util.regex.Pattern;
 
 /**
  * FrameLocator represents a view to the {@code iframe} on the page. It captures the logic sufficient to retrieve the
- * {@code iframe} and locate elements in that iframe. FrameLocator can be created with either {@link Page#frameLocator
- * Page.frameLocator()} or {@link Locator#frameLocator Locator.frameLocator()} method.
+ * {@code iframe} and locate elements in that iframe. FrameLocator can be created with either {@link
+ * com.microsoft.playwright.Page#frameLocator Page.frameLocator()} or {@link com.microsoft.playwright.Locator#frameLocator
+ * Locator.frameLocator()} method.
  * <pre>{@code
  * Locator locator = page.frameLocator("#my-frame").getByText("Submit");
  * locator.click();
  * }</pre>
  *
- * <p> **Strictness**
+ * <p> <strong>Strictness</strong>
  *
  * <p> Frame locators are strict. This means that all operations on frame locators will throw if more than one element matches
  * a given selector.
@@ -40,15 +41,15 @@ import java.util.regex.Pattern;
  * page.frame_locator(".result-frame").first().getByRole(AriaRole.BUTTON).click();
  * }</pre>
  *
- * <p> **Converting Locator to FrameLocator**
+ * <p> <strong>Converting Locator to FrameLocator</strong>
  *
  * <p> If you have a {@code Locator} object pointing to an {@code iframe} it can be converted to {@code FrameLocator} using
- * {@link Locator#contentFrame Locator.contentFrame()}.
+ * {@link com.microsoft.playwright.Locator#contentFrame Locator.contentFrame()}.
  *
- * <p> **Converting FrameLocator to Locator**
+ * <p> <strong>Converting FrameLocator to Locator</strong>
  *
  * <p> If you have a {@code FrameLocator} object it can be converted to {@code Locator} pointing to the same {@code iframe}
- * using {@link FrameLocator#owner FrameLocator.owner()}.
+ * using {@link com.microsoft.playwright.FrameLocator#owner FrameLocator.owner()}.
  */
 public interface FrameLocator {
   class GetByAltTextOptions {
@@ -398,7 +399,7 @@ public interface FrameLocator {
   /**
    * Allows locating elements by their alt text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find the image by alt text "Playwright logo":
    * <pre>{@code
@@ -414,7 +415,7 @@ public interface FrameLocator {
   /**
    * Allows locating elements by their alt text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find the image by alt text "Playwright logo":
    * <pre>{@code
@@ -428,7 +429,7 @@ public interface FrameLocator {
   /**
    * Allows locating elements by their alt text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find the image by alt text "Playwright logo":
    * <pre>{@code
@@ -444,7 +445,7 @@ public interface FrameLocator {
   /**
    * Allows locating elements by their alt text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find the image by alt text "Playwright logo":
    * <pre>{@code
@@ -459,7 +460,7 @@ public interface FrameLocator {
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
@@ -477,7 +478,7 @@ public interface FrameLocator {
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
@@ -493,7 +494,7 @@ public interface FrameLocator {
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
@@ -511,7 +512,7 @@ public interface FrameLocator {
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
@@ -526,7 +527,7 @@ public interface FrameLocator {
   /**
    * Allows locating input elements by the placeholder text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, consider the following DOM structure.
    *
@@ -544,7 +545,7 @@ public interface FrameLocator {
   /**
    * Allows locating input elements by the placeholder text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, consider the following DOM structure.
    *
@@ -560,7 +561,7 @@ public interface FrameLocator {
   /**
    * Allows locating input elements by the placeholder text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, consider the following DOM structure.
    *
@@ -578,7 +579,7 @@ public interface FrameLocator {
   /**
    * Allows locating input elements by the placeholder text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, consider the following DOM structure.
    *
@@ -596,7 +597,7 @@ public interface FrameLocator {
    * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a
    * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -617,7 +618,7 @@ public interface FrameLocator {
    *     .click();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Role selector **does not replace** accessibility audits and conformance tests, but rather gives early feedback about the
    * ARIA guidelines.
@@ -639,7 +640,7 @@ public interface FrameLocator {
    * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a
    * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -660,7 +661,7 @@ public interface FrameLocator {
    *     .click();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Role selector **does not replace** accessibility audits and conformance tests, but rather gives early feedback about the
    * ARIA guidelines.
@@ -678,7 +679,7 @@ public interface FrameLocator {
   /**
    * Locate element by the test id.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -687,10 +688,11 @@ public interface FrameLocator {
    * page.getByTestId("directions").click();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
-   * <p> By default, the {@code data-testid} attribute is used as a test id. Use {@link Selectors#setTestIdAttribute
-   * Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
+   * <p> By default, the {@code data-testid} attribute is used as a test id. Use {@link
+   * com.microsoft.playwright.Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id
+   * attribute if necessary.
    *
    * @param testId Id to locate the element by.
    * @since v1.27
@@ -699,7 +701,7 @@ public interface FrameLocator {
   /**
    * Locate element by the test id.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -708,10 +710,11 @@ public interface FrameLocator {
    * page.getByTestId("directions").click();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
-   * <p> By default, the {@code data-testid} attribute is used as a test id. Use {@link Selectors#setTestIdAttribute
-   * Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
+   * <p> By default, the {@code data-testid} attribute is used as a test id. Use {@link
+   * com.microsoft.playwright.Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id
+   * attribute if necessary.
    *
    * @param testId Id to locate the element by.
    * @since v1.27
@@ -720,10 +723,10 @@ public interface FrameLocator {
   /**
    * Allows locating elements that contain given text.
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> See also {@link com.microsoft.playwright.Locator#filter Locator.filter()} that allows to match by another criteria, like
+   * an accessible role, and then filter by the text content.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure:
    *
@@ -745,7 +748,7 @@ public interface FrameLocator {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
@@ -762,10 +765,10 @@ public interface FrameLocator {
   /**
    * Allows locating elements that contain given text.
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> See also {@link com.microsoft.playwright.Locator#filter Locator.filter()} that allows to match by another criteria, like
+   * an accessible role, and then filter by the text content.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure:
    *
@@ -787,7 +790,7 @@ public interface FrameLocator {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
@@ -802,10 +805,10 @@ public interface FrameLocator {
   /**
    * Allows locating elements that contain given text.
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> See also {@link com.microsoft.playwright.Locator#filter Locator.filter()} that allows to match by another criteria, like
+   * an accessible role, and then filter by the text content.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure:
    *
@@ -827,7 +830,7 @@ public interface FrameLocator {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
@@ -844,10 +847,10 @@ public interface FrameLocator {
   /**
    * Allows locating elements that contain given text.
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> See also {@link com.microsoft.playwright.Locator#filter Locator.filter()} that allows to match by another criteria, like
+   * an accessible role, and then filter by the text content.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure:
    *
@@ -869,7 +872,7 @@ public interface FrameLocator {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
@@ -884,7 +887,7 @@ public interface FrameLocator {
   /**
    * Allows locating elements by their title attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -902,7 +905,7 @@ public interface FrameLocator {
   /**
    * Allows locating elements by their title attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -918,7 +921,7 @@ public interface FrameLocator {
   /**
    * Allows locating elements by their title attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -936,7 +939,7 @@ public interface FrameLocator {
   /**
    * Allows locating elements by their title attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -957,7 +960,7 @@ public interface FrameLocator {
   FrameLocator last();
   /**
    * The method finds an element matching the specified selector in the locator's subtree. It also accepts filter options,
-   * similar to {@link Locator#filter Locator.filter()} method.
+   * similar to {@link com.microsoft.playwright.Locator#filter Locator.filter()} method.
    *
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
@@ -969,7 +972,7 @@ public interface FrameLocator {
   }
   /**
    * The method finds an element matching the specified selector in the locator's subtree. It also accepts filter options,
-   * similar to {@link Locator#filter Locator.filter()} method.
+   * similar to {@link com.microsoft.playwright.Locator#filter Locator.filter()} method.
    *
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
@@ -979,7 +982,7 @@ public interface FrameLocator {
   Locator locator(String selectorOrLocator, LocatorOptions options);
   /**
    * The method finds an element matching the specified selector in the locator's subtree. It also accepts filter options,
-   * similar to {@link Locator#filter Locator.filter()} method.
+   * similar to {@link com.microsoft.playwright.Locator#filter Locator.filter()} method.
    *
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
@@ -991,7 +994,7 @@ public interface FrameLocator {
   }
   /**
    * The method finds an element matching the specified selector in the locator's subtree. It also accepts filter options,
-   * similar to {@link Locator#filter Locator.filter()} method.
+   * similar to {@link com.microsoft.playwright.Locator#filter Locator.filter()} method.
    *
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
@@ -1011,9 +1014,9 @@ public interface FrameLocator {
    * <p> Useful when you have a {@code FrameLocator} object obtained somewhere, and later on would like to interact with the
    * {@code iframe} element.
    *
-   * <p> For a reverse operation, use {@link Locator#contentFrame Locator.contentFrame()}.
+   * <p> For a reverse operation, use {@link com.microsoft.playwright.Locator#contentFrame Locator.contentFrame()}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * FrameLocator frameLocator = page.frameLocator("iframe[name=\"embedded\"]");
    * // ...

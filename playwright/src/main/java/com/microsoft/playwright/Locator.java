@@ -23,8 +23,8 @@ import java.util.regex.Pattern;
 
 /**
  * Locators are the central piece of Playwright's auto-waiting and retry-ability. In a nutshell, locators represent a way
- * to find element(s) on the page at any moment. A locator can be created with the {@link Page#locator Page.locator()}
- * method.
+ * to find element(s) on the page at any moment. A locator can be created with the {@link
+ * com.microsoft.playwright.Page#locator Page.locator()} method.
  *
  * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
  */
@@ -32,15 +32,17 @@ public interface Locator {
   class BlurOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public BlurOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -50,15 +52,17 @@ public interface Locator {
   class BoundingBoxOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public BoundingBoxOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -84,8 +88,9 @@ public interface Locator {
     public Position position;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -129,8 +134,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public CheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -160,8 +166,9 @@ public interface Locator {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -184,8 +191,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public ClearOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -228,8 +236,9 @@ public interface Locator {
     public Position position;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -302,8 +311,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public ClickOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -351,8 +361,9 @@ public interface Locator {
     public Position position;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -418,8 +429,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public DblclickOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -438,15 +450,17 @@ public interface Locator {
   class DispatchEventOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public DispatchEventOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -477,8 +491,9 @@ public interface Locator {
     public Position targetPosition;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -537,8 +552,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public DragToOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -557,15 +573,17 @@ public interface Locator {
   class ElementHandleOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public ElementHandleOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -575,15 +593,17 @@ public interface Locator {
   class EvaluateOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public EvaluateOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -593,15 +613,17 @@ public interface Locator {
   class EvaluateHandleOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public EvaluateHandleOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -622,8 +644,9 @@ public interface Locator {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -646,8 +669,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public FillOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -753,15 +777,17 @@ public interface Locator {
   class FocusOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public FocusOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -771,15 +797,17 @@ public interface Locator {
   class GetAttributeOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public GetAttributeOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1044,8 +1072,9 @@ public interface Locator {
     public Position position;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -1097,8 +1126,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public HoverOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1117,15 +1147,17 @@ public interface Locator {
   class InnerHTMLOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public InnerHTMLOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1135,15 +1167,17 @@ public interface Locator {
   class InnerTextOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public InnerTextOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1153,15 +1187,17 @@ public interface Locator {
   class InputValueOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public InputValueOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1171,15 +1207,17 @@ public interface Locator {
   class IsCheckedOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public IsCheckedOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1189,15 +1227,17 @@ public interface Locator {
   class IsDisabledOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public IsDisabledOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1207,15 +1247,17 @@ public interface Locator {
   class IsEditableOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public IsEditableOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1225,15 +1267,17 @@ public interface Locator {
   class IsEnabledOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public IsEnabledOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1242,14 +1286,14 @@ public interface Locator {
   }
   class IsHiddenOptions {
     /**
-     * @deprecated This option is ignored. {@link Locator#isHidden Locator.isHidden()} does not wait for the element to become hidden and
-     * returns immediately.
+     * @deprecated This option is ignored. {@link com.microsoft.playwright.Locator#isHidden Locator.isHidden()} does not wait for the
+     * element to become hidden and returns immediately.
      */
     public Double timeout;
 
     /**
-     * @deprecated This option is ignored. {@link Locator#isHidden Locator.isHidden()} does not wait for the element to become hidden and
-     * returns immediately.
+     * @deprecated This option is ignored. {@link com.microsoft.playwright.Locator#isHidden Locator.isHidden()} does not wait for the
+     * element to become hidden and returns immediately.
      */
     public IsHiddenOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1258,14 +1302,14 @@ public interface Locator {
   }
   class IsVisibleOptions {
     /**
-     * @deprecated This option is ignored. {@link Locator#isVisible Locator.isVisible()} does not wait for the element to become visible
-     * and returns immediately.
+     * @deprecated This option is ignored. {@link com.microsoft.playwright.Locator#isVisible Locator.isVisible()} does not wait for the
+     * element to become visible and returns immediately.
      */
     public Double timeout;
 
     /**
-     * @deprecated This option is ignored. {@link Locator#isVisible Locator.isVisible()} does not wait for the element to become visible
-     * and returns immediately.
+     * @deprecated This option is ignored. {@link com.microsoft.playwright.Locator#isVisible Locator.isVisible()} does not wait for the
+     * element to become visible and returns immediately.
      */
     public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1381,8 +1425,9 @@ public interface Locator {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -1404,8 +1449,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public PressOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1425,8 +1471,9 @@ public interface Locator {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -1448,8 +1495,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public PressSequentiallyOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1515,8 +1563,9 @@ public interface Locator {
     public String style;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -1609,8 +1658,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public ScreenshotOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1627,15 +1677,17 @@ public interface Locator {
   class ScrollIntoViewIfNeededOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public ScrollIntoViewIfNeededOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1656,8 +1708,9 @@ public interface Locator {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -1680,8 +1733,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public SelectOptionOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1696,8 +1750,9 @@ public interface Locator {
     public Boolean force;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -1711,8 +1766,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public SelectTextOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1738,8 +1794,9 @@ public interface Locator {
     public Position position;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -1783,8 +1840,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public SetCheckedOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1809,8 +1867,9 @@ public interface Locator {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -1825,8 +1884,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public SetInputFilesOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1857,8 +1917,9 @@ public interface Locator {
     public Position position;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -1910,8 +1971,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public TapOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1930,15 +1992,17 @@ public interface Locator {
   class TextContentOptions {
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public TextContentOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1958,8 +2022,9 @@ public interface Locator {
     public Boolean noWaitAfter;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -1981,8 +2046,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public TypeOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2008,8 +2074,9 @@ public interface Locator {
     public Position position;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -2053,8 +2120,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public UncheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2085,8 +2153,9 @@ public interface Locator {
     public WaitForSelectorState state;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -2107,8 +2176,9 @@ public interface Locator {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public WaitForOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2118,12 +2188,13 @@ public interface Locator {
   /**
    * When the locator points to a list of elements, this returns an array of locators, pointing to their respective elements.
    *
-   * <p> <strong>NOTE:</strong> {@link Locator#all Locator.all()} does not wait for elements to match the locator, and instead immediately returns
-   * whatever is present in the page.  When the list of elements changes dynamically, {@link Locator#all Locator.all()} will
-   * produce unpredictable and flaky results.  When the list of elements is stable, but loaded dynamically, wait for the full
-   * list to finish loading before calling {@link Locator#all Locator.all()}.
+   * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Locator#all Locator.all()} does not wait for elements to match the locator, and instead
+   * immediately returns whatever is present in the page.  When the list of elements changes dynamically, {@link
+   * com.microsoft.playwright.Locator#all Locator.all()} will produce unpredictable and flaky results.  When the list of
+   * elements is stable, but loaded dynamically, wait for the full list to finish loading before calling {@link
+   * com.microsoft.playwright.Locator#all Locator.all()}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * for (Locator li : page.getByRole('listitem').all())
    *   li.click();
@@ -2135,11 +2206,11 @@ public interface Locator {
   /**
    * Returns an array of {@code node.innerText} values for all matching nodes.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link LocatorAssertions#hasText LocatorAssertions.hasText()} with {@code
-   * useInnerText} option to avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions
-   * guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link com.microsoft.playwright.assertions.LocatorAssertions#hasText
+   * LocatorAssertions.hasText()} with {@code useInnerText} option to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * String[] texts = page.getByRole(AriaRole.LINK).allInnerTexts();
    * }</pre>
@@ -2150,10 +2221,11 @@ public interface Locator {
   /**
    * Returns an array of {@code node.textContent} values for all matching nodes.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link LocatorAssertions#hasText LocatorAssertions.hasText()} to avoid
-   * flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link com.microsoft.playwright.assertions.LocatorAssertions#hasText
+   * LocatorAssertions.hasText()} to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * String[] texts = page.getByRole(AriaRole.LINK).allTextContents();
    * }</pre>
@@ -2164,7 +2236,7 @@ public interface Locator {
   /**
    * Creates a locator that matches both this locator and the argument locator.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> The following example finds a button with a specific title.
    * <pre>{@code
@@ -2193,7 +2265,7 @@ public interface Locator {
    * This method returns the bounding box of the element matching the locator, or {@code null} if the element is not visible.
    * The bounding box is calculated relative to the main frame viewport - which is usually the same as the browser window.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Scrolling affects the returned bounding box, similarly to <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">Element.getBoundingClientRect</a>.
@@ -2205,7 +2277,7 @@ public interface Locator {
    * <p> Assuming the page is static, it is safe to use bounding box coordinates to perform input. For example, the following
    * snippet should click the center of the element.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * BoundingBox box = page.getByRole(AriaRole.BUTTON).boundingBox();
    * page.mouse().click(box.x + box.width / 2, box.y + box.height / 2);
@@ -2220,7 +2292,7 @@ public interface Locator {
    * This method returns the bounding box of the element matching the locator, or {@code null} if the element is not visible.
    * The bounding box is calculated relative to the main frame viewport - which is usually the same as the browser window.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Scrolling affects the returned bounding box, similarly to <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect">Element.getBoundingClientRect</a>.
@@ -2232,7 +2304,7 @@ public interface Locator {
    * <p> Assuming the page is static, it is safe to use bounding box coordinates to perform input. For example, the following
    * snippet should click the center of the element.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * BoundingBox box = page.getByRole(AriaRole.BUTTON).boundingBox();
    * page.mouse().click(box.x + box.width / 2, box.y + box.height / 2);
@@ -2244,7 +2316,7 @@ public interface Locator {
   /**
    * Ensure that checkbox or radio element is checked.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Performs the following steps:
    * <ol>
@@ -2253,7 +2325,7 @@ public interface Locator {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now checked. If not, this method throws.</li>
    * </ol>
@@ -2263,7 +2335,7 @@ public interface Locator {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.CHECKBOX).check();
    * }</pre>
@@ -2276,7 +2348,7 @@ public interface Locator {
   /**
    * Ensure that checkbox or radio element is checked.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Performs the following steps:
    * <ol>
@@ -2285,7 +2357,7 @@ public interface Locator {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now checked. If not, this method throws.</li>
    * </ol>
@@ -2295,7 +2367,7 @@ public interface Locator {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.CHECKBOX).check();
    * }</pre>
@@ -2306,7 +2378,7 @@ public interface Locator {
   /**
    * Clear the input field.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
    * element, clears it and triggers an {@code input} event after clearing.
@@ -2316,7 +2388,7 @@ public interface Locator {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be
    * cleared instead.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.TEXTBOX).clear();
    * }</pre>
@@ -2329,7 +2401,7 @@ public interface Locator {
   /**
    * Clear the input field.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
    * element, clears it and triggers an {@code input} event after clearing.
@@ -2339,7 +2411,7 @@ public interface Locator {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be
    * cleared instead.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.TEXTBOX).clear();
    * }</pre>
@@ -2350,14 +2422,15 @@ public interface Locator {
   /**
    * Click an element.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method clicks the element by performing the following steps:
    * <ol>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element, or the specified
+   * {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -2366,7 +2439,7 @@ public interface Locator {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Click a button:
    * <pre>{@code
@@ -2389,14 +2462,15 @@ public interface Locator {
   /**
    * Click an element.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method clicks the element by performing the following steps:
    * <ol>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element, or the specified
+   * {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -2405,7 +2479,7 @@ public interface Locator {
    * <p> When all steps combined have not finished during the specified {@code timeout}, this method throws a {@code
    * TimeoutError}. Passing zero timeout disables this.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Click a button:
    * <pre>{@code
@@ -2426,11 +2500,11 @@ public interface Locator {
   /**
    * Returns the number of elements matching the locator.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert the number of elements on the page, prefer {@link LocatorAssertions#hasCount
-   * LocatorAssertions.hasCount()} to avoid flakiness. See <a
+   * <p> <strong>NOTE:</strong> If you need to assert the number of elements on the page, prefer {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#hasCount LocatorAssertions.hasCount()} to avoid flakiness. See <a
    * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * int count = page.getByRole(AriaRole.LISTITEM).count();
    * }</pre>
@@ -2441,14 +2515,15 @@ public interface Locator {
   /**
    * Double-click an element.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method double clicks the element by performing the following steps:
    * <ol>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to double click in the center of the element, or the
+   * specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
    * first click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
    * </ol>
@@ -2468,14 +2543,15 @@ public interface Locator {
   /**
    * Double-click an element.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method double clicks the element by performing the following steps:
    * <ol>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to double click in the center of the element, or the
+   * specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
    * first click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
    * </ol>
@@ -2493,12 +2569,12 @@ public interface Locator {
   /**
    * Programmatically dispatch an event on the matching element.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * locator.dispatchEvent("click");
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> The snippet above dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
    * {@code click} is dispatched. This is equivalent to calling <a
@@ -2542,12 +2618,12 @@ public interface Locator {
   /**
    * Programmatically dispatch an event on the matching element.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * locator.dispatchEvent("click");
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> The snippet above dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
    * {@code click} is dispatched. This is equivalent to calling <a
@@ -2590,12 +2666,12 @@ public interface Locator {
   /**
    * Programmatically dispatch an event on the matching element.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * locator.dispatchEvent("click");
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> The snippet above dispatches the {@code click} event on the element. Regardless of the visibility state of the element,
    * {@code click} is dispatched. This is equivalent to calling <a
@@ -2637,12 +2713,12 @@ public interface Locator {
   /**
    * Drag the source element towards the target element and drop it.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method drags the locator to another target locator or target position. It will first move to the source element,
    * perform a {@code mousedown}, then move to the target element or position and perform a {@code mouseup}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Locator source = page.locator("#source");
    * Locator target = page.locator("#target");
@@ -2662,12 +2738,12 @@ public interface Locator {
   /**
    * Drag the source element towards the target element and drop it.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method drags the locator to another target locator or target position. It will first move to the source element,
    * perform a {@code mousedown}, then move to the target element or position and perform a {@code mouseup}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Locator source = page.locator("#source");
    * Locator target = page.locator("#target");
@@ -2710,9 +2786,9 @@ public interface Locator {
    * <p> Useful when you have a {@code Locator} object obtained somewhere, and later on would like to interact with the content
    * inside the frame.
    *
-   * <p> For a reverse operation, use {@link FrameLocator#owner FrameLocator.owner()}.
+   * <p> For a reverse operation, use {@link com.microsoft.playwright.FrameLocator#owner FrameLocator.owner()}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Locator locator = page.locator("iframe[name=\"embedded\"]");
    * // ...
@@ -2726,7 +2802,7 @@ public interface Locator {
   /**
    * Execute JavaScript code in the page, taking the matching element as an argument.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Returns the return value of {@code expression}, called with the matching element as a first argument, and {@code arg} as
    * a second argument.
@@ -2737,7 +2813,7 @@ public interface Locator {
    *
    * <p> If {@code expression} throws or rejects, this method throws.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Locator tweets = page.locator(".tweet .retweets");
    * assertEquals("10 retweets", tweets.evaluate("node => node.innerText"));
@@ -2754,7 +2830,7 @@ public interface Locator {
   /**
    * Execute JavaScript code in the page, taking the matching element as an argument.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Returns the return value of {@code expression}, called with the matching element as a first argument, and {@code arg} as
    * a second argument.
@@ -2765,7 +2841,7 @@ public interface Locator {
    *
    * <p> If {@code expression} throws or rejects, this method throws.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Locator tweets = page.locator(".tweet .retweets");
    * assertEquals("10 retweets", tweets.evaluate("node => node.innerText"));
@@ -2781,7 +2857,7 @@ public interface Locator {
   /**
    * Execute JavaScript code in the page, taking the matching element as an argument.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Returns the return value of {@code expression}, called with the matching element as a first argument, and {@code arg} as
    * a second argument.
@@ -2792,7 +2868,7 @@ public interface Locator {
    *
    * <p> If {@code expression} throws or rejects, this method throws.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Locator tweets = page.locator(".tweet .retweets");
    * assertEquals("10 retweets", tweets.evaluate("node => node.innerText"));
@@ -2807,7 +2883,7 @@ public interface Locator {
   /**
    * Execute JavaScript code in the page, taking all matching elements as an argument.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Returns the return value of {@code expression}, called with an array of all matching elements as a first argument, and
    * {@code arg} as a second argument.
@@ -2818,7 +2894,7 @@ public interface Locator {
    *
    * <p> If {@code expression} throws or rejects, this method throws.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Locator locator = page.locator("div");
    * boolean moreThanTen = (boolean) locator.evaluateAll("(divs, min) => divs.length > min", 10);
@@ -2834,7 +2910,7 @@ public interface Locator {
   /**
    * Execute JavaScript code in the page, taking all matching elements as an argument.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Returns the return value of {@code expression}, called with an array of all matching elements as a first argument, and
    * {@code arg} as a second argument.
@@ -2845,7 +2921,7 @@ public interface Locator {
    *
    * <p> If {@code expression} throws or rejects, this method throws.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Locator locator = page.locator("div");
    * boolean moreThanTen = (boolean) locator.evaluateAll("(divs, min) => divs.length > min", 10);
@@ -2861,13 +2937,14 @@ public interface Locator {
    * Execute JavaScript code in the page, taking the matching element as an argument, and return a {@code JSHandle} with the
    * result.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Returns the return value of {@code expression} as a{@code JSHandle}, called with the matching element as a first
    * argument, and {@code arg} as a second argument.
    *
-   * <p> The only difference between {@link Locator#evaluate Locator.evaluate()} and {@link Locator#evaluateHandle
-   * Locator.evaluateHandle()} is that {@link Locator#evaluateHandle Locator.evaluateHandle()} returns {@code JSHandle}.
+   * <p> The only difference between {@link com.microsoft.playwright.Locator#evaluate Locator.evaluate()} and {@link
+   * com.microsoft.playwright.Locator#evaluateHandle Locator.evaluateHandle()} is that {@link
+   * com.microsoft.playwright.Locator#evaluateHandle Locator.evaluateHandle()} returns {@code JSHandle}.
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, this method
@@ -2875,7 +2952,7 @@ public interface Locator {
    *
    * <p> If {@code expression} throws or rejects, this method throws.
    *
-   * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
+   * <p> See {@link com.microsoft.playwright.Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
@@ -2889,13 +2966,14 @@ public interface Locator {
    * Execute JavaScript code in the page, taking the matching element as an argument, and return a {@code JSHandle} with the
    * result.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Returns the return value of {@code expression} as a{@code JSHandle}, called with the matching element as a first
    * argument, and {@code arg} as a second argument.
    *
-   * <p> The only difference between {@link Locator#evaluate Locator.evaluate()} and {@link Locator#evaluateHandle
-   * Locator.evaluateHandle()} is that {@link Locator#evaluateHandle Locator.evaluateHandle()} returns {@code JSHandle}.
+   * <p> The only difference between {@link com.microsoft.playwright.Locator#evaluate Locator.evaluate()} and {@link
+   * com.microsoft.playwright.Locator#evaluateHandle Locator.evaluateHandle()} is that {@link
+   * com.microsoft.playwright.Locator#evaluateHandle Locator.evaluateHandle()} returns {@code JSHandle}.
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, this method
@@ -2903,7 +2981,7 @@ public interface Locator {
    *
    * <p> If {@code expression} throws or rejects, this method throws.
    *
-   * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
+   * <p> See {@link com.microsoft.playwright.Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
@@ -2916,13 +2994,14 @@ public interface Locator {
    * Execute JavaScript code in the page, taking the matching element as an argument, and return a {@code JSHandle} with the
    * result.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Returns the return value of {@code expression} as a{@code JSHandle}, called with the matching element as a first
    * argument, and {@code arg} as a second argument.
    *
-   * <p> The only difference between {@link Locator#evaluate Locator.evaluate()} and {@link Locator#evaluateHandle
-   * Locator.evaluateHandle()} is that {@link Locator#evaluateHandle Locator.evaluateHandle()} returns {@code JSHandle}.
+   * <p> The only difference between {@link com.microsoft.playwright.Locator#evaluate Locator.evaluate()} and {@link
+   * com.microsoft.playwright.Locator#evaluateHandle Locator.evaluateHandle()} is that {@link
+   * com.microsoft.playwright.Locator#evaluateHandle Locator.evaluateHandle()} returns {@code JSHandle}.
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, this method
@@ -2930,7 +3009,7 @@ public interface Locator {
    *
    * <p> If {@code expression} throws or rejects, this method throws.
    *
-   * <p> See {@link Page#evaluateHandle Page.evaluateHandle()} for more details.
+   * <p> See {@link com.microsoft.playwright.Page#evaluateHandle Page.evaluateHandle()} for more details.
    *
    * @param expression JavaScript expression to be evaluated in the browser context. If the expression evaluates to a function, the function is
    * automatically invoked.
@@ -2941,12 +3020,12 @@ public interface Locator {
   /**
    * Set a value to the input field.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.TEXTBOX).fill("example value");
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
    * element, fills it and triggers an {@code input} event after filling. Note that you can pass an empty string to clear the
@@ -2957,7 +3036,8 @@ public interface Locator {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
    * instead.
    *
-   * <p> To send fine-grained keyboard events, use {@link Locator#pressSequentially Locator.pressSequentially()}.
+   * <p> To send fine-grained keyboard events, use {@link com.microsoft.playwright.Locator#pressSequentially
+   * Locator.pressSequentially()}.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    * @since v1.14
@@ -2968,12 +3048,12 @@ public interface Locator {
   /**
    * Set a value to the input field.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.TEXTBOX).fill("example value");
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, focuses the
    * element, fills it and triggers an {@code input} event after filling. Note that you can pass an empty string to clear the
@@ -2984,7 +3064,8 @@ public interface Locator {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
    * instead.
    *
-   * <p> To send fine-grained keyboard events, use {@link Locator#pressSequentially Locator.pressSequentially()}.
+   * <p> To send fine-grained keyboard events, use {@link com.microsoft.playwright.Locator#pressSequentially
+   * Locator.pressSequentially()}.
    *
    * @param value Value to set for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
    * @since v1.14
@@ -2994,7 +3075,7 @@ public interface Locator {
    * This method narrows existing locator according to the options, for example filters by text. It can be chained to filter
    * multiple times.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Locator rowLocator = page.locator("tr");
    * // ...
@@ -3015,7 +3096,7 @@ public interface Locator {
    * This method narrows existing locator according to the options, for example filters by text. It can be chained to filter
    * multiple times.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Locator rowLocator = page.locator("tr");
    * // ...
@@ -3054,7 +3135,7 @@ public interface Locator {
    * When working with iframes, you can create a frame locator that will enter the iframe and allow locating elements in that
    * iframe:
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Locator locator = page.frameLocator("iframe").getByText("Submit");
    * locator.click();
@@ -3067,9 +3148,9 @@ public interface Locator {
   /**
    * Returns the matching element's attribute value.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert an element's attribute, prefer {@link LocatorAssertions#hasAttribute
-   * LocatorAssertions.hasAttribute()} to avoid flakiness. See <a
-   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert an element's attribute, prefer {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#hasAttribute LocatorAssertions.hasAttribute()} to avoid flakiness.
+   * See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
    * @param name Attribute name to get the value for.
    * @since v1.14
@@ -3080,9 +3161,9 @@ public interface Locator {
   /**
    * Returns the matching element's attribute value.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert an element's attribute, prefer {@link LocatorAssertions#hasAttribute
-   * LocatorAssertions.hasAttribute()} to avoid flakiness. See <a
-   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert an element's attribute, prefer {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#hasAttribute LocatorAssertions.hasAttribute()} to avoid flakiness.
+   * See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
    * @param name Attribute name to get the value for.
    * @since v1.14
@@ -3091,7 +3172,7 @@ public interface Locator {
   /**
    * Allows locating elements by their alt text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find the image by alt text "Playwright logo":
    * <pre>{@code
@@ -3107,7 +3188,7 @@ public interface Locator {
   /**
    * Allows locating elements by their alt text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find the image by alt text "Playwright logo":
    * <pre>{@code
@@ -3121,7 +3202,7 @@ public interface Locator {
   /**
    * Allows locating elements by their alt text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find the image by alt text "Playwright logo":
    * <pre>{@code
@@ -3137,7 +3218,7 @@ public interface Locator {
   /**
    * Allows locating elements by their alt text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find the image by alt text "Playwright logo":
    * <pre>{@code
@@ -3152,7 +3233,7 @@ public interface Locator {
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
@@ -3170,7 +3251,7 @@ public interface Locator {
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
@@ -3186,7 +3267,7 @@ public interface Locator {
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
@@ -3204,7 +3285,7 @@ public interface Locator {
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
@@ -3219,7 +3300,7 @@ public interface Locator {
   /**
    * Allows locating input elements by the placeholder text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, consider the following DOM structure.
    *
@@ -3237,7 +3318,7 @@ public interface Locator {
   /**
    * Allows locating input elements by the placeholder text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, consider the following DOM structure.
    *
@@ -3253,7 +3334,7 @@ public interface Locator {
   /**
    * Allows locating input elements by the placeholder text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, consider the following DOM structure.
    *
@@ -3271,7 +3352,7 @@ public interface Locator {
   /**
    * Allows locating input elements by the placeholder text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, consider the following DOM structure.
    *
@@ -3289,7 +3370,7 @@ public interface Locator {
    * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a
    * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -3310,7 +3391,7 @@ public interface Locator {
    *     .click();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Role selector **does not replace** accessibility audits and conformance tests, but rather gives early feedback about the
    * ARIA guidelines.
@@ -3332,7 +3413,7 @@ public interface Locator {
    * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a
    * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -3353,7 +3434,7 @@ public interface Locator {
    *     .click();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Role selector **does not replace** accessibility audits and conformance tests, but rather gives early feedback about the
    * ARIA guidelines.
@@ -3371,7 +3452,7 @@ public interface Locator {
   /**
    * Locate element by the test id.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -3380,10 +3461,11 @@ public interface Locator {
    * page.getByTestId("directions").click();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
-   * <p> By default, the {@code data-testid} attribute is used as a test id. Use {@link Selectors#setTestIdAttribute
-   * Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
+   * <p> By default, the {@code data-testid} attribute is used as a test id. Use {@link
+   * com.microsoft.playwright.Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id
+   * attribute if necessary.
    *
    * @param testId Id to locate the element by.
    * @since v1.27
@@ -3392,7 +3474,7 @@ public interface Locator {
   /**
    * Locate element by the test id.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -3401,10 +3483,11 @@ public interface Locator {
    * page.getByTestId("directions").click();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
-   * <p> By default, the {@code data-testid} attribute is used as a test id. Use {@link Selectors#setTestIdAttribute
-   * Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
+   * <p> By default, the {@code data-testid} attribute is used as a test id. Use {@link
+   * com.microsoft.playwright.Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id
+   * attribute if necessary.
    *
    * @param testId Id to locate the element by.
    * @since v1.27
@@ -3413,10 +3496,10 @@ public interface Locator {
   /**
    * Allows locating elements that contain given text.
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> See also {@link com.microsoft.playwright.Locator#filter Locator.filter()} that allows to match by another criteria, like
+   * an accessible role, and then filter by the text content.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure:
    *
@@ -3438,7 +3521,7 @@ public interface Locator {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
@@ -3455,10 +3538,10 @@ public interface Locator {
   /**
    * Allows locating elements that contain given text.
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> See also {@link com.microsoft.playwright.Locator#filter Locator.filter()} that allows to match by another criteria, like
+   * an accessible role, and then filter by the text content.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure:
    *
@@ -3480,7 +3563,7 @@ public interface Locator {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
@@ -3495,10 +3578,10 @@ public interface Locator {
   /**
    * Allows locating elements that contain given text.
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> See also {@link com.microsoft.playwright.Locator#filter Locator.filter()} that allows to match by another criteria, like
+   * an accessible role, and then filter by the text content.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure:
    *
@@ -3520,7 +3603,7 @@ public interface Locator {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
@@ -3537,10 +3620,10 @@ public interface Locator {
   /**
    * Allows locating elements that contain given text.
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> See also {@link com.microsoft.playwright.Locator#filter Locator.filter()} that allows to match by another criteria, like
+   * an accessible role, and then filter by the text content.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure:
    *
@@ -3562,7 +3645,7 @@ public interface Locator {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
@@ -3577,7 +3660,7 @@ public interface Locator {
   /**
    * Allows locating elements by their title attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -3595,7 +3678,7 @@ public interface Locator {
   /**
    * Allows locating elements by their title attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -3611,7 +3694,7 @@ public interface Locator {
   /**
    * Allows locating elements by their title attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -3629,7 +3712,7 @@ public interface Locator {
   /**
    * Allows locating elements by their title attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -3644,7 +3727,7 @@ public interface Locator {
   Locator getByTitle(Pattern text, GetByTitleOptions options);
   /**
    * Highlight the corresponding element(s) on the screen. Useful for debugging, don't commit the code that uses {@link
-   * Locator#highlight Locator.highlight()}.
+   * com.microsoft.playwright.Locator#highlight Locator.highlight()}.
    *
    * @since v1.20
    */
@@ -3652,19 +3735,20 @@ public interface Locator {
   /**
    * Hover over the matching element.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.LINK).hover();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method hovers over the element by performing the following steps:
    * <ol>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to hover over the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to hover over the center of the element, or the specified
+   * {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -3681,19 +3765,20 @@ public interface Locator {
   /**
    * Hover over the matching element.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.LINK).hover();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method hovers over the element by performing the following steps:
    * <ol>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to hover over the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to hover over the center of the element, or the specified
+   * {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -3723,9 +3808,9 @@ public interface Locator {
    * Returns the <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/innerText">{@code
    * element.innerText}</a>.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link LocatorAssertions#hasText LocatorAssertions.hasText()} with {@code
-   * useInnerText} option to avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions
-   * guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link com.microsoft.playwright.assertions.LocatorAssertions#hasText
+   * LocatorAssertions.hasText()} with {@code useInnerText} option to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
    * @since v1.14
    */
@@ -3736,9 +3821,9 @@ public interface Locator {
    * Returns the <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/innerText">{@code
    * element.innerText}</a>.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link LocatorAssertions#hasText LocatorAssertions.hasText()} with {@code
-   * useInnerText} option to avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions
-   * guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link com.microsoft.playwright.assertions.LocatorAssertions#hasText
+   * LocatorAssertions.hasText()} with {@code useInnerText} option to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
    * @since v1.14
    */
@@ -3746,15 +3831,16 @@ public interface Locator {
   /**
    * Returns the value for the matching {@code <input>} or {@code <textarea>} or {@code <select>} element.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert input value, prefer {@link LocatorAssertions#hasValue LocatorAssertions.hasValue()} to avoid
-   * flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert input value, prefer {@link com.microsoft.playwright.assertions.LocatorAssertions#hasValue
+   * LocatorAssertions.hasValue()} to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * String value = page.getByRole(AriaRole.TEXTBOX).inputValue();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Throws elements that are not an input, textarea or a select. However, if the element is inside the {@code <label>}
    * element that has an associated <a
@@ -3769,15 +3855,16 @@ public interface Locator {
   /**
    * Returns the value for the matching {@code <input>} or {@code <textarea>} or {@code <select>} element.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert input value, prefer {@link LocatorAssertions#hasValue LocatorAssertions.hasValue()} to avoid
-   * flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert input value, prefer {@link com.microsoft.playwright.assertions.LocatorAssertions#hasValue
+   * LocatorAssertions.hasValue()} to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * String value = page.getByRole(AriaRole.TEXTBOX).inputValue();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Throws elements that are not an input, textarea or a select. However, if the element is inside the {@code <label>}
    * element that has an associated <a
@@ -3790,11 +3877,11 @@ public interface Locator {
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert that checkbox is checked, prefer {@link LocatorAssertions#isChecked LocatorAssertions.isChecked()}
-   * to avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more
-   * details.
+   * <p> <strong>NOTE:</strong> If you need to assert that checkbox is checked, prefer {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#isChecked LocatorAssertions.isChecked()} to avoid flakiness. See
+   * <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * boolean checked = page.getByRole(AriaRole.CHECKBOX).isChecked();
    * }</pre>
@@ -3807,11 +3894,11 @@ public interface Locator {
   /**
    * Returns whether the element is checked. Throws if the element is not a checkbox or radio input.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert that checkbox is checked, prefer {@link LocatorAssertions#isChecked LocatorAssertions.isChecked()}
-   * to avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more
-   * details.
+   * <p> <strong>NOTE:</strong> If you need to assert that checkbox is checked, prefer {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#isChecked LocatorAssertions.isChecked()} to avoid flakiness. See
+   * <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * boolean checked = page.getByRole(AriaRole.CHECKBOX).isChecked();
    * }</pre>
@@ -3823,11 +3910,11 @@ public interface Locator {
    * Returns whether the element is disabled, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert that an element is disabled, prefer {@link LocatorAssertions#isDisabled
-   * LocatorAssertions.isDisabled()} to avoid flakiness. See <a
-   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert that an element is disabled, prefer {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#isDisabled LocatorAssertions.isDisabled()} to avoid flakiness. See
+   * <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * boolean disabled = page.getByRole(AriaRole.BUTTON).isDisabled();
    * }</pre>
@@ -3841,11 +3928,11 @@ public interface Locator {
    * Returns whether the element is disabled, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert that an element is disabled, prefer {@link LocatorAssertions#isDisabled
-   * LocatorAssertions.isDisabled()} to avoid flakiness. See <a
-   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert that an element is disabled, prefer {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#isDisabled LocatorAssertions.isDisabled()} to avoid flakiness. See
+   * <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * boolean disabled = page.getByRole(AriaRole.BUTTON).isDisabled();
    * }</pre>
@@ -3856,11 +3943,11 @@ public interface Locator {
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert that an element is editable, prefer {@link LocatorAssertions#isEditable
-   * LocatorAssertions.isEditable()} to avoid flakiness. See <a
-   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert that an element is editable, prefer {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#isEditable LocatorAssertions.isEditable()} to avoid flakiness. See
+   * <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * boolean editable = page.getByRole(AriaRole.TEXTBOX).isEditable();
    * }</pre>
@@ -3873,11 +3960,11 @@ public interface Locator {
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#editable">editable</a>.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert that an element is editable, prefer {@link LocatorAssertions#isEditable
-   * LocatorAssertions.isEditable()} to avoid flakiness. See <a
-   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert that an element is editable, prefer {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#isEditable LocatorAssertions.isEditable()} to avoid flakiness. See
+   * <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * boolean editable = page.getByRole(AriaRole.TEXTBOX).isEditable();
    * }</pre>
@@ -3888,11 +3975,11 @@ public interface Locator {
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert that an element is enabled, prefer {@link LocatorAssertions#isEnabled
-   * LocatorAssertions.isEnabled()} to avoid flakiness. See <a
-   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert that an element is enabled, prefer {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#isEnabled LocatorAssertions.isEnabled()} to avoid flakiness. See
+   * <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * boolean enabled = page.getByRole(AriaRole.BUTTON).isEnabled();
    * }</pre>
@@ -3905,11 +3992,11 @@ public interface Locator {
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#enabled">enabled</a>.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert that an element is enabled, prefer {@link LocatorAssertions#isEnabled
-   * LocatorAssertions.isEnabled()} to avoid flakiness. See <a
-   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert that an element is enabled, prefer {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#isEnabled LocatorAssertions.isEnabled()} to avoid flakiness. See
+   * <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * boolean enabled = page.getByRole(AriaRole.BUTTON).isEnabled();
    * }</pre>
@@ -3921,10 +4008,11 @@ public interface Locator {
    * Returns whether the element is hidden, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert that element is hidden, prefer {@link LocatorAssertions#isHidden LocatorAssertions.isHidden()} to
-   * avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert that element is hidden, prefer {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#isHidden LocatorAssertions.isHidden()} to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * boolean hidden = page.getByRole(AriaRole.BUTTON).isHidden();
    * }</pre>
@@ -3938,10 +4026,11 @@ public interface Locator {
    * Returns whether the element is hidden, the opposite of <a
    * href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert that element is hidden, prefer {@link LocatorAssertions#isHidden LocatorAssertions.isHidden()} to
-   * avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert that element is hidden, prefer {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#isHidden LocatorAssertions.isHidden()} to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * boolean hidden = page.getByRole(AriaRole.BUTTON).isHidden();
    * }</pre>
@@ -3952,11 +4041,11 @@ public interface Locator {
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert that element is visible, prefer {@link LocatorAssertions#isVisible LocatorAssertions.isVisible()}
-   * to avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more
-   * details.
+   * <p> <strong>NOTE:</strong> If you need to assert that element is visible, prefer {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#isVisible LocatorAssertions.isVisible()} to avoid flakiness. See
+   * <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * boolean visible = page.getByRole(AriaRole.BUTTON).isVisible();
    * }</pre>
@@ -3969,11 +4058,11 @@ public interface Locator {
   /**
    * Returns whether the element is <a href="https://playwright.dev/java/docs/actionability#visible">visible</a>.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert that element is visible, prefer {@link LocatorAssertions#isVisible LocatorAssertions.isVisible()}
-   * to avoid flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more
-   * details.
+   * <p> <strong>NOTE:</strong> If you need to assert that element is visible, prefer {@link
+   * com.microsoft.playwright.assertions.LocatorAssertions#isVisible LocatorAssertions.isVisible()} to avoid flakiness. See
+   * <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * boolean visible = page.getByRole(AriaRole.BUTTON).isVisible();
    * }</pre>
@@ -3984,7 +4073,7 @@ public interface Locator {
   /**
    * Returns locator to the last matching element.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Locator banana = page.getByRole(AriaRole.LISTITEM).last();
    * }</pre>
@@ -3994,7 +4083,7 @@ public interface Locator {
   Locator last();
   /**
    * The method finds an element matching the specified selector in the locator's subtree. It also accepts filter options,
-   * similar to {@link Locator#filter Locator.filter()} method.
+   * similar to {@link com.microsoft.playwright.Locator#filter Locator.filter()} method.
    *
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
@@ -4006,7 +4095,7 @@ public interface Locator {
   }
   /**
    * The method finds an element matching the specified selector in the locator's subtree. It also accepts filter options,
-   * similar to {@link Locator#filter Locator.filter()} method.
+   * similar to {@link com.microsoft.playwright.Locator#filter Locator.filter()} method.
    *
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
@@ -4016,7 +4105,7 @@ public interface Locator {
   Locator locator(String selectorOrLocator, LocatorOptions options);
   /**
    * The method finds an element matching the specified selector in the locator's subtree. It also accepts filter options,
-   * similar to {@link Locator#filter Locator.filter()} method.
+   * similar to {@link com.microsoft.playwright.Locator#filter Locator.filter()} method.
    *
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
@@ -4028,7 +4117,7 @@ public interface Locator {
   }
   /**
    * The method finds an element matching the specified selector in the locator's subtree. It also accepts filter options,
-   * similar to {@link Locator#filter Locator.filter()} method.
+   * similar to {@link com.microsoft.playwright.Locator#filter Locator.filter()} method.
    *
    * <p> <a href="https://playwright.dev/java/docs/locators">Learn more about locators</a>.
    *
@@ -4039,7 +4128,7 @@ public interface Locator {
   /**
    * Returns locator to the n-th matching element. It's zero based, {@code nth(0)} selects the first element.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Locator banana = page.getByRole(AriaRole.LISTITEM).nth(2);
    * }</pre>
@@ -4050,7 +4139,7 @@ public interface Locator {
   /**
    * Creates a locator that matches either of the two locators.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider a scenario where you'd like to click on a "New email" button, but sometimes a security settings dialog shows up
    * instead. In this case, you can wait for either a "New email" button, or a dialog and act accordingly.
@@ -4076,14 +4165,15 @@ public interface Locator {
   /**
    * Focuses the matching element and presses a combination of the keys.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.TEXTBOX).press("Backspace");
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
-   * <p> Focuses the element, and then uses {@link Keyboard#down Keyboard.down()} and {@link Keyboard#up Keyboard.up()}.
+   * <p> Focuses the element, and then uses {@link com.microsoft.playwright.Keyboard#down Keyboard.down()} and {@link
+   * com.microsoft.playwright.Keyboard#up Keyboard.up()}.
    *
    * <p> {@code key} can specify the intended <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key">keyboardEvent.key</a> value or a single
@@ -4115,14 +4205,15 @@ public interface Locator {
   /**
    * Focuses the matching element and presses a combination of the keys.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.TEXTBOX).press("Backspace");
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
-   * <p> Focuses the element, and then uses {@link Keyboard#down Keyboard.down()} and {@link Keyboard#up Keyboard.up()}.
+   * <p> Focuses the element, and then uses {@link com.microsoft.playwright.Keyboard#down Keyboard.down()} and {@link
+   * com.microsoft.playwright.Keyboard#up Keyboard.up()}.
    *
    * <p> {@code key} can specify the intended <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key">keyboardEvent.key</a> value or a single
@@ -4150,15 +4241,16 @@ public interface Locator {
    */
   void press(String key, PressOptions options);
   /**
-   * <strong>NOTE:</strong> In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to press keys one by one if
-   * there is special keyboard handling on the page.
+   * <strong>NOTE:</strong> In most cases, you should use {@link com.microsoft.playwright.Locator#fill Locator.fill()} instead. You only need to
+   * press keys one by one if there is special keyboard handling on the page.
    *
    * <p> Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each
    * character in the text.
    *
-   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Locator#press Locator.press()}.
+   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link com.microsoft.playwright.Locator#press
+   * Locator.press()}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * locator.pressSequentially("Hello"); // Types instantly
    * locator.pressSequentially("World", new Locator.pressSequentiallyOptions().setDelay(100)); // Types slower, like a user
@@ -4178,15 +4270,16 @@ public interface Locator {
     pressSequentially(text, null);
   }
   /**
-   * <strong>NOTE:</strong> In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to press keys one by one if
-   * there is special keyboard handling on the page.
+   * <strong>NOTE:</strong> In most cases, you should use {@link com.microsoft.playwright.Locator#fill Locator.fill()} instead. You only need to
+   * press keys one by one if there is special keyboard handling on the page.
    *
    * <p> Focuses the element, and then sends a {@code keydown}, {@code keypress}/{@code input}, and {@code keyup} event for each
    * character in the text.
    *
-   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link Locator#press Locator.press()}.
+   * <p> To press a special key, like {@code Control} or {@code ArrowDown}, use {@link com.microsoft.playwright.Locator#press
+   * Locator.press()}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * locator.pressSequentially("Hello"); // Types instantly
    * locator.pressSequentially("World", new Locator.pressSequentiallyOptions().setDelay(100)); // Types slower, like a user
@@ -4206,7 +4299,7 @@ public interface Locator {
   /**
    * Take a screenshot of the element matching the locator.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.LINK).screenshot();
    * }</pre>
@@ -4218,7 +4311,7 @@ public interface Locator {
    *     .setPath(Paths.get("example.png")));
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method captures a screenshot of the page, clipped to the size and position of a particular element matching the
    * locator. If the element is covered by other elements, it will not be actually visible on the screenshot. If the element
@@ -4237,7 +4330,7 @@ public interface Locator {
   /**
    * Take a screenshot of the element matching the locator.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.LINK).screenshot();
    * }</pre>
@@ -4249,7 +4342,7 @@ public interface Locator {
    *     .setPath(Paths.get("example.png")));
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method captures a screenshot of the page, clipped to the size and position of a particular element matching the
    * locator. If the element is covered by other elements, it will not be actually visible on the screenshot. If the element
@@ -4286,7 +4379,7 @@ public interface Locator {
   /**
    * Selects option or options in {@code <select>}.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -4300,7 +4393,7 @@ public interface Locator {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // single selection matching the value or label
    * element.selectOption("blue");
@@ -4321,7 +4414,7 @@ public interface Locator {
   /**
    * Selects option or options in {@code <select>}.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -4335,7 +4428,7 @@ public interface Locator {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // single selection matching the value or label
    * element.selectOption("blue");
@@ -4354,7 +4447,7 @@ public interface Locator {
   /**
    * Selects option or options in {@code <select>}.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -4368,7 +4461,7 @@ public interface Locator {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // single selection matching the value or label
    * element.selectOption("blue");
@@ -4389,7 +4482,7 @@ public interface Locator {
   /**
    * Selects option or options in {@code <select>}.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -4403,7 +4496,7 @@ public interface Locator {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // single selection matching the value or label
    * element.selectOption("blue");
@@ -4422,7 +4515,7 @@ public interface Locator {
   /**
    * Selects option or options in {@code <select>}.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -4436,7 +4529,7 @@ public interface Locator {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // single selection matching the value or label
    * element.selectOption("blue");
@@ -4457,7 +4550,7 @@ public interface Locator {
   /**
    * Selects option or options in {@code <select>}.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -4471,7 +4564,7 @@ public interface Locator {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // single selection matching the value or label
    * element.selectOption("blue");
@@ -4490,7 +4583,7 @@ public interface Locator {
   /**
    * Selects option or options in {@code <select>}.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -4504,7 +4597,7 @@ public interface Locator {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // single selection matching the value or label
    * element.selectOption("blue");
@@ -4525,7 +4618,7 @@ public interface Locator {
   /**
    * Selects option or options in {@code <select>}.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -4539,7 +4632,7 @@ public interface Locator {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // single selection matching the value or label
    * element.selectOption("blue");
@@ -4558,7 +4651,7 @@ public interface Locator {
   /**
    * Selects option or options in {@code <select>}.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -4572,7 +4665,7 @@ public interface Locator {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // single selection matching the value or label
    * element.selectOption("blue");
@@ -4593,7 +4686,7 @@ public interface Locator {
   /**
    * Selects option or options in {@code <select>}.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -4607,7 +4700,7 @@ public interface Locator {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // single selection matching the value or label
    * element.selectOption("blue");
@@ -4626,7 +4719,7 @@ public interface Locator {
   /**
    * Selects option or options in {@code <select>}.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -4640,7 +4733,7 @@ public interface Locator {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // single selection matching the value or label
    * element.selectOption("blue");
@@ -4661,7 +4754,7 @@ public interface Locator {
   /**
    * Selects option or options in {@code <select>}.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method waits for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks, waits until all
    * specified options are present in the {@code <select>} element and selects these options.
@@ -4675,7 +4768,7 @@ public interface Locator {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // single selection matching the value or label
    * element.selectOption("blue");
@@ -4718,12 +4811,12 @@ public interface Locator {
   /**
    * Set the state of a checkbox or a radio element.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.CHECKBOX).setChecked(true);
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method checks or unchecks an element by performing the following steps:
    * <ol>
@@ -4732,7 +4825,7 @@ public interface Locator {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now checked or unchecked. If not, this method throws.</li>
    * </ol>
@@ -4749,12 +4842,12 @@ public interface Locator {
   /**
    * Set the state of a checkbox or a radio element.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.CHECKBOX).setChecked(true);
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method checks or unchecks an element by performing the following steps:
    * <ol>
@@ -4763,7 +4856,7 @@ public interface Locator {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now checked or unchecked. If not, this method throws.</li>
    * </ol>
@@ -4778,7 +4871,7 @@ public interface Locator {
   /**
    * Upload file or multiple files into {@code <input type=file>}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Select one file
    * page.getByLabel("Upload file").setInputFiles(Paths.get("myfile.pdf"));
@@ -4794,7 +4887,7 @@ public interface Locator {
    *   "file.txt", "text/plain", "this is test".getBytes(StandardCharsets.UTF_8)));
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
@@ -4813,7 +4906,7 @@ public interface Locator {
   /**
    * Upload file or multiple files into {@code <input type=file>}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Select one file
    * page.getByLabel("Upload file").setInputFiles(Paths.get("myfile.pdf"));
@@ -4829,7 +4922,7 @@ public interface Locator {
    *   "file.txt", "text/plain", "this is test".getBytes(StandardCharsets.UTF_8)));
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
@@ -4846,7 +4939,7 @@ public interface Locator {
   /**
    * Upload file or multiple files into {@code <input type=file>}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Select one file
    * page.getByLabel("Upload file").setInputFiles(Paths.get("myfile.pdf"));
@@ -4862,7 +4955,7 @@ public interface Locator {
    *   "file.txt", "text/plain", "this is test".getBytes(StandardCharsets.UTF_8)));
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
@@ -4881,7 +4974,7 @@ public interface Locator {
   /**
    * Upload file or multiple files into {@code <input type=file>}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Select one file
    * page.getByLabel("Upload file").setInputFiles(Paths.get("myfile.pdf"));
@@ -4897,7 +4990,7 @@ public interface Locator {
    *   "file.txt", "text/plain", "this is test".getBytes(StandardCharsets.UTF_8)));
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
@@ -4914,7 +5007,7 @@ public interface Locator {
   /**
    * Upload file or multiple files into {@code <input type=file>}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Select one file
    * page.getByLabel("Upload file").setInputFiles(Paths.get("myfile.pdf"));
@@ -4930,7 +5023,7 @@ public interface Locator {
    *   "file.txt", "text/plain", "this is test".getBytes(StandardCharsets.UTF_8)));
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
@@ -4949,7 +5042,7 @@ public interface Locator {
   /**
    * Upload file or multiple files into {@code <input type=file>}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Select one file
    * page.getByLabel("Upload file").setInputFiles(Paths.get("myfile.pdf"));
@@ -4965,7 +5058,7 @@ public interface Locator {
    *   "file.txt", "text/plain", "this is test".getBytes(StandardCharsets.UTF_8)));
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
@@ -4982,7 +5075,7 @@ public interface Locator {
   /**
    * Upload file or multiple files into {@code <input type=file>}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Select one file
    * page.getByLabel("Upload file").setInputFiles(Paths.get("myfile.pdf"));
@@ -4998,7 +5091,7 @@ public interface Locator {
    *   "file.txt", "text/plain", "this is test".getBytes(StandardCharsets.UTF_8)));
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
@@ -5017,7 +5110,7 @@ public interface Locator {
   /**
    * Upload file or multiple files into {@code <input type=file>}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Select one file
    * page.getByLabel("Upload file").setInputFiles(Paths.get("myfile.pdf"));
@@ -5033,7 +5126,7 @@ public interface Locator {
    *   "file.txt", "text/plain", "this is test".getBytes(StandardCharsets.UTF_8)));
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
    * they are resolved relative to the current working directory. For empty array, clears the selected files.
@@ -5050,14 +5143,15 @@ public interface Locator {
   /**
    * Perform a tap gesture on the element matching the locator.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method taps the element by performing the following steps:
    * <ol>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#touchscreen Page.touchscreen()} to tap the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#touchscreen Page.touchscreen()} to tap the center of the element, or the
+   * specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -5076,14 +5170,15 @@ public interface Locator {
   /**
    * Perform a tap gesture on the element matching the locator.
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method taps the element by performing the following steps:
    * <ol>
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#touchscreen Page.touchscreen()} to tap the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#touchscreen Page.touchscreen()} to tap the center of the element, or the
+   * specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -5100,8 +5195,9 @@ public interface Locator {
   /**
    * Returns the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent">{@code node.textContent}</a>.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link LocatorAssertions#hasText LocatorAssertions.hasText()} to avoid
-   * flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link com.microsoft.playwright.assertions.LocatorAssertions#hasText
+   * LocatorAssertions.hasText()} to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
    * @since v1.14
    */
@@ -5111,16 +5207,17 @@ public interface Locator {
   /**
    * Returns the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent">{@code node.textContent}</a>.
    *
-   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link LocatorAssertions#hasText LocatorAssertions.hasText()} to avoid
-   * flakiness. See <a href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
+   * <p> <strong>NOTE:</strong> If you need to assert text on the page, prefer {@link com.microsoft.playwright.assertions.LocatorAssertions#hasText
+   * LocatorAssertions.hasText()} to avoid flakiness. See <a
+   * href="https://playwright.dev/java/docs/test-assertions">assertions guide</a> for more details.
    *
    * @since v1.14
    */
   String textContent(TextContentOptions options);
   /**
-   * @deprecated In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to press keys one by one if
-   * there is special keyboard handling on the page - in this case use {@link Locator#pressSequentially
-   * Locator.pressSequentially()}.
+   * @deprecated In most cases, you should use {@link com.microsoft.playwright.Locator#fill Locator.fill()} instead. You only need to
+   * press keys one by one if there is special keyboard handling on the page - in this case use {@link
+   * com.microsoft.playwright.Locator#pressSequentially Locator.pressSequentially()}.
    *
    * @param text A text to type into a focused element.
    * @since v1.14
@@ -5129,9 +5226,9 @@ public interface Locator {
     type(text, null);
   }
   /**
-   * @deprecated In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to press keys one by one if
-   * there is special keyboard handling on the page - in this case use {@link Locator#pressSequentially
-   * Locator.pressSequentially()}.
+   * @deprecated In most cases, you should use {@link com.microsoft.playwright.Locator#fill Locator.fill()} instead. You only need to
+   * press keys one by one if there is special keyboard handling on the page - in this case use {@link
+   * com.microsoft.playwright.Locator#pressSequentially Locator.pressSequentially()}.
    *
    * @param text A text to type into a focused element.
    * @since v1.14
@@ -5140,12 +5237,12 @@ public interface Locator {
   /**
    * Ensure that checkbox or radio element is unchecked.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.CHECKBOX).uncheck();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method unchecks the element by performing the following steps:
    * <ol>
@@ -5154,7 +5251,7 @@ public interface Locator {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now unchecked. If not, this method throws.</li>
    * </ol>
@@ -5172,12 +5269,12 @@ public interface Locator {
   /**
    * Ensure that checkbox or radio element is unchecked.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.CHECKBOX).uncheck();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> This method unchecks the element by performing the following steps:
    * <ol>
@@ -5186,7 +5283,7 @@ public interface Locator {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the element, unless {@code
    * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now unchecked. If not, this method throws.</li>
    * </ol>
@@ -5205,7 +5302,7 @@ public interface Locator {
    * <p> If target element already satisfies the condition, the method returns immediately. Otherwise, waits for up to {@code
    * timeout} milliseconds until the condition is met.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Locator orderSent = page.locator("#order-sent");
    * orderSent.waitFor();
@@ -5222,7 +5319,7 @@ public interface Locator {
    * <p> If target element already satisfies the condition, the method returns immediately. Otherwise, waits for up to {@code
    * timeout} milliseconds until the condition is met.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Locator orderSent = page.locator("#order-sent");
    * orderSent.waitFor();

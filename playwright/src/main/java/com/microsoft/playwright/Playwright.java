@@ -94,8 +94,8 @@ public interface Playwright extends AutoCloseable {
    */
   void close();
   /**
-   * Launches new Playwright driver process and connects to it. {@link Playwright#close Playwright.close()} should be called
-   * when the instance is no longer needed.
+   * Launches new Playwright driver process and connects to it. {@link com.microsoft.playwright.Playwright#close
+   * Playwright.close()} should be called when the instance is no longer needed.
    * <pre>{@code
    * Playwright playwright = Playwright.create();
    * Browser browser = playwright.webkit().launch();

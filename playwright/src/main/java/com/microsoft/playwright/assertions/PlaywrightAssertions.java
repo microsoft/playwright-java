@@ -54,7 +54,7 @@ public interface PlaywrightAssertions {
   /**
    * Creates a {@code APIResponseAssertions} object for the given {@code APIResponse}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * PlaywrightAssertions.assertThat(response).isOK();
    * }</pre>
@@ -69,7 +69,7 @@ public interface PlaywrightAssertions {
   /**
    * Creates a {@code LocatorAssertions} object for the given {@code Locator}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * PlaywrightAssertions.assertThat(locator).isVisible();
    * }</pre>
@@ -84,7 +84,7 @@ public interface PlaywrightAssertions {
   /**
    * Creates a {@code PageAssertions} object for the given {@code Page}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * PlaywrightAssertions.assertThat(page).hasTitle("News");
    * }</pre>
@@ -99,7 +99,7 @@ public interface PlaywrightAssertions {
   /**
    * Changes default timeout for Playwright assertions from 5 seconds to the specified value.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * PlaywrightAssertions.setDefaultAssertionTimeout(30_000);
    * }</pre>
@@ -107,8 +107,8 @@ public interface PlaywrightAssertions {
    * @param timeout Timeout in milliseconds.
    * @since v1.25
    */
-  static void setDefaultAssertionTimeout(double milliseconds) {
-    AssertionsTimeout.setDefaultTimeout(milliseconds);
+  static void setDefaultAssertionTimeout(double timeout) {
+    AssertionsTimeout.setDefaultTimeout(timeout);
   }
 
 }
