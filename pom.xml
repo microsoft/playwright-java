@@ -135,6 +135,8 @@
           <configuration>
             <additionalOptions>--allow-script-in-comments</additionalOptions>
             <failOnError>false</failOnError>
+            <!-- passing 8 causes an assertion in javadoc tool, see https://github.com/microsoft/playwright-java/issues/1533 -->
+            <source>11</source>
           </configuration>
         </plugin>
         <plugin>
