@@ -132,18 +132,14 @@ abstract class Element {
         out.add("<pre>{@code");
         for (JsonElement line : node.getAsJsonArray("lines")) {
           out.add(line.getAsString());
-          if ("client.send(\"Animation.setPlaybackRate\", params);".equals(line.getAsString())) {
-            System.out.println(line);
-          }
         }
         out.add("}</pre>");
       } else {
         String paragraph = node.get("text").getAsString();
-        Matcher matcher = Pattern.compile("\\*\\*(.+)\\*\\*").matcher(paragraph);
+        Matcher matcher = Pattern.compile("^\\*\\*(.+)\\*\\*$").matcher(paragraph);
         // Format **Usage**, **Details** as bold text.
         if (matcher.matches()) {
           String title = matcher.group(1);
-          System.out.println(title);
           paragraph = "<strong>" + title + "</strong>";
         } else {
           paragraph = beautify(paragraph);
