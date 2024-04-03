@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright.junit.impl;
+package com.microsoft.playwright.impl.junit;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
@@ -24,7 +24,7 @@ import com.microsoft.playwright.impl.Utils;
 import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
-import static com.microsoft.playwright.junit.impl.ExtensionUtils.*;
+import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
 
 public class BrowserContextExtension implements ParameterResolver, AfterEachCallback {
   private static final ThreadLocal<BrowserContext> threadLocalBrowserContext = new ThreadLocal<>();

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright.junit.impl;
+package com.microsoft.playwright.impl.junit;
 
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.junit.Options;
@@ -27,8 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.microsoft.playwright.junit.impl.ExtensionUtils.isParameterSupported;
-import static com.microsoft.playwright.junit.impl.ExtensionUtils.setTestIdAttribute;
+import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
 
 public class PlaywrightExtension implements ParameterResolver {
   private static final ThreadLocal<Playwright> threadLocalPlaywright = new ThreadLocal<>();

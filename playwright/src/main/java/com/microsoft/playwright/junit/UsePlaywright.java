@@ -16,7 +16,7 @@
 
 package com.microsoft.playwright.junit;
 
-import com.microsoft.playwright.junit.impl.*;
+import com.microsoft.playwright.impl.junit.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.*;
