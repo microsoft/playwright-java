@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright.junit.impl;
+package com.microsoft.playwright.impl.junit;
 
 import com.microsoft.playwright.junit.Options;
 import com.microsoft.playwright.junit.OptionsFactory;

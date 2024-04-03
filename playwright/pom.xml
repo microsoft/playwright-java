@@ -26,7 +26,7 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration combine.self="append">
           <subpackages>com.microsoft.playwright</subpackages>
-          <excludePackageNames>com.microsoft.playwright.impl,com.microsoft.playwright.junit.impl</excludePackageNames>
+          <excludePackageNames>com.microsoft.playwright.impl</excludePackageNames>
         </configuration>
       </plugin>
       <plugin>

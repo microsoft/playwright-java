@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright.junit.impl;
+package com.microsoft.playwright.impl.junit;
 
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
 import org.junit.jupiter.api.extension.*;
 
-import static com.microsoft.playwright.junit.impl.ExtensionUtils.isClassHook;
-import static com.microsoft.playwright.junit.impl.ExtensionUtils.isParameterSupported;
+import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
 
 public class PageExtension implements ParameterResolver, AfterEachCallback {
   private static final ThreadLocal<Page> threadLocalPage = new ThreadLocal<>();

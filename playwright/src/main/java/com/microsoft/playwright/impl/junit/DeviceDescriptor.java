@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright.junit.impl;
+package com.microsoft.playwright.impl.junit;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;

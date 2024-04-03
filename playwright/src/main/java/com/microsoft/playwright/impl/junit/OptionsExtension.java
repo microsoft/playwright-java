@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package com.microsoft.playwright.junit.impl;
+package com.microsoft.playwright.impl.junit;
 
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.junit.Options;
-import com.microsoft.playwright.junit.OptionsFactory;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-import static com.microsoft.playwright.junit.impl.ExtensionUtils.getUsePlaywrightAnnotation;
+import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
 
 public class OptionsExtension implements AfterAllCallback {
   private static final ThreadLocal<Options> threadLocalOptions = new ThreadLocal<>();
