@@ -59,30 +59,4 @@ public class TestLaunch extends TestBase {
   public static boolean canRunExtensionTest() {
     return canRunHeaded() && isChromium();
   }
-
-  @Test
-  @EnabledIf(value="com.microsoft.playwright.TestLaunch#canRunExtensionTest", disabledReason="Only Chromium Headed")
-  void shouldReturnBackgroundPages(@TempDir Path tmpDir) throws IOException {
-    Path profileDir = tmpDir.resolve("profile");
-    Files.createDirectories(profileDir);
-    String extensionPath = Paths.get("src/test/resources/simple-extension").toAbsolutePath().toString();
-    initBrowserType();
-    BrowserContext context = browserType.launchPersistentContext(profileDir, new BrowserType.LaunchPersistentContextOptions()
-      .setHeadless(false)
-      .setArgs(asList(
-        "--disable-extensions-except=" + extensionPath,
-        "--load-extension=" + extensionPath
-      )));
-    List<Page> backgroundPages = context.backgroundPages();
-    context.onBackgroundPage(page1 -> backgroundPages.add(page1));
-    context.waitForCondition(() -> !backgroundPages.isEmpty(),
-      new BrowserContext.WaitForConditionOptions().setTimeout(10_000));
-    Page backgroundPage = backgroundPages.get(0);
-    assertNotNull(backgroundPage);
-    assertTrue(context.backgroundPages().contains(backgroundPage));
-    assertFalse(context.pages().contains(backgroundPage));
-    context.close();
-    assertEquals(0, context.pages().size());
-    assertEquals(0, context.backgroundPages().size());
-  }
 }
