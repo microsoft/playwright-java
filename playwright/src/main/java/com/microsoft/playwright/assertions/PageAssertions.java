@@ -78,7 +78,7 @@ public interface PageAssertions {
   /**
    * Ensures the page has the given title.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * assertThat(page).hasTitle("Playwright");
    * }</pre>
@@ -92,7 +92,7 @@ public interface PageAssertions {
   /**
    * Ensures the page has the given title.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * assertThat(page).hasTitle("Playwright");
    * }</pre>
@@ -104,7 +104,7 @@ public interface PageAssertions {
   /**
    * Ensures the page has the given title.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * assertThat(page).hasTitle("Playwright");
    * }</pre>
@@ -118,7 +118,7 @@ public interface PageAssertions {
   /**
    * Ensures the page has the given title.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * assertThat(page).hasTitle("Playwright");
    * }</pre>
@@ -130,7 +130,7 @@ public interface PageAssertions {
   /**
    * Ensures the page is navigated to the given URL.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * assertThat(page).hasURL(".com");
    * }</pre>
@@ -144,7 +144,7 @@ public interface PageAssertions {
   /**
    * Ensures the page is navigated to the given URL.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * assertThat(page).hasURL(".com");
    * }</pre>
@@ -156,7 +156,7 @@ public interface PageAssertions {
   /**
    * Ensures the page is navigated to the given URL.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * assertThat(page).hasURL(".com");
    * }</pre>
@@ -170,7 +170,7 @@ public interface PageAssertions {
   /**
    * Ensures the page is navigated to the given URL.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * assertThat(page).hasURL(".com");
    * }</pre>

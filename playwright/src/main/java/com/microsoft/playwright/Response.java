@@ -56,16 +56,16 @@ public interface Response {
   boolean fromServiceWorker();
   /**
    * An object with the response HTTP headers. The header names are lower-cased. Note that this method does not return
-   * security-related headers, including cookie-related ones. You can use {@link Response#allHeaders Response.allHeaders()}
-   * for complete list of headers that include {@code cookie} information.
+   * security-related headers, including cookie-related ones. You can use {@link com.microsoft.playwright.Response#allHeaders
+   * Response.allHeaders()} for complete list of headers that include {@code cookie} information.
    *
    * @since v1.8
    */
   Map<String, String> headers();
   /**
-   * An array with all the request HTTP headers associated with this response. Unlike {@link Response#allHeaders
-   * Response.allHeaders()}, header names are NOT lower-cased. Headers with multiple entries, such as {@code Set-Cookie},
-   * appear in the array multiple times.
+   * An array with all the request HTTP headers associated with this response. Unlike {@link
+   * com.microsoft.playwright.Response#allHeaders Response.allHeaders()}, header names are NOT lower-cased. Headers with
+   * multiple entries, such as {@code Set-Cookie}, appear in the array multiple times.
    *
    * @since v1.15
    */

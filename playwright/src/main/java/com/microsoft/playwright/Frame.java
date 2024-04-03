@@ -23,16 +23,17 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
- * At every point of time, page exposes its current frame tree via the {@link Page#mainFrame Page.mainFrame()} and {@link
- * Frame#childFrames Frame.childFrames()} methods.
+ * At every point of time, page exposes its current frame tree via the {@link com.microsoft.playwright.Page#mainFrame
+ * Page.mainFrame()} and {@link com.microsoft.playwright.Frame#childFrames Frame.childFrames()} methods.
  *
  * <p> {@code Frame} object's lifecycle is controlled by three events, dispatched on the page object:
  * <ul>
- * <li> {@link Page#onFrameAttached Page.onFrameAttached()} - fired when the frame gets attached to the page. A Frame can be
- * attached to the page only once.</li>
- * <li> {@link Page#onFrameNavigated Page.onFrameNavigated()} - fired when the frame commits navigation to a different URL.</li>
- * <li> {@link Page#onFrameDetached Page.onFrameDetached()} - fired when the frame gets detached from the page.  A Frame can be
- * detached from the page only once.</li>
+ * <li> {@link com.microsoft.playwright.Page#onFrameAttached Page.onFrameAttached()} - fired when the frame gets attached to the
+ * page. A Frame can be attached to the page only once.</li>
+ * <li> {@link com.microsoft.playwright.Page#onFrameNavigated Page.onFrameNavigated()} - fired when the frame commits navigation
+ * to a different URL.</li>
+ * <li> {@link com.microsoft.playwright.Page#onFrameDetached Page.onFrameDetached()} - fired when the frame gets detached from
+ * the page.  A Frame can be detached from the page only once.</li>
  * </ul>
  *
  * <p> An example of dumping frame tree:
@@ -173,8 +174,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -226,8 +228,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public CheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -284,8 +287,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -366,8 +370,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public ClickOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -420,8 +425,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -495,8 +501,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public DblclickOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -520,8 +527,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -535,8 +543,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public DispatchEventOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -572,8 +581,9 @@ public interface Frame {
     public Position targetPosition;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -640,8 +650,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public DragAndDropOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -692,8 +703,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -724,8 +736,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public FillOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -740,8 +753,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -755,8 +769,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public FocusOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -771,8 +786,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -786,8 +802,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public GetAttributeOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1031,14 +1048,16 @@ public interface Frame {
   class NavigateOptions {
     /**
      * Referer header value. If provided it will take preference over the referer header value set by {@link
-     * Page#setExtraHTTPHeaders Page.setExtraHTTPHeaders()}.
+     * com.microsoft.playwright.Page#setExtraHTTPHeaders Page.setExtraHTTPHeaders()}.
      */
     public String referer;
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
-     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link com.microsoft.playwright.Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -1055,7 +1074,7 @@ public interface Frame {
 
     /**
      * Referer header value. If provided it will take preference over the referer header value set by {@link
-     * Page#setExtraHTTPHeaders Page.setExtraHTTPHeaders()}.
+     * com.microsoft.playwright.Page#setExtraHTTPHeaders Page.setExtraHTTPHeaders()}.
      */
     public NavigateOptions setReferer(String referer) {
       this.referer = referer;
@@ -1063,9 +1082,11 @@ public interface Frame {
     }
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
-     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link com.microsoft.playwright.Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public NavigateOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1115,8 +1136,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -1176,8 +1198,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public HoverOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1201,8 +1224,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -1216,8 +1240,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public InnerHTMLOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1232,8 +1257,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -1247,8 +1273,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public InnerTextOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1263,8 +1290,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -1278,8 +1306,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public InputValueOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1294,8 +1323,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -1309,8 +1339,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public IsCheckedOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1325,8 +1356,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -1340,8 +1372,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public IsDisabledOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1356,8 +1389,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -1371,8 +1405,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public IsEditableOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1387,8 +1422,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -1402,8 +1438,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public IsEnabledOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1417,8 +1454,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * @deprecated This option is ignored. {@link Frame#isHidden Frame.isHidden()} does not wait for the element to become hidden and
-     * returns immediately.
+     * @deprecated This option is ignored. {@link com.microsoft.playwright.Frame#isHidden Frame.isHidden()} does not wait for the element
+     * to become hidden and returns immediately.
      */
     public Double timeout;
 
@@ -1431,8 +1468,8 @@ public interface Frame {
       return this;
     }
     /**
-     * @deprecated This option is ignored. {@link Frame#isHidden Frame.isHidden()} does not wait for the element to become hidden and
-     * returns immediately.
+     * @deprecated This option is ignored. {@link com.microsoft.playwright.Frame#isHidden Frame.isHidden()} does not wait for the element
+     * to become hidden and returns immediately.
      */
     public IsHiddenOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1446,8 +1483,8 @@ public interface Frame {
      */
     public Boolean strict;
     /**
-     * @deprecated This option is ignored. {@link Frame#isVisible Frame.isVisible()} does not wait for the element to become visible and
-     * returns immediately.
+     * @deprecated This option is ignored. {@link com.microsoft.playwright.Frame#isVisible Frame.isVisible()} does not wait for the element
+     * to become visible and returns immediately.
      */
     public Double timeout;
 
@@ -1460,8 +1497,8 @@ public interface Frame {
       return this;
     }
     /**
-     * @deprecated This option is ignored. {@link Frame#isVisible Frame.isVisible()} does not wait for the element to become visible and
-     * returns immediately.
+     * @deprecated This option is ignored. {@link com.microsoft.playwright.Frame#isVisible Frame.isVisible()} does not wait for the element
+     * to become visible and returns immediately.
      */
     public IsVisibleOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1582,8 +1619,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -1613,8 +1651,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public PressOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1656,8 +1695,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -1688,8 +1728,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public SelectOptionOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1720,8 +1761,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -1773,8 +1815,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public SetCheckedOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1793,9 +1836,11 @@ public interface Frame {
   class SetContentOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
-     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link com.microsoft.playwright.Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -1812,9 +1857,11 @@ public interface Frame {
 
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
-     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link com.microsoft.playwright.Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public SetContentOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1849,8 +1896,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -1873,8 +1921,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public SetInputFilesOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1910,8 +1959,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -1971,8 +2021,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public TapOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -1996,8 +2047,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -2011,8 +2063,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public TextContentOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2037,8 +2090,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -2068,8 +2122,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public TypeOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2100,8 +2155,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -2153,8 +2209,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public UncheckOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2178,8 +2235,9 @@ public interface Frame {
     public Double pollingInterval;
     /**
      * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
-     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or
-     * {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -2193,8 +2251,9 @@ public interface Frame {
     }
     /**
      * Maximum time to wait for in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The
-     * default value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or
-     * {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * default value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public WaitForFunctionOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2204,17 +2263,21 @@ public interface Frame {
   class WaitForLoadStateOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
-     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link com.microsoft.playwright.Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
-     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link com.microsoft.playwright.Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public WaitForLoadStateOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2224,9 +2287,11 @@ public interface Frame {
   class WaitForNavigationOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
-     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link com.microsoft.playwright.Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -2249,9 +2314,11 @@ public interface Frame {
 
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
-     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link com.microsoft.playwright.Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public WaitForNavigationOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2319,8 +2386,9 @@ public interface Frame {
     public Boolean strict;
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
 
@@ -2349,8 +2417,9 @@ public interface Frame {
     }
     /**
      * Maximum time in milliseconds. Defaults to {@code 30000} (30 seconds). Pass {@code 0} to disable timeout. The default
-     * value can be changed by using the {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()} or {@link
-     * Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * value can be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public WaitForSelectorOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2360,9 +2429,11 @@ public interface Frame {
   class WaitForURLOptions {
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
-     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link com.microsoft.playwright.Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public Double timeout;
     /**
@@ -2379,9 +2450,11 @@ public interface Frame {
 
     /**
      * Maximum operation time in milliseconds, defaults to 30 seconds, pass {@code 0} to disable timeout. The default value can
-     * be changed by using the {@link BrowserContext#setDefaultNavigationTimeout BrowserContext.setDefaultNavigationTimeout()},
-     * {@link BrowserContext#setDefaultTimeout BrowserContext.setDefaultTimeout()}, {@link Page#setDefaultNavigationTimeout
-     * Page.setDefaultNavigationTimeout()} or {@link Page#setDefaultTimeout Page.setDefaultTimeout()} methods.
+     * be changed by using the {@link com.microsoft.playwright.BrowserContext#setDefaultNavigationTimeout
+     * BrowserContext.setDefaultNavigationTimeout()}, {@link com.microsoft.playwright.BrowserContext#setDefaultTimeout
+     * BrowserContext.setDefaultTimeout()}, {@link com.microsoft.playwright.Page#setDefaultNavigationTimeout
+     * Page.setDefaultNavigationTimeout()} or {@link com.microsoft.playwright.Page#setDefaultTimeout Page.setDefaultTimeout()}
+     * methods.
      */
     public WaitForURLOptions setTimeout(double timeout) {
       this.timeout = timeout;
@@ -2449,7 +2522,7 @@ public interface Frame {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now checked. If not, this method throws.</li>
    * </ol>
@@ -2472,7 +2545,7 @@ public interface Frame {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now checked. If not, this method throws.</li>
    * </ol>
@@ -2497,7 +2570,8 @@ public interface Frame {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element, or the specified
+   * {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -2517,7 +2591,8 @@ public interface Frame {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element, or the specified
+   * {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -2541,7 +2616,8 @@ public interface Frame {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to double click in the center of the element, or the
+   * specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
    * first click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
    * </ol>
@@ -2564,7 +2640,8 @@ public interface Frame {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to double click in the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to double click in the center of the element, or the
+   * specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
    * first click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
    * </ol>
@@ -2583,7 +2660,7 @@ public interface Frame {
    * {@code click} is dispatched. This is equivalent to calling <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * frame.dispatchEvent("button#submit", "click");
    * }</pre>
@@ -2629,7 +2706,7 @@ public interface Frame {
    * {@code click} is dispatched. This is equivalent to calling <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * frame.dispatchEvent("button#submit", "click");
    * }</pre>
@@ -2674,7 +2751,7 @@ public interface Frame {
    * {@code click} is dispatched. This is equivalent to calling <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">element.click()</a>.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * frame.dispatchEvent("button#submit", "click");
    * }</pre>
@@ -2743,9 +2820,10 @@ public interface Frame {
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Frame#evalOnSelector Frame.evalOnSelector()} would wait for the promise to resolve and return its value.
+   * com.microsoft.playwright.Frame#evalOnSelector Frame.evalOnSelector()} would wait for the promise to resolve and return
+   * its value.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * String searchValue = (String) frame.evalOnSelector("#search", "el => el.value");
    * String preloadHref = (String) frame.evalOnSelector("link[rel=preload]", "el => el.href");
@@ -2769,9 +2847,10 @@ public interface Frame {
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Frame#evalOnSelector Frame.evalOnSelector()} would wait for the promise to resolve and return its value.
+   * com.microsoft.playwright.Frame#evalOnSelector Frame.evalOnSelector()} would wait for the promise to resolve and return
+   * its value.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * String searchValue = (String) frame.evalOnSelector("#search", "el => el.value");
    * String preloadHref = (String) frame.evalOnSelector("link[rel=preload]", "el => el.href");
@@ -2794,9 +2873,10 @@ public interface Frame {
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Frame#evalOnSelector Frame.evalOnSelector()} would wait for the promise to resolve and return its value.
+   * com.microsoft.playwright.Frame#evalOnSelector Frame.evalOnSelector()} would wait for the promise to resolve and return
+   * its value.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * String searchValue = (String) frame.evalOnSelector("#search", "el => el.value");
    * String preloadHref = (String) frame.evalOnSelector("link[rel=preload]", "el => el.href");
@@ -2818,9 +2898,10 @@ public interface Frame {
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Frame#evalOnSelectorAll Frame.evalOnSelectorAll()} would wait for the promise to resolve and return its value.
+   * com.microsoft.playwright.Frame#evalOnSelectorAll Frame.evalOnSelectorAll()} would wait for the promise to resolve and
+   * return its value.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * boolean divsCounts = (boolean) page.evalOnSelectorAll("div", "(divs, min) => divs.length >= min", 10);
    * }</pre>
@@ -2841,9 +2922,10 @@ public interface Frame {
    *
    * <p> If {@code expression} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Frame#evalOnSelectorAll Frame.evalOnSelectorAll()} would wait for the promise to resolve and return its value.
+   * com.microsoft.playwright.Frame#evalOnSelectorAll Frame.evalOnSelectorAll()} would wait for the promise to resolve and
+   * return its value.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * boolean divsCounts = (boolean) page.evalOnSelectorAll("div", "(divs, min) => divs.length >= min", 10);
    * }</pre>
@@ -2858,15 +2940,16 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression}.
    *
-   * <p> If the function passed to the {@link Frame#evaluate Frame.evaluate()} returns a <a
+   * <p> If the function passed to the {@link com.microsoft.playwright.Frame#evaluate Frame.evaluate()} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Frame#evaluate Frame.evaluate()} would wait for the promise to resolve and return its value.
+   * com.microsoft.playwright.Frame#evaluate Frame.evaluate()} would wait for the promise to resolve and return its value.
    *
-   * <p> If the function passed to the {@link Frame#evaluate Frame.evaluate()} returns a non-[Serializable] value, then {@link
-   * Frame#evaluate Frame.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values
-   * that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
+   * <p> If the function passed to the {@link com.microsoft.playwright.Frame#evaluate Frame.evaluate()} returns a
+   * non-[Serializable] value, then {@link com.microsoft.playwright.Frame#evaluate Frame.evaluate()} returns {@code
+   * undefined}. Playwright also supports transferring some additional values that are not serializable by {@code JSON}:
+   * {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Object result = frame.evaluate("([x, y]) => {\n" +
    *   "  return Promise.resolve(x * y);\n" +
@@ -2879,7 +2962,8 @@ public interface Frame {
    * System.out.println(frame.evaluate("1 + 2")); // prints "3"
    * }</pre>
    *
-   * <p> {@code ElementHandle} instances can be passed as an argument to the {@link Frame#evaluate Frame.evaluate()}:
+   * <p> {@code ElementHandle} instances can be passed as an argument to the {@link com.microsoft.playwright.Frame#evaluate
+   * Frame.evaluate()}:
    * <pre>{@code
    * ElementHandle bodyHandle = frame.evaluate("document.body");
    * String html = (String) frame.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
@@ -2896,15 +2980,16 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression}.
    *
-   * <p> If the function passed to the {@link Frame#evaluate Frame.evaluate()} returns a <a
+   * <p> If the function passed to the {@link com.microsoft.playwright.Frame#evaluate Frame.evaluate()} returns a <a
    * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Frame#evaluate Frame.evaluate()} would wait for the promise to resolve and return its value.
+   * com.microsoft.playwright.Frame#evaluate Frame.evaluate()} would wait for the promise to resolve and return its value.
    *
-   * <p> If the function passed to the {@link Frame#evaluate Frame.evaluate()} returns a non-[Serializable] value, then {@link
-   * Frame#evaluate Frame.evaluate()} returns {@code undefined}. Playwright also supports transferring some additional values
-   * that are not serializable by {@code JSON}: {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
+   * <p> If the function passed to the {@link com.microsoft.playwright.Frame#evaluate Frame.evaluate()} returns a
+   * non-[Serializable] value, then {@link com.microsoft.playwright.Frame#evaluate Frame.evaluate()} returns {@code
+   * undefined}. Playwright also supports transferring some additional values that are not serializable by {@code JSON}:
+   * {@code -0}, {@code NaN}, {@code Infinity}, {@code -Infinity}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Object result = frame.evaluate("([x, y]) => {\n" +
    *   "  return Promise.resolve(x * y);\n" +
@@ -2917,7 +3002,8 @@ public interface Frame {
    * System.out.println(frame.evaluate("1 + 2")); // prints "3"
    * }</pre>
    *
-   * <p> {@code ElementHandle} instances can be passed as an argument to the {@link Frame#evaluate Frame.evaluate()}:
+   * <p> {@code ElementHandle} instances can be passed as an argument to the {@link com.microsoft.playwright.Frame#evaluate
+   * Frame.evaluate()}:
    * <pre>{@code
    * ElementHandle bodyHandle = frame.evaluate("document.body");
    * String html = (String) frame.evaluate("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(bodyHandle, "hello"));
@@ -2933,14 +3019,16 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression} as a {@code JSHandle}.
    *
-   * <p> The only difference between {@link Frame#evaluate Frame.evaluate()} and {@link Frame#evaluateHandle
-   * Frame.evaluateHandle()} is that {@link Frame#evaluateHandle Frame.evaluateHandle()} returns {@code JSHandle}.
+   * <p> The only difference between {@link com.microsoft.playwright.Frame#evaluate Frame.evaluate()} and {@link
+   * com.microsoft.playwright.Frame#evaluateHandle Frame.evaluateHandle()} is that {@link
+   * com.microsoft.playwright.Frame#evaluateHandle Frame.evaluateHandle()} returns {@code JSHandle}.
    *
-   * <p> If the function, passed to the {@link Frame#evaluateHandle Frame.evaluateHandle()}, returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Frame#evaluateHandle Frame.evaluateHandle()} would wait for the promise to resolve and return its value.
+   * <p> If the function, passed to the {@link com.microsoft.playwright.Frame#evaluateHandle Frame.evaluateHandle()}, returns a
+   * <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
+   * {@link com.microsoft.playwright.Frame#evaluateHandle Frame.evaluateHandle()} would wait for the promise to resolve and
+   * return its value.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Handle for the window object.
    * JSHandle aWindowHandle = frame.evaluateHandle("() => Promise.resolve(window)");
@@ -2951,7 +3039,8 @@ public interface Frame {
    * JSHandle aHandle = frame.evaluateHandle("document"); // Handle for the "document".
    * }</pre>
    *
-   * <p> {@code JSHandle} instances can be passed as an argument to the {@link Frame#evaluateHandle Frame.evaluateHandle()}:
+   * <p> {@code JSHandle} instances can be passed as an argument to the {@link com.microsoft.playwright.Frame#evaluateHandle
+   * Frame.evaluateHandle()}:
    * <pre>{@code
    * JSHandle aHandle = frame.evaluateHandle("() => document.body");
    * JSHandle resultHandle = frame.evaluateHandle("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(aHandle, "hello"));
@@ -2969,14 +3058,16 @@ public interface Frame {
   /**
    * Returns the return value of {@code expression} as a {@code JSHandle}.
    *
-   * <p> The only difference between {@link Frame#evaluate Frame.evaluate()} and {@link Frame#evaluateHandle
-   * Frame.evaluateHandle()} is that {@link Frame#evaluateHandle Frame.evaluateHandle()} returns {@code JSHandle}.
+   * <p> The only difference between {@link com.microsoft.playwright.Frame#evaluate Frame.evaluate()} and {@link
+   * com.microsoft.playwright.Frame#evaluateHandle Frame.evaluateHandle()} is that {@link
+   * com.microsoft.playwright.Frame#evaluateHandle Frame.evaluateHandle()} returns {@code JSHandle}.
    *
-   * <p> If the function, passed to the {@link Frame#evaluateHandle Frame.evaluateHandle()}, returns a <a
-   * href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then {@link
-   * Frame#evaluateHandle Frame.evaluateHandle()} would wait for the promise to resolve and return its value.
+   * <p> If the function, passed to the {@link com.microsoft.playwright.Frame#evaluateHandle Frame.evaluateHandle()}, returns a
+   * <a href='https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise'>Promise</a>, then
+   * {@link com.microsoft.playwright.Frame#evaluateHandle Frame.evaluateHandle()} would wait for the promise to resolve and
+   * return its value.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Handle for the window object.
    * JSHandle aWindowHandle = frame.evaluateHandle("() => Promise.resolve(window)");
@@ -2987,7 +3078,8 @@ public interface Frame {
    * JSHandle aHandle = frame.evaluateHandle("document"); // Handle for the "document".
    * }</pre>
    *
-   * <p> {@code JSHandle} instances can be passed as an argument to the {@link Frame#evaluateHandle Frame.evaluateHandle()}:
+   * <p> {@code JSHandle} instances can be passed as an argument to the {@link com.microsoft.playwright.Frame#evaluateHandle
+   * Frame.evaluateHandle()}:
    * <pre>{@code
    * JSHandle aHandle = frame.evaluateHandle("() => document.body");
    * JSHandle resultHandle = frame.evaluateHandle("([body, suffix]) => body.innerHTML + suffix", Arrays.asList(aHandle, "hello"));
@@ -3011,7 +3103,8 @@ public interface Frame {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
    * instead.
    *
-   * <p> To send fine-grained keyboard events, use {@link Locator#pressSequentially Locator.pressSequentially()}.
+   * <p> To send fine-grained keyboard events, use {@link com.microsoft.playwright.Locator#pressSequentially
+   * Locator.pressSequentially()}.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
@@ -3030,7 +3123,8 @@ public interface Frame {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/control">control</a>, the control will be filled
    * instead.
    *
-   * <p> To send fine-grained keyboard events, use {@link Locator#pressSequentially Locator.pressSequentially()}.
+   * <p> To send fine-grained keyboard events, use {@link com.microsoft.playwright.Locator#pressSequentially
+   * Locator.pressSequentially()}.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param value Value to fill for the {@code <input>}, {@code <textarea>} or {@code [contenteditable]} element.
@@ -3058,12 +3152,12 @@ public interface Frame {
   /**
    * Returns the {@code frame} or {@code iframe} element handle which corresponds to this frame.
    *
-   * <p> This is an inverse of {@link ElementHandle#contentFrame ElementHandle.contentFrame()}. Note that returned handle
-   * actually belongs to the parent frame.
+   * <p> This is an inverse of {@link com.microsoft.playwright.ElementHandle#contentFrame ElementHandle.contentFrame()}. Note
+   * that returned handle actually belongs to the parent frame.
    *
    * <p> This method throws an error if the frame has been detached before {@code frameElement()} returns.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * ElementHandle frameElement = frame.frameElement();
    * Frame contentFrame = frameElement.contentFrame();
@@ -3077,7 +3171,7 @@ public interface Frame {
    * When working with iframes, you can create a frame locator that will enter the iframe and allow selecting elements in
    * that iframe.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Following snippet locates element with text "Submit" in the iframe with id {@code my-frame}, like {@code <iframe
    * id="my-frame">}:
@@ -3111,7 +3205,7 @@ public interface Frame {
   /**
    * Allows locating elements by their alt text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find the image by alt text "Playwright logo":
    * <pre>{@code
@@ -3127,7 +3221,7 @@ public interface Frame {
   /**
    * Allows locating elements by their alt text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find the image by alt text "Playwright logo":
    * <pre>{@code
@@ -3141,7 +3235,7 @@ public interface Frame {
   /**
    * Allows locating elements by their alt text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find the image by alt text "Playwright logo":
    * <pre>{@code
@@ -3157,7 +3251,7 @@ public interface Frame {
   /**
    * Allows locating elements by their alt text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find the image by alt text "Playwright logo":
    * <pre>{@code
@@ -3172,7 +3266,7 @@ public interface Frame {
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
@@ -3190,7 +3284,7 @@ public interface Frame {
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
@@ -3206,7 +3300,7 @@ public interface Frame {
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
@@ -3224,7 +3318,7 @@ public interface Frame {
    * Allows locating input elements by the text of the associated {@code <label>} or {@code aria-labelledby} element, or by
    * the {@code aria-label} attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, this method will find inputs by label "Username" and "Password" in the following DOM:
    * <pre>{@code
@@ -3239,7 +3333,7 @@ public interface Frame {
   /**
    * Allows locating input elements by the placeholder text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, consider the following DOM structure.
    *
@@ -3257,7 +3351,7 @@ public interface Frame {
   /**
    * Allows locating input elements by the placeholder text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, consider the following DOM structure.
    *
@@ -3273,7 +3367,7 @@ public interface Frame {
   /**
    * Allows locating input elements by the placeholder text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, consider the following DOM structure.
    *
@@ -3291,7 +3385,7 @@ public interface Frame {
   /**
    * Allows locating input elements by the placeholder text.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, consider the following DOM structure.
    *
@@ -3309,7 +3403,7 @@ public interface Frame {
    * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a
    * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -3330,7 +3424,7 @@ public interface Frame {
    *     .click();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Role selector **does not replace** accessibility audits and conformance tests, but rather gives early feedback about the
    * ARIA guidelines.
@@ -3352,7 +3446,7 @@ public interface Frame {
    * href="https://www.w3.org/TR/wai-aria-1.2/#aria-attributes">ARIA attributes</a> and <a
    * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -3373,7 +3467,7 @@ public interface Frame {
    *     .click();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Role selector **does not replace** accessibility audits and conformance tests, but rather gives early feedback about the
    * ARIA guidelines.
@@ -3391,7 +3485,7 @@ public interface Frame {
   /**
    * Locate element by the test id.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -3400,10 +3494,11 @@ public interface Frame {
    * page.getByTestId("directions").click();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
-   * <p> By default, the {@code data-testid} attribute is used as a test id. Use {@link Selectors#setTestIdAttribute
-   * Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
+   * <p> By default, the {@code data-testid} attribute is used as a test id. Use {@link
+   * com.microsoft.playwright.Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id
+   * attribute if necessary.
    *
    * @param testId Id to locate the element by.
    * @since v1.27
@@ -3412,7 +3507,7 @@ public interface Frame {
   /**
    * Locate element by the test id.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -3421,10 +3516,11 @@ public interface Frame {
    * page.getByTestId("directions").click();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
-   * <p> By default, the {@code data-testid} attribute is used as a test id. Use {@link Selectors#setTestIdAttribute
-   * Selectors.setTestIdAttribute()} to configure a different test id attribute if necessary.
+   * <p> By default, the {@code data-testid} attribute is used as a test id. Use {@link
+   * com.microsoft.playwright.Selectors#setTestIdAttribute Selectors.setTestIdAttribute()} to configure a different test id
+   * attribute if necessary.
    *
    * @param testId Id to locate the element by.
    * @since v1.27
@@ -3433,10 +3529,10 @@ public interface Frame {
   /**
    * Allows locating elements that contain given text.
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> See also {@link com.microsoft.playwright.Locator#filter Locator.filter()} that allows to match by another criteria, like
+   * an accessible role, and then filter by the text content.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure:
    *
@@ -3458,7 +3554,7 @@ public interface Frame {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
@@ -3475,10 +3571,10 @@ public interface Frame {
   /**
    * Allows locating elements that contain given text.
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> See also {@link com.microsoft.playwright.Locator#filter Locator.filter()} that allows to match by another criteria, like
+   * an accessible role, and then filter by the text content.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure:
    *
@@ -3500,7 +3596,7 @@ public interface Frame {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
@@ -3515,10 +3611,10 @@ public interface Frame {
   /**
    * Allows locating elements that contain given text.
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> See also {@link com.microsoft.playwright.Locator#filter Locator.filter()} that allows to match by another criteria, like
+   * an accessible role, and then filter by the text content.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure:
    *
@@ -3540,7 +3636,7 @@ public interface Frame {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
@@ -3557,10 +3653,10 @@ public interface Frame {
   /**
    * Allows locating elements that contain given text.
    *
-   * <p> See also {@link Locator#filter Locator.filter()} that allows to match by another criteria, like an accessible role, and
-   * then filter by the text content.
+   * <p> See also {@link com.microsoft.playwright.Locator#filter Locator.filter()} that allows to match by another criteria, like
+   * an accessible role, and then filter by the text content.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure:
    *
@@ -3582,7 +3678,7 @@ public interface Frame {
    * page.getByText(Pattern.compile("^hello$", Pattern.CASE_INSENSITIVE))
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one,
    * turns line breaks into spaces and ignores leading and trailing whitespace.
@@ -3597,7 +3693,7 @@ public interface Frame {
   /**
    * Allows locating elements by their title attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -3615,7 +3711,7 @@ public interface Frame {
   /**
    * Allows locating elements by their title attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -3631,7 +3727,7 @@ public interface Frame {
   /**
    * Allows locating elements by their title attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -3649,7 +3745,7 @@ public interface Frame {
   /**
    * Allows locating elements by their title attribute.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Consider the following DOM structure.
    *
@@ -3677,7 +3773,7 @@ public interface Frame {
    *
    * <p> The method will not throw an error when any valid HTTP status code is returned by the remote server, including 404 "Not
    * Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling {@link
-   * Response#status Response.status()}.
+   * com.microsoft.playwright.Response#status Response.status()}.
    *
    * <p> <strong>NOTE:</strong> The method either throws an error or returns a main resource response. The only exceptions are navigation to {@code
    * about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
@@ -3706,7 +3802,7 @@ public interface Frame {
    *
    * <p> The method will not throw an error when any valid HTTP status code is returned by the remote server, including 404 "Not
    * Found" and 500 "Internal Server Error".  The status code for such responses can be retrieved by calling {@link
-   * Response#status Response.status()}.
+   * com.microsoft.playwright.Response#status Response.status()}.
    *
    * <p> <strong>NOTE:</strong> The method either throws an error or returns a main resource response. The only exceptions are navigation to {@code
    * about:blank} or navigation to the same URL with a different hash, which would succeed and return {@code null}.
@@ -3725,7 +3821,8 @@ public interface Frame {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to hover over the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to hover over the center of the element, or the specified
+   * {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -3745,7 +3842,8 @@ public interface Frame {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to hover over the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to hover over the center of the element, or the specified
+   * {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -4080,7 +4178,7 @@ public interface Frame {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
@@ -4113,7 +4211,7 @@ public interface Frame {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
@@ -4144,7 +4242,7 @@ public interface Frame {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
@@ -4177,7 +4275,7 @@ public interface Frame {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
@@ -4208,7 +4306,7 @@ public interface Frame {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
@@ -4241,7 +4339,7 @@ public interface Frame {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
@@ -4272,7 +4370,7 @@ public interface Frame {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
@@ -4305,7 +4403,7 @@ public interface Frame {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
@@ -4336,7 +4434,7 @@ public interface Frame {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
@@ -4369,7 +4467,7 @@ public interface Frame {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
@@ -4400,7 +4498,7 @@ public interface Frame {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
@@ -4433,7 +4531,7 @@ public interface Frame {
    *
    * <p> Triggers a {@code change} and {@code input} event once all the provided options have been selected.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * // Single selection matching the value or label
    * frame.selectOption("select#colors", "blue");
@@ -4459,7 +4557,7 @@ public interface Frame {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now checked or unchecked. If not, this method throws.</li>
    * </ol>
@@ -4483,7 +4581,7 @@ public interface Frame {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now checked or unchecked. If not, this method throws.</li>
    * </ol>
@@ -4643,7 +4741,8 @@ public interface Frame {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#touchscreen Page.touchscreen()} to tap the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#touchscreen Page.touchscreen()} to tap the center of the element, or the
+   * specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -4665,7 +4764,8 @@ public interface Frame {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#touchscreen Page.touchscreen()} to tap the center of the element, or the specified {@code position}.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#touchscreen Page.touchscreen()} to tap the center of the element, or the
+   * specified {@code position}.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
@@ -4701,9 +4801,9 @@ public interface Frame {
    */
   String title();
   /**
-   * @deprecated In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to press keys one by one if
-   * there is special keyboard handling on the page - in this case use {@link Locator#pressSequentially
-   * Locator.pressSequentially()}.
+   * @deprecated In most cases, you should use {@link com.microsoft.playwright.Locator#fill Locator.fill()} instead. You only need to
+   * press keys one by one if there is special keyboard handling on the page - in this case use {@link
+   * com.microsoft.playwright.Locator#pressSequentially Locator.pressSequentially()}.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param text A text to type into a focused element.
@@ -4713,9 +4813,9 @@ public interface Frame {
     type(selector, text, null);
   }
   /**
-   * @deprecated In most cases, you should use {@link Locator#fill Locator.fill()} instead. You only need to press keys one by one if
-   * there is special keyboard handling on the page - in this case use {@link Locator#pressSequentially
-   * Locator.pressSequentially()}.
+   * @deprecated In most cases, you should use {@link com.microsoft.playwright.Locator#fill Locator.fill()} instead. You only need to
+   * press keys one by one if there is special keyboard handling on the page - in this case use {@link
+   * com.microsoft.playwright.Locator#pressSequentially Locator.pressSequentially()}.
    *
    * @param selector A selector to search for an element. If there are multiple elements satisfying the selector, the first will be used.
    * @param text A text to type into a focused element.
@@ -4731,7 +4831,7 @@ public interface Frame {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now unchecked. If not, this method throws.</li>
    * </ol>
@@ -4754,7 +4854,7 @@ public interface Frame {
    * <li> Wait for <a href="https://playwright.dev/java/docs/actionability">actionability</a> checks on the matched element,
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
-   * <li> Use {@link Page#mouse Page.mouse()} to click in the center of the element.</li>
+   * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
    * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now unchecked. If not, this method throws.</li>
    * </ol>
@@ -4775,9 +4875,10 @@ public interface Frame {
   /**
    * Returns when the {@code expression} returns a truthy value, returns that value.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
-   * <p> The {@link Frame#waitForFunction Frame.waitForFunction()} can be used to observe viewport size change:
+   * <p> The {@link com.microsoft.playwright.Frame#waitForFunction Frame.waitForFunction()} can be used to observe viewport size
+   * change:
    * <pre>{@code
    * import com.microsoft.playwright.*;
    *
@@ -4812,9 +4913,10 @@ public interface Frame {
   /**
    * Returns when the {@code expression} returns a truthy value, returns that value.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
-   * <p> The {@link Frame#waitForFunction Frame.waitForFunction()} can be used to observe viewport size change:
+   * <p> The {@link com.microsoft.playwright.Frame#waitForFunction Frame.waitForFunction()} can be used to observe viewport size
+   * change:
    * <pre>{@code
    * import com.microsoft.playwright.*;
    *
@@ -4848,9 +4950,10 @@ public interface Frame {
   /**
    * Returns when the {@code expression} returns a truthy value, returns that value.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
-   * <p> The {@link Frame#waitForFunction Frame.waitForFunction()} can be used to observe viewport size change:
+   * <p> The {@link com.microsoft.playwright.Frame#waitForFunction Frame.waitForFunction()} can be used to observe viewport size
+   * change:
    * <pre>{@code
    * import com.microsoft.playwright.*;
    *
@@ -4886,7 +4989,7 @@ public interface Frame {
    * <p> This returns when the frame reaches a required load state, {@code load} by default. The navigation must have been
    * committed when this method is called. If current document has already reached the required state, resolves immediately.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * frame.click("button"); // Click triggers navigation.
    * frame.waitForLoadState(); // Waits for "load" state by default.
@@ -4911,7 +5014,7 @@ public interface Frame {
    * <p> This returns when the frame reaches a required load state, {@code load} by default. The navigation must have been
    * committed when this method is called. If current document has already reached the required state, resolves immediately.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * frame.click("button"); // Click triggers navigation.
    * frame.waitForLoadState(); // Waits for "load" state by default.
@@ -4928,7 +5031,7 @@ public interface Frame {
    * <p> This returns when the frame reaches a required load state, {@code load} by default. The navigation must have been
    * committed when this method is called. If current document has already reached the required state, resolves immediately.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * frame.click("button"); // Click triggers navigation.
    * frame.waitForLoadState(); // Waits for "load" state by default.
@@ -4946,7 +5049,7 @@ public interface Frame {
    */
   void waitForLoadState(LoadState state, WaitForLoadStateOptions options);
   /**
-   * @deprecated This method is inherently racy, please use {@link Frame#waitForURL Frame.waitForURL()} instead.
+   * @deprecated This method is inherently racy, please use {@link com.microsoft.playwright.Frame#waitForURL Frame.waitForURL()} instead.
    *
    * @param callback Callback that performs the action triggering the event.
    * @since v1.8
@@ -4955,7 +5058,7 @@ public interface Frame {
     return waitForNavigation(null, callback);
   }
   /**
-   * @deprecated This method is inherently racy, please use {@link Frame#waitForURL Frame.waitForURL()} instead.
+   * @deprecated This method is inherently racy, please use {@link com.microsoft.playwright.Frame#waitForURL Frame.waitForURL()} instead.
    *
    * @param callback Callback that performs the action triggering the event.
    * @since v1.8
@@ -4973,7 +5076,7 @@ public interface Frame {
    * will return immediately. If the selector doesn't satisfy the condition for the {@code timeout} milliseconds, the
    * function will throw.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> This method works across navigations:
    * <pre>{@code
@@ -5014,7 +5117,7 @@ public interface Frame {
    * will return immediately. If the selector doesn't satisfy the condition for the {@code timeout} milliseconds, the
    * function will throw.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> This method works across navigations:
    * <pre>{@code
@@ -5054,7 +5157,7 @@ public interface Frame {
   /**
    * Waits for the frame to navigate to the given URL.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * frame.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
    * frame.waitForURL("**\/target.html");
@@ -5071,7 +5174,7 @@ public interface Frame {
   /**
    * Waits for the frame to navigate to the given URL.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * frame.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
    * frame.waitForURL("**\/target.html");
@@ -5086,7 +5189,7 @@ public interface Frame {
   /**
    * Waits for the frame to navigate to the given URL.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * frame.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
    * frame.waitForURL("**\/target.html");
@@ -5103,7 +5206,7 @@ public interface Frame {
   /**
    * Waits for the frame to navigate to the given URL.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * frame.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
    * frame.waitForURL("**\/target.html");
@@ -5118,7 +5221,7 @@ public interface Frame {
   /**
    * Waits for the frame to navigate to the given URL.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * frame.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
    * frame.waitForURL("**\/target.html");
@@ -5135,7 +5238,7 @@ public interface Frame {
   /**
    * Waits for the frame to navigate to the given URL.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * frame.click("a.delayed-navigation"); // Clicking the link will indirectly cause a navigation
    * frame.waitForURL("**\/target.html");

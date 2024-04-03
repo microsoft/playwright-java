@@ -31,6 +31,7 @@ import com.google.gson.JsonObject;
  * <li> Documentation on DevTools Protocol can be found here: <a
  * href="https://chromedevtools.github.io/devtools-protocol/">DevTools Protocol Viewer</a>.</li>
  * <li> Getting Started with DevTools Protocol: https://github.com/aslushnikov/getting-started-with-cdp/blob/master/README.md</li>
+ * </ul>
  * <pre>{@code
  * CDPSession client = page.context().newCDPSession(page);
  * client.send("Runtime.enable");
@@ -45,7 +46,6 @@ import com.google.gson.JsonObject;
  * params.addProperty("playbackRate", playbackRate / 2);
  * client.send("Animation.setPlaybackRate", params);
  * }</pre>
- * </ul>
  */
 public interface CDPSession {
   /**

@@ -22,14 +22,15 @@ import java.util.*;
 /**
  * Whenever the page sends a request for a network resource the following sequence of events are emitted by {@code Page}:
  * <ul>
- * <li> {@link Page#onRequest Page.onRequest()} emitted when the request is issued by the page.</li>
- * <li> {@link Page#onResponse Page.onResponse()} emitted when/if the response status and headers are received for the request.</li>
- * <li> {@link Page#onRequestFinished Page.onRequestFinished()} emitted when the response body is downloaded and the request is
- * complete.</li>
+ * <li> {@link com.microsoft.playwright.Page#onRequest Page.onRequest()} emitted when the request is issued by the page.</li>
+ * <li> {@link com.microsoft.playwright.Page#onResponse Page.onResponse()} emitted when/if the response status and headers are
+ * received for the request.</li>
+ * <li> {@link com.microsoft.playwright.Page#onRequestFinished Page.onRequestFinished()} emitted when the response body is
+ * downloaded and the request is complete.</li>
  * </ul>
  *
  * <p> If request fails at some point, then instead of {@code "requestfinished"} event (and possibly instead of 'response'
- * event), the  {@link Page#onRequestFailed Page.onRequestFailed()} event is emitted.
+ * event), the  {@link com.microsoft.playwright.Page#onRequestFailed Page.onRequestFailed()} event is emitted.
  *
  * <p> <strong>NOTE:</strong> HTTP Error responses, such as 404 or 503, are still successful responses from HTTP standpoint, so request will complete
  * with {@code "requestfinished"} event.
@@ -47,7 +48,7 @@ public interface Request {
   /**
    * The method returns {@code null} unless this request has failed, as reported by {@code requestfailed} event.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> Example of logging of all the failed requests:
    * <pre>{@code
@@ -62,18 +63,18 @@ public interface Request {
   /**
    * Returns the {@code Frame} that initiated this request.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * String frameUrl = request.frame().url();
    * }</pre>
    *
-   * <p> **Details**
+   * <p> <strong>Details</strong>
    *
    * <p> Note that in some cases the frame is not available, and this method will throw.
    * <ul>
    * <li> When request originates in the Service Worker. You can use {@code request.serviceWorker()} to check that.</li>
    * <li> When navigation request is issued before the corresponding frame is created. You can use {@link
-   * Request#isNavigationRequest Request.isNavigationRequest()} to check that.</li>
+   * com.microsoft.playwright.Request#isNavigationRequest Request.isNavigationRequest()} to check that.</li>
    * </ul>
    *
    * <p> Here is an example that handles all the cases:
@@ -83,16 +84,16 @@ public interface Request {
   Frame frame();
   /**
    * An object with the request HTTP headers. The header names are lower-cased. Note that this method does not return
-   * security-related headers, including cookie-related ones. You can use {@link Request#allHeaders Request.allHeaders()} for
-   * complete list of headers that include {@code cookie} information.
+   * security-related headers, including cookie-related ones. You can use {@link com.microsoft.playwright.Request#allHeaders
+   * Request.allHeaders()} for complete list of headers that include {@code cookie} information.
    *
    * @since v1.8
    */
   Map<String, String> headers();
   /**
-   * An array with all the request HTTP headers associated with this request. Unlike {@link Request#allHeaders
-   * Request.allHeaders()}, header names are NOT lower-cased. Headers with multiple entries, such as {@code Set-Cookie},
-   * appear in the array multiple times.
+   * An array with all the request HTTP headers associated with this request. Unlike {@link
+   * com.microsoft.playwright.Request#allHeaders Request.allHeaders()}, header names are NOT lower-cased. Headers with
+   * multiple entries, such as {@code Set-Cookie}, appear in the array multiple times.
    *
    * @since v1.15
    */
@@ -108,7 +109,7 @@ public interface Request {
    * Whether this request is driving frame's navigation.
    *
    * <p> Some navigation requests are issued before the corresponding frame is created, and therefore do not have {@link
-   * Request#frame Request.frame()} available.
+   * com.microsoft.playwright.Request#frame Request.frame()} available.
    *
    * @since v1.8
    */
@@ -138,7 +139,7 @@ public interface Request {
    * connected by {@code redirectedFrom()} and {@code redirectedTo()} methods. When multiple server redirects has happened,
    * it is possible to construct the whole redirect chain by repeatedly calling {@code redirectedFrom()}.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> For example, if the website {@code http://example.com} redirects to {@code https://example.com}:
    * <pre>{@code
@@ -158,9 +159,9 @@ public interface Request {
   /**
    * New request issued by the browser if the server responded with redirect.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
-   * <p> This method is the opposite of {@link Request#redirectedFrom Request.redirectedFrom()}:
+   * <p> This method is the opposite of {@link com.microsoft.playwright.Request#redirectedFrom Request.redirectedFrom()}:
    * <pre>{@code
    * System.out.println(request.redirectedFrom().redirectedTo() == request); // true
    * }</pre>
@@ -193,7 +194,7 @@ public interface Request {
    * {@code responseEnd} becomes available when request finishes. Find more information at <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming">Resource Timing API</a>.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.onRequestFinished(request -> {
    *   Timing timing = request.timing();

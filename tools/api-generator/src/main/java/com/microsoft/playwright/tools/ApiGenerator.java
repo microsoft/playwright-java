@@ -102,16 +102,7 @@ abstract class Element {
     for (JsonElement item : spec) {
       JsonObject node = item.getAsJsonObject();
       String type = node.get("type").getAsString();
-      if ("code".equals(type)) {
-        if (!node.get("codeLang").getAsString().contains("java")) {
-          continue;
-        }
-        out.add("<pre>{@code");
-        for (JsonElement line : node.getAsJsonArray("lines")) {
-          out.add(line.getAsString());
-        }
-        out.add("}</pre>");
-      } else if ("li".equals(type)) {
+      if ("li".equals(type)) {
         String text = node.get("text").getAsString();
         if (text.startsWith("extends: ")) {
           continue;
@@ -127,15 +118,34 @@ abstract class Element {
           }
         }
         out.add("<li> " + beautify(text) + "</li>");
+        continue;
       } else {
         if (currentItemList != null) {
           out.add("</" + currentItemList + ">");
           currentItemList = null;
         }
+      }
+      if ("code".equals(type)) {
+        if (!node.get("codeLang").getAsString().contains("java")) {
+          continue;
+        }
+        out.add("<pre>{@code");
+        for (JsonElement line : node.getAsJsonArray("lines")) {
+          out.add(line.getAsString());
+        }
+        out.add("}</pre>");
+      } else {
         String paragraph = node.get("text").getAsString();
-        paragraph = beautify(paragraph);
-        if ("note".equals(type)) {
-          paragraph = "<strong>NOTE:</strong> " + paragraph;
+        Matcher matcher = Pattern.compile("^\\*\\*(.+)\\*\\*$").matcher(paragraph);
+        // Format **Usage**, **Details** as bold text.
+        if (matcher.matches()) {
+          String title = matcher.group(1);
+          paragraph = "<strong>" + title + "</strong>";
+        } else {
+          paragraph = beautify(paragraph);
+          if ("note".equals(type)) {
+            paragraph = "<strong>NOTE:</strong> " + paragraph;
+          }
         }
         if (!out.isEmpty())
           paragraph = "\n<p> " + paragraph;
@@ -173,7 +183,13 @@ abstract class Element {
         String[] parts = name.split("\\.");
         name = parts[0] + ".on" + toTitle(parts[1]);
       }
-      linkified += "{@link " + name.replace(".", "#") + " " + name + "()}";
+      String packagePrefix = "";
+      if (ApiGenerator.isAssertionClass(name.split("\\.")[0])) {
+        packagePrefix = "com.microsoft.playwright.assertions.";
+      } else {
+        packagePrefix = "com.microsoft.playwright.";
+      }
+      linkified += "{@link " + packagePrefix + name.replace(".", "#") + " " + name + "()}";
       start = matcher.end();
     }
     linkified += paragraph.substring(start);
@@ -682,8 +698,8 @@ class Method extends Element {
     }
     if ("PlaywrightAssertions.setDefaultAssertionTimeout".equals(jsonPath)) {
       writeJavadoc(params, output, offset);
-      output.add(offset + "static void setDefaultAssertionTimeout(double milliseconds) {");
-      output.add(offset + "  AssertionsTimeout.setDefaultTimeout(milliseconds);");
+      output.add(offset + "static void setDefaultAssertionTimeout(double timeout) {");
+      output.add(offset + "  AssertionsTimeout.setDefaultTimeout(timeout);");
       output.add(offset + "}");
       output.add("");
       return;
@@ -1160,7 +1176,11 @@ public class ApiGenerator {
   }
 
   private static Predicate<String> isAssertion() {
-    return className -> className.toLowerCase().contains("assert");
+    return className -> isAssertionClass(className);
+  }
+
+  static boolean isAssertionClass(String className) {
+    return className.toLowerCase().contains("assert");
   }
 
   // TODO: Remove this predicate once SoftAssertions are implemented.

@@ -19,7 +19,7 @@ package com.microsoft.playwright;
 
 /**
  * {@code WebError} class represents an unhandled exception thrown in the page. It is dispatched via the {@link
- * BrowserContext#onWebError BrowserContext.onWebError()} event.
+ * com.microsoft.playwright.BrowserContext#onWebError BrowserContext.onWebError()} event.
  * <pre>{@code
  * // Log all uncaught errors to the terminal
  * context.onWebError(webError -> {

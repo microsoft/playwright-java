@@ -44,7 +44,7 @@ public interface Selectors {
   /**
    * Selectors must be registered before creating the page.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> An example of registering selector engine that queries elements based on a tag name:
    * <pre>{@code
@@ -84,7 +84,7 @@ public interface Selectors {
   /**
    * Selectors must be registered before creating the page.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> An example of registering selector engine that queries elements based on a tag name:
    * <pre>{@code
@@ -122,7 +122,7 @@ public interface Selectors {
   /**
    * Selectors must be registered before creating the page.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> An example of registering selector engine that queries elements based on a tag name:
    * <pre>{@code
@@ -162,7 +162,7 @@ public interface Selectors {
   /**
    * Selectors must be registered before creating the page.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    *
    * <p> An example of registering selector engine that queries elements based on a tag name:
    * <pre>{@code
@@ -198,8 +198,8 @@ public interface Selectors {
    */
   void register(String name, Path script, RegisterOptions options);
   /**
-   * Defines custom attribute name to be used in {@link Page#getByTestId Page.getByTestId()}. {@code data-testid} is used by
-   * default.
+   * Defines custom attribute name to be used in {@link com.microsoft.playwright.Page#getByTestId Page.getByTestId()}. {@code
+   * data-testid} is used by default.
    *
    * @param attributeName Test id attribute name.
    * @since v1.27

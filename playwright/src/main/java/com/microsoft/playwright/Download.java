@@ -20,7 +20,8 @@ import java.io.InputStream;
 import java.nio.file.Path;
 
 /**
- * {@code Download} objects are dispatched by page via the {@link Page#onDownload Page.onDownload()} event.
+ * {@code Download} objects are dispatched by page via the {@link com.microsoft.playwright.Page#onDownload
+ * Page.onDownload()} event.
  *
  * <p> All the downloaded files belonging to the browser context are deleted when the browser context is closed.
  *
@@ -72,8 +73,8 @@ public interface Download {
    * Returns path to the downloaded file for a successful download, or throws for a failed/canceled download. The method will
    * wait for the download to finish if necessary. The method throws when connected remotely.
    *
-   * <p> Note that the download's file name is a random GUID, use {@link Download#suggestedFilename Download.suggestedFilename()}
-   * to get suggested file name.
+   * <p> Note that the download's file name is a random GUID, use {@link com.microsoft.playwright.Download#suggestedFilename
+   * Download.suggestedFilename()} to get suggested file name.
    *
    * @since v1.8
    */
@@ -82,7 +83,7 @@ public interface Download {
    * Copy the download to a user-specified path. It is safe to call this method while the download is still in progress. Will
    * wait for the download to finish if necessary.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * download.saveAs(Paths.get("/path/to/save/at/", download.suggestedFilename()));
    * }</pre>

@@ -21,7 +21,7 @@ import com.microsoft.playwright.options.*;
 /**
  * The Mouse class operates in main-frame CSS pixels relative to the top-left corner of the viewport.
  *
- * <p> Every {@code page} object has its own Mouse, accessible with {@link Page#mouse Page.mouse()}.
+ * <p> Every {@code page} object has its own Mouse, accessible with {@link com.microsoft.playwright.Page#mouse Page.mouse()}.
  * <pre>{@code
  * // Using ‘page.mouse’ to trace a 100x100 square.
  * page.mouse().move(0, 0);
@@ -160,7 +160,8 @@ public interface Mouse {
     }
   }
   /**
-   * Shortcut for {@link Mouse#move Mouse.move()}, {@link Mouse#down Mouse.down()}, {@link Mouse#up Mouse.up()}.
+   * Shortcut for {@link com.microsoft.playwright.Mouse#move Mouse.move()}, {@link com.microsoft.playwright.Mouse#down
+   * Mouse.down()}, {@link com.microsoft.playwright.Mouse#up Mouse.up()}.
    *
    * @since v1.8
    */
@@ -168,14 +169,16 @@ public interface Mouse {
     click(x, y, null);
   }
   /**
-   * Shortcut for {@link Mouse#move Mouse.move()}, {@link Mouse#down Mouse.down()}, {@link Mouse#up Mouse.up()}.
+   * Shortcut for {@link com.microsoft.playwright.Mouse#move Mouse.move()}, {@link com.microsoft.playwright.Mouse#down
+   * Mouse.down()}, {@link com.microsoft.playwright.Mouse#up Mouse.up()}.
    *
    * @since v1.8
    */
   void click(double x, double y, ClickOptions options);
   /**
-   * Shortcut for {@link Mouse#move Mouse.move()}, {@link Mouse#down Mouse.down()}, {@link Mouse#up Mouse.up()}, {@link
-   * Mouse#down Mouse.down()} and {@link Mouse#up Mouse.up()}.
+   * Shortcut for {@link com.microsoft.playwright.Mouse#move Mouse.move()}, {@link com.microsoft.playwright.Mouse#down
+   * Mouse.down()}, {@link com.microsoft.playwright.Mouse#up Mouse.up()}, {@link com.microsoft.playwright.Mouse#down
+   * Mouse.down()} and {@link com.microsoft.playwright.Mouse#up Mouse.up()}.
    *
    * @since v1.8
    */
@@ -183,8 +186,9 @@ public interface Mouse {
     dblclick(x, y, null);
   }
   /**
-   * Shortcut for {@link Mouse#move Mouse.move()}, {@link Mouse#down Mouse.down()}, {@link Mouse#up Mouse.up()}, {@link
-   * Mouse#down Mouse.down()} and {@link Mouse#up Mouse.up()}.
+   * Shortcut for {@link com.microsoft.playwright.Mouse#move Mouse.move()}, {@link com.microsoft.playwright.Mouse#down
+   * Mouse.down()}, {@link com.microsoft.playwright.Mouse#up Mouse.up()}, {@link com.microsoft.playwright.Mouse#down
+   * Mouse.down()} and {@link com.microsoft.playwright.Mouse#up Mouse.up()}.
    *
    * @since v1.8
    */

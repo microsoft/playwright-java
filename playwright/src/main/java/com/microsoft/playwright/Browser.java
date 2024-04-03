@@ -23,8 +23,8 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 /**
- * A Browser is created via {@link BrowserType#launch BrowserType.launch()}. An example of using a {@code Browser} to
- * create a {@code Page}:
+ * A Browser is created via {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}. An example of using a
+ * {@code Browser} to create a {@code Page}:
  * <pre>{@code
  * import com.microsoft.playwright.*;
  *
@@ -47,7 +47,7 @@ public interface Browser extends AutoCloseable {
    * Emitted when Browser gets disconnected from the browser application. This might happen because of one of the following:
    * <ul>
    * <li> Browser application is closed or crashed.</li>
-   * <li> The {@link Browser#close Browser.close()} method was called.</li>
+   * <li> The {@link com.microsoft.playwright.Browser#close Browser.close()} method was called.</li>
    * </ul>
    */
   void onDisconnected(Consumer<Browser> handler);
@@ -76,10 +76,11 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean acceptDownloads;
     /**
-     * When using {@link Page#navigate Page.navigate()}, {@link Page#route Page.route()}, {@link Page#waitForURL
-     * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
-     * Page.waitForResponse()} it takes the base URL in consideration by using the <a
-     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
+     * When using {@link com.microsoft.playwright.Page#navigate Page.navigate()}, {@link com.microsoft.playwright.Page#route
+     * Page.route()}, {@link com.microsoft.playwright.Page#waitForURL Page.waitForURL()}, {@link
+     * com.microsoft.playwright.Page#waitForRequest Page.waitForRequest()}, or {@link
+     * com.microsoft.playwright.Page#waitForResponse Page.waitForResponse()} it takes the base URL in consideration by using
+     * the <a href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
      * corresponding URL. Unset by default. Examples:
      * <ul>
      * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code
@@ -97,8 +98,8 @@ public interface Browser extends AutoCloseable {
     public Boolean bypassCSP;
     /**
      * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
-     * "no-preference"}. See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
-     * emulation to system defaults. Defaults to {@code "light"}.
+     * "no-preference"}. See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing
+     * {@code null} resets emulation to system defaults. Defaults to {@code "light"}.
      */
     public Optional<ColorScheme> colorScheme;
     /**
@@ -112,8 +113,8 @@ public interface Browser extends AutoCloseable {
     public Map<String, String> extraHTTPHeaders;
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link
-     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
-     * Defaults to {@code "none"}.
+     * com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation
+     * to system defaults. Defaults to {@code "none"}.
      */
     public Optional<ForcedColors> forcedColors;
     public Geolocation geolocation;
@@ -155,8 +156,9 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean offline;
     /**
-     * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
-     * BrowserContext.grantPermissions()} for more details. Defaults to none.
+     * A list of permissions to grant to all pages in this context. See {@link
+     * com.microsoft.playwright.BrowserContext#grantPermissions BrowserContext.grantPermissions()} for more details. Defaults
+     * to none.
      */
     public List<String> permissions;
     /**
@@ -185,14 +187,14 @@ public interface Browser extends AutoCloseable {
     public Boolean recordHarOmitContent;
     /**
      * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
-     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link BrowserContext#close
-     * BrowserContext.close()} for the HAR to be saved.
+     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link
+     * com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for the HAR to be saved.
      */
     public Path recordHarPath;
     public Object recordHarUrlFilter;
     /**
      * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
-     * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
+     * to call {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
     public Path recordVideoDir;
     /**
@@ -203,8 +205,8 @@ public interface Browser extends AutoCloseable {
     public RecordVideoSize recordVideoSize;
     /**
      * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}.
-     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system
-     * defaults. Defaults to {@code "no-preference"}.
+     * See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
+     * emulation to system defaults. Defaults to {@code "no-preference"}.
      */
     public Optional<ReducedMotion> reducedMotion;
     /**
@@ -223,13 +225,13 @@ public interface Browser extends AutoCloseable {
     public ServiceWorkerPolicy serviceWorkers;
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}.
      */
     public String storageState;
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
-     * state.
+     * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}. Path to the
+     * file with saved storage state.
      */
     public Path storageStatePath;
     /**
@@ -267,10 +269,11 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * When using {@link Page#navigate Page.navigate()}, {@link Page#route Page.route()}, {@link Page#waitForURL
-     * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
-     * Page.waitForResponse()} it takes the base URL in consideration by using the <a
-     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
+     * When using {@link com.microsoft.playwright.Page#navigate Page.navigate()}, {@link com.microsoft.playwright.Page#route
+     * Page.route()}, {@link com.microsoft.playwright.Page#waitForURL Page.waitForURL()}, {@link
+     * com.microsoft.playwright.Page#waitForRequest Page.waitForRequest()}, or {@link
+     * com.microsoft.playwright.Page#waitForResponse Page.waitForResponse()} it takes the base URL in consideration by using
+     * the <a href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
      * corresponding URL. Unset by default. Examples:
      * <ul>
      * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code
@@ -294,8 +297,8 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
-     * "no-preference"}. See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
-     * emulation to system defaults. Defaults to {@code "light"}.
+     * "no-preference"}. See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing
+     * {@code null} resets emulation to system defaults. Defaults to {@code "light"}.
      */
     public NewContextOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
@@ -318,8 +321,8 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link
-     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
-     * Defaults to {@code "none"}.
+     * com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation
+     * to system defaults. Defaults to {@code "none"}.
      */
     public NewContextOptions setForcedColors(ForcedColors forcedColors) {
       this.forcedColors = Optional.ofNullable(forcedColors);
@@ -398,8 +401,9 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
-     * BrowserContext.grantPermissions()} for more details. Defaults to none.
+     * A list of permissions to grant to all pages in this context. See {@link
+     * com.microsoft.playwright.BrowserContext#grantPermissions BrowserContext.grantPermissions()} for more details. Defaults
+     * to none.
      */
     public NewContextOptions setPermissions(List<String> permissions) {
       this.permissions = permissions;
@@ -453,8 +457,8 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
-     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link BrowserContext#close
-     * BrowserContext.close()} for the HAR to be saved.
+     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link
+     * com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for the HAR to be saved.
      */
     public NewContextOptions setRecordHarPath(Path recordHarPath) {
       this.recordHarPath = recordHarPath;
@@ -470,7 +474,7 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
-     * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
+     * to call {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
     public NewContextOptions setRecordVideoDir(Path recordVideoDir) {
       this.recordVideoDir = recordVideoDir;
@@ -495,8 +499,8 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}.
-     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system
-     * defaults. Defaults to {@code "no-preference"}.
+     * See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
+     * emulation to system defaults. Defaults to {@code "no-preference"}.
      */
     public NewContextOptions setReducedMotion(ReducedMotion reducedMotion) {
       this.reducedMotion = Optional.ofNullable(reducedMotion);
@@ -531,7 +535,7 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}.
      */
     public NewContextOptions setStorageState(String storageState) {
       this.storageState = storageState;
@@ -539,8 +543,8 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
-     * state.
+     * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}. Path to the
+     * file with saved storage state.
      */
     public NewContextOptions setStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
@@ -602,10 +606,11 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean acceptDownloads;
     /**
-     * When using {@link Page#navigate Page.navigate()}, {@link Page#route Page.route()}, {@link Page#waitForURL
-     * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
-     * Page.waitForResponse()} it takes the base URL in consideration by using the <a
-     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
+     * When using {@link com.microsoft.playwright.Page#navigate Page.navigate()}, {@link com.microsoft.playwright.Page#route
+     * Page.route()}, {@link com.microsoft.playwright.Page#waitForURL Page.waitForURL()}, {@link
+     * com.microsoft.playwright.Page#waitForRequest Page.waitForRequest()}, or {@link
+     * com.microsoft.playwright.Page#waitForResponse Page.waitForResponse()} it takes the base URL in consideration by using
+     * the <a href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
      * corresponding URL. Unset by default. Examples:
      * <ul>
      * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code
@@ -623,8 +628,8 @@ public interface Browser extends AutoCloseable {
     public Boolean bypassCSP;
     /**
      * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
-     * "no-preference"}. See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
-     * emulation to system defaults. Defaults to {@code "light"}.
+     * "no-preference"}. See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing
+     * {@code null} resets emulation to system defaults. Defaults to {@code "light"}.
      */
     public Optional<ColorScheme> colorScheme;
     /**
@@ -638,8 +643,8 @@ public interface Browser extends AutoCloseable {
     public Map<String, String> extraHTTPHeaders;
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link
-     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
-     * Defaults to {@code "none"}.
+     * com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation
+     * to system defaults. Defaults to {@code "none"}.
      */
     public Optional<ForcedColors> forcedColors;
     public Geolocation geolocation;
@@ -681,8 +686,9 @@ public interface Browser extends AutoCloseable {
      */
     public Boolean offline;
     /**
-     * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
-     * BrowserContext.grantPermissions()} for more details. Defaults to none.
+     * A list of permissions to grant to all pages in this context. See {@link
+     * com.microsoft.playwright.BrowserContext#grantPermissions BrowserContext.grantPermissions()} for more details. Defaults
+     * to none.
      */
     public List<String> permissions;
     /**
@@ -711,14 +717,14 @@ public interface Browser extends AutoCloseable {
     public Boolean recordHarOmitContent;
     /**
      * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
-     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link BrowserContext#close
-     * BrowserContext.close()} for the HAR to be saved.
+     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link
+     * com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for the HAR to be saved.
      */
     public Path recordHarPath;
     public Object recordHarUrlFilter;
     /**
      * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
-     * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
+     * to call {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
     public Path recordVideoDir;
     /**
@@ -729,8 +735,8 @@ public interface Browser extends AutoCloseable {
     public RecordVideoSize recordVideoSize;
     /**
      * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}.
-     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system
-     * defaults. Defaults to {@code "no-preference"}.
+     * See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
+     * emulation to system defaults. Defaults to {@code "no-preference"}.
      */
     public Optional<ReducedMotion> reducedMotion;
     /**
@@ -749,13 +755,13 @@ public interface Browser extends AutoCloseable {
     public ServiceWorkerPolicy serviceWorkers;
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}.
      */
     public String storageState;
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
-     * state.
+     * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}. Path to the
+     * file with saved storage state.
      */
     public Path storageStatePath;
     /**
@@ -793,10 +799,11 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * When using {@link Page#navigate Page.navigate()}, {@link Page#route Page.route()}, {@link Page#waitForURL
-     * Page.waitForURL()}, {@link Page#waitForRequest Page.waitForRequest()}, or {@link Page#waitForResponse
-     * Page.waitForResponse()} it takes the base URL in consideration by using the <a
-     * href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
+     * When using {@link com.microsoft.playwright.Page#navigate Page.navigate()}, {@link com.microsoft.playwright.Page#route
+     * Page.route()}, {@link com.microsoft.playwright.Page#waitForURL Page.waitForURL()}, {@link
+     * com.microsoft.playwright.Page#waitForRequest Page.waitForRequest()}, or {@link
+     * com.microsoft.playwright.Page#waitForResponse Page.waitForResponse()} it takes the base URL in consideration by using
+     * the <a href="https://developer.mozilla.org/en-US/docs/Web/API/URL/URL">{@code URL()}</a> constructor for building the
      * corresponding URL. Unset by default. Examples:
      * <ul>
      * <li> baseURL: {@code http://localhost:3000} and navigating to {@code /bar.html} results in {@code
@@ -820,8 +827,8 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Emulates {@code "prefers-colors-scheme"} media feature, supported values are {@code "light"}, {@code "dark"}, {@code
-     * "no-preference"}. See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
-     * emulation to system defaults. Defaults to {@code "light"}.
+     * "no-preference"}. See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing
+     * {@code null} resets emulation to system defaults. Defaults to {@code "light"}.
      */
     public NewPageOptions setColorScheme(ColorScheme colorScheme) {
       this.colorScheme = Optional.ofNullable(colorScheme);
@@ -844,8 +851,8 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Emulates {@code "forced-colors"} media feature, supported values are {@code "active"}, {@code "none"}. See {@link
-     * Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system defaults.
-     * Defaults to {@code "none"}.
+     * com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation
+     * to system defaults. Defaults to {@code "none"}.
      */
     public NewPageOptions setForcedColors(ForcedColors forcedColors) {
       this.forcedColors = Optional.ofNullable(forcedColors);
@@ -924,8 +931,9 @@ public interface Browser extends AutoCloseable {
       return this;
     }
     /**
-     * A list of permissions to grant to all pages in this context. See {@link BrowserContext#grantPermissions
-     * BrowserContext.grantPermissions()} for more details. Defaults to none.
+     * A list of permissions to grant to all pages in this context. See {@link
+     * com.microsoft.playwright.BrowserContext#grantPermissions BrowserContext.grantPermissions()} for more details. Defaults
+     * to none.
      */
     public NewPageOptions setPermissions(List<String> permissions) {
       this.permissions = permissions;
@@ -979,8 +987,8 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Enables <a href="http://www.softwareishard.com/blog/har-12-spec">HAR</a> recording for all pages into the specified HAR
-     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link BrowserContext#close
-     * BrowserContext.close()} for the HAR to be saved.
+     * file on the filesystem. If not specified, the HAR is not recorded. Make sure to call {@link
+     * com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for the HAR to be saved.
      */
     public NewPageOptions setRecordHarPath(Path recordHarPath) {
       this.recordHarPath = recordHarPath;
@@ -996,7 +1004,7 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Enables video recording for all pages into the specified directory. If not specified videos are not recorded. Make sure
-     * to call {@link BrowserContext#close BrowserContext.close()} for videos to be saved.
+     * to call {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} for videos to be saved.
      */
     public NewPageOptions setRecordVideoDir(Path recordVideoDir) {
       this.recordVideoDir = recordVideoDir;
@@ -1021,8 +1029,8 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Emulates {@code "prefers-reduced-motion"} media feature, supported values are {@code "reduce"}, {@code "no-preference"}.
-     * See {@link Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets emulation to system
-     * defaults. Defaults to {@code "no-preference"}.
+     * See {@link com.microsoft.playwright.Page#emulateMedia Page.emulateMedia()} for more details. Passing {@code null} resets
+     * emulation to system defaults. Defaults to {@code "no-preference"}.
      */
     public NewPageOptions setReducedMotion(ReducedMotion reducedMotion) {
       this.reducedMotion = Optional.ofNullable(reducedMotion);
@@ -1057,7 +1065,7 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}.
+     * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}.
      */
     public NewPageOptions setStorageState(String storageState) {
       this.storageState = storageState;
@@ -1065,8 +1073,8 @@ public interface Browser extends AutoCloseable {
     }
     /**
      * Populates context with given storage state. This option can be used to initialize context with logged-in information
-     * obtained via {@link BrowserContext#storageState BrowserContext.storageState()}. Path to the file with saved storage
-     * state.
+     * obtained via {@link com.microsoft.playwright.BrowserContext#storageState BrowserContext.storageState()}. Path to the
+     * file with saved storage state.
      */
     public NewPageOptions setStorageStatePath(Path storageStatePath) {
       this.storageStatePath = storageStatePath;
@@ -1165,15 +1173,16 @@ public interface Browser extends AutoCloseable {
    */
   BrowserType browserType();
   /**
-   * In case this browser is obtained using {@link BrowserType#launch BrowserType.launch()}, closes the browser and all of
-   * its pages (if any were opened).
+   * In case this browser is obtained using {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}, closes
+   * the browser and all of its pages (if any were opened).
    *
    * <p> In case this browser is connected to, clears all created contexts belonging to this browser and disconnects from the
    * browser server.
    *
-   * <p> <strong>NOTE:</strong> This is similar to force quitting the browser. Therefore, you should call {@link BrowserContext#close
-   * BrowserContext.close()} on any {@code BrowserContext}'s you explicitly created earlier with {@link Browser#newContext
-   * Browser.newContext()} **before** calling {@link Browser#close Browser.close()}.
+   * <p> <strong>NOTE:</strong> This is similar to force quitting the browser. Therefore, you should call {@link
+   * com.microsoft.playwright.BrowserContext#close BrowserContext.close()} on any {@code BrowserContext}'s you explicitly
+   * created earlier with {@link com.microsoft.playwright.Browser#newContext Browser.newContext()} **before** calling {@link
+   * com.microsoft.playwright.Browser#close Browser.close()}.
    *
    * <p> The {@code Browser} object itself is considered to be disposed and cannot be used anymore.
    *
@@ -1183,15 +1192,16 @@ public interface Browser extends AutoCloseable {
     close(null);
   }
   /**
-   * In case this browser is obtained using {@link BrowserType#launch BrowserType.launch()}, closes the browser and all of
-   * its pages (if any were opened).
+   * In case this browser is obtained using {@link com.microsoft.playwright.BrowserType#launch BrowserType.launch()}, closes
+   * the browser and all of its pages (if any were opened).
    *
    * <p> In case this browser is connected to, clears all created contexts belonging to this browser and disconnects from the
    * browser server.
    *
-   * <p> <strong>NOTE:</strong> This is similar to force quitting the browser. Therefore, you should call {@link BrowserContext#close
-   * BrowserContext.close()} on any {@code BrowserContext}'s you explicitly created earlier with {@link Browser#newContext
-   * Browser.newContext()} **before** calling {@link Browser#close Browser.close()}.
+   * <p> <strong>NOTE:</strong> This is similar to force quitting the browser. Therefore, you should call {@link
+   * com.microsoft.playwright.BrowserContext#close BrowserContext.close()} on any {@code BrowserContext}'s you explicitly
+   * created earlier with {@link com.microsoft.playwright.Browser#newContext Browser.newContext()} **before** calling {@link
+   * com.microsoft.playwright.Browser#close Browser.close()}.
    *
    * <p> The {@code Browser} object itself is considered to be disposed and cannot be used anymore.
    *
@@ -1201,7 +1211,7 @@ public interface Browser extends AutoCloseable {
   /**
    * Returns an array of all open browser contexts. In a newly created browser, this will return zero browser contexts.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Browser browser = pw.webkit().launch();
    * System.out.println(browser.contexts().size()); // prints "0"
@@ -1230,11 +1240,11 @@ public interface Browser extends AutoCloseable {
    * Creates a new browser context. It won't share cookies/cache with other browser contexts.
    *
    * <p> <strong>NOTE:</strong> If directly using this method to create {@code BrowserContext}s, it is best practice to explicitly close the returned
-   * context via {@link BrowserContext#close BrowserContext.close()} when your code is done with the {@code BrowserContext},
-   * and before calling {@link Browser#close Browser.close()}. This will ensure the {@code context} is closed gracefully and
-   * any artifacts—like HARs and videos—are fully flushed and saved.
+   * context via {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} when your code is done with the
+   * {@code BrowserContext}, and before calling {@link com.microsoft.playwright.Browser#close Browser.close()}. This will
+   * ensure the {@code context} is closed gracefully and any artifacts—like HARs and videos—are fully flushed and saved.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Browser browser = playwright.firefox().launch();  // Or 'chromium' or 'webkit'.
    * // Create a new incognito browser context.
@@ -1257,11 +1267,11 @@ public interface Browser extends AutoCloseable {
    * Creates a new browser context. It won't share cookies/cache with other browser contexts.
    *
    * <p> <strong>NOTE:</strong> If directly using this method to create {@code BrowserContext}s, it is best practice to explicitly close the returned
-   * context via {@link BrowserContext#close BrowserContext.close()} when your code is done with the {@code BrowserContext},
-   * and before calling {@link Browser#close Browser.close()}. This will ensure the {@code context} is closed gracefully and
-   * any artifacts—like HARs and videos—are fully flushed and saved.
+   * context via {@link com.microsoft.playwright.BrowserContext#close BrowserContext.close()} when your code is done with the
+   * {@code BrowserContext}, and before calling {@link com.microsoft.playwright.Browser#close Browser.close()}. This will
+   * ensure the {@code context} is closed gracefully and any artifacts—like HARs and videos—are fully flushed and saved.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * Browser browser = playwright.firefox().launch();  // Or 'chromium' or 'webkit'.
    * // Create a new incognito browser context.
@@ -1282,8 +1292,9 @@ public interface Browser extends AutoCloseable {
    * Creates a new page in a new browser context. Closing this page will close the context as well.
    *
    * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and
-   * testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the {@link
-   * BrowserContext#newPage BrowserContext.newPage()} to control their exact life times.
+   * testing frameworks should explicitly create {@link com.microsoft.playwright.Browser#newContext Browser.newContext()}
+   * followed by the {@link com.microsoft.playwright.BrowserContext#newPage BrowserContext.newPage()} to control their exact
+   * life times.
    *
    * @since v1.8
    */
@@ -1294,8 +1305,9 @@ public interface Browser extends AutoCloseable {
    * Creates a new page in a new browser context. Closing this page will close the context as well.
    *
    * <p> This is a convenience API that should only be used for the single-page scenarios and short snippets. Production code and
-   * testing frameworks should explicitly create {@link Browser#newContext Browser.newContext()} followed by the {@link
-   * BrowserContext#newPage BrowserContext.newPage()} to control their exact life times.
+   * testing frameworks should explicitly create {@link com.microsoft.playwright.Browser#newContext Browser.newContext()}
+   * followed by the {@link com.microsoft.playwright.BrowserContext#newPage BrowserContext.newPage()} to control their exact
+   * life times.
    *
    * @since v1.8
    */
@@ -1306,10 +1318,11 @@ public interface Browser extends AutoCloseable {
    * href="https://playwright.dev/java/docs/trace-viewer">Playwright Tracing</a> could be found <a
    * href="https://playwright.dev/java/docs/api/class-tracing">here</a>.
    *
-   * <p> You can use {@link Browser#startTracing Browser.startTracing()} and {@link Browser#stopTracing Browser.stopTracing()} to
-   * create a trace file that can be opened in Chrome DevTools performance panel.
+   * <p> You can use {@link com.microsoft.playwright.Browser#startTracing Browser.startTracing()} and {@link
+   * com.microsoft.playwright.Browser#stopTracing Browser.stopTracing()} to create a trace file that can be opened in Chrome
+   * DevTools performance panel.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * browser.startTracing(page, new Browser.StartTracingOptions()
    *   .setPath(Paths.get("trace.json")));
@@ -1329,10 +1342,11 @@ public interface Browser extends AutoCloseable {
    * href="https://playwright.dev/java/docs/trace-viewer">Playwright Tracing</a> could be found <a
    * href="https://playwright.dev/java/docs/api/class-tracing">here</a>.
    *
-   * <p> You can use {@link Browser#startTracing Browser.startTracing()} and {@link Browser#stopTracing Browser.stopTracing()} to
-   * create a trace file that can be opened in Chrome DevTools performance panel.
+   * <p> You can use {@link com.microsoft.playwright.Browser#startTracing Browser.startTracing()} and {@link
+   * com.microsoft.playwright.Browser#stopTracing Browser.stopTracing()} to create a trace file that can be opened in Chrome
+   * DevTools performance panel.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * browser.startTracing(page, new Browser.StartTracingOptions()
    *   .setPath(Paths.get("trace.json")));
@@ -1351,10 +1365,11 @@ public interface Browser extends AutoCloseable {
    * href="https://playwright.dev/java/docs/trace-viewer">Playwright Tracing</a> could be found <a
    * href="https://playwright.dev/java/docs/api/class-tracing">here</a>.
    *
-   * <p> You can use {@link Browser#startTracing Browser.startTracing()} and {@link Browser#stopTracing Browser.stopTracing()} to
-   * create a trace file that can be opened in Chrome DevTools performance panel.
+   * <p> You can use {@link com.microsoft.playwright.Browser#startTracing Browser.startTracing()} and {@link
+   * com.microsoft.playwright.Browser#stopTracing Browser.stopTracing()} to create a trace file that can be opened in Chrome
+   * DevTools performance panel.
    *
-   * <p> **Usage**
+   * <p> <strong>Usage</strong>
    * <pre>{@code
    * browser.startTracing(page, new Browser.StartTracingOptions()
    *   .setPath(Paths.get("trace.json")));
