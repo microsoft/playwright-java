@@ -45,23 +45,6 @@ import java.util.regex.Pattern;
 public interface BrowserContext extends AutoCloseable {
 
   /**
-   * <strong>NOTE:</strong> Only works with Chromium browser's persistent context.
-   *
-   * <p> Emitted when new background page is created in the context.
-   * <pre>{@code
-   * Page backgroundPage = context.waitForBackgroundPage(() -> {
-   *   page.getByText("activate extension").click();
-   * });
-   * System.out.println(backgroundPage.evaluate("location.href"));
-   * }</pre>
-   */
-  void onBackgroundPage(Consumer<Page> handler);
-  /**
-   * Removes handler that was previously added with {@link #onBackgroundPage onBackgroundPage(handler)}.
-   */
-  void offBackgroundPage(Consumer<Page> handler);
-
-  /**
    * Emitted when Browser context gets closed. This might happen because of one of the following:
    * <ul>
    * <li> Browser context is closed.</li>
@@ -568,14 +551,6 @@ public interface BrowserContext extends AutoCloseable {
    * @since v1.8
    */
   void addInitScript(Path script);
-  /**
-   * <strong>NOTE:</strong> Background pages are only supported on Chromium-based browsers.
-   *
-   * <p> All existing background pages in the context.
-   *
-   * @since v1.11
-   */
-  List<Page> backgroundPages();
   /**
    * Returns the browser instance of the context. If it was launched as a persistent context null gets returned.
    *
