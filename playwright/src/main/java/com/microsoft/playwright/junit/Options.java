@@ -43,6 +43,18 @@ public class Options {
   public Browser.NewContextOptions contextOptions;
   public APIRequest.NewContextOptions apiRequestOptions;
   public Playwright.CreateOptions playwrightCreateOptions;
+  public String wsEndpoint;
+  public BrowserType.ConnectOptions connectOptions;
+
+  public Options setWsEndpoint(String wsEndpoint) {
+    this.wsEndpoint = wsEndpoint;
+    return this;
+  }
+
+  public Options setConnectOptions(BrowserType.ConnectOptions connectOptions) {
+    this.connectOptions = connectOptions;
+    return this;
+  }
 
   public Options setPlaywrightCreateOptions(Playwright.CreateOptions playwrightCreateOptions) {
     this.playwrightCreateOptions = playwrightCreateOptions;

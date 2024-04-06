@@ -63,4 +63,7 @@ public class TestOptionsFactories {
   public static boolean isWebKit() {
     return getBrowserName().equals("webkit");
   }
+
+  static final boolean isMac = Utils.getOS() == Utils.OS.MAC;
+  static final boolean isWindows = Utils.getOS() == Utils.OS.WINDOWS;
 }
