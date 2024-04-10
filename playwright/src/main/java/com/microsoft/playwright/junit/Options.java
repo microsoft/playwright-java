@@ -43,6 +43,7 @@ public class Options {
   public Browser.NewContextOptions contextOptions;
   public APIRequest.NewContextOptions apiRequestOptions;
   public Playwright.CreateOptions playwrightCreateOptions;
+  // WebSocket endpoint to be used when connecting to a remote browser.
   public String wsEndpoint;
   public BrowserType.ConnectOptions connectOptions;
 

@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.impl.ImplUtils;
 import com.microsoft.playwright.impl.driver.Driver;
 import com.microsoft.playwright.impl.junit.OptionsExtension;
 import com.microsoft.playwright.junit.FixtureTest;
@@ -113,6 +114,11 @@ public class TestBrowserTypeConnect {
       browserServer = null;
       wsEndpoint = null;
     }
+  }
+
+  @Test
+  void shouldBeConnectedToARemoteBrowser(Browser browser) {
+    assertTrue(ImplUtils.isRemoteBrowser(browser));
   }
 
   @Test
