@@ -44,6 +44,7 @@ public class Options {
   public APIRequest.NewContextOptions apiRequestOptions;
   public Playwright.CreateOptions playwrightCreateOptions;
   // WebSocket endpoint to be used when connecting to a remote browser.
+  // If this is set, BrowserType.connect will be used.  Otherwise, BrowserType.launch will be used.
   public String wsEndpoint;
   public BrowserType.ConnectOptions connectOptions;
 
