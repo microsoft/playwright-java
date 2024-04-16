@@ -18,7 +18,6 @@ package com.microsoft.playwright.impl.driver;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -30,7 +29,7 @@ import static com.microsoft.playwright.impl.driver.DriverLogging.logWithTimestam
  * loaded from the driver-bundle module if that module is in the classpath.
  */
 public abstract class Driver {
-  protected final Map<String, String> env = new LinkedHashMap<>();
+  protected final Map<String, String> env = new LinkedHashMap<>(System.getenv());
   public static final String PLAYWRIGHT_NODEJS_PATH = "PLAYWRIGHT_NODEJS_PATH";
 
   private static Driver instance;
