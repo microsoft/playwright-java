@@ -25,8 +25,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
 
 public class OptionsExtension implements AfterAllCallback {
-  // This is public to allow our tests to set the wsEndpoint dynamically
-  public static final ThreadLocal<Options> threadLocalOptions = new ThreadLocal<>();
+  private static final ThreadLocal<Options> threadLocalOptions = new ThreadLocal<>();
 
   @Override
   public void afterAll(ExtensionContext extensionContext) {
