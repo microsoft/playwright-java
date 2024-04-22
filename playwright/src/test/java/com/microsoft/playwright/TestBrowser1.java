@@ -18,6 +18,7 @@ package com.microsoft.playwright;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.junit.FixtureTest;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
@@ -25,9 +26,9 @@ import org.junit.jupiter.api.condition.EnabledIf;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
-import static com.microsoft.playwright.Utils.getBrowserTypeFromEnv;
 import static org.junit.jupiter.api.Assertions.*;
 
+@FixtureTest
 @UsePlaywright(TestOptionsFactories.BasicOptionsFactory.class)
 public class TestBrowser1 {
 
@@ -73,8 +74,8 @@ public class TestBrowser1 {
   }
 
   @Test
-  void shouldReturnBrowserType(Playwright playwright, Browser browser) {
-    assertEquals(getBrowserTypeFromEnv(playwright), browser.browserType());
+  void shouldReturnBrowserType(BrowserType browserType, Browser browser) {
+    assertEquals(browserType, browser.browserType());
   }
 
   @Test

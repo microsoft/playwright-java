@@ -62,7 +62,7 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
 
     Options options = OptionsExtension.getOptions(extensionContext);
     Playwright playwright = PlaywrightExtension.getOrCreatePlaywright(extensionContext);
-    BrowserType.LaunchOptions launchOptions = getLaunchOptions(options);
+
 
     BrowserType browserType = playwright.chromium();
     if (options.browserName != null) {
@@ -73,10 +73,25 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
           browserType = getBrowserTypeForName(playwright, deviceDescriptor.defaultBrowserType);
       }
     }
-    browser = browserType.launch(launchOptions);
+
+    if(options.wsEndpoint != null && !options.wsEndpoint.isEmpty()) {
+      BrowserType.ConnectOptions connectOptions = getConnectOptions(options);
+      browser = browserType.connect(options.wsEndpoint, connectOptions);
+    } else {
+      BrowserType.LaunchOptions launchOptions = getLaunchOptions(options);
+      browser = browserType.launch(launchOptions);
+    }
 
     threadLocalBrowser.set(browser);
     return browser;
+  }
+
+  private static BrowserType.ConnectOptions getConnectOptions(Options options) {
+    BrowserType.ConnectOptions connectOptions = options.connectOptions;
+    if(connectOptions == null) {
+      connectOptions = new BrowserType.ConnectOptions();
+    }
+    return connectOptions;
   }
 
   private static BrowserType getBrowserTypeForName(Playwright playwright, String name) {

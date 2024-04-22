@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.junit.FixtureTest;
 import com.microsoft.playwright.junit.Options;
 import com.microsoft.playwright.junit.OptionsFactory;
 import com.microsoft.playwright.junit.UsePlaywright;
@@ -28,6 +29,7 @@ import static com.microsoft.playwright.TestOptionsFactories.createLaunchOptions;
 import static com.microsoft.playwright.TestOptionsFactories.getBrowserChannelFromEnv;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@FixtureTest
 @UsePlaywright(TestBrowser2.ChannelOptionsFactory.class)
 public class TestBrowser2 {
 
@@ -70,12 +72,11 @@ public class TestBrowser2 {
   }
 
   @Test
-  void shouldSupportDeprecatedChannelEnum(Playwright playwright) {
+  void shouldSupportDeprecatedChannelEnum(BrowserType browserType) {
     BrowserChannel channel = getBrowserChannelEnumFromEnv();
     Assumptions.assumeTrue(channel != null);
     BrowserType.LaunchOptions options = createLaunchOptions();
     options.setChannel(channel);
-    BrowserType browserType = Utils.getBrowserTypeFromEnv(playwright);
     Browser browser = browserType.launch(options);
     assertNotNull(browser);
     browser.close();
