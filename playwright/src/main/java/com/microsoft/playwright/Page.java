@@ -242,7 +242,10 @@ public interface Page extends AutoCloseable {
    *
    * <p> The earliest moment that page is available is when it has navigated to the initial url. For example, when opening a
    * popup with {@code window.open('http://example.com')}, this event will fire when the network request to
-   * "http://example.com" is done and its response has started loading in the popup.
+   * "http://example.com" is done and its response has started loading in the popup. If you would like to route/listen to
+   * this network request, use {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} and {@link
+   * com.microsoft.playwright.BrowserContext#onRequest BrowserContext.onRequest()} respectively instead of similar methods on
+   * the {@code Page}.
    * <pre>{@code
    * Page popup = page.waitForPopup(() -> {
    *   page.getByText("open the popup").click();
@@ -2324,6 +2327,35 @@ public interface Page extends AutoCloseable {
      */
     public QuerySelectorOptions setStrict(boolean strict) {
       this.strict = strict;
+      return this;
+    }
+  }
+  class AddLocatorHandlerOptions {
+    /**
+     * By default, after calling the handler Playwright will wait until the overlay becomes hidden, and only then Playwright
+     * will continue with the action/assertion that triggered the handler. This option allows to opt-out of this behavior, so
+     * that overlay can stay visible after the handler has run.
+     */
+    public Boolean noWaitAfter;
+    /**
+     * Specifies the maximum number of times this handler should be called. Unlimited by default.
+     */
+    public Integer times;
+
+    /**
+     * By default, after calling the handler Playwright will wait until the overlay becomes hidden, and only then Playwright
+     * will continue with the action/assertion that triggered the handler. This option allows to opt-out of this behavior, so
+     * that overlay can stay visible after the handler has run.
+     */
+    public AddLocatorHandlerOptions setNoWaitAfter(boolean noWaitAfter) {
+      this.noWaitAfter = noWaitAfter;
+      return this;
+    }
+    /**
+     * Specifies the maximum number of times this handler should be called. Unlimited by default.
+     */
+    public AddLocatorHandlerOptions setTimes(int times) {
+      this.times = times;
       return this;
     }
   }
@@ -6058,9 +6090,7 @@ public interface Page extends AutoCloseable {
    */
   List<ElementHandle> querySelectorAll(String selector);
   /**
-   * <strong>NOTE:</strong> This method is experimental and its behavior may change in the upcoming releases.
-   *
-   * <p> When testing a web page, sometimes unexpected overlays like a "Sign up" dialog appear and block actions you want to
+   * When testing a web page, sometimes unexpected overlays like a "Sign up" dialog appear and block actions you want to
    * automate, e.g. clicking a button. These overlays don't always show up in the same way or at the same time, making them
    * tricky to handle in automated tests.
    *
@@ -6077,6 +6107,8 @@ public interface Page extends AutoCloseable {
    * assertion check. When overlay is visible, Playwright calls the handler first, and then proceeds with the
    * action/assertion. Note that the handler is only called when you perform an action/assertion - if the overlay becomes
    * visible but you don't perform any actions, the handler will not be triggered.</li>
+   * <li> After executing the handler, Playwright will ensure that overlay that triggered the handler is not visible anymore. You
+   * can opt-out of this behavior with {@code noWaitAfter}.</li>
    * <li> The execution time of the handler counts towards the timeout of the action/assertion that executed the handler. If your
    * handler takes too long, it might cause timeouts.</li>
    * <li> You can register multiple handlers. However, only a single handler will be running at a time. Make sure the actions
@@ -6122,16 +6154,25 @@ public interface Page extends AutoCloseable {
    * }</pre>
    *
    * <p> An example with a custom callback on every actionability check. It uses a {@code <body>} locator that is always visible,
-   * so the handler is called before every actionability check:
+   * so the handler is called before every actionability check. It is important to specify {@code noWaitAfter}, because the
+   * handler does not hide the {@code <body>} element.
    * <pre>{@code
    * // Setup the handler.
    * page.addLocatorHandler(page.locator("body")), () => {
    *   page.evaluate("window.removeObstructionsForTestIfNeeded()");
-   * });
+   * }, new Page.AddLocatorHandlerOptions.setNoWaitAfter(true));
    *
    * // Write the test as usual.
    * page.goto("https://example.com");
    * page.getByRole("button", Page.GetByRoleOptions().setName("Start here")).click();
+   * }</pre>
+   *
+   * <p> Handler takes the original locator as an argument. You can also automatically remove the handler after a number of
+   * invocations by setting {@code times}:
+   * <pre>{@code
+   * page.addLocatorHandler(page.getByLabel("Close"), locator => {
+   *   locator.click();
+   * }, new Page.AddLocatorHandlerOptions().setTimes(1));
    * }</pre>
    *
    * @param locator Locator that triggers the handler.
@@ -6139,7 +6180,109 @@ public interface Page extends AutoCloseable {
    * actions like click.
    * @since v1.42
    */
-  void addLocatorHandler(Locator locator, Runnable handler);
+  default void addLocatorHandler(Locator locator, Consumer<Locator> handler) {
+    addLocatorHandler(locator, handler, null);
+  }
+  /**
+   * When testing a web page, sometimes unexpected overlays like a "Sign up" dialog appear and block actions you want to
+   * automate, e.g. clicking a button. These overlays don't always show up in the same way or at the same time, making them
+   * tricky to handle in automated tests.
+   *
+   * <p> This method lets you set up a special function, called a handler, that activates when it detects that overlay is
+   * visible. The handler's job is to remove the overlay, allowing your test to continue as if the overlay wasn't there.
+   *
+   * <p> Things to keep in mind:
+   * <ul>
+   * <li> When an overlay is shown predictably, we recommend explicitly waiting for it in your test and dismissing it as a part of
+   * your normal test flow, instead of using {@link com.microsoft.playwright.Page#addLocatorHandler
+   * Page.addLocatorHandler()}.</li>
+   * <li> Playwright checks for the overlay every time before executing or retrying an action that requires an <a
+   * href="https://playwright.dev/java/docs/actionability">actionability check</a>, or before performing an auto-waiting
+   * assertion check. When overlay is visible, Playwright calls the handler first, and then proceeds with the
+   * action/assertion. Note that the handler is only called when you perform an action/assertion - if the overlay becomes
+   * visible but you don't perform any actions, the handler will not be triggered.</li>
+   * <li> After executing the handler, Playwright will ensure that overlay that triggered the handler is not visible anymore. You
+   * can opt-out of this behavior with {@code noWaitAfter}.</li>
+   * <li> The execution time of the handler counts towards the timeout of the action/assertion that executed the handler. If your
+   * handler takes too long, it might cause timeouts.</li>
+   * <li> You can register multiple handlers. However, only a single handler will be running at a time. Make sure the actions
+   * within a handler don't depend on another handler.</li>
+   * </ul>
+   *
+   * <p> <strong>NOTE:</strong> Running the handler will alter your page state mid-test. For example it will change the currently focused element and
+   * move the mouse. Make sure that actions that run after the handler are self-contained and do not rely on the focus and
+   * mouse state being unchanged. <br /> <br /> For example, consider a test that calls {@link
+   * com.microsoft.playwright.Locator#focus Locator.focus()} followed by {@link com.microsoft.playwright.Keyboard#press
+   * Keyboard.press()}. If your handler clicks a button between these two actions, the focused element most likely will be
+   * wrong, and key press will happen on the unexpected element. Use {@link com.microsoft.playwright.Locator#press
+   * Locator.press()} instead to avoid this problem. <br /> <br /> Another example is a series of mouse actions, where {@link
+   * com.microsoft.playwright.Mouse#move Mouse.move()} is followed by {@link com.microsoft.playwright.Mouse#down
+   * Mouse.down()}. Again, when the handler runs between these two actions, the mouse position will be wrong during the mouse
+   * down. Prefer self-contained actions like {@link com.microsoft.playwright.Locator#click Locator.click()} that do not rely
+   * on the state being unchanged by a handler.
+   *
+   * <p> <strong>Usage</strong>
+   *
+   * <p> An example that closes a "Sign up to the newsletter" dialog when it appears:
+   * <pre>{@code
+   * // Setup the handler.
+   * page.addLocatorHandler(page.getByText("Sign up to the newsletter"), () => {
+   *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("No thanks")).click();
+   * });
+   *
+   * // Write the test as usual.
+   * page.goto("https://example.com");
+   * page.getByRole("button", Page.GetByRoleOptions().setName("Start here")).click();
+   * }</pre>
+   *
+   * <p> An example that skips the "Confirm your security details" page when it is shown:
+   * <pre>{@code
+   * // Setup the handler.
+   * page.addLocatorHandler(page.getByText("Confirm your security details")), () => {
+   *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Remind me later")).click();
+   * });
+   *
+   * // Write the test as usual.
+   * page.goto("https://example.com");
+   * page.getByRole("button", Page.GetByRoleOptions().setName("Start here")).click();
+   * }</pre>
+   *
+   * <p> An example with a custom callback on every actionability check. It uses a {@code <body>} locator that is always visible,
+   * so the handler is called before every actionability check. It is important to specify {@code noWaitAfter}, because the
+   * handler does not hide the {@code <body>} element.
+   * <pre>{@code
+   * // Setup the handler.
+   * page.addLocatorHandler(page.locator("body")), () => {
+   *   page.evaluate("window.removeObstructionsForTestIfNeeded()");
+   * }, new Page.AddLocatorHandlerOptions.setNoWaitAfter(true));
+   *
+   * // Write the test as usual.
+   * page.goto("https://example.com");
+   * page.getByRole("button", Page.GetByRoleOptions().setName("Start here")).click();
+   * }</pre>
+   *
+   * <p> Handler takes the original locator as an argument. You can also automatically remove the handler after a number of
+   * invocations by setting {@code times}:
+   * <pre>{@code
+   * page.addLocatorHandler(page.getByLabel("Close"), locator => {
+   *   locator.click();
+   * }, new Page.AddLocatorHandlerOptions().setTimes(1));
+   * }</pre>
+   *
+   * @param locator Locator that triggers the handler.
+   * @param handler Function that should be run once {@code locator} appears. This function should get rid of the element that blocks
+   * actions like click.
+   * @since v1.42
+   */
+  void addLocatorHandler(Locator locator, Consumer<Locator> handler, AddLocatorHandlerOptions options);
+  /**
+   * Removes all locator handlers added by {@link com.microsoft.playwright.Page#addLocatorHandler Page.addLocatorHandler()}
+   * for a specific locator.
+   *
+   * @param locator Locator passed to {@link com.microsoft.playwright.Page#addLocatorHandler Page.addLocatorHandler()}.
+   * @since v1.44
+   */
+  void removeLocatorHandler(Locator locator);
   /**
    * This method reloads the current page, in the same way as if the user had triggered a browser refresh. Returns the main
    * resource response. In case of multiple redirects, the navigation will resolve with the response of the last redirect.
@@ -6174,6 +6317,9 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept requests intercepted by Service Worker. See
    * <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers
    * when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   *
+   * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept the first request of a popup page. Use
+   * {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} instead.
    *
    * <p> <strong>Usage</strong>
    *
@@ -6231,6 +6377,9 @@ public interface Page extends AutoCloseable {
    * <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers
    * when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
    *
+   * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept the first request of a popup page. Use
+   * {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} instead.
+   *
    * <p> <strong>Usage</strong>
    *
    * <p> An example of a naive handler that aborts all image requests:
@@ -6284,6 +6433,9 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept requests intercepted by Service Worker. See
    * <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers
    * when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   *
+   * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept the first request of a popup page. Use
+   * {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} instead.
    *
    * <p> <strong>Usage</strong>
    *
@@ -6341,6 +6493,9 @@ public interface Page extends AutoCloseable {
    * <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers
    * when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
    *
+   * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept the first request of a popup page. Use
+   * {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} instead.
+   *
    * <p> <strong>Usage</strong>
    *
    * <p> An example of a naive handler that aborts all image requests:
@@ -6394,6 +6549,9 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept requests intercepted by Service Worker. See
    * <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers
    * when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   *
+   * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept the first request of a popup page. Use
+   * {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} instead.
    *
    * <p> <strong>Usage</strong>
    *
@@ -6450,6 +6608,9 @@ public interface Page extends AutoCloseable {
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept requests intercepted by Service Worker. See
    * <a href="https://github.com/microsoft/playwright/issues/1090">this</a> issue. We recommend disabling Service Workers
    * when using request interception by setting {@code Browser.newContext.serviceWorkers} to {@code "block"}.
+   *
+   * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#route Page.route()} will not intercept the first request of a popup page. Use
+   * {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} instead.
    *
    * <p> <strong>Usage</strong>
    *
@@ -7588,6 +7749,9 @@ public interface Page extends AutoCloseable {
    * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been
    * committed when this method is called. If current document has already reached the required state, resolves immediately.
    *
+   * <p> <strong>NOTE:</strong> Most of the time, this method is not needed because Playwright <a
+   * href="https://playwright.dev/java/docs/actionability">auto-waits before every action</a>.
+   *
    * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.BUTTON).click(); // Click triggers navigation.
@@ -7621,6 +7785,9 @@ public interface Page extends AutoCloseable {
    * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been
    * committed when this method is called. If current document has already reached the required state, resolves immediately.
    *
+   * <p> <strong>NOTE:</strong> Most of the time, this method is not needed because Playwright <a
+   * href="https://playwright.dev/java/docs/actionability">auto-waits before every action</a>.
+   *
    * <p> <strong>Usage</strong>
    * <pre>{@code
    * page.getByRole(AriaRole.BUTTON).click(); // Click triggers navigation.
@@ -7645,6 +7812,9 @@ public interface Page extends AutoCloseable {
    *
    * <p> This resolves when the page reaches a required load state, {@code load} by default. The navigation must have been
    * committed when this method is called. If current document has already reached the required state, resolves immediately.
+   *
+   * <p> <strong>NOTE:</strong> Most of the time, this method is not needed because Playwright <a
+   * href="https://playwright.dev/java/docs/actionability">auto-waits before every action</a>.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code

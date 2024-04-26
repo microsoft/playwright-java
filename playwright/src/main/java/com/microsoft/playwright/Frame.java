@@ -4989,6 +4989,9 @@ public interface Frame {
    * <p> This returns when the frame reaches a required load state, {@code load} by default. The navigation must have been
    * committed when this method is called. If current document has already reached the required state, resolves immediately.
    *
+   * <p> <strong>NOTE:</strong> Most of the time, this method is not needed because Playwright <a
+   * href="https://playwright.dev/java/docs/actionability">auto-waits before every action</a>.
+   *
    * <p> <strong>Usage</strong>
    * <pre>{@code
    * frame.click("button"); // Click triggers navigation.
@@ -5014,6 +5017,9 @@ public interface Frame {
    * <p> This returns when the frame reaches a required load state, {@code load} by default. The navigation must have been
    * committed when this method is called. If current document has already reached the required state, resolves immediately.
    *
+   * <p> <strong>NOTE:</strong> Most of the time, this method is not needed because Playwright <a
+   * href="https://playwright.dev/java/docs/actionability">auto-waits before every action</a>.
+   *
    * <p> <strong>Usage</strong>
    * <pre>{@code
    * frame.click("button"); // Click triggers navigation.
@@ -5030,6 +5036,9 @@ public interface Frame {
    *
    * <p> This returns when the frame reaches a required load state, {@code load} by default. The navigation must have been
    * committed when this method is called. If current document has already reached the required state, resolves immediately.
+   *
+   * <p> <strong>NOTE:</strong> Most of the time, this method is not needed because Playwright <a
+   * href="https://playwright.dev/java/docs/actionability">auto-waits before every action</a>.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code

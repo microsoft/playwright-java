@@ -294,6 +294,7 @@ class TypeRef extends Element {
     customTypeNames.put("Frame.setInputFiles.files", "FilePayload");
     customTypeNames.put("Page.setInputFiles.files", "FilePayload");
     customTypeNames.put("Page.setInputFiles.files", "FilePayload");
+    customTypeNames.put("FormData.append.value", "FilePayload");
     customTypeNames.put("FormData.set.value", "FilePayload");
 
     customTypeNames.put("Locator.dragTo.options.sourcePosition", "Position");
@@ -996,6 +997,9 @@ class Interface extends TypeDefinition {
     if ("CDPSession".equals(jsonName)) {
       output.add("import com.google.gson.JsonObject;");
     }
+    if ("LocatorAssertions".equals(jsonName)) {
+      output.add("import com.microsoft.playwright.options.AriaRole;");
+    }
     if ("PlaywrightAssertions".equals(jsonName)) {
       output.add("import com.microsoft.playwright.APIResponse;");
       output.add("import com.microsoft.playwright.Locator;");
@@ -1213,6 +1217,11 @@ public class ApiGenerator {
       try (FileWriter writer = new FileWriter(new File(dir, name + ".java"))) {
         writer.write(text);
       }
+    }
+
+    // No options under assertions.
+    if (packageName.contains(".assertions")) {
+      return;
     }
 
     dir = new File(dir, "options");

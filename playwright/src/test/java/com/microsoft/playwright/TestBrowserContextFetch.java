@@ -592,6 +592,46 @@ public class TestBrowserContextFetch extends TestBase {
   }
 
   @Test
+  public void shouldSupportRepeatingNamesInMultipartFormData() throws InterruptedException, ExecutionException {
+    Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
+
+    FilePayload file1 = new FilePayload("f.js", "text/javascript",
+      "var x = 10;\r\n;console.log(x);".getBytes(StandardCharsets.UTF_8));
+    FilePayload file2 = new FilePayload("f2.txt", "text/plain",
+      "hello".getBytes(StandardCharsets.UTF_8));
+    APIResponse response = context.request().post(server.EMPTY_PAGE, RequestOptions.create().setMultipart(
+      FormData.create()
+        .set("name", "John")
+        .append("name", "Doe")
+        .append("file", file1)
+        .append("file", file2)));
+
+    assertEquals("POST", serverRequest.get().method);
+    List<String> contentType = serverRequest.get().headers.get("content-type");
+    assertNotNull(contentType);
+    assertEquals(1, contentType.size());
+    assertTrue(contentType.get(0).contains("multipart/form-data"), contentType.get(0));
+
+    String body = new String(serverRequest.get().postBody);
+    assertTrue(body.contains("content-disposition: form-data; name=\"name\"\r\n" +
+      "\r\n" +
+      "John"), body);
+    assertTrue(body.contains("content-disposition: form-data; name=\"name\"\r\n" +
+      "\r\n" +
+      "Doe"), body);
+    assertTrue(body.contains("content-disposition: form-data; name=\"file\"; filename=\"f.js\"\r\n" +
+      "content-type: text/javascript\r\n" +
+      "\r\n" +
+      "var x = 10;\r\n" +
+      ";console.log(x);"), body);
+    assertTrue(body.contains("content-disposition: form-data; name=\"file\"; filename=\"f2.txt\"\r\n" +
+      "content-type: text/plain\r\n" +
+      "\r\n" +
+      "hello"), body);
+    assertEquals(200, response.status());
+  }
+
+  @Test
   void shouldSupportMultipartFormDataWithPathValues(@TempDir Path tmp) throws ExecutionException, InterruptedException, IOException {
     Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
 

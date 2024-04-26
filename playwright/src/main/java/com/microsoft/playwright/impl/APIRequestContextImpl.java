@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.microsoft.playwright.impl.Serialization.*;
@@ -86,7 +87,7 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
       for (Map.Entry<String, ?> e : options.params.entrySet()) {
         queryParams.put(e.getKey(), "" + e.getValue());
       }
-      params.add("params", toNameValueArray(queryParams));
+      params.add("params", toNameValueArray(queryParams.entrySet()));
     }
     if (options.method != null) {
       params.addProperty("method", options.method);
@@ -149,9 +150,9 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
     return false;
   }
 
-  private static JsonArray serializeMultipartData(Map<String, Object> data) {
+  private static JsonArray serializeMultipartData(List<? extends Map.Entry<String, Object>> data) {
     JsonArray result = new JsonArray();
-    for (Map.Entry<String, Object> e : data.entrySet()) {
+    for (Map.Entry<String, ?> e : data) {
       FilePayload filePayload = null;
       if (e.getValue() instanceof FilePayload) {
         filePayload = (FilePayload) e.getValue();

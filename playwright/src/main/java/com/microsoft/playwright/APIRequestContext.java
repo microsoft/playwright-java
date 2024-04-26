@@ -91,10 +91,11 @@ public interface APIRequestContext {
   void dispose();
   /**
    * Sends HTTP(S) request and returns its response. The method will populate request cookies from the context and update
-   * context cookies from the response. The method will automatically follow redirects. JSON objects can be passed directly
-   * to the request.
+   * context cookies from the response. The method will automatically follow redirects.
    *
    * <p> <strong>Usage</strong>
+   *
+   * <p> JSON objects can be passed directly to the request:
    * <pre>{@code
    * Map<String, Object> data = new HashMap();
    * data.put("title", "Book Title");
@@ -102,8 +103,9 @@ public interface APIRequestContext {
    * request.fetch("https://example.com/api/createBook", RequestOptions.create().setMethod("post").setData(data));
    * }</pre>
    *
-   * <p> The common way to send file(s) in the body of a request is to encode it as form fields with {@code multipart/form-data}
-   * encoding. You can achieve that with Playwright API like this:
+   * <p> The common way to send file(s) in the body of a request is to upload them as form fields with {@code
+   * multipart/form-data} encoding. Use {@code FormData} to construct request body and pass it to the request as {@code
+   * multipart} parameter:
    * <pre>{@code
    * // Pass file path to the form data constructor:
    * Path file = Paths.get("team.csv");
@@ -114,7 +116,7 @@ public interface APIRequestContext {
    * // Or you can pass the file content directly as FilePayload object:
    * FilePayload filePayload = new FilePayload("f.js", "text/javascript",
    *       "console.log(2022);".getBytes(StandardCharsets.UTF_8));
-   * APIResponse response = request.fetch("https://example.com/api/uploadTeamList",
+   * APIResponse response = request.fetch("https://example.com/api/uploadScript",
    *   RequestOptions.create().setMethod("post").setMultipart(
    *     FormData.create().set("fileField", filePayload)));
    * }</pre>
@@ -127,10 +129,11 @@ public interface APIRequestContext {
   }
   /**
    * Sends HTTP(S) request and returns its response. The method will populate request cookies from the context and update
-   * context cookies from the response. The method will automatically follow redirects. JSON objects can be passed directly
-   * to the request.
+   * context cookies from the response. The method will automatically follow redirects.
    *
    * <p> <strong>Usage</strong>
+   *
+   * <p> JSON objects can be passed directly to the request:
    * <pre>{@code
    * Map<String, Object> data = new HashMap();
    * data.put("title", "Book Title");
@@ -138,8 +141,9 @@ public interface APIRequestContext {
    * request.fetch("https://example.com/api/createBook", RequestOptions.create().setMethod("post").setData(data));
    * }</pre>
    *
-   * <p> The common way to send file(s) in the body of a request is to encode it as form fields with {@code multipart/form-data}
-   * encoding. You can achieve that with Playwright API like this:
+   * <p> The common way to send file(s) in the body of a request is to upload them as form fields with {@code
+   * multipart/form-data} encoding. Use {@code FormData} to construct request body and pass it to the request as {@code
+   * multipart} parameter:
    * <pre>{@code
    * // Pass file path to the form data constructor:
    * Path file = Paths.get("team.csv");
@@ -150,7 +154,7 @@ public interface APIRequestContext {
    * // Or you can pass the file content directly as FilePayload object:
    * FilePayload filePayload = new FilePayload("f.js", "text/javascript",
    *       "console.log(2022);".getBytes(StandardCharsets.UTF_8));
-   * APIResponse response = request.fetch("https://example.com/api/uploadTeamList",
+   * APIResponse response = request.fetch("https://example.com/api/uploadScript",
    *   RequestOptions.create().setMethod("post").setMultipart(
    *     FormData.create().set("fileField", filePayload)));
    * }</pre>
@@ -162,10 +166,11 @@ public interface APIRequestContext {
   APIResponse fetch(String urlOrRequest, RequestOptions params);
   /**
    * Sends HTTP(S) request and returns its response. The method will populate request cookies from the context and update
-   * context cookies from the response. The method will automatically follow redirects. JSON objects can be passed directly
-   * to the request.
+   * context cookies from the response. The method will automatically follow redirects.
    *
    * <p> <strong>Usage</strong>
+   *
+   * <p> JSON objects can be passed directly to the request:
    * <pre>{@code
    * Map<String, Object> data = new HashMap();
    * data.put("title", "Book Title");
@@ -173,8 +178,9 @@ public interface APIRequestContext {
    * request.fetch("https://example.com/api/createBook", RequestOptions.create().setMethod("post").setData(data));
    * }</pre>
    *
-   * <p> The common way to send file(s) in the body of a request is to encode it as form fields with {@code multipart/form-data}
-   * encoding. You can achieve that with Playwright API like this:
+   * <p> The common way to send file(s) in the body of a request is to upload them as form fields with {@code
+   * multipart/form-data} encoding. Use {@code FormData} to construct request body and pass it to the request as {@code
+   * multipart} parameter:
    * <pre>{@code
    * // Pass file path to the form data constructor:
    * Path file = Paths.get("team.csv");
@@ -185,7 +191,7 @@ public interface APIRequestContext {
    * // Or you can pass the file content directly as FilePayload object:
    * FilePayload filePayload = new FilePayload("f.js", "text/javascript",
    *       "console.log(2022);".getBytes(StandardCharsets.UTF_8));
-   * APIResponse response = request.fetch("https://example.com/api/uploadTeamList",
+   * APIResponse response = request.fetch("https://example.com/api/uploadScript",
    *   RequestOptions.create().setMethod("post").setMultipart(
    *     FormData.create().set("fileField", filePayload)));
    * }</pre>
@@ -198,10 +204,11 @@ public interface APIRequestContext {
   }
   /**
    * Sends HTTP(S) request and returns its response. The method will populate request cookies from the context and update
-   * context cookies from the response. The method will automatically follow redirects. JSON objects can be passed directly
-   * to the request.
+   * context cookies from the response. The method will automatically follow redirects.
    *
    * <p> <strong>Usage</strong>
+   *
+   * <p> JSON objects can be passed directly to the request:
    * <pre>{@code
    * Map<String, Object> data = new HashMap();
    * data.put("title", "Book Title");
@@ -209,8 +216,9 @@ public interface APIRequestContext {
    * request.fetch("https://example.com/api/createBook", RequestOptions.create().setMethod("post").setData(data));
    * }</pre>
    *
-   * <p> The common way to send file(s) in the body of a request is to encode it as form fields with {@code multipart/form-data}
-   * encoding. You can achieve that with Playwright API like this:
+   * <p> The common way to send file(s) in the body of a request is to upload them as form fields with {@code
+   * multipart/form-data} encoding. Use {@code FormData} to construct request body and pass it to the request as {@code
+   * multipart} parameter:
    * <pre>{@code
    * // Pass file path to the form data constructor:
    * Path file = Paths.get("team.csv");
@@ -221,7 +229,7 @@ public interface APIRequestContext {
    * // Or you can pass the file content directly as FilePayload object:
    * FilePayload filePayload = new FilePayload("f.js", "text/javascript",
    *       "console.log(2022);".getBytes(StandardCharsets.UTF_8));
-   * APIResponse response = request.fetch("https://example.com/api/uploadTeamList",
+   * APIResponse response = request.fetch("https://example.com/api/uploadScript",
    *   RequestOptions.create().setMethod("post").setMultipart(
    *     FormData.create().set("fileField", filePayload)));
    * }</pre>
@@ -337,7 +345,8 @@ public interface APIRequestContext {
    * }</pre>
    *
    * <p> The common way to send file(s) in the body of a request is to upload them as form fields with {@code
-   * multipart/form-data} encoding. You can achieve that with Playwright API like this:
+   * multipart/form-data} encoding. Use {@code FormData} to construct request body and pass it to the request as {@code
+   * multipart} parameter:
    * <pre>{@code
    * // Pass file path to the form data constructor:
    * Path file = Paths.get("team.csv");
@@ -346,9 +355,9 @@ public interface APIRequestContext {
    *     FormData.create().set("fileField", file)));
    *
    * // Or you can pass the file content directly as FilePayload object:
-   * FilePayload filePayload = new FilePayload("f.js", "text/javascript",
+   * FilePayload filePayload1 = new FilePayload("f1.js", "text/javascript",
    *       "console.log(2022);".getBytes(StandardCharsets.UTF_8));
-   * APIResponse response = request.post("https://example.com/api/uploadTeamList",
+   * APIResponse response = request.post("https://example.com/api/uploadScript",
    *   RequestOptions.create().setMultipart(
    *     FormData.create().set("fileField", filePayload)));
    * }</pre>
@@ -384,7 +393,8 @@ public interface APIRequestContext {
    * }</pre>
    *
    * <p> The common way to send file(s) in the body of a request is to upload them as form fields with {@code
-   * multipart/form-data} encoding. You can achieve that with Playwright API like this:
+   * multipart/form-data} encoding. Use {@code FormData} to construct request body and pass it to the request as {@code
+   * multipart} parameter:
    * <pre>{@code
    * // Pass file path to the form data constructor:
    * Path file = Paths.get("team.csv");
@@ -393,9 +403,9 @@ public interface APIRequestContext {
    *     FormData.create().set("fileField", file)));
    *
    * // Or you can pass the file content directly as FilePayload object:
-   * FilePayload filePayload = new FilePayload("f.js", "text/javascript",
+   * FilePayload filePayload1 = new FilePayload("f1.js", "text/javascript",
    *       "console.log(2022);".getBytes(StandardCharsets.UTF_8));
-   * APIResponse response = request.post("https://example.com/api/uploadTeamList",
+   * APIResponse response = request.post("https://example.com/api/uploadScript",
    *   RequestOptions.create().setMultipart(
    *     FormData.create().set("fileField", filePayload)));
    * }</pre>

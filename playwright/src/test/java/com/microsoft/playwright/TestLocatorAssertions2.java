@@ -17,8 +17,11 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.assertions.LocatorAssertions;
+import com.microsoft.playwright.options.AriaRole;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
+
+import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -114,5 +117,37 @@ public class TestLocatorAssertions2 extends TestBase {
   void isAttachedWithImpossibleTimeoutNot() {
     page.setContent("<div id=node>Text content</div>");
     assertThat(page.locator("no-such-thing")).not().isAttached(new LocatorAssertions.IsAttachedOptions().setTimeout(1));
+  }
+
+  @Test
+  public void toHaveAccessibleName() {
+    page.setContent("<div role=\"button\" aria-label=\"Hello\"></div>");
+
+    assertThat(page.locator("div")).hasAccessibleName("Hello");
+    assertThat(page.locator("div")).not().hasAccessibleName("hello");
+    assertThat(page.locator("div")).hasAccessibleName("hello", new LocatorAssertions.HasAccessibleNameOptions().setIgnoreCase(true));
+    assertThat(page.locator("div")).hasAccessibleName(Pattern.compile("ell\\w"));
+    assertThat(page.locator("div")).not().hasAccessibleName(Pattern.compile("hello"));
+    assertThat(page.locator("div")).hasAccessibleName(Pattern.compile("hello"), new LocatorAssertions.HasAccessibleNameOptions().setIgnoreCase(true));
+  }
+
+  @Test
+  public void toHaveAccessibleDescription() {
+    page.setContent("<div role=\"button\" aria-description=\"Hello\"></div>");
+
+    assertThat(page.locator("div")).hasAccessibleDescription("Hello");
+    assertThat(page.locator("div")).not().hasAccessibleDescription("hello");
+    assertThat(page.locator("div")).hasAccessibleDescription("hello", new LocatorAssertions.HasAccessibleDescriptionOptions().setIgnoreCase(true));
+    assertThat(page.locator("div")).hasAccessibleDescription(Pattern.compile("ell\\w"));
+    assertThat(page.locator("div")).not().hasAccessibleDescription(Pattern.compile("hello"));
+    assertThat(page.locator("div")).hasAccessibleDescription(Pattern.compile("hello"), new LocatorAssertions.HasAccessibleDescriptionOptions().setIgnoreCase(true));
+  }
+
+  @Test
+  public void toHaveRole() {
+    page.setContent("<div role=\"button\">Button!</div>");
+
+    assertThat(page.locator("div")).hasRole(AriaRole.BUTTON);
+    assertThat(page.locator("div")).not().hasRole(AriaRole.CHECKBOX);
   }
 }

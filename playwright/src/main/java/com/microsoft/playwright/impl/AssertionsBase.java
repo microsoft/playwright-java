@@ -20,6 +20,7 @@ import com.microsoft.playwright.PlaywrightException;
 import org.opentest4j.AssertionFailedError;
 import org.opentest4j.ValueWrapper;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -90,5 +91,18 @@ class AssertionsBase {
       expected.regexFlags = toJsRegexFlags(pattern);
     }
     return expected;
+  }
+
+  static Boolean shouldIgnoreCase(Object options) {
+    if (options == null) {
+      return null;
+    }
+    try {
+      Field fromField = options.getClass().getDeclaredField("ignoreCase");
+      Object value = fromField.get(options);
+      return (Boolean) value;
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      return null;
+    }
   }
 }

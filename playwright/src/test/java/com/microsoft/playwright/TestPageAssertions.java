@@ -59,6 +59,12 @@ public class TestPageAssertions extends TestBase {
   }
 
   @Test
+  public void hasUrlSupportIgnoreCase() {
+    page.navigate("data:text/html,<div>A</div>");
+    assertThat(page).hasURL("DATA:teXT/HTml,<div>a</div>", new PageAssertions.HasURLOptions().setIgnoreCase(true));
+  }
+
+  @Test
   void hasURLRegexPass() {
     page.navigate("data:text/html,<div>A</div>");
     assertThat(page).hasURL(Pattern.compile("text"));

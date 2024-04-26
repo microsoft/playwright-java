@@ -351,7 +351,7 @@ class Serialization {
         throw new PlaywrightException("Value cannot be null");
       }
     }
-    return toNameValueArray(map);
+    return toNameValueArray(map.entrySet());
   }
 
   static void addHarUrlFilter(JsonObject options, Object urlFilter) {
@@ -364,9 +364,9 @@ class Serialization {
       }
   }
 
-  static JsonArray toNameValueArray(Map<String, ?> map) {
+  static JsonArray toNameValueArray(Iterable<? extends Map.Entry<String, ?>> collection) {
     JsonArray array = new JsonArray();
-    for (Map.Entry<String, ?> e : map.entrySet()) {
+    for (Map.Entry<String, ?> e : collection) {
       JsonObject item = new JsonObject();
       item.addProperty("name", e.getKey());
       if (e.getValue() instanceof FilePayload) {

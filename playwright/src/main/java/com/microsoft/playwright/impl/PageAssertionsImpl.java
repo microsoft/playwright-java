@@ -21,6 +21,7 @@ import com.microsoft.playwright.assertions.PageAssertions;
 
 import java.util.regex.Pattern;
 
+import static com.microsoft.playwright.impl.LocatorAssertionsImpl.shouldIgnoreCase;
 import static com.microsoft.playwright.impl.UrlMatcher.resolveUrl;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
@@ -57,6 +58,7 @@ public class PageAssertionsImpl extends AssertionsBase implements PageAssertions
       url = resolveUrl(actualPage.context().baseUrl, url);
     }
     expected.string = url;
+    expected.ignoreCase = shouldIgnoreCase(options);
     expectImpl("to.have.url", expected, url, "Page URL expected to be", convertType(options, FrameExpectOptions.class));
   }
 
