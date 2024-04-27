@@ -241,7 +241,7 @@ public class LocatorAssertionsImpl extends AssertionsBase implements LocatorAsse
   public void hasRole(AriaRole role, HasRoleOptions options) {
     ExpectedTextValue expected = new ExpectedTextValue();
     expected.string = role.toString().toLowerCase();
-    expectImpl("to.have.role", expected, expected.string, "Locator expected to have text", convertType(options, FrameExpectOptions.class));
+    expectImpl("to.have.role", expected, expected.string, "Locator expected to have role", convertType(options, FrameExpectOptions.class));
   }
 
   @Override
