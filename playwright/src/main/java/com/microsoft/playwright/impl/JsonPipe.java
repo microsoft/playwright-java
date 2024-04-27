@@ -33,6 +33,7 @@ class JsonPipe extends ChannelOwner implements Transport {
   private ListenerCollection<EventType> listeners = new ListenerCollection<>();
   private enum EventType { CLOSE }
   private boolean isClosed;
+  private String closeReason = "Browser has been closed";
 
   JsonPipe(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -97,13 +98,19 @@ class JsonPipe extends ChannelOwner implements Transport {
       incoming.add(params.get("message").getAsJsonObject());
     } else if ("closed".equals(event)) {
       isClosed = true;
+      if (params.has("reason")) {
+        String reason = params.get("reason").getAsString();
+        if (reason.trim().length() > 0) {
+          closeReason = reason;
+        }
+      }
       listeners.notify(EventType.CLOSE, this);
     }
   }
 
   private void checkIfClosed() {
     if (isClosed) {
-      throw new PlaywrightException("Browser has been closed");
+      throw new PlaywrightException(closeReason);
     }
   }
 }

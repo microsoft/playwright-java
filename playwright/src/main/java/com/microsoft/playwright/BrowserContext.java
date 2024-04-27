@@ -49,10 +49,9 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> Emitted when new background page is created in the context.
    * <pre>{@code
-   * Page backgroundPage = context.waitForBackgroundPage(() -> {
-   *   page.getByText("activate extension").click();
+   * context.onBackgroundPage(backgroundPage -> {
+   *   System.out.println(backgroundPage.url());
    * });
-   * System.out.println(backgroundPage.evaluate("location.href"));
    * }</pre>
    */
   void onBackgroundPage(Consumer<Page> handler);
@@ -128,7 +127,10 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> The earliest moment that page is available is when it has navigated to the initial url. For example, when opening a
    * popup with {@code window.open('http://example.com')}, this event will fire when the network request to
-   * "http://example.com" is done and its response has started loading in the popup.
+   * "http://example.com" is done and its response has started loading in the popup. If you would like to route/listen to
+   * this network request, use {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} and {@link
+   * com.microsoft.playwright.BrowserContext#onRequest BrowserContext.onRequest()} respectively instead of similar methods on
+   * the {@code Page}.
    * <pre>{@code
    * Page newPage = context.waitForPage(() -> {
    *   page.getByText("open new page").click();

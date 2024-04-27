@@ -252,8 +252,20 @@ public class TestPageScreenshot extends TestBase {
     assertThrows(AssertionError.class, () -> assertArrayEquals(screenshot1, screenshot2));
   }
 
+  static boolean isScreenshotTestDisabled() {
+    if (isWebKit()) {
+      // Array lengths differ.
+      return true;
+    }
+    if (getBrowserChannelFromEnv() != null) {
+      // Stable builds may have different expectations.
+      return true;
+    }
+    return false;
+  }
+
   @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="array lengths differ")
+  @DisabledIf(value="com.microsoft.playwright.TestPageScreenshot#isScreenshotTestDisabled", disabledReason="array lengths differ")
   void shouldHideElementsBasedOnAttr() throws IOException {
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");
@@ -269,7 +281,7 @@ public class TestPageScreenshot extends TestBase {
   }
 
   @Test
-  @DisabledIf(value="com.microsoft.playwright.TestBase#isWebKit", disabledReason="array lengths differ")
+  @DisabledIf(value="com.microsoft.playwright.TestPageScreenshot#isScreenshotTestDisabled", disabledReason="array lengths differ")
   void shouldRemoveElementsBasedOnAttr() throws IOException {
     page.setViewportSize(500, 500);
     page.navigate(server.PREFIX + "/grid.html");

@@ -624,6 +624,20 @@ class LocatorImpl implements Locator {
     return "Locator@" + selector;
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof LocatorImpl)) {
+      return false;
+    }
+    LocatorImpl locator = (LocatorImpl) obj;
+    return  frame.equals(locator.frame) && selector.equals(locator.selector);
+  }
+
+  @Override
+  public int hashCode() {
+    return frame.hashCode() ^ selector.hashCode();
+  }
+
   FrameExpectResult expect(String expression, FrameExpectOptions options) {
     return frame.withLogging("Locator.expect", () -> expectImpl(expression, options));
   }
