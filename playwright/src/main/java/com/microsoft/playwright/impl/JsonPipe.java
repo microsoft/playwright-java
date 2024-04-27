@@ -99,7 +99,10 @@ class JsonPipe extends ChannelOwner implements Transport {
     } else if ("closed".equals(event)) {
       isClosed = true;
       if (params.has("reason")) {
-        closeReason = params.get("reason").getAsString();
+        String reason = params.get("reason").getAsString();
+        if (reason.trim().length() > 0) {
+          closeReason = reason;
+        }
       }
       listeners.notify(EventType.CLOSE, this);
     }
