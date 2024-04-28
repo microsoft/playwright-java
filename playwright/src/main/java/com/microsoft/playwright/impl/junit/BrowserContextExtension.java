@@ -27,7 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
-import static com.microsoft.playwright.impl.junit.PlaywrightExtension.namespace;
 
 public class BrowserContextExtension implements ParameterResolver, TestWatcher {
   private static final ThreadLocal<BrowserContext> threadLocalBrowserContext = new ThreadLocal<>();

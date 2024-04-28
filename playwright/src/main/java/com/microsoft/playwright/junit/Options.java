@@ -49,9 +49,9 @@ public class Options {
   // The dir where test artifacts will be stored
   public Path outputDir;
   // When to record traces
-  public Trace trace;
+  public Trace trace = Trace.OFF;
   // Capture screenshots of your test
-  public Screenshot screenshot;
+  public Screenshot screenshot = Screenshot.OFF;
 
   public enum Trace {
     ON,

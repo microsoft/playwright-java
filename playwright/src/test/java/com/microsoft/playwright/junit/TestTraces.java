@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
 // Test traces and screenshots together because the artifacts go in the same directory
+@FixtureTest
 public class TestTraces {
   private static final Path baseDir = Paths.get(System.getProperty("user.dir")).resolve("test-results");
   private static final EngineTestKit.Builder engineTestKitBuilder = EngineTestKit.engine("junit-jupiter")
@@ -98,10 +99,6 @@ public class TestTraces {
 
   private List<Method> getTestMethods(Class<?> testClass) {
     return Arrays.stream(testClass.getDeclaredMethods()).filter(m -> m.isAnnotationPresent(Test.class)).collect(Collectors.toList());
-  }
-
-  private EngineTestKit.Builder getEngineTestKitBuilder(Class<?> testClass) {
-    return EngineTestKit.engine("junit-jupiter").selectors(selectClass(testClass));
   }
 
   private Path getTracePathForDefaultLocation(Class<?> testClass, Method test) {
