@@ -44,7 +44,7 @@ public class TestOptionsFactories {
     return headfulEnv != null && !"0".equals(headfulEnv) && !"false".equals(headfulEnv);
   }
 
-  private static String getBrowserName() {
+  public static String getBrowserName() {
     String browserName = System.getenv("BROWSER");
     if (browserName == null) {
       browserName = "chromium";

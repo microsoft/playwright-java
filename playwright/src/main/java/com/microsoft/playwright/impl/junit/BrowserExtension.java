@@ -25,6 +25,7 @@ import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
 import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
+import static com.microsoft.playwright.impl.junit.PlaywrightExtension.namespace;
 
 public class BrowserExtension implements ParameterResolver, AfterAllCallback {
   private static final ThreadLocal<Browser> threadLocalBrowser = new ThreadLocal<>();
@@ -84,6 +85,10 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
 
     threadLocalBrowser.set(browser);
     return browser;
+  }
+
+  static Browser getBrowser() {
+    return threadLocalBrowser.get();
   }
 
   private static BrowserType.ConnectOptions getConnectOptions(Options options) {
