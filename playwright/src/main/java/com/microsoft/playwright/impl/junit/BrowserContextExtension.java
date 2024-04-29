@@ -90,7 +90,7 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
       saveTrace(extensionContext);
     }
 
-    if(options.screenshot.equals(Options.Screenshot.ON) || options.screenshot.equals(Options.Screenshot.ONLY_ON_FAILURE)) {
+    if (options.screenshot.equals(Options.Screenshot.ON) || options.screenshot.equals(Options.Screenshot.ONLY_ON_FAILURE)) {
       saveScreenshot(extensionContext);
     }
     cleanupResources();
@@ -118,10 +118,10 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
   private static void saveScreenshot(ExtensionContext extensionContext) {
     BrowserContext browserContext = threadLocalBrowserContext.get();
     if (browserContext != null) {
-      Path outputDir = getOutputDir(extensionContext);
-      createDirs(outputDir);
-      for(int i = 0; i < browserContext.pages().size(); i++) {
-        Path screenshotPath = outputDir.resolve("test-finished-" + (i + 1) + ".png");
+      Path outputPath = getOutputPath(extensionContext);
+      createOutputPath(outputPath);
+      for (int i = 0; i < browserContext.pages().size(); i++) {
+        Path screenshotPath = outputPath.resolve("test-finished-" + (i + 1) + ".png");
         browserContext.pages().get(i).screenshot(new Page.ScreenshotOptions().setPath(screenshotPath));
       }
     }
@@ -130,37 +130,37 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
   private static void saveTrace(ExtensionContext extensionContext) {
     BrowserContext browserContext = threadLocalBrowserContext.get();
     if (browserContext != null) {
-      Path outputDir = getOutputDir(extensionContext);
-      createDirs(outputDir);
-      Tracing.StopOptions stopOptions = new Tracing.StopOptions().setPath(outputDir.resolve("trace.zip"));
+      Path outputPath = getOutputPath(extensionContext);
+      createOutputPath(outputPath);
+      Tracing.StopOptions stopOptions = new Tracing.StopOptions().setPath(outputPath.resolve("trace.zip"));
       browserContext.tracing().stop(stopOptions);
     }
   }
 
-  private static void createDirs(Path outputDir) {
+  private static void createOutputPath(Path outputPath) {
     try {
-      Files.createDirectories(outputDir);
+      Files.createDirectories(outputPath);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
-  private static Path getOutputDir(ExtensionContext extensionContext) {
+  private static Path getOutputPath(ExtensionContext extensionContext) {
     BrowserType browserType = BrowserExtension.getBrowser().browserType();
-    Path baseDir = getBaseDir(extensionContext);
+    Path defaultOutputPath = getDefaultOutputPath(extensionContext);
     String outputDirName = extensionContext.getRequiredTestClass().getName() + "." +
       extensionContext.getRequiredTestMethod().getName() + "-" +
       browserType.name();
-    return baseDir.resolve(outputDirName);
+    return defaultOutputPath.resolve(outputDirName);
   }
 
-  private static Path getBaseDir(ExtensionContext extensionContext) {
+  private static Path getDefaultOutputPath(ExtensionContext extensionContext) {
     Options options = OptionsExtension.getOptions(extensionContext);
-    Path baseDir = options.outputDir;
-    if (baseDir == null) {
-      baseDir = Paths.get(System.getProperty("user.dir")).resolve("test-results");
+    Path outputPath = options.outputDir;
+    if (outputPath == null) {
+      outputPath = Paths.get(System.getProperty("user.dir")).resolve("test-results");
     }
-    return baseDir;
+    return outputPath;
   }
 
   private void closeBrowserContext() {
@@ -168,7 +168,7 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
     threadLocalBrowserContext.remove();
     if (browserContext != null) {
       // handle any straggling pages that may have been created in the test but not by the fixture
-      for(Page page : browserContext.pages()) {
+      for (Page page : browserContext.pages()) {
         page.close();
       }
       browserContext.close();

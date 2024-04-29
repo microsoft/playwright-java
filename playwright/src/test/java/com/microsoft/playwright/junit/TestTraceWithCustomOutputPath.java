@@ -3,7 +3,7 @@ package com.microsoft.playwright.junit;
 import com.microsoft.playwright.Page;
 import org.junit.jupiter.api.Test;
 
-import static com.microsoft.playwright.junit.FixtureTestUtils.getCustomOutputPath;
+import static com.microsoft.playwright.junit.TestTracesAndScreenshots.getCustomOutputPath;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.abort;
 
@@ -13,7 +13,7 @@ public class TestTraceWithCustomOutputPath {
   public static class TestOptions implements OptionsFactory {
     @Override
     public Options getOptions() {
-      return new Options().setTrace(Options.Trace.ON).setOutputDir(getCustomOutputPath().resolve("traceTest"));
+      return new Options().setTrace(Options.Trace.ON).setOutputDir(getCustomOutputPath());
     }
   }
 
