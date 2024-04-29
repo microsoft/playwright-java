@@ -63,6 +63,9 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
     browserContext = browser.newContext(contextOptions);
     if (recordTrace(options)) {
       Tracing.StartOptions startOptions = new Tracing.StartOptions().setSnapshots(true).setScreenshots(true).setTitle(extensionContext.getDisplayName());
+      if(System.getenv("PLAYWRIGHT_JAVA_SRC") != null) {
+        startOptions.setSources(true);
+      }
       browserContext.tracing().start(startOptions);
     }
     threadLocalBrowserContext.set(browserContext);
