@@ -8,27 +8,27 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.abort;
 
 @Transient
-@UsePlaywright(TestTraceWithCustomOutputPath.TestOptions.class)
-public class TestTraceWithCustomOutputPath {
+@UsePlaywright(TestScreenshotWithCustomOutputPath.TestOptions.class)
+public class TestScreenshotWithCustomOutputPath {
   public static class TestOptions implements OptionsFactory {
     @Override
     public Options getOptions() {
-      return new Options().setTrace(Options.Trace.ON).setOutputDir(getCustomOutputPath().resolve("traceTest"));
+      return new Options().setScreenshot(Options.Screenshot.ON).setOutputDir(getCustomOutputPath().resolve("screenshotTest"));
     }
   }
 
   @Test
-  void traceShouldExistInCustomOutputPathWhenTestPasses(Page ignored) {
+  void screenshotShouldExistInCustomOutputPathWhenTestPasses(Page ignored) {
     // force pass
   }
 
   @Test
-  void traceShouldExistInCustomOutputPathWhenTestIsAborted(Page ignored) {
+  void screenshotShouldExistInCustomOutputPathWhenTestIsAborted(Page ignored) {
     abort();
   }
 
   @Test
-  void traceShouldExistInCustomOutputPathWhenTestFails(Page ignored) {
+  void screenshotShouldExistInCustomOutputPathWhenTestFails(Page ignored) {
     fail();
   }
 }

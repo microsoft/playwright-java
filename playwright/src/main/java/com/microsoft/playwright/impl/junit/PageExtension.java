@@ -22,17 +22,8 @@ import org.junit.jupiter.api.extension.*;
 
 import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
 
-public class PageExtension implements ParameterResolver, AfterEachCallback {
+public class PageExtension implements ParameterResolver {
   private static final ThreadLocal<Page> threadLocalPage = new ThreadLocal<>();
-
-  @Override
-  public void afterEach(ExtensionContext extensionContext) {
-    Page page = threadLocalPage.get();
-    threadLocalPage.remove();
-    if (page != null) {
-      page.close();
-    }
-  }
 
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
@@ -60,5 +51,14 @@ public class PageExtension implements ParameterResolver, AfterEachCallback {
     page = browserContext.newPage();
     threadLocalPage.set(page);
     return page;
+  }
+
+  // Close is called after TestWatcher is finished recording traces/screenshots
+  static void closePage() {
+    Page page = threadLocalPage.get();
+    threadLocalPage.remove();
+    if (page != null) {
+      page.close();
+    }
   }
 }

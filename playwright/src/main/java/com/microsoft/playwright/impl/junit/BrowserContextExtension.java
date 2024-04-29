@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
+import static com.microsoft.playwright.impl.junit.PageExtension.closePage;
 
 public class BrowserContextExtension implements ParameterResolver, TestWatcher {
   private static final ThreadLocal<BrowserContext> threadLocalBrowserContext = new ThreadLocal<>();
@@ -71,13 +72,15 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
   @Override
   public void testSuccessful(ExtensionContext extensionContext) {
     saveTraceWhenOn(extensionContext);
-    closeBrowserContext();
+    saveScreenshotWhenOn(extensionContext);
+    cleanupResources();
   }
 
   @Override
   public void testAborted(ExtensionContext extensionContext, Throwable cause) {
     saveTraceWhenOn(extensionContext);
-    closeBrowserContext();
+    saveScreenshotWhenOn(extensionContext);
+    cleanupResources();
   }
 
   @Override
@@ -86,13 +89,41 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
     if (options.trace.equals(Options.Trace.ON) || options.trace.equals(Options.Trace.RETAIN_ON_FAILURE)) {
       saveTrace(extensionContext);
     }
+
+    if(options.screenshot.equals(Options.Screenshot.ON) || options.screenshot.equals(Options.Screenshot.ONLY_ON_FAILURE)) {
+      saveScreenshot(extensionContext);
+    }
+    cleanupResources();
+  }
+
+  private void cleanupResources() {
+    closePage();
     closeBrowserContext();
+  }
+
+  private static void saveScreenshotWhenOn(ExtensionContext extensionContext) {
+    Options options = OptionsExtension.getOptions(extensionContext);
+    if (options.screenshot.equals(Options.Screenshot.ON)) {
+      saveScreenshot(extensionContext);
+    }
   }
 
   private static void saveTraceWhenOn(ExtensionContext extensionContext) {
     Options options = OptionsExtension.getOptions(extensionContext);
     if (options.trace.equals(Options.Trace.ON)) {
       saveTrace(extensionContext);
+    }
+  }
+
+  private static void saveScreenshot(ExtensionContext extensionContext) {
+    BrowserContext browserContext = threadLocalBrowserContext.get();
+    if (browserContext != null) {
+      Path outputDir = getOutputDir(extensionContext);
+      createDirs(outputDir);
+      for(int i = 0; i < browserContext.pages().size(); i++) {
+        Path screenshotPath = outputDir.resolve("test-finished-" + (i + 1) + ".png");
+        browserContext.pages().get(i).screenshot(new Page.ScreenshotOptions().setPath(screenshotPath));
+      }
     }
   }
 
@@ -136,6 +167,10 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
     BrowserContext browserContext = threadLocalBrowserContext.get();
     threadLocalBrowserContext.remove();
     if (browserContext != null) {
+      // handle any straggling pages that may have been created in the test but not by the fixture
+      for(Page page : browserContext.pages()) {
+        page.close();
+      }
       browserContext.close();
     }
   }

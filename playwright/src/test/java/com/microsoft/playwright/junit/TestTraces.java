@@ -6,25 +6,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.testkit.engine.EngineTestKit;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.microsoft.playwright.TestOptionsFactories.getBrowserName;
+import static com.microsoft.playwright.junit.FixtureTestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
-// Test traces and screenshots together because the artifacts go in the same directory
 @FixtureTest
 public class TestTraces {
-  private static final Path baseDir = Paths.get(System.getProperty("user.dir")).resolve("test-results");
+  // Select all the test classes that need to be executed as part of this test
   private static final EngineTestKit.Builder engineTestKitBuilder = EngineTestKit.engine("junit-jupiter")
     .selectors(selectClass(TestTraceWithCustomOutputPath.class), selectClass(TestTraceOn.class), selectClass(TestTraceOff.class),
       selectClass(TestTraceRetainOnFailures.class));
@@ -32,6 +25,7 @@ public class TestTraces {
   @BeforeAll
   static void beforeAll() {
     cleanUpDirs();
+    // run tests
     engineTestKitBuilder.execute();
   }
 
@@ -41,21 +35,14 @@ public class TestTraces {
   }
 
   @Test
-  void testTraceWithCustomOutput() {
+  void testTraceWithCustomOutputPath() {
     Class<?> testClass = TestTraceWithCustomOutputPath.class;
     List<Method> testMethods = getTestMethods(testClass);
-    Path outputPath = null;
-    try {
-      outputPath = (Path) testClass.getDeclaredField("outputPath").get(null);
-      for (Method test : testMethods) {
-        File traceFile = getTracePathForCustomLocation(outputPath, testClass, test).toFile();
-        assertTrue(traceFile.exists());
-        assertTrue(traceFile.length() > 0);
-      }
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      throw new RuntimeException(e);
-    } finally {
-      cleanUpDirs(outputPath);
+
+    for (Method test : testMethods) {
+      File traceFile = getTracePathForCustomLocation(getCustomOutputPath().resolve("traceTest"), testClass, test).toFile();
+      assertTrue(traceFile.exists());
+      assertTrue(traceFile.length() > 0);
     }
   }
 
@@ -97,27 +84,11 @@ public class TestTraces {
     }
   }
 
-  private List<Method> getTestMethods(Class<?> testClass) {
-    return Arrays.stream(testClass.getDeclaredMethods()).filter(m -> m.isAnnotationPresent(Test.class)).collect(Collectors.toList());
-  }
-
   private Path getTracePathForDefaultLocation(Class<?> testClass, Method test) {
-    return getTracePathForCustomLocation(baseDir, testClass, test);
+    return getTracePathForCustomLocation(getDefaultOutputPath(), testClass, test);
   }
 
-  private Path getTracePathForCustomLocation(Path customBaseDir, Class<?> testClass, Method test) {
-    return customBaseDir.resolve(testClass.getName() + "." + test.getName() + "-" + getBrowserName()).resolve("trace.zip");
-  }
-
-  private static void cleanUpDirs() {
-    cleanUpDirs(baseDir);
-  }
-
-  private static void cleanUpDirs(Path path) {
-    try (Stream<Path> stream = Files.walk(path)) {
-      stream.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
-    } catch (IOException ignored) {
-      // swallow
-    }
+  private Path getTracePathForCustomLocation(Path outputPath, Class<?> testClass, Method test) {
+    return outputPath.resolve(testClass.getName() + "." + test.getName() + "-" + getBrowserName()).resolve("trace.zip");
   }
 }
