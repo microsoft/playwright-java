@@ -19,6 +19,7 @@ package com.microsoft.playwright.options;
 public enum KeyboardModifier {
   ALT,
   CONTROL,
+  CONTROLORMETA,
   META,
   SHIFT
 }
