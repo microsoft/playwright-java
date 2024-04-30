@@ -266,7 +266,8 @@ public interface Frame {
     public Boolean force;
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
+     * and Linux and to "Meta" on macOS.
      */
     public List<KeyboardModifier> modifiers;
     /**
@@ -330,7 +331,8 @@ public interface Frame {
     }
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
+     * and Linux and to "Meta" on macOS.
      */
     public ClickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
@@ -404,7 +406,8 @@ public interface Frame {
     public Boolean force;
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
+     * and Linux and to "Meta" on macOS.
      */
     public List<KeyboardModifier> modifiers;
     /**
@@ -461,7 +464,8 @@ public interface Frame {
     }
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
+     * and Linux and to "Meta" on macOS.
      */
     public DblclickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
@@ -1115,7 +1119,8 @@ public interface Frame {
     public Boolean force;
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
+     * and Linux and to "Meta" on macOS.
      */
     public List<KeyboardModifier> modifiers;
     /**
@@ -1158,7 +1163,8 @@ public interface Frame {
     }
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
+     * and Linux and to "Meta" on macOS.
      */
     public HoverOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
@@ -1938,7 +1944,8 @@ public interface Frame {
     public Boolean force;
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
+     * and Linux and to "Meta" on macOS.
      */
     public List<KeyboardModifier> modifiers;
     /**
@@ -1981,7 +1988,8 @@ public interface Frame {
     }
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
+     * and Linux and to "Meta" on macOS.
      */
     public TapOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
@@ -4082,7 +4090,8 @@ public interface Frame {
    * ArrowUp}, etc.
    *
    * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code
-   * ShiftLeft}.
+   * ShiftLeft}, {@code ControlOrMeta}. {@code ControlOrMeta} resolves to {@code Control} on Windows and Linux and to {@code
+   * Meta} on macOS.
    *
    * <p> Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
    *
@@ -4111,7 +4120,8 @@ public interface Frame {
    * ArrowUp}, etc.
    *
    * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code
-   * ShiftLeft}.
+   * ShiftLeft}, {@code ControlOrMeta}. {@code ControlOrMeta} resolves to {@code Control} on Windows and Linux and to {@code
+   * Meta} on macOS.
    *
    * <p> Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
    *
