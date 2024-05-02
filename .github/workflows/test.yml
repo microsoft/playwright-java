@@ -31,11 +31,11 @@ jobs:
     - name: Build & Install
       run: mvn -B install -D skipTests --no-transfer-progress
     - name: Run tests
-      run: mvn test -DexcludedGroups=transient,fixtureTracing --no-transfer-progress --fail-at-end -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
+      run: mvn test -DexcludedGroups=fixtureTestCase,fixtureArtifacts --no-transfer-progress --fail-at-end -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
       env:
         BROWSER: ${{ matrix.browser }}
     - name: Run fixture trace tests
-      run: mvn test -Dgroups=fixtureTracing --no-transfer-progress --fail-at-end -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
+      run: mvn test -Dgroups=fixtureArtifacts --no-transfer-progress --fail-at-end -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
       env:
         BROWSER: ${{ matrix.browser }}
     - name: Run tracing tests w/ sources

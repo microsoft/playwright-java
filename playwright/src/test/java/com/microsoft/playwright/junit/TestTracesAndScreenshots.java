@@ -1,5 +1,6 @@
 package com.microsoft.playwright.junit;
 
+import com.microsoft.playwright.junit.fixtureArtifactTests.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
@@ -24,7 +25,7 @@ import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 
 // Test both traces and screenshots in the same class as they both have the same default directory
 // and cleanup is easier
-@Tag("fixtureTracing") // These tests should be run in isolation as there are threading issues when run with others
+@Tag("fixtureArtifacts") // These tests should be run in isolation as there are threading issues when run with others
 @FixtureTest
 public class TestTracesAndScreenshots {
   // Select all the test classes that need to be executed as part of this test
@@ -52,7 +53,7 @@ public class TestTracesAndScreenshots {
 
     for (Method test : testMethods) {
       File traceFile = getTracePathForCustomLocation(getCustomOutputPath(), testClass, test).toFile();
-      assertTrue(traceFile.exists());
+      assertTrue(traceFile.exists(), traceFile::getAbsolutePath);
       assertTrue(traceFile.length() > 0);
     }
   }
@@ -64,7 +65,7 @@ public class TestTracesAndScreenshots {
 
     for (Method test : testMethods) {
       File traceFile = getTracePathForDefaultLocation(testClass, test).toFile();
-      assertTrue(traceFile.exists());
+      assertTrue(traceFile.exists(), traceFile::getAbsolutePath);
       assertTrue(traceFile.length() > 0);
     }
   }
@@ -76,7 +77,7 @@ public class TestTracesAndScreenshots {
 
     for (Method test : testMethods) {
       File traceFile = getTracePathForDefaultLocation(testClass, test).toFile();
-      assertFalse(traceFile.exists());
+      assertFalse(traceFile.exists(), traceFile::getAbsolutePath);
     }
   }
 
@@ -87,10 +88,10 @@ public class TestTracesAndScreenshots {
 
     for (Method test : testMethods) {
       File traceFile = getTracePathForDefaultLocation(testClass, test).toFile();
-      if (test.getName().contains("ShouldNot")) {
-        assertFalse(traceFile.exists());
+      if(test.getName().equals("traceShouldExistWhenTestFails")) {
+        assertTrue(traceFile.exists(), traceFile::getAbsolutePath);
       } else {
-        assertTrue(traceFile.exists());
+        assertFalse(traceFile.exists(), traceFile::getAbsolutePath);
       }
     }
   }
@@ -101,17 +102,21 @@ public class TestTracesAndScreenshots {
     List<Method> testMethods = getTestMethods(testClass);
 
     for (Method test : testMethods) {
-      if (test.getName().contains("BrowserContest")) {
-        File screenshotFile1 = getScreenshotPathForCustomLocation(getDefaultOutputPath(), testClass, test, 1).toFile();
-        File screenshotFile2 = getScreenshotPathForCustomLocation(getDefaultOutputPath(), testClass, test, 1).toFile();
+      if (test.getName().equals("screenshotsShouldExistForAllPagesInTheBrowserContext")) {
+        File screenshotFile1 = getScreenshotPathForCustomLocation(getDefaultOutputPath(), testClass, test, 1, false).toFile();
+        File screenshotFile2 = getScreenshotPathForCustomLocation(getDefaultOutputPath(), testClass, test, 2, false).toFile();
         assertTrue(screenshotFile1.exists());
         assertTrue(screenshotFile1.length() > 0);
         assertTrue(screenshotFile2.exists());
         assertTrue(screenshotFile2.length() > 0);
+      } else if (test.getName().equals("screenshotShouldExistWhenTestFails")) {
+        File screenshotFile = getScreenshotPathForDefaultLocation(testClass, test, true).toFile();
+        assertTrue(screenshotFile.exists(), screenshotFile::getAbsolutePath);
+        assertTrue(screenshotFile.length() > 0, screenshotFile::getAbsolutePath);
       } else {
-        File screenshotFile = getScreenshotPathForDefaultLocation(testClass, test).toFile();
-        assertTrue(screenshotFile.exists());
-        assertTrue(screenshotFile.length() > 0);
+        File screenshotFile = getScreenshotPathForDefaultLocation(testClass, test, false).toFile();
+        assertTrue(screenshotFile.exists(), screenshotFile::getAbsolutePath);
+        assertTrue(screenshotFile.length() > 0, screenshotFile::getAbsolutePath);
       }
     }
   }
@@ -122,9 +127,10 @@ public class TestTracesAndScreenshots {
     List<Method> testMethods = getTestMethods(testClass);
 
     for (Method test : testMethods) {
-      File screenshotFile = getScreenshotPathForDefaultLocation(testClass, test).toFile();
-      assertFalse(screenshotFile.exists());
-
+      File screenshotFileFail = getScreenshotPathForDefaultLocation(testClass, test, false).toFile();
+      File screenshotFilePass = getScreenshotPathForDefaultLocation(testClass, test, true).toFile();
+      assertFalse(screenshotFileFail.exists(), screenshotFileFail::getAbsolutePath);
+      assertFalse(screenshotFilePass.exists(), screenshotFilePass::getAbsolutePath);
     }
   }
 
@@ -134,12 +140,12 @@ public class TestTracesAndScreenshots {
     List<Method> testMethods = getTestMethods(testClass);
 
     for (Method test : testMethods) {
-      File screenshotFile = getScreenshotPathForDefaultLocation(testClass, test).toFile();
-      if (test.getName().contains("ShouldNot")) {
-        assertFalse(screenshotFile.exists());
+      if (test.getName().contains("screenshotShouldExistWhenTestFails")) {
+        File screenshotFile = getScreenshotPathForDefaultLocation(testClass, test, true).toFile();
+        assertTrue(screenshotFile.exists(), screenshotFile::getAbsolutePath);
       } else {
-        assertTrue(screenshotFile.exists());
-        assertTrue(screenshotFile.length() > 0);
+        File screenshotFile = getScreenshotPathForDefaultLocation(testClass, test, false).toFile();
+        assertFalse(screenshotFile.exists(), screenshotFile::getAbsolutePath);
       }
     }
   }
@@ -150,20 +156,30 @@ public class TestTracesAndScreenshots {
     List<Method> testMethods = getTestMethods(testClass);
 
     for (Method test : testMethods) {
-      File screenshotFile = getScreenshotPathForCustomLocation(getCustomOutputPath(), testClass, test, 1).toFile();
-      assertTrue(screenshotFile.exists());
-      assertTrue(screenshotFile.length() > 0);
+      if(test.getName().equals("screenshotShouldExistInCustomOutputPathWhenTestFails")) {
+        File screenshotFile = getScreenshotPathForCustomLocation(getCustomOutputPath(), testClass, test, 1, true).toFile();
+        assertTrue(screenshotFile.exists(), screenshotFile::getAbsolutePath);
+        assertTrue(screenshotFile.length() > 0);
+      } else {
+        File screenshotFile = getScreenshotPathForCustomLocation(getCustomOutputPath(), testClass, test, 1, false).toFile();
+        assertTrue(screenshotFile.exists(), screenshotFile::getAbsolutePath);
+        assertTrue(screenshotFile.length() > 0);
+      }
     }
   }
 
 
-  private Path getScreenshotPathForDefaultLocation(Class<?> testClass, Method test) {
-    return getScreenshotPathForCustomLocation(getDefaultOutputPath(), testClass, test, 1);
+  private Path getScreenshotPathForDefaultLocation(Class<?> testClass, Method test, boolean didTestFail) {
+    return getScreenshotPathForCustomLocation(getDefaultOutputPath(), testClass, test, 1, didTestFail);
   }
 
-  private Path getScreenshotPathForCustomLocation(Path outputPath, Class<?> testClass, Method test, int pageNumber) {
+  private Path getScreenshotPathForCustomLocation(Path outputPath, Class<?> testClass, Method test, int pageNumber, boolean didTestFail) {
+    String fileNamePrefix = "test-finished-";
+    if(didTestFail) {
+      fileNamePrefix = "test-failed-";
+    }
     return outputPath.resolve(testClass.getName() + "." + test.getName() + "-" + getBrowserName())
-      .resolve("test-finished-" + pageNumber + ".png");
+      .resolve(fileNamePrefix + pageNumber + ".png");
   }
 
   private Path getTracePathForDefaultLocation(Class<?> testClass, Method test) {

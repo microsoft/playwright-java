@@ -7,10 +7,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-// Tests tagged with @Transient should be excluded in normal circumstances because they are run indirectly by the test engine
+// Tests tagged with @FixtureTestCase should be excluded in normal circumstances because they are run indirectly by the test engine
 // in order to verify behavior that would normally fail the test run (failed tests).
-@Tag("transient")
+@Tag("fixtureTestCase")
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Transient {
+public @interface FixtureTestCase {
 }

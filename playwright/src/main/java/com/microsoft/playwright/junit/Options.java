@@ -48,20 +48,20 @@ public class Options {
   public BrowserType.ConnectOptions connectOptions;
   // The dir where test artifacts will be stored
   public Path outputDir;
-  // When to record traces
+  // When to record traces.  Default is OFF.
   public Trace trace = Trace.OFF;
-  // Capture screenshots of your test
+  // When to save screenshots.  Default is OFF.
   public Screenshot screenshot = Screenshot.OFF;
 
   public enum Trace {
-    ON,
     OFF,
+    ON,
     RETAIN_ON_FAILURE;
   }
 
   public enum Screenshot {
-    ON,
     OFF,
+    ON,
     ONLY_ON_FAILURE
   }
 
