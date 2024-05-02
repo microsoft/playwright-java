@@ -65,17 +65,21 @@ extends:
             done
           displayName: 'Create .sha256 files'
         
-        - task: EsrpRelease@4
+        - task: EsrpRelease@7
           inputs:
-            ConnectedServiceName: 'Playwright-ESRP'
-            Intent: 'PackageDistribution'
-            ContentType: 'Maven'
-            ContentSource: 'Folder'
-            FolderLocation: './local-build'
-            WaitForReleaseCompletion: true
-            Owners: 'yurys@microsoft.com'
-            Approvers: 'maxschmitt@microsoft.com'
-            ServiceEndpointUrl: 'https://api.esrp.microsoft.com'
-            MainPublisher: 'Playwright'
-            DomainTenantId: '72f988bf-86f1-41af-91ab-2d7cd011db47'
+            connectedservicename: 'Playwright-ESRP-Azure'
+            keyvaultname: 'pw-publishing-secrets'
+            authcertname: 'ESRP-Release-Auth'
+            signcertname: 'ESRP-Release-Sign'
+            clientid: '13434a40-7de4-4c23-81a3-d843dc81c2c5'
+            intent: 'PackageDistribution'
+            contenttype: 'Maven'
+            contentsource: 'folder'
+            folderlocation: './local-build'
+            waitforreleasecompletion: true
+            owners: 'yurys@microsoft.com'
+            approvers: 'maxschmitt@microsoft.com'
+            serviceendpointurl: 'https://api.esrp.microsoft.com'
+            mainpublisher: 'ESRPRELPACMAN'
+            domaintenantid: '72f988bf-86f1-41af-91ab-2d7cd011db47'
           displayName: 'ESRP Release to Maven'
