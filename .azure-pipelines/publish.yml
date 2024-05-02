@@ -80,6 +80,6 @@ extends:
             owners: 'yurys@microsoft.com'
             approvers: 'maxschmitt@microsoft.com'
             serviceendpointurl: 'https://api.esrp.microsoft.com'
-            mainpublisher: 'ESRPRELPACMAN'
+            mainpublisher: 'Playwright'
             domaintenantid: '72f988bf-86f1-41af-91ab-2d7cd011db47'
           displayName: 'ESRP Release to Maven'
