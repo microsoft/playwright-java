@@ -603,6 +603,9 @@ public class PageImpl extends ChannelOwner implements Page {
       LocatorHandler handler = locatorHandlers.get(uid);
       remove = handler != null && handler.call();
     } finally {
+      if (remove) {
+        locatorHandlers.remove(uid);
+      }
       JsonObject params = new JsonObject();
       params.addProperty("uid", uid);
       params.addProperty("remove", remove);
