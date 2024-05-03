@@ -55,16 +55,6 @@ extends:
           env:
             GPG_PASSPHRASE: $(GPG_PASSPHRASE) # secret variable has to be mapped to an env variable
         
-        - bash: |
-            for file in $(find snapshots -type f); do
-              echo "processing: $file"
-              if [[ $file =~ \.(md5|sha1|sha256)$ ]]; then
-                continue
-              fi
-              sha256sum "$file" | cut -f1 -d \ > "$file.sha256"
-            done
-          displayName: 'Create .sha256 files'
-        
         - task: EsrpRelease@7
           inputs:
             connectedservicename: 'Playwright-ESRP-Azure'
