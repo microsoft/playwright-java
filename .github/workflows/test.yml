@@ -78,6 +78,10 @@ jobs:
         run: scripts/download_driver_for_all_platforms.sh
       - name: Build & Install
         run: mvn -B install -D skipTests --no-transfer-progress
+      - name: Install MS Edge
+        if: matrix.browser-channel == 'msedge' && matrix.os == 'macos-latest'
+        shell: bash
+        run: mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install msedge" -f playwright/pom.xml 
       - name: Run tests
         run: mvn test --no-transfer-progress --fail-at-end -D org.slf4j.simpleLogger.showDateTime=true -D org.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss
         env:
