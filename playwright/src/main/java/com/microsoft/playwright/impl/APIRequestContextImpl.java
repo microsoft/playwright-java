@@ -107,7 +107,7 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
         }
       }
       if (bytes == null) {
-        params.addProperty("jsonData", gson().toJson(options.data));
+        params.addProperty("jsonData", jsonDataSerializer.toJson(options.data));
       } else {
         String base64 = Base64.getEncoder().encodeToString(bytes);
         params.addProperty("postData", base64);
