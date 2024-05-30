@@ -39,7 +39,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -75,6 +74,11 @@ class Serialization {
   static Gson gson() {
     return gson;
   }
+
+  static final Gson jsonDataSerializer = new GsonBuilder().disableHtmlEscaping()
+    .registerTypeAdapter(Date.class, new DateSerializer())
+    .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
+    .serializeNulls().create();
 
   static SerializedError serializeError(Throwable e) {
     SerializedError result = new SerializedError();

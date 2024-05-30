@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.text.ParseException;
@@ -516,7 +517,7 @@ public class TestBrowserContextFetch extends TestBase {
     testData.date = new Date(currentMillis);
     testData.localDateTime = testData.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     context.request().fetch(pageReq, RequestOptions.create().setMethod("POST").setData(testData));
-    assertEquals("{\"name\":\"foo\",\"localDateTime\":\"2022-12-23T06:14:58.818Z\",\"date\":\"2022-12-23T06:14:58.818Z\"}",
+    assertEquals("{\"name\":\"foo\",\"localDateTime\":\"2022-12-23T06:14:58.818Z\",\"date\":\"2022-12-23T06:14:58.818Z\",\"nullLocalDateTime\":null,\"nullDate\":null}",
       new String(req.get().postBody));
   }
 
@@ -795,5 +796,13 @@ public class TestBrowserContextFetch extends TestBase {
       APIResponse response = context.request().get(server.EMPTY_PAGE);
       assertEquals(401, response.status());
     }
+  }
+
+  @Test
+  void shouldSerializeNullValuesInPostData() throws ExecutionException, InterruptedException {
+    Future<Server.Request> req = server.futureRequest("/empty.html");
+    APIResponse response = context.request().post(server.EMPTY_PAGE, RequestOptions.create().setData(mapOf("foo", null)));
+    assertEquals(200, response.status());
+    assertEquals("{\"foo\":null}", new String(req.get().postBody));
   }
 }
