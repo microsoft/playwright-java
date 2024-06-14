@@ -236,7 +236,8 @@ public interface Mouse {
    */
   void up(UpOptions options);
   /**
-   * Dispatches a {@code wheel} event.
+   * Dispatches a {@code wheel} event. This method is usually used to manually scroll the page. See <a
+   * href="https://playwright.dev/java/docs/input#scrolling">scrolling</a> for alternative ways to scroll.
    *
    * <p> <strong>NOTE:</strong> Wheel events may cause scrolling if they are not handled, and this method does not wait for the scrolling to finish
    * before returning.

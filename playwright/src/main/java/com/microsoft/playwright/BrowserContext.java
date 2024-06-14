@@ -502,6 +502,12 @@ public interface BrowserContext extends AutoCloseable {
     }
   }
   /**
+   * Playwright has ability to mock clock and passage of time.
+   *
+   * @since v1.45
+   */
+  Clock clock();
+  /**
    * Adds cookies into this browser context. All pages within this context will have these cookies installed. Cookies can be
    * obtained via {@link com.microsoft.playwright.BrowserContext#cookies BrowserContext.cookies()}.
    *
@@ -863,21 +869,22 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @param permissions A permission or an array of permissions to grant. Permissions can be one of the following values:
    * <ul>
-   * <li> {@code "geolocation"}</li>
-   * <li> {@code "midi"}</li>
-   * <li> {@code "midi-sysex"} (system-exclusive midi)</li>
-   * <li> {@code "notifications"}</li>
-   * <li> {@code "camera"}</li>
-   * <li> {@code "microphone"}</li>
-   * <li> {@code "background-sync"}</li>
-   * <li> {@code "ambient-light-sensor"}</li>
    * <li> {@code "accelerometer"}</li>
-   * <li> {@code "gyroscope"}</li>
-   * <li> {@code "magnetometer"}</li>
    * <li> {@code "accessibility-events"}</li>
+   * <li> {@code "ambient-light-sensor"}</li>
+   * <li> {@code "background-sync"}</li>
+   * <li> {@code "camera"}</li>
    * <li> {@code "clipboard-read"}</li>
    * <li> {@code "clipboard-write"}</li>
+   * <li> {@code "geolocation"}</li>
+   * <li> {@code "gyroscope"}</li>
+   * <li> {@code "magnetometer"}</li>
+   * <li> {@code "microphone"}</li>
+   * <li> {@code "midi-sysex"} (system-exclusive midi)</li>
+   * <li> {@code "midi"}</li>
+   * <li> {@code "notifications"}</li>
    * <li> {@code "payment-handler"}</li>
+   * <li> {@code "storage-access"}</li>
    * </ul>
    * @since v1.8
    */
@@ -890,21 +897,22 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @param permissions A permission or an array of permissions to grant. Permissions can be one of the following values:
    * <ul>
-   * <li> {@code "geolocation"}</li>
-   * <li> {@code "midi"}</li>
-   * <li> {@code "midi-sysex"} (system-exclusive midi)</li>
-   * <li> {@code "notifications"}</li>
-   * <li> {@code "camera"}</li>
-   * <li> {@code "microphone"}</li>
-   * <li> {@code "background-sync"}</li>
-   * <li> {@code "ambient-light-sensor"}</li>
    * <li> {@code "accelerometer"}</li>
-   * <li> {@code "gyroscope"}</li>
-   * <li> {@code "magnetometer"}</li>
    * <li> {@code "accessibility-events"}</li>
+   * <li> {@code "ambient-light-sensor"}</li>
+   * <li> {@code "background-sync"}</li>
+   * <li> {@code "camera"}</li>
    * <li> {@code "clipboard-read"}</li>
    * <li> {@code "clipboard-write"}</li>
+   * <li> {@code "geolocation"}</li>
+   * <li> {@code "gyroscope"}</li>
+   * <li> {@code "magnetometer"}</li>
+   * <li> {@code "microphone"}</li>
+   * <li> {@code "midi-sysex"} (system-exclusive midi)</li>
+   * <li> {@code "midi"}</li>
+   * <li> {@code "notifications"}</li>
    * <li> {@code "payment-handler"}</li>
+   * <li> {@code "storage-access"}</li>
    * </ul>
    * @since v1.8
    */

@@ -1926,6 +1926,8 @@ public interface ElementHandle extends JSHandle {
    * <p> Throws when {@code elementHandle} does not point to an element <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Node/isConnected">connected</a> to a Document or a ShadowRoot.
    *
+   * <p> See <a href="https://playwright.dev/java/docs/input#scrolling">scrolling</a> for alternative ways to scroll.
+   *
    * @since v1.8
    */
   default void scrollIntoViewIfNeeded() {
@@ -1939,6 +1941,8 @@ public interface ElementHandle extends JSHandle {
    *
    * <p> Throws when {@code elementHandle} does not point to an element <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Node/isConnected">connected</a> to a Document or a ShadowRoot.
+   *
+   * <p> See <a href="https://playwright.dev/java/docs/input#scrolling">scrolling</a> for alternative ways to scroll.
    *
    * @since v1.8
    */
@@ -2371,7 +2375,8 @@ public interface ElementHandle extends JSHandle {
   void setChecked(boolean checked, SetCheckedOptions options);
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
+   * a {@code [webkitdirectory]} attribute, only a single directory path is supported.
    *
    * <p> This method expects {@code ElementHandle} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -2386,7 +2391,8 @@ public interface ElementHandle extends JSHandle {
   }
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
+   * a {@code [webkitdirectory]} attribute, only a single directory path is supported.
    *
    * <p> This method expects {@code ElementHandle} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -2399,7 +2405,8 @@ public interface ElementHandle extends JSHandle {
   void setInputFiles(Path files, SetInputFilesOptions options);
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
+   * a {@code [webkitdirectory]} attribute, only a single directory path is supported.
    *
    * <p> This method expects {@code ElementHandle} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -2414,7 +2421,8 @@ public interface ElementHandle extends JSHandle {
   }
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
+   * a {@code [webkitdirectory]} attribute, only a single directory path is supported.
    *
    * <p> This method expects {@code ElementHandle} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -2427,7 +2435,8 @@ public interface ElementHandle extends JSHandle {
   void setInputFiles(Path[] files, SetInputFilesOptions options);
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
+   * a {@code [webkitdirectory]} attribute, only a single directory path is supported.
    *
    * <p> This method expects {@code ElementHandle} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -2442,7 +2451,8 @@ public interface ElementHandle extends JSHandle {
   }
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
+   * a {@code [webkitdirectory]} attribute, only a single directory path is supported.
    *
    * <p> This method expects {@code ElementHandle} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -2455,7 +2465,8 @@ public interface ElementHandle extends JSHandle {
   void setInputFiles(FilePayload files, SetInputFilesOptions options);
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
+   * a {@code [webkitdirectory]} attribute, only a single directory path is supported.
    *
    * <p> This method expects {@code ElementHandle} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -2470,7 +2481,8 @@ public interface ElementHandle extends JSHandle {
   }
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
+   * a {@code [webkitdirectory]} attribute, only a single directory path is supported.
    *
    * <p> This method expects {@code ElementHandle} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is

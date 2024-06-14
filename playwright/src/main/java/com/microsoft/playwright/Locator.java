@@ -4372,6 +4372,8 @@ public interface Locator {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">IntersectionObserver</a>'s {@code
    * ratio}.
    *
+   * <p> See <a href="https://playwright.dev/java/docs/input#scrolling">scrolling</a> for alternative ways to scroll.
+   *
    * @since v1.14
    */
   default void scrollIntoViewIfNeeded() {
@@ -4382,6 +4384,8 @@ public interface Locator {
    * scroll element into view, unless it is completely visible as defined by <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">IntersectionObserver</a>'s {@code
    * ratio}.
+   *
+   * <p> See <a href="https://playwright.dev/java/docs/input#scrolling">scrolling</a> for alternative ways to scroll.
    *
    * @since v1.14
    */
@@ -4879,7 +4883,8 @@ public interface Locator {
    */
   void setChecked(boolean checked, SetCheckedOptions options);
   /**
-   * Upload file or multiple files into {@code <input type=file>}.
+   * Upload file or multiple files into {@code <input type=file>}. For inputs with a {@code [webkitdirectory]} attribute,
+   * only a single directory path is supported.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -4888,6 +4893,9 @@ public interface Locator {
    *
    * // Select multiple files
    * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Select a directory
+   * page.getByLabel("Upload directory").setInputFiles(Paths.get("mydir"));
    *
    * // Remove all the selected files
    * page.getByLabel("Upload file").setInputFiles(new Path[0]);
@@ -4914,7 +4922,8 @@ public interface Locator {
     setInputFiles(files, null);
   }
   /**
-   * Upload file or multiple files into {@code <input type=file>}.
+   * Upload file or multiple files into {@code <input type=file>}. For inputs with a {@code [webkitdirectory]} attribute,
+   * only a single directory path is supported.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -4923,6 +4932,9 @@ public interface Locator {
    *
    * // Select multiple files
    * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Select a directory
+   * page.getByLabel("Upload directory").setInputFiles(Paths.get("mydir"));
    *
    * // Remove all the selected files
    * page.getByLabel("Upload file").setInputFiles(new Path[0]);
@@ -4947,7 +4959,8 @@ public interface Locator {
    */
   void setInputFiles(Path files, SetInputFilesOptions options);
   /**
-   * Upload file or multiple files into {@code <input type=file>}.
+   * Upload file or multiple files into {@code <input type=file>}. For inputs with a {@code [webkitdirectory]} attribute,
+   * only a single directory path is supported.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -4956,6 +4969,9 @@ public interface Locator {
    *
    * // Select multiple files
    * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Select a directory
+   * page.getByLabel("Upload directory").setInputFiles(Paths.get("mydir"));
    *
    * // Remove all the selected files
    * page.getByLabel("Upload file").setInputFiles(new Path[0]);
@@ -4982,7 +4998,8 @@ public interface Locator {
     setInputFiles(files, null);
   }
   /**
-   * Upload file or multiple files into {@code <input type=file>}.
+   * Upload file or multiple files into {@code <input type=file>}. For inputs with a {@code [webkitdirectory]} attribute,
+   * only a single directory path is supported.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -4991,6 +5008,9 @@ public interface Locator {
    *
    * // Select multiple files
    * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Select a directory
+   * page.getByLabel("Upload directory").setInputFiles(Paths.get("mydir"));
    *
    * // Remove all the selected files
    * page.getByLabel("Upload file").setInputFiles(new Path[0]);
@@ -5015,7 +5035,8 @@ public interface Locator {
    */
   void setInputFiles(Path[] files, SetInputFilesOptions options);
   /**
-   * Upload file or multiple files into {@code <input type=file>}.
+   * Upload file or multiple files into {@code <input type=file>}. For inputs with a {@code [webkitdirectory]} attribute,
+   * only a single directory path is supported.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -5024,6 +5045,9 @@ public interface Locator {
    *
    * // Select multiple files
    * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Select a directory
+   * page.getByLabel("Upload directory").setInputFiles(Paths.get("mydir"));
    *
    * // Remove all the selected files
    * page.getByLabel("Upload file").setInputFiles(new Path[0]);
@@ -5050,7 +5074,8 @@ public interface Locator {
     setInputFiles(files, null);
   }
   /**
-   * Upload file or multiple files into {@code <input type=file>}.
+   * Upload file or multiple files into {@code <input type=file>}. For inputs with a {@code [webkitdirectory]} attribute,
+   * only a single directory path is supported.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -5059,6 +5084,9 @@ public interface Locator {
    *
    * // Select multiple files
    * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Select a directory
+   * page.getByLabel("Upload directory").setInputFiles(Paths.get("mydir"));
    *
    * // Remove all the selected files
    * page.getByLabel("Upload file").setInputFiles(new Path[0]);
@@ -5083,7 +5111,8 @@ public interface Locator {
    */
   void setInputFiles(FilePayload files, SetInputFilesOptions options);
   /**
-   * Upload file or multiple files into {@code <input type=file>}.
+   * Upload file or multiple files into {@code <input type=file>}. For inputs with a {@code [webkitdirectory]} attribute,
+   * only a single directory path is supported.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -5092,6 +5121,9 @@ public interface Locator {
    *
    * // Select multiple files
    * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Select a directory
+   * page.getByLabel("Upload directory").setInputFiles(Paths.get("mydir"));
    *
    * // Remove all the selected files
    * page.getByLabel("Upload file").setInputFiles(new Path[0]);
@@ -5118,7 +5150,8 @@ public interface Locator {
     setInputFiles(files, null);
   }
   /**
-   * Upload file or multiple files into {@code <input type=file>}.
+   * Upload file or multiple files into {@code <input type=file>}. For inputs with a {@code [webkitdirectory]} attribute,
+   * only a single directory path is supported.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -5127,6 +5160,9 @@ public interface Locator {
    *
    * // Select multiple files
    * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Select a directory
+   * page.getByLabel("Upload directory").setInputFiles(Paths.get("mydir"));
    *
    * // Remove all the selected files
    * page.getByLabel("Upload file").setInputFiles(new Path[0]);
