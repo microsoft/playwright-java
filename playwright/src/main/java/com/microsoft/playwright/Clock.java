@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import java.util.Date;
 
 /**
  * Accurately simulating time-dependent behavior is essential for verifying the correctness of applications. Learn more

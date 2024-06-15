@@ -231,6 +231,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     listeners.remove(EventType.RESPONSE, handler);
   }
 
+  @Override
+  public Clock clock() {
+    return null;
+  }
+
   private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Predicate<T> predicate, Double timeout) {
     List<Waitable<T>> waitables = new ArrayList<>();
     waitables.add(new WaitableEvent<>(listeners, eventType, predicate));

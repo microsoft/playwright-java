@@ -54,6 +54,7 @@ class Serialization {
     .registerTypeAdapter(ColorScheme.class, new ToLowerCaseAndDashSerializer<ColorScheme>())
     .registerTypeAdapter(Media.class, new ToLowerCaseSerializer<Media>())
     .registerTypeAdapter(ForcedColors.class, new ToLowerCaseSerializer<ForcedColors>())
+    .registerTypeAdapter(HttpCredentialsSend.class, new ToLowerCaseSerializer<HttpCredentialsSend>())
     .registerTypeAdapter(ReducedMotion.class, new ToLowerCaseAndDashSerializer<ReducedMotion>())
     .registerTypeAdapter(ScreenshotAnimations.class, new ToLowerCaseSerializer<ScreenshotAnimations>())
     .registerTypeAdapter(ScreenshotType.class, new ToLowerCaseSerializer<ScreenshotType>())

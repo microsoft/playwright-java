@@ -18,6 +18,7 @@ package com.microsoft.playwright;
 
 import com.google.gson.Gson;
 import com.microsoft.playwright.options.HttpCredentials;
+import com.microsoft.playwright.options.HttpCredentialsSend;
 import com.microsoft.playwright.options.HttpHeader;
 import com.microsoft.playwright.options.RequestOptions;
 import org.junit.jupiter.api.Disabled;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -490,4 +492,27 @@ public class TestGlobalFetch extends TestBase {
     assertEquals(401, response.status());
   }
 
+  @Test
+  void shouldSupportHTTPCredentialsSendImmediately() throws InterruptedException, ExecutionException {
+    APIRequestContext request = playwright.request().newContext(new APIRequest.NewContextOptions()
+      .setHttpCredentials(new HttpCredentials("user", "pass")
+        .setOrigin(server.PREFIX.toUpperCase())
+        .setSend(HttpCredentialsSend.ALWAYS)));
+
+    Future<Server.Request> serverRequestFuture = server.futureRequest("/empty.html");
+    APIResponse response = request.get(server.EMPTY_PAGE);
+    assertEquals("Basic " + Base64.getEncoder().encodeToString("user:pass".getBytes()),
+      serverRequestFuture.get().headers.getFirst("authorization"));
+    assertEquals(200, response.status());
+
+    // Second request and response to another origin
+    serverRequestFuture = server.futureRequest("/empty.html");
+    response = request.get(server.CROSS_PROCESS_PREFIX + "/empty.html");
+
+    // Not sent to another origin
+    assertNull(serverRequestFuture.get().headers.get("authorization"));
+    assertEquals(200, response.status());
+
+    request.dispose();
+  }
 }

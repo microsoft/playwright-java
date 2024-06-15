@@ -805,4 +805,46 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals(200, response.status());
     assertEquals("{\"foo\":null}", new String(req.get().postBody));
   }
+
+    @Test
+    void shouldSupportHTTPCredentialsSendImmediatelyForNewContext() throws ExecutionException, InterruptedException {
+      Browser.NewContextOptions options = new Browser.NewContextOptions().setHttpCredentials(
+          new HttpCredentials("user", "pass")
+            .setOrigin(server.PREFIX.toUpperCase())
+            .setSend(HttpCredentialsSend.ALWAYS));
+      try (BrowserContext context = browser.newContext(options)) {
+        Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
+        APIResponse response = context.request().get(server.EMPTY_PAGE);
+        assertEquals("Basic " + java.util.Base64.getEncoder().encodeToString("user:pass".getBytes()),
+          serverRequest.get().headers.getFirst("authorization"));
+        assertEquals(200, response.status());
+
+        serverRequest = server.futureRequest("/empty.html");
+        response = context.request().get(server.CROSS_PROCESS_PREFIX + "/empty.html");
+        // Not sent to another origin.
+        assertNull(serverRequest.get().headers.get("authorization"));
+        assertEquals(200, response.status());
+      }
+    }
+
+    @Test
+    void shouldSupportHTTPCredentialsSendImmediatelyForBrowserNewPage() throws ExecutionException, InterruptedException {
+      Browser.NewPageOptions options = new Browser.NewPageOptions().setHttpCredentials(
+        new HttpCredentials("user", "pass")
+          .setOrigin(server.PREFIX.toUpperCase())
+          .setSend(HttpCredentialsSend.ALWAYS));
+      try (Page newPage = browser.newPage(options)) {
+        Future<Server.Request> serverRequest = server.futureRequest("/empty.html");
+        APIResponse response = newPage.request().get(server.EMPTY_PAGE);
+        assertEquals("Basic " + java.util.Base64.getEncoder().encodeToString("user:pass".getBytes()),
+          serverRequest.get().headers.getFirst("authorization"));
+        assertEquals(200, response.status());
+
+        serverRequest = server.futureRequest("/empty.html");
+        response = newPage.request().get(server.CROSS_PROCESS_PREFIX + "/empty.html");
+        // Not sent to another origin.
+        assertNull(serverRequest.get().headers.get("authorization"));
+        assertEquals(200, response.status());
+      }
+    }
 }

@@ -49,7 +49,7 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
   }
 
   @Override
-  public void dispose() {
+  public void dispose(DisposeOptions options) {
     withLogging("APIRequestContext.dispose", () -> sendMessage("dispose"));
   }
 
