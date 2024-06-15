@@ -847,4 +847,11 @@ public class TestBrowserContextFetch extends TestBase {
         assertEquals(200, response.status());
       }
     }
+
+  @Test
+  void shouldNotWorkAfterContextDispose() {
+    context.close(new BrowserContext.CloseOptions().setReason("Test ended."));
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.request().get(server.EMPTY_PAGE));
+    assertTrue(e.getMessage().contains("Test ended."), e.getMessage());
+  }
 }

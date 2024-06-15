@@ -515,4 +515,12 @@ public class TestGlobalFetch extends TestBase {
 
     request.dispose();
   }
+
+  @Test
+  void shouldSupportDisposeReason() {
+    APIRequestContext request = playwright.request().newContext();
+    request.dispose(new APIRequestContext.DisposeOptions().setReason("My reason"));
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> request.get(server.EMPTY_PAGE));
+    assertTrue(e.getMessage().contains("My reason"), e.getMessage());
+  }
 }

@@ -36,8 +36,7 @@ import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.addHarUrlFilter;
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
-import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
+import static com.microsoft.playwright.impl.Utils.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
@@ -289,6 +288,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         options = new CloseOptions();
       }
       closeReason = options.reason;
+      request.dispose(convertType(options, APIRequestContext.DisposeOptions.class));
       for (Map.Entry<String, HarRecorder> entry : harRecorders.entrySet()) {
         JsonObject params = new JsonObject();
         params.addProperty("harId", entry.getKey());
