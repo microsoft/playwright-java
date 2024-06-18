@@ -190,8 +190,9 @@ public class Utils {
       JsonArray jsonStreams = copyLocalToTempFiles(context, localPaths, writableStreams);
       if (json.has("rootDir")) {
         params.add("directoryStream", json.get("rootDir"));
+      } else {
+        params.add("streams", jsonStreams);
       }
-      params.add("streams", jsonStreams);
     } else {
       if (!localPaths.isEmpty()) {
         params.add("localPaths", toJsonArray(localPaths.toArray(new Path[0])));

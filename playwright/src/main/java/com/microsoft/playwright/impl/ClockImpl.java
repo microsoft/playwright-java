@@ -121,7 +121,7 @@ class ClockImpl implements Clock {
     if (time instanceof Long) {
       params.addProperty("timeNumber", (Long) time);
     } else if (time instanceof Date) {
-      params.addProperty("timeString", ((Date) time).getTime());
+      params.addProperty("timeNumber", ((Date) time).getTime());
     } else if (time instanceof String) {
       params.addProperty("timeString", (String) time);
     }

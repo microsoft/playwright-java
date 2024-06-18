@@ -447,7 +447,10 @@ public class TestPageSetInputFiles extends TestBase {
     writeFile(dir.resolve("sub-dir").resolve("really.txt"), "sub-dir file content");
     input.setInputFiles(dir);
     List<String> webkitRelativePaths = (List<String>) input.evaluate("e => [...e.files].map(f => f.webkitRelativePath)");
-    assertEquals(asList("file-upload-test/file1.txt", "file-upload-test/file2", "file-upload-test/sub-dir/really.txt"), webkitRelativePaths);
+
+    List<String> relativePathsSorted = new ArrayList<>(webkitRelativePaths);
+    relativePathsSorted.sort(String::compareTo);
+    assertEquals(asList("file-upload-test/file1.txt", "file-upload-test/file2", "file-upload-test/sub-dir/really.txt"), relativePathsSorted);
 
     for (int i = 0; i < webkitRelativePaths.size(); i++) {
       String relativePath = webkitRelativePaths.get(i);
