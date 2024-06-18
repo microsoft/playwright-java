@@ -204,15 +204,19 @@ public class Utils {
 
   private static Path resolvePathsAndDirectoryForInputFiles(Path[] items, List<Path> outLocalPaths) {
     Path localDirectory = null;
-    for (Path item : items) {
-      if (Files.isDirectory(item)) {
-        if (localDirectory != null) {
-          throw new PlaywrightException("Multiple directories are not supported");
+    try {
+      for (Path item : items) {
+        if (Files.isDirectory(item)) {
+          if (localDirectory != null) {
+            throw new PlaywrightException("Multiple directories are not supported");
+          }
+          localDirectory = item.toRealPath();
+        } else {
+          outLocalPaths.add(item.toRealPath());
         }
-        localDirectory = item.toAbsolutePath();
-      } else {
-        outLocalPaths.add(item.toAbsolutePath());
       }
+    } catch (IOException e) {
+      throw new PlaywrightException("Cannot get absolute file path",  e);
     }
     if (!outLocalPaths.isEmpty() && localDirectory != null) {
       throw new PlaywrightException("File paths must be all files or a single directory");
