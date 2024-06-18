@@ -58,7 +58,6 @@ class APIRequestImpl implements APIRequest {
       options.storageState = null;
     }
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
-    System.out.println(params.toString());
     if (storageState != null) {
       params.add("storageState", storageState);
     }
