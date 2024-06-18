@@ -170,4 +170,16 @@ public class TestBase {
     // for firefox version >= 103 'None' is used.
     return SameSiteAttribute.NONE;
   }
+
+  static boolean chromiumVersionLessThan(String a, String b) {
+    String[] aParts = a.split("\\.");
+    String[] bParts = b.split("\\.");
+    for (int i = 0; i < 4; i++) {
+      int aPart = Integer.parseInt(aParts[i]);
+      int bPart = Integer.parseInt(bParts[i]);
+      if (aPart > bPart) return false;
+      if (aPart < bPart) return true;
+    }
+    return false;
+  }
 }
