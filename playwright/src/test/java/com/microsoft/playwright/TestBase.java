@@ -42,9 +42,11 @@ public class TestBase {
   Browser browser;
 
   static final boolean isMac = Utils.getOS() == Utils.OS.MAC;
+  static final boolean isLinux = Utils.getOS() == Utils.OS.LINUX;
   static final boolean isWindows = Utils.getOS() == Utils.OS.WINDOWS;
   static final boolean headful;
   static final SameSiteAttribute defaultSameSiteCookieValue;
+
   static {
     String headfulEnv = System.getenv("HEADFUL");
     headful = headfulEnv != null && !"0".equals(headfulEnv) && !"false".equals(headfulEnv);
@@ -160,13 +162,15 @@ public class TestBase {
   void waitForCondition(BooleanSupplier predicate) {
     waitForCondition(predicate, 5_000);
   }
+
   void waitForCondition(BooleanSupplier predicate, int timeoutMs) {
     page.waitForCondition(predicate, new Page.WaitForConditionOptions().setTimeout(timeoutMs));
   }
 
   private static SameSiteAttribute initSameSiteAttribute() {
     if (isChromium()) return SameSiteAttribute.LAX;
-    if (isWebKit()) return SameSiteAttribute.NONE;
+    if (isWebKit() && isLinux) return SameSiteAttribute.LAX;
+    if (isWebKit() && !isLinux) return SameSiteAttribute.NONE;
     // for firefox version >= 103 'None' is used.
     return SameSiteAttribute.NONE;
   }
