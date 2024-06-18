@@ -21,7 +21,6 @@ import com.microsoft.playwright.options.FilePayload;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -428,6 +427,78 @@ public class TestPageSetInputFiles extends TestBase {
     // On Linux browser sometimes reduces the timestamp by 1ms: 1696272058110.0715  -> 1696272058109 or even
     // rounds it to seconds in WebKit: 1696272058110 -> 1696272058000.
     assertTrue(Math.abs(timestamps.get(0) - expected.toMillis()) < 1000, "expected: " + expected.toMillis() + "; actual: " + timestamps.get(0));
+  }
+
+  static void writeFile(Path file, String content) throws IOException {
+    try (Writer stream = new OutputStreamWriter(Files.newOutputStream(file))) {
+        stream.write(content);
+    }
+  }
+
+  @Test
+  void shouldUploadAFolder(@TempDir Path tmpDir) throws IOException {
+    page.navigate(server.PREFIX + "/input/folderupload.html");
+    Locator input = page.locator("input[name=\"file1\"]");
+    Path dir = tmpDir.resolve("file-upload-test");
+    Files.createDirectories(dir);
+    writeFile(dir.resolve("file1.txt"), "file1 content");
+    writeFile(dir.resolve("file2"), "file2 content");
+    Files.createDirectories(dir.resolve("sub-dir"));
+    writeFile(dir.resolve("sub-dir").resolve("really.txt"), "sub-dir file content");
+    input.setInputFiles(dir);
+    List<String> webkitRelativePaths = (List<String>) input.evaluate("e => [...e.files].map(f => f.webkitRelativePath)");
+    assertEquals(asList("file-upload-test/file1.txt", "file-upload-test/file2", "file-upload-test/sub-dir/really.txt"), webkitRelativePaths);
+
+    for (int i = 0; i < webkitRelativePaths.size(); i++) {
+      String relativePath = webkitRelativePaths.get(i);
+      Object content = input.evaluate("(e, i) => {\n" +
+        "      const reader = new FileReader();\n" +
+        "      const promise = new Promise(fulfill => reader.onload = fulfill);\n" +
+        "      reader.readAsText(e.files[i]);\n" +
+        "      return promise.then(() => reader.result);\n" +
+        "    }", i);
+      String expectedContent = new String(Files.readAllBytes(tmpDir.resolve(relativePath)));
+      assertEquals(expectedContent, content);
+    }
+  }
+
+  @Test
+  void shouldUploadAFolderAndThrowForMultipleDirectories() throws IOException {
+    page.navigate(server.PREFIX + "/input/folderupload.html");
+    Locator input = page.locator("input[name=\"file1\"]");
+    Path dir = Paths.get("file-upload-test"); // Adjust path as necessary
+    Files.createDirectories(dir.resolve("folder1"));
+    writeFile(dir.resolve("folder1").resolve("file1.txt"), "file1 content");
+    Files.createDirectories(dir.resolve("folder2"));
+    writeFile(dir.resolve("folder2").resolve("file2.txt"), "file2 content");
+    PlaywrightException e = assertThrows(PlaywrightException.class,
+      () -> input.setInputFiles(new Path[]{dir.resolve("folder1"), dir.resolve("folder2")}));
+    assertTrue(e.getMessage().contains("Multiple directories are not supported"), e.getMessage());
+  }
+
+  @Test
+  void shouldThrowIfADirectoryAndFilesArePassed() throws IOException {
+    // Skipping conditions based on environment not directly translatable to Java; needs custom implementation
+    page.navigate(server.PREFIX + "/input/folderupload.html");
+    Locator input = page.locator("input[name=\"file1\"]");
+    Path dir = Paths.get("file-upload-test"); // Adjust path as necessary
+    Files.createDirectories(dir.resolve("folder1"));
+    writeFile(dir.resolve("folder1").resolve("file1.txt"), "file1 content");
+    PlaywrightException e = assertThrows(PlaywrightException.class,
+      () -> input.setInputFiles(new Path[]{ dir.resolve("folder1"), dir.resolve("folder1").resolve("file1.txt") }));
+    assertTrue(e.getMessage().contains("File paths must be all files or a single directory"), e.getMessage());
+  }
+
+  @Test
+  void shouldThrowWhenUploadingAFolderInANormalFileUploadInput() throws IOException {
+    page.navigate(server.PREFIX + "/input/fileupload.html");
+    Locator input = page.locator("input[name=\"file1\"]");
+    Path dir = Paths.get("file-upload-test"); // Adjust path as necessary
+    Files.createDirectories(dir);
+    writeFile(dir.resolve("file1.txt"), "file1 content");
+    PlaywrightException e = assertThrows(PlaywrightException.class,
+      () -> input.setInputFiles(dir));
+    assertTrue(e.getMessage().contains("File input does not support directories, pass individual files instead"), e.getMessage());
   }
 }
 

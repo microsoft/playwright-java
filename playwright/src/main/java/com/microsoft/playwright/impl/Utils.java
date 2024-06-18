@@ -17,6 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.FilePayload;
@@ -33,6 +34,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.impl.Serialization.toJsonArray;
 
@@ -173,40 +175,100 @@ public class Utils {
     return mimeType;
   }
 
-  static void addFilePathUploadParams(Path[] files, JsonObject params, BrowserContextImpl context) {
-    if (files.length == 0) {
+  static void addFilePathUploadParams(Path[] items, JsonObject params, BrowserContextImpl context) {
+    List<Path> localPaths = new ArrayList<>();
+    Path localDirectory = resolvePathsAndDirectoryForInputFiles(items, localPaths);
+    if (items.length == 0) {
       // FIXME: shouldBeAbleToResetSelectedFilesWithEmptyFileList tesst hangs in Chromium if we pass empty paths list.
       params.add("payloads", new JsonArray());
     } else if (context.connection.isRemote) {
-      List<WritableStream> streams = new ArrayList<>();
-      JsonArray jsonStreams = new JsonArray();
-      for (Path path : files) {
-        long lastModifiedMs;
-        try {
-          lastModifiedMs = Files.getLastModifiedTime(path).toMillis();
-        } catch (IOException e) {
-          throw new PlaywrightException("Cannot read file timestamp: " + path, e);
-        }
-        WritableStream temp = context.createTempFile(path.getFileName().toString(), lastModifiedMs);
-        streams.add(temp);
-        try (OutputStream out = temp.stream()) {
-          Files.copy(path, out);
-        } catch (IOException e) {
-          throw new PlaywrightException("Failed to copy file to remote server.", e);
-        }
-        jsonStreams.add(temp.toProtocolRef());
+      if (localDirectory != null) {
+        localPaths = collectFiles(localDirectory);
+      }
+      JsonObject json = createTempFiles(context, localDirectory, localPaths);
+      JsonArray writableStreams = json.getAsJsonArray("writableStreams");
+      JsonArray jsonStreams = copyLocalToTempFiles(context, localPaths, writableStreams);
+      if (json.has("rootDir")) {
+        params.add("directoryStream", json.get("rootDir"));
       }
       params.add("streams", jsonStreams);
     } else {
-      Path[] absolute = Arrays.stream(files).map(f -> {
-        try {
-          return f.toRealPath();
-        } catch (IOException e) {
-          throw new PlaywrightException("Cannot get absolute file path", e);
-        }
-      }).toArray(Path[]::new);
-      params.add("localPaths", toJsonArray(absolute));
+      if (!localPaths.isEmpty()) {
+        params.add("localPaths", toJsonArray(localPaths.toArray(new Path[0])));
+      }
+      if (localDirectory != null) {
+        params.addProperty("localDirectory", localDirectory.toString());
+      }
     }
+  }
+
+  private static Path resolvePathsAndDirectoryForInputFiles(Path[] items, List<Path> outLocalPaths) {
+    Path localDirectory = null;
+    for (Path item : items) {
+      if (Files.isDirectory(item)) {
+        if (localDirectory != null) {
+          throw new PlaywrightException("Multiple directories are not supported");
+        }
+        localDirectory = item.toAbsolutePath();
+      } else {
+        outLocalPaths.add(item.toAbsolutePath());
+      }
+    }
+    if (!outLocalPaths.isEmpty() && localDirectory != null) {
+      throw new PlaywrightException("File paths must be all files or a single directory");
+    }
+    return localDirectory;
+  }
+
+  private static List<Path> collectFiles(Path localDirectory) {
+    try {
+      return Files.walk(localDirectory).filter(e -> Files.isRegularFile(e)).collect(Collectors.toList());
+    } catch (IOException e) {
+      throw new PlaywrightException("Failed to traverse directory", e);
+    }
+  }
+
+  private static JsonArray copyLocalToTempFiles(BrowserContextImpl context, List<Path> localPaths, JsonArray writableStreams) {
+    JsonArray jsonStreams = new JsonArray();
+    for (int i = 0; i < localPaths.size(); i++) {
+      JsonObject jsonStream = writableStreams.get(i).getAsJsonObject();
+      WritableStream temp = context.connection.getExistingObject(jsonStream.get("guid").getAsString());
+      try (OutputStream out = temp.stream()) {
+        Files.copy(localPaths.get(i), out);
+      } catch (IOException e) {
+        throw new PlaywrightException("Failed to copy file to remote server.", e);
+      }
+      jsonStreams.add(temp.toProtocolRef());
+    }
+    return jsonStreams;
+  }
+
+  private static JsonObject createTempFiles(BrowserContextImpl context, Path localDirectory, List<Path> localPaths) {
+    JsonObject tempFilesParams = new JsonObject();
+    if (localDirectory != null) {
+      tempFilesParams.addProperty("rootDirName", localDirectory.getFileName().toString());
+    }
+    JsonArray items = new JsonArray();
+    for (Path path : localPaths) {
+      long lastModifiedMs;
+      try {
+        lastModifiedMs = Files.getLastModifiedTime(path).toMillis();
+      } catch (IOException e) {
+        throw new PlaywrightException("Cannot read file timestamp: " + path, e);
+      }
+      Path name;
+      if (localDirectory == null) {
+        name = path.getFileName();
+      } else {
+        name = localDirectory.relativize(path);
+      }
+      JsonObject item = new JsonObject();
+      item.addProperty("name", name.toString());
+      item.addProperty("lastModifiedMs", lastModifiedMs);
+      items.add(item);
+    }
+    tempFilesParams.add("items", items);
+    return context.sendMessage("createTempFiles", tempFilesParams).getAsJsonObject();
   }
 
   static void checkFilePayloadSize(FilePayload[] files) {

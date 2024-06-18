@@ -32,6 +32,7 @@ public class TestPageCheck extends TestBase {
     BoundingBox box = page.querySelector("text=Click me").boundingBox();
     page.check("text=Click me", new Page.CheckOptions().setPosition(box.width - 10, 2));
     assertEquals(true, page.evalOnSelector("input", "input => input.checked"));
+    page.unrouteAll();
   }
 
   @Test
