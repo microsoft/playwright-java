@@ -432,8 +432,8 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public Clock clock() {
-    return null;
+  public ClockImpl clock() {
+    return browserContext.clock();
   }
 
   @Override

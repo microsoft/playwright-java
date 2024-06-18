@@ -35,7 +35,7 @@ public interface Clock {
     /**
      * Time to initialize with, current system time by default.
      */
-    public InstallOptions setTime(int time) {
+    public InstallOptions setTime(long time) {
       this.time = time;
       return this;
     }
@@ -68,7 +68,7 @@ public interface Clock {
    * for eight seconds, "01:00" for one minute and "02:34:10" for two hours, 34 minutes and ten seconds.
    * @since v1.45
    */
-  void fastForward(int ticks);
+  void fastForward(long ticks);
   /**
    * Advance the clock by jumping forward in time. Only fires due timers at most once. This is equivalent to user closing the
    * laptop lid for a while and reopening it later, after given time.
@@ -143,7 +143,7 @@ public interface Clock {
    * for eight seconds, "01:00" for one minute and "02:34:10" for two hours, 34 minutes and ten seconds.
    * @since v1.45
    */
-  void runFor(int ticks);
+  void runFor(long ticks);
   /**
    * Advance the clock, firing all the time-related callbacks.
    *
@@ -175,7 +175,7 @@ public interface Clock {
    *
    * @since v1.45
    */
-  void pauseAt(int time);
+  void pauseAt(long time);
   /**
    * Advance the clock by jumping forward in time and pause the time. Once this method is called, no timers are fired unless
    * {@link com.microsoft.playwright.Clock#runFor Clock.runFor()}, {@link com.microsoft.playwright.Clock#fastForward
@@ -231,7 +231,7 @@ public interface Clock {
    * @param time Time to be set.
    * @since v1.45
    */
-  void setFixedTime(int time);
+  void setFixedTime(long time);
   /**
    * Makes {@code Date.now} and {@code new Date()} return fixed fake time at all times, keeps all the timers running.
    *
@@ -272,7 +272,7 @@ public interface Clock {
    *
    * @since v1.45
    */
-  void setSystemTime(int time);
+  void setSystemTime(long time);
   /**
    * Sets current system time but does not trigger any timers.
    *

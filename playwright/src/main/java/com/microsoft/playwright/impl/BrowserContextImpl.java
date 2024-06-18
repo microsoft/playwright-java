@@ -45,6 +45,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private final BrowserImpl browser;
   private final TracingImpl tracing;
   private final APIRequestContextImpl request;
+  private final ClockImpl clock;
   final List<PageImpl> pages = new ArrayList<>();
   final List<PageImpl> backgroundPages = new ArrayList<>();
 
@@ -103,6 +104,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
     tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());
     request = connection.getExistingObject(initializer.getAsJsonObject("requestContext").get("guid").getAsString());
+    clock = new ClockImpl(this);
     closePromise = new WaitableEvent<>(listeners, EventType.CLOSE);
   }
 
@@ -231,8 +233,8 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   }
 
   @Override
-  public Clock clock() {
-    return null;
+  public ClockImpl clock() {
+    return clock;
   }
 
   private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Predicate<T> predicate, Double timeout) {
