@@ -122,7 +122,7 @@ public class MobileAndGeolocation {
         .setPermissions(asList("geolocation")));
       Page page = context.newPage();
       page.navigate("https://www.openstreetmap.org/");
-      page.click("a[data-original-title=\"Show My Location\"]");
+      page.click("a[data-bs-original-title=\"Show My Location\"]");
       page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("colosseum-pixel2.png")));
     }
   }
