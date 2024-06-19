@@ -506,7 +506,7 @@ public class TestBrowserTypeConnect extends TestBase {
   }
 
   @Test
-  void setInputFilesDhouldPreserveLastModifiedTimestamp() throws IOException {
+  void setInputFilesShouldPreserveLastModifiedTimestamp() throws IOException {
     page.setContent("<input type=file multiple=true/>");
     Locator input = page.locator("input");
     input.setInputFiles(FILE_TO_UPLOAD);

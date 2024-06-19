@@ -3793,6 +3793,12 @@ public interface Page extends AutoCloseable {
     }
   }
   /**
+   * Playwright has ability to mock clock and passage of time.
+   *
+   * @since v1.45
+   */
+  Clock clock();
+  /**
    * Adds a script which would be evaluated in one of the following scenarios:
    * <ul>
    * <li> Whenever the page is navigated.</li>
@@ -7200,7 +7206,8 @@ public interface Page extends AutoCloseable {
   void setExtraHTTPHeaders(Map<String, String> headers);
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
+   * a {@code [webkitdirectory]} attribute, only a single directory path is supported.
    *
    * <p> This method expects {@code selector} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -7216,7 +7223,8 @@ public interface Page extends AutoCloseable {
   }
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
+   * a {@code [webkitdirectory]} attribute, only a single directory path is supported.
    *
    * <p> This method expects {@code selector} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -7230,7 +7238,8 @@ public interface Page extends AutoCloseable {
   void setInputFiles(String selector, Path files, SetInputFilesOptions options);
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
+   * a {@code [webkitdirectory]} attribute, only a single directory path is supported.
    *
    * <p> This method expects {@code selector} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -7246,7 +7255,8 @@ public interface Page extends AutoCloseable {
   }
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
+   * a {@code [webkitdirectory]} attribute, only a single directory path is supported.
    *
    * <p> This method expects {@code selector} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -7260,7 +7270,8 @@ public interface Page extends AutoCloseable {
   void setInputFiles(String selector, Path[] files, SetInputFilesOptions options);
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
+   * a {@code [webkitdirectory]} attribute, only a single directory path is supported.
    *
    * <p> This method expects {@code selector} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -7276,7 +7287,8 @@ public interface Page extends AutoCloseable {
   }
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
+   * a {@code [webkitdirectory]} attribute, only a single directory path is supported.
    *
    * <p> This method expects {@code selector} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -7290,7 +7302,8 @@ public interface Page extends AutoCloseable {
   void setInputFiles(String selector, FilePayload files, SetInputFilesOptions options);
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
+   * a {@code [webkitdirectory]} attribute, only a single directory path is supported.
    *
    * <p> This method expects {@code selector} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -7306,7 +7319,8 @@ public interface Page extends AutoCloseable {
   }
   /**
    * Sets the value of the file input to these file paths or files. If some of the {@code filePaths} are relative paths, then
-   * they are resolved relative to the current working directory. For empty array, clears the selected files.
+   * they are resolved relative to the current working directory. For empty array, clears the selected files. For inputs with
+   * a {@code [webkitdirectory]} attribute, only a single directory path is supported.
    *
    * <p> This method expects {@code selector} to point to an <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input">input element</a>. However, if the element is
@@ -8084,7 +8098,7 @@ public interface Page extends AutoCloseable {
    * });
    *
    * // Waits for the next response matching some conditions
-   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
+   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200 && "GET".equals(response.request().method()), () -> {
    *   // Triggers the response
    *   page.getByText("trigger response").click();
    * });
@@ -8112,7 +8126,7 @@ public interface Page extends AutoCloseable {
    * });
    *
    * // Waits for the next response matching some conditions
-   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
+   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200 && "GET".equals(response.request().method()), () -> {
    *   // Triggers the response
    *   page.getByText("trigger response").click();
    * });
@@ -8138,7 +8152,7 @@ public interface Page extends AutoCloseable {
    * });
    *
    * // Waits for the next response matching some conditions
-   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
+   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200 && "GET".equals(response.request().method()), () -> {
    *   // Triggers the response
    *   page.getByText("trigger response").click();
    * });
@@ -8166,7 +8180,7 @@ public interface Page extends AutoCloseable {
    * });
    *
    * // Waits for the next response matching some conditions
-   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
+   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200 && "GET".equals(response.request().method()), () -> {
    *   // Triggers the response
    *   page.getByText("trigger response").click();
    * });
@@ -8192,7 +8206,7 @@ public interface Page extends AutoCloseable {
    * });
    *
    * // Waits for the next response matching some conditions
-   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
+   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200 && "GET".equals(response.request().method()), () -> {
    *   // Triggers the response
    *   page.getByText("trigger response").click();
    * });
@@ -8220,7 +8234,7 @@ public interface Page extends AutoCloseable {
    * });
    *
    * // Waits for the next response matching some conditions
-   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200, () -> {
+   * Response response = page.waitForResponse(response -> "https://example.com".equals(response.url()) && response.status() == 200 && "GET".equals(response.request().method()), () -> {
    *   // Triggers the response
    *   page.getByText("trigger response").click();
    * });

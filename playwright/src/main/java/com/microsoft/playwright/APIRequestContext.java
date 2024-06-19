@@ -43,6 +43,20 @@ import java.nio.file.Path;
  * object will have its own isolated cookie storage.
  */
 public interface APIRequestContext {
+  class DisposeOptions {
+    /**
+     * The reason to be reported to the operations interrupted by the context disposal.
+     */
+    public String reason;
+
+    /**
+     * The reason to be reported to the operations interrupted by the context disposal.
+     */
+    public DisposeOptions setReason(String reason) {
+      this.reason = reason;
+      return this;
+    }
+  }
   class StorageStateOptions {
     /**
      * The file path to save the storage state to. If {@code path} is a relative path, then it is resolved relative to current
@@ -88,7 +102,18 @@ public interface APIRequestContext {
    *
    * @since v1.16
    */
-  void dispose();
+  default void dispose() {
+    dispose(null);
+  }
+  /**
+   * All responses returned by {@link com.microsoft.playwright.APIRequestContext#get APIRequestContext.get()} and similar
+   * methods are stored in the memory, so that you can later call {@link com.microsoft.playwright.APIResponse#body
+   * APIResponse.body()}.This method discards all its resources, calling any method on disposed {@code APIRequestContext}
+   * will throw an exception.
+   *
+   * @since v1.16
+   */
+  void dispose(DisposeOptions options);
   /**
    * Sends HTTP(S) request and returns its response. The method will populate request cookies from the context and update
    * context cookies from the response. The method will automatically follow redirects.

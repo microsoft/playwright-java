@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import static com.microsoft.playwright.TestOptionsFactories.isChromium;
+import static com.microsoft.playwright.TestBase.defaultSameSiteCookieValue;
 import static com.microsoft.playwright.TestOptionsFactories.isFirefox;
 import static com.microsoft.playwright.Utils.assertJsonEquals;
 import static java.util.Arrays.asList;
@@ -227,7 +227,7 @@ public class TestBrowserContextAddCookies {
       "  expires: -1,\n" +
       "  httpOnly: false,\n" +
       "  secure: false,\n" +
-      "  sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
+      "  sameSite: '" + defaultSameSiteCookieValue +"'\n" +
       "}]", cookies);
   }
 
@@ -246,7 +246,7 @@ public class TestBrowserContextAddCookies {
       "  expires: -1,\n" +
       "  httpOnly: false,\n" +
       "  secure: false,\n" +
-      "  sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
+      "  sameSite: '" + defaultSameSiteCookieValue +"'\n" +
       "}]", cookies);
     assertEquals("gridcookie=GRID", page.evaluate("document.cookie"));
     page.navigate(server.EMPTY_PAGE);
@@ -311,7 +311,7 @@ public class TestBrowserContextAddCookies {
       "  expires: -1,\n" +
       "  httpOnly: false,\n" +
       "  secure: true,\n" +
-      "  sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
+      "  sameSite: '" + defaultSameSiteCookieValue +"'\n" +
       "}]", context.cookies("https://www.example.com"));
   }
 

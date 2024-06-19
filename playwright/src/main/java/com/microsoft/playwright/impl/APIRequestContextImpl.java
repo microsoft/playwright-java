@@ -37,6 +37,7 @@ import static com.microsoft.playwright.impl.Utils.toFilePayload;
 
 class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
   private final TracingImpl tracing;
+  private String disposeReason;
 
   APIRequestContextImpl(ChannelOwner parent, String type, String guid, JsonObject initializer) {
     super(parent, type, guid, initializer);
@@ -49,8 +50,17 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
   }
 
   @Override
-  public void dispose() {
-    withLogging("APIRequestContext.dispose", () -> sendMessage("dispose"));
+  public void dispose(DisposeOptions options) {
+    withLogging("APIRequestContext.dispose", () -> disposeImpl(options));
+  }
+
+  private void disposeImpl(DisposeOptions options) {
+    if (options == null) {
+      options = new DisposeOptions();
+    }
+    disposeReason = options.reason;
+    JsonObject params = gson().toJsonTree(options).getAsJsonObject();
+    sendMessage("dispose", params);
   }
 
   @Override
@@ -77,6 +87,9 @@ class APIRequestContextImpl extends ChannelOwner implements APIRequestContext {
   }
 
   private APIResponse fetchImpl(String url, RequestOptionsImpl options) {
+    if (disposeReason != null) {
+      throw new PlaywrightException(disposeReason);
+    }
     if (options == null) {
       options = new RequestOptionsImpl();
     }

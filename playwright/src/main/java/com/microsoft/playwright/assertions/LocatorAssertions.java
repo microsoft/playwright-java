@@ -752,10 +752,10 @@ public interface LocatorAssertions {
    * assertThat(page.getByText("Welcome")).isVisible();
    *
    * // At least one item in the list is visible.
-   * asserThat(page.getByTestId("todo-item").first()).isVisible();
+   * assertThat(page.getByTestId("todo-item").first()).isVisible();
    *
    * // At least one of the two elements is visible, possibly both.
-   * asserThat(
+   * assertThat(
    *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign in"))
    *     .or(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign up")))
    *     .first()
@@ -780,10 +780,10 @@ public interface LocatorAssertions {
    * assertThat(page.getByText("Welcome")).isVisible();
    *
    * // At least one item in the list is visible.
-   * asserThat(page.getByTestId("todo-item").first()).isVisible();
+   * assertThat(page.getByTestId("todo-item").first()).isVisible();
    *
    * // At least one of the two elements is visible, possibly both.
-   * asserThat(
+   * assertThat(
    *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign in"))
    *     .or(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign up")))
    *     .first()

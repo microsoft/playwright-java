@@ -432,6 +432,11 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public ClockImpl clock() {
+    return browserContext.clock();
+  }
+
+  @Override
   public Page waitForClose(WaitForCloseOptions options, Runnable code) {
     return withWaitLogging("Page.waitForClose", logger -> waitForCloseImpl(options, code));
   }

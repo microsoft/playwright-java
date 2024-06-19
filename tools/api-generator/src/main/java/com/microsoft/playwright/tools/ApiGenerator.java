@@ -978,6 +978,9 @@ class Interface extends TypeDefinition {
     if (asList("Page", "Frame", "ElementHandle", "Locator", "FormData", "APIRequest", "APIRequestContext", "FileChooser", "Browser", "BrowserContext", "BrowserType", "Download", "Route", "Selectors", "Tracing", "Video").contains(jsonName)) {
       output.add("import java.nio.file.Path;");
     }
+    if ("Clock".equals(jsonName)) {
+      output.add("import java.util.Date;");
+    }
     if (asList("Page", "Frame", "ElementHandle", "Locator", "APIRequest", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright").contains(jsonName)) {
       output.add("import java.util.*;");
     }

@@ -48,7 +48,7 @@ public class TestBrowserContextCookies extends TestBase {
       "    expires: -1,\n" +
       "    httpOnly: false,\n" +
       "    secure: false,\n" +
-      "    sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
+      "    sameSite: '" + defaultSameSiteCookieValue +"'\n" +
       "  }]", cookies);
   }
 
@@ -71,6 +71,7 @@ public class TestBrowserContextCookies extends TestBase {
     assertEquals("/", cookies.get(0).path);
     assertFalse(cookies.get(0).httpOnly);
     assertFalse(cookies.get(0).secure);
+    assertEquals(defaultSameSiteCookieValue, cookies.get(0).sameSite);
     assertEquals(defaultSameSiteCookieValue, cookies.get(0).sameSite);
 
     // Browsers start to cap cookies with 400 days max expires value.
@@ -147,7 +148,7 @@ public class TestBrowserContextCookies extends TestBase {
       "    expires: -1,\n" +
       "    httpOnly: false,\n" +
       "    secure: false,\n" +
-      "    sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
+      "    sameSite: '" + defaultSameSiteCookieValue +"'\n" +
       "  },\n" +
       "  {\n" +
       "    name: 'username',\n" +
@@ -157,7 +158,7 @@ public class TestBrowserContextCookies extends TestBase {
       "    expires: -1,\n" +
       "    httpOnly: false,\n" +
       "    secure: false,\n" +
-      "    sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
+      "    sameSite: '" + defaultSameSiteCookieValue +"'\n" +
       "  }\n" +
       "]", cookies);
   }
@@ -178,7 +179,7 @@ public class TestBrowserContextCookies extends TestBase {
       "  expires: -1.0,\n" +
       "  httpOnly: false,\n" +
       "  secure: true,\n" +
-      "  sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
+      "  sameSite: '" + defaultSameSiteCookieValue +"'\n" +
       "}, {\n" +
       "  name: 'doggo',\n" +
       "  value: 'woofs',\n" +
@@ -187,7 +188,7 @@ public class TestBrowserContextCookies extends TestBase {
       "  expires: -1.0,\n" +
       "  httpOnly: false,\n" +
       "  secure: true,\n" +
-      "  sameSite: '" + (isChromium() ? "LAX" : "NONE") +"'\n" +
+      "  sameSite: '" + defaultSameSiteCookieValue +"'\n" +
       "}]", cookies);
   }
 
@@ -205,14 +206,14 @@ public class TestBrowserContextCookies extends TestBase {
 
     page.navigate(server.EMPTY_PAGE);
     Object documentCookie = page.evaluate("document.cookie.split('; ').sort().join('; ')");
-    if (isChromium()) {
+    if (isChromium() || (isLinux && isWebKit())) {
       assertEquals("one=uno; two=dos", documentCookie);
     } else {
       assertEquals("one=uno; three=tres; two=dos", documentCookie);
     }
 
     List<SameSiteAttribute> list = context.cookies().stream().map(c -> c.sameSite).sorted().collect(Collectors.toList());
-    if (isChromium()) {
+    if (isChromium() || (isLinux && isWebKit())) {
       assertEquals(asList(SameSiteAttribute.STRICT, SameSiteAttribute.LAX), list);
     } else {
       assertEquals(asList(SameSiteAttribute.STRICT, SameSiteAttribute.LAX, SameSiteAttribute.NONE), list);

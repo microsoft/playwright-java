@@ -20,7 +20,7 @@ import java.util.*;
 
 /**
  * {@code ConsoleMessage} objects are dispatched by page via the {@link com.microsoft.playwright.Page#onConsoleMessage
- * Page.onConsoleMessage()} event. For each console messages logged in the page there will be corresponding event in the
+ * Page.onConsoleMessage()} event. For each console message logged in the page there will be corresponding event in the
  * Playwright context.
  * <pre>{@code
  * // Listen for all console messages and print them to the standard output.

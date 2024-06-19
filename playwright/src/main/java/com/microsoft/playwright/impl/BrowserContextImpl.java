@@ -36,8 +36,7 @@ import java.util.regex.Pattern;
 
 import static com.microsoft.playwright.impl.Serialization.addHarUrlFilter;
 import static com.microsoft.playwright.impl.Serialization.gson;
-import static com.microsoft.playwright.impl.Utils.isSafeCloseError;
-import static com.microsoft.playwright.impl.Utils.toJsRegexFlags;
+import static com.microsoft.playwright.impl.Utils.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 import static java.util.Arrays.asList;
@@ -46,6 +45,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
   private final BrowserImpl browser;
   private final TracingImpl tracing;
   private final APIRequestContextImpl request;
+  private final ClockImpl clock;
   final List<PageImpl> pages = new ArrayList<>();
   final List<PageImpl> backgroundPages = new ArrayList<>();
 
@@ -104,6 +104,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     }
     tracing = connection.getExistingObject(initializer.getAsJsonObject("tracing").get("guid").getAsString());
     request = connection.getExistingObject(initializer.getAsJsonObject("requestContext").get("guid").getAsString());
+    clock = new ClockImpl(this);
     closePromise = new WaitableEvent<>(listeners, EventType.CLOSE);
   }
 
@@ -231,6 +232,11 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
     listeners.remove(EventType.RESPONSE, handler);
   }
 
+  @Override
+  public ClockImpl clock() {
+    return clock;
+  }
+
   private <T> T waitForEventWithTimeout(EventType eventType, Runnable code, Predicate<T> predicate, Double timeout) {
     List<Waitable<T>> waitables = new ArrayList<>();
     waitables.add(new WaitableEvent<>(listeners, eventType, predicate));
@@ -284,6 +290,7 @@ class BrowserContextImpl extends ChannelOwner implements BrowserContext {
         options = new CloseOptions();
       }
       closeReason = options.reason;
+      request.dispose(convertType(options, APIRequestContext.DisposeOptions.class));
       for (Map.Entry<String, HarRecorder> entry : harRecorders.entrySet()) {
         JsonObject params = new JsonObject();
         params.addProperty("harId", entry.getKey());
