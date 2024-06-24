@@ -47,7 +47,7 @@ extends:
            GPG_PRIVATE_KEY_BASE64: $(GPG_PRIVATE_KEY_BASE64) # secret variable has to be mapped to an env variable
           displayName: "Import gpg key"
         
-        - bash: ./scripts/download_driver_for_all_platforms.sh
+        - bash: ./scripts/download_driver.sh
           displayName: 'Download driver'
         
         - bash: mvn -B deploy -D skipTests --no-transfer-progress --activate-profiles release -D gpg.passphrase=$GPG_PASSPHRASE -DaltDeploymentRepository=snapshot-repo::default::file:$(pwd)/local-build
