@@ -41,7 +41,7 @@ RUN mkdir /ms-playwright && \
 COPY . /tmp/pw-java
 
 RUN cd /tmp/pw-java && \
-    ./scripts/download_driver_for_all_platforms.sh && \
+    ./scripts/download_driver.sh && \
     mvn install -D skipTests --no-transfer-progress && \
     DEBIAN_FRONTEND=noninteractive mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI \
                      -D exec.args="install-deps" -f playwright/pom.xml --no-transfer-progress && \

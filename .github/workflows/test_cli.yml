@@ -21,7 +21,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Download drivers
-        run: scripts/download_driver_for_all_platforms.sh
+        run: scripts/download_driver.sh
       - name: Intall Playwright
         run: mvn install -D skipTests --no-transfer-progress
       - name: Test CLI

@@ -20,13 +20,11 @@ git clone https://github.com/microsoft/playwright-java
 cd playwright-java
 ```
 
-2. Run the following script to download playwright-cli binaries for all platforms into `driver-bundle/src/main/resources/driver/` directory (browser binaries for Chromium, Firefox and WebKit will be automatically downloaded later on first Playwright run).
+2. Run the following script to download Playwright driver for all platforms into `driver-bundle/src/main/resources/driver/` directory (browser binaries for Chromium, Firefox and WebKit will be automatically downloaded later on first Playwright run).
 
 ```bash
-scripts/download_driver_for_all_platforms.sh
+scripts/download_driver.sh
 ```
-
-Names of published driver archives can be found at https://github.com/microsoft/playwright-cli/actions
 
 ### Building and running the tests with Maven
 
@@ -41,25 +39,19 @@ BROWSER=chromium mvn test --projects=playwright -Dtest=TestPageNetworkSizes
 
 ### Generating API
 
-Public Java API is generated from api.json which is produced by `playwright-cli print-api-json`. To regenerate
-Java interfaces for the current driver run the following commands:
+Public Java API is generated from api.json which is produced by `print-api-json` command of playwright CLI. To regenerate Java interfaces for the current driver run the following commands:
 
 ```bash
-./scripts/download_driver_for_all_platforms.sh
+./scripts/download_driver.sh
 ./scripts/generate_api.sh
 ```
 
 #### Updating driver version
 
-Driver version is read from [scripts/CLI_VERSION](https://github.com/microsoft/playwright-java/blob/main/scripts/CLI_VERSION) and can be found in the upstream [GHA build](https://github.com/microsoft/playwright/actions/workflows/publish_canary.yml) logs. To update the driver to a particular version run the following commands:
+Versions of published driver archives can be found in [publish canary](https://github.com/microsoft/playwright/actions/workflows/publish_canary.yml) and [publish release](https://github.com/microsoft/playwright/actions/workflows/publish_release_driver.yml) actions logs. To update the driver to a particular version run the following command:
 
 ```bash
-cat > scripts/CLI_VERSION
-<paste new version>
-^D
-./scripts/download_driver_for_all_platforms.sh -f
-./scripts/generate_api.sh
-./scripts/update_readme.sh
+scripts/roll_driver.sh [version]
 ```
 
 ### Code Style

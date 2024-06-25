@@ -27,7 +27,7 @@ jobs:
         java-version: 8
     - name: Download drivers
       shell: bash
-      run: scripts/download_driver_for_all_platforms.sh
+      run: scripts/download_driver.sh
     - name: Build & Install
       run: mvn -B install -D skipTests --no-transfer-progress
     - name: Run tests
@@ -75,7 +75,7 @@ jobs:
           java-version: 8
       - name: Download drivers
         shell: bash
-        run: scripts/download_driver_for_all_platforms.sh
+        run: scripts/download_driver.sh
       - name: Build & Install
         run: mvn -B install -D skipTests --no-transfer-progress
       - name: Install MS Edge
@@ -105,7 +105,7 @@ jobs:
           java-version: 17
       - name: Download drivers
         shell: bash
-        run: scripts/download_driver_for_all_platforms.sh
+        run: scripts/download_driver.sh
       - name: Build & Install
         run: mvn -B install -D skipTests --no-transfer-progress
       - name: Run tests

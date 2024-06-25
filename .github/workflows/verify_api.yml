@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: microsoft/playwright-github-action@v1
       - name: Download drivers
-        run: scripts/download_driver_for_all_platforms.sh
+        run: scripts/download_driver.sh
       - name: Regenerate APIs
         run: scripts/generate_api.sh
       - name: Update browser versions in README
