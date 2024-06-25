@@ -279,14 +279,12 @@ public interface BrowserContext extends AutoCloseable {
   }
   class ExposeBindingOptions {
     /**
-     * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument is
-     * supported. When passing by value, multiple arguments are supported.
+     * @deprecated This option will be removed in the future.
      */
     public Boolean handle;
 
     /**
-     * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument is
-     * supported. When passing by value, multiple arguments are supported.
+     * @deprecated This option will be removed in the future.
      */
     public ExposeBindingOptions setHandle(boolean handle) {
       this.handle = handle;
@@ -723,21 +721,6 @@ public interface BrowserContext extends AutoCloseable {
    * }
    * }</pre>
    *
-   * <p> An example of passing an element handle:
-   * <pre>{@code
-   * context.exposeBinding("clicked", (source, args) -> {
-   *   ElementHandle element = (ElementHandle) args[0];
-   *   System.out.println(element.textContent());
-   *   return null;
-   * }, new BrowserContext.ExposeBindingOptions().setHandle(true));
-   * page.setContent("" +
-   *   "<script>\n" +
-   *   "  document.addEventListener('click', event => window.clicked(event.target));\n" +
-   *   "</script>\n" +
-   *   "<div>Click me</div>\n" +
-   *   "<div>Or click me</div>\n");
-   * }</pre>
-   *
    * @param name Name of the function on the window object.
    * @param callback Callback function that will be called in the Playwright's context.
    * @since v1.8
@@ -783,21 +766,6 @@ public interface BrowserContext extends AutoCloseable {
    *     }
    *   }
    * }
-   * }</pre>
-   *
-   * <p> An example of passing an element handle:
-   * <pre>{@code
-   * context.exposeBinding("clicked", (source, args) -> {
-   *   ElementHandle element = (ElementHandle) args[0];
-   *   System.out.println(element.textContent());
-   *   return null;
-   * }, new BrowserContext.ExposeBindingOptions().setHandle(true));
-   * page.setContent("" +
-   *   "<script>\n" +
-   *   "  document.addEventListener('click', event => window.clicked(event.target));\n" +
-   *   "</script>\n" +
-   *   "<div>Click me</div>\n" +
-   *   "<div>Or click me</div>\n");
    * }</pre>
    *
    * @param name Name of the function on the window object.
