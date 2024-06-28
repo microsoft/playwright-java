@@ -86,6 +86,10 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
     return browser;
   }
 
+  static Browser getBrowser() {
+    return threadLocalBrowser.get();
+  }
+
   private static BrowserType.ConnectOptions getConnectOptions(Options options) {
     BrowserType.ConnectOptions connectOptions = options.connectOptions;
     if(connectOptions == null) {
