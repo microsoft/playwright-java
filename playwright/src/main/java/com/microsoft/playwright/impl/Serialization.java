@@ -35,10 +35,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -79,6 +76,7 @@ class Serialization {
   static final Gson jsonDataSerializer = new GsonBuilder().disableHtmlEscaping()
     .registerTypeAdapter(Date.class, new DateSerializer())
     .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
+    .registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeSerializer())
     .serializeNulls().create();
 
   static SerializedError serializeError(Throwable e) {
@@ -516,6 +514,13 @@ class Serialization {
     @Override
     public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
       return new JsonPrimitive(dateFormat.format(src));
+    }
+  }
+
+  private static class OffsetDateTimeSerializer implements JsonSerializer<OffsetDateTime> {
+    @Override
+    public JsonElement serialize(OffsetDateTime src, Type typeOfSrc, JsonSerializationContext context) {
+      return new JsonPrimitive(dateFormat.format(Date.from(src.toInstant())));
     }
   }
 
