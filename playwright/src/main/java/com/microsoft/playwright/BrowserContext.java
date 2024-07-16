@@ -853,6 +853,7 @@ public interface BrowserContext extends AutoCloseable {
    * <li> {@code "notifications"}</li>
    * <li> {@code "payment-handler"}</li>
    * <li> {@code "storage-access"}</li>
+   * <li> {@code "window-management"}</li>
    * </ul>
    * @since v1.8
    */
@@ -881,6 +882,7 @@ public interface BrowserContext extends AutoCloseable {
    * <li> {@code "notifications"}</li>
    * <li> {@code "payment-handler"}</li>
    * <li> {@code "storage-access"}</li>
+   * <li> {@code "window-management"}</li>
    * </ul>
    * @since v1.8
    */
