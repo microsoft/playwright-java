@@ -74,7 +74,7 @@ public class DriverJar extends Driver {
       skip = System.getenv(PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD);
     }
     if (skip != null && !"0".equals(skip) && !"false".equals(skip)) {
-      System.out.println("Skipping browsers download because `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD` env variable is set");
+      logMessage("Skipping browsers download because `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD` env variable is set");
       return;
     }
     if (env.get(SELENIUM_REMOTE_URL) != null || System.getenv(SELENIUM_REMOTE_URL) != null) {
