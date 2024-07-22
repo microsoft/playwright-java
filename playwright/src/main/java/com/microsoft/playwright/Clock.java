@@ -174,6 +174,7 @@ public interface Clock {
    * page.clock().pauseAt("2020-02-02");
    * }</pre>
    *
+   * @param time Time to pause at.
    * @since v1.45
    */
   void pauseAt(long time);
@@ -193,6 +194,7 @@ public interface Clock {
    * page.clock().pauseAt("2020-02-02");
    * }</pre>
    *
+   * @param time Time to pause at.
    * @since v1.45
    */
   void pauseAt(String time);
@@ -212,6 +214,7 @@ public interface Clock {
    * page.clock().pauseAt("2020-02-02");
    * }</pre>
    *
+   * @param time Time to pause at.
    * @since v1.45
    */
   void pauseAt(Date time);
@@ -231,7 +234,7 @@ public interface Clock {
    * page.clock().setFixedTime("2020-02-02");
    * }</pre>
    *
-   * @param time Time to be set.
+   * @param time Time to be set in milliseconds.
    * @since v1.45
    */
   void setFixedTime(long time);
@@ -245,7 +248,7 @@ public interface Clock {
    * page.clock().setFixedTime("2020-02-02");
    * }</pre>
    *
-   * @param time Time to be set.
+   * @param time Time to be set in milliseconds.
    * @since v1.45
    */
   void setFixedTime(String time);
@@ -259,7 +262,7 @@ public interface Clock {
    * page.clock().setFixedTime("2020-02-02");
    * }</pre>
    *
-   * @param time Time to be set.
+   * @param time Time to be set in milliseconds.
    * @since v1.45
    */
   void setFixedTime(Date time);
@@ -273,6 +276,7 @@ public interface Clock {
    * page.clock().setSystemTime("2020-02-02");
    * }</pre>
    *
+   * @param time Time to be set in milliseconds.
    * @since v1.45
    */
   void setSystemTime(long time);
@@ -286,6 +290,7 @@ public interface Clock {
    * page.clock().setSystemTime("2020-02-02");
    * }</pre>
    *
+   * @param time Time to be set in milliseconds.
    * @since v1.45
    */
   void setSystemTime(String time);
@@ -299,6 +304,7 @@ public interface Clock {
    * page.clock().setSystemTime("2020-02-02");
    * }</pre>
    *
+   * @param time Time to be set in milliseconds.
    * @since v1.45
    */
   void setSystemTime(Date time);
