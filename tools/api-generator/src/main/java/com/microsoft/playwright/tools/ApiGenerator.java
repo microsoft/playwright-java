@@ -276,6 +276,11 @@ class TypeRef extends Element {
 
   private static final Map<String, String> customTypeNames = new HashMap<>();
   static {
+    customTypeNames.put("APIRequest.newContext.options.clientCertificates", "ClientCertificate");
+    customTypeNames.put("Browser.newContext.options.clientCertificates", "ClientCertificate");
+    customTypeNames.put("Browser.newPage.options.clientCertificates", "ClientCertificate");
+    customTypeNames.put("BrowserType.launchPersistentContext.options.clientCertificates", "ClientCertificate");
+
     customTypeNames.put("BrowserContext.addCookies.cookies", "Cookie");
     customTypeNames.put("BrowserContext.cookies", "Cookie");
 
@@ -1095,8 +1100,9 @@ class CustomClass extends TypeDefinition {
 
   @Override
   void writeTo(List<String> output, String offset) {
-    if (asList("RecordHar", "RecordVideo").contains(name)) {
+    if (asList("ClientCertificate").contains(name)) {
       output.add("import java.nio.file.Path;");
+      output.add("");
     }
     String access = (parent.typeScope() instanceof CustomClass) || topLevelTypes().containsKey(name) ? "public " : "";
     output.add(offset + access + "class " + name + " {");

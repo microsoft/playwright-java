@@ -455,4 +455,10 @@ public class TestPageClock {
     assertEquals(2, calls.size());
     assertEquals("inner", ((Object[]) calls.get(1))[0]);
   }
+
+  @Test
+  void shouldThrowForInvalidDate(Page page) {
+    Exception exception1 = assertThrows(PlaywrightException.class, () -> page.clock().setSystemTime("invalid"));
+    assertTrue(exception1.getMessage().contains("Invalid date: invalid"), exception1.getMessage());
+  }
 }

@@ -249,6 +249,11 @@ class Serialization {
       return (T)(Date.from(Instant.parse(value.d)));
     if (value.r != null)
       return (T)(Pattern.compile(value.r.p, fromJsRegexFlags(value.r.f)));
+    if (value.e != null) {
+      if (!value.e.s.isEmpty())
+        return (T)(value.e.s);
+      return (T)(value.e.m);
+    }
     if (value.v != null) {
       switch (value.v) {
         case "undefined":

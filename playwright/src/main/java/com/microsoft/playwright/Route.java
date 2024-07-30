@@ -148,6 +148,12 @@ public interface Route {
      */
     public Integer maxRedirects;
     /**
+     * Maximum number of times network errors should be retried. Currently only {@code ECONNRESET} error is retried. Does not
+     * retry based on HTTP response codes. An error will be thrown if the limit is exceeded. Defaults to {@code 0} - no
+     * retries.
+     */
+    public Integer maxRetries;
+    /**
      * If set changes the request method (e.g. GET or POST).
      */
     public String method;
@@ -177,6 +183,15 @@ public interface Route {
      */
     public FetchOptions setMaxRedirects(int maxRedirects) {
       this.maxRedirects = maxRedirects;
+      return this;
+    }
+    /**
+     * Maximum number of times network errors should be retried. Currently only {@code ECONNRESET} error is retried. Does not
+     * retry based on HTTP response codes. An error will be thrown if the limit is exceeded. Defaults to {@code 0} - no
+     * retries.
+     */
+    public FetchOptions setMaxRetries(int maxRetries) {
+      this.maxRetries = maxRetries;
       return this;
     }
     /**

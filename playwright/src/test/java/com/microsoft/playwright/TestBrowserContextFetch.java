@@ -521,7 +521,7 @@ public class TestBrowserContextFetch extends TestBase {
     assertEquals("{\"name\":\"foo\",\"localDateTime\":\"2022-12-23T06:14:58.818Z\",\"date\":\"2022-12-23T06:14:58.818Z\",\"nullLocalDateTime\":null,\"nullDate\":null}",
       new String(req.get().postBody));
   }
-  
+
   @Test
   void shouldSupportOffsetDateTimeInData() throws ExecutionException, InterruptedException {
     APIRequestContext request = playwright.request().newContext();
@@ -864,5 +864,29 @@ public class TestBrowserContextFetch extends TestBase {
     context.close(new BrowserContext.CloseOptions().setReason("Test ended."));
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> context.request().get(server.EMPTY_PAGE));
     assertTrue(e.getMessage().contains("Test ended."), e.getMessage());
+  }
+
+  @Test
+  public void shouldRetryECONNRESET() {
+    int[] requestCount = {0};
+    server.setRoute("/test", exchange -> {
+      if (requestCount[0]++ < 3) {
+        exchange.close();
+        return;
+      }
+      exchange.getResponseHeaders().add("Content-Type", "text/plain");
+      exchange.sendResponseHeaders(200, 0);
+      try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write("Hello!");
+      }
+    });
+
+    APIRequestContext requestContext = context.request();
+    APIResponse response = requestContext.get(server.PREFIX + "/test",
+      RequestOptions.create().setMaxRetries(3));
+
+    assertEquals(200, response.status());
+    assertEquals("Hello!", response.text());
+    assertEquals(4, requestCount[0]);
   }
 }

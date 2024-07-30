@@ -71,7 +71,7 @@ public interface Response {
    */
   List<HttpHeader> headersArray();
   /**
-   * Returns the value of the header matching the name. The name is case insensitive. If multiple headers have the same name
+   * Returns the value of the header matching the name. The name is case-insensitive. If multiple headers have the same name
    * (except {@code set-cookie}), they are returned as a list separated by {@code , }. For {@code set-cookie}, the {@code \n}
    * separator is used. If no headers are found, {@code null} is returned.
    *
@@ -80,7 +80,7 @@ public interface Response {
    */
   String headerValue(String name);
   /**
-   * Returns all values of the headers matching the name, for example {@code set-cookie}. The name is case insensitive.
+   * Returns all values of the headers matching the name, for example {@code set-cookie}. The name is case-insensitive.
    *
    * @param name Name of the header.
    * @since v1.15

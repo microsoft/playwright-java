@@ -134,6 +134,15 @@ public interface RequestOptions {
    */
   RequestOptions setMaxRedirects(int maxRedirects);
   /**
+   *
+   *
+   * @param maxRetries Maximum number of times network errors should be retried. Currently only {@code ECONNRESET} error is retried. Does not
+   * retry based on HTTP response codes. An error will be thrown if the limit is exceeded. Defaults to {@code 0} - no
+   * retries.
+   * @since v1.46
+   */
+  RequestOptions setMaxRetries(int maxRetries);
+  /**
    * Changes the request method (e.g. <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT">PUT</a> or <a
    * href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST">POST</a>).
    *

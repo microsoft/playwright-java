@@ -30,6 +30,7 @@ import java.util.function.Consumer;
 
 import static com.microsoft.playwright.impl.Serialization.addHarUrlFilter;
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Utils.addToProtocol;
 import static com.microsoft.playwright.impl.Utils.convertType;
 
 class BrowserTypeImpl extends ChannelOwner implements BrowserType {
@@ -221,6 +222,7 @@ class BrowserTypeImpl extends ChannelOwner implements BrowserType {
         params.addProperty("noDefaultViewport", true);
       }
     }
+    addToProtocol(params, options.clientCertificates);
     params.remove("acceptDownloads");
     if (options.acceptDownloads != null) {
       params.addProperty("acceptDownloads", options.acceptDownloads ? "accept" : "deny");
