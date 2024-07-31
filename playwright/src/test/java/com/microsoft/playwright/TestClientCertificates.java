@@ -60,9 +60,6 @@ public class TestClientCertificates extends TestBase {
         new APIRequest.NewContextOptions().setIgnoreHTTPSErrors(true));
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> request.get(customServer.url));
     assertTrue(e.getMessage().contains("Error: socket hang up"), e.getMessage());
-//    APIResponse response = request.get(customServer.url);
-//    assertEquals(401, response.status());
-//    assertTrue(response.text().contains("Sorry, but you need to provide a client certificate to continue."));
     request.dispose();
   }
 

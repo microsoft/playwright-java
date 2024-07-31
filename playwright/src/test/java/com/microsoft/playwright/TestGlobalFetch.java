@@ -539,12 +539,13 @@ public class TestGlobalFetch extends TestBase {
       }
     });
 
-    APIRequestContext requestContext = context.request();
+    APIRequestContext requestContext = playwright.request().newContext();
     APIResponse response = requestContext.get(server.PREFIX + "/test",
       RequestOptions.create().setMaxRetries(3));
 
     assertEquals(200, response.status());
     assertEquals("Hello!", response.text());
     assertEquals(4, requestCount[0]);
+    requestContext.dispose();
   }
 }
