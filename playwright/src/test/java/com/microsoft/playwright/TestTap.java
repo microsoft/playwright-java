@@ -16,6 +16,7 @@
 
 package com.microsoft.playwright;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.OutputStreamWriter;
@@ -97,6 +98,7 @@ public class TestTap extends TestBase {
   }
 
   @Test
+  @Disabled("noWaitAfter was removed from tap() in https://github.com/microsoft/playwright/pull/31739")
   void shouldWaitForANavigationCausedByATap() throws InterruptedException {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a href='/intercept-this.html'>link</a>;");
