@@ -1,6 +1,7 @@
 package com.microsoft.playwright;
 
 import com.microsoft.playwright.options.ClientCertificate;
+import com.microsoft.playwright.options.Proxy;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -52,6 +53,13 @@ public class TestClientCertificates extends TestBase {
       customServer = null;
     }
     super.stopServer();
+  }
+
+  @BeforeAll
+  @Override
+  void launchBrowser() {
+    // TODO: remove once Chromium Stable tests pass without it on Windows.
+    launchBrowser(createLaunchOptions().setProxy(new Proxy("per-context")));
   }
 
   @Test
