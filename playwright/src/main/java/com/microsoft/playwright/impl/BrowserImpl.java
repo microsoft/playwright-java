@@ -208,6 +208,7 @@ class BrowserImpl extends ChannelOwner implements Browser {
         params.addProperty("noDefaultViewport", true);
       }
     }
+    addToProtocol(params, options.clientCertificates);
     params.remove("acceptDownloads");
     if (options.acceptDownloads != null) {
       params.addProperty("acceptDownloads", options.acceptDownloads ? "accept" : "deny");

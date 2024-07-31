@@ -19,11 +19,15 @@ package com.microsoft.playwright;
 import com.sun.net.httpserver.HttpsConfigurator;
 import com.sun.net.httpserver.HttpsParameters;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
-import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.*;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 class HttpsConfiguratorImpl extends HttpsConfigurator {
 
@@ -31,7 +35,7 @@ class HttpsConfiguratorImpl extends HttpsConfigurator {
     return new HttpsConfiguratorImpl(createSSLContext());
   }
 
-  private HttpsConfiguratorImpl(SSLContext context) {
+  HttpsConfiguratorImpl(SSLContext context) {
     super(context);
   }
 

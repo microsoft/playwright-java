@@ -18,16 +18,13 @@ package com.microsoft.playwright;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
-import static com.microsoft.playwright.options.KeyboardModifier.ALT;
 import static com.microsoft.playwright.Utils.mapOf;
+import static com.microsoft.playwright.options.KeyboardModifier.ALT;
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestTap extends TestBase {
@@ -97,26 +94,13 @@ public class TestTap extends TestBase {
   }
 
   @Test
-  void shouldWaitForANavigationCausedByATap() throws InterruptedException {
+  void shouldNotWaitForANavigationCausedByATap() throws InterruptedException, ExecutionException {
     page.navigate(server.EMPTY_PAGE);
     page.setContent("<a href='/intercept-this.html'>link</a>;");
-    Semaphore responseWritten = new Semaphore(0);
-    List<String> events = Collections.synchronizedList(new ArrayList<>());
-    server.setRoute("/intercept-this.html", exchange -> {
-      // make sure the tap doesnt resolve too early
-      assertDoesNotThrow(() -> Thread.sleep(100));
-      exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
-      exchange.sendResponseHeaders(200, 0);
-      try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
-        writer.write("foo");
-      }
-      events.add("sent response");
-      responseWritten.release();
-    });
+    Future<Server.Request> serverReq = server.futureRequest("/intercept-this.html");
+    server.setRoute("/intercept-this.html", exchange -> {});
     page.tap("a");
-    events.add("tap finished");
-    responseWritten.acquire();
-    assertEquals(asList("sent response", "tap finished"), events);
+    serverReq.get();
   }
 
   @Test

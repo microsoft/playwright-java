@@ -523,4 +523,29 @@ public class TestGlobalFetch extends TestBase {
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> request.get(server.EMPTY_PAGE));
     assertTrue(e.getMessage().contains("My reason"), e.getMessage());
   }
+
+  @Test
+  public void shouldRetryECONNRESET() {
+    int[] requestCount = {0};
+    server.setRoute("/test", exchange -> {
+      if (requestCount[0]++ < 3) {
+        exchange.close();
+        return;
+      }
+      exchange.getResponseHeaders().add("Content-Type", "text/plain");
+      exchange.sendResponseHeaders(200, 0);
+      try (OutputStreamWriter writer = new OutputStreamWriter(exchange.getResponseBody())) {
+        writer.write("Hello!");
+      }
+    });
+
+    APIRequestContext requestContext = playwright.request().newContext();
+    APIResponse response = requestContext.get(server.PREFIX + "/test",
+      RequestOptions.create().setMaxRetries(3));
+
+    assertEquals(200, response.status());
+    assertEquals("Hello!", response.text());
+    assertEquals(4, requestCount[0]);
+    requestContext.dispose();
+  }
 }

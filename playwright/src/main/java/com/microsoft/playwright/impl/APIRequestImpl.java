@@ -17,15 +17,21 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.APIRequest;
 import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.options.ClientCertificate;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Base64;
+import java.util.List;
 
 import static com.microsoft.playwright.impl.Serialization.gson;
+import static com.microsoft.playwright.impl.Utils.addToProtocol;
+import static java.nio.file.Files.readAllBytes;
 
 class APIRequestImpl implements APIRequest {
   private final PlaywrightImpl playwright;
@@ -42,6 +48,8 @@ class APIRequestImpl implements APIRequest {
   private APIRequestContextImpl newContextImpl(NewContextOptions options) {
     if (options == null) {
       options = new NewContextOptions();
+    } else {
+      options = Utils.clone(options);
     }
     if (options.storageStatePath != null) {
       try {
@@ -57,11 +65,13 @@ class APIRequestImpl implements APIRequest {
       storageState = new Gson().fromJson(options.storageState, JsonObject.class);
       options.storageState = null;
     }
+    List<ClientCertificate> clientCertificateList = options.clientCertificates;
+    options.clientCertificates = null;
     JsonObject params = gson().toJsonTree(options).getAsJsonObject();
     if (storageState != null) {
       params.add("storageState", storageState);
     }
-
+    addToProtocol(params, clientCertificateList);
     JsonObject result = playwright.sendMessage("newRequest", params).getAsJsonObject();
     APIRequestContextImpl context = playwright.connection.getExistingObject(result.getAsJsonObject("request").get("guid").getAsString());
     return context;

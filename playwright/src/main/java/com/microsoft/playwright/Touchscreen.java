@@ -28,6 +28,8 @@ public interface Touchscreen {
    * <p> <strong>NOTE:</strong> {@link com.microsoft.playwright.Page#tap Page.tap()} the method will throw if {@code hasTouch} option of the browser
    * context is false.
    *
+   * @param x X coordinate relative to the main frame's viewport in CSS pixels.
+   * @param y Y coordinate relative to the main frame's viewport in CSS pixels.
    * @since v1.8
    */
   void tap(double x, double y);

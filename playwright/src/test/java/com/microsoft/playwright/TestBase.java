@@ -22,6 +22,7 @@ import com.microsoft.playwright.options.SameSiteAttribute;
 
 import javax.sql.rowset.Predicate;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.Provider;
 import java.time.Duration;
 import java.time.Instant;

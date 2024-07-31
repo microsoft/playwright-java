@@ -514,9 +514,6 @@ public interface BrowserContext extends AutoCloseable {
    * browserContext.addCookies(Arrays.asList(cookieObject1, cookieObject2));
    * }</pre>
    *
-   * @param cookies Adds cookies to the browser context.
-   *
-   * <p> For the cookie to apply to all subdomains as well, prefix domain with a dot, like this: ".example.com".
    * @since v1.8
    */
   void addCookies(List<Cookie> cookies);

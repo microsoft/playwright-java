@@ -20,6 +20,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.options.ClientCertificate;
 import com.microsoft.playwright.options.FilePayload;
 import com.microsoft.playwright.options.HttpHeader;
 
@@ -37,6 +38,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.microsoft.playwright.impl.Serialization.toJsonArray;
+import static java.nio.file.Files.readAllBytes;
 
 public class Utils {
   static <F, T> T convertType(F f, Class<T> t) {
@@ -411,5 +413,41 @@ public class Utils {
 
   static String addSourceUrlToScript(String source, Path path) {
     return source + "\n//# sourceURL=" + path.toString().replace("\n", "");
+  }
+
+  static void addToProtocol(JsonObject params, List<ClientCertificate> clientCertificateList) {
+    if (clientCertificateList == null) {
+      return;
+    }
+    JsonArray clientCertificates = new JsonArray();
+    for (ClientCertificate cert: clientCertificateList) {
+      JsonObject jsonCert = new JsonObject();
+      jsonCert.addProperty("origin", cert.origin);
+      try {
+        if (cert.certPath != null) {
+          byte[] bytes = readAllBytes(cert.certPath);
+          String base64 = Base64.getEncoder().encodeToString(bytes);
+          jsonCert.addProperty("cert",  base64);
+        }
+        if (cert.keyPath != null) {
+          byte[] bytes = readAllBytes(cert.keyPath);
+          String base64 = Base64.getEncoder().encodeToString(bytes);
+          jsonCert.addProperty("key", base64);
+        }
+        if (cert.pfxPath != null) {
+          byte[] bytes = readAllBytes(cert.pfxPath);
+          String base64 = Base64.getEncoder().encodeToString(bytes);
+          params.addProperty("pfx", base64);
+        }
+      } catch (IOException e) {
+        throw new PlaywrightException("Failed to read from file", e);
+      }
+      if (cert.passphrase != null) {
+        jsonCert.addProperty("passphrase", cert.passphrase);
+      }
+      clientCertificates.add(jsonCert);
+    }
+    params.remove("clientCertificates");
+    params.add("clientCertificates", clientCertificates);
   }
 }
