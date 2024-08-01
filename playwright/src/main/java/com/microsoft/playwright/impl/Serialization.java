@@ -24,9 +24,7 @@ import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.options.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -172,6 +170,14 @@ class Serialization {
         result.r = new SerializedValue.R();
         result.r.p = ((Pattern)value).pattern();
         result.r.f = toJsRegexFlags(((Pattern)value));
+      } else if (value instanceof Exception) {
+        Exception exception = (Exception) value;
+        result.e = new SerializedValue.E();
+        result.e.m = exception.getMessage();
+        result.e.n = exception.getClass().getSimpleName();
+        StringWriter sw = new StringWriter();
+        exception.printStackTrace(new PrintWriter(sw));
+        result.e.s = sw.toString();
       } else {
         HashableValue mapKey = new HashableValue(value);
         Integer id = valueToId.get(mapKey);
@@ -250,9 +256,7 @@ class Serialization {
     if (value.r != null)
       return (T)(Pattern.compile(value.r.p, fromJsRegexFlags(value.r.f)));
     if (value.e != null) {
-      if (!value.e.s.isEmpty())
-        return (T)(value.e.s);
-      return (T)(value.e.m);
+      return (T)new Exception(value.e.s);
     }
     if (value.v != null) {
       switch (value.v) {
