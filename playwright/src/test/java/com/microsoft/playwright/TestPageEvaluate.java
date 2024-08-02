@@ -544,7 +544,6 @@ public class TestPageEvaluate extends TestBase {
       "    return new Error('error message');\n" +
       "  })();\n" +
       "}");
-    System.out.println(result.getMessage());
     assertTrue(result.getMessage().contains("Error: error message"), result.getMessage());
     assertTrue(result.getMessage().contains("functionOnStack"), result.getMessage());
   }
