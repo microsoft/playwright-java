@@ -539,19 +539,30 @@ public class TestPageEvaluate extends TestBase {
 
   @Test
   void shouldEvaluateException() {
-    String result = (String) page.evaluate("() => {\n" +
+    Exception result = (Exception) page.evaluate("() => {\n" +
       "  return (function functionOnStack() {\n" +
       "    return new Error('error message');\n" +
       "  })();\n" +
       "}");
-    assertTrue(result.contains("Error: error message"), result);
-    assertTrue(result.contains("functionOnStack"), result);
+    assertTrue(result.getMessage().contains("Error: error message"), result.getMessage());
+    assertTrue(result.getMessage().contains("functionOnStack"), result.getMessage());
   }
 
   @Test
   void shouldEvaluateException2() {
-    Object error = page.evaluate("new Error('error message')");
-    assertTrue(((String) error).contains("Error: error message"));
+    Exception error = (Exception) page.evaluate("new Error('error message')");
+    assertTrue(error.getMessage().contains("Error: error message"), error.getMessage());
+  }
+
+  @Test
+  void shouldPassExceptionArgument() {
+    Exception e = new Exception("error message");
+    Map<String, Object> received = (Map<String, Object>) page.evaluate("e => { return { message: e.message, name: e.name, stack: e.stack }; }", e);
+
+    assertEquals("error message", received.get("message"));
+    assertEquals("Exception", received.get("name"));
+    assertNotNull(received.get("stack"));
+    assertTrue(received.get("stack").toString().contains("shouldPassExceptionArgument"), received.get("stack").toString());
   }
 
   @Test
