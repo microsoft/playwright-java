@@ -5,6 +5,7 @@ import com.microsoft.playwright.options.Proxy;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
@@ -88,7 +89,7 @@ public class TestClientCertificates extends TestBase {
   }
 
   @Test
-  public void shouldThrowWithUntrustedClientCerts() throws Exception {
+  public void shouldThrowWithUntrustedClientCerts() {
     APIRequest.NewContextOptions requestOptions = new APIRequest.NewContextOptions()
       .setIgnoreHTTPSErrors(true) // TODO: remove once we can pass a custom CA.
       .setClientCertificates(asList(
@@ -107,7 +108,7 @@ public class TestClientCertificates extends TestBase {
   }
 
   @Test
-  public void passWithTrustedClientCertificates() throws Exception {
+  public void passWithTrustedClientCertificates() {
     APIRequest.NewContextOptions requestOptions = new APIRequest.NewContextOptions()
       .setIgnoreHTTPSErrors(true) // TODO: remove once we can pass a custom CA.
       .setClientCertificates(asList(
@@ -125,8 +126,13 @@ public class TestClientCertificates extends TestBase {
     request.dispose();
   }
 
+  static boolean isWebKitMacOS() {
+    return isWebKit() && isMac;
+  }
+
   @Test
-  public void shouldWorkWithBrowserNewContext() throws Exception {
+  @DisabledIf(value="com.microsoft.playwright.TestClientCertificates#isWebKitMacOS", disabledReason="The network connection was lost.")
+  public void shouldWorkWithBrowserNewContext() {
     Browser.NewContextOptions options = new Browser.NewContextOptions()
       .setIgnoreHTTPSErrors(true) // TODO: remove once we can pass a custom CA.
       .setClientCertificates(asList(
@@ -146,7 +152,8 @@ public class TestClientCertificates extends TestBase {
   }
 
   @Test
-  public void shouldWorkWithBrowserNewPage() throws Exception {
+  @DisabledIf(value="com.microsoft.playwright.TestClientCertificates#isWebKitMacOS", disabledReason="The network connection was lost.")
+  public void shouldWorkWithBrowserNewPage() {
     Browser.NewPageOptions options = new Browser.NewPageOptions()
       .setIgnoreHTTPSErrors(true) // TODO: remove once we can pass a custom CA.
       .setClientCertificates(asList(
@@ -165,7 +172,8 @@ public class TestClientCertificates extends TestBase {
   }
 
   @Test
-  public void shouldWorkWithBrowserLaunchPersistentContext(@TempDir Path tmpDir) throws Exception {
+  @DisabledIf(value="com.microsoft.playwright.TestClientCertificates#isWebKitMacOS", disabledReason="The network connection was lost.")
+  public void shouldWorkWithBrowserLaunchPersistentContext(@TempDir Path tmpDir) {
     BrowserType.LaunchPersistentContextOptions options = new BrowserType.LaunchPersistentContextOptions()
       .setIgnoreHTTPSErrors(true) // TODO: remove once we can pass a custom CA.
       .setClientCertificates(asList(
