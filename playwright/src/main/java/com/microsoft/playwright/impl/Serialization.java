@@ -315,6 +315,9 @@ class Serialization {
       if (modifiers.contains(KeyboardModifier.CONTROL)) {
         result.add("Control");
       }
+      if (modifiers.contains(KeyboardModifier.CONTROLORMETA)) {
+        result.add("ControlOrMeta");
+      }
       if (modifiers.contains(KeyboardModifier.META)) {
         result.add("Meta");
       }

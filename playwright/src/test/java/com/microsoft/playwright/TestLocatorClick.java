@@ -16,9 +16,12 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.KeyboardModifier;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestLocatorClick extends TestBase {
 
@@ -53,5 +56,13 @@ public class TestLocatorClick extends TestBase {
     button.dblclick();
     assertEquals(true, page.evaluate("double"));
     assertEquals("Clicked", page.evaluate("result"));
+  }
+
+  @Test
+  void shouldSupportCotrolOrMetaModifier() {
+    page.setContent("<a href='" + server.PREFIX + "/title.html'>Go</a>");
+    Page newPage = page.context().waitForPage(() ->
+      page.getByText("Go").click(new Locator.ClickOptions().setModifiers(asList(KeyboardModifier.CONTROLORMETA))));
+    assertThat(newPage).hasURL(server.PREFIX + "/title.html");
   }
 }
