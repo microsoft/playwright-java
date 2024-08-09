@@ -16,27 +16,24 @@
 
 package com.microsoft.playwright.impl.junit;
 
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.Playwright;
-import com.microsoft.playwright.PlaywrightException;
+import com.microsoft.playwright.*;
 import com.microsoft.playwright.impl.Utils;
 import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
+
 import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
+import static com.microsoft.playwright.impl.junit.PageExtension.closePage;
 
-public class BrowserContextExtension implements ParameterResolver, AfterEachCallback {
+public class BrowserContextExtension implements ParameterResolver, TestWatcher {
   private static final ThreadLocal<BrowserContext> threadLocalBrowserContext = new ThreadLocal<>();
-
-  @Override
-  public void afterEach(ExtensionContext extensionContext) {
-    BrowserContext browserContext = threadLocalBrowserContext.get();
-    threadLocalBrowserContext.remove();
-    if (browserContext != null) {
-      browserContext.close();
-    }
-  }
 
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
@@ -51,6 +48,7 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
   /**
    * Returns the BrowserContext that belongs to the current test.  Will be created if it doesn't already exist.
    * <strong>NOTE:</strong> this method is subject to change.
+   *
    * @param extensionContext the context in which the current test or container is being executed.
    * @return The BrowserContext that belongs to the current test.
    */
@@ -66,8 +64,133 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
     Browser browser = BrowserExtension.getOrCreateBrowser(extensionContext);
     Browser.NewContextOptions contextOptions = getContextOptions(playwright, options);
     browserContext = browser.newContext(contextOptions);
+    if (shouldRecordTrace(options)) {
+      Tracing.StartOptions startOptions = new Tracing.StartOptions().setSnapshots(true).setScreenshots(true).setTitle(extensionContext.getDisplayName());
+      if (System.getenv("PLAYWRIGHT_JAVA_SRC") != null) {
+        startOptions.setSources(true);
+      }
+      browserContext.tracing().start(startOptions);
+    }
     threadLocalBrowserContext.set(browserContext);
     return browserContext;
+  }
+
+  @Override
+  public void testSuccessful(ExtensionContext extensionContext) {
+    saveTraceWhenOn(extensionContext);
+    saveScreenshotWhenOn(extensionContext);
+    cleanupResources();
+  }
+
+  @Override
+  public void testAborted(ExtensionContext extensionContext, Throwable cause) {
+    saveTraceWhenOn(extensionContext);
+    saveScreenshotWhenOn(extensionContext);
+    cleanupResources();
+  }
+
+  @Override
+  public void testFailed(ExtensionContext extensionContext, Throwable cause) {
+    Options options = OptionsExtension.getOptions(extensionContext);
+    if (options.trace.equals(Options.Trace.ON) || options.trace.equals(Options.Trace.RETAIN_ON_FAILURE)) {
+      saveTrace(extensionContext);
+    }
+
+    if (options.screenshot.equals(Options.Screenshot.ON) || options.screenshot.equals(Options.Screenshot.ONLY_ON_FAILURE)) {
+      saveScreenshot(extensionContext, true);
+    }
+    cleanupResources();
+  }
+
+  private void cleanupResources() {
+    closePage();
+    closeBrowserContext();
+  }
+
+  private static void saveScreenshotWhenOn(ExtensionContext extensionContext) {
+    Options options = OptionsExtension.getOptions(extensionContext);
+    if (options.screenshot.equals(Options.Screenshot.ON)) {
+      saveScreenshot(extensionContext, false);
+    }
+  }
+
+  private static void saveTraceWhenOn(ExtensionContext extensionContext) {
+    Options options = OptionsExtension.getOptions(extensionContext);
+    if (options.trace.equals(Options.Trace.ON)) {
+      saveTrace(extensionContext);
+    }
+  }
+
+  private static void saveScreenshot(ExtensionContext extensionContext, boolean didTestFail) {
+    BrowserContext browserContext = threadLocalBrowserContext.get();
+    if (browserContext == null) {
+      return;
+    }
+    String fileNamePrefix = "test-finished-";
+
+    if (didTestFail) {
+      fileNamePrefix = "test-failed-";
+    }
+
+    Path outputPath = getOutputPath(extensionContext);
+    createOutputPath(outputPath);
+    for (int i = 0; i < browserContext.pages().size(); i++) {
+      Path screenshotPath = outputPath.resolve(fileNamePrefix + (i + 1) + ".png");
+      browserContext.pages().get(i).screenshot(new Page.ScreenshotOptions().setPath(screenshotPath));
+    }
+
+  }
+
+  private static void saveTrace(ExtensionContext extensionContext) {
+    BrowserContext browserContext = threadLocalBrowserContext.get();
+    if (browserContext == null) {
+      return;
+    }
+    Path outputPath = getOutputPath(extensionContext);
+    createOutputPath(outputPath);
+    Tracing.StopOptions stopOptions = new Tracing.StopOptions().setPath(outputPath.resolve("trace.zip"));
+    browserContext.tracing().stop(stopOptions);
+  }
+
+  private static void createOutputPath(Path outputPath) {
+    try {
+      Files.walk(outputPath).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+      Files.createDirectories(outputPath);
+    } catch (NoSuchFileException ignored) {
+      // swallow
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private static Path getOutputPath(ExtensionContext extensionContext) {
+    BrowserType browserType = BrowserExtension.getBrowser().browserType();
+    Path defaultOutputPath = getDefaultOutputPath(extensionContext);
+    String outputDirName = extensionContext.getRequiredTestClass().getName() + "." +
+      extensionContext.getRequiredTestMethod().getName() + "-" +
+      browserType.name();
+    return defaultOutputPath.resolve(outputDirName);
+  }
+
+  private static Path getDefaultOutputPath(ExtensionContext extensionContext) {
+    Options options = OptionsExtension.getOptions(extensionContext);
+    Path outputPath = options.outputDir;
+    if (outputPath == null) {
+      outputPath = Paths.get(System.getProperty("user.dir")).resolve("test-results");
+    }
+    return outputPath;
+  }
+
+  private void closeBrowserContext() {
+    BrowserContext browserContext = threadLocalBrowserContext.get();
+    threadLocalBrowserContext.remove();
+    if (browserContext != null) {
+      browserContext.close();
+    }
+  }
+
+  private static boolean shouldRecordTrace(Options options) {
+    return options.trace.equals(Options.Trace.ON) || options.trace.equals(Options.Trace.RETAIN_ON_FAILURE);
   }
 
   private static Browser.NewContextOptions getContextOptions(Playwright playwright, Options options) {
@@ -94,7 +217,7 @@ public class BrowserContextExtension implements ParameterResolver, AfterEachCall
       contextOptions.hasTouch = deviceDescriptor.hasTouch;
     }
 
-    if(options.ignoreHTTPSErrors != null) {
+    if (options.ignoreHTTPSErrors != null) {
       contextOptions.setIgnoreHTTPSErrors(options.ignoreHTTPSErrors);
     }
 
