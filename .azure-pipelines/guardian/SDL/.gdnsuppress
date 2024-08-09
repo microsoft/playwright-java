@@ -1,115 +1,65 @@
 {
-  "hydrated": false,
+  "hydrated": true,
   "properties": {
     "helpUri": "https://eng.ms/docs/microsoft-security/security/azure-security/cloudai-security-fundamentals-engineering/security-integration/guardian-wiki/microsoft-guardian/general/suppressions",
-    "hydrationStatus": "This file does not contain identifying data. It is safe to check into your repo. To hydrate this file with identifying data, run `guardian hydrate --help` and follow the guidance."
+    "hydrationStatus": "This file contains identifying data. It is **NOT** safe to check into your repo. To dehydrate this file, run `guardian dehydrate --help` and follow the guidance."
   },
   "version": "1.0.0",
   "suppressionSets": {
     "default": {
       "name": "default",
-      "createdDate": "2024-02-06 20:37:57Z",
-      "lastUpdatedDate": "2024-02-06 20:37:57Z"
+      "createdDate": "2024-08-09 19:17:21Z",
+      "lastUpdatedDate": "2024-08-09 19:17:21Z"
     }
   },
   "results": {
-    "de854c6ab9b27b1ec642cec1a51059b92f88815a231c1c8f4b8e71d9e378f174": {
-      "signature": "de854c6ab9b27b1ec642cec1a51059b92f88815a231c1c8f4b8e71d9e378f174",
-      "alternativeSignatures": [
-        "79827cf2e75a7f99eec716562fb9fa0d49014ac96b7afc76d29d79a33e8edd94"
-      ],
-      "memberOf": [
-        "default"
-      ],
-      "createdDate": "2024-02-06 20:37:57Z"
-    },
-    "ebe0026db71ae4bb2d8e76b706198003079a5c095658de8dd49e67f7e572ea46": {
-      "signature": "ebe0026db71ae4bb2d8e76b706198003079a5c095658de8dd49e67f7e572ea46",
+    "757b006824c5a71008a6cd0fdcc6113f362e75ce80c84dd5e12fb7182df81fd3": {
+      "signature": "757b006824c5a71008a6cd0fdcc6113f362e75ce80c84dd5e12fb7182df81fd3",
       "alternativeSignatures": [],
+      "target": "playwright/src/test/resources/client-certificates/server/server_key.pem",
+      "line": 1,
       "memberOf": [
         "default"
       ],
-      "createdDate": "2024-02-06 20:37:57Z"
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0020",
+      "createdDate": "2024-08-09 19:17:21Z"
     },
-    "bb02ef965dce40b6c950b6d0cf8a9f41c08c5e33f17268fb208f3687b11ffa26": {
-      "signature": "bb02ef965dce40b6c950b6d0cf8a9f41c08c5e33f17268fb208f3687b11ffa26",
-      "alternativeSignatures": [
-        "3a8630eaccc2c5c39ae78836bb115bf55557058bad206fdad7dbe4f0ae466ed1"
-      ],
+    "106de9e280144480cf3960ce4d3affeb2641213962b6df5795f8bf1e237faa3e": {
+      "signature": "106de9e280144480cf3960ce4d3affeb2641213962b6df5795f8bf1e237faa3e",
+      "alternativeSignatures": [],
+      "target": "playwright/src/test/resources/client-certificates/server/server_keystore.p12",
+      "line": 1,
       "memberOf": [
         "default"
       ],
-      "createdDate": "2024-02-06 20:37:57Z"
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0020",
+      "createdDate": "2024-08-09 19:17:21Z"
     },
-    "dffa3e24f6dc7542d741b2fab22eec657aca441a51cee515ca9bb4932995a416": {
-      "signature": "dffa3e24f6dc7542d741b2fab22eec657aca441a51cee515ca9bb4932995a416",
-      "alternativeSignatures": [
-        "56a4b454840e2c21d44a76d9ab09fde76fba682ce7508a3f6abf7b411d389e56"
-      ],
+    "0e0f18fb6260fff02937bd500c07cdc052ed123a418f7baa25a959a614f39b98": {
+      "signature": "0e0f18fb6260fff02937bd500c07cdc052ed123a418f7baa25a959a614f39b98",
+      "alternativeSignatures": [],
+      "target": "playwright/src/test/resources/client-certificates/client/self-signed/key.pem",
+      "line": 1,
       "memberOf": [
         "default"
       ],
-      "createdDate": "2024-02-06 20:37:57Z"
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0020",
+      "createdDate": "2024-08-09 19:17:21Z"
     },
-    "5dbcaaac8cdccc6df557cbde94e5d7e0f1c8a67546ba82a1b85b629030f3d311": {
-      "signature": "5dbcaaac8cdccc6df557cbde94e5d7e0f1c8a67546ba82a1b85b629030f3d311",
-      "alternativeSignatures": [
-        "fdb8e8af8d5697f767d0e55194f91d4a089d981555e00d058ba866acb8602014"
-      ],
+    "d634dbc2dfcf7f0f467298d0a323337af5ecdb52032061180c50e99966eda4a7": {
+      "signature": "d634dbc2dfcf7f0f467298d0a323337af5ecdb52032061180c50e99966eda4a7",
+      "alternativeSignatures": [],
+      "target": "playwright/src/test/resources/client-certificates/client/trusted/key.pem",
+      "line": 1,
       "memberOf": [
         "default"
       ],
-      "createdDate": "2024-02-06 20:37:57Z"
-    },
-    "b7db026b2a60bdb63af1c0938ac16d9414bb4d38e9efdc51626e12aa55f6b72f": {
-      "signature": "b7db026b2a60bdb63af1c0938ac16d9414bb4d38e9efdc51626e12aa55f6b72f",
-      "alternativeSignatures": [
-        "bf7bb897e644659827d8dc8d55f719296d3ab94dc750b666ce90d8057361d9d5"
-      ],
-      "memberOf": [
-        "default"
-      ],
-      "createdDate": "2024-02-06 20:37:57Z"
-    },
-    "aa702d85554c352e3016e3ec3d790df489833dc97e3733c58b57915ec125f47b": {
-      "signature": "aa702d85554c352e3016e3ec3d790df489833dc97e3733c58b57915ec125f47b",
-      "alternativeSignatures": [
-        "948787329d52a66b4691383c81af407b03e68344a6685bbab3cfa8eb8db34f81"
-      ],
-      "memberOf": [
-        "default"
-      ],
-      "createdDate": "2024-02-06 20:37:57Z"
-    },
-    "38174b5c9b474c3c0278d4c4173c14022e03dec3dc4db5ced51d2ca8459e7f2a": {
-      "signature": "38174b5c9b474c3c0278d4c4173c14022e03dec3dc4db5ced51d2ca8459e7f2a",
-      "alternativeSignatures": [
-        "a9efa99679f3966da96a8b89f1250576cfceda774556d43ea89ea84289967276"
-      ],
-      "memberOf": [
-        "default"
-      ],
-      "createdDate": "2024-02-06 20:37:57Z"
-    },
-    "08a4e1be4662d897e5b2b7a7dc6d6901405462cd2d5f8ad433c13e12a8503fb6": {
-      "signature": "08a4e1be4662d897e5b2b7a7dc6d6901405462cd2d5f8ad433c13e12a8503fb6",
-      "alternativeSignatures": [
-        "009132f89939956a3f4471bb13353394015c9a7e675d118aa427e75f05658e05"
-      ],
-      "memberOf": [
-        "default"
-      ],
-      "createdDate": "2024-02-06 20:37:57Z"
-    },
-    "551d69737553150380e58bc9a8ae1e8f17da931561ea4e195781fb8cad225188": {
-      "signature": "551d69737553150380e58bc9a8ae1e8f17da931561ea4e195781fb8cad225188",
-      "alternativeSignatures": [
-        "617ad56322c5fb82a162b0b583e676d66a8e76b0d444aaab487865e4bf89e83b"
-      ],
-      "memberOf": [
-        "default"
-      ],
-      "createdDate": "2024-02-06 20:37:57Z"
+      "tool": "credscan",
+      "ruleId": "CSCAN-GENERAL0020",
+      "createdDate": "2024-08-09 19:17:21Z"
     }
   }
 }
