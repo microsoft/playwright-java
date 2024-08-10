@@ -20,39 +20,93 @@ import com.microsoft.playwright.options.FilePayload;
 import com.microsoft.playwright.options.FormData;
 
 import java.nio.file.Path;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class FormDataImpl implements FormData {
-  Map<String, Object> fields = new LinkedHashMap<>();
+  static class Field implements Map.Entry<String, Object> {
+    final String name;
+    final Object value;
+
+    private Field(String name, Object value) {
+        this.name = name;
+        this.value = value;
+    }
+
+    @Override
+    public String getKey() {
+      return name;
+    }
+
+    @Override
+    public Object getValue() {
+      return value;
+    }
+
+    @Override
+    public Object setValue(Object value) {
+      throw new UnsupportedOperationException();
+    }
+  }
+  List<Field> fields = new ArrayList();
+
+  @Override
+  public FormData append(String name, String value) {
+    return appendImpl(name, value);
+  }
+
+  @Override
+  public FormData append(String name, boolean value) {
+    return appendImpl(name, value);
+  }
+
+  @Override
+  public FormData append(String name, int value) {
+    return appendImpl(name, value);
+  }
+
+  @Override
+  public FormData append(String name, Path value) {
+    return appendImpl(name, value);
+  }
+
+  @Override
+  public FormData append(String name, FilePayload value) {
+    return appendImpl(name, value);
+  }
 
   @Override
   public FormData set(String name, String value) {
-    fields.put(name, value);
-    return this;
+    return setImpl(name, value);
   }
 
   @Override
   public FormData set(String name, boolean value) {
-    fields.put(name, value);
-    return this;
+    return setImpl(name, value);
   }
 
   @Override
   public FormData set(String name, int value) {
-    fields.put(name, value);
-    return this;
+    return setImpl(name, value);
   }
 
   @Override
   public FormData set(String name, Path value) {
-    fields.put(name, value);
-    return this;
+    return setImpl(name, value);
   }
 
   @Override
   public FormData set(String name, FilePayload value) {
-    fields.put(name, value);
+    return setImpl(name, value);
+  }
+
+  private FormData setImpl(String name, Object value) {
+    fields = fields.stream().filter(f -> !name.equals(f.name)).collect(Collectors.toList());
+    return appendImpl(name, value);
+  }
+
+  private FormData appendImpl(String name, Object value) {
+    fields.add(new Field(name, value));
     return this;
   }
 }

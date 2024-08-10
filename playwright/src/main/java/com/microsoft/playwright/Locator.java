@@ -76,9 +76,7 @@ public interface Locator {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public Boolean noWaitAfter;
     /**
@@ -109,9 +107,7 @@ public interface Locator {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public CheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -159,9 +155,7 @@ public interface Locator {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public Boolean noWaitAfter;
     /**
@@ -181,9 +175,7 @@ public interface Locator {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public ClearOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -220,13 +212,12 @@ public interface Locator {
     public Boolean force;
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
+     * and Linux and to "Meta" on macOS.
      */
     public List<KeyboardModifier> modifiers;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option will default to {@code true} in the future.
      */
     public Boolean noWaitAfter;
     /**
@@ -279,16 +270,15 @@ public interface Locator {
     }
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
+     * and Linux and to "Meta" on macOS.
      */
     public ClickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option will default to {@code true} in the future.
      */
     public ClickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -345,13 +335,12 @@ public interface Locator {
     public Boolean force;
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
+     * and Linux and to "Meta" on macOS.
      */
     public List<KeyboardModifier> modifiers;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public Boolean noWaitAfter;
     /**
@@ -397,16 +386,15 @@ public interface Locator {
     }
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
+     * and Linux and to "Meta" on macOS.
      */
     public DblclickOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public DblclickOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -474,9 +462,7 @@ public interface Locator {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public Boolean noWaitAfter;
     /**
@@ -512,9 +498,7 @@ public interface Locator {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public DragToOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -637,9 +621,7 @@ public interface Locator {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public Boolean noWaitAfter;
     /**
@@ -659,9 +641,7 @@ public interface Locator {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public FillOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -1056,13 +1036,12 @@ public interface Locator {
     public Boolean force;
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
+     * and Linux and to "Meta" on macOS.
      */
     public List<KeyboardModifier> modifiers;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public Boolean noWaitAfter;
     /**
@@ -1094,16 +1073,15 @@ public interface Locator {
     }
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
+     * and Linux and to "Meta" on macOS.
      */
     public HoverOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public HoverOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -1418,9 +1396,7 @@ public interface Locator {
      */
     public Double delay;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option will default to {@code true} in the future.
      */
     public Boolean noWaitAfter;
     /**
@@ -1439,9 +1415,7 @@ public interface Locator {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option will default to {@code true} in the future.
      */
     public PressOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -1464,9 +1438,7 @@ public interface Locator {
      */
     public Double delay;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public Boolean noWaitAfter;
     /**
@@ -1485,9 +1457,7 @@ public interface Locator {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public PressSequentiallyOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -1701,9 +1671,7 @@ public interface Locator {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option will default to {@code true} in the future.
      */
     public Boolean noWaitAfter;
     /**
@@ -1723,9 +1691,7 @@ public interface Locator {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option will default to {@code true} in the future.
      */
     public SelectOptionOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -1782,9 +1748,7 @@ public interface Locator {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public Boolean noWaitAfter;
     /**
@@ -1815,9 +1779,7 @@ public interface Locator {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public SetCheckedOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -1860,9 +1822,7 @@ public interface Locator {
   }
   class SetInputFilesOptions {
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public Boolean noWaitAfter;
     /**
@@ -1874,9 +1834,7 @@ public interface Locator {
     public Double timeout;
 
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public SetInputFilesOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -1901,13 +1859,12 @@ public interface Locator {
     public Boolean force;
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
+     * and Linux and to "Meta" on macOS.
      */
     public List<KeyboardModifier> modifiers;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public Boolean noWaitAfter;
     /**
@@ -1939,16 +1896,15 @@ public interface Locator {
     }
     /**
      * Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current
-     * modifiers back. If not specified, currently pressed modifiers are used.
+     * modifiers back. If not specified, currently pressed modifiers are used. "ControlOrMeta" resolves to "Control" on Windows
+     * and Linux and to "Meta" on macOS.
      */
     public TapOptions setModifiers(List<KeyboardModifier> modifiers) {
       this.modifiers = modifiers;
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public TapOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -2015,9 +1971,7 @@ public interface Locator {
      */
     public Double delay;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public Boolean noWaitAfter;
     /**
@@ -2036,9 +1990,7 @@ public interface Locator {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public TypeOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -2062,9 +2014,7 @@ public interface Locator {
      */
     public Boolean force;
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public Boolean noWaitAfter;
     /**
@@ -2095,9 +2045,7 @@ public interface Locator {
       return this;
     }
     /**
-     * Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can
-     * opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to
-     * inaccessible pages. Defaults to {@code false}.
+     * @deprecated This option has no effect.
      */
     public UncheckOptions setNoWaitAfter(boolean noWaitAfter) {
       this.noWaitAfter = noWaitAfter;
@@ -2326,7 +2274,6 @@ public interface Locator {
    * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
-   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now checked. If not, this method throws.</li>
    * </ol>
    *
@@ -2358,7 +2305,6 @@ public interface Locator {
    * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
-   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now checked. If not, this method throws.</li>
    * </ol>
    *
@@ -2524,8 +2470,6 @@ public interface Locator {
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to double click in the center of the element, or the
    * specified {@code position}.</li>
-   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
-   * first click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
    * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
@@ -2552,8 +2496,6 @@ public interface Locator {
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to double click in the center of the element, or the
    * specified {@code position}.</li>
-   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set. Note that if the
-   * first click of the {@code dblclick()} triggers a navigation event, this method will throw.</li>
    * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
@@ -3749,7 +3691,6 @@ public interface Locator {
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to hover over the center of the element, or the specified
    * {@code position}.</li>
-   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
@@ -3779,7 +3720,6 @@ public interface Locator {
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to hover over the center of the element, or the specified
    * {@code position}.</li>
-   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
@@ -4186,7 +4126,8 @@ public interface Locator {
    * ArrowUp}, etc.
    *
    * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code
-   * ShiftLeft}.
+   * ShiftLeft}, {@code ControlOrMeta}. {@code ControlOrMeta} resolves to {@code Control} on Windows and Linux and to {@code
+   * Meta} on macOS.
    *
    * <p> Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
    *
@@ -4226,7 +4167,8 @@ public interface Locator {
    * ArrowUp}, etc.
    *
    * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code
-   * ShiftLeft}.
+   * ShiftLeft}, {@code ControlOrMeta}. {@code ControlOrMeta} resolves to {@code Control} on Windows and Linux and to {@code
+   * Meta} on macOS.
    *
    * <p> Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
    *
@@ -4362,6 +4304,8 @@ public interface Locator {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">IntersectionObserver</a>'s {@code
    * ratio}.
    *
+   * <p> See <a href="https://playwright.dev/java/docs/input#scrolling">scrolling</a> for alternative ways to scroll.
+   *
    * @since v1.14
    */
   default void scrollIntoViewIfNeeded() {
@@ -4372,6 +4316,8 @@ public interface Locator {
    * scroll element into view, unless it is completely visible as defined by <a
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API">IntersectionObserver</a>'s {@code
    * ratio}.
+   *
+   * <p> See <a href="https://playwright.dev/java/docs/input#scrolling">scrolling</a> for alternative ways to scroll.
    *
    * @since v1.14
    */
@@ -4826,7 +4772,6 @@ public interface Locator {
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
-   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now checked or unchecked. If not, this method throws.</li>
    * </ol>
    *
@@ -4857,7 +4802,6 @@ public interface Locator {
    * unless {@code force} option is set. If the element is detached during the checks, the whole action is retried.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
-   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now checked or unchecked. If not, this method throws.</li>
    * </ol>
    *
@@ -4869,7 +4813,8 @@ public interface Locator {
    */
   void setChecked(boolean checked, SetCheckedOptions options);
   /**
-   * Upload file or multiple files into {@code <input type=file>}.
+   * Upload file or multiple files into {@code <input type=file>}. For inputs with a {@code [webkitdirectory]} attribute,
+   * only a single directory path is supported.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -4878,6 +4823,9 @@ public interface Locator {
    *
    * // Select multiple files
    * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Select a directory
+   * page.getByLabel("Upload directory").setInputFiles(Paths.get("mydir"));
    *
    * // Remove all the selected files
    * page.getByLabel("Upload file").setInputFiles(new Path[0]);
@@ -4904,7 +4852,8 @@ public interface Locator {
     setInputFiles(files, null);
   }
   /**
-   * Upload file or multiple files into {@code <input type=file>}.
+   * Upload file or multiple files into {@code <input type=file>}. For inputs with a {@code [webkitdirectory]} attribute,
+   * only a single directory path is supported.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -4913,6 +4862,9 @@ public interface Locator {
    *
    * // Select multiple files
    * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Select a directory
+   * page.getByLabel("Upload directory").setInputFiles(Paths.get("mydir"));
    *
    * // Remove all the selected files
    * page.getByLabel("Upload file").setInputFiles(new Path[0]);
@@ -4937,7 +4889,8 @@ public interface Locator {
    */
   void setInputFiles(Path files, SetInputFilesOptions options);
   /**
-   * Upload file or multiple files into {@code <input type=file>}.
+   * Upload file or multiple files into {@code <input type=file>}. For inputs with a {@code [webkitdirectory]} attribute,
+   * only a single directory path is supported.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -4946,6 +4899,9 @@ public interface Locator {
    *
    * // Select multiple files
    * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Select a directory
+   * page.getByLabel("Upload directory").setInputFiles(Paths.get("mydir"));
    *
    * // Remove all the selected files
    * page.getByLabel("Upload file").setInputFiles(new Path[0]);
@@ -4972,7 +4928,8 @@ public interface Locator {
     setInputFiles(files, null);
   }
   /**
-   * Upload file or multiple files into {@code <input type=file>}.
+   * Upload file or multiple files into {@code <input type=file>}. For inputs with a {@code [webkitdirectory]} attribute,
+   * only a single directory path is supported.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -4981,6 +4938,9 @@ public interface Locator {
    *
    * // Select multiple files
    * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Select a directory
+   * page.getByLabel("Upload directory").setInputFiles(Paths.get("mydir"));
    *
    * // Remove all the selected files
    * page.getByLabel("Upload file").setInputFiles(new Path[0]);
@@ -5005,7 +4965,8 @@ public interface Locator {
    */
   void setInputFiles(Path[] files, SetInputFilesOptions options);
   /**
-   * Upload file or multiple files into {@code <input type=file>}.
+   * Upload file or multiple files into {@code <input type=file>}. For inputs with a {@code [webkitdirectory]} attribute,
+   * only a single directory path is supported.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -5014,6 +4975,9 @@ public interface Locator {
    *
    * // Select multiple files
    * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Select a directory
+   * page.getByLabel("Upload directory").setInputFiles(Paths.get("mydir"));
    *
    * // Remove all the selected files
    * page.getByLabel("Upload file").setInputFiles(new Path[0]);
@@ -5040,7 +5004,8 @@ public interface Locator {
     setInputFiles(files, null);
   }
   /**
-   * Upload file or multiple files into {@code <input type=file>}.
+   * Upload file or multiple files into {@code <input type=file>}. For inputs with a {@code [webkitdirectory]} attribute,
+   * only a single directory path is supported.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -5049,6 +5014,9 @@ public interface Locator {
    *
    * // Select multiple files
    * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Select a directory
+   * page.getByLabel("Upload directory").setInputFiles(Paths.get("mydir"));
    *
    * // Remove all the selected files
    * page.getByLabel("Upload file").setInputFiles(new Path[0]);
@@ -5073,7 +5041,8 @@ public interface Locator {
    */
   void setInputFiles(FilePayload files, SetInputFilesOptions options);
   /**
-   * Upload file or multiple files into {@code <input type=file>}.
+   * Upload file or multiple files into {@code <input type=file>}. For inputs with a {@code [webkitdirectory]} attribute,
+   * only a single directory path is supported.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -5082,6 +5051,9 @@ public interface Locator {
    *
    * // Select multiple files
    * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Select a directory
+   * page.getByLabel("Upload directory").setInputFiles(Paths.get("mydir"));
    *
    * // Remove all the selected files
    * page.getByLabel("Upload file").setInputFiles(new Path[0]);
@@ -5108,7 +5080,8 @@ public interface Locator {
     setInputFiles(files, null);
   }
   /**
-   * Upload file or multiple files into {@code <input type=file>}.
+   * Upload file or multiple files into {@code <input type=file>}. For inputs with a {@code [webkitdirectory]} attribute,
+   * only a single directory path is supported.
    *
    * <p> <strong>Usage</strong>
    * <pre>{@code
@@ -5117,6 +5090,9 @@ public interface Locator {
    *
    * // Select multiple files
    * page.getByLabel("Upload files").setInputFiles(new Path[] {Paths.get("file1.txt"), Paths.get("file2.txt")});
+   *
+   * // Select a directory
+   * page.getByLabel("Upload directory").setInputFiles(Paths.get("mydir"));
    *
    * // Remove all the selected files
    * page.getByLabel("Upload file").setInputFiles(new Path[0]);
@@ -5152,7 +5128,6 @@ public interface Locator {
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link com.microsoft.playwright.Page#touchscreen Page.touchscreen()} to tap the center of the element, or the
    * specified {@code position}.</li>
-   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
@@ -5179,7 +5154,6 @@ public interface Locator {
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link com.microsoft.playwright.Page#touchscreen Page.touchscreen()} to tap the center of the element, or the
    * specified {@code position}.</li>
-   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * </ol>
    *
    * <p> If the element is detached from the DOM at any moment during the action, this method throws.
@@ -5252,7 +5226,6 @@ public interface Locator {
    * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
-   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now unchecked. If not, this method throws.</li>
    * </ol>
    *
@@ -5284,7 +5257,6 @@ public interface Locator {
    * force} option is set.</li>
    * <li> Scroll the element into view if needed.</li>
    * <li> Use {@link com.microsoft.playwright.Page#mouse Page.mouse()} to click in the center of the element.</li>
-   * <li> Wait for initiated navigations to either succeed or fail, unless {@code noWaitAfter} option is set.</li>
    * <li> Ensure that the element is now unchecked. If not, this method throws.</li>
    * </ol>
    *

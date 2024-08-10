@@ -20,15 +20,16 @@ public class Cookie {
   public String name;
   public String value;
   /**
-   * either url or domain / path are required. Optional.
+   * Either url or domain / path are required. Optional.
    */
   public String url;
   /**
-   * either url or domain / path are required Optional.
+   * For the cookie to apply to all subdomains as well, prefix domain with a dot, like this: ".example.com". Either url or
+   * domain / path are required. Optional.
    */
   public String domain;
   /**
-   * either url or domain / path are required Optional.
+   * Either url or domain / path are required Optional.
    */
   public String path;
   /**
@@ -53,21 +54,22 @@ public class Cookie {
     this.value = value;
   }
   /**
-   * either url or domain / path are required. Optional.
+   * Either url or domain / path are required. Optional.
    */
   public Cookie setUrl(String url) {
     this.url = url;
     return this;
   }
   /**
-   * either url or domain / path are required Optional.
+   * For the cookie to apply to all subdomains as well, prefix domain with a dot, like this: ".example.com". Either url or
+   * domain / path are required. Optional.
    */
   public Cookie setDomain(String domain) {
     this.domain = domain;
     return this;
   }
   /**
-   * either url or domain / path are required Optional.
+   * Either url or domain / path are required Optional.
    */
   public Cookie setPath(String path) {
     this.path = path;

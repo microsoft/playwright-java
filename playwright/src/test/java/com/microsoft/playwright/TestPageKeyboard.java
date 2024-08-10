@@ -343,10 +343,9 @@ public class TestPageKeyboard extends TestBase {
     page.navigate(server.PREFIX + "/input/textarea.html");
     ElementHandle textarea = page.querySelector("textarea");
     textarea.type("some text");
-    String modifier = isMac ? "Meta" : "Control";
-    page.keyboard().down(modifier);
+    page.keyboard().down("ControlOrMeta");
     page.keyboard().press("a");
-    page.keyboard().up(modifier);
+    page.keyboard().up("ControlOrMeta");
     page.keyboard().press("Backspace");
     assertTrue(((String)page.evalOnSelector("textarea", "textarea => textarea.value")).isEmpty());
   }
@@ -362,10 +361,9 @@ public class TestPageKeyboard extends TestBase {
       "      event.preventDefault();\n" +
       "  }, false);\n" +
       "}");
-    String modifier = isMac ? "Meta" : "Control";
-    page.keyboard().down(modifier);
+    page.keyboard().down("ControlOrMeta");
     page.keyboard().press("a");
-    page.keyboard().up(modifier);
+    page.keyboard().up("ControlOrMeta");
     page.keyboard().press("Backspace");
     assertEquals("some tex", page.evalOnSelector("textarea", "textarea => textarea.value"));
   }

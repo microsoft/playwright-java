@@ -99,7 +99,7 @@ public interface Request {
    */
   List<HttpHeader> headersArray();
   /**
-   * Returns the value of the header matching the name. The name is case insensitive.
+   * Returns the value of the header matching the name. The name is case-insensitive.
    *
    * @param name Name of the header.
    * @since v1.15

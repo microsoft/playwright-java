@@ -49,10 +49,9 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> Emitted when new background page is created in the context.
    * <pre>{@code
-   * Page backgroundPage = context.waitForBackgroundPage(() -> {
-   *   page.getByText("activate extension").click();
+   * context.onBackgroundPage(backgroundPage -> {
+   *   System.out.println(backgroundPage.url());
    * });
-   * System.out.println(backgroundPage.evaluate("location.href"));
    * }</pre>
    */
   void onBackgroundPage(Consumer<Page> handler);
@@ -128,7 +127,10 @@ public interface BrowserContext extends AutoCloseable {
    *
    * <p> The earliest moment that page is available is when it has navigated to the initial url. For example, when opening a
    * popup with {@code window.open('http://example.com')}, this event will fire when the network request to
-   * "http://example.com" is done and its response has started loading in the popup.
+   * "http://example.com" is done and its response has started loading in the popup. If you would like to route/listen to
+   * this network request, use {@link com.microsoft.playwright.BrowserContext#route BrowserContext.route()} and {@link
+   * com.microsoft.playwright.BrowserContext#onRequest BrowserContext.onRequest()} respectively instead of similar methods on
+   * the {@code Page}.
    * <pre>{@code
    * Page newPage = context.waitForPage(() -> {
    *   page.getByText("open new page").click();
@@ -277,14 +279,12 @@ public interface BrowserContext extends AutoCloseable {
   }
   class ExposeBindingOptions {
     /**
-     * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument is
-     * supported. When passing by value, multiple arguments are supported.
+     * @deprecated This option will be removed in the future.
      */
     public Boolean handle;
 
     /**
-     * Whether to pass the argument as a handle, instead of passing by value. When passing a handle, only one argument is
-     * supported. When passing by value, multiple arguments are supported.
+     * @deprecated This option will be removed in the future.
      */
     public ExposeBindingOptions setHandle(boolean handle) {
       this.handle = handle;
@@ -500,6 +500,12 @@ public interface BrowserContext extends AutoCloseable {
     }
   }
   /**
+   * Playwright has ability to mock clock and passage of time.
+   *
+   * @since v1.45
+   */
+  Clock clock();
+  /**
    * Adds cookies into this browser context. All pages within this context will have these cookies installed. Cookies can be
    * obtained via {@link com.microsoft.playwright.BrowserContext#cookies BrowserContext.cookies()}.
    *
@@ -508,9 +514,6 @@ public interface BrowserContext extends AutoCloseable {
    * browserContext.addCookies(Arrays.asList(cookieObject1, cookieObject2));
    * }</pre>
    *
-   * @param cookies Adds cookies to the browser context.
-   *
-   * <p> For the cookie to apply to all subdomains as well, prefix domain with a dot, like this: ".example.com".
    * @since v1.8
    */
   void addCookies(List<Cookie> cookies);
@@ -715,21 +718,6 @@ public interface BrowserContext extends AutoCloseable {
    * }
    * }</pre>
    *
-   * <p> An example of passing an element handle:
-   * <pre>{@code
-   * context.exposeBinding("clicked", (source, args) -> {
-   *   ElementHandle element = (ElementHandle) args[0];
-   *   System.out.println(element.textContent());
-   *   return null;
-   * }, new BrowserContext.ExposeBindingOptions().setHandle(true));
-   * page.setContent("" +
-   *   "<script>\n" +
-   *   "  document.addEventListener('click', event => window.clicked(event.target));\n" +
-   *   "</script>\n" +
-   *   "<div>Click me</div>\n" +
-   *   "<div>Or click me</div>\n");
-   * }</pre>
-   *
    * @param name Name of the function on the window object.
    * @param callback Callback function that will be called in the Playwright's context.
    * @since v1.8
@@ -775,21 +763,6 @@ public interface BrowserContext extends AutoCloseable {
    *     }
    *   }
    * }
-   * }</pre>
-   *
-   * <p> An example of passing an element handle:
-   * <pre>{@code
-   * context.exposeBinding("clicked", (source, args) -> {
-   *   ElementHandle element = (ElementHandle) args[0];
-   *   System.out.println(element.textContent());
-   *   return null;
-   * }, new BrowserContext.ExposeBindingOptions().setHandle(true));
-   * page.setContent("" +
-   *   "<script>\n" +
-   *   "  document.addEventListener('click', event => window.clicked(event.target));\n" +
-   *   "</script>\n" +
-   *   "<div>Click me</div>\n" +
-   *   "<div>Or click me</div>\n");
    * }</pre>
    *
    * @param name Name of the function on the window object.
@@ -861,21 +834,22 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @param permissions A permission or an array of permissions to grant. Permissions can be one of the following values:
    * <ul>
-   * <li> {@code "geolocation"}</li>
-   * <li> {@code "midi"}</li>
-   * <li> {@code "midi-sysex"} (system-exclusive midi)</li>
-   * <li> {@code "notifications"}</li>
-   * <li> {@code "camera"}</li>
-   * <li> {@code "microphone"}</li>
-   * <li> {@code "background-sync"}</li>
-   * <li> {@code "ambient-light-sensor"}</li>
    * <li> {@code "accelerometer"}</li>
-   * <li> {@code "gyroscope"}</li>
-   * <li> {@code "magnetometer"}</li>
    * <li> {@code "accessibility-events"}</li>
+   * <li> {@code "ambient-light-sensor"}</li>
+   * <li> {@code "background-sync"}</li>
+   * <li> {@code "camera"}</li>
    * <li> {@code "clipboard-read"}</li>
    * <li> {@code "clipboard-write"}</li>
+   * <li> {@code "geolocation"}</li>
+   * <li> {@code "gyroscope"}</li>
+   * <li> {@code "magnetometer"}</li>
+   * <li> {@code "microphone"}</li>
+   * <li> {@code "midi-sysex"} (system-exclusive midi)</li>
+   * <li> {@code "midi"}</li>
+   * <li> {@code "notifications"}</li>
    * <li> {@code "payment-handler"}</li>
+   * <li> {@code "storage-access"}</li>
    * </ul>
    * @since v1.8
    */
@@ -888,21 +862,22 @@ public interface BrowserContext extends AutoCloseable {
    *
    * @param permissions A permission or an array of permissions to grant. Permissions can be one of the following values:
    * <ul>
-   * <li> {@code "geolocation"}</li>
-   * <li> {@code "midi"}</li>
-   * <li> {@code "midi-sysex"} (system-exclusive midi)</li>
-   * <li> {@code "notifications"}</li>
-   * <li> {@code "camera"}</li>
-   * <li> {@code "microphone"}</li>
-   * <li> {@code "background-sync"}</li>
-   * <li> {@code "ambient-light-sensor"}</li>
    * <li> {@code "accelerometer"}</li>
-   * <li> {@code "gyroscope"}</li>
-   * <li> {@code "magnetometer"}</li>
    * <li> {@code "accessibility-events"}</li>
+   * <li> {@code "ambient-light-sensor"}</li>
+   * <li> {@code "background-sync"}</li>
+   * <li> {@code "camera"}</li>
    * <li> {@code "clipboard-read"}</li>
    * <li> {@code "clipboard-write"}</li>
+   * <li> {@code "geolocation"}</li>
+   * <li> {@code "gyroscope"}</li>
+   * <li> {@code "magnetometer"}</li>
+   * <li> {@code "microphone"}</li>
+   * <li> {@code "midi-sysex"} (system-exclusive midi)</li>
+   * <li> {@code "midi"}</li>
+   * <li> {@code "notifications"}</li>
    * <li> {@code "payment-handler"}</li>
+   * <li> {@code "storage-access"}</li>
    * </ul>
    * @since v1.8
    */

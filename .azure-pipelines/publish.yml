@@ -47,7 +47,7 @@ extends:
            GPG_PRIVATE_KEY_BASE64: $(GPG_PRIVATE_KEY_BASE64) # secret variable has to be mapped to an env variable
           displayName: "Import gpg key"
         
-        - bash: ./scripts/download_driver_for_all_platforms.sh
+        - bash: ./scripts/download_driver.sh
           displayName: 'Download driver'
         
         - bash: mvn -B deploy -D skipTests --no-transfer-progress --activate-profiles release -D gpg.passphrase=$GPG_PASSPHRASE -DaltDeploymentRepository=snapshot-repo::default::file:$(pwd)/local-build
@@ -55,27 +55,23 @@ extends:
           env:
             GPG_PASSPHRASE: $(GPG_PASSPHRASE) # secret variable has to be mapped to an env variable
         
-        - bash: |
-            for file in $(find snapshots -type f); do
-              echo "processing: $file"
-              if [[ $file =~ \.(md5|sha1|sha256)$ ]]; then
-                continue
-              fi
-              sha256sum "$file" | cut -f1 -d \ > "$file.sha256"
-            done
-          displayName: 'Create .sha256 files'
-        
-        - task: EsrpRelease@4
+        - task: EsrpRelease@7
           inputs:
-            ConnectedServiceName: 'Playwright-ESRP'
-            Intent: 'PackageDistribution'
-            ContentType: 'Maven'
-            ContentSource: 'Folder'
-            FolderLocation: './local-build'
-            WaitForReleaseCompletion: true
-            Owners: 'yurys@microsoft.com'
-            Approvers: 'maxschmitt@microsoft.com'
-            ServiceEndpointUrl: 'https://api.esrp.microsoft.com'
-            MainPublisher: 'Playwright'
-            DomainTenantId: '72f988bf-86f1-41af-91ab-2d7cd011db47'
+            connectedservicename: 'Playwright-ESRP-Azure'
+            keyvaultname: 'pw-publishing-secrets'
+            authcertname: 'ESRP-Release-Auth'
+            signcertname: 'ESRP-Release-Sign'
+            clientid: '13434a40-7de4-4c23-81a3-d843dc81c2c5'
+            intent: 'PackageDistribution'
+            contenttype: 'Maven'
+            # Keeping it commented out as a workaround for:
+            # https://portal.microsofticm.com/imp/v3/incidents/incident/499972482/summary
+            # contentsource: 'folder'
+            folderlocation: './local-build'
+            waitforreleasecompletion: true
+            owners: 'yurys@microsoft.com'
+            approvers: 'maxschmitt@microsoft.com'
+            serviceendpointurl: 'https://api.esrp.microsoft.com'
+            mainpublisher: 'Playwright'
+            domaintenantid: '72f988bf-86f1-41af-91ab-2d7cd011db47'
           displayName: 'ESRP Release to Maven'

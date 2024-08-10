@@ -97,7 +97,8 @@ public interface Keyboard {
    * ArrowUp}, etc.
    *
    * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code
-   * ShiftLeft}.
+   * ShiftLeft}, {@code ControlOrMeta}. {@code ControlOrMeta} resolves to {@code Control} on Windows and Linux and to {@code
+   * Meta} on macOS.
    *
    * <p> Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
    *
@@ -147,7 +148,8 @@ public interface Keyboard {
    * ArrowUp}, etc.
    *
    * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code
-   * ShiftLeft}.
+   * ShiftLeft}, {@code ControlOrMeta}. {@code ControlOrMeta} resolves to {@code Control} on Windows and Linux and to {@code
+   * Meta} on macOS.
    *
    * <p> Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
    *
@@ -193,7 +195,8 @@ public interface Keyboard {
    * ArrowUp}, etc.
    *
    * <p> Following modification shortcuts are also supported: {@code Shift}, {@code Control}, {@code Alt}, {@code Meta}, {@code
-   * ShiftLeft}.
+   * ShiftLeft}, {@code ControlOrMeta}. {@code ControlOrMeta} resolves to {@code Control} on Windows and Linux and to {@code
+   * Meta} on macOS.
    *
    * <p> Holding down {@code Shift} will type the text that corresponds to the {@code key} in the upper case.
    *

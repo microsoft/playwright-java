@@ -49,7 +49,34 @@ public class PageImpl extends ChannelOwner implements Page {
   private ViewportSize viewport;
   private final Router routes = new Router();
   private final Set<FrameImpl> frames = new LinkedHashSet<>();
-  private final Map<Integer, Runnable> locatorHandlers = new HashMap<>();
+  private final Map<Integer, LocatorHandler> locatorHandlers = new HashMap<>();
+
+  private static class LocatorHandler {
+    private final Locator locator;
+    private final Consumer<Locator> handler;
+    private Integer times;
+
+    LocatorHandler(Locator locator, Consumer<Locator> handler, Integer times) {
+      this.locator = locator;
+      this.handler = handler;
+      this.times = times;
+    }
+
+    boolean call() {
+      if (shouldRemove()) {
+        return true;
+      }
+      if (times != null) {
+        --times;
+      }
+      handler.accept(locator);
+      return shouldRemove();
+    }
+
+    private boolean shouldRemove() {
+      return times != null && times == 0;
+    }
+  }
 
   private static final Map<EventType, String> eventSubscriptions() {
     Map<EventType, String> result = new HashMap<>();
@@ -405,6 +432,11 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
+  public ClockImpl clock() {
+    return browserContext.clock();
+  }
+
+  @Override
   public Page waitForClose(WaitForCloseOptions options, Runnable code) {
     return withWaitLogging("Page.waitForClose", logger -> waitForCloseImpl(options, code));
   }
@@ -530,29 +562,58 @@ public class PageImpl extends ChannelOwner implements Page {
   }
 
   @Override
-  public void addLocatorHandler(Locator locator, Runnable handler) {
+  public void addLocatorHandler(Locator locator, Consumer<Locator> handler, AddLocatorHandlerOptions options) {
     LocatorImpl locatorImpl = (LocatorImpl) locator;
     if (locatorImpl.frame != mainFrame) {
       throw new PlaywrightException("Locator must belong to the main frame of this page");
     }
+    if (options == null) {
+      options = new AddLocatorHandlerOptions();
+    }
+    if (options.times != null && options.times == 0) {
+      return;
+    }
+    AddLocatorHandlerOptions finalOptions = options;
     withLogging("Page.addLocatorHandler", () -> {
       JsonObject params = new JsonObject();
       params.addProperty("selector", locatorImpl.selector);
+      if (finalOptions.noWaitAfter != null && finalOptions.noWaitAfter) {
+        params.addProperty("noWaitAfter", true);
+      }
+      params.addProperty("selector", locatorImpl.selector);
       JsonObject json = (JsonObject) sendMessage("registerLocatorHandler", params);
       int uid = json.get("uid").getAsInt();
-      locatorHandlers.put(uid, handler);
+      locatorHandlers.put(uid, new LocatorHandler(locator, handler, finalOptions.times));
     });
   }
 
-  private void onLocatorHandlerTriggered(int uid) {
-    try {
-      Runnable handler = locatorHandlers.get(uid);
-      if (handler != null) {
-        handler.run();
+  @Override
+  public void removeLocatorHandler(Locator locator) {
+    for (Map.Entry<Integer, LocatorHandler> entry: locatorHandlers.entrySet()) {
+      if (entry.getValue().locator.equals(locator)) {
+        locatorHandlers.remove(locator);
+        JsonObject params = new JsonObject();
+        params.addProperty("uid", entry.getKey());
+        try {
+          sendMessage("unregisterLocatorHandler", params);
+        } catch (PlaywrightException e) {
+        }
       }
+    }
+  }
+
+  private void onLocatorHandlerTriggered(int uid) {
+    boolean remove = false;
+    try {
+      LocatorHandler handler = locatorHandlers.get(uid);
+      remove = handler != null && handler.call();
     } finally {
+      if (remove) {
+        locatorHandlers.remove(uid);
+      }
       JsonObject params = new JsonObject();
       params.addProperty("uid", uid);
+      params.addProperty("remove", remove);
       sendMessageAsync("resolveLocatorHandlerNoReply", params);
     }
   }

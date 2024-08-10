@@ -42,6 +42,22 @@ public interface APIRequest {
      */
     public String baseURL;
     /**
+     * TLS Client Authentication allows the server to request a client certificate and verify it.
+     *
+     * <p> <strong>Details</strong>
+     *
+     * <p> An array of client certificates to be used. Each certificate object must have both {@code certPath} and {@code keyPath}
+     * or a single {@code pfxPath} to load the client certificate. Optionally, {@code passphrase} property should be provided
+     * if the certficiate is encrypted. The {@code origin} property should be provided with an exact match to the request
+     * origin that the certificate is valid for.
+     *
+     * <p> <strong>NOTE:</strong> Using Client Certificates in combination with Proxy Servers is not supported.
+     *
+     * <p> <strong>NOTE:</strong> When using WebKit on macOS, accessing {@code localhost} will not pick up client certificates. You can make it work by
+     * replacing {@code localhost} with {@code local.playwright}.
+     */
+    public List<ClientCertificate> clientCertificates;
+    /**
      * An object containing additional HTTP headers to be sent with every request. Defaults to none.
      */
     public Map<String, String> extraHTTPHeaders;
@@ -98,6 +114,25 @@ public interface APIRequest {
      */
     public NewContextOptions setBaseURL(String baseURL) {
       this.baseURL = baseURL;
+      return this;
+    }
+    /**
+     * TLS Client Authentication allows the server to request a client certificate and verify it.
+     *
+     * <p> <strong>Details</strong>
+     *
+     * <p> An array of client certificates to be used. Each certificate object must have both {@code certPath} and {@code keyPath}
+     * or a single {@code pfxPath} to load the client certificate. Optionally, {@code passphrase} property should be provided
+     * if the certficiate is encrypted. The {@code origin} property should be provided with an exact match to the request
+     * origin that the certificate is valid for.
+     *
+     * <p> <strong>NOTE:</strong> Using Client Certificates in combination with Proxy Servers is not supported.
+     *
+     * <p> <strong>NOTE:</strong> When using WebKit on macOS, accessing {@code localhost} will not pick up client certificates. You can make it work by
+     * replacing {@code localhost} with {@code local.playwright}.
+     */
+    public NewContextOptions setClientCertificates(List<ClientCertificate> clientCertificates) {
+      this.clientCertificates = clientCertificates;
       return this;
     }
     /**

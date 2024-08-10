@@ -23,6 +23,13 @@ public class HttpCredentials {
    * Restrain sending http credentials on specific origin (scheme://host:port).
    */
   public String origin;
+  /**
+   * This option only applies to the requests sent from corresponding {@code APIRequestContext} and does not affect requests
+   * sent from the browser. {@code "always"} - {@code Authorization} header with basic authentication credentials will be
+   * sent with the each API request. {@code 'unauthorized} - the credentials are only sent when 401 (Unauthorized) response
+   * with {@code WWW-Authenticate} header is received. Defaults to {@code "unauthorized"}.
+   */
+  public HttpCredentialsSend send;
 
   public HttpCredentials(String username, String password) {
     this.username = username;
@@ -33,6 +40,16 @@ public class HttpCredentials {
    */
   public HttpCredentials setOrigin(String origin) {
     this.origin = origin;
+    return this;
+  }
+  /**
+   * This option only applies to the requests sent from corresponding {@code APIRequestContext} and does not affect requests
+   * sent from the browser. {@code "always"} - {@code Authorization} header with basic authentication credentials will be
+   * sent with the each API request. {@code 'unauthorized} - the credentials are only sent when 401 (Unauthorized) response
+   * with {@code WWW-Authenticate} header is received. Defaults to {@code "unauthorized"}.
+   */
+  public HttpCredentials setSend(HttpCredentialsSend send) {
+    this.send = send;
     return this;
   }
 }

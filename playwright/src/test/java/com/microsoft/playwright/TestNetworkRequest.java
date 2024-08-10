@@ -16,14 +16,12 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.HttpHeader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIf;
 
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -113,13 +111,48 @@ public class TestNetworkRequest extends TestBase {
       assertTrue(response.request().headers().get("user-agent").contains("WebKit"));
   }
 
-
-  static boolean isWebKitWindowsOrChromium() {
-    return (isWebKit() && getOS() == Utils.OS.WINDOWS) || isChromium();
-  }
-
   static boolean isWebKitWindows() {
     return isWebKit() && getOS() == Utils.OS.WINDOWS;
+  }
+
+  // HTTP server in java does not preserve headers order.
+  static List<HttpHeader> normalizeServerHeaders(Map<String,List<String>> headers) {
+    List<HttpHeader> serverHeaders = new ArrayList<>();
+    for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+      for (String value: entry.getValue()) {
+        HttpHeader header = new HttpHeader();
+        header.name = entry.getKey().toLowerCase();
+        header.value = value;
+        serverHeaders.add(header);
+      }
+    }
+    Comparator<HttpHeader> comparator = Comparator.comparing(h -> h.name);
+    serverHeaders.sort(comparator);
+    return serverHeaders;
+  }
+
+  static List<HttpHeader> normalizeAllHeaders(Map<String, String> headers) {
+    List<HttpHeader> serverHeaders = new ArrayList<>();
+    for (Map.Entry<String, String> entry : headers.entrySet()) {
+      HttpHeader header = new HttpHeader();
+      header.name = entry.getKey().toLowerCase();
+      header.value = entry.getValue();
+      serverHeaders.add(header);
+    }
+    Comparator<HttpHeader> comparator = Comparator.comparing(h -> h.name);
+    serverHeaders.sort(comparator);
+    return serverHeaders;
+  }
+
+  static List<HttpHeader> adjustServerHeaders(List<HttpHeader> headers) {
+    if (isFirefox()) {
+      for (Iterator<HttpHeader> it = headers.iterator(); it.hasNext(); ) {
+        if ("priority".equals(it.next().name)) {
+          it.remove();
+        }
+      }
+    }
+    return headers;
   }
 
   @Test
@@ -133,9 +166,10 @@ public class TestNetworkRequest extends TestBase {
       }
     });
     Response response = page.navigate(server.PREFIX + "/empty.html");
-    Map<String, String> expectedHeaders = serverRequest.get().headers.entrySet().stream().collect(
-      Collectors.toMap(e -> e.getKey().toLowerCase(), e -> e.getValue().get(0)));
-    assertEquals(expectedHeaders, response.request().allHeaders());
+
+    List<HttpHeader> expectedHeaders = adjustServerHeaders(normalizeServerHeaders(serverRequest.get().headers));
+    List<HttpHeader> allHeaders = normalizeAllHeaders(response.request().allHeaders());
+    assertJsonEquals(expectedHeaders, allHeaders);
   }
 
   @Test
@@ -157,9 +191,9 @@ public class TestNetworkRequest extends TestBase {
           "}", server.CROSS_PROCESS_PREFIX + "/something");
         assertEquals("done", text);
       });
-    Map<String, String> expectedHeaders = serverRequest.get().headers.entrySet().stream().collect(
-      Collectors.toMap(e -> e.getKey().toLowerCase(), e -> e.getValue().get(0)));
-    assertEquals(expectedHeaders, response.request().allHeaders());
+    List<HttpHeader> expectedHeaders = adjustServerHeaders(normalizeServerHeaders(serverRequest.get().headers));
+    List<HttpHeader> allHeaders = normalizeAllHeaders(response.request().allHeaders());
+    assertJsonEquals(expectedHeaders, allHeaders);
   }
 
   @Test

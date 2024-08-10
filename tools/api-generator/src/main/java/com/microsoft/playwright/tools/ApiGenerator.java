@@ -276,6 +276,11 @@ class TypeRef extends Element {
 
   private static final Map<String, String> customTypeNames = new HashMap<>();
   static {
+    customTypeNames.put("APIRequest.newContext.options.clientCertificates", "ClientCertificate");
+    customTypeNames.put("Browser.newContext.options.clientCertificates", "ClientCertificate");
+    customTypeNames.put("Browser.newPage.options.clientCertificates", "ClientCertificate");
+    customTypeNames.put("BrowserType.launchPersistentContext.options.clientCertificates", "ClientCertificate");
+
     customTypeNames.put("BrowserContext.addCookies.cookies", "Cookie");
     customTypeNames.put("BrowserContext.cookies", "Cookie");
 
@@ -294,6 +299,7 @@ class TypeRef extends Element {
     customTypeNames.put("Frame.setInputFiles.files", "FilePayload");
     customTypeNames.put("Page.setInputFiles.files", "FilePayload");
     customTypeNames.put("Page.setInputFiles.files", "FilePayload");
+    customTypeNames.put("FormData.append.value", "FilePayload");
     customTypeNames.put("FormData.set.value", "FilePayload");
 
     customTypeNames.put("Locator.dragTo.options.sourcePosition", "Position");
@@ -977,6 +983,9 @@ class Interface extends TypeDefinition {
     if (asList("Page", "Frame", "ElementHandle", "Locator", "FormData", "APIRequest", "APIRequestContext", "FileChooser", "Browser", "BrowserContext", "BrowserType", "Download", "Route", "Selectors", "Tracing", "Video").contains(jsonName)) {
       output.add("import java.nio.file.Path;");
     }
+    if ("Clock".equals(jsonName)) {
+      output.add("import java.util.Date;");
+    }
     if (asList("Page", "Frame", "ElementHandle", "Locator", "APIRequest", "Browser", "BrowserContext", "BrowserType", "Route", "Request", "Response", "JSHandle", "ConsoleMessage", "APIResponse", "Playwright").contains(jsonName)) {
       output.add("import java.util.*;");
     }
@@ -995,6 +1004,9 @@ class Interface extends TypeDefinition {
     }
     if ("CDPSession".equals(jsonName)) {
       output.add("import com.google.gson.JsonObject;");
+    }
+    if ("LocatorAssertions".equals(jsonName)) {
+      output.add("import com.microsoft.playwright.options.AriaRole;");
     }
     if ("PlaywrightAssertions".equals(jsonName)) {
       output.add("import com.microsoft.playwright.APIResponse;");
@@ -1088,8 +1100,9 @@ class CustomClass extends TypeDefinition {
 
   @Override
   void writeTo(List<String> output, String offset) {
-    if (asList("RecordHar", "RecordVideo").contains(name)) {
+    if (asList("ClientCertificate").contains(name)) {
       output.add("import java.nio.file.Path;");
+      output.add("");
     }
     String access = (parent.typeScope() instanceof CustomClass) || topLevelTypes().containsKey(name) ? "public " : "";
     output.add(offset + access + "class " + name + " {");
@@ -1213,6 +1226,11 @@ public class ApiGenerator {
       try (FileWriter writer = new FileWriter(new File(dir, name + ".java"))) {
         writer.write(text);
       }
+    }
+
+    // No options under assertions.
+    if (packageName.contains(".assertions")) {
+      return;
     }
 
     dir = new File(dir, "options");

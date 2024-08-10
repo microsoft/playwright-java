@@ -16,6 +16,8 @@
 
 package com.microsoft.playwright;
 
+import com.microsoft.playwright.options.AriaRole;
+import com.microsoft.playwright.options.WaitForSelectorState;
 import org.junit.jupiter.api.Test;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
@@ -29,11 +31,13 @@ public class TestPageAddLocatorHandler extends TestBase {
     int[] beforeCount = {0};
     int[] afterCount = {0};
 
-    page.addLocatorHandler(page.getByText("This interstitial covers the button"), () -> {
+    Locator originalLocator = page.getByText("This interstitial covers the button");
+    page.addLocatorHandler(originalLocator, locator -> {
+      assertEquals(originalLocator, locator);
       ++beforeCount[0];
       page.locator("#close").click();
       ++afterCount[0];
-    });
+    }, new Page.AddLocatorHandlerOptions().setNoWaitAfter(true));
 
     String[][] argsList = {
       {"mouseover", "1"},
@@ -73,10 +77,10 @@ public class TestPageAddLocatorHandler extends TestBase {
   void shouldWorkWithCustomCheck() {
     page.navigate(server.PREFIX + "/input/handle-locator.html");
 
-    page.addLocatorHandler(page.locator("body"), () -> {
+    page.addLocatorHandler(page.locator("body"), locator -> {
       if (page.getByText("This interstitial covers the button").isVisible())
         page.locator("#close").click();
-    });
+    }, new Page.AddLocatorHandlerOptions().setNoWaitAfter(true));
 
     String[][] argsList = {
       {"mouseover", "2"},
@@ -103,7 +107,7 @@ public class TestPageAddLocatorHandler extends TestBase {
   void shouldWorkWithLocatorHover() {
     page.navigate(server.PREFIX + "/input/handle-locator.html");
 
-    page.addLocatorHandler(page.getByText("This interstitial covers the button"), () -> {
+    page.addLocatorHandler(page.getByText("This interstitial covers the button"), locator -> {
       page.locator("#close").click();
     });
 
@@ -120,7 +124,7 @@ public class TestPageAddLocatorHandler extends TestBase {
   void shouldNotWorkWithForceTrue() {
     page.navigate(server.PREFIX + "/input/handle-locator.html");
 
-    page.addLocatorHandler(page.getByText("This interstitial covers the button"), () -> {
+    page.addLocatorHandler(page.getByText("This interstitial covers the button"), locator -> {
       page.locator("#close").click();
     });
 
@@ -138,7 +142,7 @@ public class TestPageAddLocatorHandler extends TestBase {
   void shouldThrowWhenPageCloses() {
     page.navigate(server.PREFIX + "/input/handle-locator.html");
 
-    page.addLocatorHandler(page.getByText("This interstitial covers the button"), () -> {
+    page.addLocatorHandler(page.getByText("This interstitial covers the button"), locator -> {
       page.close();
     });
 
@@ -156,7 +160,7 @@ public class TestPageAddLocatorHandler extends TestBase {
     page.navigate(server.PREFIX + "/input/handle-locator.html");
 
     int[] called = {0};
-    page.addLocatorHandler(page.getByText("This interstitial covers the button"), () -> {
+    page.addLocatorHandler(page.getByText("This interstitial covers the button"), locator -> {
       ++called[0];
       page.locator("#close").click();
     });
@@ -169,4 +173,168 @@ public class TestPageAddLocatorHandler extends TestBase {
     assertThat(page.locator("#interstitial")).not().isVisible();
     assertEquals(1, called[0]);
  }
+
+  @Test
+  public void shouldWorkWhenOwnerFrameDetaches() {
+    Page page = browser.newPage();
+    page.navigate(server.EMPTY_PAGE);
+
+    page.evaluate("() => {\n" +
+      "    const iframe = document.createElement('iframe');\n" +
+      "    iframe.src = 'data:text/html,<body>hello from iframe</body>';\n" +
+      "    document.body.append(iframe);\n" +
+      "\n" +
+      "    const target = document.createElement('button');\n" +
+      "    target.textContent = 'Click me';\n" +
+      "    target.id = 'target';\n" +
+      "    target.addEventListener('click', () => window._clicked = true);\n" +
+      "    document.body.appendChild(target);\n" +
+      "\n" +
+      "    const closeButton = document.createElement('button');\n" +
+      "    closeButton.textContent = 'close';\n" +
+      "    closeButton.id = 'close';\n" +
+      "    closeButton.addEventListener('click', () => iframe.remove());\n" +
+      "    document.body.appendChild(closeButton);\n" +
+      "  }");
+
+    page.addLocatorHandler(page.frameLocator("iframe").locator("body"), locator -> {
+      page.locator("#close").click();
+    });
+
+    page.locator("#target").click();
+    assertNull(page.querySelector("iframe"));
+    assertTrue((Boolean) page.evaluate("window._clicked"));
+  }
+
+  @Test
+  public void shouldWorkWithTimesOption() {
+    Page page = browser.newPage();
+    page.navigate(server.PREFIX + "/input/handle-locator.html");
+
+    int[] called = {0};
+    page.addLocatorHandler(page.locator("body"), locator -> {
+      ++called[0];
+    }, new Page.AddLocatorHandlerOptions().setNoWaitAfter(true).setTimes(2));
+
+    page.locator("#aside").hover();
+    page.evaluate("() => {\n" +
+      "    window.clicked = 0;\n" +
+      "    window.setupAnnoyingInterstitial('mouseover', 4);\n" +
+      "  }");
+
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.locator("#target").click(new Locator.ClickOptions().setTimeout(3_000)));
+    assertEquals(2, called[0]);
+    assertEquals(0, (int) page.evaluate("window.clicked"));
+    assertTrue(page.locator("#interstitial").isVisible());
+    assertTrue(e.getMessage().contains("Timeout 3000ms exceeded"), e.getMessage());
+    assertTrue(e.getMessage().contains("<div>This interstitial covers the button</div> from <div class=\"visible\" id=\"interstitial\">…</div> subtree intercepts pointer events"), e.getMessage());
+  }
+
+  @Test
+  public void shouldWaitForHiddenByDefault() {
+    Page page = browser.newPage();
+    page.navigate(server.PREFIX + "/input/handle-locator.html");
+
+    int[] called = {0};
+    page.addLocatorHandler(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("close")), button -> {
+      ++called[0];
+      button.click();
+    });
+
+    page.locator("#aside").hover();
+    page.evaluate("() => {" +
+      "window.clicked = 0;" +
+      "window.setupAnnoyingInterstitial('timeout', 1);" +
+      "}");
+
+    page.locator("#target").click();
+    assertEquals(1, (int) page.evaluate("window.clicked"));
+    assertFalse(page.locator("#interstitial").isVisible());
+    assertEquals(1, called[0]);
+  }
+
+  @Test
+  public void shouldWaitForHiddenByDefault2() {
+    Page page = browser.newPage();
+    page.navigate(server.PREFIX + "/input/handle-locator.html");
+
+    int[] called = {0};
+    page.addLocatorHandler(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("close")), button -> {
+      ++called[0];
+    });
+
+    page.locator("#aside").hover();
+    page.evaluate("() => {" +
+      "window.clicked = 0;" +
+      "window.setupAnnoyingInterstitial('hide', 1);" +
+      "}");
+
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.locator("#target").click(new Locator.ClickOptions().setTimeout(3_000)));
+    assertEquals(0, (int) page.evaluate("window.clicked"));
+    assertThat(page.locator("#interstitial")).isVisible();
+    assertEquals(1, called[0]);
+    assertTrue(e.getMessage().contains("locator handler has finished, waiting for getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName(\"close\")) to be hidden"), e.getMessage());
+  }
+
+  @Test
+  public void shouldWorkWithNoWaitAfter() {
+    Page page = browser.newPage();
+    page.navigate(server.PREFIX + "/input/handle-locator.html");
+
+    int[] called = {0};
+    page.addLocatorHandler(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("close")), button -> {
+      ++called[0];
+      if (called[0] == 1) {
+        button.click();
+      } else {
+        page.locator("#interstitial").waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.HIDDEN));
+      }
+    }, new Page.AddLocatorHandlerOptions().setNoWaitAfter(true));
+
+    page.locator("#aside").hover();
+    page.evaluate("() => {" +
+      "window.clicked = 0;" +
+      "window.setupAnnoyingInterstitial('timeout', 1);" +
+      "}");
+
+    page.locator("#target").click();
+    assertEquals(1, (int) page.evaluate("window.clicked"));
+    assertThat(page.locator("#interstitial")).not().isVisible();
+    assertEquals(2, called[0]);
+  }
+
+  @Test
+  public void shouldRemoveLocatorHandler() {
+    Page page = browser.newPage();
+    page.navigate(server.PREFIX + "/input/handle-locator.html");
+
+    int[] called = {0};
+    page.addLocatorHandler(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("close")), button -> {
+      ++called[0];
+      button.click();
+    });
+
+    page.evaluate("() => {" +
+      "window.clicked = 0;" +
+      "window.setupAnnoyingInterstitial('hide', 1);" +
+      "}");
+
+    page.locator("#target").click();
+    assertEquals(1, called[0]);
+    assertEquals(1, (int) page.evaluate("window.clicked"));
+    assertThat(page.locator("#interstitial")).not().isVisible();
+
+    page.evaluate("() => {" +
+      "window.clicked = 0;" +
+      "window.setupAnnoyingInterstitial('hide', 1);" +
+      "}");
+
+    page.removeLocatorHandler(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("close")));
+
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.locator("#target").click(new Locator.ClickOptions().setTimeout(3_000)));
+    assertEquals(1, called[0]);
+    assertEquals(0, (int) page.evaluate("window.clicked"));
+    assertThat(page.locator("#interstitial")).isVisible();
+    assertTrue(e.getMessage().contains("Timeout 3000ms exceeded"));
+  }
 }

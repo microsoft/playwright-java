@@ -238,7 +238,7 @@ public class TestBrowserTypeConnect extends TestBase {
     }
     assertFalse(remote.isConnected());
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.evaluate("1 + 1"));
-    assertTrue(e.getMessage().contains("Browser has been closed"), e.getMessage());
+    assertTrue(e.getMessage().contains("Browser has been closed") || e.getMessage().contains("Browser closed"), e.getMessage());
     assertFalse(remote.isConnected());
   }
 
@@ -259,7 +259,7 @@ public class TestBrowserTypeConnect extends TestBase {
     }
     assertFalse(browser.isConnected());
     PlaywrightException e = assertThrows(PlaywrightException.class, () -> page.waitForNavigation(() -> {}));
-    assertTrue(e.getMessage().contains("Page closed") || e.getMessage().contains("Browser has been closed"), e.getMessage());
+    assertTrue(e.getMessage().contains("Browser closed") || e.getMessage().contains("Page closed") || e.getMessage().contains("Browser has been closed"), e.getMessage());
   }
 
   @Test
@@ -506,7 +506,7 @@ public class TestBrowserTypeConnect extends TestBase {
   }
 
   @Test
-  void setInputFilesDhouldPreserveLastModifiedTimestamp() throws IOException {
+  void setInputFilesShouldPreserveLastModifiedTimestamp() throws IOException {
     page.setContent("<input type=file multiple=true/>");
     Locator input = page.locator("input");
     input.setInputFiles(FILE_TO_UPLOAD);

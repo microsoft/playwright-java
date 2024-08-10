@@ -17,6 +17,7 @@
 package com.microsoft.playwright.assertions;
 
 import java.util.regex.Pattern;
+import com.microsoft.playwright.options.AriaRole;
 
 /**
  * The {@code LocatorAssertions} class provides assertion methods that can be used to make assertions about the {@code
@@ -253,6 +254,60 @@ public interface LocatorAssertions {
       return this;
     }
   }
+  class HasAccessibleDescriptionOptions {
+    /**
+     * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
+     * expression flag if specified.
+     */
+    public Boolean ignoreCase;
+    /**
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
+     */
+    public Double timeout;
+
+    /**
+     * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
+     * expression flag if specified.
+     */
+    public HasAccessibleDescriptionOptions setIgnoreCase(boolean ignoreCase) {
+      this.ignoreCase = ignoreCase;
+      return this;
+    }
+    /**
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
+     */
+    public HasAccessibleDescriptionOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class HasAccessibleNameOptions {
+    /**
+     * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
+     * expression flag if specified.
+     */
+    public Boolean ignoreCase;
+    /**
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
+     */
+    public Double timeout;
+
+    /**
+     * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
+     * expression flag if specified.
+     */
+    public HasAccessibleNameOptions setIgnoreCase(boolean ignoreCase) {
+      this.ignoreCase = ignoreCase;
+      return this;
+    }
+    /**
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
+     */
+    public HasAccessibleNameOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
   class HasAttributeOptions {
     /**
      * Whether to perform case-insensitive match. {@code ignoreCase} option takes precedence over the corresponding regular
@@ -346,6 +401,20 @@ public interface LocatorAssertions {
      * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
      */
     public HasJSPropertyOptions setTimeout(double timeout) {
+      this.timeout = timeout;
+      return this;
+    }
+  }
+  class HasRoleOptions {
+    /**
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
+     */
+    public Double timeout;
+
+    /**
+     * Time to retry the assertion for in milliseconds. Defaults to {@code 5000}.
+     */
+    public HasRoleOptions setTimeout(double timeout) {
       this.timeout = timeout;
       return this;
     }
@@ -683,10 +752,10 @@ public interface LocatorAssertions {
    * assertThat(page.getByText("Welcome")).isVisible();
    *
    * // At least one item in the list is visible.
-   * asserThat(page.getByTestId("todo-item").first()).isVisible();
+   * assertThat(page.getByTestId("todo-item").first()).isVisible();
    *
    * // At least one of the two elements is visible, possibly both.
-   * asserThat(
+   * assertThat(
    *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign in"))
    *     .or(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign up")))
    *     .first()
@@ -711,10 +780,10 @@ public interface LocatorAssertions {
    * assertThat(page.getByText("Welcome")).isVisible();
    *
    * // At least one item in the list is visible.
-   * asserThat(page.getByTestId("todo-item").first()).isVisible();
+   * assertThat(page.getByTestId("todo-item").first()).isVisible();
    *
    * // At least one of the two elements is visible, possibly both.
-   * asserThat(
+   * assertThat(
    *   page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign in"))
    *     .or(page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign up")))
    *     .first()
@@ -1076,6 +1145,126 @@ public interface LocatorAssertions {
    * @since v1.20
    */
   void containsText(Pattern[] expected, ContainsTextOptions options);
+  /**
+   * Ensures the {@code Locator} points to an element with a given <a
+   * href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * Locator locator = page.getByTestId("save-button");
+   * assertThat(locator).hasAccessibleDescription("Save results to disk");
+   * }</pre>
+   *
+   * @param description Expected accessible description.
+   * @since v1.44
+   */
+  default void hasAccessibleDescription(String description) {
+    hasAccessibleDescription(description, null);
+  }
+  /**
+   * Ensures the {@code Locator} points to an element with a given <a
+   * href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * Locator locator = page.getByTestId("save-button");
+   * assertThat(locator).hasAccessibleDescription("Save results to disk");
+   * }</pre>
+   *
+   * @param description Expected accessible description.
+   * @since v1.44
+   */
+  void hasAccessibleDescription(String description, HasAccessibleDescriptionOptions options);
+  /**
+   * Ensures the {@code Locator} points to an element with a given <a
+   * href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * Locator locator = page.getByTestId("save-button");
+   * assertThat(locator).hasAccessibleDescription("Save results to disk");
+   * }</pre>
+   *
+   * @param description Expected accessible description.
+   * @since v1.44
+   */
+  default void hasAccessibleDescription(Pattern description) {
+    hasAccessibleDescription(description, null);
+  }
+  /**
+   * Ensures the {@code Locator} points to an element with a given <a
+   * href="https://w3c.github.io/accname/#dfn-accessible-description">accessible description</a>.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * Locator locator = page.getByTestId("save-button");
+   * assertThat(locator).hasAccessibleDescription("Save results to disk");
+   * }</pre>
+   *
+   * @param description Expected accessible description.
+   * @since v1.44
+   */
+  void hasAccessibleDescription(Pattern description, HasAccessibleDescriptionOptions options);
+  /**
+   * Ensures the {@code Locator} points to an element with a given <a
+   * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * Locator locator = page.getByTestId("save-button");
+   * assertThat(locator).hasAccessibleName("Save to disk");
+   * }</pre>
+   *
+   * @param name Expected accessible name.
+   * @since v1.44
+   */
+  default void hasAccessibleName(String name) {
+    hasAccessibleName(name, null);
+  }
+  /**
+   * Ensures the {@code Locator} points to an element with a given <a
+   * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * Locator locator = page.getByTestId("save-button");
+   * assertThat(locator).hasAccessibleName("Save to disk");
+   * }</pre>
+   *
+   * @param name Expected accessible name.
+   * @since v1.44
+   */
+  void hasAccessibleName(String name, HasAccessibleNameOptions options);
+  /**
+   * Ensures the {@code Locator} points to an element with a given <a
+   * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * Locator locator = page.getByTestId("save-button");
+   * assertThat(locator).hasAccessibleName("Save to disk");
+   * }</pre>
+   *
+   * @param name Expected accessible name.
+   * @since v1.44
+   */
+  default void hasAccessibleName(Pattern name) {
+    hasAccessibleName(name, null);
+  }
+  /**
+   * Ensures the {@code Locator} points to an element with a given <a
+   * href="https://w3c.github.io/accname/#dfn-accessible-name">accessible name</a>.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * Locator locator = page.getByTestId("save-button");
+   * assertThat(locator).hasAccessibleName("Save to disk");
+   * }</pre>
+   *
+   * @param name Expected accessible name.
+   * @since v1.44
+   */
+  void hasAccessibleName(Pattern name, HasAccessibleNameOptions options);
   /**
    * Ensures the {@code Locator} points to an element with given attribute.
    *
@@ -1456,6 +1645,42 @@ public interface LocatorAssertions {
    * @since v1.20
    */
   void hasJSProperty(String name, Object value, HasJSPropertyOptions options);
+  /**
+   * Ensures the {@code Locator} points to an element with a given <a href="https://www.w3.org/TR/wai-aria-1.2/#roles">ARIA
+   * role</a>.
+   *
+   * <p> Note that role is matched as a string, disregarding the ARIA role hierarchy. For example, asserting  a superclass role
+   * {@code "checkbox"} on an element with a subclass role {@code "switch"} will fail.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * Locator locator = page.getByTestId("save-button");
+   * assertThat(locator).hasRole(AriaRole.BUTTON);
+   * }</pre>
+   *
+   * @param role Required aria role.
+   * @since v1.44
+   */
+  default void hasRole(AriaRole role) {
+    hasRole(role, null);
+  }
+  /**
+   * Ensures the {@code Locator} points to an element with a given <a href="https://www.w3.org/TR/wai-aria-1.2/#roles">ARIA
+   * role</a>.
+   *
+   * <p> Note that role is matched as a string, disregarding the ARIA role hierarchy. For example, asserting  a superclass role
+   * {@code "checkbox"} on an element with a subclass role {@code "switch"} will fail.
+   *
+   * <p> <strong>Usage</strong>
+   * <pre>{@code
+   * Locator locator = page.getByTestId("save-button");
+   * assertThat(locator).hasRole(AriaRole.BUTTON);
+   * }</pre>
+   *
+   * @param role Required aria role.
+   * @since v1.44
+   */
+  void hasRole(AriaRole role, HasRoleOptions options);
   /**
    * Ensures the {@code Locator} points to an element with the given text. All nested elements will be considered when
    * computing the text content of the element. You can use regular expressions for the value as well.

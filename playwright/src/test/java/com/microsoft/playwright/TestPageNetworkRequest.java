@@ -62,10 +62,16 @@ public class TestPageNetworkRequest extends TestBase {
     });
 
     responseWritten.acquire();
+
     List<HttpHeader> expectedHeaders = serverHeaders;
     if (isWebKit() && isWindows) {
       expectedHeaders = expectedHeaders.stream()
         .filter(h -> !"accept-encoding".equals(h.name.toLowerCase()) && !"accept-language".equals(h.name.toLowerCase()))
+        .collect(Collectors.toList());
+    }
+    if (isFirefox()) {
+      expectedHeaders = expectedHeaders.stream()
+        .filter(h -> !"priority".equals(h.name.toLowerCase()))
         .collect(Collectors.toList());
     }
 
