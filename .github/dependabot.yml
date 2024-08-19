@@ -3,8 +3,17 @@ updates:
   - package-ecosystem: "maven"
     directory: "/" # Location of the pom.xml file
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     open-pull-requests-limit: 10
+    groups:
+      # Create a group of dependencies to be updated together in one pull request
+      all:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
     allow:
       - dependency-type: "direct" # Optional: Only update direct dependencies
       - dependency-type: "indirect" # Optional: Only update indirect (transitive) dependencies
