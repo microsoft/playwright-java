@@ -62,7 +62,6 @@ public class Options {
   public enum Screenshot {
     OFF,
     ON,
-    ONLY_ON_FAILURE
   }
 
   public Options setTrace(Trace trace) {

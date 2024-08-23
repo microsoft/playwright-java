@@ -21,16 +21,12 @@ import com.microsoft.playwright.impl.Utils;
 import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
 
 import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
-import static com.microsoft.playwright.impl.junit.PageExtension.closePage;
 
 public class BrowserContextExtension implements ParameterResolver, TestWatcher {
   private static final ThreadLocal<BrowserContext> threadLocalBrowserContext = new ThreadLocal<>();
@@ -79,38 +75,32 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
   public void testSuccessful(ExtensionContext extensionContext) {
     saveTraceWhenOn(extensionContext);
     saveScreenshotWhenOn(extensionContext);
-    cleanupResources();
+    closeBrowserContext();
   }
 
   @Override
   public void testAborted(ExtensionContext extensionContext, Throwable cause) {
     saveTraceWhenOn(extensionContext);
     saveScreenshotWhenOn(extensionContext);
-    cleanupResources();
+    closeBrowserContext();
   }
 
   @Override
   public void testFailed(ExtensionContext extensionContext, Throwable cause) {
     Options options = OptionsExtension.getOptions(extensionContext);
-    if (options.trace.equals(Options.Trace.ON) || options.trace.equals(Options.Trace.RETAIN_ON_FAILURE)) {
+    if (shouldRecordTrace(options)) {
       saveTrace(extensionContext);
     }
 
-    if (options.screenshot.equals(Options.Screenshot.ON) || options.screenshot.equals(Options.Screenshot.ONLY_ON_FAILURE)) {
-      saveScreenshot(extensionContext, true);
-    }
-    cleanupResources();
-  }
+    saveScreenshotWhenOn(extensionContext);
 
-  private void cleanupResources() {
-    closePage();
     closeBrowserContext();
   }
 
   private static void saveScreenshotWhenOn(ExtensionContext extensionContext) {
     Options options = OptionsExtension.getOptions(extensionContext);
     if (options.screenshot.equals(Options.Screenshot.ON)) {
-      saveScreenshot(extensionContext, false);
+      saveScreenshot(extensionContext);
     }
   }
 
@@ -121,16 +111,12 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
     }
   }
 
-  private static void saveScreenshot(ExtensionContext extensionContext, boolean didTestFail) {
+  private static void saveScreenshot(ExtensionContext extensionContext) {
     BrowserContext browserContext = threadLocalBrowserContext.get();
     if (browserContext == null) {
       return;
     }
     String fileNamePrefix = "test-finished-";
-
-    if (didTestFail) {
-      fileNamePrefix = "test-failed-";
-    }
 
     Path outputPath = getOutputPath(extensionContext);
     createOutputPath(outputPath);
@@ -153,13 +139,12 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
   }
 
   private static void createOutputPath(Path outputPath) {
-    try {
-      Files.walk(outputPath).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
-      Files.createDirectories(outputPath);
-    } catch (NoSuchFileException ignored) {
-      // swallow
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    if(!Files.exists(outputPath)) {
+      try {
+        Files.createDirectories(outputPath);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 

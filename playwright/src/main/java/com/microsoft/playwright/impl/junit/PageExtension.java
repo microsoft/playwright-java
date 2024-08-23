@@ -52,13 +52,4 @@ public class PageExtension implements ParameterResolver {
     threadLocalPage.set(page);
     return page;
   }
-
-  // Close is called after TestWatcher is finished recording traces/screenshots
-  static void closePage() {
-    Page page = threadLocalPage.get();
-    threadLocalPage.remove();
-    if (page != null) {
-      page.close();
-    }
-  }
 }
