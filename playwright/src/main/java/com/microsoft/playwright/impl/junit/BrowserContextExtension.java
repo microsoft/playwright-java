@@ -74,14 +74,12 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
   @Override
   public void testSuccessful(ExtensionContext extensionContext) {
     saveTraceWhenOn(extensionContext);
-    saveScreenshotWhenOn(extensionContext);
     closeBrowserContext();
   }
 
   @Override
   public void testAborted(ExtensionContext extensionContext, Throwable cause) {
     saveTraceWhenOn(extensionContext);
-    saveScreenshotWhenOn(extensionContext);
     closeBrowserContext();
   }
 
@@ -91,17 +89,7 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
     if (shouldRecordTrace(options)) {
       saveTrace(extensionContext);
     }
-
-    saveScreenshotWhenOn(extensionContext);
-
     closeBrowserContext();
-  }
-
-  private static void saveScreenshotWhenOn(ExtensionContext extensionContext) {
-    Options options = OptionsExtension.getOptions(extensionContext);
-    if (options.screenshot.equals(Options.Screenshot.ON)) {
-      saveScreenshot(extensionContext);
-    }
   }
 
   private static void saveTraceWhenOn(ExtensionContext extensionContext) {
@@ -109,22 +97,6 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
     if (options.trace.equals(Options.Trace.ON)) {
       saveTrace(extensionContext);
     }
-  }
-
-  private static void saveScreenshot(ExtensionContext extensionContext) {
-    BrowserContext browserContext = threadLocalBrowserContext.get();
-    if (browserContext == null) {
-      return;
-    }
-    String fileNamePrefix = "test-finished-";
-
-    Path outputPath = getOutputPath(extensionContext);
-    createOutputPath(outputPath);
-    for (int i = 0; i < browserContext.pages().size(); i++) {
-      Path screenshotPath = outputPath.resolve(fileNamePrefix + (i + 1) + ".png");
-      browserContext.pages().get(i).screenshot(new Page.ScreenshotOptions().setPath(screenshotPath));
-    }
-
   }
 
   private static void saveTrace(ExtensionContext extensionContext) {

@@ -50,8 +50,6 @@ public class Options {
   public Path outputDir;
   // When to record traces.  Default is OFF.
   public Trace trace = Trace.OFF;
-  // When to save screenshots.  Default is OFF.
-  public Screenshot screenshot = Screenshot.OFF;
 
   public enum Trace {
     OFF,
@@ -59,18 +57,8 @@ public class Options {
     RETAIN_ON_FAILURE;
   }
 
-  public enum Screenshot {
-    OFF,
-    ON,
-  }
-
   public Options setTrace(Trace trace) {
     this.trace = trace;
-    return this;
-  }
-
-  public Options setScreenshot(Screenshot screenshot) {
-    this.screenshot = screenshot;
     return this;
   }
 
