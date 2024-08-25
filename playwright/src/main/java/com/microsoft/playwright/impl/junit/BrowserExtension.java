@@ -24,18 +24,19 @@ import com.microsoft.playwright.impl.Utils;
 import com.microsoft.playwright.junit.Options;
 import org.junit.jupiter.api.extension.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
 
 public class BrowserExtension implements ParameterResolver, AfterAllCallback {
-  private static final ThreadLocal<Browser> threadLocalBrowser = new ThreadLocal<>();
+  private static final ThreadLocal<Map<String,Browser>> threadLocalBrowser = ThreadLocal.withInitial(HashMap::new);
 
   @Override
   public void afterAll(ExtensionContext extensionContext) {
-    Browser browser = threadLocalBrowser.get();
+    Map<String, Browser> browserMap = threadLocalBrowser.get();
     threadLocalBrowser.remove();
-    if (browser != null) {
-      browser.close();
-    }
+    browserMap.values().forEach(Browser::close);
   }
 
   @Override
@@ -55,25 +56,17 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
    * @return The Browser that belongs to the current test.
    */
   public static Browser getOrCreateBrowser(ExtensionContext extensionContext) {
-    Browser browser = threadLocalBrowser.get();
-    if (browser != null) {
-      return browser;
-    }
 
     Options options = OptionsExtension.getOptions(extensionContext);
     Playwright playwright = PlaywrightExtension.getOrCreatePlaywright(extensionContext);
 
-
-    BrowserType browserType = playwright.chromium();
-    if (options.browserName != null) {
-      browserType = getBrowserTypeForName(playwright, options.browserName);
-    } else if (options.deviceName != null) {
-      DeviceDescriptor deviceDescriptor = DeviceDescriptor.findByName(playwright, options.deviceName);
-      if (deviceDescriptor != null && deviceDescriptor.defaultBrowserType != null) {
-          browserType = getBrowserTypeForName(playwright, deviceDescriptor.defaultBrowserType);
-      }
+    String selectedBrowserName = getSelectedBrowserName(playwright, options, extensionContext);
+    Browser browser = threadLocalBrowser.get().get(selectedBrowserName);
+    if (browser != null) {
+      return browser;
     }
 
+    BrowserType browserType = getBrowserTypeForName(playwright, selectedBrowserName);
     if(options.wsEndpoint != null && !options.wsEndpoint.isEmpty()) {
       BrowserType.ConnectOptions connectOptions = getConnectOptions(options);
       browser = browserType.connect(options.wsEndpoint, connectOptions);
@@ -82,8 +75,23 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
       browser = browserType.launch(launchOptions);
     }
 
-    threadLocalBrowser.set(browser);
+    threadLocalBrowser.get().put(selectedBrowserName, browser);
     return browser;
+  }
+
+  private static String getSelectedBrowserName(Playwright playwright, Options options, ExtensionContext extensionContext) {
+    String selectedBrowser = extensionContext.getStore(PlaywrightExtension.namespace).get(SelectedBrowserExtension.class, String.class);
+    if (selectedBrowser != null) {
+      return selectedBrowser;
+    } else if (options.browserName != null) {
+      return options.browserName;
+    } else if  (options.deviceName != null) {
+      DeviceDescriptor deviceDescriptor = DeviceDescriptor.findByName(playwright, options.deviceName);
+      if (deviceDescriptor != null && deviceDescriptor.defaultBrowserType != null) {
+        return deviceDescriptor.defaultBrowserType;
+      }
+    }
+    return "chromium";
   }
 
   private static BrowserType.ConnectOptions getConnectOptions(Options options) {
@@ -103,7 +111,7 @@ public class BrowserExtension implements ParameterResolver, AfterAllCallback {
       case "chromium":
         return playwright.chromium();
       default:
-        throw new PlaywrightException("Invalid browser name.");
+        throw new PlaywrightException("Invalid browser name: " + name);
     }
   }
 

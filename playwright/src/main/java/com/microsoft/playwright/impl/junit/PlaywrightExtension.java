@@ -31,7 +31,7 @@ import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
 
 public class PlaywrightExtension implements ParameterResolver {
   private static final ThreadLocal<Playwright> threadLocalPlaywright = new ThreadLocal<>();
-  private static final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(PlaywrightExtension.class);
+  static final ExtensionContext.Namespace namespace = ExtensionContext.Namespace.create(PlaywrightExtension.class);
 
   // There should be at most one instance of PlaywrightRegistry per test run, it keeps
   // track of all created Playwright instances and calls `close()` on each of them after
