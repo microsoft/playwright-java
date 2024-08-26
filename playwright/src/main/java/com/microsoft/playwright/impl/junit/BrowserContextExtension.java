@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.microsoft.playwright.impl.junit.ExtensionUtils.*;
+import static com.microsoft.playwright.impl.junit.PageExtension.cleanUpPage;
 
 public class BrowserContextExtension implements ParameterResolver, TestWatcher {
   private static final ThreadLocal<BrowserContext> threadLocalBrowserContext = new ThreadLocal<>();
@@ -111,7 +112,7 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
   }
 
   private static void createOutputPath(Path outputPath) {
-    if(!Files.exists(outputPath)) {
+    if (!Files.exists(outputPath)) {
       try {
         Files.createDirectories(outputPath);
       } catch (IOException e) {
@@ -139,6 +140,7 @@ public class BrowserContextExtension implements ParameterResolver, TestWatcher {
   }
 
   private void closeBrowserContext() {
+    cleanUpPage();
     BrowserContext browserContext = threadLocalBrowserContext.get();
     threadLocalBrowserContext.remove();
     if (browserContext != null) {
