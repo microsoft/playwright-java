@@ -17,6 +17,7 @@
 package com.microsoft.playwright.impl;
 
 import com.google.gson.JsonObject;
+import com.microsoft.playwright.PlaywrightException;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -41,13 +42,14 @@ class ListenerCollection <EventType> {
     }
 
     for (Consumer<?> listener: new ArrayList<>(list)) {
-      if (listener != null) {
         ((Consumer<T>) listener).accept(param);
-      }
     }
   }
 
   void add(EventType type, Consumer<?> listener) {
+    if (listener == null) {
+      throw new PlaywrightException("Can't add a null listener");
+    }
     List<Consumer<?>> list = listeners.get(type);
     if (list == null) {
       list = new ArrayList<>();
