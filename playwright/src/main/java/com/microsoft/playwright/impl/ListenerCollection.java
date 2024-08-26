@@ -42,7 +42,7 @@ class ListenerCollection <EventType> {
     }
 
     for (Consumer<?> listener: new ArrayList<>(list)) {
-        ((Consumer<T>) listener).accept(param);
+      ((Consumer<T>) listener).accept(param);
     }
   }
 
