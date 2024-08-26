@@ -347,4 +347,13 @@ public class TestPageBasic extends TestBase {
     }));
     assertTrue(e.getMessage().contains("The reason."), e.getMessage());
   }
+
+  @Test
+  void shouldProhibitNullListeners() {
+    Page newPage = context.newPage();
+
+    PlaywrightException e = assertThrows(PlaywrightException.class, () -> newPage.onClose(null));
+
+    assertTrue(e.getMessage().contains("Can't add a null listener"));
+  }
 }
